@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<questions>
+    <question type="choice" id="WELL_CONTRASTED">
+        <text>Are the images well contrasted?</text>
+        <answer value="yes" next="SHARP_ENOUGH" />
+        <answer value="no" next="SHARP_ENOUGH" />
+    </question>
+    <question type="choice" id="SHARP_ENOUGH">
+        <text>Are the images sharp enough?</text>
+        <answer value="yes" next="RESOLUTION" />
+        <answer value="no" next="RESOLUTION" />
+    </question>
+    <question type="input_integer" id="RESOLUTION">
+        <text>What is the resolution of the images?</text>
+        <answer value="0" next="TARGET_AREA" />
+    </question>
+    <question type="input_integer" id="TARGET_AREA">
+        <text>What percent of the image are, on average, is occupied by the target?</text>
+        <answer value="0" next="ORGANISM_COUNT" />
+    </question>
+
+    <question type="choice" id="ORGANISM_COUNT">
+        <text>Is there one or multiple organisms in the images?</text>
+        <answer value="one" next="ORGANISM_POSITION" />
+        <answer value="multiple" next="OCCLUSION" />
+    </question>
+    <question type="choice" id="ORGANISM_POSITION">
+        <text>Is the organism centered in the images?</text>
+        <answer value="yes" next="ORGANISM_ORIENTATION" />
+        <answer value="no" next="ORGANISM_ORIENTATION" />
+    </question>
+    <question type="choice" id="ORGANISM_ORIENTATION">
+        <text>Is the organism always in a certain orientation?</text>
+        <answer value="yes" next="OCCLUSION" />
+        <answer value="no" next="OCCLUSION" />
+    </question>
+    <question type="choice" id="OCCLUSION">
+        <text>Do other objects occlude the organism?</text>
+        <answer value="yes" next="BACKGROUND_CLUTTER" />
+        <answer value="no" next="BACKGROUND_CLUTTER" />
+    </question>
+    <question type="choice" id="BACKGROUND_CLUTTER">
+        <text>Is the background in the images uniform or does the background contain clutter?</text>
+        <answer value="uniform" next="CHARACTER_PROPERTY_OR_PART" />
+        <answer value="clutter" next="CHARACTER_PROPERTY_OR_PART" />
+    </question>
+    <question type="choice" id="CHARACTER_PROPERTY_OR_PART">
+        <text>Does the character involve part(s)? Or is it a more global property (e.g. texture)?</text>
+        <answer value="parts" next="CHARACTER_PART_POSITIONS" />
+        <answer value="global" next="NO_MORE_QUESTIONS" />
+    </question>
+    <question type="choice" id="CHARACTER_PART_POSITIONS">
+        <text>Could positions of parts be predicted by other positions?</text>
+        <answer value="yes" next="CHARACTER_PARTS_COUNT" />
+        <answer value="no" next="NO_MORE_QUESTIONS" />
+    </question>
+    <question type="choice" id="CHARACTER_PARTS_COUNT">
+        <text>Does the character involve one or multiple parts?</text>
+        <answer value="one" next="CHARACTER_PRESENCE" />
+        <answer value="multiple" next="CHARACTER_COMPARE_PROPERTIES" />
+    </question>
+    <question type="choice" id="CHARACTER_PRESENCE">
+        <text>Does the character involve presence and absence of a single part?</text>
+        <answer value="yes" next="NO_MORE_QUESTIONS" />
+        <answer value="no" next="CHARACTER_SINGLE_PROPERTY" />
+    </question>
+    <question type="choice" id="CHARACTER_SINGLE_PROPERTY">
+        <text>Does this character involve a property (color, shape, size) of the part?</text>
+        <answer value="yes" next="CHARACTER_PROPERTY" />
+        <answer value="no" next="NO_MORE_QUESTIONS" />
+    </question>
+    <question type="choice" id="CHARACTER_PROPERTY">
+        <text>Which property?</text>
+        <answer value="color" next="NO_MORE_QUESTIONS" />
+        <answer value="shape" next="NO_MORE_QUESTIONS" />
+        <answer value="size" next="NO_MORE_QUESTIONS" />
+        <answer value="texture" next="NO_MORE_QUESTIONS" />
+        <answer value="other" next="NO_MORE_QUESTIONS" />
+    </question>
+    <question type="choice" id="CHARACTER_COMPARE_PROPERTIES">
+        <text>Does this character involve comparing properties of two or more parts (e.g. size, color, shape)?</text>
+        <answer value="yes" next="CHARACTER_COMPARE_PROPERTIES_CHOICES" />
+        <answer value="no" next="CHARACTER_COMPARE_SPATIAL" />
+    </question>
+    <question type="choice" id="CHARACTER_COMPARE_PROPERTIES_CHOICES">
+        <text>What property is being compared?</text>
+        <answer value="width" next="NO_MORE_QUESTIONS" />
+        <answer value="height" next="NO_MORE_QUESTIONS" />
+        <answer value="size" next="NO_MORE_QUESTIONS" />
+        <answer value="texture" next="NO_MORE_QUESTIONS" />
+        <answer value="color" next="NO_MORE_QUESTIONS" />
+        <answer value="shape" next="NO_MORE_QUESTIONS" />
+        <answer value="other" next="NO_MORE_QUESTIONS" />
+    </question>
+    <question type="choice" id="CHARACTER_COMPARE_SPATIAL">
+        <text>Does this character involve spatial relationship (e.g. distance, orientation) between multiple part?</text>
+        <answer value="yes" next="CHARACTER_COMPARE_SPATIAL_CHOICES" />
+        <answer value="no" next="NO_MORE_QUESTIONS" />
+    </question>
+    <question type="choice" id="CHARACTER_COMPARE_SPATIAL_CHOICES">
+        <text>What is the spatial relationship?</text>
+        <answer value="distance apart" next="NO_MORE_QUESTIONS" />
+        <answer value="relative orientation" next="NO_MORE_QUESTIONS" />
+    </question>
+</questions>
