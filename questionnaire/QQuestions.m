@@ -26,7 +26,7 @@ classdef QQuestions < handle
                 end
             end
             validator = QuestionsValidator();
-            %validator.validate(obj.questions);
+            validator.validate(obj.questions);
         end
         function question = createQQuestion(obj,qnode)
             childNodes = qnode.getChildNodes;
