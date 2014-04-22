@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?> 
 <questions> 
     <question type="choice" id="BREADBOX"> 
-        <text>Is it bigger than a breadbox?</text>
+        <text>Is it bigger than a breadbox or is it approximately the same size? (Use your own judgement when deciding on the approximate size.  Everything is relative, you know.</text>
         <answer value="yes" next="COLOR"/>
         <answer value="no" next="WEIGHT"/>
         <image filename="data/images/elephant.jpg" caption="elephants are bigger than a breadbox"/>
