@@ -1,7 +1,7 @@
 function avatol_cv
 
-    %xmlFile = QuestionsXMLFile('tests/simple.xml');
-    xmlFile = QuestionsXMLFile('data/Questionnaire.xml');
+    xmlFile = QuestionsXMLFile('tests/simple.xml');
+    %xmlFile = QuestionsXMLFile('data/Questionnaire.xml');
     qquestions = QQuestions(xmlFile.domNode);
     global H;
     H.questionSequencer = QuestionSequencer(qquestions);
@@ -36,11 +36,13 @@ function avatol_cv
 
     function deleteObsoleteControls(controlTags)
         handles = guihandles();
-        for i=1:length(controlTags)
-            tag = controlTags{i};
-            %control = findobj('Tag',tag);
-            control = getfield(handles, tag);
-            delete(control);
+        if (not(isempty(handles)))
+            for i=1:length(controlTags)
+                tag = controlTags{i};
+                %control = findobj('Tag',tag);
+                control = getfield(handles, tag);
+                delete(control);
+            end
         end
     end
 
@@ -70,11 +72,11 @@ function avatol_cv
                               
         H.answerPanel = uipanel('Background', [0.3 1 0.3],...%[0.3 1 0.3]
                                   'BorderType', 'none',...
-                                  'Position',[0.02 0.2 0.25 0.68]);
+                                  'Position',[0.74 0.2 0.25 0.68]);
                               
         H.imagePanel = uipanel('Background', [0.3 0.3 1],...%[0.3 0.3 1]
                                   'BorderType', 'none',...
-                                  'Position',[ 0.27 0.1 0.7 0.78]);
+                                  'Position',[ 0.02 0.1 0.7 0.78]);
                               
         H.navigationPanel = uipanel('Background', [0.1 0.3 0.3],...%[0.1 0.3 0.3]
                                   'BorderType', 'none',...
@@ -354,7 +356,7 @@ end
     end
 
     function displayIntegerInputQuestion(qquestion)
-        
+        H.activeControlTags = {};
         H.questionText = uicontrol('style', 'text' ,...
                                      'String', qquestion.text ,...
                                      'position', getQuestionPosition() ,...
@@ -468,6 +470,7 @@ end
     function showPrevQuestion(hObject, eventData)
         
         deleteObsoleteControls(H.activeControlTags);
+        H.activeControlTags = {};
         if H.questionSequencer.canBackUp()
             prevAnsweredQuestion = H.questionSequencer.backUp();
             prevAnswer = prevAnsweredQuestion.answer;
@@ -517,6 +520,7 @@ end
         if verifyAnswerPresent()
             nextAnswer = registerDisplayedAnswer();
             deleteObsoleteControls(H.activeControlTags);
+            H.activeControlTags = {};
             qquestion = H.questionSequencer.getCurrentQuestion();
             if (strcmp(qquestion.id,'NO_MORE_QUESTIONS'))
                 displayFinishedScreen();
