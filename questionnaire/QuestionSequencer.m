@@ -65,9 +65,7 @@ classdef QuestionSequencer < handle
         function existingAnswerToNextQuestion = answerQuestion(obj, answer)
             existingAnswerToNextQuestion = 'NOT_YET_SPECIFIED';
             if (not(obj.currentQuestion.isValidAnswer(answer)))
-                message = fprintf('given answer %s is not valid for question %s', answer,obj.currentQuestion.id);
-                exception = MException('QuestionSequencer:OutOfSync', message);
-                throw(exception);
+                return;
             end 
             answerQuestionCount = length(obj.answeredQuestions);
             if (obj.nextAnswerIndex <= answerQuestionCount)
@@ -84,7 +82,7 @@ classdef QuestionSequencer < handle
                 else
                     nextQuestion = obj.findQuestionById(nextQuestionId);
                     if (strcmp(nextQuestion.id,'NULL'))
-                        message = fprintf('could not find question %s in qquestions', nextQuestionId);
+                        message = sprintf('could not find question %s in qquestions', nextQuestionId);
                         exception = MException('QuestionSequencer:UnknownQuestionId', message);
                         throw(exception);
                     else
