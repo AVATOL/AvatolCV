@@ -298,37 +298,61 @@ function avatol_cv
         set(H.prev, 'callback', {@showPrevQuestion});
         
         if (not(isempty(qquestion.images)))
-            imageCount = length(qquestion.images);
-            if (imageCount == 2)
-                image1Path = qquestion.images(1).imageFilePath;
-                axes1Panel = uipanel('Parent',H.imagePanel,...
+            displayImages(qquestion);
+        end
+    end
+
+    function displaySingleImage(qquestion)
+        image1Path = qquestion.images(1).imageFilePath;
+        axes1Panel = uipanel('Parent',H.imagePanel,...
                              'Tag','image1panel' ,...
-                             'position',[0,0,0.5,1]);
-                axes1 = axes('Parent',axes1Panel,...
+                             'position',[0,0,1,1]);
+        axes1 = axes('Parent',axes1Panel,...
                              'FontName', H.fontname ,...
                              'FontSize', H.fontsize ,...
                              'Tag','image1' ,...
                              'position',[0.05,0.05,0.9,0.9]);
-                H.activeControlTags = [ H.activeControlTags, 'image1panel' ];
-                imshow(image1Path);
-                xlabel(qquestion.images(1).imageCaption);
-                image2Path = qquestion.images(2).imageFilePath;
-                axes2Panel = uipanel('Parent',H.imagePanel,...
+        H.activeControlTags = [ H.activeControlTags, 'image1panel' ];
+        imshow(image1Path);
+        xlabel(qquestion.images(1).imageCaption);
+    end
+
+    function displayImagePair(qquestion)
+        image1Path = qquestion.images(1).imageFilePath;
+        axes1Panel = uipanel('Parent',H.imagePanel,...
+                             'Tag','image1panel' ,...
+                             'position',[0,0,0.5,1]);
+        axes1 = axes('Parent',axes1Panel,...
+                             'FontName', H.fontname ,...
+                             'FontSize', H.fontsize ,...
+                             'Tag','image1' ,...
+                             'position',[0.05,0.05,0.9,0.9]);
+        H.activeControlTags = [ H.activeControlTags, 'image1panel' ];
+        imshow(image1Path);
+        xlabel(qquestion.images(1).imageCaption);
+        image2Path = qquestion.images(2).imageFilePath;
+        axes2Panel = uipanel('Parent',H.imagePanel,...
                              'Tag','image2panel' ,...
                              'position',[0.5,0,0.5,1]);
-                axes2 = axes('Parent',axes2Panel,...
+        axes2 = axes('Parent',axes2Panel,...
                              'FontName', H.fontname ,...
                              'FontSize', H.fontsize ,...
                              'Tag','image2' ,...
                              'position',[0.05,0.05,0.9,0.9]);
-                H.activeControlTags = [ H.activeControlTags, 'image2panel' ];
-                imshow(image2Path);
-                xlabel(qquestion.images(2).imageCaption);
-            end
+        H.activeControlTags = [ H.activeControlTags, 'image2panel' ];
+        imshow(image2Path);
+        xlabel(qquestion.images(2).imageCaption);
+end
+
+    function displayImages(qquestion)
+        imageCount = length(qquestion.images);
+        if (imageCount == 1)
+           displaySingleImage(qquestion);
+        elseif (imageCount == 2)
+            displayImagePair(qquestion);
         end
     end
 
-    
     function displayIntegerInputQuestion(qquestion)
         
         H.questionText = uicontrol('style', 'text' ,...
@@ -376,6 +400,10 @@ function avatol_cv
         
         set(H.next, 'callback', {@showNextQuestion});
         set(H.prev, 'callback', {@showPrevQuestion});
+        
+        if (not(isempty(qquestion.images)))
+            displayImages(qquestion);
+        end
     end
 
 
