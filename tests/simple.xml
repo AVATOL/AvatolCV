@@ -4,8 +4,8 @@
         <text>Is it bigger than a breadbox?</text>
         <answer value="yes" next="COLOR"/>
         <answer value="no" next="WEIGHT"/>
-        <image filename="images/elephant.jpg" caption="elephants are bigger than a breadbox"/>
-        <image filename="images/mouse.jpg" caption="mice are smaller than a breadbox"/>
+        <image filename="data/images/elephant.jpg" caption="elephants are bigger than a breadbox"/>
+        <image filename="data/images/mouse.jpg" caption="mice are smaller than a breadbox"/>
     </question>
     <question type="choice" id="COLOR">
         <text>What color is the larger-than-breadbox item?</text>
