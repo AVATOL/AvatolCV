@@ -1,7 +1,7 @@
 function avatol_cv
 
-    xmlFile = QuestionsXMLFile('tests/simple.xml');
-    %xmlFile = QuestionsXMLFile('data/Questionnaire.xml');
+    %xmlFile = QuestionsXMLFile('tests/simple.xml');
+    xmlFile = QuestionsXMLFile('data/Questionnaire.xml');
     qquestions = QQuestions(xmlFile.domNode);
     global H;
     H.questionSequencer = QuestionSequencer(qquestions);
@@ -35,9 +35,11 @@ function avatol_cv
     end
 
     function deleteObsoleteControls(controlTags)
+        handles = guihandles();
         for i=1:length(controlTags)
             tag = controlTags{i};
-            control = findobj('Tag',tag);
+            %control = findobj('Tag',tag);
+            control = getfield(handles, tag);
             delete(control);
         end
     end
@@ -261,7 +263,7 @@ function avatol_cv
                             'parent',H.buttonGroup,...
                             'Tag', tag,...
                             'HandleVisibility', 'off');
-            H.activeControlTags = [ H.activeControlTags, tag ];
+            %H.activeControlTags = [ H.activeControlTags, tag ];
             H.radioButtons = [ H.radioButtons, thisButton ];
         end
 
@@ -294,6 +296,36 @@ function avatol_cv
         
         set(H.next, 'callback', {@showNextQuestion});
         set(H.prev, 'callback', {@showPrevQuestion});
+        
+        if (not(isempty(qquestion.images)))
+            imageCount = length(qquestion.images);
+            if (imageCount == 2)
+                image1Path = qquestion.images(1).imageFilePath;
+                axes1Panel = uipanel('Parent',H.imagePanel,...
+                             'Tag','image1panel' ,...
+                             'position',[0,0,0.5,1]);
+                axes1 = axes('Parent',axes1Panel,...
+                             'FontName', H.fontname ,...
+                             'FontSize', H.fontsize ,...
+                             'Tag','image1' ,...
+                             'position',[0.05,0.05,0.9,0.9]);
+                H.activeControlTags = [ H.activeControlTags, 'image1panel' ];
+                imshow(image1Path);
+                xlabel(qquestion.images(1).imageCaption);
+                image2Path = qquestion.images(2).imageFilePath;
+                axes2Panel = uipanel('Parent',H.imagePanel,...
+                             'Tag','image2panel' ,...
+                             'position',[0.5,0,0.5,1]);
+                axes2 = axes('Parent',axes2Panel,...
+                             'FontName', H.fontname ,...
+                             'FontSize', H.fontsize ,...
+                             'Tag','image2' ,...
+                             'position',[0.05,0.05,0.9,0.9]);
+                H.activeControlTags = [ H.activeControlTags, 'image2panel' ];
+                imshow(image2Path);
+                xlabel(qquestion.images(2).imageCaption);
+            end
+        end
     end
 
     
@@ -381,23 +413,27 @@ function avatol_cv
 
     function answerToNextQuestion = registerDisplayedAnswer()
         answerToNextQuestion = 'NOT_YET_SPECIFIED';
-        if strcmp(H.activeQuestionId,'characterQuestion')
-            characterName = get(H.activeAnswerControl, 'String');
-            H.questionSequencer.characterName = characterName;
-            if (not(isempty(H.questionSequencer.answeredQuestions)))
-                qanswer = H.questionSequencer.answeredQuestions(1)
-                answerToNextQuestion = qanswer.answer;
+        try
+            if strcmp(H.activeQuestionId,'characterQuestion')
+                characterName = get(H.activeAnswerControl, 'String');
+                H.questionSequencer.characterName = characterName;
+                if (not(isempty(H.questionSequencer.answeredQuestions)))
+                    qanswer = H.questionSequencer.answeredQuestions(1)
+                    answerToNextQuestion = qanswer.answer;
+                end
+            else 
+                if strcmp(H.activeControlType,'edit')
+                    answer = get(H.activeAnswerControl, 'String');
+                    answerToNextQuestion = H.questionSequencer.answerQuestion(answer);
+                else
+                    % must be choice
+                    radioButton = get(H.buttonGroup,'SelectedObject');
+                    answer = get(radioButton,'String');
+                    answerToNextQuestion = H.questionSequencer.answerQuestion(answer);
+                end
             end
-        else 
-            if strcmp(H.activeControlType,'edit')
-                answer = get(H.activeAnswerControl, 'String');
-                answerToNextQuestion = H.questionSequencer.answerQuestion(answer);
-            else
-                % must be choice
-                radioButton = get(H.buttonGroup,'SelectedObject');
-                answer = get(radioButton,'String');
-                answerToNextQuestion = H.questionSequencer.answerQuestion(answer);
-            end
+        catch exception
+            warndlg(exception.message);
         end
     end
 
