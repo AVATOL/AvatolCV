@@ -25,7 +25,12 @@ classdef QQuestion < handle
         function result = isValidAnswer(obj, givenAnswer)
             result = false;
             if (strcmp(obj.type,'input_integer'))
-                result = obj.isStringInteger(givenAnswer);
+                if (obj.isStringInteger(givenAnswer))
+                    result = true;
+                else
+                    exception = MException('QQuestion:BadType', 'answer must be integer');
+                    throw(exception);
+                end
             elseif (strcmp(obj.type, 'choice'))
                 for i = 1:length(obj.answers)
                     answer = obj.answers(i);
@@ -34,7 +39,7 @@ classdef QQuestion < handle
                     end
                 end
             else
-                message = fprintf('unknown question type %s for question %s', obj.type,obj.id)
+                message = sprintf('unknown question type %s for question %s', obj.type,obj.id)
                 exception = MException('QQuestion:BadType', message);
                 throw(exception);
             end
@@ -54,7 +59,7 @@ classdef QQuestion < handle
             elseif (strcmp(obj.type,'input_integer' ))
                 qanswer = obj.answers(1);
             else
-                message = fprintf('unknown question type %s for question %s', obj.type,obj.id)
+                message = sprintf('unknown question type %s for question %s', obj.type,obj.id)
                 exception = MException('QQuestion:BadType', message);
                 throw(exception);
             end
