@@ -67,8 +67,12 @@ function avatol_cv
     end
 
     function deleteMessagePanel()
+        handles = guihandles();
         if (isfield(H, 'done'))
             delete(H.done);
+        end
+        if (isfield(H, 'prev'))
+            delete(H.prev);
         end
         if (isfield(H, 'doAnotherCharacter'))
             delete(H.doAnotherCharacter);
@@ -82,14 +86,8 @@ function avatol_cv
         if (isfield(H, 'messagePanel'))
             delete(H.messagePanel);
         end
-        if (isfield(H, 'prev'))
-            delete(H.prev);
-        end
     end
 
-    function position = getNavigationPanelPosition()
-        position = [0.02 0.02 0.96 0.05];
-    end
     function createTypedInputQAPanels()
         H.titlePanel = uipanel('Background', [1 0.5 0.5],...%[1 0.5 0.5]
                                   'BorderType', 'etchedin',...
@@ -110,7 +108,8 @@ function avatol_cv
         H.navigationPanel = uipanel('Background', [0.1 0.3 0.3],...%[0.1 0.3 0.3]
                                   'BorderType', 'none',...
                                   'Position',getNavigationPanelPosition());
-        
+                              
+        H.mostRecentQAFlavor = 'typedInput';
     end
 
 
@@ -134,7 +133,11 @@ function avatol_cv
         H.navigationPanel = uipanel('Background', [0.1 0.3 0.3],...%[0.1 0.3 0.3]
                                   'BorderType', 'none',...
                                   'Position',getNavigationPanelPosition());
-        
+        H.mostRecentQAFlavor = 'choice';
+    end
+
+    function position = getNavigationPanelPosition()
+        position = [0.02 0.02 0.96 0.05];
     end
 
     function questionPosition = getQuestionPosition()
@@ -517,7 +520,12 @@ end
 
     function backFromEndMessageScreen(hObject, eventData)
         deleteMessagePanel();
-        createQAPanels();
+        if (strcmp(H.mostRecentQAFlavor,'typedInput'))
+            createTypedInputQAPanels();
+        else
+            createChoiceQAPanels();
+        end
+        
         showPrevQuestion(hObject, eventData);
     end
 
