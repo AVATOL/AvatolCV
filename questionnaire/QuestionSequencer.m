@@ -17,7 +17,20 @@ classdef QuestionSequencer < handle
         end
         
         function persist(obj)
-            disp('not yet implemented');
+            resultsDirExists = exist('results', 'dir');
+            if (not(resultsDirExists))
+                mkdir('results');
+            end
+            curDir = pwd();
+            filepath = sprintf('%s/results/%s.out',curDir,obj.characterName);
+            disp(filepath);
+            fileID = fopen(filepath,'w');
+            for i=1:length(obj.answeredQuestions)
+                aq = obj.answeredQuestions(i);
+                fprintf(fileID,'%s=%s\n',aq.questionID, aq.answer);
+            end
+            fprintf(fileID,'\n');
+            fclose(fileID);
         end
         
         function currentQuestion = getCurrentQuestion(obj)
