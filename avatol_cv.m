@@ -536,7 +536,7 @@ end
         H.questionSequencer = QuestionSequencer(qquestions);
         deleteMessagePanel();
         H.activeControlTags = {};
-        createQAPanels();
+        createTypedInputQAPanels();
         showCharacterQuestions();
     end
 
