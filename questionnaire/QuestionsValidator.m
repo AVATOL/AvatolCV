@@ -74,14 +74,21 @@ classdef QuestionsValidator < handle
                     end
                 end
             elseif (strcmp(question.type,'input_integer'))
-                integerQuestionMalformations = obj.getIntegerInputQuestionMalformations(question);
+                integerQuestionMalformations = obj.getInputIntegerQuestionMalformations(question);
                 if (not(isempty(integerQuestionMalformations)))
                     for i=1,length(integerQuestionMalformations)
                         malformations =  [ malformations, integerQuestionMalformations(i) ];
                     end
                 end
+            elseif (strcmp(question.type,'input_string'))
+                stringQuestionMalformations = obj.getInputStringQuestionMalformations(question);
+                if (not(isempty(stringQuestionMalformations)))
+                    for i=1,length(stringQuestionMalformations)
+                        malformations =  [ malformations, stringQuestionMalformations(i) ];
+                    end
+                end
             else
-                typeError = 'question type must be either choice or input_integer';
+                typeError = 'question type must be either choice, input_integer, or input_string';
                 malformations = [ malformations, typeError ];
             end
         end
@@ -95,7 +102,7 @@ classdef QuestionsValidator < handle
                 malformations = [ malformations,  tooFewAnswerError ];
             end
              % answer valid
-            answerMalformations = obj.getAnswerMalformationsForQuestion(question);
+            answerMalformations = obj.getAnswerMalformationsForChoiceQuestion(question);
             if (not(isempty(answerMalformations)))
                 for i=1,length(answerMalformations)
                     malformations =  [ malformations, answerMalformations(i) ];
@@ -111,7 +118,7 @@ classdef QuestionsValidator < handle
             end
         end
         
-        function malformations = getIntegerInputQuestionMalformations(obj, question)
+        function malformations = getInputIntegerQuestionMalformations(obj, question)
             % single answer element
             malformations = {}
             answerCount = length(question.answers);
@@ -120,7 +127,7 @@ classdef QuestionsValidator < handle
                 malformations = [ malformations,  singleAnwserError ];
             end
             % answer valid
-            answerMalformations = obj.getAnswerMalformationsForQuestion(question);
+            answerMalformations = obj.getAnswerMalformationsForInputIntegerQuestion(question);
             if (not(isempty(answerMalformations)))
                 for i=1,length(answerMalformations)
                     malformations =  [ malformations, answerMalformations(i) ];
@@ -136,21 +143,110 @@ classdef QuestionsValidator < handle
             end
         end
         
-        function malformations = getAnswerMalformationsForQuestion(obj, question)
+        
+        function malformations = getInputStringQuestionMalformations(obj, question)
+            % single answer element
+            malformations = {}
+            answerCount = length(question.answers);
+            if (answerCount ~= 1)
+                singleAnwserError = sprintf('input_string questions should have one answer: %s', question.id);
+                malformations = [ malformations,  singleAnwserError ];
+            end
+            % answer valid
+            answerMalformations = obj.getAnswerMalformationsForInputStringQuestion(question);
+            if (not(isempty(answerMalformations)))
+                for i=1,length(answerMalformations)
+                    malformations =  [ malformations, answerMalformations(i) ];
+                end
+            end
+            
+            % if images, images valid
+            imageMalformations = obj.getImageMalformationsForQuestion(question);
+            if (not(isempty(imageMalformations)))
+                for i=1,length(imageMalformations)
+                    malformations =  [ malformations, imageMalformations(i) ];
+                end
+            end
+        end
+        
+        
+        
+        function malformations = getAnswerMalformationsForChoiceQuestion(obj, question)
             malformations = {};
             answerCount = length(question.answers);
-            if (answerCount > 0)
-                for i=1:answerCount
-                    answer = question.answers(i);
-                    answerMalformations = obj.getAnswerMalformations(answer);
-                    if (not(isempty(answerMalformations)))
-                        for j=1,length(answerMalformations)
-                            malformations = [ malformations, answerMalformations(j) ];
-                        end
+            for i=1:answerCount
+                answer = question.answers(i);
+                answerMalformations = obj.getChoiceAnswerMalformations(answer);
+                if (not(isempty(answerMalformations)))
+                    for j=1,length(answerMalformations)
+                        malformations = [ malformations, answerMalformations(j) ];
                     end
                 end
             end
         end
+         function malformations = getChoiceAnswerMalformations(obj, qanswer)
+            malformations = {}
+            % value not ''
+            if (strcmp(qanswer.value,''))
+                malformations = [ malformations, 'answer value empty' ];
+            end
+            % next not ''
+            if (strcmp(qanswer.nextQuestion,''))
+                malformations = [ malformations, 'answer nextQuestion empty' ];
+            end
+        end
+        
+        
+        
+        
+        function malformations = getAnswerMalformationsForInputIntegerQuestion(obj, question)
+            malformations = {};
+            answer = question.answers(1);
+            answerMalformations = obj.getInputIntegerAnswerMalformations(answer);
+            if (not(isempty(answerMalformations)))
+                for j=1,length(answerMalformations)
+                    malformations = [ malformations, answerMalformations(j) ];
+                end
+            end
+        end
+        
+        function malformations = getInputIntegerAnswerMalformations(obj, qanswer)
+            malformations = {}
+            % value not ''
+            if (strcmp(qanswer.value,''))
+                malformations = [ malformations, 'answer value empty' ];
+            end
+            % next not ''
+            if (strcmp(qanswer.nextQuestion,''))
+                malformations = [ malformations, 'answer nextQuestion empty' ];
+            end
+        end
+        
+        
+        
+        
+        function malformations = getAnswerMalformationsForInputStringQuestion(obj, question)
+            malformations = {};
+            answer = question.answers(1);
+            answerMalformations = obj.getInputStringAnswerMalformations(answer);
+            if (not(isempty(answerMalformations)))
+                for j=1,length(answerMalformations)
+                    malformations = [ malformations, answerMalformations(j) ];
+                end
+            end
+        end
+        
+        function malformations = getInputStringAnswerMalformations(obj, qanswer)
+            malformations = {}
+            % next not ''
+            if (strcmp(qanswer.nextQuestion,''))
+                malformations = [ malformations, 'answer nextQuestion empty' ];
+            end
+        end
+        
+        
+        
+        
         function malformations = getImageMalformationsForQuestion(obj, question)
             malformations = {};
             imageCount = length(question.images);
@@ -186,19 +282,7 @@ classdef QuestionsValidator < handle
             end
         end
         
-        function malformations = getAnswerMalformations(obj, qanswer)
-            
-            malformations = {}
-            % value not ''
-            if (strcmp(qanswer.value,''))
-                malformations = [ malformations, 'answer value empty' ];
-            end
-            % next not ''
-            if (strcmp(qanswer.nextQuestion,''))
-                malformations = [ malformations, 'answer nextQuestion empty' ];
-            end
-
-        end
+       
         
         
         

@@ -29,7 +29,7 @@ classdef QuestionSequencer < handle
                 aq = obj.answeredQuestions(i);
                 fprintf(fileID,'%s=%s\n',aq.questionID, aq.answer);
             end
-            fprintf(fileID,'\n');
+            fprintf(fileID,'\n'); % not sure why I needed to add an extra linefeed, but if didn't, final linefeed doesn't express
             fclose(fileID);
         end
         

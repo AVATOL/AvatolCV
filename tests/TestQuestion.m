@@ -26,17 +26,39 @@ classdef TestQuestion < matlab.unittest.TestCase
             testCase.verifyTrue(q.isStringInteger('234'));
             testCase.verifyFalse(q.isStringInteger('b'));
             testCase.verifyFalse(q.isStringInteger('023.'));
-            
-           
         end
-        function testIsValidAnswer(testCase)
+        
+        function testIsStringString(testCase)
+            q = QQuestion('input_string', 'AAA', 'what is up?');
+            testCase.verifyTrue(q.isStringString('0'));
+            testCase.verifyTrue(q.isStringString('o'));
+            testCase.verifyTrue(q.isStringString('gsdfg'));
+            testCase.verifyFalse(q.isStringString(''));
+            testCase.verifyFalse(q.isStringString('\n'));
+            testCase.verifyFalse(q.isStringString('\t'));
+        end
+        function testIsValidIntegerAnswer(testCase)
             q = QQuestion('input_integer', 'AAA', 'what is up?');
             testCase.verifyTrue(q.isValidAnswer('0'));
             testCase.verifyTrue(q.isValidAnswer('1'));
             testCase.verifyTrue(q.isValidAnswer('234'));
-            testCase.verifyFalse(q.isValidAnswer('b'));
-            testCase.verifyFalse(q.isValidAnswer('023.'));
+            try
+                q.isValidAnswer('b');
+                testCase.assertFail('invalid integer should have thrown exception');
+            catch exception
+                
+            end
+            try 
+                testCase.verifyFalse(q.isValidAnswer('023.'));
+                testCase.assertFail('invalid integer should have thrown exception');
+            catch exception
+                
+            end
             
+            
+            
+        end
+        function testIsValidChoiceAnswer(testCase)
             q = QQuestion('choice', 'BBB', 'what is up?');
             answer1 = QAnswer('yes','someNext');
             answer2 = QAnswer('no','someOtherNext');
@@ -56,6 +78,31 @@ classdef TestQuestion < matlab.unittest.TestCase
             end
             
         end
+        function testIsValidStringAnswer(testCase)
+            q = QQuestion('input_string', 'AAA', 'what is up?');
+            testCase.verifyTrue(q.isValidAnswer('0'));
+            testCase.verifyTrue(q.isValidAnswer('1'));
+            testCase.verifyTrue(q.isValidAnswer('234'));
+            try 
+                testCase.verifyFalse(q.isValidAnswer(''));
+                testCase.assertFail('invalid string input should have thrown exception');
+            catch exception
+                
+            end
+            try
+                testCase.verifyFalse(q.isValidAnswer('\n'));
+                testCase.assertFail('invalid string input "\n" should have thrown exception');
+            catch exception
+                
+            end
+            try
+                testCase.verifyFalse(q.isValidAnswer('\t'));
+                testCase.assertFail('invalid string input "\t" should have thrown exception');
+            catch
+               
+            end
+            
+        end
         function testGetQAnswerForAnswerValue(testCase)
             q = QQuestion('choice', 'BBB', 'what is up?');
             answer1 = QAnswer('yes','someNext');
@@ -69,9 +116,6 @@ classdef TestQuestion < matlab.unittest.TestCase
             qAnswerNULL = q.getQAnswerForAnswerValue('maybe')
             testCase.verifyTrue(strcmp(qAnswerNULL.value, 'NULL'));
             
-            q = QQuestion('input_integer', 'BBB', 'what is the frequency, Kenneth?');
-            answer1 = QAnswer('0','someNext');
-            q.addAnswer(answer1);
         end
  
     end

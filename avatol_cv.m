@@ -183,7 +183,8 @@ function avatol_cv
     %
     
     function createEndMessagePanel(message) 
-        
+        deleteObsoleteControls(H.activeControlTags);
+        H.activeControlTags = {};
         H.messagePanel = uipanel('Background', [1 0.3 0.3],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
                                   'Position',[0.2 0.4 0.6 0.2]);
@@ -235,7 +236,7 @@ function avatol_cv
                                      'Tag','prev' ,...
                                      'BackgroundColor', [0.5 0.5 0.5]);  
                             
-        set(H.doAnotherCharacter, 'callback', {@restart});
+        set(H.doAnotherCharacter, 'callback', {@doAnotherCharacter});
         set(H.done, 'callback', {@saveAndExit});
         set(H.prev, 'callback', {@backFromEndMessageScreen});
          
@@ -291,7 +292,8 @@ function avatol_cv
         
     function displayChoiceQuestion(qquestion)
         % Create the button group.
-        
+        deleteObsoleteControls(H.activeControlTags);
+        H.activeControlTags = {};
         deleteQApanels();
         createChoiceQAPanels();
         
@@ -439,7 +441,8 @@ end
         end
     end
 
-    function displayIntegerInputQuestion(qquestion)
+    function displayInputQuestion(qquestion)
+        deleteObsoleteControls(H.activeControlTags);
         H.activeControlTags = {};
         
         deleteQApanels();
@@ -468,13 +471,13 @@ end
                                      'HorizontalAlignment', 'left');
         
         
-        H.integerInputText = uicontrol('style', 'edit' ,...
+        H.inputText = uicontrol('style', 'edit' ,...
                                      'Parent',H.answerPanel,...
                                      'Units','normalized',...
                                      'position', getInputAnswerPosition() ,...
                                      'FontName', H.fontname ,...
                                      'FontSize', H.fontsize ,...
-                                     'Tag','integerInput' ,...
+                                     'Tag','input' ,...
                                      'Background',[1 1 1],...
                                      'HorizontalAlignment', 'left');%'BackgroundColor', [1 0.1 0.1] ,...
                                  
@@ -499,9 +502,9 @@ end
                                      'Tag','prev' ,...
                                      'BackgroundColor', [0.5 0.5 0.5]);  
                                  
-        H.activeControlTags = { 'titleText', 'questionText'  'integerInput' 'next' 'prev' };   
+        H.activeControlTags = { 'titleText', 'questionText'  'input' 'next' 'prev' };   
         
-        H.activeAnswerControl = H.integerInputText;
+        H.activeAnswerControl = H.inputText;
         H.activeQuestionId = qquestion.id;
         H.activeControlType = 'edit';
         
@@ -529,8 +532,8 @@ end
         showPrevQuestion(hObject, eventData);
     end
 
-    function restart(hObject, eventData)
-        
+    function doAnotherCharacter(hObject, eventData)
+        H.questionSequencer.persist();
         xmlFile = QuestionsXMLFile('tests/simple.xml');
         qquestions = QQuestions(xmlFile.domNode);
         H.questionSequencer = QuestionSequencer(qquestions);
@@ -579,8 +582,8 @@ end
 
     function showPrevQuestion(hObject, eventData)
         
-        deleteObsoleteControls(H.activeControlTags);
-        H.activeControlTags = {};
+        %deleteObsoleteControls(H.activeControlTags);
+        %H.activeControlTags = {};
         if H.questionSequencer.canBackUp()
             prevAnsweredQuestion = H.questionSequencer.backUp();
             prevAnswer = prevAnsweredQuestion.answer;
@@ -598,7 +601,10 @@ end
     function displayPriorSetAnswer(prevAnswer, qquestion)
         
         if strcmp(qquestion.type,'input_integer')
-            control = findobj('Tag','integerInput');
+            control = findobj('Tag','input');
+            set(control,'String',prevAnswer);
+        elseif strcmp(qquestion.type,'input_string')
+            control = findobj('Tag','input');
             set(control,'String',prevAnswer);
         else
             % must be 'choice'
@@ -617,7 +623,9 @@ end
         if (strcmp(qquestion.type,'choice'))
             displayChoiceQuestion(qquestion);
         elseif (strcmp(qquestion.type,'input_integer'))
-            displayIntegerInputQuestion(qquestion);
+            displayInputQuestion(qquestion);
+        elseif (strcmp(qquestion.type,'input_string'))
+            displayInputQuestion(qquestion);
         else
             msg = sprintf('Invalid question type: %s', qquestion.type);
             err = MException('UI:BadQuestionType', msg);
@@ -629,8 +637,7 @@ end
         
         if verifyAnswerPresent()
             nextAnswer = registerDisplayedAnswer();
-            deleteObsoleteControls(H.activeControlTags);
-            H.activeControlTags = {};
+            
             qquestion = H.questionSequencer.getCurrentQuestion();
             if (strcmp(qquestion.id,'NO_MORE_QUESTIONS'))
                 displayFinishedScreen();

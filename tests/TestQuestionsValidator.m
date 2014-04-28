@@ -109,25 +109,63 @@ classdef TestQuestionsValidator < matlab.unittest.TestCase
             unused = qv.getUnusedQuestions(questions);
             testCase.verifyFalse(isempty(unused));
         end
-        function testGetAnswerMalformations(testCase)
+        function testGetChoiceAnswerMalformations(testCase)
             qv = QuestionsValidator();
             a1 = QAnswer('','CCC');
-            malformations = qv.getAnswerMalformations(a1);
+            malformations = qv.getChoiceAnswerMalformations(a1);
             problem = char(malformations(1));
             expectedProblem = 'answer value empty';
             testCase.verifyTrue(strcmp(problem,expectedProblem));
             testCase.verifyTrue(length(malformations) == 1);
             
             a2 = QAnswer('0','');
-            malformations = qv.getAnswerMalformations(a2);
+            malformations = qv.getChoiceAnswerMalformations(a2);
             problem = char(malformations(1));
             expectedProblem = 'answer nextQuestion empty';
             testCase.verifyTrue(strcmp(problem,expectedProblem));
             testCase.verifyTrue(length(malformations) == 1);
             
             a3 = QAnswer('0','CCC');
-            malformations = qv.getAnswerMalformations(a3);
+            malformations = qv.getChoiceAnswerMalformations(a3);
             testCase.verifyTrue(length(malformations) == 0);
+        end
+        
+        function testGetInputIntegerAnswerMalformations(testCase)
+            qv = QuestionsValidator();
+            a1 = QAnswer('','CCC');
+            malformations = qv.getInputIntegerAnswerMalformations(a1);
+            problem = char(malformations(1));
+            expectedProblem = 'answer value empty';
+            testCase.verifyTrue(strcmp(problem,expectedProblem));
+            testCase.verifyTrue(length(malformations) == 1);
+            
+            a2 = QAnswer('0','');
+            malformations = qv.getInputIntegerAnswerMalformations(a2);
+            problem = char(malformations(1));
+            expectedProblem = 'answer nextQuestion empty';
+            testCase.verifyTrue(strcmp(problem,expectedProblem));
+            testCase.verifyTrue(length(malformations) == 1);
+            
+            a3 = QAnswer('0','CCC');
+            malformations = qv.getInputIntegerAnswerMalformations(a3);
+            testCase.verifyTrue(length(malformations) == 0);
+        end
+        
+        function testGetInputStringAnswerMalformations(testCase)
+            qv = QuestionsValidator();
+            a1 = QAnswer('','CCC');
+            malformations = qv.getInputStringAnswerMalformations(a1);
+            testCase.verifyTrue(isempty(malformations));
+            
+            % in case we ever want to have a default value, allow
+            % non-empty content for now - it will just be ignored
+            a2 = QAnswer('0','');
+            malformations = qv.getInputStringAnswerMalformations(a2);
+            problem = char(malformations(1));
+            expectedProblem = 'answer nextQuestion empty';
+            testCase.verifyTrue(strcmp(problem,expectedProblem));
+            testCase.verifyTrue(length(malformations) == 1);
+            
         end
         
         function testGetImageMalformations(testCase)
@@ -139,33 +177,33 @@ classdef TestQuestionsValidator < matlab.unittest.TestCase
             testCase.verifyTrue(strcmp(problem,expectedProblem));
             testCase.verifyTrue(length(malformations) == 1);
             
-            i2 = QImage('images/nonExistent.jpg','someCaption');
+            i2 = QImage('data/images/nonExistent.jpg','someCaption');
             malformations = qv.getImageMalformations(i2);
             problem = char(malformations(1));
-            expectedProblem = 'image filename does not exist: images/nonExistent.jpg';
+            expectedProblem = 'image filename does not exist: data/images/nonExistent.jpg';
             testCase.verifyTrue(strcmp(problem,expectedProblem));
             testCase.verifyTrue(length(malformations) == 1);
             
-            i3 = QImage('images/bogusJPG.jpg','');
+            i3 = QImage('data/images/bogusJPG.jpg','');
             malformations = qv.getImageMalformations(i3);
             problem = char(malformations(1));
             expectedProblem = 'image caption empty';
             testCase.verifyTrue(strcmp(problem,expectedProblem));
             testCase.verifyTrue(length(malformations) == 1);
             
-            i4 = QImage('images/bogusJPG.jpg','someCaption');
+            i4 = QImage('data/images/bogusJPG.jpg','someCaption');
             malformations = qv.getImageMalformations(i4);
             testCase.verifyTrue(length(malformations) == 0);
         end
         
-        function testGetIntegerInputQuestionMalformations(testCase)
+        function testGetInputIntegerQuestionMalformations(testCase)
             qv = QuestionsValidator();
             a1 = QAnswer('X','CCC');
             a2 = QAnswer('Y','DDD');
             q = QQuestion('integer_input', 'ID3', 'someText');
             q.addAnswer(a1);
             q.addAnswer(a2);
-            malformations = qv.getIntegerInputQuestionMalformations(q);
+            malformations = qv.getInputIntegerQuestionMalformations(q);
             problem = char(malformations(1));
             expectedProblem = 'input_integer questions should have one answer: ID3';
             testCase.verifyTrue(strcmp(problem,expectedProblem));
@@ -174,7 +212,7 @@ classdef TestQuestionsValidator < matlab.unittest.TestCase
             q = QQuestion('integer_input', 'ID4', 'someText');
             a1 = QAnswer('','CCC');
             q.addAnswer(a1);
-            malformations = qv.getIntegerInputQuestionMalformations(q);
+            malformations = qv.getInputIntegerQuestionMalformations(q);
             problem = char(malformations(1));
             expectedProblem = 'answer value empty';
             testCase.verifyTrue(strcmp(problem,expectedProblem));
@@ -182,10 +220,10 @@ classdef TestQuestionsValidator < matlab.unittest.TestCase
             
             q = QQuestion('integer_input', 'ID4', 'someText');
             a1 = QAnswer('','CCC');
-            i1 = QImage('images/bogusJPG.jpg','');
+            i1 = QImage('data/images/bogusJPG.jpg','');
             q.addAnswer(a1);
             q.addImage(i1);
-            malformations = qv.getIntegerInputQuestionMalformations(q);
+            malformations = qv.getInputIntegerQuestionMalformations(q);
             problem1 = char(malformations(1));
             problem2 = char(malformations(2));
             expectedProblem = 'answer value empty';
@@ -193,6 +231,28 @@ classdef TestQuestionsValidator < matlab.unittest.TestCase
             expectedProblem = 'image caption empty';
             testCase.verifyTrue(strcmp(problem2,expectedProblem));
             testCase.verifyTrue(length(malformations) == 2);
+        end
+        
+        
+        function testGetInputStringQuestionMalformations(testCase)
+            qv = QuestionsValidator();
+            a1 = QAnswer('X','CCC');
+            a2 = QAnswer('Y','DDD');
+            q = QQuestion('integer_input', 'ID3', 'someText');
+            q.addAnswer(a1);
+            q.addAnswer(a2);
+            malformations = qv.getInputStringQuestionMalformations(q);
+            problem = char(malformations(1));
+            expectedProblem = 'input_string questions should have one answer: ID3';
+            testCase.verifyTrue(strcmp(problem,expectedProblem));
+            testCase.verifyTrue(length(malformations) == 1);
+            
+            q = QQuestion('integer_input', 'ID4', 'someText');
+            a1 = QAnswer('','CCC');
+            q.addAnswer(a1);
+            malformations = qv.getInputStringQuestionMalformations(q);
+            testCase.verifyTrue(isempty(malformations));
+          
         end
         
         
@@ -241,7 +301,7 @@ classdef TestQuestionsValidator < matlab.unittest.TestCase
             q = QQuestion('badType', 'ID3', 'someText');
             malformations = qv.getQuestionMalformations(q);
             problem = char(malformations(1));
-            expectedProblem = 'question type must be either choice or input_integer';
+            expectedProblem = 'question type must be either choice, input_integer, or input_string';
             testCase.verifyTrue(strcmp(problem,expectedProblem));
             testCase.verifyTrue(length(malformations) == 1);
             

@@ -425,7 +425,7 @@ classdef TestQuestionSequencer < matlab.unittest.TestCase
             testCase.verifyEqual(qs.nextAnswerIndex,3);
             testCase.verifyFalse(qs.isAllQuestionsAnswered());
             question3 = qs.getCurrentQuestion();
-            testCase.verifyEqual(question3.id,'COVER_PERCENT');
+            testCase.verifyEqual(question3.id,'RESOLUTION');
             testCase.verifyTrue(length(qs.answeredQuestions) == 2);
             testCase.verifyEqual(qs.answeredQuestions(1).questionID, 'BREADBOX');
             testCase.verifyEqual(qs.answeredQuestions(2).questionID, 'COLOR');
@@ -540,7 +540,7 @@ classdef TestQuestionSequencer < matlab.unittest.TestCase
             testCase.verifyEqual(qs.nextAnswerIndex,3);
             testCase.verifyFalse(qs.isAllQuestionsAnswered());
             question3 = qs.getCurrentQuestion();
-            testCase.verifyEqual(question3.id,'COVER_PERCENT');
+            testCase.verifyEqual(question3.id,'RESOLUTION');
             testCase.verifyTrue(length(qs.answeredQuestions) == 2);
             
             testCase.verifyEqual(qs.answeredQuestions(1).questionID, 'BREADBOX');
@@ -648,14 +648,14 @@ classdef TestQuestionSequencer < matlab.unittest.TestCase
             question1 = theQuestions(1);
             testCase.verifyEqual(question1.type,'choice');
             testCase.verifyEqual(question1.id,'BREADBOX');
-            testCase.verifyEqual(question1.text,'Is it bigger than a breadbox?');
+            testCase.verifyEqual(question1.text,'Is it bigger than a breadbox or is it approximately the same size? (Use your own judgement when deciding on the approximate size.  Everything is relative, you know.');
             testCase.verifyEqual(question1.answers(1).value,'yes');
             testCase.verifyEqual(question1.answers(1).nextQuestion,'COLOR');
             testCase.verifyEqual(question1.answers(2).value,'no');
             testCase.verifyEqual(question1.answers(2).nextQuestion,'WEIGHT');
-            testCase.verifyEqual(question1.images(1).imageFilePath,'images/elephant.jpg');
+            testCase.verifyEqual(question1.images(1).imageFilePath,'data/images/elephant.jpg');
             testCase.verifyEqual(question1.images(1).imageCaption,'elephants are bigger than a breadbox');
-            testCase.verifyEqual(question1.images(2).imageFilePath,'images/mouse.jpg');
+            testCase.verifyEqual(question1.images(2).imageFilePath,'data/images/mouse.jpg');
             testCase.verifyEqual(question1.images(2).imageCaption,'mice are smaller than a breadbox');
             
             question2 = theQuestions(2);
@@ -667,7 +667,7 @@ classdef TestQuestionSequencer < matlab.unittest.TestCase
             testCase.verifyEqual(question2.answers(2).value,'green');
             testCase.verifyEqual(question2.answers(2).nextQuestion,'COVER_PERCENT');
             testCase.verifyEqual(question2.answers(3).value,'blue');
-            testCase.verifyEqual(question2.answers(3).nextQuestion,'COVER_PERCENT');
+            testCase.verifyEqual(question2.answers(3).nextQuestion,'RESOLUTION');
              
             question3 = theQuestions(3);
             testCase.verifyEqual(question3.type,'input_integer');
@@ -677,11 +677,18 @@ classdef TestQuestionSequencer < matlab.unittest.TestCase
             testCase.verifyEqual(question3.answers(1).nextQuestion,'COVER_PERCENT');
             
             question4 = theQuestions(4);
-            testCase.verifyEqual(question4.type,'input_integer');
-            testCase.verifyEqual(question4.id,'COVER_PERCENT');
-            testCase.verifyEqual(question4.text,'What percent of image is occupied?');
-            testCase.verifyEqual(question4.answers(1).value,'0');
+            testCase.verifyEqual(question4.type,'input_string');
+            testCase.verifyEqual(question4.id,'RESOLUTION');
+            testCase.verifyEqual(question4.text,'What is the resolution of the smaller-than-breadbox item?');
+            testCase.verifyEqual(question4.answers(1).value,'');
             testCase.verifyEqual(question4.answers(1).nextQuestion,'NO_MORE_QUESTIONS');
+            
+            question5 = theQuestions(5);
+            testCase.verifyEqual(question5.type,'input_integer');
+            testCase.verifyEqual(question5.id,'COVER_PERCENT');
+            testCase.verifyEqual(question5.text,'What percent of image is occupied?');
+            testCase.verifyEqual(question5.answers(1).value,'0');
+            testCase.verifyEqual(question5.answers(1).nextQuestion,'NO_MORE_QUESTIONS');
     
         end
     end

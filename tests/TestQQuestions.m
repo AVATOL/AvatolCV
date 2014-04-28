@@ -31,6 +31,8 @@ classdef TestQQuestions < matlab.unittest.TestCase
             testCase.verifyEqual(qquestion4.id, 'COVER_PERCENT')
             qquestion5= qquestions.findQuestionById('SHOULD_NOT_FIND_THIS');
             testCase.verifyEqual(qquestion5.id, 'NULL')
+            qquestion6= qquestions.findQuestionById('RESOLUTION');
+            testCase.verifyEqual(qquestion6.id, 'RESOLUTION')
         end
     end
 end

@@ -11,11 +11,15 @@
         <text>What color is the larger-than-breadbox item?</text>
         <answer value="red" next="COVER_PERCENT"/>
         <answer value="green" next="COVER_PERCENT"/>
-        <answer value="blue" next="COVER_PERCENT"/>
+        <answer value="blue" next="RESOLUTION"/>
     </question>
     <question type="input_integer" id="WEIGHT">
         <text>What is the weight in kilograms of the smaller-than-breadbox item?</text>
         <answer value="0" next="COVER_PERCENT"/>
+    </question>
+    <question type="input_string" id="RESOLUTION">
+        <text>What is the resolution of the smaller-than-breadbox item?</text>
+        <answer value="" next="NO_MORE_QUESTIONS"/>
     </question>
     <question type="input_integer" id="COVER_PERCENT">
         <text>What percent of image is occupied?</text>
