@@ -22,17 +22,17 @@ classdef TestQQuestions < matlab.unittest.TestCase
             xmlFile = QuestionsXMLFile('tests/simple.xml');
             qquestions = QQuestions(xmlFile.domNode);
             qquestion1 = qquestions.findQuestionById('BREADBOX');
-            testCase.verifyEqual(qquestion1.id, 'BREADBOX')
+            testCase.verifyEqual(qquestion1.id, 'BREADBOX');
             qquestion2 = qquestions.findQuestionById('COLOR');
-            testCase.verifyEqual(qquestion2.id, 'COLOR')
+            testCase.verifyEqual(qquestion2.id, 'COLOR');
             qquestion3 = qquestions.findQuestionById('WEIGHT');
-            testCase.verifyEqual(qquestion3.id, 'WEIGHT')
+            testCase.verifyEqual(qquestion3.id, 'WEIGHT');
             qquestion4= qquestions.findQuestionById('COVER_PERCENT');
-            testCase.verifyEqual(qquestion4.id, 'COVER_PERCENT')
+            testCase.verifyEqual(qquestion4.id, 'COVER_PERCENT');
             qquestion5= qquestions.findQuestionById('SHOULD_NOT_FIND_THIS');
-            testCase.verifyEqual(qquestion5.id, 'NULL')
+            testCase.verifyEqual(qquestion5.id, 'NULL');
             qquestion6= qquestions.findQuestionById('RESOLUTION');
-            testCase.verifyEqual(qquestion6.id, 'RESOLUTION')
+            testCase.verifyEqual(qquestion6.id, 'RESOLUTION');
         end
     end
 end

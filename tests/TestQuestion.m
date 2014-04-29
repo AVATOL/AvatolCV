@@ -109,11 +109,11 @@ classdef TestQuestion < matlab.unittest.TestCase
             answer2 = QAnswer('no','someOtherNext');
             q.addAnswer(answer1);
             q.addAnswer(answer2);
-            qAnswerYes = q.getQAnswerForAnswerValue('yes')
+            qAnswerYes = q.getQAnswerForAnswerValue('yes');
             testCase.verifyTrue(strcmp(qAnswerYes.value, 'yes'));
-            qAnswerNo = q.getQAnswerForAnswerValue('no')
+            qAnswerNo = q.getQAnswerForAnswerValue('no');
             testCase.verifyTrue(strcmp(qAnswerNo.value, 'no'));
-            qAnswerNULL = q.getQAnswerForAnswerValue('maybe')
+            qAnswerNULL = q.getQAnswerForAnswerValue('maybe');
             testCase.verifyTrue(strcmp(qAnswerNULL.value, 'NULL'));
             
         end

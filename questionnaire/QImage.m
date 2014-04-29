@@ -1,7 +1,7 @@
 classdef QImage < handle 
     properties
-        imageFilePath
-        imageCaption
+        imageFilePath;
+        imageCaption;
     end
     methods
         function obj = QImage(path, caption)

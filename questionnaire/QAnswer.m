@@ -1,15 +1,15 @@
 classdef QAnswer < handle
     properties
-        value
-        nextQuestion
+        value;
+        nextQuestion;
     end
     methods
         function obj = QAnswer(val, next)
-            fprintf('value coming in as %s\n',val);
+            %fprintf('value coming in as %s\n',val);
             obj.value = val;
-            fprintf('value now is %s\n', obj.value);
-            obj.nextQuestion = next
-            fprintf('nextQuestion now is %s\n', obj.nextQuestion);
+            %fprintf('value now is %s\n', obj.value);
+            obj.nextQuestion = next;
+            %fprintf('nextQuestion now is %s\n', obj.nextQuestion);
         end
         
         function value = getValue(obj)

@@ -1,6 +1,6 @@
 classdef TestQuestionsValidator < matlab.unittest.TestCase
     properties 
-        OriginalPath
+        OriginalPath;
     end
     
     methods (TestMethodSetup)
@@ -25,11 +25,11 @@ classdef TestQuestionsValidator < matlab.unittest.TestCase
             testCase.verifyFalse(qv.validateQuestionCount(questions));
             
             q = QQuestion('input_integer', 'AAA', 'how many?');
-            questions = [ questions, q ]
+            questions = [ questions, q ];
             testCase.verifyTrue(qv.validateQuestionCount(questions));
             
             q = QQuestion('choice', 'BBB', 'what is down?');
-            questions = [ questions, q ]
+            questions = [ questions, q ];
             testCase.verifyTrue(qv.validateQuestionCount(questions));
         end
         
@@ -37,19 +37,19 @@ classdef TestQuestionsValidator < matlab.unittest.TestCase
             qv = QuestionsValidator();
             questions = {};
             q1 = QQuestion('input_integer', 'AAA', 'how many?');
-            questions = [ questions, q1 ]
+            questions = [ questions, q1 ];
             testCase.verifyTrue(isempty(qv.getDuplicateIds(questions)));
             
             q2 = QQuestion('input_integer', 'BBB', 'how many?');
-            questions = [ questions, q2 ]
+            questions = [ questions, q2 ];
             testCase.verifyTrue(isempty(qv.getDuplicateIds(questions)));
             
             q3 = QQuestion('input_integer', 'CCC', 'how many?');
-            questions = [ questions, q3 ]
+            questions = [ questions, q3 ];
             testCase.verifyTrue(isempty(qv.getDuplicateIds(questions)));
             
             q4 = QQuestion('input_integer', 'BBB', 'how many?');
-            questions = [ questions, q4 ]
+            questions = [ questions, q4 ];
             testCase.verifyFalse(isempty(qv.getDuplicateIds(questions)));
         end
         

@@ -1,10 +1,10 @@
 classdef QQuestion < handle
     properties
-        type
-        id
-        text
-        answers = {}
-        images = {}
+        type;
+        id;
+        text;
+        answers = {};
+        images = {};
         
     end
     methods
@@ -46,7 +46,7 @@ classdef QQuestion < handle
                     end
                 end
             else
-                message = sprintf('unknown question type %s for question %s', obj.type,obj.id)
+                message = sprintf('unknown question type %s for question %s', obj.type,obj.id);
                 exception = MException('QQuestion:BadType', message);
                 throw(exception);
             end
@@ -62,8 +62,8 @@ classdef QQuestion < handle
         
         function result = isStringString(obj, s)
             result = true;
-            s = strrep(s, '\n', '')
-            s = strrep(s, '\t', '')
+            s = strrep(s, '\n', '');
+            s = strrep(s, '\t', '');
             if (strcmp(s,''))
                 result = false;
             end
@@ -76,7 +76,7 @@ classdef QQuestion < handle
             elseif (strcmp(obj.type,'input_string' ))
                 qanswer = obj.answers(1);
             else
-                message = sprintf('unknown question type %s for question %s', obj.type,obj.id)
+                message = sprintf('unknown question type %s for question %s', obj.type,obj.id);
                 exception = MException('QQuestion:BadType', message);
                 throw(exception);
             end

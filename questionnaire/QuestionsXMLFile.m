@@ -1,6 +1,6 @@
 classdef QuestionsXMLFile 
     properties
-        domNode
+        domNode;
     end
     
     methods
@@ -8,7 +8,7 @@ classdef QuestionsXMLFile
             try 
                 obj.domNode = xmlread(path);
             catch ME
-                fprintf('unable to parse xml file %s %s', path, ME.message)
+                disp('unable to parse xml file %s %s', path, ME.message);
             end
         end
         

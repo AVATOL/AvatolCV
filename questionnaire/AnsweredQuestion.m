@@ -3,8 +3,8 @@ classdef AnsweredQuestion
     %   Detailed explanation goes here
     
     properties
-        questionID
-        answer
+        questionID;
+        answer;
     end
     
     methods

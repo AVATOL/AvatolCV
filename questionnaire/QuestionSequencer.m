@@ -1,10 +1,10 @@
 classdef QuestionSequencer < handle
     properties
-        nextAnswerIndex
-        qquestions
-        currentQuestion
-        answeredQuestions = {}
-        noMoreQuestionsMarker
+        nextAnswerIndex;
+        qquestions;
+        currentQuestion;
+        answeredQuestions = {};
+        noMoreQuestionsMarker;
         characterName = 'UNDEFINED';
     end
     methods
@@ -27,9 +27,9 @@ classdef QuestionSequencer < handle
             fileID = fopen(filepath,'w');
             for i=1:length(obj.answeredQuestions)
                 aq = obj.answeredQuestions(i);
-                fprintf(fileID,'%s=%s\n',aq.questionID, aq.answer);
+                %fprintf(fileID,'%s=%s\n',aq.questionID, aq.answer);
             end
-            fprintf(fileID,'\n'); % not sure why I needed to add an extra linefeed, but if didn't, final linefeed doesn't express
+            %fprintf(fileID,'\n'); % not sure why I needed to add an extra linefeed, but if didn't, final linefeed doesn't express
             fclose(fileID);
         end
         
@@ -78,7 +78,9 @@ classdef QuestionSequencer < handle
         function existingAnswerToNextQuestion = answerQuestion(obj, answer)
             existingAnswerToNextQuestion = 'NOT_YET_SPECIFIED';
             if (not(obj.currentQuestion.isValidAnswer(answer)))
-                return;
+                message = sprintf('invalid answer %s given to question %s', answer, obj.currentQuestion.id);
+                exception = MException('QuestionSequencer:IllegalAnswer', message);
+                throw(exception);
             end 
             answerQuestionCount = length(obj.answeredQuestions);
             if (obj.nextAnswerIndex <= answerQuestionCount)
