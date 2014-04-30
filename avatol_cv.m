@@ -2,19 +2,26 @@ function avatol_cv
 
     clearvars();
     clearvars -global H;
-    xmlFile = QuestionsXMLFile('tests/simple.xml');
-    %xmlFile = QuestionsXMLFile('data/Questionnaire.xml');
-    qquestions = QQuestions(xmlFile.domNode);
+    questionsXmlFile = QuestionsXMLFile('tests/simple.xml');
+    %questionsXmlFile = QuestionsXMLFile('data/Questionnaire.xml');
+    qquestions = QQuestions(questionsXmlFile.domNode);
+    tutorialXmlFile = QuestionsXMLFile('tests/simpleTutorial.xml');
+    %questionsXmlFile = QuestionsXMLFile('data/Tutorial.xml');
+    infoPages = InfoPages(tutorialXmlFile.domNode);
     global H;
     H.questionSequencer = QuestionSequencer(qquestions);
-    %qv = QuestionsValidator();
-    %qv.validate(H.questionSequencer.qquestions.questions);
+    H.infoPageSequencer = InfoPageSequencer(infoPages);
+    qv = QuestionsValidator();
+    qv.validate(H.questionSequencer.qquestions.questions);
+    ipv = InfoPagesValidator();
+    ipv.validate(H.infoPageSequencer.info_pages.info_pages);
     %layout();
     %showCharacterQuestions();
     
     H.activeControlTags = {};
     layout();
-    showCharacterQuestions();
+    showWelcomeScreen();
+    %showCharacterQuestions();
     
     %
     %  LAYOUT helper functions
@@ -24,8 +31,10 @@ function avatol_cv
         
         H.lineHeight = 30;
         H.pushButtonWidth = 80;
-        H.fontname = 'Helvetica';
+        %H.fontname = 'Helvetica';
+        H.fontname = 'Calibri';
         H.fontsize = 13;
+        H.fontsizeHeader = 16;
         H.fullWidth = 900;
         H.fullHeight = 600;
         H.figurePosition =  [150 150 H.fullWidth H.fullHeight];
@@ -67,7 +76,6 @@ function avatol_cv
     end
 
     function deleteMessagePanel()
-        handles = guihandles();
         if (isfield(H, 'done'))
             delete(H.done);
         end
@@ -88,52 +96,109 @@ function avatol_cv
         end
     end
 
+   function deleteWelcomeScreenPanels()
+       
+        if (isfield(H, 'textPanel'))
+            delete(H.questionPanel);
+        end
+        if (isfield(H, 'navigationPanel'))
+            delete(H.navigationPanel);
+        end
+   end
+
+    function deleteTutorialPanels()
+        if (isfield(H, 'titlePanel'))
+            delete(H.titlePanel);
+        end
+        if (isfield(H, 'textPanel'))
+            delete(H.questionPanel);
+        end
+        if (isfield(H, 'imagePanel'))
+            delete(H.imagePanel);
+        end
+        if (isfield(H, 'navigationPanel'))
+            delete(H.navigationPanel);
+        end
+    end
     function createTypedInputQAPanels()
-        H.titlePanel = uipanel('Background', [1 0.5 0.5],...%[1 0.5 0.5]
-                                  'BorderType', 'etchedin',...
-                                  'Position',[0.02 0.93 .96 0.07]);
+        H.titlePanel = createTitlePanel();
                               
-        H.questionPanel = uipanel('Background', [1 0.3 0.3],...%[1 0.3 0.3]
+        H.questionPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
                                   'Position',[0.02 0.74 0.7 0.18]);
                               
-        H.answerPanel = uipanel('Background', [0.3 1 0.3],...%[0.3 1 0.3]
+        H.answerPanel = uipanel('Background', [1 1 1],...%[0.3 1 0.3]
                                   'BorderType', 'none',...
                                   'Position',[0.74 0.74 0.24 0.18]);
                               
-        H.imagePanel = uipanel('Background',[0.3 0.3 1],...%[0.3 0.3 1]
+        H.imagePanel = uipanel('Background',[1 1 1],...%[0.3 0.3 1]
                                   'BorderType', 'none',...
                                   'Position',[ 0.02 0.1 0.96 0.62]);
                               
-        H.navigationPanel = uipanel('Background', [0.1 0.3 0.3],...%[0.1 0.3 0.3]
+        H.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
                                   'BorderType', 'none',...
                                   'Position',getNavigationPanelPosition());
                               
         H.mostRecentQAFlavor = 'typedInput';
     end
 
+    function titlePanel = createTitlePanel()
+        titlePanel = uipanel('Background', [1 1 1],...%[1 0.5 0.5]
+                                  'BorderType', 'none',... %etchedin
+                                  'Position',[0.02 0.91 .96 0.07]);
+        
+    end
 
     function createChoiceQAPanels()
-        H.titlePanel = uipanel('Background', [1 0.5 0.5],...%[1 0.5 0.5]
-                                  'BorderType', 'etchedin',...
-                                  'Position',[0.02 0.93 .96 0.07]);
+        H.titlePanel = createTitlePanel();
                               
-        H.questionPanel = uipanel('Background', [1 0.3 0.3],...%[1 0.3 0.3]
+        H.questionPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
                                   'Position',[0.02 0.74 0.7 0.18]);
                               
-        H.answerPanel = uipanel('Background', [0.3 1 0.3],...%[0.3 1 0.3]
+        H.answerPanel = uipanel('Background', [1 1 1],...%[0.3 1 0.3]
                                   'BorderType', 'none',...
                                   'Position',[0.74 0.1 0.24 0.79]);
                               
-        H.imagePanel = uipanel('Background',[0.3 0.3 1],...%[0.3 0.3 1]
+        H.imagePanel = uipanel('Background',[1 1 1],...%[0.3 0.3 1]
                                   'BorderType', 'none',...
                                   'Position',[ 0.02 0.1 0.7 0.62]);
                               
-        H.navigationPanel = uipanel('Background', [0.1 0.3 0.3],...%[0.1 0.3 0.3]
+        H.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
                                   'BorderType', 'none',...
                                   'Position',getNavigationPanelPosition());
         H.mostRecentQAFlavor = 'choice';
+    end
+
+
+    function createWelcomeScreenPanels()
+        
+        H.textPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
+                                  'BorderType', 'none',...
+                                  'Position',[0.2 0.3 0.6 0.3]);
+                             
+      
+        H.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
+                                  'BorderType', 'none',...
+                                  'Position',getNavigationPanelPosition());
+        %H.mostRecentQAFlavor = 'na';
+    end
+
+    function createTutorialPanels()
+        H.titlePanel = createTitlePanel();
+                              
+        H.textPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
+                                  'BorderType', 'none',...
+                                  'Position',[0.02 0.74 0.98 0.18]);
+                             
+        H.imagePanel = uipanel('Background',[1 1 1],...%[0.3 0.3 1]
+                                  'BorderType', 'none',...
+                                  'Position',[ 0.02 0.1 0.7 0.62]);
+                              
+        H.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
+                                  'BorderType', 'none',...
+                                  'Position',getNavigationPanelPosition());
+        %H.mostRecentQAFlavor = 'na';
     end
 
     function position = getNavigationPanelPosition()
@@ -178,6 +243,13 @@ function avatol_cv
         navButtonPosition = [0,0,0.3,1 ];
     end
 
+    function navButtonPosition = getButtonPositionBeginTutorial()
+        navButtonPosition = [0.5,0,0.25,1 ];
+    end
+
+    function navButtonPosition = getButtonPositionSkipToQuestionnaire()
+        navButtonPosition = [0.75,0,0.25,1 ];
+    end
     %
     %  UI panel populators
     %
@@ -242,9 +314,62 @@ function avatol_cv
          
     end
 
+
+
+    function showWelcomeScreen()
+        createWelcomeScreenPanels();
+        introText = ['Welcome to the AVATOL Computer Vision System.  '...
+                     'Click the buttons below to either begin the tutorial, or skip to the questionnaire'];
+       
+        H.tutorialText = uicontrol('style', 'text' ,...
+                                     'String', introText ,...
+                                     'Units','normalized',...
+                                     'position', [0,0,1,1] ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'BackgroundColor', [1 1 1] ,...
+                                     'Tag','tutorialText' ,...
+                                     'Parent',H.textPanel,...
+                                     'HorizontalAlignment', 'left');
+                                 
+        H.beginTutorial = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Begin Tutorial' ,...
+                                     'Parent',H.navigationPanel,...
+                                     'Units','normalized',...
+                                     'position', getButtonPositionBeginTutorial(),...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','beginTutorial' ,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);  
+        
+                         
+        H.skipToQuestionnaire = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Skip to Questionnaire' ,...
+                                     'Parent',H.navigationPanel,...
+                                     'Units','normalized',...
+                                     'position', getButtonPositionSkipToQuestionnaire() ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','skipToQuestionnaire' ,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);  
+                                 
+        H.activeControlTags = { 'tutorialText', 'beginTutorial' 'skipToQuestionnaire' };   
+        
+        %H.activeAnswerControl = H.inputText;
+        %H.activeQuestionId = qquestion.id;
+        %H.activeControlType = 'edit';
+        
+        set(H.beginTutorial, 'callback', {@beginTutorial});
+        set(H.skipToQuestionnaire, 'callback', {@showCharacterQuestions});
+        
+        %if (not(isempty(qquestion.images)))
+        %    displayImages(qquestion);
+        %end
+    end
+
  
 
-    function showCharacterQuestions()
+    function showCharacterQuestions(hObject, eventData)
         
         deleteObsoleteControls(H.activeControlTags);
         deleteQApanels();
@@ -289,7 +414,19 @@ function avatol_cv
         set(H.next, 'callback', {@showNextQuestion});
     end
 
-        
+    function control = getCharacterNameTitle(titleString)
+        control = uicontrol('style', 'text' ,...
+                                     'String', titleString ,...
+                                     'Units','normalized',...
+                                     'position', [0,0,1,1] ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsizeHeader ,...
+                                     'BackgroundColor', [1 1 1] ,...
+                                     'Tag','titleText' ,...
+                                     'Parent',H.titlePanel,...
+                                     'HorizontalAlignment', 'center');
+      
+    end
     function displayChoiceQuestion(qquestion)
         % Create the button group.
         deleteObsoleteControls(H.activeControlTags);
@@ -307,17 +444,8 @@ function avatol_cv
         
         H.activeControlTags = { 'buttonGroup', 'titleText' };    
         %set(H.buttonGroup,'SelectionChangeFcn',@setMostRecentChoice);
-        titleString = sprintf('%s :  %s','Character Name', H.characterName);
-        H.characterNameText = uicontrol('style', 'text' ,...
-                                     'String', titleString ,...
-                                     'Units','normalized',...
-                                     'position', [0,0,1,1] ,...
-                                     'FontName', H.fontname ,...
-                                     'FontSize', H.fontsize ,...
-                                     'BackgroundColor', [1 1 1] ,...
-                                     'Tag','titleText' ,...
-                                     'Parent',H.titlePanel,...
-                                     'HorizontalAlignment', 'center');
+        titleString = sprintf('Character :  %s',H.characterName);
+        H.characterNameText = getCharacterNameTitle(titleString);
                                  
         %'position', getQuestionPosition() ,...
         H.questionText = uicontrol('style', 'text' ,...
@@ -448,16 +576,7 @@ end
         deleteQApanels();
         createTypedInputQAPanels();
         titleString = sprintf('%s :  %s','Character Name', H.characterName);
-        H.characterNameText = uicontrol('style', 'text' ,...
-                                     'String', titleString ,...
-                                     'Units','normalized',...
-                                     'position', [0,0,1,1] ,...
-                                     'FontName', H.fontname ,...
-                                     'FontSize', H.fontsize ,...
-                                     'BackgroundColor', [1 1 1] ,...
-                                     'Tag','titleText' ,...
-                                     'Parent',H.titlePanel,...
-                                     'HorizontalAlignment', 'center');
+        H.characterNameText = getCharacterNameTitle(titleString);
         
         H.questionText = uicontrol('style', 'text' ,...
                                      'String', qquestion.text ,...
