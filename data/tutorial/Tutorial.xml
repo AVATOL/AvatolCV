@@ -16,7 +16,7 @@
 		<image filename="data/tutorial/images/facemultipleparts.jpg" caption="Example multiple parts"/>
 	</infoPage> 
 	<infoPage next="TRAINING_IMAGES" id="RIGID_CONFIG"> 
-		<text>Rigid Configuration of Parts. It is important to recognize when the configuration of parts is mostly rigid. An example of a rigid configuration of parts is the face. The eyes are always above the nose, the nose is always above the mouth, etc. The configruation of the eyes, nose and mouth are consistent and do not vary much.</text> 
+		<text>Rigid Configuration of Parts. It is important to recognize when the configuration of parts is mostly rigid. An example of a rigid configuration of parts is the face. The eyes are always above the nose, the nose is always above the mouth, etc. The configuration of the eyes, nose and mouth are consistent and do not vary much.</text> 
 		<image filename="data/tutorial/images/rigid.jpg" caption="Example rigid configuration of parts"/> 
 	</infoPage> 
 	<infoPage next="ANNOTATION" id="TRAINING_IMAGES"> 
@@ -34,7 +34,7 @@
 		<image filename="data/tutorial/images/boundingbox.jpg" caption="Annotating with bounding boxes"/> 
 	</infoPage> 
 	<infoPage next="ANNOTATION_PART_RELATIONSHIPS" id="POLYGON"> 
-		<text>Polygon. Use a polygon when a part is articulated. For example, a tail of an animal would be a good candidate for a polygon annotation because it can bend a lot. Make sure the polygon is tight around the part. The polygon tool is coming soon to Morphobank.</text> 
+		<text>Polygon. Use a polygon when a part is articulated. For example, a tail of an animal would be a good candidate for a polygon annotation because it can bend a lot. Make sure the polygon is tight around the part. The polygon tool is a planned enhancement to Morphobank.</text> 
 		<image filename="data/tutorial/images/polygon.jpg" caption="Annotating with polygons"/>
 	</infoPage> 
 	<infoPage next="IMAGE_SHARPNESS" id="ANNOTATION_PART_RELATIONSHIPS"> 
