@@ -1,27 +1,36 @@
 function avatol_cv
 
     clearvars();
+    
     clearvars -global H;
-    questionsXmlFile = QuestionsXMLFile('tests/simple.xml');
-    %questionsXmlFile = QuestionsXMLFile('data/Questionnaire.xml');
-    qquestions = QQuestions(questionsXmlFile.domNode);
-    tutorialXmlFile = QuestionsXMLFile('tests/simpleTutorial.xml');
-    %questionsXmlFile = QuestionsXMLFile('data/Tutorial.xml');
-    infoPages = InfoPages(tutorialXmlFile.domNode);
     global H;
+    H.questionnaireXML = 'tests/simple.xml';
+    %H.questionnaireXML = 'data/Questionnaire.xml'
+    
+    questionsXmlFile = QuestionsXMLFile(H.questionnaireXML);
+    qquestions = QQuestions(questionsXmlFile.domNode);
     H.questionSequencer = QuestionSequencer(qquestions);
-    H.infoPageSequencer = InfoPageSequencer(infoPages);
     qv = QuestionsValidator();
     qv.validate(H.questionSequencer.qquestions.questions);
+    
+    H.tutorialXML = 'tests/simpleTutorial.xml';
+    %H.tutorialXML = 'data/Tutorial.xml';
+    
+    tutorialXmlFile = QuestionsXMLFile(H.tutorialXML);
+    infoPages = InfoPages(tutorialXmlFile.domNode);
+    H.infoPageSequencer = InfoPageSequencer(infoPages);
     ipv = InfoPagesValidator();
     ipv.validate(H.infoPageSequencer.info_pages.info_pages);
-    %layout();
-    %showCharacterQuestions();
+    
     
     H.activeControlTags = {};
+    H.activePanelTags = {};
+    
+    H.mostRecentTutorialPage = 'NOT_STARTED';
+    H.mostRecentQuestionnairePage = 'NOT_STARTED';
+    
     layout();
-    showWelcomeScreen();
-    %showCharacterQuestions();
+    displayWelcomeScreen();
     
     %
     %  LAYOUT helper functions
@@ -44,7 +53,14 @@ function avatol_cv
                 'Color', [1 1 1]);
     end
 
-    function deleteObsoleteControls(controlTags)
+    function deleteObsoleteControls()
+        deleteControls(H.activeControlTags);
+        H.activeControlTags = {};
+        deleteControls(H.activePanelTags);
+        H.activePanelTags = {};
+    end
+
+    function deleteControls(controlTags)
         handles = guihandles();
         if (not(isempty(handles)))
             for i=1:length(controlTags)
@@ -56,95 +72,37 @@ function avatol_cv
         end
     end
 
-
-    function deleteQApanels()
-        if (isfield(H, 'titlePanel'))
-            delete(H.titlePanel);
-        end
-        if (isfield(H, 'questionPanel'))
-            delete(H.questionPanel);
-        end
-        if (isfield(H, 'answerPanel'))
-            delete(H.answerPanel);
-        end
-        if (isfield(H, 'imagePanel'))
-            delete(H.imagePanel);
-        end
-        if (isfield(H, 'navigationPanel'))
-            delete(H.navigationPanel);
-        end
-    end
-
-    function deleteMessagePanel()
-        if (isfield(H, 'done'))
-            delete(H.done);
-        end
-        if (isfield(H, 'prev'))
-            delete(H.prev);
-        end
-        if (isfield(H, 'doAnotherCharacter'))
-            delete(H.doAnotherCharacter);
-        end
-        if (isfield(H, 'navigationPanel'))
-            delete(H.navigationPanel);
-        end
-        if (isfield(H, 'messageText'))
-            delete(H.messageText);
-        end
-        if (isfield(H, 'messagePanel'))
-            delete(H.messagePanel);
-        end
-    end
-
-   function deleteWelcomeScreenPanels()
-       
-        if (isfield(H, 'textPanel'))
-            delete(H.questionPanel);
-        end
-        if (isfield(H, 'navigationPanel'))
-            delete(H.navigationPanel);
-        end
-   end
-
-    function deleteTutorialPanels()
-        if (isfield(H, 'titlePanel'))
-            delete(H.titlePanel);
-        end
-        if (isfield(H, 'textPanel'))
-            delete(H.questionPanel);
-        end
-        if (isfield(H, 'imagePanel'))
-            delete(H.imagePanel);
-        end
-        if (isfield(H, 'navigationPanel'))
-            delete(H.navigationPanel);
-        end
-    end
     function createTypedInputQAPanels()
         H.titlePanel = createTitlePanel();
                               
         H.questionPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
+                                  'Tag','questionPanel',...
                                   'Position',[0.02 0.74 0.7 0.18]);
                               
         H.answerPanel = uipanel('Background', [1 1 1],...%[0.3 1 0.3]
                                   'BorderType', 'none',...
+                                  'Tag','answerPanel',...
                                   'Position',[0.74 0.74 0.24 0.18]);
                               
         H.imagePanel = uipanel('Background',[1 1 1],...%[0.3 0.3 1]
                                   'BorderType', 'none',...
+                                  'Tag','imagePanel',...
                                   'Position',[ 0.02 0.1 0.96 0.62]);
                               
         H.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
                                   'BorderType', 'none',...
+                                  'Tag','navigationPanel',...
                                   'Position',getNavigationPanelPosition());
                               
         H.mostRecentQAFlavor = 'typedInput';
+        H.activePanelTags = { 'titlePanel', 'questionPanel', 'answerPanel', 'imagePanel', 'navigationPanel' };
     end
 
     function titlePanel = createTitlePanel()
         titlePanel = uipanel('Background', [1 1 1],...%[1 0.5 0.5]
                                   'BorderType', 'none',... %etchedin
+                                  'Tag','titlePanel',...
                                   'Position',[0.02 0.91 .96 0.07]);
         
     end
@@ -154,34 +112,42 @@ function avatol_cv
                               
         H.questionPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
+                                  'Tag', 'questionPanel',...
                                   'Position',[0.02 0.74 0.7 0.18]);
                               
         H.answerPanel = uipanel('Background', [1 1 1],...%[0.3 1 0.3]
                                   'BorderType', 'none',...
+                                  'Tag', 'answerPanel',...
                                   'Position',[0.74 0.1 0.24 0.79]);
                               
         H.imagePanel = uipanel('Background',[1 1 1],...%[0.3 0.3 1]
                                   'BorderType', 'none',...
+                                  'Tag', 'imagePanel',...
                                   'Position',[ 0.02 0.1 0.7 0.62]);
                               
         H.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
                                   'BorderType', 'none',...
+                                  'Tag', 'navigationPanel',...
                                   'Position',getNavigationPanelPosition());
         H.mostRecentQAFlavor = 'choice';
+        H.activePanelTags = {  'titlePanel', 'questionPanel', 'answerPanel', 'imagePanel', 'navigationPanel'}; 
     end
 
 
-    function createWelcomeScreenPanels()
+    function createSimpleTextScreenPanels()
         
         H.textPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
+                                  'Tag', 'textPanel',...
                                   'Position',[0.2 0.3 0.6 0.3]);
                              
       
         H.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
                                   'BorderType', 'none',...
+                                  'Tag', 'navigationPanel',...
                                   'Position',getNavigationPanelPosition());
         %H.mostRecentQAFlavor = 'na';
+        H.activePanelTags = { 'textPanel', 'navigationPanel'};
     end
 
     function createTutorialPanels()
@@ -189,17 +155,25 @@ function avatol_cv
                               
         H.textPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
+                                  'Tag', 'textPanel',...
                                   'Position',[0.02 0.74 0.98 0.18]);
                              
         H.imagePanel = uipanel('Background',[1 1 1],...%[0.3 0.3 1]
                                   'BorderType', 'none',...
-                                  'Position',[ 0.02 0.1 0.7 0.62]);
+                                  'Tag', 'imagePanel',...
+                                  'Position',[ 0.15 0.2 0.7 0.62]);
                               
         H.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
                                   'BorderType', 'none',...
+                                  'Tag', 'navigationPanel',...
                                   'Position',getNavigationPanelPosition());
         %H.mostRecentQAFlavor = 'na';
+        H.activePanelTags = { 'titlePanel', 'textPanel', 'imagePanel', 'navigationPanel'}; 
     end
+
+     %
+     % Podsitions
+     %
 
     function position = getNavigationPanelPosition()
         position = [0.02 0.02 0.96 0.05];
@@ -243,24 +217,35 @@ function avatol_cv
         navButtonPosition = [0,0,0.3,1 ];
     end
 
-    function navButtonPosition = getButtonPositionBeginTutorial()
-        navButtonPosition = [0.5,0,0.25,1 ];
-    end
-
-    function navButtonPosition = getButtonPositionSkipToQuestionnaire()
-        navButtonPosition = [0.75,0,0.25,1 ];
-    end
+  
     %
     %  UI panel populators
     %
     
-    function createEndMessagePanel(message) 
-        deleteObsoleteControls(H.activeControlTags);
-        H.activeControlTags = {};
-        H.messagePanel = uipanel('Background', [1 0.3 0.3],...%[1 0.3 0.3]
+    function control = getCharacterNameTitle(titleString)
+        control = uicontrol('style', 'text' ,...
+                                     'String', titleString ,...
+                                     'Units','normalized',...
+                                     'position', [0,0,1,1] ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsizeHeader ,...
+                                     'BackgroundColor', [1 1 1] ,...
+                                     'Tag','titleText' ,...
+                                     'Parent',H.titlePanel,...
+                                     'HorizontalAlignment', 'center');
+      
+    end
+
+    function displayQuestionnaireCompleteScreen() 
+        deleteObsoleteControls();
+        message = 'You have finished answering questions for this character.  Click "More" to do another character or "Done" if you are finished.';
+        
+        H.messagePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
+                                  'Tag','messagePanel',...
                                   'Position',[0.2 0.4 0.6 0.2]);
-                              
+        
+        
         H.messageText = uicontrol('style', 'text' ,...
                                      'Parent',H.messagePanel,...
                                      'Units', 'normalized',...
@@ -272,9 +257,10 @@ function avatol_cv
                                      'String', message,...
                                      'HorizontalAlignment', 'left');%'BackgroundColor', [1 0.1 0.1] ,...
                                  
-        H.navigationPanel = uipanel('Background', [0.1 0.3 0.3],...%[0.1 0.3 0.3]
+        H.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
                                      'BorderType', 'none',...
                                      'Units', 'normalized',...
+                                     'Tag','navigationPanel' ,...
                                      'Position',getNavigationPanelPosition());
                               
         H.doAnotherCharacter = uicontrol('style', 'pushbutton' ,...
@@ -307,20 +293,22 @@ function avatol_cv
                                      'FontSize', H.fontsize ,...
                                      'Tag','prev' ,...
                                      'BackgroundColor', [0.5 0.5 0.5]);  
-                            
+                                 
+        H.activePanelTags = { 'messagePanel', 'navigationPanel' };
+        H.activeControlTags = { 'messageText', 'doAnotherCharacter', 'done', 'prev'};    
+        
         set(H.doAnotherCharacter, 'callback', {@doAnotherCharacter});
         set(H.done, 'callback', {@saveAndExit});
         set(H.prev, 'callback', {@backFromEndMessageScreen});
-         
+        H.mostRecentQuestionnairePage = 'QUESTIONNAIRE_COMPLETE'; 
     end
 
-
-
-    function showWelcomeScreen()
-        createWelcomeScreenPanels();
+    function displayWelcomeScreen()
+        deleteObsoleteControls();
+        createSimpleTextScreenPanels();
         introText = ['Welcome to the AVATOL Computer Vision System.  '...
                      'Click the buttons below to either begin the tutorial, or skip to the questionnaire'];
-       
+        
         H.tutorialText = uicontrol('style', 'text' ,...
                                      'String', introText ,...
                                      'Units','normalized',...
@@ -332,11 +320,14 @@ function avatol_cv
                                      'Parent',H.textPanel,...
                                      'HorizontalAlignment', 'left');
                                  
+        beginTutorialPosition = [0.75,0,0.25,1 ];  
+        skipToQuestionnaireButtonPosition = [0,0,0.25,1 ];
+        
         H.beginTutorial = uicontrol('style', 'pushbutton' ,...
                                      'String', 'Begin Tutorial' ,...
                                      'Parent',H.navigationPanel,...
                                      'Units','normalized',...
-                                     'position', getButtonPositionBeginTutorial(),...
+                                     'position', beginTutorialPosition,...
                                      'FontName', H.fontname ,...
                                      'FontSize', H.fontsize ,...
                                      'Tag','beginTutorial' ,...
@@ -347,32 +338,139 @@ function avatol_cv
                                      'String', 'Skip to Questionnaire' ,...
                                      'Parent',H.navigationPanel,...
                                      'Units','normalized',...
-                                     'position', getButtonPositionSkipToQuestionnaire() ,...
+                                     'position', skipToQuestionnaireButtonPosition ,...
                                      'FontName', H.fontname ,...
                                      'FontSize', H.fontsize ,...
                                      'Tag','skipToQuestionnaire' ,...
                                      'BackgroundColor', [0.5 0.5 0.5]);  
                                  
-        H.activeControlTags = { 'tutorialText', 'beginTutorial' 'skipToQuestionnaire' };   
+        H.activeControlTags = { 'tutorialText', 'beginTutorial', 'skipToQuestionnaire' };   
         
-        %H.activeAnswerControl = H.inputText;
-        %H.activeQuestionId = qquestion.id;
-        %H.activeControlType = 'edit';
-        
-        set(H.beginTutorial, 'callback', {@beginTutorial});
-        set(H.skipToQuestionnaire, 'callback', {@showCharacterQuestions});
-        
-        %if (not(isempty(qquestion.images)))
-        %    displayImages(qquestion);
-        %end
+        H.activeScreen = 'WelcomeScreen';
+        set(H.beginTutorial, 'callback', {@showCurrentTutorialPage});
+        set(H.skipToQuestionnaire, 'callback', {@jumpToQuestionnaire});
+ 
     end
 
- 
-
-    function showCharacterQuestions(hObject, eventData)
+    function displayFinishedTutorialScreen() 
+        deleteObsoleteControls();
+        createSimpleTextScreenPanels();
+        summaryText = ['You have completed the tutorial.  '...
+                     'You may either begin the questionnaire or exit the application.'];
         
-        deleteObsoleteControls(H.activeControlTags);
-        deleteQApanels();
+        H.summaryText = uicontrol('style', 'text' ,...
+                                     'String', summaryText ,...
+                                     'Units','normalized',...
+                                     'position', [0,0,1,1] ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'BackgroundColor', [1 1 1] ,...
+                                     'Tag','summaryText' ,...
+                                     'Parent',H.textPanel,...
+                                     'HorizontalAlignment', 'left');
+        
+        skipToQuestionnaireButtonPosition = [0,0,0.25,1 ];  
+        prevButtonPosition =                [0.6,0,0.15,1];                       
+        beginQuestionnaireButtonPosition =  [0.75,0,0.25,1 ];
+        H.beginQuestionnaire = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Begin Questionnaire' ,...
+                                     'Parent',H.navigationPanel,...
+                                     'Units','normalized',...
+                                     'position', beginQuestionnaireButtonPosition,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','beginQuestionnaire' ,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);  
+        
+         H.prev = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Prev' ,...
+                                     'Units','normalized',...
+                                     'position', prevButtonPosition ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Parent',H.navigationPanel,...
+                                     'Tag','prev' ,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);                   
+        H.exit = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Exit' ,...
+                                     'Parent',H.navigationPanel,...
+                                     'Units','normalized',...
+                                     'position', skipToQuestionnaireButtonPosition ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','exit' ,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);  
+                                 
+        H.activeControlTags = { 'summaryText', 'beginQuestionnaire', 'exit', 'prev' };   
+        
+        H.activeScreen = 'SummaryScreen';
+        set(H.beginQuestionnaire, 'callback', {@displayCharacterQuestion});
+        set(H.exit, 'callback', {@exit});
+        set(H.prev, 'callback', {@showPrevTutorialPage});
+        H.mostRecentTutorialPage = 'TUTORIAL_COMPLETE';
+    end
+
+    function displayTutorialPage(infoPage)
+        deleteObsoleteControls();
+        createTutorialPanels();
+        
+        titleString = sprintf('Tutorial');
+        H.characterNameText = getCharacterNameTitle(titleString);
+        
+        H.tutorialText = uicontrol('style', 'text' ,...
+                                     'String', infoPage.text ,...
+                                     'Units','normalized',...
+                                     'position', [0,0,1,1] ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'BackgroundColor', [1 1 1] ,...
+                                     'Tag','tutorialText' ,...
+                                     'Parent',H.textPanel,...
+                                     'HorizontalAlignment', 'left');
+        skipToQuestionnaireButtonPosition = [0,0,0.25,1 ];
+        H.skipToQuestionnaire = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Skip to Questionnaire' ,...
+                                     'Parent',H.navigationPanel,...
+                                     'Units','normalized',...
+                                     'position', skipToQuestionnaireButtonPosition ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','skipToQuestionnaire' ,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);  
+                                 
+         H.next = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Next' ,...
+                                     'Units','normalized',...
+                                     'position', getButtonPositionRightB() ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','next' ,...
+                                     'parent',H.navigationPanel,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);  
+                         
+         H.prev = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Back' ,...
+                                     'Units','normalized',...
+                                     'position', getButtonPositionRightA() ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Parent',H.navigationPanel,...
+                                     'Tag','prev' ,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);  
+                                 
+        H.activeControlTags = { 'tutorialText', 'next', 'prev', 'skipToQuestionnaire'};  
+        H.activeScreen = 'TutorialPage';
+        set(H.next, 'callback', {@showNextTutorialPage});
+        set(H.prev, 'callback', {@showPrevTutorialPage});
+        set(H.skipToQuestionnaire, 'callback', {@jumpToQuestionnaire});
+        if (not(isempty(infoPage.images)))
+            displayImages(infoPage.images);
+        end
+        H.mostRecentTutorialPage = infoPage.id;
+    end
+
+    function displayCharacterQuestion(hObject, eventData)
+        deleteObsoleteControls();
         createTypedInputQAPanels();
         H.characterNameInputText = uicontrol('style', 'edit' ,...
                                      'Parent',H.answerPanel,...
@@ -383,8 +481,7 @@ function avatol_cv
                                      'Tag','characterNameInputText' ,...
                                      'Background',[1 1 1],...
                                      'HorizontalAlignment', 'left');%'BackgroundColor', [1 0.1 0.1] ,...
-
-        %'position', getQuestionPosition() ,...                         
+                     
         H.characterNamePrompt = uicontrol('style', 'text' ,...
                                      'Parent',H.questionPanel,...
                                      'Units','normalized',...
@@ -395,7 +492,17 @@ function avatol_cv
                                      'Tag','characterNamePrompt' ,...
                                      'Background',[1 1 1],...
                                      'HorizontalAlignment', 'left');%'BackgroundColor', [0.1 1 0.1] ,...
-        
+ 
+        H.tutorial = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Tutorial' ,...
+                                     'Parent',H.navigationPanel,...
+                                     'Units','normalized',...
+                                     'position', [0,0,0.15,1],...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','tutorial' ,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);  
+                                 
         H.next = uicontrol('style', 'pushbutton' ,...
                                      'Parent',H.navigationPanel,...
                                      'Units','normalized',...
@@ -405,34 +512,24 @@ function avatol_cv
                                      'FontSize', H.fontsize ,...
                                      'Tag','next' ,...
                                      'BackgroundColor', [0.5 0.5 0.5]);  
-        H.activeControlTags = {'characterNameInputText'  'characterNamePrompt'  'next' };
+        H.activeControlTags = {'characterNameInputText',  'characterNamePrompt',  'next', 'tutorial' };
         
         H.activeAnswerControl = H.characterNameInputText;
         H.activeQuestionId = 'characterQuestion';
         H.activeControlType = 'edit';
         
         set(H.next, 'callback', {@showNextQuestion});
+        set(H.tutorial, 'callback', {@jumpToTutorial});
+        H.mostRecentQuestionnairePage = 'CHARACTER_QUESTION'; 
     end
 
-    function control = getCharacterNameTitle(titleString)
-        control = uicontrol('style', 'text' ,...
-                                     'String', titleString ,...
-                                     'Units','normalized',...
-                                     'position', [0,0,1,1] ,...
-                                     'FontName', H.fontname ,...
-                                     'FontSize', H.fontsizeHeader ,...
-                                     'BackgroundColor', [1 1 1] ,...
-                                     'Tag','titleText' ,...
-                                     'Parent',H.titlePanel,...
-                                     'HorizontalAlignment', 'center');
-      
-    end
     function displayChoiceQuestion(qquestion)
         % Create the button group.
-        deleteObsoleteControls(H.activeControlTags);
-        H.activeControlTags = {};
-        deleteQApanels();
+        deleteObsoleteControls();
         createChoiceQAPanels();
+        
+        titleString = sprintf('Character :  %s',H.characterName);
+        H.characterNameText = getCharacterNameTitle(titleString);
         
         H.buttonGroup = uibuttongroup('Visible','off',...
                                     'Tag','buttonGroup',...
@@ -443,11 +540,7 @@ function avatol_cv
                                 
         
         H.activeControlTags = { 'buttonGroup', 'titleText' };    
-        %set(H.buttonGroup,'SelectionChangeFcn',@setMostRecentChoice);
-        titleString = sprintf('Character :  %s',H.characterName);
-        H.characterNameText = getCharacterNameTitle(titleString);
-                                 
-        %'position', getQuestionPosition() ,...
+       
         H.questionText = uicontrol('style', 'text' ,...
                                      'String', qquestion.text ,...
                                      'Units','normalized',...
@@ -462,7 +555,6 @@ function avatol_cv
         
         % Create radio buttons in the button group.       
                         
-        H.radioButtons = {};
         for i=1:length(qquestion.answers)
             answerValue = qquestion.answers(i).value;
             tag = sprintf('radioButton%s',answerValue);
@@ -475,14 +567,26 @@ function avatol_cv
                             'parent',H.buttonGroup,...
                             'Tag', tag,...
                             'HandleVisibility', 'off');
-            %H.activeControlTags = [ H.activeControlTags, tag ];
-            H.radioButtons = [ H.radioButtons, thisButton ];
+            % buttons not found for deletion, presumably because Button
+            % group gets deleted forst, so, don't bother to remember here
+            % for later deletion.
+            %H.activeControlTags = [ H.activeControlTags, tag ]; 
         end
 
        
         set(H.buttonGroup,'SelectedObject',[]);  % No selection
         set(H.buttonGroup,'Visible','on');
 
+        H.tutorial = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Tutorial' ,...
+                                     'Parent',H.navigationPanel,...
+                                     'Units','normalized',...
+                                     'position', [0,0,0.15,1],...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','tutorial' ,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);  
+        H.activeControlTags = [ H.activeControlTags, 'tutorial' ];                              
         H.next = uicontrol('style', 'pushbutton' ,...
                                      'String', 'Next' ,...
                                      'Units','normalized',...
@@ -495,7 +599,7 @@ function avatol_cv
         
         H.activeControlTags = [ H.activeControlTags, 'next' ];                         
         H.prev = uicontrol('style', 'pushbutton' ,...
-                                     'String', 'Prev' ,...
+                                     'String', 'Back' ,...
                                      'Units','normalized',...
                                      'position', getButtonPositionRightA() ,...
                                      'FontName', H.fontname ,...
@@ -512,70 +616,19 @@ function avatol_cv
         
         set(H.next, 'callback', {@showNextQuestion});
         set(H.prev, 'callback', {@showPrevQuestion});
+        set(H.tutorial, 'callback', {@jumpToTutorial});
         
         if (not(isempty(qquestion.images)))
-            displayImages(qquestion);
+            displayImages(qquestion.images);
         end
-    end
-
-    function displaySingleImage(qquestion)
-        image1Path = qquestion.images(1).imageFilePath;
-        axes1Panel = uipanel('Parent',H.imagePanel,...
-                             'Tag','image1panel' ,...
-                             'position',[0,0,1,1]);
-        axes1 = axes('Parent',axes1Panel,...
-                             'FontName', H.fontname ,...
-                             'FontSize', H.fontsize ,...
-                             'Tag','image1' ,...
-                             'position',[0.05,0.05,0.9,0.9]);
-        H.activeControlTags = [ H.activeControlTags, 'image1panel' ];
-        imshow(image1Path);
-        xlabel(qquestion.images(1).imageCaption);
-    end
-
-    function displayImagePair(qquestion)
-        image1Path = qquestion.images(1).imageFilePath;
-        axes1Panel = uipanel('Parent',H.imagePanel,...
-                             'Tag','image1panel' ,...
-                             'position',[0,0,0.5,1]);
-        axes1 = axes('Parent',axes1Panel,...
-                             'FontName', H.fontname ,...
-                             'FontSize', H.fontsize ,...
-                             'Tag','image1' ,...
-                             'position',[0.05,0.05,0.9,0.9]);
-        H.activeControlTags = [ H.activeControlTags, 'image1panel' ];
-        imshow(image1Path);
-        xlabel(qquestion.images(1).imageCaption);
-        image2Path = qquestion.images(2).imageFilePath;
-        axes2Panel = uipanel('Parent',H.imagePanel,...
-                             'Tag','image2panel' ,...
-                             'position',[0.5,0,0.5,1]);
-        axes2 = axes('Parent',axes2Panel,...
-                             'FontName', H.fontname ,...
-                             'FontSize', H.fontsize ,...
-                             'Tag','image2' ,...
-                             'position',[0.05,0.05,0.9,0.9]);
-        H.activeControlTags = [ H.activeControlTags, 'image2panel' ];
-        imshow(image2Path);
-        xlabel(qquestion.images(2).imageCaption);
-end
-
-    function displayImages(qquestion)
-        imageCount = length(qquestion.images);
-        if (imageCount == 1)
-           displaySingleImage(qquestion);
-        elseif (imageCount == 2)
-            displayImagePair(qquestion);
-        end
+        H.mostRecentQuestionnairePage = qquestion.id; 
     end
 
     function displayInputQuestion(qquestion)
-        deleteObsoleteControls(H.activeControlTags);
-        H.activeControlTags = {};
+        deleteObsoleteControls();
         
-        deleteQApanels();
         createTypedInputQAPanels();
-        titleString = sprintf('%s :  %s','Character Name', H.characterName);
+        titleString = sprintf('Character :  %s', H.characterName);
         H.characterNameText = getCharacterNameTitle(titleString);
         
         H.questionText = uicontrol('style', 'text' ,...
@@ -599,6 +652,16 @@ end
                                      'Tag','input' ,...
                                      'Background',[1 1 1],...
                                      'HorizontalAlignment', 'left');%'BackgroundColor', [1 0.1 0.1] ,...
+        
+        H.tutorial = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Tutorial' ,...
+                                     'Parent',H.navigationPanel,...
+                                     'Units','normalized',...
+                                     'position', [0,0,0.15,1],...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','tutorial' ,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);  
                                  
         H.next = uicontrol('style', 'pushbutton' ,...
                                      'String', 'Next' ,...
@@ -612,7 +675,7 @@ end
         
         H.activeControlTags = [ H.activeControlTags, 'next' ];                     
         H.prev = uicontrol('style', 'pushbutton' ,...
-                                     'String', 'Prev' ,...
+                                     'String', 'Back' ,...
                                      'Parent',H.navigationPanel,...
                                      'Units','normalized',...
                                      'position', getButtonPositionRightA() ,...
@@ -621,7 +684,7 @@ end
                                      'Tag','prev' ,...
                                      'BackgroundColor', [0.5 0.5 0.5]);  
                                  
-        H.activeControlTags = { 'titleText', 'questionText'  'input' 'next' 'prev' };   
+        H.activeControlTags = { 'titleText', 'questionText',  'input', 'next', 'prev', 'tutorial' };   
         
         H.activeAnswerControl = H.inputText;
         H.activeQuestionId = qquestion.id;
@@ -629,11 +692,135 @@ end
         
         set(H.next, 'callback', {@showNextQuestion});
         set(H.prev, 'callback', {@showPrevQuestion});
+        set(H.tutorial, 'callback', {@jumpToTutorial});
         
         if (not(isempty(qquestion.images)))
-            displayImages(qquestion);
+            displayImages(qquestion.images);
+        end
+        H.mostRecentQuestionnairePage = qquestion.id; 
+    end
+
+    %
+    % sequential navigation logic
+    %
+    function showCurrentTutorialPage(hObject, eventData)
+        infoPage = H.infoPageSequencer.getCurrentInfoPage();
+        displayTutorialPage(infoPage);
+    end
+        
+    function showNextTutorialPage(hObject, eventData)
+        % we've already started the tutorial, check to see if we can
+        % move forward
+        infoPage = H.infoPageSequencer.getCurrentInfoPage();
+        if (strcmp(infoPage.next,'NO_MORE_PAGES'))
+            displayFinishedTutorialScreen();
+        else
+            H.infoPageSequencer.moveToNextPage();
+            infoPage = H.infoPageSequencer.getCurrentInfoPage();
+            displayTutorialPage(infoPage);
         end
     end
+
+    function showPrevTutorialPage(hObject, eventData)
+        if (strcmp(H.activeScreen,'SummaryScreen'))
+            % we're backing up from the TutorialDone screen - just
+            % show the currently referenced page
+            infoPage = H.infoPageSequencer.getCurrentInfoPage();
+            displayTutorialPage(infoPage);
+        elseif (H.infoPageSequencer.canBackUp())
+            H.infoPageSequencer.backUp();
+            infoPage = H.infoPageSequencer.getCurrentInfoPage();
+            displayTutorialPage(infoPage);
+        else
+            displayWelcomeScreen();
+        end
+    end
+
+    %
+    % jumping between tutorial and questionnaire
+    %
+    
+    function jumpToTutorial(hObject, eventData)
+        if (strcmp(H.mostRecentTutorialPage,'NOT_STARTED'))
+           showCurrentTutorialPage(hObject, eventData);
+        elseif (strcmp(H.mostRecentTutorialPage,'TUTORIAL_COMPLETE'))
+            H.infoPageSequencer.reset();
+            showCurrentTutorialPage(hObject, eventData);
+        else
+            showCurrentTutorialPage(hObject, eventData);
+        end
+    end
+
+    function jumpToQuestionnaire(hObject, eventData)
+        if (strcmp(H.mostRecentQuestionnairePage,'NOT_STARTED'))
+           displayCharacterQuestion(hObject, eventData);
+        elseif (strcmp(H.mostRecentQuestionnairePage,'QUESTIONNAIRE_COMPLETE'))
+            doAnotherCharacter(hObject, eventData);
+        elseif (strcmp(H.mostRecentQuestionnairePage,'CHARACTER_QUESTION'))
+            displayCharacterQuestion(hObject, eventData);
+        else
+            showCurrentQuestion(hObject, eventData);
+        end
+    end
+    
+    %
+    % image display
+    %
+
+    function displaySingleImage(images)
+        image1Path = images(1).imageFilePath;
+        axes1Panel = uipanel('Parent',H.imagePanel,...
+                             'Tag','image1panel' ,...
+                             'position',[0,0,1,1]);
+        axes1 = axes('Parent',axes1Panel,...
+                             'Color',[1,1,1],...
+                             'FontName', H.fontname ,...
+                             'FontSize', H.fontsize ,...
+                             'Tag','image1' ,...
+                             'position',[0.02,0.02,0.96,0.96]);
+        H.activeControlTags = [ H.activeControlTags, 'image1panel' ];
+        imshow(image1Path);
+        xlabel(images(1).imageCaption);
+    end
+
+    function displayImagePair(images)
+        image1Path = images(1).imageFilePath;
+        axes1Panel = uipanel('Parent',H.imagePanel,...
+                             'Tag','image1panel' ,...
+                             'position',[0,0,0.5,1]);
+        axes1 = axes('Parent',axes1Panel,...
+                             'Color',[1,1,1],...
+                             'FontName', H.fontname ,...
+                             'FontSize', H.fontsize ,...
+                             'Tag','image1' ,...
+                             'position',[0.02,0.02,0.96,0.96]);
+        H.activeControlTags = [ H.activeControlTags, 'image1panel' ];
+        imshow(image1Path);
+        xlabel(images(1).imageCaption);
+        image2Path = images(2).imageFilePath;
+        axes2Panel = uipanel('Parent',H.imagePanel,...
+                             'Tag','image2panel' ,...
+                             'position',[0.5,0,0.5,1]);
+        axes2 = axes('Parent',axes2Panel,...
+                             'Color',[1,1,1],...
+                             'FontName', H.fontname ,...
+                             'FontSize', H.fontsize ,...
+                             'Tag','image2' ,...
+                             'position',[0.02,0.02,0.96,0.96]);
+        H.activeControlTags = [ H.activeControlTags, 'image2panel' ];
+        imshow(image2Path);
+        xlabel(images(2).imageCaption);
+    end
+
+    function displayImages(images)
+        imageCount = length(images);
+        if (imageCount == 1)
+           displaySingleImage(images);
+        elseif (imageCount == 2)
+            displayImagePair(images);
+        end
+    end
+
 
 
     %
@@ -641,7 +828,7 @@ end
     %
 
     function backFromEndMessageScreen(hObject, eventData)
-        deleteMessagePanel();
+        deleteObsoleteControls();
         if (strcmp(H.mostRecentQAFlavor,'typedInput'))
             createTypedInputQAPanels();
         else
@@ -653,13 +840,12 @@ end
 
     function doAnotherCharacter(hObject, eventData)
         H.questionSequencer.persist();
-        xmlFile = QuestionsXMLFile('tests/simple.xml');
+        xmlFile = QuestionsXMLFile(H.questionnaireXML);
         qquestions = QQuestions(xmlFile.domNode);
         H.questionSequencer = QuestionSequencer(qquestions);
-        deleteMessagePanel();
-        H.activeControlTags = {};
+        deleteObsoleteControls();
         createTypedInputQAPanels();
-        showCharacterQuestions();
+        displayCharacterQuestion();
     end
 
     function saveAndExit(hObject, eventData)
@@ -668,6 +854,9 @@ end
         close();
     end
 
+    function exit(hObject, eventData)
+        close();
+    end
 
 
 
@@ -700,9 +889,6 @@ end
     end
 
     function showPrevQuestion(hObject, eventData)
-        
-        %deleteObsoleteControls(H.activeControlTags);
-        %H.activeControlTags = {};
         if H.questionSequencer.canBackUp()
             prevAnsweredQuestion = H.questionSequencer.backUp();
             prevAnswer = prevAnsweredQuestion.answer;
@@ -710,7 +896,7 @@ end
             displayAppropriateQuestion(qquestion);
             displayPriorSetAnswer(prevAnswer,qquestion);
         else
-            showCharacterQuestions();
+            displayCharacterQuestion();
             control = findobj('Tag','characterNameInputText');
             set(control,'String',H.questionSequencer.characterName);
         end
@@ -738,6 +924,7 @@ end
             set(goodRB,'Value',1);
         end
     end
+
     function displayAppropriateQuestion(qquestion)
         if (strcmp(qquestion.type,'choice'))
             displayChoiceQuestion(qquestion);
@@ -759,7 +946,7 @@ end
             
             qquestion = H.questionSequencer.getCurrentQuestion();
             if (strcmp(qquestion.id,'NO_MORE_QUESTIONS'))
-                displayFinishedScreen();
+                displayQuestionnaireCompleteScreen();
             else
                 displayAppropriateQuestion(qquestion);
                 if (strcmp(nextAnswer,'NOT_YET_SPECIFIED'))
@@ -774,14 +961,15 @@ end
         end
     end
 
-    function displayFinishedScreen()
-        
-        H.frimble = 3;
-        deleteQApanels();
-        msg = 'You have finished answering questions for this character.  Click "More" to do another character or "Done" if you are finished.';
-        createEndMessagePanel(msg);
-        
+    function showCurrentQuestion(hObject, eventData)
+        qquestion = H.questionSequencer.getCurrentQuestion();
+        if (strcmp(qquestion.id,'NO_MORE_QUESTIONS'))
+            displayQuestionnaireCompleteScreen();
+        else
+            displayAppropriateQuestion(qquestion);
+        end
     end
+
     function result = verifyAnswerPresent()
         
         result = 1;
