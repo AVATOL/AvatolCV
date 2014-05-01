@@ -653,9 +653,9 @@ classdef TestQuestionSequencer < matlab.unittest.TestCase
             testCase.verifyEqual(question1.answers(1).nextQuestion,'COLOR');
             testCase.verifyEqual(question1.answers(2).value,'no');
             testCase.verifyEqual(question1.answers(2).nextQuestion,'WEIGHT');
-            testCase.verifyEqual(question1.images(1).imageFilePath,'data/images/elephant.jpg');
+            testCase.verifyEqual(question1.images(1).imageFilePath,'data/questionnaire/images/elephant.jpg');
             testCase.verifyEqual(question1.images(1).imageCaption,'elephants are bigger than a breadbox');
-            testCase.verifyEqual(question1.images(2).imageFilePath,'data/images/mouse.jpg');
+            testCase.verifyEqual(question1.images(2).imageFilePath,'data/questionnaire/images/mouse.jpg');
             testCase.verifyEqual(question1.images(2).imageCaption,'mice are smaller than a breadbox');
             
             question2 = theQuestions(2);

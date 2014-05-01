@@ -177,21 +177,21 @@ classdef TestQuestionsValidator < matlab.unittest.TestCase
             testCase.verifyTrue(strcmp(problem,expectedProblem));
             testCase.verifyTrue(length(malformations) == 1);
             
-            i2 = QImage('data/images/nonExistent.jpg','someCaption');
+            i2 = QImage('data/questionnaire/images/nonExistent.jpg','someCaption');
             malformations = qv.getImageMalformations(i2);
             problem = char(malformations(1));
-            expectedProblem = 'image filename does not exist: data/images/nonExistent.jpg';
+            expectedProblem = 'image filename does not exist: data/questionnaire/images/nonExistent.jpg';
             testCase.verifyTrue(strcmp(problem,expectedProblem));
             testCase.verifyTrue(length(malformations) == 1);
             
-            i3 = QImage('data/images/bogusJPG.jpg','');
+            i3 = QImage('data/questionnaire/images/bogusJPG.jpg','');
             malformations = qv.getImageMalformations(i3);
             problem = char(malformations(1));
             expectedProblem = 'image caption empty';
             testCase.verifyTrue(strcmp(problem,expectedProblem));
             testCase.verifyTrue(length(malformations) == 1);
             
-            i4 = QImage('data/images/bogusJPG.jpg','someCaption');
+            i4 = QImage('data/questionnaire/images/bogusJPG.jpg','someCaption');
             malformations = qv.getImageMalformations(i4);
             testCase.verifyTrue(length(malformations) == 0);
         end
@@ -220,7 +220,7 @@ classdef TestQuestionsValidator < matlab.unittest.TestCase
             
             q = QQuestion('integer_input', 'ID4', 'someText');
             a1 = QAnswer('','CCC');
-            i1 = QImage('data/images/bogusJPG.jpg','');
+            i1 = QImage('data/questionnaire/images/bogusJPG.jpg','');
             q.addAnswer(a1);
             q.addImage(i1);
             malformations = qv.getInputIntegerQuestionMalformations(q);

@@ -5,7 +5,7 @@ function avatol_cv
     clearvars -global H;
     global H;
     H.questionnaireXML = 'tests/simple.xml';
-    %H.questionnaireXML = 'data/Questionnaire.xml'
+    %H.questionnaireXML = 'data/questionnaire/Questionnaire.xml'
     
     questionsXmlFile = QuestionsXMLFile(H.questionnaireXML);
     qquestions = QQuestions(questionsXmlFile.domNode);
@@ -14,7 +14,7 @@ function avatol_cv
     qv.validate(H.questionSequencer.qquestions.questions);
     
     H.tutorialXML = 'tests/simpleTutorial.xml';
-    %H.tutorialXML = 'data/Tutorial.xml';
+    %H.tutorialXML = 'data/tutorial/Tutorial.xml';
     
     tutorialXmlFile = QuestionsXMLFile(H.tutorialXML);
     infoPages = InfoPages(tutorialXmlFile.domNode);

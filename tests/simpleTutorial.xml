@@ -2,8 +2,8 @@
 <infoPages>
     <infoPage next="BREAD_FAVORITES" id="BREAD_INFO">
         <text>Bread is used in sandwiches.</text>
-        <image filename="data/images/sub_sandwich.jpg" caption="This is a sub."/>
-        <image filename="data/images/sliced_bread_sandwich.jpg" caption="This is a homemade sandwich."/>
+        <image filename="data/tutorial/images/sub_sandwich.jpg" caption="This is a sub."/>
+        <image filename="data/tutorial/images/sliced_bread_sandwich.jpg" caption="This is a homemade sandwich."/>
      </infoPage>
      <infoPage next="WHITE_BREAD_INFO" id="BREAD_FAVORITES">
         <text>Some favor white bread, some favor rye.</text>

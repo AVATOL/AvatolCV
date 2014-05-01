@@ -108,21 +108,21 @@ classdef TestInfoPagesValidator < matlab.unittest.TestCase
             testCase.verifyTrue(strcmp(problem,expectedProblem));
             testCase.verifyTrue(length(malformations) == 1);
             
-            i2 = QImage('data/images/nonExistent.jpg','someCaption');
+            i2 = QImage('data/questionnaire/images/nonExistent.jpg','someCaption');
             malformations = ipv.getImageMalformations(i2);
             problem = char(malformations(1));
-            expectedProblem = 'image filename does not exist: data/images/nonExistent.jpg';
+            expectedProblem = 'image filename does not exist: data/questionnaire/images/nonExistent.jpg';
             testCase.verifyTrue(strcmp(problem,expectedProblem));
             testCase.verifyTrue(length(malformations) == 1);
             
-            i3 = QImage('data/images/bogusJPG.jpg','');
+            i3 = QImage('data/questionnaire/images/bogusJPG.jpg','');
             malformations = ipv.getImageMalformations(i3);
             problem = char(malformations(1));
             expectedProblem = 'image caption empty';
             testCase.verifyTrue(strcmp(problem,expectedProblem));
             testCase.verifyTrue(length(malformations) == 1);
             
-            i4 = QImage('data/images/bogusJPG.jpg','someCaption');
+            i4 = QImage('data/questionnaire/images/bogusJPG.jpg','someCaption');
             malformations = ipv.getImageMalformations(i4);
             testCase.verifyTrue(length(malformations) == 0);
         end
