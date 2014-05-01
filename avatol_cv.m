@@ -4,8 +4,8 @@ function avatol_cv
     
     clearvars -global H;
     global H;
-    H.questionnaireXML = 'tests/simple.xml';
-    %H.questionnaireXML = 'data/questionnaire/Questionnaire.xml'
+    %H.questionnaireXML = 'tests/simple.xml';
+    H.questionnaireXML = 'data/questionnaire/Questionnaire.xml';
     
     questionsXmlFile = QuestionsXMLFile(H.questionnaireXML);
     qquestions = QQuestions(questionsXmlFile.domNode);
@@ -13,8 +13,8 @@ function avatol_cv
     qv = QuestionsValidator();
     qv.validate(H.questionSequencer.qquestions.questions);
     
-    H.tutorialXML = 'tests/simpleTutorial.xml';
-    %H.tutorialXML = 'data/tutorial/Tutorial.xml';
+    %H.tutorialXML = 'tests/simpleTutorial.xml';
+    H.tutorialXML = 'data/tutorial/Tutorial.xml';
     
     tutorialXmlFile = QuestionsXMLFile(H.tutorialXML);
     infoPages = InfoPages(tutorialXmlFile.domNode);
@@ -172,23 +172,13 @@ function avatol_cv
     end
 
      %
-     % Podsitions
+     % Positions
      %
 
     function position = getNavigationPanelPosition()
         position = [0.02 0.02 0.96 0.05];
     end
 
-    function questionPosition = getQuestionPosition()
-        
-        questionPanelPosition = getpixelposition(H.questionPanel,1);
-        questionPanelWidth = questionPanelPosition(3);
-        questionPanelHeight = questionPanelPosition(4);
-        
-        questionPositionY = questionPanelHeight / 4;
-        questionHeight = questionPanelHeight / 2;
-        questionPosition = [ 0 questionPositionY questionPanelWidth questionHeight ];
-    end
 
     function answerPosition = getInputAnswerPosition()
         answerPosition = [ 0,0.7,1, 0.3 ];
@@ -885,6 +875,7 @@ function avatol_cv
             end
         catch exception
             warndlg(exception.message);
+            answerToNextQuestion = 'ANSWER_BLOCKED_BY_ERROR';
         end
     end
 
@@ -943,17 +934,20 @@ function avatol_cv
         
         if verifyAnswerPresent()
             nextAnswer = registerDisplayedAnswer();
-            
-            qquestion = H.questionSequencer.getCurrentQuestion();
-            if (strcmp(qquestion.id,'NO_MORE_QUESTIONS'))
-                displayQuestionnaireCompleteScreen();
-            else
-                displayAppropriateQuestion(qquestion);
-                if (strcmp(nextAnswer,'NOT_YET_SPECIFIED'))
-                    % no answer to apply
+            if (strcmp(nextAnswer,'ANSWER_BLOCKED_BY_ERROR'))
+                % stay on same question
+            else 
+                qquestion = H.questionSequencer.getCurrentQuestion();
+                if (strcmp(qquestion.id,'NO_MORE_QUESTIONS'))
+                    displayQuestionnaireCompleteScreen();
                 else
-                    % apply the previous answer
-                    displayPriorSetAnswer(nextAnswer, qquestion);
+                    displayAppropriateQuestion(qquestion);
+                    if (strcmp(nextAnswer,'NOT_YET_SPECIFIED'))
+                        % no answer to apply
+                    else
+                        % apply the previous answer
+                        displayPriorSetAnswer(nextAnswer, qquestion);
+                    end
                 end
             end
         else
