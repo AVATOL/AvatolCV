@@ -1,6 +1,5 @@
 classdef InfoPageSequencer < handle
     properties
-        
         info_pages;
         nextInfoPageIndex;
         currentInfoPage;
@@ -12,13 +11,17 @@ classdef InfoPageSequencer < handle
             obj.nextInfoPageIndex = 1;
             obj.info_pages = info_pages;
             obj.currentInfoPage = obj.info_pages.info_pages(obj.nextInfoPageIndex);
-            obj.noMoreInfoPagesMarker = QQuestion('NO_MORE_QUESTIONS','NO_MORE_QUESTIONS','NO_MORE_QUESTIONS');
+            obj.noMoreInfoPagesMarker = QQuestion('NO_MORE_QUESTIONS','NO_MORE_QUESTIONS','NO_MORE_QUESTIONS'); 
         end
         
         function currentInfoPage = getCurrentInfoPage(obj)
             currentInfoPage = obj.currentInfoPage;
         end
         
+        function reset(obj)
+            obj.nextInfoPageIndex = 1;
+            obj.currentInfoPage = obj.info_pages.info_pages(obj.nextInfoPageIndex);
+        end
         function moveToNextPage(obj)
             nextId = obj.currentInfoPage.next;
             if (strcmp(nextId,'NO_MORE_PAGES'))
