@@ -14,7 +14,7 @@
         <image filename="data/questionnaire/images/clutter.jpg" caption="Sharp Enough" />
         <image filename="data/questionnaire/images/notsharp.jpg" caption="Not Sharp Enough" />
     </question>
-    <question type="input_integer" id="RESOLUTION">
+    <question type="input_string" id="RESOLUTION">
         <text>What is the resolution of the images?</text>
         <answer value="0" next="TARGET_AREA" />
     </question>
