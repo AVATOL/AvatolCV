@@ -27,9 +27,9 @@ classdef QuestionSequencer < handle
             fileID = fopen(filepath,'w');
             for i=1:length(obj.answeredQuestions)
                 aq = obj.answeredQuestions(i);
-                %fprintf(fileID,'%s=%s\n',aq.questionID, aq.answer);
+                fprintf(fileID,'%s=%s\n',aq.questionID, aq.answer);
             end
-            %fprintf(fileID,'\n'); % not sure why I needed to add an extra linefeed, but if didn't, final linefeed doesn't express
+            fprintf(fileID,'\n'); % not sure why I needed to add an extra linefeed, but if didn't, final linefeed doesn't express
             fclose(fileID);
         end
         
