@@ -78,17 +78,17 @@ function avatol_cv
         H.questionPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
                                   'Tag','questionPanel',...
-                                  'Position',[0.02 0.74 0.7 0.18]);
+                                  'Position',[0.05 0.70 0.67 0.18]);
                               
         H.answerPanel = uipanel('Background', [1 1 1],...%[0.3 1 0.3]
                                   'BorderType', 'none',...
                                   'Tag','answerPanel',...
-                                  'Position',[0.74 0.74 0.24 0.18]);
+                                  'Position',[0.74 0.70 0.21 0.18]);
                               
         H.imagePanel = uipanel('Background',[1 1 1],...%[0.3 0.3 1]
                                   'BorderType', 'none',...
                                   'Tag','imagePanel',...
-                                  'Position',[ 0.02 0.1 0.96 0.62]);
+                                  'Position',[ 0.02 0.1 0.96 0.60]);
                               
         H.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
                                   'BorderType', 'none',...
@@ -103,7 +103,7 @@ function avatol_cv
         titlePanel = uipanel('Background', [1 1 1],...%[1 0.5 0.5]
                                   'BorderType', 'none',... %etchedin
                                   'Tag','titlePanel',...
-                                  'Position',[0.02 0.91 .96 0.07]);
+                                  'Position',[0.02 0.89 .96 0.07]);
         
     end
 
@@ -113,17 +113,17 @@ function avatol_cv
         H.questionPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
                                   'Tag', 'questionPanel',...
-                                  'Position',[0.02 0.74 0.7 0.18]);
+                                  'Position',[0.05 0.70 0.67 0.18]);
                               
         H.answerPanel = uipanel('Background', [1 1 1],...%[0.3 1 0.3]
                                   'BorderType', 'none',...
                                   'Tag', 'answerPanel',...
-                                  'Position',[0.74 0.1 0.24 0.79]);
+                                  'Position',[0.74 0.1 0.21 0.77]);
                               
         H.imagePanel = uipanel('Background',[1 1 1],...%[0.3 0.3 1]
                                   'BorderType', 'none',...
                                   'Tag', 'imagePanel',...
-                                  'Position',[ 0.02 0.1 0.7 0.62]);
+                                  'Position',[ 0.02 0.1 0.7 0.60]);
                               
         H.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
                                   'BorderType', 'none',...
@@ -156,12 +156,12 @@ function avatol_cv
         H.textPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
                                   'Tag', 'textPanel',...
-                                  'Position',[0.02 0.74 0.98 0.18]);
+                                  'Position',[0.05 0.70 0.9 0.18]);
                              
         H.imagePanel = uipanel('Background',[1 1 1],...%[0.3 0.3 1]
                                   'BorderType', 'none',...
                                   'Tag', 'imagePanel',...
-                                  'Position',[ 0.15 0.2 0.7 0.62]);
+                                  'Position',[ 0.15 0.2 0.7 0.60]);
                               
         H.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
                                   'BorderType', 'none',...
@@ -228,7 +228,7 @@ function avatol_cv
 
     function displayQuestionnaireCompleteScreen() 
         deleteObsoleteControls();
-        message = 'You have finished answering questions for this character.  Click "More" to do another character or "Done" if you are finished.';
+        message = 'You have finished answering questions for this character.  Click "More" to do another character or "Exit" if you are finished.';
         
         H.messagePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
