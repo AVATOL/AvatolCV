@@ -40,9 +40,11 @@ function avatol_cv
         
         H.lineHeight = 30;
         H.pushButtonWidth = 80;
-        %H.fontname = 'Helvetica';
-        H.fontname = 'Calibri';
+        H.fontname = 'Helvetica';
+        %H.fontname = 'Calibri';
+        %H.fontname = 'Times New Roman';
         H.fontsize = 13;
+        %H.fontsize = 14;
         H.fontsizeHeader = 16;
         H.fullWidth = 900;
         H.fullHeight = 600;
@@ -139,7 +141,7 @@ function avatol_cv
         H.textPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
                                   'Tag', 'textPanel',...
-                                  'Position',[0.2 0.3 0.6 0.3]);
+                                  'Position',[0.2 0.3 0.6 0.4]);
                              
       
         H.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
@@ -337,11 +339,76 @@ function avatol_cv
         H.activeControlTags = { 'tutorialText', 'beginTutorial', 'skipToQuestionnaire' };   
         
         H.activeScreen = 'WelcomeScreen';
-        set(H.beginTutorial, 'callback', {@showCurrentTutorialPage});
+        set(H.beginTutorial, 'callback', {@showTutorialGoalPage});
         set(H.skipToQuestionnaire, 'callback', {@jumpToQuestionnaire});
  
     end
 
+    function displayTutorialGoalPage()
+        deleteObsoleteControls();
+        createSimpleTextScreenPanels();
+        lineA = 'The goals of this tutorial are to:';
+        lineA1 = '';
+        lineA2 = '';
+        lineB = '    1) Map biological terminology into computer vision terminology';
+        lineC = '';
+        lineD = '        - What is a biological character in computer vision terms?';
+        lineE = '';
+        lineF = '        - What is a character score in computer vision terms?';
+        lineG = '';
+        lineH = '';
+        lineI = '    2) Explain general concepts about images and computer vision';
+        goalText = { lineA lineA1 lineA2 lineB lineC lineD lineE lineF lineG lineH lineI };
+        
+        H.tutorialText = uicontrol('style', 'text' ,...
+                                     'String', goalText ,...
+                                     'Units','normalized',...
+                                     'position', [0,0,1,1] ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'BackgroundColor', [1 1 1] ,...
+                                     'Tag','tutorialText' ,...
+                                     'Parent',H.textPanel,...
+                                     'HorizontalAlignment', 'left');
+                                 
+        skipToQuestionnaireButtonPosition = [0,0,0.25,1 ];
+        H.skipToQuestionnaire = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Skip to Questionnaire' ,...
+                                     'Parent',H.navigationPanel,...
+                                     'Units','normalized',...
+                                     'position', skipToQuestionnaireButtonPosition ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','skipToQuestionnaire' ,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);  
+                                 
+         H.next = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Next' ,...
+                                     'Units','normalized',...
+                                     'position', getButtonPositionRightB() ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','next' ,...
+                                     'parent',H.navigationPanel,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);  
+                         
+         H.prev = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Back' ,...
+                                     'Units','normalized',...
+                                     'position', getButtonPositionRightA() ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Parent',H.navigationPanel,...
+                                     'Tag','prev' ,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);  
+                                 
+        H.activeControlTags = { 'tutorialText', 'next', 'prev', 'skipToQuestionnaire'};  
+        H.activeScreen = 'TUTORIAL_GOAL';
+        set(H.next, 'callback', {@showCurrentTutorialPage});
+        set(H.prev, 'callback', {@showWelcomeScreen});
+        set(H.skipToQuestionnaire, 'callback', {@jumpToQuestionnaire});
+        H.mostRecentTutorialPage = 'TUTORIAL_GOAL';
+    end
     function displayFinishedTutorialScreen() 
         deleteObsoleteControls();
         createSimpleTextScreenPanels();
@@ -693,11 +760,19 @@ function avatol_cv
     %
     % sequential navigation logic
     %
+    
+    function showWelcomeScreen(hObject, eventData)
+        displayWelcomeScreen();
+    end
+
     function showCurrentTutorialPage(hObject, eventData)
         infoPage = H.infoPageSequencer.getCurrentInfoPage();
         displayTutorialPage(infoPage);
     end
-        
+    
+    function showTutorialGoalPage(hObject, eventData)
+        displayTutorialGoalPage();
+    end
     function showNextTutorialPage(hObject, eventData)
         % we've already started the tutorial, check to see if we can
         % move forward
@@ -722,7 +797,7 @@ function avatol_cv
             infoPage = H.infoPageSequencer.getCurrentInfoPage();
             displayTutorialPage(infoPage);
         else
-            displayWelcomeScreen();
+            displayTutorialGoalPage();
         end
     end
 
@@ -732,10 +807,12 @@ function avatol_cv
     
     function jumpToTutorial(hObject, eventData)
         if (strcmp(H.mostRecentTutorialPage,'NOT_STARTED'))
-           showCurrentTutorialPage(hObject, eventData);
+            showTutorialGoalPage(hObject, eventData);
+        elseif (strcmp(H.mostRecentTutorialPage,'TUTORIAL_GOAL'))
+            showTutorialGoalPage(hObject, eventData);
         elseif (strcmp(H.mostRecentTutorialPage,'TUTORIAL_COMPLETE'))
             H.infoPageSequencer.reset();
-            showCurrentTutorialPage(hObject, eventData);
+            showTutorialGoalPage(hObject, eventData);
         else
             showCurrentTutorialPage(hObject, eventData);
         end
