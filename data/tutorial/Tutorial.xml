@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <infoPages> 
-	<infoPage next="OBJECT_PARTS" id="WELCOME"> 
-		<text>Welcome to the tutorial. The goal of the tutorial is to educate how to annotate images and review some terminology.</text> 
-	</infoPage> 
 	<infoPage next="SINGLE_PARTS" id="OBJECT_PARTS"> 
 		<text>Terminology: objects and parts. An object is usually the organism itself, which contains parts. An example object would be the human face and example parts would be the eyes, nose and mouth.</text> 
 		<image filename="data/tutorial/images/faceparts.jpg" caption="Parts of the object"/> 
