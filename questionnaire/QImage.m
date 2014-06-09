@@ -8,7 +8,6 @@ classdef QImage < handle
             if ispc
                 path = strrep(path, '/', '\\');
             end
-            fprintf('new path is %s\n',path);
             obj.imageFilePath = path;
             obj.imageCaption = caption;
         end

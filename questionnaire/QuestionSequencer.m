@@ -22,7 +22,11 @@ classdef QuestionSequencer < handle
                 mkdir('results');
             end
             curDir = pwd();
-            filepath = sprintf('%s/results/%s.out',curDir,obj.characterName);
+            if ispc
+                filepath = sprintf('%s\\results\\%s.out',curDir,obj.characterName);
+            else
+                filepath = sprintf('%s/results/%s.out',curDir,obj.characterName);
+            end
             disp(filepath);
             fileID = fopen(filepath,'w');
             for i=1:length(obj.answeredQuestions)

@@ -104,7 +104,11 @@ classdef InfoPagesValidator < handle
             % filename not ''
             currentDir = pwd();
             relPath = qimage.imageFilePath;
-            imagePath = sprintf('%s/%s',currentDir, relPath);
+            if ispc
+                imagePath = sprintf('%s\\%s',currentDir, relPath);
+            else
+                imagePath = sprintf('%s/%s',currentDir, relPath);
+            end
             if (strcmp(qimage.imageFilePath,''))
                 malformations = [ malformations,  'image filename empty'];
             elseif exist(imagePath, 'file') ~= 2
