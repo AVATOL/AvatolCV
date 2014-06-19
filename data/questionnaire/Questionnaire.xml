@@ -66,9 +66,16 @@
     </question>
     <question type="choice" id="CHARACTER_PART_POSITIONS">
         <text>Could positions of parts be predicted by other positions?</text>
-        <answer value="yes" next="CHARACTER_PARTS_COUNT" />
+        <answer value="yes" next="CHARACTER_PART_ARTICULATED" />
         <answer value="no" next="NO_MORE_QUESTIONS" />
         <image filename="data/questionnaire/images/rigid.jpg" caption="Positions of teeth are relatively rigid" />
+    </question>
+    <question type="choice" id="CHARACTER_PART_ARTICULATED">
+        <text>Are the parts themselves highly articulated, i.e. can they bend around or change shape easily?</text>
+        <answer value="yes" next="CHARACTER_PARTS_COUNT" />
+        <answer value="no" next="CHARACTER_PARTS_COUNT" />
+        <image filename="data/questionnaire/images/rigid.jpg" caption="Single tooth not articulated" />
+        <image filename="data/questionnaire/images/clutter.jpg" caption="Tubule is highly articulated" />
     </question>
     <question type="choice" id="CHARACTER_PARTS_COUNT">
         <text>Does the character involve one or multiple parts?</text>
