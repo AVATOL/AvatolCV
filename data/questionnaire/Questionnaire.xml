@@ -9,21 +9,19 @@
     </question>
     <question type="choice" id="SHARP_ENOUGH">
         <text>Are the images sharp enough?</text>
-        <answer value="yes" next="RESOLUTION" />
-        <answer value="no" next="RESOLUTION" />
+        <answer value="yes" next="TARGET_AREA" />
+        <answer value="no" next="TARGET_AREA" />
         <image filename="data/questionnaire/images/clutter.jpg" caption="Sharp Enough" />
         <image filename="data/questionnaire/images/notsharp.jpg" caption="Not Sharp Enough" />
     </question>
-    <question type="input_string" id="RESOLUTION">
-        <text>What is the resolution of the images?</text>
-        <answer value="0" next="TARGET_AREA" />
-    </question>
-    <question type="input_integer" id="TARGET_AREA">
+    <question type="choice" id="TARGET_AREA">
         <text>What percent of the image are, on average, is occupied by the target?</text>
-        <answer value="0" next="ORGANISM_COUNT" />
+        <answer value="5% or less" next="ORGANISM_COUNT" />
+        <answer value="10%" next="ORGANISM_COUNT" />
+        <answer value="20%" next="ORGANISM_COUNT" />
+        <answer value="more than 20%" next="ORGANISM_COUNT" />
         <image filename="data/questionnaire/images/targetarea.jpg" caption="Estimate percentage of target area to image size" />
     </question>
-
     <question type="choice" id="ORGANISM_COUNT">
         <text>Is there one or multiple organisms in the images?</text>
         <answer value="one" next="ORGANISM_POSITION" />
