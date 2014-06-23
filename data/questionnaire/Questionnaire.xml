@@ -19,7 +19,7 @@
         <answer value="5% or less" next="ORGANISM_COUNT" />
         <answer value="10%" next="ORGANISM_COUNT" />
         <answer value="20%" next="ORGANISM_COUNT" />
-        <answer value="more than 20%" next="ORGANISM_COUNT" />
+        <answer value="25% or more" next="ORGANISM_COUNT" />
         <image filename="data/questionnaire/images/targetarea.jpg" caption="Estimate percentage of target area to image size" />
     </question>
     <question type="choice" id="ORGANISM_COUNT">
