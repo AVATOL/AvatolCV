@@ -24,7 +24,7 @@
         <answer value="40" next="TARGET_AREA_CHARACTER" />
         <answer value="50" next="TARGET_AREA_CHARACTER" />
         <answer value="more than 50" next="TARGET_AREA_CHARACTER" />
-        <image filename="data/questionnaire/images/targetarea.jpg" caption="Estimate percentage of specimen area to image size" />
+        <image filename="data/questionnaire/images/targetarea.jpg" caption="Estimating percentage of specimen area to image size" />
     </question>
     <question type="choice" id="TARGET_AREA_CHARACTER">
         <text>On average, what percent of the specimen is covered by the target character?</text>
@@ -36,7 +36,7 @@
         <answer value="40" next="ORGANISM_COUNT" />
         <answer value="50" next="ORGANISM_COUNT" />
         <answer value="more than 50" next="ORGANISM_COUNT" />
-        <image filename="data/questionnaire/images/parts.jpg" caption="Estimate percentage of character area to specimen size" />
+        <image filename="data/questionnaire/images/parts.jpg" caption="Estimating percentage of character area to specimen size" />
     </question>
     <question type="choice" id="ORGANISM_COUNT">
         <text>Is there one or multiple organisms in the images?</text>
