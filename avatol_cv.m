@@ -623,7 +623,6 @@ function avatol_cv
         for i=1:length(qquestion.answers)
             answerValue = qquestion.answers(i).value;
             tag = sprintf('radioButton%s',answerValue);
-            
             thisButton = uicontrol('Style','radiobutton',...
                             'visible', 'on',...
                             'String',answerValue ,...
@@ -946,7 +945,7 @@ function avatol_cv
                 H.characterName = get(H.activeAnswerControl, 'String');
                 H.questionSequencer.characterName = H.characterName;
                 if (not(isempty(H.questionSequencer.answeredQuestions)))
-                    qanswer = H.questionSequencer.answeredQuestions(1)
+                    qanswer = H.questionSequencer.answeredQuestions(1);
                     answerToNextQuestion = qanswer.answer;
                 end
             else 
