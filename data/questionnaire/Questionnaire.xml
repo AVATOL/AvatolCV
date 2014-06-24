@@ -9,18 +9,34 @@
     </question>
     <question type="choice" id="SHARP_ENOUGH">
         <text>Are the images sharp enough?</text>
-        <answer value="yes" next="TARGET_AREA" />
-        <answer value="no" next="TARGET_AREA" />
+        <answer value="yes" next="TARGET_AREA_SPECIMEN" />
+        <answer value="no" next="TARGET_AREA_SPECIMEN" />
         <image filename="data/questionnaire/images/clutter.jpg" caption="Sharp Enough" />
         <image filename="data/questionnaire/images/notsharp.jpg" caption="Not Sharp Enough" />
     </question>
-    <question type="choice" id="TARGET_AREA">
-        <text>What percent of the image are, on average, is occupied by the target?</text>
-        <answer value="5% or less" next="ORGANISM_COUNT" />
+    <question type="choice" id="TARGET_AREA_SPECIMEN">
+        <text>On average, what percent of the image is occupied by the specimen?</text>
+        <answer value="less than 5%" next="TARGET_AREA_CHARACTER" />
+        <answer value="5%" next="TARGET_AREA_CHARACTER" />
+        <answer value="10%" next="TARGET_AREA_CHARACTER" />
+        <answer value="20%" next="TARGET_AREA_CHARACTER" />
+        <answer value="30%" next="TARGET_AREA_CHARACTER" />
+        <answer value="40%" next="TARGET_AREA_CHARACTER" />
+        <answer value="50%" next="TARGET_AREA_CHARACTER" />
+        <answer value="more than 50%" next="TARGET_AREA_CHARACTER" />
+        <image filename="data/questionnaire/images/targetarea.jpg" caption="Estimate percentage of specimen area to image size" />
+    </question>
+    <question type="choice" id="TARGET_AREA_CHARACTER">
+        <text>On average, what percent of the specimen is covered by the target character?</text>
+        <answer value="less than 5%" next="ORGANISM_COUNT" />
+        <answer value="5%" next="ORGANISM_COUNT" />
         <answer value="10%" next="ORGANISM_COUNT" />
         <answer value="20%" next="ORGANISM_COUNT" />
-        <answer value="25% or more" next="ORGANISM_COUNT" />
-        <image filename="data/questionnaire/images/targetarea.jpg" caption="Estimate percentage of target area to image size" />
+        <answer value="30%" next="ORGANISM_COUNT" />
+        <answer value="40%" next="ORGANISM_COUNT" />
+        <answer value="50%" next="ORGANISM_COUNT" />
+        <answer value="more than 50%" next="ORGANISM_COUNT" />
+        <image filename="data/questionnaire/images/parts.jpg" caption="Estimate percentage of character area to specimen size" />
     </question>
     <question type="choice" id="ORGANISM_COUNT">
         <text>Is there one or multiple organisms in the images?</text>
