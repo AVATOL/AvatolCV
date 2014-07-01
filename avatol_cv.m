@@ -1,5 +1,5 @@
 function avatol_cv
-
+    %%
     clearvars();
     
     clearvars -global H;
