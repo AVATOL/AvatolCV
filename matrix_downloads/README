@@ -1,0 +1,8 @@
+The matrix_downloads folder is where you will download zip files from Morphobank.
+
+- Create a subdirectory under matrix_downloads with the same root name as the zip file.
+- move the zip file into this new directory
+- unzip the file there
+- (optionally) delete the zip file
+
+The application will then be able to find your matrix data.
