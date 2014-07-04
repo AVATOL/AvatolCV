@@ -1,4 +1,4 @@
-classdef MorphobankMatrices
+classdef MorphobankMatrices < handle
     %MORPHOBANKMATRICES Wrapper class for Morphobank matrix data
     %   Knows about the sdd.xml file, the media and annotations directories
     %   and files.
@@ -40,8 +40,9 @@ classdef MorphobankMatrices
                 end
                 
             end
-            obj.matrixDirNames
+            
         end
+        
     end
     
 end

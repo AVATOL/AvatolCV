@@ -20,12 +20,8 @@ classdef TestMorphobankMatrices < matlab.unittest.TestCase
     methods (Test)
         function testLoadMatrices(testCase)
             mm = MorphobankMatrices('../matrix_downloads');
-            
-            %xmlFile = QuestionsXMLFile('tests/simpleTutorial.xml');
-            %info_pages = InfoPages(xmlFile.domNode);
-            %info_page1 = info_pages.findInfoPageById('BREAD_INFO');
-            %testCase.verifyEqual(info_page1.id, 'BREAD_INFO');
-            
+            testCase.verifyEqual(length(mm.matrixDirNames),1);
+            testCase.verifyEqual(char(mm.matrixDirNames(1)),'AVAToL Bat Skull Project_morphobank'); 
         end
     end
     
