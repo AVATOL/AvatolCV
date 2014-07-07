@@ -5,6 +5,7 @@ classdef QuestionSequencer < handle
         currentQuestion;
         answeredQuestions = {};
         noMoreQuestionsMarker;
+        matrixName = 'UNDEFINED'
         characterName = 'UNDEFINED';
     end
     methods
@@ -23,9 +24,9 @@ classdef QuestionSequencer < handle
             end
             curDir = pwd();
             if ispc
-                filepath = sprintf('%s\\results\\%s.out',curDir,obj.characterName);
+                filepath = sprintf('%s\\results\\%s\\%s.out',curDir,obj.matrixName,obj.characterName);
             else
-                filepath = sprintf('%s/results/%s.out',curDir,obj.characterName);
+                filepath = sprintf('%s/results/%s/%s.out',curDir,obj.matrixName,obj.characterName);
             end
             disp(filepath);
             fileID = fopen(filepath,'w');
