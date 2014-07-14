@@ -20,8 +20,9 @@ classdef TestMorphobankMatrices < matlab.unittest.TestCase
     methods (Test)
         function testLoadMatrices(testCase)
             mm = MorphobankMatrices('../matrix_downloads');
-            testCase.verifyEqual(length(mm.matrixDirNames),1);
+            testCase.verifyEqual(length(mm.matrixDirNames),2);
             testCase.verifyEqual(char(mm.matrixDirNames(1)),'AVAToL Bat Skull Project_morphobank'); 
+            testCase.verifyEqual(char(mm.matrixDirNames(2)),'BOGUS'); 
         end
     end
     
