@@ -9,11 +9,12 @@ classdef MatrixCharacters < handle
 	end
 	
 	methods
+        % NOTE dom tree uses java arrays so index starting at 0
 	    function obj = MatrixCharacters(domNode, matrixName)
             obj.parseDomNodeForCharacters(domNode);
-			obj.matrixname = matrixName;
+			obj.matrixName = matrixName;
         end
-	    function parseDomNodeForCharacters(domNode)
+	    function parseDomNodeForCharacters(obj, domNode)
 			datasetsNode = domNode.getDocumentElement;
             fprintf('docNode name %s\n', char(datasetsNode.getNodeName()));
             datasetNodesAndWhiteSpaceNodes = datasetsNode.getChildNodes;
@@ -22,8 +23,8 @@ classdef MatrixCharacters < handle
                 somethingNode = datasetNodesAndWhiteSpaceNodes.item(i);
                 nodeName = somethingNode.getNodeName();
 				if strcmp(nodeName,'Dataset')
-					if (strcmp(obj.datasetOneSet,'no')
-						obj.datasetOne = sometingNode;
+					if (strcmp(obj.datasetOneSet,'no'))
+						obj.datasetOne = somethingNode;
 						obj.datasetOneSet = 'yes';
 					else
 						obj.datasetTwo = somethingNode;
@@ -32,21 +33,21 @@ classdef MatrixCharacters < handle
 				end
 
             end
-			if (strcmp('no',datasetOneSet))
+			if (strcmp('no',obj.datasetOneSet))
 			    msg = sprintf('First Dataset element not present for matrix %s.',obj.matrixName);
                 err = MException('MatrixCharactersError', msg);
                 throw(err);
-			elseif (strcmp('no',datasetTwoSet))
+			elseif (strcmp('no',obj.datasetTwoSet))
 			    msg = sprintf('Second Dataset element not present for matrix %s.',obj.matrixName);
                 err = MException('MatrixCharactersError', msg);
                 throw(err);
 			else
-			    parseDatasetnodeForCharacters(obj.datasetTwo)
+			    obj.parseDatasetNodeForCharacters(obj.datasetTwo)
 			end
 		end
 		
-		function parseDatasetnodeForCharacters(datasetNode)
-            datasetChildren = datasetsNode.getChildNodes;
+		function parseDatasetNodeForCharacters(obj, datasetNode)
+            datasetChildren = datasetNode.getChildNodes;
             count = datasetChildren.getLength; 
             for i=0:count-1
                 somethingNode = datasetChildren.item(i);
@@ -57,7 +58,7 @@ classdef MatrixCharacters < handle
 					charactersChildrenCount = charactersNode.getLength();
 					for j=0:charactersChildrenCount - 1
 						candidateNode = charactersChildren.item(j);
-						candidateNodename = candidateNode.getNodeName();
+						candidateNodeName = candidateNode.getNodeName();
 						if (strcmp(candidateNodeName,'CategoricalCharacter'))
 						    newChar = Character(candidateNode);
 						    obj.characters = [ obj.characters, newChar ];
