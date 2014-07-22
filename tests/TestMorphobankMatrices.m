@@ -28,6 +28,8 @@ classdef TestMorphobankMatrices < matlab.unittest.TestCase
             matrixCharacters = MatrixCharacters(domNode,'AVAToL Bat Skull Project_morphobank');
             testCase.verifyEqual(matrixCharacters.characters(1).name,'GEN skull, dorsal margin, shape at juncture of braincase and rostrum in lateral view');
             testCase.verifyEqual(matrixCharacters.characters(2).name,'GEN skull, posterior extension of alveolar line and occiput, intersection');
+            
+            testCase.verifyEqual('../matrix_downloads/AVAToL Bat Skull Project_morphobank/AVAToL Bat Skull Project_sdd.xml',mm.getSDDFilePath('AVAToL Bat Skull Project_morphobank'));
         end
     end
     

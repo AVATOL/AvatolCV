@@ -8,7 +8,8 @@ classdef QuestionsXMLFile
             try 
                 obj.domNode = xmlread(path);
             catch ME
-                disp('unable to parse xml file %s %s', path, ME.message);
+                message = sprintf('unable to parse xml file %s %s', path, ME.message);
+                disp(message);
             end
         end
         

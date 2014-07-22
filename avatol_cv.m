@@ -91,12 +91,12 @@ function avatol_cv
         H.questionPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
                                   'Tag','questionPanel',...
-                                  'Position',[0.05 0.70 0.37 0.18]);
+                                  'Position',[0.05 0.70 0.95 0.18]);
                               
         H.answerPanel = uipanel('Background', [1 1 1],...%[0.3 1 0.3]
                                   'BorderType', 'none',...
                                   'Tag','answerPanel',...
-                                  'Position',[0.42 0.70 0.55 0.18]);
+                                  'Position',[0.05 0.65 0.95 0.18]);
                               
         H.imagePanel = uipanel('Background',[1 1 1],...%[0.3 0.3 1]
                                   'BorderType', 'none',...
@@ -621,13 +621,16 @@ function avatol_cv
     end
 
     function displayCharacterQuestion(hObject, eventData)
+        chosenMatrixIndex = get(H.matrixChoice, 'value');
+        matrixList = get(H.matrixChoice, 'string');
+        chosenMatrix = matrixList(chosenMatrixIndex);
         deleteObsoleteControls();
         createPopupChoicePanels();
         
         H.characterChoicePrompt = uicontrol('style', 'text' ,...
                                      'Parent',H.questionPanel,...
                                      'Units','normalized',...
-                                     'String', 'What is the name of the character?' ,...
+                                     'String', 'Which character do you want to score?' ,...
                                      'position', [0,0,1,1] ,...
                                      'FontName', H.fontname ,...
                                      'FontSize', H.fontsize ,...
@@ -643,8 +646,22 @@ function avatol_cv
                                      'Tag','characterChoice' ,...
                                      'Background',[1 1 1],...
                                      'HorizontalAlignment', 'left');%'BackgroundColor', [1 0.1 0.1] ,...
-                                 
-        H.characterChoices = {'one','two' };
+        
+        
+        sddXMLFilePath = H.matrices.getSDDFilePath(chosenMatrix);
+        sddXMLFile = XMLFile(sddXMLFilePath);
+        domNode = sddXMLFile.domNode;
+        matrixCharacters = MatrixCharacters(domNode,chosenMatrix);
+        %    testCase.verifyEqual(matrixCharacters.characters(1).name,'GEN skull, dorsal margin, shape at juncture of braincase and rostrum in lateral view');
+        %    testCase.verifyEqual(matrixCharacters.characters(2).name,'GEN skull, posterior extension of alveolar line and occiput, intersection');
+        characterClassList = matrixCharacters.characters;
+        characterNameList = {};
+        for i=1:length(characterClassList)
+            charName = characterClassList(i).name;
+            characterNameList = [ characterNameList, charName ];
+        end
+        H.characterChoices = characterNameList;
+        
         set(H.characterChoice,'string',H.characterChoices);
        
                                  

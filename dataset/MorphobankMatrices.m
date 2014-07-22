@@ -42,7 +42,23 @@ classdef MorphobankMatrices < handle
             end
             
         end
-        
+        function path = getSDDFilePath(obj, matrixName)
+            path = 'unknown';
+            matrixDirPath = sprintf('%s/%s',obj.parentDir, char(matrixName));
+            fileList = dir(matrixDirPath);
+            for i=1:length(fileList)
+                name = fileList(i).name;
+                indices = strfind(name, 'sdd.xml');
+                if (length(indices) == 1)
+                    path = sprintf('%s/%s',matrixDirPath, name);
+                end
+            end
+            if strcmp(path,'unknown')
+                msg = sprintf('No sdd file found for matrix %s.',matrixName);
+                err = MException('MatrixCharactersError', msg);
+                throw(err);
+            end
+        end
     end
     
 end
