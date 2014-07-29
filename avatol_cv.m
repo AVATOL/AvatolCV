@@ -38,7 +38,8 @@ function avatol_cv
     H.mostRecentQuestionnairePage = 'NOT_STARTED';
     
     H.matrices = MorphobankMatrices('matrix_downloads');
-    
+    H.matrixChoiceIndex = 1;
+    H.chosenMatrix = H.matrices.matrixDirNames(H.matrixChoiceIndex);  
     layout();
     displayWelcomeScreen();
     
@@ -266,6 +267,7 @@ function avatol_cv
     end
 
     function displayQuestionnaireCompleteScreen() 
+        
         deleteObsoleteControls();
         message = 'You have finished answering questions for this character.  Click "More" to do another character or "Exit" if you are finished.';
         
@@ -330,6 +332,7 @@ function avatol_cv
         set(H.done, 'callback', {@saveAndExit});
         set(H.prev, 'callback', {@backFromEndMessageScreen});
         H.mostRecentQuestionnairePage = 'QUESTIONNAIRE_COMPLETE'; 
+        H.questionSequencer.persist();
     end
 
     function displayWelcomeScreen()
@@ -589,7 +592,8 @@ function avatol_cv
                                      'HorizontalAlignment', 'left');%'BackgroundColor', [0.1 1 0.1] ,...
                                  
         set(H.matrixChoice,'string',H.matrices.matrixDirNames);
-                       
+        set(H.matrixChoice,'Value',H.matrixChoiceIndex);
+                    
         H.tutorial = uicontrol('style', 'pushbutton' ,...
                                      'String', 'Tutorial' ,...
                                      'Parent',H.navigationPanel,...
@@ -609,21 +613,29 @@ function avatol_cv
                                      'FontSize', H.fontsize ,...
                                      'Tag','next' ,...
                                      'BackgroundColor', [0.5 0.5 0.5]);  
-        H.activeControlTags = { 'matrixChoice',  'matrixChoicePrompt', 'next', 'tutorial' };
-        
+        %H.activeControlTags = { 'matrixChoice',  'matrixChoicePrompt', 'next', 'tutorial' };
+        H.activeControlTags = { 'matrixChoicePrompt', 'next', 'tutorial' };
         H.activeAnswerControl = H.matrixChoice;
         H.activeQuestionId = 'matrixQuestion';
         H.activeControlType = 'popupMenu';
         
         set(H.next, 'callback', {@displayCharacterQuestion});
         set(H.tutorial, 'callback', {@jumpToTutorial});
+        set(H.matrixChoice, 'callback', {@setMatrixChoice});
         H.mostRecentQuestionnairePage = 'MATRIX_QUESTION'; 
     end
 
-    function displayCharacterQuestion(hObject, eventData)
-        chosenMatrixIndex = get(H.matrixChoice, 'value');
+    function setMatrixChoice(hObject, eventData)
+        H.matrixChoiceIndex = get(H.matrixChoice, 'value');
         matrixList = get(H.matrixChoice, 'string');
-        chosenMatrix = matrixList(chosenMatrixIndex);
+        H.chosenMatrix = char(matrixList(H.matrixChoiceIndex));
+    end
+    function setCharacterChoice(hObject, eventData)
+        chosenCharacterIndex = get(H.characterChoice, 'value');
+        characterList = get(H.characterChoice, 'string');
+        H.characterName = char(characterList(chosenCharacterIndex));
+    end
+    function displayCharacterQuestion(hObject, eventData)
         deleteObsoleteControls();
         createPopupChoicePanels();
         
@@ -648,20 +660,20 @@ function avatol_cv
                                      'HorizontalAlignment', 'left');%'BackgroundColor', [1 0.1 0.1] ,...
         
         
-        sddXMLFilePath = H.matrices.getSDDFilePath(chosenMatrix);
+        sddXMLFilePath = H.matrices.getSDDFilePath(H.chosenMatrix);
         sddXMLFile = XMLFile(sddXMLFilePath);
         domNode = sddXMLFile.domNode;
-        matrixCharacters = MatrixCharacters(domNode,chosenMatrix);
+        matrixCharacters = MatrixCharacters(domNode,H.chosenMatrix);
         %    testCase.verifyEqual(matrixCharacters.characters(1).name,'GEN skull, dorsal margin, shape at juncture of braincase and rostrum in lateral view');
         %    testCase.verifyEqual(matrixCharacters.characters(2).name,'GEN skull, posterior extension of alveolar line and occiput, intersection');
         characterClassList = matrixCharacters.characters;
         characterNameList = {};
         for i=1:length(characterClassList)
-            charName = characterClassList(i).name;
+            charName = char(characterClassList(i).name);
             characterNameList = [ characterNameList, charName ];
         end
         H.characterChoices = characterNameList;
-        
+        H.characterName = char(characterNameList(1));
         set(H.characterChoice,'string',H.characterChoices);
        
                                  
@@ -693,7 +705,8 @@ function avatol_cv
                                      'Parent',H.navigationPanel,...
                                      'Tag','prev' ,...
                                      'BackgroundColor', [0.5 0.5 0.5]);  
-        H.activeControlTags = {'characterChoice',  'characterChoicePrompt', 'next', 'tutorial', 'prev' };
+        %H.activeControlTags = {'characterChoice',  'characterChoicePrompt', 'next', 'tutorial', 'prev' };
+        H.activeControlTags = {'characterChoicePrompt', 'next', 'tutorial', 'prev' };
         
         H.activeAnswerControl = H.characterChoice;
         H.activeQuestionId = 'characterQuestion';
@@ -702,6 +715,7 @@ function avatol_cv
         set(H.next, 'callback', {@showNextQuestion});
         set(H.tutorial, 'callback', {@jumpToTutorial});
         set(H.prev, 'callback', {@displayMatrixQuestion});
+        set(H.characterChoice, 'callback', {@setCharacterChoice});
         H.mostRecentQuestionnairePage = 'CHARACTER_QUESTION'; 
     end
     function displayChoiceQuestion(qquestion)
@@ -1033,7 +1047,7 @@ function avatol_cv
     end
 
     function doAnotherCharacter(hObject, eventData)
-        H.questionSequencer.persist();
+        %H.questionSequencer.persist();
         xmlFile = QuestionsXMLFile(H.questionnaireXML);
         qquestions = QQuestions(xmlFile.domNode);
         H.questionSequencer = QuestionSequencer(qquestions);
@@ -1044,7 +1058,7 @@ function avatol_cv
 
     function saveAndExit(hObject, eventData)
         
-        H.questionSequencer.persist();
+        %H.questionSequencer.persist();
         close();
     end
 
@@ -1060,16 +1074,16 @@ function avatol_cv
         answerToNextQuestion = 'NOT_YET_SPECIFIED';
         try
             if strcmp(H.activeQuestionId,'characterQuestion')
-                indexOfCharacterAnswer = get(H.characterChoice,'value');
-                H.characterName = char(H.characterChoices(indexOfCharacterAnswer));
+                %indexOfCharacterAnswer = get(H.characterChoice,'value');
+                %H.characterName = char(H.characterChoices(indexOfCharacterAnswer));
                 H.questionSequencer.characterName = H.characterName;
                 if (not(isempty(H.questionSequencer.answeredQuestions)))
                     qanswer = H.questionSequencer.answeredQuestions(1);
                     answerToNextQuestion = qanswer.answer;
                 end
             elseif strcmp(H.activeQuestionId,'matrixQuestion')
-                indexOfMatrixAnswer = get(H.matrixChoice,'value');
-                H.matrixName = char(H.characterChoices(indexOfMatrixAnswer));
+                %indexOfMatrixAnswer = get(H.matrixChoice,'value');
+                %H.matrixName = char(H.characterChoices(indexOfMatrixAnswer));
                 H.questionSequencer.matrixName = H.matrixName;
                 if (not(H.questionSequencer.characterName == 'UNSPECIFIED'))
                     answerToNextQuestion = H.questionSequencer.characterName
