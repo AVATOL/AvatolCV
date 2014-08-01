@@ -24,9 +24,15 @@ classdef QuestionSequencer < handle
             end
             curDir = pwd();
             if ispc
+                parentPath = sprintf('%s\\results\\%s',curDir,obj.matrixName);
                 filepath = sprintf('%s\\results\\%s\\%s.out',curDir,obj.matrixName,obj.characterName);
             else
+                parentPath = sprintf('%s/results/%s',curDir,obj.matrixName);
                 filepath = sprintf('%s/results/%s/%s.out',curDir,obj.matrixName,obj.characterName);
+            end
+            parentPathExists = exist(parentPath, 'dir');
+            if (not(parentPathExists))
+                mkdir(parentPath);
             end
             disp(filepath);
             fileID = fopen(filepath,'w');

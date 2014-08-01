@@ -40,6 +40,7 @@ function avatol_cv
     H.matrices = MorphobankMatrices('matrix_downloads');
     H.matrixChoiceIndex = 1;
     H.chosenMatrix = H.matrices.matrixDirNames(H.matrixChoiceIndex);  
+    H.characterChoiceIndex = 1;
     layout();
     displayWelcomeScreen();
     
@@ -269,7 +270,16 @@ function avatol_cv
     function displayQuestionnaireCompleteScreen() 
         
         deleteObsoleteControls();
-        message = 'You have finished answering questions for this character.  Click "More" to do another character or "Exit" if you are finished.';
+        H.algorithms = Algorithms();
+        disqualifyingCRFMessage = H.algorithms.getDisqualifyingMessageForCRF(H.questionSequencer.answeredQuestions);
+        disqualifyingDPMMessage = H.algorithms.getDisqualifyingMessageForDPM(H.questionSequencer.answeredQuestions);
+        if (strcmp(disqualifyingCRFMessage,''))
+            message = 'CRF algorithm applies!';
+        elseif (strcmp(disqualifyingDPMMessage,''))
+            message = 'DPM algorithm applies!';
+        else
+            message = sprintf('%s\n%s',disqualifyingCRFMessage, disqualifyingDPMMessage);
+        end
         
         H.messagePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
@@ -315,22 +325,22 @@ function avatol_cv
                                      'Tag','done' ,...
                                      'BackgroundColor', [0.5 0.5 0.5]);  
          
-        H.prev = uicontrol('style', 'pushbutton' ,...
-                                     'String', 'Prev' ,...
-                                     'Parent',H.navigationPanel,...
-                                     'Units', 'normalized',...
-                                     'position', getButtonPositionRightA() ,...
-                                     'FontName', H.fontname ,...
-                                     'FontSize', H.fontsize ,...
-                                     'Tag','prev' ,...
-                                     'BackgroundColor', [0.5 0.5 0.5]);  
+        %H.prev = uicontrol('style', 'pushbutton' ,...
+        %                             'String', 'Prev' ,...
+        %                             'Parent',H.navigationPanel,...
+        %                             'Units', 'normalized',...
+        %                             'position', getButtonPositionRightA() ,...
+        %                             'FontName', H.fontname ,...
+        %                             'FontSize', H.fontsize ,...
+        %                             'Tag','prev' ,...
+        %                             'BackgroundColor', [0.5 0.5 0.5]);  
                                  
         H.activePanelTags = { 'messagePanel', 'navigationPanel' };
         H.activeControlTags = { 'messageText', 'doAnotherCharacter', 'done', 'prev'};    
         
         set(H.doAnotherCharacter, 'callback', {@doAnotherCharacter});
         set(H.done, 'callback', {@saveAndExit});
-        set(H.prev, 'callback', {@backFromEndMessageScreen});
+        %set(H.prev, 'callback', {@backFromEndMessageScreen});
         H.mostRecentQuestionnairePage = 'QUESTIONNAIRE_COMPLETE'; 
         H.questionSequencer.persist();
     end
@@ -501,10 +511,14 @@ function avatol_cv
         H.activeControlTags = { 'summaryText', 'beginQuestionnaire', 'exit', 'prev' };   
         
         H.activeScreen = 'SummaryScreen';
-        set(H.beginQuestionnaire, 'callback', {@displayCharacterQuestion});
+        set(H.beginQuestionnaire, 'callback', {@startQuestionnaire});
         set(H.exit, 'callback', {@exit});
         set(H.prev, 'callback', {@showPrevTutorialPage});
         H.mostRecentTutorialPage = 'TUTORIAL_COMPLETE';
+    end
+
+    function startQuestionnaire(hObject, eventData)
+        displayMatrixQuestion();
     end
 
     function displayTutorialPage(infoPage)
@@ -566,7 +580,7 @@ function avatol_cv
         H.mostRecentTutorialPage = infoPage.id;
     end
 
-    function displayMatrixQuestion(hObject, eventData)
+    function displayMatrixQuestion()
         deleteObsoleteControls();
         createPopupChoicePanels();
         
@@ -593,6 +607,7 @@ function avatol_cv
                                  
         set(H.matrixChoice,'string',H.matrices.matrixDirNames);
         set(H.matrixChoice,'Value',H.matrixChoiceIndex);
+        H.matrixChoices = H.matrices.matrixDirNames;
                     
         H.tutorial = uicontrol('style', 'pushbutton' ,...
                                      'String', 'Tutorial' ,...
@@ -619,7 +634,7 @@ function avatol_cv
         H.activeQuestionId = 'matrixQuestion';
         H.activeControlType = 'popupMenu';
         
-        set(H.next, 'callback', {@displayCharacterQuestion});
+        set(H.next, 'callback', {@showNextQuestion});
         set(H.tutorial, 'callback', {@jumpToTutorial});
         set(H.matrixChoice, 'callback', {@setMatrixChoice});
         H.mostRecentQuestionnairePage = 'MATRIX_QUESTION'; 
@@ -631,11 +646,11 @@ function avatol_cv
         H.chosenMatrix = char(matrixList(H.matrixChoiceIndex));
     end
     function setCharacterChoice(hObject, eventData)
-        chosenCharacterIndex = get(H.characterChoice, 'value');
+        H.characterChoiceIndex = get(H.characterChoice, 'value');
         characterList = get(H.characterChoice, 'string');
-        H.characterName = char(characterList(chosenCharacterIndex));
+        H.characterName = char(characterList(H.characterChoiceIndex));
     end
-    function displayCharacterQuestion(hObject, eventData)
+    function displayCharacterQuestion()
         deleteObsoleteControls();
         createPopupChoicePanels();
         
@@ -673,10 +688,14 @@ function avatol_cv
             characterNameList = [ characterNameList, charName ];
         end
         H.characterChoices = characterNameList;
-        H.characterName = char(characterNameList(1));
         set(H.characterChoice,'string',H.characterChoices);
+        %H.characterName = char(characterNameList(1));
+        set(H.characterChoice,'Value',H.characterChoiceIndex);
        
-                                 
+        
+            
+            
+            
         H.tutorial = uicontrol('style', 'pushbutton' ,...
                                      'String', 'Tutorial' ,...
                                      'Parent',H.navigationPanel,...
@@ -714,7 +733,7 @@ function avatol_cv
         
         set(H.next, 'callback', {@showNextQuestion});
         set(H.tutorial, 'callback', {@jumpToTutorial});
-        set(H.prev, 'callback', {@displayMatrixQuestion});
+        set(H.prev, 'callback', {@showPrevQuestion});
         set(H.characterChoice, 'callback', {@setCharacterChoice});
         H.mostRecentQuestionnairePage = 'CHARACTER_QUESTION'; 
     end
@@ -959,13 +978,13 @@ function avatol_cv
 
     function jumpToQuestionnaire(hObject, eventData)
         if (strcmp(H.mostRecentQuestionnairePage,'NOT_STARTED'))
-           displayMatrixQuestion(hObject, eventData);
+           displayMatrixQuestion();
         elseif (strcmp(H.mostRecentQuestionnairePage,'QUESTIONNAIRE_COMPLETE'))
             doAnotherCharacter(hObject, eventData);
         elseif (strcmp(H.mostRecentQuestionnairePage,'MATRIX_QUESTION'))
-            displayMatrixQuestion(hObject, eventData);
+            displayMatrixQuestion();
         elseif (strcmp(H.mostRecentQuestionnairePage,'CHARACTER_QUESTION'))
-            displayCharacterQuestion(hObject, eventData);
+            displayCharacterQuestion();
         else
             showCurrentQuestion(hObject, eventData);
         end
@@ -1074,18 +1093,28 @@ function avatol_cv
         answerToNextQuestion = 'NOT_YET_SPECIFIED';
         try
             if strcmp(H.activeQuestionId,'characterQuestion')
-                %indexOfCharacterAnswer = get(H.characterChoice,'value');
-                %H.characterName = char(H.characterChoices(indexOfCharacterAnswer));
+                indexOfCharacterAnswer = get(H.characterChoice,'value');
+                H.characterName = char(H.characterChoices(indexOfCharacterAnswer));
                 H.questionSequencer.characterName = H.characterName;
                 if (not(isempty(H.questionSequencer.answeredQuestions)))
                     qanswer = H.questionSequencer.answeredQuestions(1);
                     answerToNextQuestion = qanswer.answer;
                 end
             elseif strcmp(H.activeQuestionId,'matrixQuestion')
-                %indexOfMatrixAnswer = get(H.matrixChoice,'value');
-                %H.matrixName = char(H.characterChoices(indexOfMatrixAnswer));
-                H.questionSequencer.matrixName = H.matrixName;
-                if (not(H.questionSequencer.characterName == 'UNSPECIFIED'))
+                indexOfMatrixAnswer = get(H.matrixChoice,'value');
+                H.chosenMatrix = char(H.matrixChoices(indexOfMatrixAnswer));
+                if (strcmp(H.questionSequencer.matrixName,H.chosenMatrix))
+                    % being re-answered to the same value, no need to flush
+                    % the characterName
+                else
+                    % changing the choice (or its the initial choice) for
+                    % matrix, need to clear characterName
+                    H.questionSequencer.characterName = 'UNDEFINED';
+                    %... and forget prior character choice index
+                    H.characterChoiceIndex = 1;
+                end
+                H.questionSequencer.matrixName = H.chosenMatrix;
+                if (not(strcmp(H.questionSequencer.characterName,'UNSPECIFIED')))
                     answerToNextQuestion = H.questionSequencer.characterName
                 end
             else 
@@ -1111,8 +1140,11 @@ function avatol_cv
             % set the chooser to the previous answer
             % get the index of the prev answer
             prevMatrixAnswer = H.questionSequencer.matrixName;
-            indexOfMatrixAnswer = find(ismember(H.matrices.matrixDirNames,prevMatrixAnswer));
-            set(H.matrixChoice,'value',indexOfMatrixAnswer);
+            % we know we're backing up to the matrix question, so it must
+            % have a value to restore
+            setPopupMenuToValue(H.matrixChoice,H.matrices.matrixDirNames,prevMatrixAnswer);
+            %indexOfMatrixAnswer = find(ismember(H.matrices.matrixDirNames,prevMatrixAnswer));
+            %set(H.matrixChoice,'value',indexOfMatrixAnswer);
         elseif H.questionSequencer.canBackUp()
             prevAnsweredQuestion = H.questionSequencer.backUp();
             prevAnswer = prevAnsweredQuestion.answer;
@@ -1120,16 +1152,28 @@ function avatol_cv
             displayAppropriateQuestion(qquestion);
             displayPriorSetAnswer(prevAnswer,qquestion);
         else
+             
+            % backing up to char question, must set to previous answer
             displayCharacterQuestion();%TESTME
-            
+            prevCharacterAnswer = H.questionSequencer.characterName;
+            setPopupMenuToValue(H.characterChoice, H.characterChoices,prevCharacterAnswer);
             % set the chooser to the previous answer
             % get the index of the prev answer
             %set(control,'String',H.questionSequencer.characterName);
-            prevCharacterAnswer = H.questionSequencer.characterName;
-            indexOfCharacterAnswer = find(ismember(H.characterChoices,prevCharacterAnswer));
-            set(H.characterChoice,'value',indexOfCharacterAnswer);
+            
         end
         
+    end
+
+    function setPopupMenuToValue(popupMenu, stringsLoadedIntoPopupMenu, value)
+        indexArray = find(ismember(stringsLoadedIntoPopupMenu,value));
+        if (isempty(indexArray))
+            msg = sprintf('Invalid choice for popupmenu: %s', value);
+            err = MException('UI:BadPopupEntry', msg);
+            throw(err);
+        else
+            set(popupMenu,'value',indexArray);
+        end
     end
 
     function displayPriorSetAnswer(prevAnswer, qquestion)
@@ -1175,23 +1219,46 @@ function avatol_cv
             if (strcmp(nextAnswer,'ANSWER_BLOCKED_BY_ERROR'))
                 % stay on same question
             else 
-                qquestion = H.questionSequencer.getCurrentQuestion();
-                if (strcmp(qquestion.id,'NO_MORE_QUESTIONS'))
-                    displayQuestionnaireCompleteScreen();
-                else
-                    displayAppropriateQuestion(qquestion);
-                    if (strcmp(nextAnswer,'NOT_YET_SPECIFIED'))
-                        % no answer to apply
+                if (strcmp(H.activeQuestionId,'matrixQuestion'))
+                    displayCharacterQuestion();
+                    prevCharacterAnswer = H.questionSequencer.characterName;
+                    if (strcmp(prevCharacterAnswer, 'UNDEFINED'))
+                        % this is the first time visiting the character
+                        % question since the matrix has been thusly set.
+                        % Leave the default answer as the first in the
+                        % matrix
                     else
-                        % apply the previous answer
-                        displayPriorSetAnswer(nextAnswer, qquestion);
+                        % pre-existing answer can be loaded - we must have
+                        % revisted the matrix question and not changed it.
+                        setPopupMenuToValue(H.characterChoice, H.characterChoices,prevCharacterAnswer);
+                        %indexOfCharacterAnswer = find(ismember(H.characterChoices,prevCharacterAnswer));
+                        %set(H.characterChoice,'value',indexOfCharacterAnswer);)
                     end
+                else
+                    showNextQuestionSequencerQuestion(nextAnswer)
                 end
+                
             end
         else
             errordlg('Please answer the question before clicking "Next"')
         end
     end
+
+    function showNextQuestionSequencerQuestion(nextAnswer)
+        qquestion = H.questionSequencer.getCurrentQuestion();
+        if (strcmp(qquestion.id,'NO_MORE_QUESTIONS'))
+            displayQuestionnaireCompleteScreen();
+        else
+            displayAppropriateQuestion(qquestion);
+            if (strcmp(nextAnswer,'NOT_YET_SPECIFIED'))
+                % no answer to apply
+            else
+                % apply the previous answer
+                displayPriorSetAnswer(nextAnswer, qquestion);
+            end
+        end
+    end
+
 
     function showCurrentQuestion(hObject, eventData)
         qquestion = H.questionSequencer.getCurrentQuestion();
