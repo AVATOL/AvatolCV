@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<questions>
+    <question type="choice" id="WELL_CONTRASTED">
+        <text>Are the images well contrasted?</text>
+        <answer value="yes" next="SHARP_ENOUGH" />
+        <answer value="no" next="SHARP_ENOUGH" />
+        <image filename="data/questionnaire/images/clutter.jpg" caption="Better Contrast" />
+        <image filename="data/questionnaire/images/poorcontrast.jpg" caption="Poorer Contrast" />
+    </question>
+    <question type="choice" id="SHARP_ENOUGH">
+        <text>Are the images sharp enough?</text>
+        <answer value="yes" next="TARGET_AREA_SPECIMEN" />
+        <answer value="no" next="TARGET_AREA_SPECIMEN" />
+        <image filename="data/questionnaire/images/clutter.jpg" caption="Sharp Enough" />
+        <image filename="data/questionnaire/images/notsharp.jpg" caption="Not Sharp Enough" />
+    </question>
+    <question type="choice" id="TARGET_AREA_SPECIMEN">
+        <text>On average, what percent of the image is occupied by the specimen?</text>
+        <answer value="less than 5" next="TARGET_AREA_CHARACTER" />
+        <answer value="5" next="TARGET_AREA_CHARACTER" />
+        <answer value="10" next="TARGET_AREA_CHARACTER" />
+        <answer value="20" next="TARGET_AREA_CHARACTER" />
+        <answer value="30" next="TARGET_AREA_CHARACTER" />
+        <answer value="40" next="TARGET_AREA_CHARACTER" />
+        <answer value="50" next="TARGET_AREA_CHARACTER" />
+        <answer value="more than 50" next="TARGET_AREA_CHARACTER" />
+        <image filename="data/questionnaire/images/targetarea.jpg" caption="Estimating percentage of specimen area to image size" />
+    </question>
+    <question type="choice" id="TARGET_AREA_CHARACTER">
+        <text>On average, what percent of the specimen is covered by the target character?</text>
+        <answer value="less than 5" next="ORGANISM_COUNT" />
+        <answer value="5" next="ORGANISM_COUNT" />
+        <answer value="10" next="ORGANISM_COUNT" />
+        <answer value="20" next="ORGANISM_COUNT" />
+        <answer value="30" next="ORGANISM_COUNT" />
+        <answer value="40" next="ORGANISM_COUNT" />
+        <answer value="50" next="ORGANISM_COUNT" />
+        <answer value="more than 50" next="ORGANISM_COUNT" />
+        <image filename="data/questionnaire/images/parts.jpg" caption="Estimating percentage of character area to specimen size" />
+    </question>
+    <question type="choice" id="ORGANISM_COUNT">
+        <text>Is there one or multiple organisms in the images?</text>
+        <answer value="one" next="ORGANISM_POSITION" />
+        <answer value="multiple" next="OCCLUSION" />
+        <image filename="data/questionnaire/images/rigid.jpg" caption="Exactly one organism in all images" />
+        <image filename="data/questionnaire/images/occlusion.jpg" caption="Multiple organisms possible in images" />
+    </question>
+    <question type="choice" id="ORGANISM_POSITION">
+        <text>Is the organism centered in the images?</text>
+        <answer value="yes" next="ORGANISM_ORIENTATION" />
+        <answer value="no" next="ORGANISM_ORIENTATION" />
+        <image filename="data/questionnaire/images/rigid.jpg" caption="Object is always centered in all images" />
+    </question>
+    <question type="choice" id="ORGANISM_ORIENTATION">
+        <text>Is the organism always in a certain orientation?</text>
+        <answer value="yes" next="OCCLUSION" />
+        <answer value="no" next="OCCLUSION" />
+        <image filename="data/questionnaire/images/rigid.jpg" caption="Object is always in this orientation in all images" />
+    </question>
+    <question type="choice" id="OCCLUSION">
+        <text>Do other objects occlude the organism?</text>
+        <answer value="yes" next="BACKGROUND_CLUTTER" />
+        <answer value="no" next="BACKGROUND_CLUTTER" />
+        <image filename="data/questionnaire/images/occlusion.jpg" caption="Objects can block other objects" />
+        <image filename="data/questionnaire/images/rigid.jpg" caption="Object is not blocked by other objects" />
+    </question>
+    <question type="choice" id="BACKGROUND_CLUTTER">
+        <text>Is the background in the images uniform or does the background contain clutter?</text>
+        <answer value="uniform" next="CHARACTER_PROPERTY_OR_PART" />
+        <answer value="clutter" next="CHARACTER_PROPERTY_OR_PART" />
+        <image filename="data/questionnaire/images/rigid.jpg" caption="Uniform background" />
+        <image filename="data/questionnaire/images/clutter.jpg" caption="Cluttered background" />
+    </question>
+    <question type="choice" id="CHARACTER_PROPERTY_OR_PART">
+        <text>Does the character involve part(s)? Or is it a more global property (e.g. texture)?</text>
+        <answer value="parts" next="CHARACTER_PART_POSITIONS" />
+        <answer value="global" next="NO_MORE_QUESTIONS" />
+        <image filename="data/questionnaire/images/globalproperty.jpg" caption="Global Property: Leaf Texture" />
+        <image filename="data/questionnaire/images/parts.jpg" caption="Characteristic Part: Particular Teeth" />
+    </question>
+    <question type="choice" id="CHARACTER_PART_POSITIONS">
+        <text>Could positions of parts be predicted by other positions?</text>
+        <answer value="yes" next="CHARACTER_PART_ARTICULATED" />
+        <answer value="no" next="NO_MORE_QUESTIONS" />
+        <image filename="data/questionnaire/images/rigid.jpg" caption="Positions of teeth are relatively rigid" />
+    </question>
+    <question type="choice" id="CHARACTER_PART_ARTICULATED">
+        <text>Are the parts themselves highly articulated, i.e. can they bend around or change shape easily?</text>
+        <answer value="yes" next="CHARACTER_PARTS_COUNT" />
+        <answer value="no" next="CHARACTER_PARTS_COUNT" />
+        <image filename="data/questionnaire/images/rigid.jpg" caption="Single tooth not articulated" />
+        <image filename="data/questionnaire/images/clutter.jpg" caption="Tubule is highly articulated" />
+    </question>
+    <question type="choice" id="CHARACTER_PARTS_COUNT">
+        <text>Does the character involve one or multiple parts?</text>
+        <answer value="one" next="CHARACTER_PRESENCE" />
+        <answer value="multiple" next="CHARACTER_COMPARE_PROPERTIES" />
+    </question>
+    <question type="choice" id="CHARACTER_PRESENCE">
+        <text>Does the character involve presence and absence of a single part?</text>
+        <answer value="yes" next="NO_MORE_QUESTIONS" />
+        <answer value="no" next="CHARACTER_SINGLE_PROPERTY" />
+        <image filename="data/questionnaire/images/presence.png" caption="Presence of Apical Flaps" />
+        <image filename="data/questionnaire/images/absence.png" caption="Absence of Apical Flaps" />
+    </question>
+    <question type="choice" id="CHARACTER_SINGLE_PROPERTY">
+        <text>Does this character involve a property (color, shape, size) of the part?</text>
+        <answer value="yes" next="CHARACTER_PROPERTY" />
+        <answer value="no" next="NO_MORE_QUESTIONS" />
+        <image filename="data/questionnaire/images/partproperty1.png" caption="Surface Texture: Annulations" />
+        <image filename="data/questionnaire/images/partproperty2.png" caption="Surface Texture: Folds" />
+    </question>
+    <question type="choice" id="CHARACTER_PROPERTY">
+        <text>Which property?</text>
+        <answer value="color" next="NO_MORE_QUESTIONS" />
+        <answer value="shape" next="NO_MORE_QUESTIONS" />
+        <answer value="size" next="NO_MORE_QUESTIONS" />
+        <answer value="texture" next="NO_MORE_QUESTIONS" />
+        <answer value="other" next="NO_MORE_QUESTIONS" />
+    </question>
+    <question type="choice" id="CHARACTER_COMPARE_PROPERTIES">
+        <text>Does this character involve comparing properties of two or more parts (e.g. size, color, shape)?</text>
+        <answer value="yes" next="CHARACTER_COMPARE_PROPERTIES_CHOICES" />
+        <answer value="no" next="CHARACTER_COMPARE_SPATIAL" />
+        <image filename="data/questionnaire/images/compareparts1.png" caption="Length of basal vs. distal spines: longer" />
+        <image filename="data/questionnaire/images/compareparts2.png" caption="Length of basal vs. distal spines: same" />
+    </question>
+    <question type="choice" id="CHARACTER_COMPARE_PROPERTIES_CHOICES">
+        <text>What property is being compared?</text>
+        <answer value="width" next="NO_MORE_QUESTIONS" />
+        <answer value="height" next="NO_MORE_QUESTIONS" />
+        <answer value="size" next="NO_MORE_QUESTIONS" />
+        <answer value="texture" next="NO_MORE_QUESTIONS" />
+        <answer value="color" next="NO_MORE_QUESTIONS" />
+        <answer value="shape" next="NO_MORE_QUESTIONS" />
+        <answer value="other" next="NO_MORE_QUESTIONS" />
+    </question>
+    <question type="choice" id="CHARACTER_COMPARE_SPATIAL">
+        <text>Does this character involve spatial relationship (e.g. distance, orientation) between multiple part?</text>
+        <answer value="yes" next="CHARACTER_COMPARE_SPATIAL_CHOICES" />
+        <answer value="no" next="NO_MORE_QUESTIONS" />
+        <image filename="data/questionnaire/images/spatial1.png" caption="Spine Junction: Acute Angle" />
+        <image filename="data/questionnaire/images/spatial2.png" caption="Spine Junction: Perpendicular" />
+    </question>
+    <question type="choice" id="CHARACTER_COMPARE_SPATIAL_CHOICES">
+        <text>What is the spatial relationship?</text>
+        <answer value="distance apart" next="NO_MORE_QUESTIONS" />
+        <answer value="relative orientation" next="NO_MORE_QUESTIONS" />
+    </question>
+</questions>

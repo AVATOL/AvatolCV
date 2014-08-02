@@ -29,7 +29,7 @@ classdef Algorithms  < handle
                 if or((strcmp(obj.getAnswer(answeredQuestions,'BACKGROUND_CLUTTER'),'clutter')),(strcmp(obj.getAnswer(answeredQuestions,'CHARACTER_PART_ARTICULATED'),'yes')))
                      msg = '';
                 else
-                    msg = 'For CRF, BACKGROUND_CLUTTER must be "clutter" or CHARACTER_PART_ARTICULATED must be "yes"';
+                    msg = 'For CRF, the question named BACKGROUND_CLUTTER needs to have the answer "clutter" or the question named CHARACTER_PART_ARTICULATED needs to have the answer "yes"';
                 end
             else
                 msg = 'For CRF, the question named CHARACTER_PROPERTY_OR_PART needs to have the answer "parts"';
@@ -43,13 +43,13 @@ classdef Algorithms  < handle
                     if strcmp(obj.getAnswer(answeredQuestions,'CHARACTER_PRESENCE'),'yes')
                         msg = '';
                     else
-                        msg = 'For DPM, CHARACTER_PRESENCE must be "yes"';
+                        msg = 'For DPM, the question named CHARACTER_PRESENCE needs to have the answer "yes"';
                     end
                 else
-                    msg = 'For DPM, ORGANISM_ORIENTATION must be "yes"';
+                    msg = 'For DPM, the question named ORGANISM_ORIENTATION needs to have the answer "yes"';
                 end
             else
-                msg = 'For DPM, CHARACTER_PROPERTY_OR_PART must be "parts"';
+                msg = 'For DPM, the question named CHARACTER_PROPERTY_OR_PART needs to have the answer "parts"';
             end
         end
     

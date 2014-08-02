@@ -235,11 +235,15 @@ function avatol_cv
         answerPosition = [ 0 answerPositionY answerPanelWidth H.lineHeight];
     end
 
+    function navButtonPosition = getButtonPositionRightBig()
+        navButtonPosition = [0.75,0,0.2,1 ];
+    end
+
+    
     function navButtonPosition = getButtonPositionRightA()
         navButtonPosition = [0.8,0,0.1,1 ];
     end
 
-    
     function navButtonPosition = getButtonPositionRightB()
         navButtonPosition = [0.9,0,0.1,1 ];
     end
@@ -273,18 +277,22 @@ function avatol_cv
         H.algorithms = Algorithms();
         disqualifyingCRFMessage = H.algorithms.getDisqualifyingMessageForCRF(H.questionSequencer.answeredQuestions);
         disqualifyingDPMMessage = H.algorithms.getDisqualifyingMessageForDPM(H.questionSequencer.answeredQuestions);
+        showRunAlgorithmButton = false;
         if (strcmp(disqualifyingCRFMessage,''))
-            message = 'CRF algorithm applies!';
+            message = 'CRF algorithm has been chosen for scoring.  Press Run Algorithm to begin.';
+            showRunAlgorithmButton = true;
         elseif (strcmp(disqualifyingDPMMessage,''))
-            message = 'DPM algorithm applies!';
+            message = 'DPM algorithm has been chosen for scoring.  Press Run Algorithm to begin.';
+            showRunAlgorithmButton = true;
         else
-            message = sprintf('%s\n%s',disqualifyingCRFMessage, disqualifyingDPMMessage);
+            general_error_msg = 'The answers chosen indicate the currently in-play algorithms are not a match for scoring the images:';
+            message = sprintf('%s\n\n%s\n\n%s',general_error_msg, disqualifyingCRFMessage, disqualifyingDPMMessage);
         end
         
         H.messagePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
                                   'Tag','messagePanel',...
-                                  'Position',[0.2 0.4 0.6 0.2]);
+                                  'Position',[0.1 0.2 0.8 0.7]);
         
         
         H.messageText = uicontrol('style', 'text' ,...
@@ -305,7 +313,7 @@ function avatol_cv
                                      'Position',getNavigationPanelPosition());
                               
         H.doAnotherCharacter = uicontrol('style', 'pushbutton' ,...
-                                     'String', 'Do another character' ,...
+                                     'String', 'Try another character' ,...
                                      'Parent',H.navigationPanel,...
                                      'Units', 'normalized',...
                                      'position', getButtonPositionLeft() ,...
@@ -314,8 +322,19 @@ function avatol_cv
                                      'Tag','doAnotherCharacter' ,...
                                      'BackgroundColor', [0.5 0.5 0.5]);  
         
-                                
-        H.done = uicontrol('style', 'pushbutton' ,...
+        if (showRunAlgorithmButton)
+             H.runAlgorithm = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Run Algorithm' ,...
+                                     'Parent',H.navigationPanel,...
+                                     'Units', 'normalized',...
+                                     'position', getButtonPositionRightBig() ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','runAlgorithm' ,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);  
+            H.activeControlTags = { 'messageText', 'doAnotherCharacter', 'runAlgorithm'}; 
+        else
+            H.done = uicontrol('style', 'pushbutton' ,...
                                      'String', 'Exit' ,...
                                      'Parent',H.navigationPanel,...
                                      'Units', 'normalized',...
@@ -324,7 +343,8 @@ function avatol_cv
                                      'FontSize', H.fontsize ,...
                                      'Tag','done' ,...
                                      'BackgroundColor', [0.5 0.5 0.5]);  
-         
+            H.activeControlTags = { 'messageText', 'doAnotherCharacter', 'done'}; 
+        end
         %H.prev = uicontrol('style', 'pushbutton' ,...
         %                             'String', 'Prev' ,...
         %                             'Parent',H.navigationPanel,...
@@ -336,7 +356,8 @@ function avatol_cv
         %                             'BackgroundColor', [0.5 0.5 0.5]);  
                                  
         H.activePanelTags = { 'messagePanel', 'navigationPanel' };
-        H.activeControlTags = { 'messageText', 'doAnotherCharacter', 'done', 'prev'};    
+        %H.activeControlTags = { 'messageText', 'doAnotherCharacter', 'done', 'prev'};    
+           
         
         set(H.doAnotherCharacter, 'callback', {@doAnotherCharacter});
         set(H.done, 'callback', {@saveAndExit});
@@ -687,6 +708,7 @@ function avatol_cv
             charName = char(characterClassList(i).name);
             characterNameList = [ characterNameList, charName ];
         end
+        matrixCharacters.generateInputDataFiles();
         H.characterChoices = characterNameList;
         set(H.characterChoice,'string',H.characterChoices);
         %H.characterName = char(characterNameList(1));
@@ -1115,7 +1137,7 @@ function avatol_cv
                 end
                 H.questionSequencer.matrixName = H.chosenMatrix;
                 if (not(strcmp(H.questionSequencer.characterName,'UNSPECIFIED')))
-                    answerToNextQuestion = H.questionSequencer.characterName
+                    answerToNextQuestion = H.questionSequencer.characterName;
                 end
             else 
                 if strcmp(H.activeControlType,'edit')
@@ -1235,7 +1257,7 @@ function avatol_cv
                         %set(H.characterChoice,'value',indexOfCharacterAnswer);)
                     end
                 else
-                    showNextQuestionSequencerQuestion(nextAnswer)
+                    showNextQuestionSequencerQuestion(nextAnswer);
                 end
                 
             end
