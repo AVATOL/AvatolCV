@@ -6,6 +6,8 @@ classdef MatrixCharacters < handle
 		datasetTwo;
 		matrixName;
 		characters = {};
+        charactersPresenceAbscence = {};
+        charactersWithAnnotationFiles = {};
 	end
 	
 	methods
@@ -42,10 +44,120 @@ classdef MatrixCharacters < handle
                 err = MException('MatrixCharactersError', msg);
                 throw(err);
 			else
-			    obj.parseDatasetNodeForCharacters(obj.datasetTwo)
+			    obj.parseDatasetNodeForCharacters(obj.datasetTwo);
+                obj.findPresenceAbsenceCharacters();
+                obj.dumpMediaForCharactersViaXpath(domNode);
+                %obj.dumpMediaForCharacters(obj.datasetTwo);
+                %obj.findCharactersWithAnnotationFiles();
 			end
-		end
-		
+        end
+        function dumpMediaForCharactersViaXpath(obj, domNode)
+            import javax.xml.xpath.*;
+            factory = XPathFactory.newInstance;
+            xpath = factory.newXPath;
+            %expression = xpath.compile('CodedDescriptions/CodedDescription/SummaryData/Categorical');
+            expression = xpath.compile('Datasets/Dataset/CodedDescriptions');
+            categoricals = expression.evaluate(domNode, XPathConstants.NODESET);
+            length = categoricals.getLength();
+            for i=0:categoricals.getLength()
+                categoricalNode = categoricals.item(i);
+                charId = char(categoricalNode.getAttribute('ref'));
+                categoricalChildren = categoricalNode.getChildNodes;
+                categoricalChildrenCount = categoricalChildren.getLength();
+                mediaCount = 0;
+                stateCount = 0;
+                for m=0:categoricalChildrenCount - 1
+                     categoricalChildNode = categoricalChildren.item(m);
+                     categoricalChildNodeName = categoricalChildNode.getNodeName();
+                     if strcmp(categoricalChildNodeName, 'MediaObject')
+                          mediaCount = mediaCount + 1;
+                     elseif strcmp(categoricalChildNodeName, 'State')
+                          stateCount = stateCount + 1;
+                     end
+                end
+                if or((mediaCount > 1),(stateCount > 1))
+                     fprintf('char %s media count %i state count %i\n', charId, mediaCount, stateCount);
+                end
+            end
+            
+        end
+        function dumpMediaForCharacters(obj, datasetNode)
+            datasetChildren = datasetNode.getChildNodes;
+            count = datasetChildren.getLength; 
+            for i=0:count-1
+                somethingNode = datasetChildren.item(i);
+                nodeName = somethingNode.getNodeName();
+				if strcmp(nodeName,'CodedDescriptions')
+					codedDescriptionsNode = somethingNode;
+					codedDescriptionsChildren = codedDescriptionsNode.getChildNodes;
+					codedDescriptionsChildrenCount = codedDescriptionsChildren.getLength();
+					for j=0:codedDescriptionsChildrenCount - 1
+						codedDescriptionsChild = codedDescriptionsChildren.item(j);
+						codedDescriptionsChildName = codedDescriptionsChild.getNodeName();
+                        if strcmp(codedDescriptionsChildName,'CodedDescription')
+                            codedDescriptionChildren = codedDescriptionsChild.getChildNodes;
+                            codedDescriptionChildrenCount = codedDescriptionChildren.getLength();
+                            for k=0:codedDescriptionChildrenCount - 1
+                                codedDescriptionChildNode = codedDescriptionChildren.item(k);
+                                codedDescriptionChildNodeName = codedDescriptionChildNode.getNodeName();
+                                if (strcmp(codedDescriptionChildNodeName,'SummaryData'))
+                                    summaryDataChildren = codedDescriptionChildNode.getChildNodes;
+                                    summaryDataChildrenCount = summaryDataChildren.getLength();
+                                    for l=0:summaryDataChildrenCount - 1
+                                        summaryDataChildNode = summaryDataChildren.item(l);
+                                        summaryDataChildNodeName = summaryDataChildNode.getNodeName();
+                                        if (strcmp(summaryDataChildNodeName,'Categorical'))
+                                            charId = char(summaryDataChildNode.getAttribute('ref'));
+                                            categoricalChildren = summaryDataChildNode.getChildNodes;
+                                            categoricalChildrenCount = categoricalChildren.getLength();
+                                            mediaCount = 0;
+                                            stateCount = 0;
+                                            for m=0:categoricalChildrenCount - 1
+                                                categoricalChildNode = categoricalChildren.item(m);
+                                                categoricalChildNodeName = categoricalChildNode.getNodeName();
+                                                if strcmp(categoricalChildNodeName, 'MediaObject')
+                                                    mediaCount = mediaCount + 1;
+                                                elseif strcmp(categoricalChildNodeName, 'State')
+                                                    stateCount = stateCount + 1;
+                                                end
+                                            end
+                                            if or((mediaCount > 1),(stateCount > 1))
+                                                fprintf('char %s media count %i state count %i\n', charId, mediaCount, stateCount);
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+				        end
+				   end
+                end
+            end		
+        end
+        
+        function getAttribute(obj, attributeName, node)
+            attributes = node.getAttributes;
+            n_attr = attributes.getLength;
+            for i = 0:n_attr-1
+                attr = attributes.item(i);
+                attrName = attr.getName;
+                if (strcmp(attrName, attributeName))
+                    obj.id = char(attr.getValue);
+                end
+            end
+        end
+        %<Categorical ref="c524112"><MediaObject ref="m151268"/><State ref="s1168129"/></Categorical>
+        function findCharactersWithAnnotationFiles(obj)
+            count = length(obj.charactersPresenceAbscence);
+            for i=1:count
+                character = obj.charactersPresenceAbscence(i);
+                id = character.id;
+                
+                if character.hasStatePresent
+                    obj.charactersPresenceAbscence = [ obj.charactersPresenceAbscence, character ];
+                end
+            end
+            
+        end
 		function parseDatasetNodeForCharacters(obj, datasetNode)
             datasetChildren = datasetNode.getChildNodes;
             count = datasetChildren.getLength; 
@@ -64,11 +176,18 @@ classdef MatrixCharacters < handle
 						    obj.characters = [ obj.characters, newChar ];
 				        end
 				   end
-				end
-               
+                end
             end		
-		
-		end
+        end
+        function findPresenceAbsenceCharacters(obj)
+            count = length(obj.characters);
+            for i=1:count
+                character = obj.characters(i);
+                if character.hasStatePresent
+                    obj.charactersPresenceAbscence = [ obj.charactersPresenceAbscence, character ];
+                end
+            end
+        end 
 	end
 
 
