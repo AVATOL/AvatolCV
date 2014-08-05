@@ -702,7 +702,7 @@ function avatol_cv
         matrixCharacters = MatrixCharacters(domNode,H.chosenMatrix);
         %    testCase.verifyEqual(matrixCharacters.characters(1).name,'GEN skull, dorsal margin, shape at juncture of braincase and rostrum in lateral view');
         %    testCase.verifyEqual(matrixCharacters.characters(2).name,'GEN skull, posterior extension of alveolar line and occiput, intersection');
-        characterClassList = matrixCharacters.charactersPresenceAbscence;
+        characterClassList = matrixCharacters.charactersPresenceAbsence;
         characterNameList = {};
         for i=1:length(characterClassList)
             charName = char(characterClassList(i).name);
