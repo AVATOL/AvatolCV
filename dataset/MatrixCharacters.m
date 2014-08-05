@@ -8,15 +8,19 @@ classdef MatrixCharacters < handle
 		matrixName;
 		characters = {};
         charactersPresenceAbsence = {};
-        charactersWithAnnotationFiles = {};
-        annotationFilenamesForCharacters;
+        %annotationFileForCharacter = {};
+        annotationFilenamesForCharacters = {};
+        mediaForAnnotationFilenames = {};
+        taxonsForMedia = {};
+        matrixDir;
 	end
 	
 	methods
         % NOTE dom tree uses java arrays so index starting at 0
-	    function obj = MatrixCharacters(domNode, matrixName)
-            obj.parseDomNodeForCharacters(domNode);
+	    function obj = MatrixCharacters(domNode, matrixName, matrixDir)
+            obj.matrixDir = matrixDir;
 			obj.matrixName = matrixName;
+            obj.parseDomNodeForCharacters(domNode);
         end
 	    function parseDomNodeForCharacters(obj, domNode)
 			datasetsNode = domNode.getDocumentElement;
@@ -45,12 +49,96 @@ classdef MatrixCharacters < handle
 			    msg = sprintf('Second Dataset element not present for matrix %s.',obj.matrixName);
                 err = MException('MatrixCharactersError', msg);
                 throw(err);
-			else
+            else
+                obj.erasePriorInputData();
+                obj.createInputDataDir();
 			    obj.parseDatasetNodeForCharacters(obj.datasetTwo);
                 obj.findPresenceAbsenceCharacters();
                 %obj.dumpMediaForCharacters(domNode);
-                %obj.findCharactersWithAnnotationFiles(domNode);
+                obj.loadTaxonsForMedia(domNode);
+                obj.findAnnotationFilesForCharacter(domNode);
+                obj.findMediaToScoreForCharacter(domNode);
+                obj.generateInputDataFiles();
 			end
+        end
+        function inputDataDir = getInputDataDir(obj)
+            if ispc
+                inputDataDir = sprintf('%s\\input',obj.matrixDir );
+             else
+                inputDataDir = sprintf('%s/input',obj.matrixDir );
+             end
+        end
+        function createInputDataDir(obj)
+            inputDataDir = obj.getInputDataDir();
+             if not(exist(inputDataDir, 'dir'))
+                 mkdir(inputDataDir);
+             end
+        end
+        function erasePriorInputData(obj)
+             inputDataDir = obj.getInputDataDir();
+             if exist(inputDataDir, 'dir')
+                 files = dir(inputDataDir);
+                 for i=1:length(files)
+                     filename = char(files(i));
+                     matchingIndices = strfind(filename, '.txt');
+                     if not(isempty(matchingIndices))
+                         % match, delete
+                         pathname = getPathnameForFile(inputDataDir,filename);
+                         delete(pathname);
+                     end
+                 end
+             end
+        end
+        function pathname = getPathnameForFile(obj, parent, filename)
+            if ispc
+            	pathname = sprintf('%s\\%s',parent,filename );
+            else
+            	pathname = sprintf('%s/%s',parent, filename );
+            end
+        end
+        function loadTaxonsForMedia(obj, domNode)
+            obj.taxonsForMedia = containers.Map();
+            specimens = domNode.getElementsByTagName('Specimen');
+            for i=0:specimens.getLength() - 1
+                specimenNode = specimens.item(i);
+                %foo = categoricalNode.getAttribute('ref');
+                taxonNodes = specimenNode.getElementsByTagName('TaxonName');
+                taxonNode = taxonNodes.item(0);
+                taxonId = char(taxonNode.getAttribute('ref'));
+                mediaNodes = specimenNode.getElementsByTagName('MediaObjects');
+                for j=0:mediaNodes.getLenth() - 1
+                    mediaNode = mdeiaNodes.item(j);
+                    mediaId = char(mediaNode.getAttribute('ref'));
+                    obj.taxonsForMedia(mediaId) = taxonId;
+                end
+            end
+        end    
+        function characterState = getCharacterStateFromAnnotationFile(obj, pathname)
+            instead of this, I should create a class called Annotation and load them from files, keep a hash of them keyed by c54738_m43788_lineNumber
+            LEFT OFF HERE
+        end
+         %<Categorical ref="c524112"><MediaObject ref="m151268"/><State ref="s1168129"/></Categorical>
+        function findMediaToScoreForCharacter(obj, domNode)
+            obj.annotationFilenamesForCharacters = containers.Map();
+            categoricals = domNode.getElementsByTagName('Categorical');
+            for i=0:categoricals.getLength() - 1
+                categoricalNode = categoricals.item(i);
+                %foo = categoricalNode.getAttribute('ref');
+                charId = char(categoricalNode.getAttribute('ref'));
+                if obj.isCharIdOfInterest(charId)
+                    annotationPathnames = obj.getAnnotationFilePathnames(charId, categoricalNode);
+                    obj.annotationFilenamesForCharacters(charId) = annotationPathnames;
+                end
+            end
+        end
+        
+        % sorted_input_data_<charID>_charName.txt
+        % for each annotation file, add line
+        % training_data:media/<name_of_mediafile>:char_state:<pathname_of_annotation_file>:taxonID
+         % for each media file which needs scoring, add line
+        % image_to_score:media/<name_of_mediafile>:taxonID 
+        function generateInputDataFiles(obj)
+            
         end
         function dumpMediaForCharacters(obj, domNode)
             categoricals = domNode.getElementsByTagName('Categorical');
@@ -91,48 +179,62 @@ classdef MatrixCharacters < handle
             end
         end
         
-        function registerAnnotationFiles(obj, charId, categoricalNode, map)
-            categoricalChildren = categoricalNode.getChildNodes;
-            categoricalChildrenCount = categoricalChildren.getLength();
-            for m=0:categoricalChildrenCount - 1
-                 categoricalChildNode = categoricalChildren.item(m);
-                 categoricalChildNodeName = categoricalChildNode.getNodeName();
-                 if strcmp(categoricalChildNodeName, 'MediaObject')
-                     mediaId = char(categoricalChildNode.getAttribute('ref'));
-                     candidateAnnotationFilename = createAnnotationFilename(charId, mediaId);
-                     if exist(candidateAnnotationFilename, 'file')
-                         registerAnnotationFilename(map,charId, mediaId);
-                     end
-                 end
-            end
-        end
         %<Categorical ref="c524112"><MediaObject ref="m151268"/><State ref="s1168129"/></Categorical>
-        function findCharactersWithAnnotationFiles(obj, domNode)
+        function findAnnotationFilesForCharacter(obj, domNode)
             obj.annotationFilenamesForCharacters = containers.Map();
+            obj.mediaForAnnotationFilenames = containers.Map();
             categoricals = domNode.getElementsByTagName('Categorical');
-            length = categoricals.getLength();
             for i=0:categoricals.getLength() - 1
                 categoricalNode = categoricals.item(i);
                 %foo = categoricalNode.getAttribute('ref');
                 charId = char(categoricalNode.getAttribute('ref'));
-                if isCharIdQualified(charId)
-                    registerAnnotationFiles(charId, categoricalNode, obj.annotationFilenamesForCharacters);
+                if obj.isCharIdOfInterest(charId)
+                    annotationPathnames = obj.getAnnotationFilePathnames(charId, categoricalNode);
+                    obj.annotationFilenamesForCharacters(charId) = annotationPathnames;
+                    obj.setMediaForAnnotationFilenames(categoricalNode, obj.mediaForAnnotationFilenames);
                 end
             end
-            
-            
-            
-            %annotationFilenamesForCharacters = new java.util.Hashtable<java.lang.String, java.lang.String>;
-            count = length(obj.charactersPresenceAbsence);
-            for i=1:count
+        end
+        function result = isCharIdOfInterest(obj, charId)
+            result = false;
+            for i=1:length(obj.charactersPresenceAbsence)
                 character = obj.charactersPresenceAbsence(i);
-                id = character.id;
-                
-                if character.hasStatePresent
-                    obj.charactersPresenceAbsence = [ obj.charactersPresenceAbsence, character ];
+                if strcmp(character.id,charId)
+                    result = true;
                 end
             end
-            
+        end
+        
+        function setMediaForAnnotationFilenames(obj, categoricalNode, mediaForAnnotationFilenamesMap)
+            mediaObjects = categoricalNode.getElementsByTagName('MediaObject');
+            for i=0:mediaObjects.getLength()-1
+                mediaObject = mediaObjects.item(i);
+                mediaId = char(mediaObject.getAttribute('ref'));
+                pathname = getAnnotationFilePathname(obj.matrixDir, charId, mediaId);
+                if exist(pathname, 'file')
+                    mediaForAnnotationFilenamesMap(pathname) = mediaId;
+                end
+            end
+        end
+        function pathnames = getAnnotationFilePathnames(obj, charId, categoricalNode)
+            pathnames = {};
+            mediaObjects = categoricalNode.getElementsByTagName('MediaObject');
+            for i=0:mediaObjects.getLength()-1
+                mediaObject = mediaObjects.item(i);
+                mediaId = char(mediaObject.getAttribute('ref'));
+                pathname = getAnnotationFilePathname(obj.matrixDir, charId, mediaId);
+                if exist(pathname, 'file')
+                    pathnames = [ pathnames, pathname ];
+                end
+            end
+        end
+        
+        function pathname = getAnnotationFilePathname(obj, matrixDir, charId, mediaId)
+            if ispc
+            	pathname = sprintf('%s\\annotations\\%s_%s.txt',obj.matrixDir, charId, mediaId);
+            else
+                pathname = sprintf('%s/annotations/%s_%s.txt',obj.matrixDir, charId, mediaId);
+            end
         end
 		function parseDatasetNodeForCharacters(obj, datasetNode)
             datasetChildren = datasetNode.getChildNodes;
