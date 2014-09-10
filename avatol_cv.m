@@ -113,6 +113,41 @@ function avatol_cv
         H.mostRecentQAFlavor = 'typedInput';
         H.activePanelTags = { 'titlePanel', 'questionPanel', 'answerPanel', 'imagePanel', 'navigationPanel' };
     end
+	function createResultsReviewPanels()
+        H.titlePanel = createTitlePanel();
+                              
+        H.messagePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
+                                  'BorderType', 'none',...
+                                  'Tag','messagePanel',...
+                                  'Position',[0.05 0.70 0.67 0.18]);
+                              
+        H.scoredImagePanel = uipanel('Background', [1 1 1],...%[0.3 1 0.3]
+                                  'BorderType', 'none',...
+                                  'Tag','scoredImagePanel',...
+                                  'Position',[0.74 0.70 0.21 0.18]);
+                              
+        H.scoredTextPanel = uipanel('Background',[1 1 1],...%[0.3 0.3 1]
+                                  'BorderType', 'none',...
+                                  'Tag','scoredTextPanel',...
+                                  'Position',[ 0.02 0.1 0.96 0.60]);
+                              
+        H.trainingImagePanel = uipanel('Background', [1 1 1],...%[0.3 1 0.3]
+                                  'BorderType', 'none',...
+                                  'Tag','trainingImagePanel',...
+                                  'Position',[0.74 0.70 0.21 0.18]);
+                              
+        H.trainingTextPanel = uipanel('Background',[1 1 1],...%[0.3 0.3 1]
+                                  'BorderType', 'none',...
+                                  'Tag','trainingTextPanel',...
+                                  'Position',[ 0.02 0.1 0.96 0.60]);
+                              
+        H.feedbackPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
+                                  'BorderType', 'none',...
+                                  'Tag','feedbackPanel',...
+                                  'Position',getNavigationPanelPosition());
+                
+        H.activePanelTags = { 'titlePanel', 'messagePanel', 'scoredImagePanel', 'scoredTextPanel', 'trainingImagePanel', 'trainingTextPanel', 'feedbackPanel' };
+    end
     function createTypedInputQAPanels()
         H.titlePanel = createTitlePanel();
                               
@@ -281,9 +316,11 @@ function avatol_cv
         if (strcmp(disqualifyingCRFMessage,''))
             message = 'CRF algorithm has been chosen for scoring.  Press Run Algorithm to begin.';
             showRunAlgorithmButton = true;
+			H.algorithmChosen = 'CRF';
         elseif (strcmp(disqualifyingDPMMessage,''))
             message = 'DPM algorithm has been chosen for scoring.  Press Run Algorithm to begin.';
             showRunAlgorithmButton = true;
+			H.algorithmChosen = 'DPM';
         else
             general_error_msg = 'The answers chosen indicate the currently in-play algorithms are not a match for scoring the images:';
             message = sprintf('%s\n\n%s\n\n%s',general_error_msg, disqualifyingCRFMessage, disqualifyingDPMMessage);
@@ -333,6 +370,7 @@ function avatol_cv
                                      'Tag','runAlgorithm' ,...
                                      'BackgroundColor', [0.5 0.5 0.5]);  
             H.activeControlTags = { 'messageText', 'doAnotherCharacter', 'runAlgorithm'}; 
+			set(H.runAlgorithm, 'callback', {@runAlgorithm});
         else
             H.done = uicontrol('style', 'pushbutton' ,...
                                      'String', 'Exit' ,...
@@ -365,7 +403,42 @@ function avatol_cv
         H.mostRecentQuestionnairePage = 'QUESTIONNAIRE_COMPLETE'; 
         H.questionSequencer.persist();
     end
-
+    function runAlgorithm()
+		deleteObsoleteControls();
+		H.messagePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
+                                  'BorderType', 'none',...
+                                  'Tag','messagePanel',...
+                                  'Position',[0.1 0.2 0.8 0.7]);
+        
+        startingAlgorithmString = sprintf('Starting %s algorithm...', H.algorithmChosen);
+        H.statusMessage = uicontrol('style', 'text' ,...
+                                     'Parent',H.messagePanel,...
+                                     'Units', 'normalized',...
+                                     'position', [0 0 1 1] ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','messageText' ,...
+                                     'Background',[1 1 1],...
+                                     'String', startingAlgorithmString,...
+                                     'HorizontalAlignment', 'left');%'BackgroundColor', [1 0.1 0.1] ,...
+		
+		H.progressIndicator = ProgressIndicator(H.statusMessage);
+        H.activePanelTags = { 'messagePanel' };
+        H.activeControlTags = { 'messageText', 'statusMessage'};  
+		H.algorothms.invoke_algorithm(obj, alg, list_of_characters, input_folder, output_folder detection_results_folder, H.progressIndicator);
+		%here is where we show the results
+		showResults();
+	end
+	function showResults()
+		deleteObsoleteControls();
+		% create panel for instructions
+		
+		% create panel for training images
+		
+		% create panel for scored images
+		
+		% create panel for feedback
+	end
     function displayWelcomeScreen()
         deleteObsoleteControls();
         createSimpleTextScreenPanels();
