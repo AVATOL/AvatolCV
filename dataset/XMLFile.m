@@ -1,4 +1,4 @@
-classdef XMLFile 
+classdef XMLFile < handle
     properties
         domNode;
     end

@@ -1,9 +1,9 @@
 function avatol_cv
     %
     clearvars();
-    
     clearvars -global H;
     global H;
+    H.rootDir = pwd();
     %H.questionnaireXML = 'tests/simple.xml';
     if ispc
         H.questionnaireXML = 'data\\questionnaire\\Questionnaire.xml';
@@ -772,7 +772,7 @@ function avatol_cv
         sddXMLFilePath = H.matrices.getSDDFilePath(H.chosenMatrix);
         sddXMLFile = XMLFile(sddXMLFilePath);
         domNode = sddXMLFile.domNode;
-        matrixCharacters = MatrixCharacters(domNode,H.chosenMatrix);
+        matrixCharacters = MatrixCharacters(domNode,H.chosenMatrix, H.matrixDir);
         %    testCase.verifyEqual(matrixCharacters.characters(1).name,'GEN skull, dorsal margin, shape at juncture of braincase and rostrum in lateral view');
         %    testCase.verifyEqual(matrixCharacters.characters(2).name,'GEN skull, posterior extension of alveolar line and occiput, intersection');
         characterClassList = matrixCharacters.charactersPresenceAbsence;
@@ -1198,6 +1198,12 @@ function avatol_cv
             elseif strcmp(H.activeQuestionId,'matrixQuestion')
                 indexOfMatrixAnswer = get(H.matrixChoice,'value');
                 H.chosenMatrix = char(H.matrixChoices(indexOfMatrixAnswer));
+                if ispc()
+                    H.matrixDir = sprintf('%s\\matrix_downloads\\%s', H.rootDir, H.chosenMatrix);
+                else
+                    H.matrixDir = sprintf('%s/matrix_downloads/%s', H.rootDir, H.chosenMatrix);
+                end
+                
                 if (strcmp(H.questionSequencer.matrixName,H.chosenMatrix))
                     % being re-answered to the same value, no need to flush
                     % the characterName
