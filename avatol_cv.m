@@ -1,4 +1,6 @@
 function avatol_cv
+    javaPathString = getJavaPathString();
+    javaaddpath(javaPathString);
     %
     clearvars();
     clearvars -global H;
@@ -44,6 +46,21 @@ function avatol_cv
     layout();
     displayWelcomeScreen();
     
+    function javaPathString = getJavaPathString()
+        if ispc
+            javaPathString = 'java\\bin';
+        else
+            javaPathString = 'java/bin';
+        end
+    end
+    function full_path = getFullPathForJava(partialPath)
+        curDir = pwd();
+        if ispc
+            full_path = sprintf('%s\\%s',curDir, partialPath);
+        else
+            full_path = sprintf('%s/%s',curDir, partialPath);
+        end
+    end    
     %
     %  LAYOUT helper functions
     %
@@ -425,7 +442,7 @@ function avatol_cv
 		H.progressIndicator = ProgressIndicator(H.statusMessage);
         H.activePanelTags = { 'messagePanel' };
         H.activeControlTags = { 'messageText', 'statusMessage'};  
-		H.algorothms.invoke_algorithm(obj, alg, list_of_characters, input_folder, output_folder detection_results_folder, H.progressIndicator);
+		H.algorothms.invoke_algorithm(obj, alg, list_of_characters, input_folder, output_folder, detection_results_folder, H.progressIndicator);
 		%here is where we show the results
 		showResults();
 	end
@@ -768,8 +785,12 @@ function avatol_cv
                                      'Background',[1 1 1],...
                                      'HorizontalAlignment', 'left');%'BackgroundColor', [1 0.1 0.1] ,...
         
+        import edu.oregonstate.eecs.iis.avatolcv.*;
         
         sddXMLFilePath = H.matrices.getSDDFilePath(H.chosenMatrix);
+        fullSddXMLFilePathForJava = getFullPathForJava(sddXMLFilePath);
+        matrix = Matrix(fullSddXMLFilePathForJava);
+        
         sddXMLFile = XMLFile(sddXMLFilePath);
         domNode = sddXMLFile.domNode;
         matrixCharacters = MatrixCharacters(domNode,H.chosenMatrix, H.matrixDir);

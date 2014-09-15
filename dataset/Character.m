@@ -82,15 +82,10 @@ classdef Character < handle
                 somethingNode = childNodes.item(i);
                 nodeName = somethingNode.getNodeName();
 				if strcmp(nodeName,'Representation')
-					representationChildren = somethingNode.getChildNodes;
-                    representationChildrenCount = representationChildren.getLength;
-                    for j=0:representationChildrenCount-1
-                        childNode = representationChildren.item(j);
-                        childNodeName = childNode.getNodeName();
-                        if strcmp(childNodeName,'Label')
-                            obj.name = char(childNode.getTextContent);
-                        end
-                    end
+                    labelNodes = somethingNode.getElementsByTagName('Label');
+                    labelNode = labelNodes.item(0);
+                    obj.name = char(labelNode.getTextContent);
+                    return;
 				end
 
             end

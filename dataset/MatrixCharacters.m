@@ -1,6 +1,6 @@
 classdef MatrixCharacters < handle
     properties
-        
+        domNode;
 	    datasetOneSet = 'no';
 	    datasetTwoSet = 'no';
 		datasetOne;
@@ -18,6 +18,7 @@ classdef MatrixCharacters < handle
         annotations = {};
         annotationsForCharacter = {};
         matrixDir;
+        trainingMediaFilesForCharacter = {};
 	end
 	
 	methods
@@ -25,6 +26,7 @@ classdef MatrixCharacters < handle
 	    function obj = MatrixCharacters(domNode, matrixName, matrixDir)
             obj.matrixDir = matrixDir;
 			obj.matrixName = matrixName;
+            obj.domNode = domNode;
             obj.parseDomNodeForCharacters(domNode);
         end
 	    function parseDomNodeForCharacters(obj, domNode)
@@ -60,6 +62,7 @@ classdef MatrixCharacters < handle
                 obj.mediaForAnnotationFilenames = containers.Map();
                 obj.characterForAnnotationFilenames = containers.Map();
                 obj.annotationsForCharacter = containers.Map();
+                obj.trainingMediaFilesForCharacter = containers.Map();
             
                 obj.erasePriorInputData();
                 obj.createInputDataDir();
@@ -71,7 +74,6 @@ classdef MatrixCharacters < handle
                 obj.findAnnotationFilesForCharacter(domNode);
                 obj.findTrainedCharacters();
                 obj.loadAnnotations();
-                %obj.findMediaToScoreForCharacter(domNode);
                 obj.generateInputDataFiles();
 			end
         end
@@ -92,6 +94,16 @@ classdef MatrixCharacters < handle
                 end
             end
         end    
+        function registerTrainingMediaFile(obj, charId, mediaId)
+            mediaFilename = obj.getMediaFilenameForMediaId(mediaId);
+            if isKey(obj.trainingMediaFilesForCharacter, charId)
+                trainingMediaFiles = obj.trainingMediaFilesForCharacter(charId);
+            else
+                trainingMediaFiles = {};
+            end
+            trainingMediaFiles = [ trainingMediaFiles, mediaFilename ];
+            obj.trainingMediaFilesForCharacter(charId) = trainingMediaFiles;
+        end
         function loadAnnotationsFromFile(obj, annotationPathname)
             import java.lang.String;
             import java.io.BufferedReader;
@@ -101,18 +113,20 @@ classdef MatrixCharacters < handle
             reader = BufferedReader(FileReader(annotationPathname));
             charId = obj.characterForAnnotationFilenames(annotationPathname);
             mediaId = obj.mediaForAnnotationFilenames(annotationPathname);
+            obj.registerTrainingMediaFile(charId, mediaId);
             line = reader.readLine();
             emptyArray = [];
             lineNumber = 1;
             while and((line ~= emptyArray),(not(strcmp(char(line),''))))
                 fprintf('line : %s\n',char(line));
                 key = obj.createAnnotationKey(annotationPathname,lineNumber);
-                annotation = Annotation(char(line), 1, mediaId, annotationPathname);
+                annotation = Annotation(char(line), lineNumber, mediaId, annotationPathname);
                 obj.annotations(key) = { annotation };
                 obj.registerAnnotationForCharacter(annotation,charId);
                 lineNumber = lineNumber + 1;
                 line = reader.readLine();
             end
+            reader.close();
             
         end
         
@@ -132,11 +146,7 @@ classdef MatrixCharacters < handle
             key = sprintf('%s_%s_%i',charId, mediaId, lineNumber);
         end
         function inputDataDir = getInputDataDir(obj)
-            if ispc
-                inputDataDir = sprintf('%s\\input',obj.matrixDir );
-             else
-                inputDataDir = sprintf('%s/input',obj.matrixDir );
-             end
+            inputDataDir = obj.getPathnameFromParentAndChild(obj.matrixDir, 'input');
         end
         function createInputDataDir(obj)
             inputDataDir = obj.getInputDataDir();
@@ -153,18 +163,11 @@ classdef MatrixCharacters < handle
                      matchingIndices = strfind(filename, '.txt');
                      if not(isempty(matchingIndices))
                          % match, delete
-                         pathname = obj.getPathnameForFile(inputDataDir,filename);
+                         pathname = obj.getPathnameFromParentAndChild(inputDataDir,filename);
                          delete(pathname);
                      end
                  end
              end
-        end
-        function pathname = getPathnameForFile(obj, parent, filename)
-            if ispc
-            	pathname = sprintf('%s\\%s',parent,filename );
-            else
-            	pathname = sprintf('%s/%s',parent, filename );
-            end
         end
         function loadTaxonsForMedia(obj, domNode)
             obj.taxonsForMedia = containers.Map();
@@ -186,20 +189,79 @@ classdef MatrixCharacters < handle
         end    
         function filename = getMediaFilenameForMediaId(obj, mediaId)
             filename = 'fileNotFound';
-            if ispc()
-                mediaDir = sprintf('%s\\media', obj.matrixDir);
-            else
-                mediaDir = sprintf('%s/media', obj.matrixDir);
-            end
+            mediaDir = obj.getPathnameFromParentAndChild(obj.matrixDir, 'media');
             mediaIdPrefix = strrep(mediaId, 'm', 'M');
             files = dir(mediaDir);
             for i=1:length(files)
                 candidateFilename = files(i).name;
-                LEFT OFF TRYING TO MATCH
-                indicesArray = strfind(filename, mediaIdPrefix);
+                indicesArray = strfind(candidateFilename, mediaIdPrefix);
                 if not(isempty(indicesArray))
                     filename = candidateFilename;
                     return;
+                end
+            end
+        end
+        function trainingDataLine = getTrainingDataLineForAnnotation(obj, annotationForChar)
+            charStateText = annotationForChar.charStateText;
+            charState = annotationForChar.charState;
+            mediaId = annotationForChar.mediaId;
+            annotationPathname = annotationForChar.pathname;
+            mediaFilename = obj.getMediaFilenameForMediaId(mediaId);
+            taxonId = obj.taxonsForMedia(mediaId);
+            lineNumber = annotationForChar.lineNumber;
+            trainingDataLine = sprintf('training_data:media/%s:%s:%s:%s:%s:%d',mediaFilename,charState,charStateText,annotationPathname, taxonId,lineNumber);          
+        end
+        
+        function allMediaForCharacter = getAllMediaFilenamesForCharacter(obj, charId)
+            codedDescriptions = domNode.getElementsByTagName('CodedDescription');
+            for i=0:length(codedDescriptions)-1
+                codedDescription = codedDescriptions(i);
+                categoricals = codedDescription.getElementsByTagName('Categorical');
+                for j=0:length(categoricals)-1
+                    categorical = categoricals(j);
+                    candidateCharId = char(categorical.getAttribute('ref'));
+                    if (strcmp(candidateCharId, charId))
+                        mediaNodes = categorical.getElementsByTagName('MediaObject');
+                        mediaNode = mediaNode(0);
+                        
+                    end    
+                end
+            end
+            foreach coded description
+                 find matching categorical
+                     read in its mediaId
+            
+            - it needs to scan the xml to see the related ones.  Right now its grabbing all
+            
+            
+            allMediaForCharacter = {}
+            mediaDir = obj.getPathnameFromParentAndChild(obj.matrixDir, 'media');
+            files = dir(mediaDir);
+            for i=1:length(files)
+                candidateFilename = files(i).name;
+                if and(not(strcmp(candidateFilename,'.')),not(strcmp(candidateFilename,'..')))
+                    allMediaForCharacter = [ allMediaForCharacter, candidateFilename ];
+                end
+            end
+        end
+        function mediaId = getMediaIdFromFilename(obj, filename)
+            parts = strsplit(char(filename),'_');
+            mediaIdWithCapitalM = char(parts(1));
+            mediaId = strrep(mediaIdWithCapitalM, 'M', 'm');
+        end
+        function mediaFilesToScore = getMediaFilesNotForTraining(obj, allMediaForCharacter, trainingMediaForCharacter)
+            mediaFilesToScore = {};
+            for i=1:length(allMediaForCharacter)
+                candidateMediaFile = allMediaForCharacter(i);
+                match = false;
+                for j=1:length(trainingMediaForCharacter)
+                    trainingMediaFile = trainingMediaForCharacter(j);
+                    if (strcmp(trainingMediaFile,candidateMediaFile))
+                        match = true;
+                    end
+                end
+                if not(match)
+                    mediaFilesToScore = [mediaFilesToScore, candidateMediaFile];
                 end
             end
         end
@@ -209,43 +271,57 @@ classdef MatrixCharacters < handle
          % for each media file which needs scoring, add line
         % image_to_score:media/<name_of_mediafile>:taxonID 
         function generateInputDataFiles(obj)
-            inputDataLines = {};
+            
             for i=1:length(obj.charactersTrained)
                 character = obj.charactersTrained(i);
                 charId = character.id;
+                trainingDataLines = {};
+                scoringDataLines = {};
                 if isKey(obj.annotationsForCharacter, charId)
                     annotationsForChar = obj.annotationsForCharacter(charId);
                     for j=1:length(annotationsForChar)
                         annotationForChar = annotationsForChar(j);
-                        charNameText = annotationForChar.charNameText;
-                        charStateText = annotationForChar.charStateText;
-                        charState = annotationForChar.charState;
-                        mediaId = annotationForChar.mediaId;
-                        annotationPathname = annotationForChar.pathname;
-                        mediaFilename = obj.getMediaFilenameForMediaId(mediaId);
-                        taxonId = obj.taxonsForMedia(mediaId);
-                        lineNumber = annotationForChar.lineNumber;
-                        inputDataLine = sprintf('training_data:media/%s:%s:%s:%s:%s',mediaFilename,charState,charStateText,annotationPathname, taxonId,lineNumber);
-                        inputDataLines = [ inputDataLines, inputDataLine ];
+                        trainingDataLine = obj.getTrainingDataLineForAnnotation(annotationForChar);
+                        trainingDataLines = [ trainingDataLines, trainingDataLine ];
+                    end
+                    allMediaForCharacter = obj.getAllMediaFilenamesForCharacter(charId);
+                    trainingMediaForCharacter = obj.trainingMediaFilesForCharacter(charId); 
+                    mediaFilesToScoreForCharacter = obj.getMediaFilesNotForTraining(allMediaForCharacter,trainingMediaForCharacter);
+                    for j=1:length(mediaFilesToScoreForCharacter)
+                        mediaFilename = mediaFilesToScoreForCharacter(j);
+                        mediaId = obj.getMediaIdFromFilename(mediaFilename);
+                        fprintf('mediaId : %s\n',mediaId);
+                        if isKey(obj.taxonsForMedia, mediaId)
+                            taxonId = obj.taxonsForMedia(mediaId);
+                            fprintf('taxonId : %s\n',taxonId);
+                            scoringDataLine = sprintf('image_to_score:media/%s:%s',char(mediaFilename), char(taxonId));
+                            scoringDataLines = [ scoringDataLines, scoringDataLine ];
+                        else
+                            fprintf('WARNING mediaId %s is not associated with a taxon - ignoring.\n',mediaId);
+                        end
+                        
+                    end
+                    if (length(trainingDataLines) > 0)
+                        filename = sprintf('sorted_input_data_%s_%s.txt',charId,character.name);
+                        inputFilePathname = obj.getPathnameFromRootAndParentAndChild(obj.matrixDir, 'input', filename);
+                        if (exist(inputFilePathname, 'file'))
+                            delete(inputFilePathname);
+                        end
+                        fileId = fopen(inputFilePathname,'w');
+                        for i=1:length(trainingDataLines)
+                            trainingDataLine = trainingDataLines(i);
+                            fprintf(fileId,'%s\n',char(trainingDataLine));
+                        end
+                        for i=1:length(scoringDataLines)
+                            scoringDataLine = scoringDataLines(i);
+                            fprintf(fileId,'%s\n',char(scoringDataLine));
+                        end
+                        fprintf(fileId,'\n'); %not sure why I need this extra newline, but do
+                        fclose(fileId);
                     end
                 end
+                
             end
-            filename = sprintf('sorted_input_data_%s_%s.txt',charId,charNameText);
-            if ispc()
-                inputFilePathname = sprintf('%s\\input\\%s', obj.matrixDir, filename);
-            else
-                inputFilePathname = sprintf('%s/input/%s', obj.matrixDir, filename);
-            end
-            if (exist(inputFilePathname, 'file'))
-                delete(inputFilePathname);
-            end
-            fileId = fopen(inputFilePathname,'w');
-            for i=1:length(inputDataLines)
-                inputDataLine = inputDataLines(i);
-                fprintf(fileId,'%s\n',inputDataLine);
-            end
-            close(fileId);
-            
         end
         function dumpMediaForCharacters(obj, domNode)
             categoricals = domNode.getElementsByTagName('Categorical');
@@ -329,7 +405,7 @@ classdef MatrixCharacters < handle
             for i=0:mediaObjects.getLength()-1
                 mediaObject = mediaObjects.item(i);
                 mediaId = char(mediaObject.getAttribute('ref'));
-                pathname = obj.getAnnotationFilePathname(obj.matrixDir, charId, mediaId);
+                pathname = obj.getAnnotationFilePathname(charId, mediaId);
                 if exist(pathname, 'file')
                     obj.mediaForAnnotationFilenames(pathname) = mediaId;
                     obj.characterForAnnotationFilenames(pathname) = charId;
@@ -343,7 +419,7 @@ classdef MatrixCharacters < handle
                 mediaObject = mediaObjects.item(i);
                 mediaId = char(mediaObject.getAttribute('ref'));
                 %fprintf('...: %s_%s\n',charId,mediaId);
-                pathname = obj.getAnnotationFilePathname(obj.matrixDir, charId, mediaId);
+                pathname = obj.getAnnotationFilePathname(charId, mediaId);
                 %fprintf('...checking pathname: %s\n',pathname);
                 if exist(pathname, 'file')
                     %fprintf('found path: %s\n',pathname);
@@ -352,7 +428,21 @@ classdef MatrixCharacters < handle
             end
         end
         
-        function pathname = getAnnotationFilePathname(obj, matrixDir, charId, mediaId)
+        function pathname = getPathnameFromParentAndChild(obj, parent, child)
+            if ispc()
+                pathname = sprintf('%s\\%s', parent, child);
+            else
+                pathname = sprintf('%s/%s', parent, child);
+            end
+        end
+        function pathname = getPathnameFromRootAndParentAndChild(obj, root, parent, child)
+            if ispc()
+                pathname = sprintf('%s\\%s\\%s', root, parent, child);
+            else
+                pathname = sprintf('%s/%s/%s', root, parent, child);
+            end
+        end
+        function pathname = getAnnotationFilePathname(obj, charId, mediaId)
             if ispc
             	pathname = sprintf('%s\\annotations\\%s_%s.txt',obj.matrixDir, charId, mediaId);
             else
