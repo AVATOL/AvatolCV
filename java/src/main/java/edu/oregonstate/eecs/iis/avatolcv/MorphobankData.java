@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 
 public class MorphobankData {
-	//System.setProperty("log4j.configuration","");
+	//System.setProperty("log4j.configuration","");;
 	Logger logger;
 	private static final String FILESEP = System.getProperty("file.separator");
 	private String parentDirPath = null;
