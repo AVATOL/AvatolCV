@@ -8,8 +8,11 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 
 /*
  *  %    <CategoricalCharacter id='c524104'>
@@ -26,8 +29,9 @@ public class Character {
     private String name = "notYetSet";
     private List<CharacterState> characterStates = null;
     private boolean hasStatePresent = false;
-    
-    public Character(Node catCharNode) throws MorphobankDataException {
+    private Document document = null;
+    public Character(Node catCharNode, Document doc) throws MorphobankDataException {
+    	this.document = doc;
     	this.id = catCharNode.getAttributes().getNamedItem("id").getNodeValue();
         this.name = loadName(catCharNode);
         this.characterStates = loadStates(catCharNode);
@@ -47,37 +51,69 @@ public class Character {
     public String getId(){
     	return this.id;
     }
+    public static Node getChildNodeNamed(String name, Node node, Document doc) throws MorphobankDataException{
+    	NodeList nodes = node.getChildNodes();
+    	//System.out.println("seeking child node named " + name);
+    	for (int i = 0; i < nodes.getLength(); i++){
+    	    Node child = nodes.item(i);
+    	    //System.out.println("getChildNodeNamed... node name " + child.getNodeName());
+    	    if (child.getNodeName().equals(name)){
+    	    	return child;
+    	    }
+    	}
+    	DOMImplementationLS domImplLS = (DOMImplementationLS) doc.getImplementation();
+    	LSSerializer serializer = domImplLS.createLSSerializer();
+    	String str = serializer.writeToString(node);
+		throw new MorphobankDataException("could not find child node of type : " + name + " in " + str);
+    }
+    /*
+     * for some reason the xpath evaluate fails under matlab where it succeeds under junit!.  SO, need to 
+     * brute force the search.
+     */
     public String loadName(Node catCharNode) throws MorphobankDataException {
+    	System.out.println("loading name for character..." + this.id);
+    	Node representationNode = getChildNodeNamed("Representation", catCharNode, this.document);
+    	Node labelNode = getChildNodeNamed("Label",representationNode, this.document);
+    	return labelNode.getTextContent();	
+    	
+    }
+    /*
+     * for some reason the xpath evaluate below fails under matlab where it succeeds under junit!.  SO, need to 
+     * brute force the search using the new loadName method.
+     */
+    public String loadNameOrig(Node catCharNode) throws MorphobankDataException {
+    	System.out.println("loading name for character..." + this.id);
+    	DOMImplementationLS domImplLS = (DOMImplementationLS) document.getImplementation();
+    	LSSerializer serializer = domImplLS.createLSSerializer();
+    	String str = serializer.writeToString(catCharNode);
+    	System.out.println(str);
     	try {
     		XPath xpath = XPathFactory.newInstance().newXPath();
         	String expression = "Representation/Label";
+        	System.out.println("expression : " + expression);
         	Node labelNode = (Node) xpath.evaluate(expression, catCharNode, XPathConstants.NODE);
+        	if (labelNode == null){
+        		System.out.println("labelNode returned null!");
+        	}
         	return labelNode.getTextContent();
     	}
     	catch(XPathExpressionException xee){
     		xee.printStackTrace();
     		throw new MorphobankDataException("could not load name for Character: " + xee.getMessage());
     	}
-    	
     }
-    public List<CharacterState> loadStates(Node catCharNode) throws MorphobankDataException {
-    	try {
-    		List<CharacterState> characterStates = new ArrayList<CharacterState>();
-        	XPath xpath = XPathFactory.newInstance().newXPath();
-        	String expression = "States/StateDefinition";
-        	NodeList stateNodes = (NodeList) xpath.evaluate(expression, catCharNode, XPathConstants.NODESET);
-        	for (int i = 0; i < stateNodes.getLength(); i++){
-        		Node stateNode = stateNodes.item(i);
-        		CharacterState state = new CharacterState(this.id, stateNode);
+    public List<CharacterState> loadStates(Node catCharNode) throws MorphobankDataException  {
+		List<CharacterState> characterStates = new ArrayList<CharacterState>();
+		Node statesNode = getChildNodeNamed("States", catCharNode, this.document);
+    	NodeList candidates = statesNode.getChildNodes();
+    	for (int i = 0; i < candidates.getLength(); i++){
+    		Node candidate = candidates.item(i);
+    		if (candidate.getNodeName().equals("StateDefinition")){
+    			CharacterState state = new CharacterState(this.id, candidate, this.document);
         		characterStates.add(state);
-        	}
-        	return characterStates;
+    		}
     	}
-    	catch(XPathExpressionException xee){
-    		xee.printStackTrace();
-    		throw new MorphobankDataException("could not load states for Character: " + xee.getMessage());
-    	}
-    	
+    	return characterStates;
     }
     public boolean isPresentAbsentCharacter(){
     	if (characterStates.size() !=2 ){

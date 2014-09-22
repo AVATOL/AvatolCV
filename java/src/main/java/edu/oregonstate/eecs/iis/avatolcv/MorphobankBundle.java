@@ -16,9 +16,9 @@ public class MorphobankBundle {
     	this.dirName = dirName;
     	String sddPath = getSDDFilePath(dirName);
     	this.sddFile = new MorphobankSDDFile(sddPath);
-    	this.annotations = new Annotations(this.sddFile.getPresenceAbsenceCharacterCells(),this.dirName, this.sddFile);
-        erasePriorInputData();
+    	erasePriorInputData();
         createInputDataDir();
+    	this.annotations = new Annotations(this.sddFile.getPresenceAbsenceCharacterCells(),this.dirName, this.sddFile);
     }
   
     public String getInputDataDir(){
@@ -41,6 +41,9 @@ public class MorphobankBundle {
         		}
         	}
         }
+    }
+    public static void printString(String s){
+    	System.out.println("the given string is " + s);
     }
     public List<String> getPresenceAbsenceCharacterNames(){
     	return sddFile.getPresenceAbsenceCharacterNames();

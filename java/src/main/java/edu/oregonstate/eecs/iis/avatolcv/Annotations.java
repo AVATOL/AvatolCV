@@ -38,10 +38,7 @@ public class Annotations {
             		for (Annotation annotation : annotations){
             			annotationsForCharacter.add(annotation);
             		}
-            		
-            		
         		}
-        		
         	}
         }
         generateInputDataFiles(sddFile);
@@ -93,7 +90,7 @@ public class Annotations {
 	}
 	  // sorted_input_data_<charID>_charName.txt
     // for each annotation file, add line
-    // training_data:media/<name_of_mediafile>:char_state:<pathname_of_annotation_file>:taxonID
+    // training_data:media/<name_of_mediafile>:char_state:<pathname_of_annotation_file>:taxonID:lineNumber
     // for each media file which needs scoring, add line
     // image_to_score:media/<name_of_mediafile>:taxonID 
     public void generateInputDataFiles(MorphobankSDDFile sddFile) throws MorphobankDataException {
@@ -143,14 +140,6 @@ public class Annotations {
                 }
     		}
     	}
-                
-               
-               
-                    
-        
-                    
-               
-                
     }
 	public List<Annotation> loadAnnotations(String path, String mediaId) throws MorphobankDataException {
 		List<Annotation> annotations = new ArrayList<Annotation>();
@@ -159,9 +148,11 @@ public class Annotations {
 			String line = null;
 			int lineNumber = 1;
 			while ((line = reader.readLine()) != null){
-				Annotation annotation = new Annotation(line, lineNumber, mediaId, path);
-				annotations.add(annotation);
-				lineNumber += 1;
+				if (!"".equals(line)){
+					Annotation annotation = new Annotation(line, lineNumber, mediaId, path);
+					annotations.add(annotation);
+					lineNumber += 1;
+				}
 			}
 			reader.close();
 			return annotations;
@@ -173,6 +164,6 @@ public class Annotations {
 		
 	}
 	public String getAnnotationFilePathname(String charId, String mediaId){
-        return this.bundleDir + FILESEP + "annotations" + charId + "_" + mediaId + ".txt";
+        return this.bundleDir + FILESEP + "annotations" + FILESEP + charId + "_" + mediaId + ".txt";
 	}
 }

@@ -1,10 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 //<StateDefinition id='cs1168105'>
@@ -18,21 +15,23 @@ public class CharacterState {
 	private String name;
 	private int stateNumber;
 	private String charId;
-    public CharacterState(String charId, Node stateNode) throws MorphobankDataException {
+	private Document document;
+    public CharacterState(String charId, Node stateNode, Document document) throws MorphobankDataException {
     	this.charId = charId;
+    	this.document = document;
     	try {
+    		// see Character.java on why xpath was abandoned
     		this.id = stateNode.getAttributes().getNamedItem("id").getNodeValue();
-    		XPath xpath = XPathFactory.newInstance().newXPath();
-    		String expression = "Representation/Label";
-    		Node labelNode = (Node) xpath.evaluate(expression, stateNode, XPathConstants.NODE);
+    		Node representationNode = Character.getChildNodeNamed("Representation", stateNode, this.document);
+    		Node labelNode = Character.getChildNodeNamed("Label", representationNode, this.document);
     		this.name = labelNode.getTextContent();
-    		
-    		expression = "Representation/Detail";
-    		Node detailNode = (Node) xpath.evaluate(expression, stateNode, XPathConstants.NODE);
+    		//System.out.println("charState name   : " + this.name);
+    		Node detailNode = Character.getChildNodeNamed("Detail", representationNode, this.document);
     		String numberString = detailNode.getAttributes().getNamedItem("role").getNodeValue();
     		if (numberString.equals("number")){
     			String integerString = detailNode.getTextContent();
     			this.stateNumber = new Integer(integerString).intValue();
+        		//System.out.println("charState number : " + this.stateNumber);
     		}
     		else {
     			throw new MorphobankDataException("non-numeric value for state number found for charId " + charId);
@@ -42,10 +41,6 @@ public class CharacterState {
     	catch(NumberFormatException nfe){
     		nfe.printStackTrace();
     		throw new MorphobankDataException("loading character state encountered non-numeric role attribute of StateDefinition/Representation/Detail " + nfe.getMessage());
-    	}
-    	catch(XPathExpressionException xee){
-    		xee.printStackTrace();
-    		throw new MorphobankDataException("problem loading character state " + xee.getMessage());
     	}
     }
     public String getName(){

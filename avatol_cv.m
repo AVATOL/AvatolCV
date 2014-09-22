@@ -1,6 +1,16 @@
 function avatol_cv
-    javaPathString = getJavaPathString();
-    javaaddpath(javaPathString);
+    if ispc
+        javaaddpath('java\\bin');
+        javaaddpath('java\\lib');
+    else
+        javaaddpath('java/bin');
+        javaaddpath('java/lib');
+    end
+   
+    import edu.oregonstate.eecs.iis.avatolcv.*;
+    import java.util.List;
+    import java.lang.String;
+    import java.lang.System.*;
     %
     clearvars();
     clearvars -global H;
@@ -39,20 +49,15 @@ function avatol_cv
     H.mostRecentTutorialPage = 'NOT_STARTED';
     H.mostRecentQuestionnairePage = 'NOT_STARTED';
     
-    H.matrices = MorphobankMatrices('matrix_downloads');
+    matrixDownloadsRootPath = getFullPathForJava('matrix_downloads');
+    H.morphobankData = MorphobankData(matrixDownloadsRootPath);
+    %H.matrices = MorphobankMatrices('matrix_downloads');
     H.matrixChoiceIndex = 1;
-    H.chosenMatrix = H.matrices.matrixDirNames(H.matrixChoiceIndex);  
+    H.chosenMatrix = H.morphobankData.getMatrixNameAtIndex(H.matrixChoiceIndex);  
     H.characterChoiceIndex = 1;
     layout();
     displayWelcomeScreen();
     
-    function javaPathString = getJavaPathString()
-        if ispc
-            javaPathString = 'java\\bin';
-        else
-            javaPathString = 'java/bin';
-        end
-    end
     function full_path = getFullPathForJava(partialPath)
         curDir = pwd();
         if ispc
@@ -715,10 +720,11 @@ function avatol_cv
                                      'Tag','matrixChoice' ,...
                                      'Background',[1 1 1],...
                                      'HorizontalAlignment', 'left');%'BackgroundColor', [0.1 1 0.1] ,...
-                                 
-        set(H.matrixChoice,'string',H.matrices.matrixDirNames);
+        
+        matrixDirNames = javaStringListToMatlabCharList(H.morphobankData.getMatrixNames());
+        set(H.matrixChoice,'string',matrixDirNames);
         set(H.matrixChoice,'Value',H.matrixChoiceIndex);
-        H.matrixChoices = H.matrices.matrixDirNames;
+        H.matrixChoices = matrixDirNames;
                     
         H.tutorial = uicontrol('style', 'pushbutton' ,...
                                      'String', 'Tutorial' ,...
@@ -750,7 +756,14 @@ function avatol_cv
         set(H.matrixChoice, 'callback', {@setMatrixChoice});
         H.mostRecentQuestionnairePage = 'MATRIX_QUESTION'; 
     end
-
+    function matlabList = javaStringListToMatlabCharList(javaList)
+        matlabList = {};
+        for i=0:javaList.size()-1
+            javaString = javaList.get(i);
+            matlabString = char(javaString);
+            matlabList = [ matlabList, matlabString ];
+        end
+    end
     function setMatrixChoice(hObject, eventData)
         H.matrixChoiceIndex = get(H.matrixChoice, 'value');
         matrixList = get(H.matrixChoice, 'string');
@@ -785,25 +798,38 @@ function avatol_cv
                                      'Background',[1 1 1],...
                                      'HorizontalAlignment', 'left');%'BackgroundColor', [1 0.1 0.1] ,...
         
-        import edu.oregonstate.eecs.iis.avatolcv.*;
+        %import edu.oregonstate.eecs.iis.avatolcv.*;
+        chosenMatrixString = java.lang.String(H.chosenMatrix);
+        edu.oregonstate.eecs.iis.avatolcv.MorphobankBundle.printString(chosenMatrixString);
+        H.morphobankBundle = H.morphobankData.loadMatrix(chosenMatrixString);
+        presenceAbsenceCharNamesJavaList = H.morphobankBundle.getPresenceAbsenceCharacterNames();
+        for i=0:presenceAbsenceCharNamesJavaList.size() - 1
+            fprintf('matlab name %s\n',char(presenceAbsenceCharNamesJavaList.get(i)));
+        end
         
-        sddXMLFilePath = H.matrices.getSDDFilePath(H.chosenMatrix);
-        fullSddXMLFilePathForJava = getFullPathForJava(sddXMLFilePath);
-        matrix = Matrix(fullSddXMLFilePathForJava);
+        presenceAbsenceCharNames = javaStringListToMatlabCharList(presenceAbsenceCharNamesJavaList);
+        for i=1:length(presenceAbsenceCharNames)
+            fprintf('presenceAbsenceCharName : %s',char(presenceAbsenceCharNames(i)));
+        end
         
-        sddXMLFile = XMLFile(sddXMLFilePath);
-        domNode = sddXMLFile.domNode;
-        matrixCharacters = MatrixCharacters(domNode,H.chosenMatrix, H.matrixDir);
+        %sddXMLFilePath = H.matrices.getSDDFilePath(H.chosenMatrix);
+        %fullSddXMLFilePathForJava = getFullPathForJava(sddXMLFilePath);
+        %matrix = Matrix(fullSddXMLFilePathForJava);
+        
+        %sddXMLFile = XMLFile(sddXMLFilePath);
+        %domNode = sddXMLFile.domNode;
+        %matrixCharacters = MatrixCharacters(domNode,H.chosenMatrix, H.matrixDir);
         %    testCase.verifyEqual(matrixCharacters.characters(1).name,'GEN skull, dorsal margin, shape at juncture of braincase and rostrum in lateral view');
         %    testCase.verifyEqual(matrixCharacters.characters(2).name,'GEN skull, posterior extension of alveolar line and occiput, intersection');
-        characterClassList = matrixCharacters.charactersPresenceAbsence;
-        characterNameList = {};
-        for i=1:length(characterClassList)
-            charName = char(characterClassList(i).name);
-            characterNameList = [ characterNameList, charName ];
-        end
+        %characterClassList = matrixCharacters.charactersPresenceAbsence;
+        %characterNameList = {};
+        %for i=1:length(characterClassList)
+        %    charName = char(characterClassList(i).name);
+        %    characterNameList = [ characterNameList, charName ];
+        %end
         %matrixCharacters.generateInputDataFiles();
-        H.characterChoices = characterNameList;
+        %H.characterChoices = characterNameList;
+        H.characterChoices = presenceAbsenceCharNames;
         set(H.characterChoice,'string',H.characterChoices);
         %H.characterName = char(characterNameList(1));
         set(H.characterChoice,'Value',H.characterChoiceIndex);

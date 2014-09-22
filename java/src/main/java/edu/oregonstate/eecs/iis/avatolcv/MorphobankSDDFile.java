@@ -94,10 +94,12 @@ public class MorphobankSDDFile {
     	}
     }
     public List<String> getPresenceAbsenceCharacterNames(){
+    	System.out.println("collecting presence absence char names ");
     	List<String> charNames = new ArrayList<String>();
     	List<Character> chars = characters.getPresenceAbsenceCharacters();
     	for (Character aChar : chars){
     		String name = aChar.getName();
+    		System.out.println("name : " + name);
     		charNames.add(name);
     	}
     	return charNames;

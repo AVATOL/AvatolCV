@@ -15,14 +15,13 @@ public class Characters {
     	NodeList nodes = doc.getElementsByTagName("CategoricalCharacter");
     	for (int i = 0; i < nodes.getLength(); i++){
     		Node catCharNode = nodes.item(i);
-    		Character character = new Character(catCharNode);
+    		Character character = new Character(catCharNode, doc);
     		String charId = character.getId();
     		String charName = character.getName();
-    		System.out.println("loading character " + charName);
+    		//System.out.println("loading character " + charName + " is pa? " + character.isPresentAbsentCharacter());
     		characterNameForIdMap.put(charId, charName);
     		this.characters.add(character);
     	}
-    	
     }
     
     public List<Character> getPresenceAbsenceCharacters(){
