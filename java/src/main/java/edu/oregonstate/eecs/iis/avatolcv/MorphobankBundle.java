@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MorphobankBundle {
@@ -57,8 +58,15 @@ public class MorphobankBundle {
     public static void printString(String s){
     	System.out.println("the given string is " + s);
     }
-    public List<String> getPresenceAbsenceCharacterNames(){
-    	return sddFile.getPresenceAbsenceCharacterNames();
+    public List<String> getScorableCharacterNames(){
+    	List<String> scorableCharacterNames = new ArrayList<String>();
+    	List<String> presenceAbsenceCharNames = sddFile.getPresenceAbsenceCharacterNames();
+    	for (String name : presenceAbsenceCharNames){
+    		if (this.annotations.doesAnnotationInputFileExistForCharacterName(name)){
+    			scorableCharacterNames.add(name);
+    		}
+    	}
+    	return scorableCharacterNames;
     }
     public String getSDDFilePath(String bundleDirPath) throws MorphobankDataException {
     	String path = "unknown";

@@ -927,7 +927,7 @@ function avatol_cv
         chosenMatrixString = java.lang.String(H.chosenMatrix);
         edu.oregonstate.eecs.iis.avatolcv.MorphobankBundle.printString(chosenMatrixString);
         H.morphobankBundle = H.morphobankData.loadMatrix(chosenMatrixString);
-        presenceAbsenceCharNamesJavaList = H.morphobankBundle.getPresenceAbsenceCharacterNames();
+        presenceAbsenceCharNamesJavaList = H.morphobankBundle.getScorableCharacterNames();
         %for i=0:presenceAbsenceCharNamesJavaList.size() - 1
         %    fprintf('matlab name %s\n',char(presenceAbsenceCharNamesJavaList.get(i)));
         %end

@@ -46,7 +46,13 @@ public class Annotations {
         }
         generateInputDataFiles(sddFile);
 	}
-	
+	public boolean doesAnnotationInputFileExistForCharacterName(String name){
+		String pathname = inputFilepathForCharacterName.get(name);
+		if (null == pathname){
+			return false;
+		}
+		return true;
+	}
 	public String getMediaFilenameForMediaId(String id) throws MorphobankDataException {
 		String filename = null;
         String mediaDir = this.bundleDir + FILESEP +  MorphobankBundle.MEDIA_DIRNAME;
