@@ -1,21 +1,22 @@
 function avatol_cv
     if ispc
-        javaaddpath('java\\bin');
-        javaaddpath('java\\lib');
+        javaaddpath('.\\java\\lib');
+        javaaddpath('.\\java\\bin');
     else
         javaaddpath('java/bin');
         javaaddpath('java/lib');
     end
-   
-    import edu.oregonstate.eecs.iis.avatolcv.*;
-    import java.util.List;
-    import java.lang.String;
-    import java.lang.System.*;
+    
+    import edu.oregonstate.eecs.iis.avatolcv.*
+    import java.util.List
+    import java.lang.String
+    import java.lang.System.*
     %
     clearvars();
     clearvars -global H;
     global H;
     H.rootDir = pwd();
+    H.avatolSystem = AvatolSystem(java.lang.String(H.rootDir));
     %H.questionnaireXML = 'tests/simple.xml';
     if ispc
         H.questionnaireXML = 'data\\questionnaire\\Questionnaire.xml';
@@ -58,13 +59,14 @@ function avatol_cv
     layout();
     displayWelcomeScreen();
     
-    function full_path = getFullPathForJava(partialPath)
+    function full_path_as_string = getFullPathForJava(partialPath)
         curDir = pwd();
         if ispc
             full_path = sprintf('%s\\%s',curDir, partialPath);
         else
             full_path = sprintf('%s/%s',curDir, partialPath);
         end
+        full_path_as_string = java.lang.String(full_path);
     end    
     %
     %  LAYOUT helper functions
@@ -425,7 +427,102 @@ function avatol_cv
         H.mostRecentQuestionnairePage = 'QUESTIONNAIRE_COMPLETE'; 
         H.questionSequencer.persist();
     end
-    function runAlgorithm()
+    function displayQuestionnaireCompleteScreenForceCRF() 
+        
+        deleteObsoleteControls();
+        H.algorithms = Algorithms();
+        showRunAlgorithmButton = false;
+        if (true)
+            message = 'CRF algorithm has been chosen for scoring.  Press Run Algorithm to begin.';
+            showRunAlgorithmButton = true;
+			H.algorithmChosen = 'CRF';
+        elseif (strcmp(disqualifyingDPMMessage,''))
+            message = 'DPM algorithm has been chosen for scoring.  Press Run Algorithm to begin.';
+            showRunAlgorithmButton = true;
+			H.algorithmChosen = 'DPM';
+        else
+            general_error_msg = 'The answers chosen indicate the currently in-play algorithms are not a match for scoring the images:';
+            message = sprintf('%s\n\n%s\n\n%s',general_error_msg, disqualifyingCRFMessage, disqualifyingDPMMessage);
+        end
+        
+        H.messagePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
+                                  'BorderType', 'none',...
+                                  'Tag','messagePanel',...
+                                  'Position',[0.1 0.2 0.8 0.7]);
+        
+        
+        H.messageText = uicontrol('style', 'text' ,...
+                                     'Parent',H.messagePanel,...
+                                     'Units', 'normalized',...
+                                     'position', [0 0 1 1] ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','messageText' ,...
+                                     'Background',[1 1 1],...
+                                     'String', message,...
+                                     'HorizontalAlignment', 'left');%'BackgroundColor', [1 0.1 0.1] ,...
+                                 
+        H.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
+                                     'BorderType', 'none',...
+                                     'Units', 'normalized',...
+                                     'Tag','navigationPanel' ,...
+                                     'Position',getNavigationPanelPosition());
+                              
+        H.doAnotherCharacter = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Try another character' ,...
+                                     'Parent',H.navigationPanel,...
+                                     'Units', 'normalized',...
+                                     'position', getButtonPositionLeft() ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','doAnotherCharacter' ,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);  
+        
+        if (showRunAlgorithmButton)
+             H.runAlgorithm = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Run Algorithm' ,...
+                                     'Parent',H.navigationPanel,...
+                                     'Units', 'normalized',...
+                                     'position', getButtonPositionRightBig() ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','runAlgorithm' ,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);  
+            H.activeControlTags = { 'messageText', 'doAnotherCharacter', 'runAlgorithm'}; 
+			set(H.runAlgorithm, 'callback', {@runAlgorithm});
+        else
+            H.done = uicontrol('style', 'pushbutton' ,...
+                                     'String', 'Exit' ,...
+                                     'Parent',H.navigationPanel,...
+                                     'Units', 'normalized',...
+                                     'position', getButtonPositionRightB() ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','done' ,...
+                                     'BackgroundColor', [0.5 0.5 0.5]);  
+            H.activeControlTags = { 'messageText', 'doAnotherCharacter', 'done'}; 
+            set(H.done, 'callback', {@saveAndExit});
+        end
+        %H.prev = uicontrol('style', 'pushbutton' ,...
+        %                             'String', 'Prev' ,...
+        %                             'Parent',H.navigationPanel,...
+        %                             'Units', 'normalized',...
+        %                             'position', getButtonPositionRightA() ,...
+        %                             'FontName', H.fontname ,...
+        %                             'FontSize', H.fontsize ,...
+        %                             'Tag','prev' ,...
+        %                             'BackgroundColor', [0.5 0.5 0.5]);  
+                                 
+        H.activePanelTags = { 'messagePanel', 'navigationPanel' };
+        %H.activeControlTags = { 'messageText', 'doAnotherCharacter', 'done', 'prev'};    
+           
+        
+        set(H.doAnotherCharacter, 'callback', {@doAnotherCharacter});
+        %set(H.prev, 'callback', {@backFromEndMessageScreen});
+        H.mostRecentQuestionnairePage = 'QUESTIONNAIRE_COMPLETE'; 
+        H.questionSequencer.persist();
+    end
+    function runAlgorithm(hObject, eventData)
 		deleteObsoleteControls();
 		H.messagePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
@@ -446,10 +543,38 @@ function avatol_cv
 		
 		H.progressIndicator = ProgressIndicator(H.statusMessage);
         H.activePanelTags = { 'messagePanel' };
-        H.activeControlTags = { 'messageText', 'statusMessage'};  
-		H.algorothms.invoke_algorithm(obj, alg, list_of_characters, input_folder, output_folder, detection_results_folder, H.progressIndicator);
+        H.activeControlTags = { 'messageText', 'statusMessage'}; 
+        H.originalDir = pwd();
+        
+        bundleRootDir = char(H.morphobankBundle.getRootDir());
+        cd(bundleRootDir);
+
+        if (strcmp(H.algorithmChosen,'CRF'))
+            chosenCharNameString = java.lang.String(H.characterName);
+            inputFilePathname = char(H.morphobankBundle.getInputFilePathnameForCharacter(chosenCharNameString));
+            outputFilePathname = char(H.morphobankBundle.getOutputFilePathnameForCharacter(chosenCharNameString));
+            options = struct;
+            
+            detectionResultsPathname = char(H.morphobankBundle.getDetectionResultsPathname());
+            options.DETECTION_RESULTS_FOLDER = detectionResultsPathname;
+            
+            dataset_path = char(H.morphobankBundle.getRootDir());
+            options.DATASET_PATH = dataset_path;
+            
+            crf_temp_path = sprintf('%stemp_crf',dataset_path);
+            mkdir(crf_temp_path);
+            options.TEMP_PATH = crf_temp_path;
+            
+            hcsearch_dir = char(H.avatolSystem.getCrfDir());
+            options.BASE_PATH = hcsearch_dir;
+            H.algorithms.invoke_the_crf_system(inputFilePathname, outputFilePathname, options);
+        else
+            H.algorithms.invoke_dpm_system(list_of_characters, input_folder, output_folder, detection_results_folder, H.progressIndicator);
+        end
+        
 		%here is where we show the results
 		showResults();
+        cd(H.originalDir);
 	end
 	function showResults()
 		deleteObsoleteControls();
@@ -781,7 +906,7 @@ function avatol_cv
         H.characterChoicePrompt = uicontrol('style', 'text' ,...
                                      'Parent',H.questionPanel,...
                                      'Units','normalized',...
-                                     'String', 'Which character do you want to score?' ,...
+                                     'String', 'Which presence/absence character do you want to score?' ,...
                                      'position', [0,0,1,1] ,...
                                      'FontName', H.fontname ,...
                                      'FontSize', H.fontsize ,...
@@ -803,14 +928,14 @@ function avatol_cv
         edu.oregonstate.eecs.iis.avatolcv.MorphobankBundle.printString(chosenMatrixString);
         H.morphobankBundle = H.morphobankData.loadMatrix(chosenMatrixString);
         presenceAbsenceCharNamesJavaList = H.morphobankBundle.getPresenceAbsenceCharacterNames();
-        for i=0:presenceAbsenceCharNamesJavaList.size() - 1
-            fprintf('matlab name %s\n',char(presenceAbsenceCharNamesJavaList.get(i)));
-        end
+        %for i=0:presenceAbsenceCharNamesJavaList.size() - 1
+        %    fprintf('matlab name %s\n',char(presenceAbsenceCharNamesJavaList.get(i)));
+        %end
         
         presenceAbsenceCharNames = javaStringListToMatlabCharList(presenceAbsenceCharNamesJavaList);
-        for i=1:length(presenceAbsenceCharNames)
-            fprintf('presenceAbsenceCharName : %s',char(presenceAbsenceCharNames(i)));
-        end
+        %for i=1:length(presenceAbsenceCharNames)
+        %    fprintf('presenceAbsenceCharName : %s',char(presenceAbsenceCharNames(i)));
+        %end
         
         %sddXMLFilePath = H.matrices.getSDDFilePath(H.chosenMatrix);
         %fullSddXMLFilePathForJava = getFullPathForJava(sddXMLFilePath);
@@ -1395,7 +1520,7 @@ function avatol_cv
     function showNextQuestionSequencerQuestion(nextAnswer)
         qquestion = H.questionSequencer.getCurrentQuestion();
         if (strcmp(qquestion.id,'NO_MORE_QUESTIONS'))
-            displayQuestionnaireCompleteScreen();
+            displayQuestionnaireCompleteScreenForceCRF();
         else
             displayAppropriateQuestion(qquestion);
             if (strcmp(nextAnswer,'NOT_YET_SPECIFIED'))
@@ -1411,7 +1536,7 @@ function avatol_cv
     function showCurrentQuestion(hObject, eventData)
         qquestion = H.questionSequencer.getCurrentQuestion();
         if (strcmp(qquestion.id,'NO_MORE_QUESTIONS'))
-            displayQuestionnaireCompleteScreen();
+            displayQuestionnaireCompleteScreenForceCRF();
         else
             displayAppropriateQuestion(qquestion);
         end

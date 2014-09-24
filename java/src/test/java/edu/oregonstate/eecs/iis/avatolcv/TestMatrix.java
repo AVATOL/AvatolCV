@@ -16,8 +16,9 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}*/
+	/*
 	@Test
-	public void testData() {
+	public void testDataUnix() {
 		try {
 		    MorphobankData md = new MorphobankData("/nfs/guille/tgd/users/irvine/matlabui/matrix_downloads");
 		    md.loadMatrix("BOGUS");
@@ -27,5 +28,16 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}
-	
+	*/
+	@Test
+	public void testDataWindows() {
+		try {
+		    MorphobankData md = new MorphobankData("C:\\avatol\\git\\avatol_cv\\matrix_downloads");
+		    md.loadMatrix("BOGUS");
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			fail(ex.getMessage());
+		}
+	}
 }

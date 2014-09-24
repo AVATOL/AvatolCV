@@ -16,6 +16,9 @@ public class Annotations {
 	private static final String NL = System.getProperty("line.separator");
 	private Hashtable<String, List<Annotation>> annotationsForCharacterHash = new Hashtable<String, List<Annotation>>();
 	private List<String> charactersTrained = new ArrayList<String>();
+	private Hashtable<String, String> inputFilepathForCharacterName = new Hashtable<String,String>();
+	private Hashtable<String, String> outputFilepathForCharacterName = new Hashtable<String,String>();
+	
 	public Annotations(List<MatrixCell> matrixCellsOfInterest, String bundleDir, MorphobankSDDFile sddFile) throws MorphobankDataException {
 		this.bundleDir = bundleDir;
         for (MatrixCell matrixCell : matrixCellsOfInterest){
@@ -88,6 +91,20 @@ public class Annotations {
 		}
 		return cellsToScore;
 	}
+	public String getInputFilepathForCharacter(String charName) throws MorphobankDataException {
+		String path = inputFilepathForCharacterName.get(charName);
+		if (null == path){
+			throw new MorphobankDataException("no inputFile pathname for character name: " + charName);
+		}
+		return path;
+	}
+	public String getOutputFilepathForCharacter(String charName) throws MorphobankDataException {
+		String path = outputFilepathForCharacterName.get(charName);
+		if (null == path){
+			throw new MorphobankDataException("no outputFile pathname for character name: " + charName);
+		}
+		return path;
+	}
 	  // sorted_input_data_<charID>_charName.txt
     // for each annotation file, add line
     // training_data:media/<name_of_mediafile>:char_state:<pathname_of_annotation_file>:taxonID:lineNumber
@@ -117,8 +134,12 @@ public class Annotations {
     		}
     		if (trainingDataLines.size() > 0){
     			String charName = sddFile.getCharacterNameForId(charId);
-                String filename = "sorted_input_data_" + charId + "_" + charName + ".txt";
-                String inputFilePathname = this.bundleDir + FILESEP + MorphobankBundle.INPUT_DIRNAME + FILESEP + filename;
+                String inputFilename = "sorted_input_data_" + charId + "_" + charName + ".txt";
+                String inputFilePathname = this.bundleDir + FILESEP + MorphobankBundle.INPUT_DIRNAME + FILESEP + inputFilename;
+                String outputFilename = "sorted_output_data_" + charId + "_" + charName + ".txt";
+                String outputFilePathname = this.bundleDir + FILESEP + MorphobankBundle.INPUT_DIRNAME + FILESEP + outputFilename;
+                this.inputFilepathForCharacterName.put(charName, inputFilePathname);
+                this.outputFilepathForCharacterName.put(charName, outputFilePathname);
                 File f = new File(inputFilePathname);
                 if (f.exists()){
                     f.delete();

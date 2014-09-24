@@ -53,7 +53,10 @@ classdef Algorithms  < handle
             end
         end
     
-         
+        % I will pass to shell list of simple-part char names, parent_path of input files, 
+        % and parent_output_path - he doesn't need to know the character of interest. They will all get scored
+        %
+        %
         % list_of_characters will be the list of basic presence/absence parts
         % input_path will point to folder containing sorted_input_data_<charID>_<charName>.txt 
         %   which has 
@@ -70,21 +73,15 @@ classdef Algorithms  < handle
         %       image_not_scored:media/<name_of_mediafile> 
         % detection_results_folder will point to folder where detection_results should be put (in same form as annotations
         
-        function invoke_dpm_system(obj, list_of_characters, input_folder, output_folder, detection_results_folder, progress_indicator) 
+        function invoke_the_dpm_system(obj, list_of_characters, input_folder, output_folder, detection_results_folder, progress_indicator) 
             invoke_batskull_system(list_of_characters, input_folder, output_folder, detection_results_folder);
         end
         
-		function invoke_algorithm(obj, alg, list_of_characters, input_folder, output_folder, detection_results_folder, progress_indicator)
-		    if strcmp(alg, 'DPM')
-			    invoke_dpm_system(list_of_characters, input_folder, output_folder, detection_results_folder, progress_indicator)
-			else
-			    invoke_crf_system(list_of_characters, input_folder, output_folder, detection_results_folder, progress_indicator)
-			end
-		end
-        
-        % same conventions as mentioned above invoke_batskull_system
-        function invoke_crf_system(obj, input_path, output_path) 
-            
+	
+        %   inputPath   : path/.../sorted_input_data_<charID>_<charName>.txt
+        %   outputPath  : path/.../sorted_output_data_<charID>_<charName>.txt
+        function invoke_the_crf_system(obj, input_path, output_path, options) 
+            invoke_crf_system( input_path, output_path, options )
         end
     end
     

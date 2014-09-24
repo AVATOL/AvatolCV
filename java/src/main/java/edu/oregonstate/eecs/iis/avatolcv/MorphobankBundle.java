@@ -7,6 +7,7 @@ public class MorphobankBundle {
     private static final String FILESEP = System.getProperty("file.separator");
     public static final String INPUT_DIRNAME = "input";
     public static final String MEDIA_DIRNAME = "media";
+    public static final String DETECTION_RESULTS_DIRNAME = "detection_results";
     
     private MorphobankSDDFile sddFile = null;
     private String dirName = null;
@@ -20,9 +21,20 @@ public class MorphobankBundle {
         createInputDataDir();
     	this.annotations = new Annotations(this.sddFile.getPresenceAbsenceCharacterCells(),this.dirName, this.sddFile);
     }
-  
+    public String getDetectionResultsPathname(){
+    	return this.dirName + FILESEP + DETECTION_RESULTS_DIRNAME + FILESEP;
+    }
+    public String getInputFilePathnameForCharacter(String characterName) throws MorphobankDataException {
+    	return this.annotations.getInputFilepathForCharacter(characterName);
+    }
+    public String getOutputFilePathnameForCharacter(String characterName) throws MorphobankDataException {
+    	return this.annotations.getOutputFilepathForCharacter(characterName);
+    }
+    public String getRootDir(){
+    	return this.dirName + FILESEP;
+    }
     public String getInputDataDir(){
-    	return this.dirName + FILESEP + "input";
+    	return this.dirName + FILESEP + INPUT_DIRNAME;
     }
     public void createInputDataDir(){
     	String inputDir = getInputDataDir();
