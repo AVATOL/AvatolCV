@@ -61,7 +61,7 @@ public class Annotation {
     	return this.pathname;
     }
     public String getTrainingDataLine(String mediaFilename, String taxonId){
-    	return "training_data:media/" + mediaFilename + ":" + 
-                    charState + ":" + charStateText + ":" + pathname + ":" + taxonId + ":" + lineNumber;          
+    	return "training_data|media/" + mediaFilename + "|" + 
+                    charState + "|" + charStateText + "|" + pathname + "|" + taxonId + "|" + lineNumber;          
     }
 }
