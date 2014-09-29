@@ -104,6 +104,9 @@ public class MorphobankSDDFile {
     	}
     	return charNames;
     }
+    public List<Character> getPresenceAbsenceCharacters(){
+    	return characters.getPresenceAbsenceCharacters();
+    }
     public List<MatrixCell> getPresenceAbsenceCharacterCells() {
     	List<Character> chars = characters.getPresenceAbsenceCharacters();
     	List<MatrixCell> allMatrixCells = new ArrayList<MatrixCell>();
