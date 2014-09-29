@@ -1,4 +1,15 @@
 function crfTest
+    if ispc
+        javaaddpath('.\\java\\lib');
+        javaaddpath('.\\java\\bin');
+    else
+        javaaddpath('java/bin');
+        javaaddpath('java/lib');
+    end
+    
+    import edu.oregonstate.eecs.iis.avatolcv.*
+    md = MorphobankData(java.lang.String('C:\\avatol\\git\\avatol_cv\\matrix_downloads'));
+    md.loadMatrix('BOGUS');
     inputFilePathname = 'C:\avatol\git\avatol_cv\matrix_downloads\BOGUS\input\sorted_input_data_c521244_Premaxilla body presence.txt';
     outputFilePathname = 'C:\avatol\git\avatol_cv\matrix_downloads\BOGUS\input\sorted_output_data_c521244_Premaxilla body presence.txt'
     options = struct;
