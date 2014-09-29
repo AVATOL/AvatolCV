@@ -939,27 +939,7 @@ function avatol_cv
         %    fprintf('presenceAbsenceCharName : %s',char(presenceAbsenceCharNames(i)));
         %end
         
-        %sddXMLFilePath = H.matrices.getSDDFilePath(H.chosenMatrix);
-        %fullSddXMLFilePathForJava = getFullPathForJava(sddXMLFilePath);
-        %matrix = Matrix(fullSddXMLFilePathForJava);
-        
-        %sddXMLFile = XMLFile(sddXMLFilePath);
-        %domNode = sddXMLFile.domNode;
-        %matrixCharacters = MatrixCharacters(domNode,H.chosenMatrix, H.matrixDir);
-        %    testCase.verifyEqual(matrixCharacters.characters(1).name,'GEN skull, dorsal margin, shape at juncture of braincase and rostrum in lateral view');
-        %    testCase.verifyEqual(matrixCharacters.characters(2).name,'GEN skull, posterior extension of alveolar line and occiput, intersection');
-        %characterClassList = matrixCharacters.charactersPresenceAbsence;
-        %characterNameList = {};
-        %for i=1:length(characterClassList)
-        %    charName = char(characterClassList(i).name);
-        %    characterNameList = [ characterNameList, charName ];
-        %end
-        %matrixCharacters.generateInputDataFiles();
-        %H.characterChoices = characterNameList;
-        H.characterChoices = presenceAbsenceCharNames;
-        set(H.characterChoice,'string',H.characterChoices);
-        %H.characterName = char(characterNameList(1));
-        set(H.characterChoice,'Value',H.characterChoiceIndex);
+      
        
         
             
@@ -975,15 +955,7 @@ function avatol_cv
                                      'Tag','tutorial' ,...
                                      'BackgroundColor', [0.5 0.5 0.5]);  
                                  
-        H.next = uicontrol('style', 'pushbutton' ,...
-                                     'Parent',H.navigationPanel,...
-                                     'Units','normalized',...
-                                     'String', 'Next' ,...
-                                     'position', getButtonPositionRightB() ,...
-                                     'FontName', H.fontname ,...
-                                     'FontSize', H.fontsize ,...
-                                     'Tag','next' ,...
-                                     'BackgroundColor', [0.5 0.5 0.5]);  
+        
         H.prev = uicontrol('style', 'pushbutton' ,...
                                      'String', 'Back' ,...
                                      'Units','normalized',...
@@ -993,14 +965,34 @@ function avatol_cv
                                      'Parent',H.navigationPanel,...
                                      'Tag','prev' ,...
                                      'BackgroundColor', [0.5 0.5 0.5]);  
+        if (length(presenceAbsenceCharNames) == 0)
+            set(H.characterChoicePrompt, 'string', 'No presence/absence characters with training data detected. Go back and try another matrix.');
+            H.activeControlTags = {'characterChoicePrompt', 'tutorial', 'prev' };
+        else 
+            H.next = uicontrol('style', 'pushbutton' ,...
+                                     'Parent',H.navigationPanel,...
+                                     'Units','normalized',...
+                                     'String', 'Next' ,...
+                                     'position', getButtonPositionRightB() ,...
+                                     'FontName', H.fontname ,...
+                                     'FontSize', H.fontsize ,...
+                                     'Tag','next' ,...
+                                     'BackgroundColor', [0.5 0.5 0.5]); 
+                                 
+            set(H.next, 'callback', {@showNextQuestion});
+            H.characterChoices = presenceAbsenceCharNames;
+            set(H.characterChoice,'string',H.characterChoices);
+            %H.characterName = char(characterNameList(1));
+            set(H.characterChoice,'Value',H.characterChoiceIndex);
+            H.activeControlTags = {'characterChoicePrompt', 'next', 'tutorial', 'prev' };
+        end
         %H.activeControlTags = {'characterChoice',  'characterChoicePrompt', 'next', 'tutorial', 'prev' };
-        H.activeControlTags = {'characterChoicePrompt', 'next', 'tutorial', 'prev' };
+        
         
         H.activeAnswerControl = H.characterChoice;
         H.activeQuestionId = 'characterQuestion';
         H.activeControlType = 'popupMenu';
         
-        set(H.next, 'callback', {@showNextQuestion});
         set(H.tutorial, 'callback', {@jumpToTutorial});
         set(H.prev, 'callback', {@showPrevQuestion});
         set(H.characterChoice, 'callback', {@setCharacterChoice});
@@ -1417,7 +1409,8 @@ function avatol_cv
             prevMatrixAnswer = H.questionSequencer.matrixName;
             % we know we're backing up to the matrix question, so it must
             % have a value to restore
-            setPopupMenuToValue(H.matrixChoice,H.matrices.matrixDirNames,prevMatrixAnswer);
+            matrixDirNames = javaStringListToMatlabCharList(H.morphobankData.getMatrixNames());
+            setPopupMenuToValue(H.matrixChoice,matrixDirNames,prevMatrixAnswer);
             %indexOfMatrixAnswer = find(ismember(H.matrices.matrixDirNames,prevMatrixAnswer));
             %set(H.matrixChoice,'value',indexOfMatrixAnswer);
         elseif H.questionSequencer.canBackUp()

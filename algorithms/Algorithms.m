@@ -74,7 +74,7 @@ classdef Algorithms  < handle
         % detection_results_folder will point to folder where detection_results should be put (in same form as annotations
         
         function invoke_the_dpm_system(obj, list_of_characters, input_folder, output_folder, detection_results_folder, progress_indicator) 
-            invoke_batskull_system(list_of_characters, input_folder, output_folder, detection_results_folder);
+            invoke_batskull_system(list_of_characters, input_folder, output_folder, detection_results_folder, progress_indicator);
         end
         
 	
