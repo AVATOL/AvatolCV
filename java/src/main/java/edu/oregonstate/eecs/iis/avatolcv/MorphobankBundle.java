@@ -1,6 +1,9 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +24,32 @@ public class MorphobankBundle {
     	erasePriorInputData();
         createInputDataDir();
     	this.annotations = new Annotations(this.sddFile.getPresenceAbsenceCharacterCells(),this.dirName, this.sddFile);
+        emitCharacterInfo();
+    }
+    public void emitCharacterInfo() throws MorphobankDataException {
+    	String tempCharsDir = dirName + FILESEP + "tempCharacters";
+    	File dir = new File(tempCharsDir);
+    	dir.mkdirs();
+    	try {
+    		List<Character> characters = sddFile.getPresenceAbsenceCharacters();
+        	for (Character character : characters){
+        		String name = character.getName();
+        		String noSlashName = name.replace("/","slash");
+            	noSlashName = noSlashName.replace("\\","backslash");
+        		String pathname = tempCharsDir + FILESEP + noSlashName + ".txt";
+        		File f = new File(pathname);
+        		if (f.exists()){
+        			f.delete();
+        		}
+        		BufferedWriter writer = new BufferedWriter(new FileWriter(pathname));
+        		writer.write(character.toString());
+        		writer.close();
+        	}
+    	}
+    	catch(IOException ioe){
+    		ioe.printStackTrace();
+    		throw new MorphobankDataException(" problem emitting character info - " + ioe.getMessage());
+    	}
     }
     public String getDetectionResultsPathname(){
     	return this.dirName + FILESEP + DETECTION_RESULTS_DIRNAME + FILESEP;
