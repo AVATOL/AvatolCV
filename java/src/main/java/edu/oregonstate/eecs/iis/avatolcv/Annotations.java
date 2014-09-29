@@ -134,7 +134,7 @@ public class Annotations {
     			for (String mediaId : mediaIds){
     				String mediaFilename = getMediaFilenameForMediaId(mediaId);
     				String taxonId = sddFile.getTaxonIdForMediaId(mediaId);
-        			String scoringDataLine = "image_to_score:media/" + mediaFilename + ":" + taxonId;
+        			String scoringDataLine = "image_to_score|media/" + mediaFilename + "|" + taxonId;
         			scoringDataLines.add(scoringDataLine);
     			}
     		}
