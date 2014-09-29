@@ -567,6 +567,8 @@ function avatol_cv
             
             hcsearch_dir = char(H.avatolSystem.getCrfDir());
             options.BASE_PATH = hcsearch_dir;
+            
+            options.PROGRESS_INDICATOR = H.progressIndicator;
             H.algorithms.invoke_the_crf_system(inputFilePathname, outputFilePathname, options);
         else
             H.algorithms.invoke_dpm_system(list_of_characters, input_folder, output_folder, detection_results_folder, H.progressIndicator);
