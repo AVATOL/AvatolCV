@@ -25,6 +25,7 @@ import org.w3c.dom.ls.LSSerializer;
 	%      </CategoricalCharacter>
  */
 public class Character {
+    private static final String NL = System.getProperty("line.separator");
     private String id = "notYetSet";
     private String name = "notYetSet";
     private List<CharacterState> characterStates = null;
@@ -138,5 +139,14 @@ public class Character {
     	else {
     		return false;
     	}
+    }
+    public String toString(){
+    	StringBuilder sb = new StringBuilder();
+    	sb.append(this.name + "," + this.id + NL);
+    	sb.append("states:" + NL);
+    	for (CharacterState state : this.characterStates){
+    		sb.append(state.getName() + NL);
+    	}
+    	return "" + sb;
     }
 }
