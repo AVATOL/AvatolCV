@@ -33,7 +33,8 @@ public class TestMatrix {
 	public void testDataWindows() {
 		try {
 		    MorphobankData md = new MorphobankData("C:\\avatol\\git\\avatol_cv\\matrix_downloads");
-		    md.loadMatrix("BOGUS");
+		    //md.loadMatrix("BOGUS");
+		    md.loadMatrix("BAT");
 		}
 		catch(Exception ex){
 			ex.printStackTrace();
