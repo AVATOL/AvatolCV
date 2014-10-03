@@ -12,6 +12,7 @@ import java.util.List;
 
 public class Annotations {
 	private String bundleDir = null;
+	private Media media = null;
 	private static final String FILESEP = System.getProperty("file.separator");
 	private static final String NL = System.getProperty("line.separator");
 	private Hashtable<String, List<Annotation>> annotationsForCharacterHash = new Hashtable<String, List<Annotation>>();
@@ -19,8 +20,9 @@ public class Annotations {
 	private Hashtable<String, String> inputFilepathForCharacterName = new Hashtable<String,String>();
 	private Hashtable<String, String> outputFilepathForCharacterName = new Hashtable<String,String>();
 	
-	public Annotations(List<MatrixCell> matrixCellsOfInterest, String bundleDir, MorphobankSDDFile sddFile) throws MorphobankDataException {
+	public Annotations(List<MatrixCell> matrixCellsOfInterest, String bundleDir, MorphobankSDDFile sddFile, Media media) throws MorphobankDataException {
 		this.bundleDir = bundleDir;
+		this.media = media;
         for (MatrixCell matrixCell : matrixCellsOfInterest){
         	List<String> mediaIds = matrixCell.getMediaIds();
         	for (String mediaId : mediaIds){
@@ -53,22 +55,6 @@ public class Annotations {
 		}
 		return true;
 	}
-	public String getMediaFilenameForMediaId(String id) throws MorphobankDataException {
-		String filename = null;
-        String mediaDir = this.bundleDir + FILESEP +  MorphobankBundle.MEDIA_DIRNAME;
-        String mediaIdPrefix = id.replace('m', 'M');
-        String[] filenames = new File(mediaDir).list();
-        for (int i=0; i < filenames.length; i++){
-        	String candidateFilename = filenames[i];
-        	if (candidateFilename.startsWith(mediaIdPrefix)){
-        		filename = candidateFilename;
-        	}
-        }
-        if (null == filename){
-        	throw new MorphobankDataException("no mediaFile present for media id " + id);
-        }
-        return filename;
-    }
 	
 	public boolean isMatrixCellRepresentedByAnyAnnotation(MatrixCell cell, List<Annotation> annotations){
 		String charIdFromCell = cell.getCharId();
@@ -122,7 +108,7 @@ public class Annotations {
     		List<String> scoringDataLines = new ArrayList<String>();
     		List<Annotation> annotationsForCharacter = this.annotationsForCharacterHash.get(charId);
     		for (Annotation annotation : annotationsForCharacter){
-    			String mediaFileName = getMediaFilenameForMediaId(annotation.getMediaId());
+    			String mediaFileName = this.media.getMediaFilenameForMediaId(annotation.getMediaId());
     			String taxonId = sddFile.getTaxonIdForMediaId(annotation.getMediaId());
     			String trainingDataLine = annotation.getTrainingDataLine(mediaFileName, taxonId);
     			trainingDataLines.add(trainingDataLine);
@@ -132,7 +118,7 @@ public class Annotations {
     		for (MatrixCell cell : matrixCellsToScore){
     			List<String> mediaIds = cell.getMediaIds();
     			for (String mediaId : mediaIds){
-    				String mediaFilename = getMediaFilenameForMediaId(mediaId);
+    				String mediaFilename = this.media.getMediaFilenameForMediaId(mediaId);
     				String taxonId = sddFile.getTaxonIdForMediaId(mediaId);
         			String scoringDataLine = "image_to_score|media/" + mediaFilename + "|" + taxonId;
         			scoringDataLines.add(scoringDataLine);

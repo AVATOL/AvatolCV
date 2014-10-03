@@ -30,6 +30,47 @@ public class Matrix {
     	}
     	
     }
+    public List<String> getImageNamesForSpecialCase(){
+    	ArrayList<String> result = new ArrayList<String>();
+    	//Thyroptera tricolor 268577
+    	//<CategoricalCharacter id='c427749'><Representation><Label>Upper I1 presence</Label><
+    	MatrixRow row = matrixRowForTaxonMap.get("t281047");
+    	MatrixCell cell = row.getCellForCharacter("c427753");
+    	result.addAll(cell.getMediaIds());
+    	row = matrixRowForTaxonMap.get("t281048");
+    	cell = row.getCellForCharacter("c427753");
+    	result.addAll(cell.getMediaIds());
+    	
+    	row = matrixRowForTaxonMap.get("t281049");
+    	cell = row.getCellForCharacter("c427753");
+    	result.addAll(cell.getMediaIds());
+    	
+    	row = matrixRowForTaxonMap.get("t281050");
+    	cell = row.getCellForCharacter("c427753");
+    	result.addAll(cell.getMediaIds());
+    	
+        row = matrixRowForTaxonMap.get("t281051");
+    	cell = row.getCellForCharacter("c427753");
+    	result.addAll(cell.getMediaIds());
+    	
+    	row = matrixRowForTaxonMap.get("t281052");
+    	cell = row.getCellForCharacter("c427753");
+    	result.addAll(cell.getMediaIds());
+    	
+    	row = matrixRowForTaxonMap.get("t281053");
+    	cell = row.getCellForCharacter("c427753");
+    	result.addAll(cell.getMediaIds());
+    	
+    	row = matrixRowForTaxonMap.get("t281054");
+    	cell = row.getCellForCharacter("c427753");
+    	result.addAll(cell.getMediaIds());
+    	
+    	row = matrixRowForTaxonMap.get("t281055");
+    	cell = row.getCellForCharacter("c427753");
+    	result.addAll(cell.getMediaIds());
+    	
+        return result;
+    }
     public List<String> loadCharIdsFromAllRows(){
     	List<String> allCharIds = new ArrayList<String>();
     	for (String taxonId : taxonIds){

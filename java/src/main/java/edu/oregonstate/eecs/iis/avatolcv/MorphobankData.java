@@ -18,7 +18,7 @@ public class MorphobankData {
 	private Hashtable<String, MorphobankBundle> bundleForName = new Hashtable<String, MorphobankBundle>();
 	
 	public MorphobankData(String parentDirPath) throws MorphobankDataException {
-		System.setProperty("log4j.configuration","/nfs/guille/tgd/users/irvine/matlabui/java/lib/log4j.properties");
+		//System.setProperty("log4j.configuration","/nfs/guille/tgd/users/irvine/matlabui/java/lib/log4j.properties");
 		logger = LoggerFactory.getLogger(MorphobankData.class);
     	this.parentDirPath = parentDirPath;
     	File parentDir = new File(parentDirPath);

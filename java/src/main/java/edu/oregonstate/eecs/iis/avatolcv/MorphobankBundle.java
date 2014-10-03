@@ -9,13 +9,14 @@ import java.util.List;
 
 public class MorphobankBundle {
     private static final String FILESEP = System.getProperty("file.separator");
+    private static final String NL = System.getProperty("line.separator");
     public static final String INPUT_DIRNAME = "input";
-    public static final String MEDIA_DIRNAME = "media";
     public static final String DETECTION_RESULTS_DIRNAME = "detection_results";
     
     private MorphobankSDDFile sddFile = null;
     private String dirName = null;
     private Annotations annotations = null;
+    private Media media = null;
     
     public MorphobankBundle(String dirName) throws MorphobankDataException {
     	this.dirName = dirName;
@@ -23,8 +24,50 @@ public class MorphobankBundle {
     	this.sddFile = new MorphobankSDDFile(sddPath);
     	erasePriorInputData();
         createInputDataDir();
-    	this.annotations = new Annotations(this.sddFile.getPresenceAbsenceCharacterCells(),this.dirName, this.sddFile);
+        this.media = new Media(this.dirName);
+    	this.annotations = new Annotations(this.sddFile.getPresenceAbsenceCharacterCells(),this.dirName, this.sddFile, this.media);
         emitCharacterInfo();
+        integrityCheck();
+        findImagesForBAT();
+        
+    }
+    public void findImagesForBAT() throws MorphobankDataException {
+    	List<String> mediaIds = sddFile.getMatrix().getImageNamesForSpecialCase();
+    	for (String mediaId : mediaIds){
+    		String name = this.media.getMediaFilenameForMediaId(mediaId);
+    		System.out.println("BAT image candidate : " + name);
+    	}
+    	
+    }
+    public void integrityCheck() throws MorphobankDataException {
+    	try {
+    		String pathname = this.dirName + FILESEP + "integrityCheck.txt";
+        	File f = new File(pathname);
+        	if (f.exists()){
+        		f.delete();
+        	}
+        	BufferedWriter writer = new BufferedWriter(new FileWriter(pathname));
+        	List<Character> characters = this.sddFile.getPresenceAbsenceCharacters();
+        	for (Character character : characters){
+        		writer.write("character " + character.getId() + " " + character.getName() + NL);
+            	List<MatrixCell> cellsForCharacter = this.sddFile.getPresenceAbsenceCellsForCharacter(character.getId());
+            	for (MatrixCell cell : cellsForCharacter){
+            		List<String> mediaIdsForCell = cell.getMediaIds();
+            		for (String mediaId : mediaIdsForCell){
+            			if (!this.media.isMediaIdBackedByMediaFile(mediaId)){
+            				writer.write("...media missing : " + mediaId + NL);
+            			}
+            		}
+            	}
+        	}
+        	writer.close();
+    	}
+    	catch(IOException ioe){
+    		ioe.printStackTrace();
+    		throw new MorphobankDataException("problem during integrity check: " + ioe.getMessage());
+    	}
+    	
+    	 
     }
     public void emitCharacterInfo() throws MorphobankDataException {
     	String tempCharsDir = dirName + FILESEP + "tempCharacters";

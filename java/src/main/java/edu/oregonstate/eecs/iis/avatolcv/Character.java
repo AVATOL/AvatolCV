@@ -126,10 +126,10 @@ public class Character {
     		String name = state.getName();
     		name = name.trim();
     		name = name.toLowerCase();
-    		if ("present".equals(name)){
+    		if ("present".equals(name) || name.endsWith("present")){
     			presentFound = true;
     		}
-    		else if ("absent".equals(name)){
+    		else if ("absent".equals(name) || name.endsWith("absent")){
     			absentFound = true;
     		}
     	}

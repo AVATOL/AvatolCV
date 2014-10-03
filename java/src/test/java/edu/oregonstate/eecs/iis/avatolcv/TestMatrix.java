@@ -16,19 +16,19 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}*/
-	/*
+	
 	@Test
 	public void testDataUnix() {
 		try {
-		    MorphobankData md = new MorphobankData("/nfs/guille/tgd/users/irvine/matlabui/matrix_downloads");
-		    md.loadMatrix("BOGUS");
+		    MorphobankData md = new MorphobankData("/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/matrix_downloads");
+		    md.loadMatrix("BAT");
 		}
 		catch(Exception ex){
 			ex.printStackTrace();
 			fail(ex.getMessage());
 		}
 	}
-	*/
+	/*
 	@Test
 	public void testDataWindows() {
 		try {
@@ -41,4 +41,5 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}
+	*/
 }
