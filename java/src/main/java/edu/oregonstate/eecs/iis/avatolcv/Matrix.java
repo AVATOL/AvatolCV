@@ -6,13 +6,15 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class Matrix {
-	private List<String> taxonIds = new ArrayList<String>();
-	private List<String> charIds = new ArrayList<String>();
-	private Hashtable<String,MatrixRow> matrixRowForTaxonMap = new Hashtable<String, MatrixRow>();
+	protected List<String> taxonIds = new ArrayList<String>();
+	protected List<String> charIds = new ArrayList<String>();
+	protected Hashtable<String,MatrixRow> matrixRowForTaxonMap = new Hashtable<String, MatrixRow>();
+	protected Hashtable<String, String> taxonsForMediaId = new Hashtable<String, String>();
 	
     public Matrix(Document doc) throws MorphobankDataException {
     	NodeList nodes = doc.getElementsByTagName("CodedDescription");
@@ -26,9 +28,27 @@ public class Matrix {
     	this.charIds = loadCharIdsFromAllRows();
     	for (String taxonId : taxonIds){
     		MatrixRow row = matrixRowForTaxonMap.get(taxonId);
-    		System.out.println("column count for row " + taxonId + " is " + row.getColumnCount());
+    		//System.out.println("column count for row " + taxonId + " is " + row.getColumnCount());
     	}
-    	
+    }
+    public String getTaxonIdForMediaId(String mediaId) throws MorphobankDataException {
+    	String taxonId = taxonsForMediaId.get(mediaId);
+    	if (null == taxonId){
+    		throw new MorphobankDataException("no taxonId available for mediaId " + mediaId);
+    	}
+    	return taxonId;
+    }
+    /*
+     * loadTaxonsForMediaOld which looked through specimen nodes, was found to not always work.  New version uses matrix data instead.
+     */
+    public void loadTaxonsForMedia()throws MorphobankDataException{
+    	for (String taxon : this.taxonIds){
+    		MatrixRow row = matrixRowForTaxonMap.get(taxon);
+    		List<String> mediaIds = row.getAllMediaIds();
+    		for (String mediaId : mediaIds){
+    			this.taxonsForMediaId.put(mediaId, taxon);
+    		}
+    	}
     }
     public List<String> getImageNamesForSpecialCase(){
     	ArrayList<String> result = new ArrayList<String>();
@@ -84,7 +104,7 @@ public class Matrix {
         	}
     	}
     	Collections.sort(allCharIds);
-    	System.out.println("charId count is " + allCharIds.size());
+    	//System.out.println("charId count is " + allCharIds.size());
     	return allCharIds;
     }
     public List<MatrixCell> getCellsForCharacter(String charId) {

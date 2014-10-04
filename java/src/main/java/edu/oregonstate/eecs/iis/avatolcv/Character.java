@@ -72,7 +72,7 @@ public class Character {
      * brute force the search.
      */
     public String loadName(Node catCharNode) throws MorphobankDataException {
-    	System.out.println("loading name for character..." + this.id);
+    	//System.out.println("loading name for character..." + this.id);
     	Node representationNode = getChildNodeNamed("Representation", catCharNode, this.document);
     	Node labelNode = getChildNodeNamed("Label",representationNode, this.document);
     	return labelNode.getTextContent();	
@@ -83,7 +83,7 @@ public class Character {
      * brute force the search using the new loadName method.
      */
     public String loadNameOrig(Node catCharNode) throws MorphobankDataException {
-    	System.out.println("loading name for character..." + this.id);
+    	//System.out.println("loading name for character..." + this.id);
     	DOMImplementationLS domImplLS = (DOMImplementationLS) document.getImplementation();
     	LSSerializer serializer = domImplLS.createLSSerializer();
     	String str = serializer.writeToString(catCharNode);

@@ -71,6 +71,19 @@ public class MatrixRow {
     		}
     	}
     }
+    public List<String> getAllMediaIds(){
+    	ArrayList<String> mediaIds = new ArrayList<String>();
+    	for (String charId : this.charIds){
+    		MatrixCell cell = this.matrixCellsForCharacter.get(charId);
+    		List<String> cellMediaIds = cell.getMediaIds();
+    		for (String cellMediaId : cellMediaIds){
+    			if (!mediaIds.contains(cellMediaId)){
+    				mediaIds.add(cellMediaId);
+    			}
+    		}
+    	}
+    	return mediaIds;
+    }
     public void setTaxonNameFromRepresentationNode(Node node){
     	Node labelNode = node.getFirstChild();
     	this.taxonName = labelNode.getTextContent();

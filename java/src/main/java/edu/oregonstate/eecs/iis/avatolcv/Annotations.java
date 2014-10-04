@@ -108,10 +108,12 @@ public class Annotations {
     		List<String> scoringDataLines = new ArrayList<String>();
     		List<Annotation> annotationsForCharacter = this.annotationsForCharacterHash.get(charId);
     		for (Annotation annotation : annotationsForCharacter){
-    			String mediaFileName = this.media.getMediaFilenameForMediaId(annotation.getMediaId());
-    			String taxonId = sddFile.getTaxonIdForMediaId(annotation.getMediaId());
-    			String trainingDataLine = annotation.getTrainingDataLine(mediaFileName, taxonId);
-    			trainingDataLines.add(trainingDataLine);
+    			String mediaFilename = this.media.getMediaFilenameForMediaId(annotation.getMediaId());
+    			if (null != mediaFilename){
+    				String taxonId = sddFile.getTaxonIdForMediaId(annotation.getMediaId());
+        			String trainingDataLine = annotation.getTrainingDataLine(mediaFilename, taxonId);
+        			trainingDataLines.add(trainingDataLine);
+    			}
     		}
     		List<MatrixCell> allMatrixCellsForTrainedCharacter = sddFile.getPresenceAbsenceCellsForCharacter(charId);
     		List<MatrixCell> matrixCellsToScore = getCellsToScore(allMatrixCellsForTrainedCharacter, annotationsForCharacter);
@@ -119,9 +121,12 @@ public class Annotations {
     			List<String> mediaIds = cell.getMediaIds();
     			for (String mediaId : mediaIds){
     				String mediaFilename = this.media.getMediaFilenameForMediaId(mediaId);
-    				String taxonId = sddFile.getTaxonIdForMediaId(mediaId);
-        			String scoringDataLine = "image_to_score|media/" + mediaFilename + "|" + taxonId;
-        			scoringDataLines.add(scoringDataLine);
+    				if (null != mediaFilename){
+    					String taxonId = sddFile.getTaxonIdForMediaId(mediaId);
+            			String scoringDataLine = "image_to_score|media/" + mediaFilename + "|" + taxonId;
+            			scoringDataLines.add(scoringDataLine);
+    				}
+    				
     			}
     		}
     		if (trainingDataLines.size() > 0){

@@ -21,24 +21,36 @@ public class MorphobankBundle {
     public MorphobankBundle(String dirName) throws MorphobankDataException {
     	this.dirName = dirName;
     	String sddPath = getSDDFilePath(dirName);
-    	this.sddFile = new MorphobankSDDFile(sddPath);
+    	SPRTaxonIdMapper mapper = null;
+    	if (isSpecimenPerRowBundle()){
+    		mapper = new SPRTaxonIdMapper(sddPath);
+    	}
+    	this.sddFile = new MorphobankSDDFile(sddPath, mapper);
     	erasePriorInputData();
         createInputDataDir();
         this.media = new Media(this.dirName);
     	this.annotations = new Annotations(this.sddFile.getPresenceAbsenceCharacterCells(),this.dirName, this.sddFile, this.media);
         emitCharacterInfo();
         integrityCheck();
-        findImagesForBAT();
+        //findImagesForBAT();
         
     }
-    public void findImagesForBAT() throws MorphobankDataException {
-    	List<String> mediaIds = sddFile.getMatrix().getImageNamesForSpecialCase();
-    	for (String mediaId : mediaIds){
-    		String name = this.media.getMediaFilenameForMediaId(mediaId);
-    		System.out.println("BAT image candidate : " + name);
+    public boolean isSpecimenPerRowBundle(){
+    	String path = this.dirName + FILESEP + "specimenPerRowMarker.txt";
+    	File f = new File(path);
+    	if (f.exists()){
+    		return true;
     	}
-    	
+    	return false;
     }
+    //public void findImagesForBAT() throws MorphobankDataException {
+    //	List<String> mediaIds = sddFile.getMatrix().getImageNamesForSpecialCase();
+    //	for (String mediaId : mediaIds){
+    //		String name = this.media.getMediaFilenameForMediaId(mediaId);
+    		//System.out.println("BAT image candidate : " + name);
+    //	}
+    	
+    //}
     public void integrityCheck() throws MorphobankDataException {
     	try {
     		String pathname = this.dirName + FILESEP + "integrityCheck.txt";

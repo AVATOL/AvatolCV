@@ -20,28 +20,31 @@ public class MorphobankSDDFile {
 	private String pathname;
 	private Matrix matrix;
 	private Characters characters;
-	private Hashtable<String, String> taxonsForMediaId = new Hashtable<String, String>();
+	
 	
 	private Document document = null;
-    public MorphobankSDDFile(String pathname) throws MorphobankDataException {
+    public MorphobankSDDFile(String pathname, SPRTaxonIdMapper mapper) throws MorphobankDataException {
     	this.pathname = pathname;
     	this.document = getDocumentFromPathname(pathname);
-    	this.matrix = new Matrix(this.document);
+    	if (null != mapper){
+    		this.matrix = new SPRMatrix(this.document, mapper);
+    	}
+    	else {
+    		this.matrix = new Matrix(this.document);
+    	}
+    	this.matrix.loadTaxonsForMedia();
     	this.characters = new Characters(this.document);
-    	loadTaxonsForMedia();
+    	
     	
     }
    
     public String getTaxonIdForMediaId(String mediaId) throws MorphobankDataException {
-    	String taxonId = taxonsForMediaId.get(mediaId);
-    	if (null == taxonId){
-    		throw new MorphobankDataException("no taxonId available for mediaId " + mediaId);
-    	}
-    	return taxonId;
+    	return this.matrix.getTaxonIdForMediaId(mediaId);
     }
     public Matrix getMatrix(){
     	return this.matrix;
     }
+    
     /*
      * <Specimens>
 		<Specimen id='s25176'>
@@ -56,9 +59,9 @@ public class MorphobankSDDFile {
 		    </Representation>
 		    <TaxonName ref='t171056'/>
 		</Specimen>
-     */
-    
-    public void loadTaxonsForMedia()throws MorphobankDataException{
+     
+    // this was found to not always work and so Matrix now handles this association
+    public void loadTaxonsForMediaOld()throws MorphobankDataException{
     	NodeList specimens = this.document.getElementsByTagName("Specimen");
         for (int i=0; i < specimens.getLength(); i++){
         	Node specimenNode = specimens.item(i);
@@ -70,11 +73,12 @@ public class MorphobankSDDFile {
             for (int j=0; j < mediaNodes.getLength(); j++){
             	Node mediaNode = mediaNodes.item(j);
                 String mediaId = mediaNode.getAttributes().getNamedItem("ref").getNodeValue();
+                System.out.println("associating media and taxon : " + taxonId + " - " + mediaId);
                 this.taxonsForMediaId.put(mediaId,taxonId);
             }
         }
-    }
-    public Document getDocumentFromPathname(String path) throws MorphobankDataException {
+    }*/
+    public static Document getDocumentFromPathname(String path) throws MorphobankDataException {
     	try {
     		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         	DocumentBuilder db = dbf.newDocumentBuilder(); 
@@ -100,7 +104,7 @@ public class MorphobankSDDFile {
     	List<Character> chars = characters.getPresenceAbsenceCharacters();
     	for (Character aChar : chars){
     		String name = aChar.getName();
-    		System.out.println("name : " + name);
+    		//System.out.println("name : " + name);
     		charNames.add(name);
     	}
     	return charNames;

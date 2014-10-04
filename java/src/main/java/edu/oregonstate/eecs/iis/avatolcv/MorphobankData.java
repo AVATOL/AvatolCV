@@ -36,7 +36,7 @@ public class MorphobankData {
     		}
     		else if (candidateDir.isDirectory()){
     			logger.info("Adding matrix dir name {}.", candidateDir.getName());
-    			System.out.println("Should have logged : Adding matrix dir name...");
+    			//System.out.println("Should have logged : Adding matrix dir name...");
     			matrixDirNames.add(candidateDir.getName());
     		}
     		else {
