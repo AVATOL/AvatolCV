@@ -19,7 +19,7 @@ public class SPRMatrix extends Matrix {
 	    MatrixRow row = matrixRowForTaxonMap.get(taxon);
 	    	List<String> mediaIds = row.getAllMediaIds();
 	    	for (String mediaId : mediaIds){
-	    		String actualTaxonId = this.taxonIdMapper.getNormalizedTaxonId(taxon);
+	    		String actualTaxonId = taxonIdMapper.getNormalizedTaxonId(taxon);
 	    		this.taxonsForMediaId.put(mediaId, actualTaxonId);
 	    	}
 	    }
