@@ -11,7 +11,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class Matrix {
-	protected List<String> taxonIds = new ArrayList<String>();
+	protected List<String> rowIds = new ArrayList<String>();
 	protected List<String> charIds = new ArrayList<String>();
 	protected Hashtable<String,MatrixRow> matrixRowForTaxonMap = new Hashtable<String, MatrixRow>();
 	protected Hashtable<String, String> taxonsForMediaId = new Hashtable<String, String>();
@@ -22,12 +22,12 @@ public class Matrix {
     		Node codedDescription = nodes.item(i);
     		MatrixRow matrixRow = new MatrixRow(codedDescription);
     		String taxonId = matrixRow.getTaxonId();
-    		taxonIds.add(taxonId);
+    		rowIds.add(taxonId);
     		matrixRowForTaxonMap.put(taxonId, matrixRow);
     	}
     	this.charIds = loadCharIdsFromAllRows();
-    	for (String taxonId : taxonIds){
-    		MatrixRow row = matrixRowForTaxonMap.get(taxonId);
+    	for (String rowId : rowIds){
+    		MatrixRow row = matrixRowForTaxonMap.get(rowId);
     		//System.out.println("column count for row " + taxonId + " is " + row.getColumnCount());
     	}
     }
@@ -42,11 +42,11 @@ public class Matrix {
      * loadTaxonsForMediaOld which looked through specimen nodes, was found to not always work.  New version uses matrix data instead.
      */
     public void loadTaxonsForMedia()throws MorphobankDataException{
-    	for (String taxon : this.taxonIds){
-    		MatrixRow row = matrixRowForTaxonMap.get(taxon);
+    	for (String rowId : this.rowIds){
+    		MatrixRow row = matrixRowForTaxonMap.get(rowId);
     		List<String> mediaIds = row.getAllMediaIds();
     		for (String mediaId : mediaIds){
-    			this.taxonsForMediaId.put(mediaId, taxon);
+    			this.taxonsForMediaId.put(mediaId, rowId);
     		}
     	}
     }
@@ -93,7 +93,7 @@ public class Matrix {
     }
     public List<String> loadCharIdsFromAllRows(){
     	List<String> allCharIds = new ArrayList<String>();
-    	for (String taxonId : taxonIds){
+    	for (String taxonId : rowIds){
     		MatrixRow row = matrixRowForTaxonMap.get(taxonId);
     		List<String> charIds = row.getCharacterIds();
 
@@ -109,8 +109,8 @@ public class Matrix {
     }
     public List<MatrixCell> getCellsForCharacter(String charId) {
     	List<MatrixCell> cells = new ArrayList<MatrixCell>();
-    	for (String taxonId : taxonIds){
-    		MatrixRow matrixRow = matrixRowForTaxonMap.get(taxonId);
+    	for (String rowId : rowIds){
+    		MatrixRow matrixRow = matrixRowForTaxonMap.get(rowId);
     		MatrixCell cell = matrixRow.getCellForCharacter(charId);
     		if (null != cell){
     			cells.add(cell);

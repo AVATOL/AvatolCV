@@ -2,6 +2,9 @@ package edu.oregonstate.eecs.iis.avatolcv;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 public class TestMatrix {
@@ -22,6 +25,11 @@ public class TestMatrix {
 		try {
 		    MorphobankData md = new MorphobankData("/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/matrix_downloads");
 		    md.loadMatrix("BAT");
+		    MorphobankBundle bundle = md.getBundle("BAT");
+		    ArrayList<String> charIds = new ArrayList<String>();
+		    charIds.add("c427749");
+		    bundle.filterInputsByView(charIds, "v3540", "DPM");
+		    
 		}
 		catch(Exception ex){
 			ex.printStackTrace();

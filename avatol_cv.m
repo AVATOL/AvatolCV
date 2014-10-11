@@ -533,7 +533,7 @@ function avatol_cv
             showRunAlgorithmButton = true;
 			H.algorithmChosen = 'CRF';
         elseif (true)
-            message = 'DPM algorithm has been chosen for scoring.  Press Next to answer additional questions
+            message = 'DPM algorithm has been chosen for scoring.  Press Next to answer additional questions';
             
             HERE NEED TO DO SOMETHING ELSE - HOW ABOUT ???
             showRunAlgorithmButton = false;

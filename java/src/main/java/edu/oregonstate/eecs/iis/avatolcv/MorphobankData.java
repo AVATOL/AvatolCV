@@ -55,10 +55,13 @@ public class MorphobankData {
 		int javaIndex = matlabIndex - 1;
 		return this.matrixDirNames.get(javaIndex);
 	}
-	public MorphobankBundle loadMatrix(String name) throws MorphobankDataException {
+	public MorphobankBundle loadMatrix(String name) throws MorphobankDataException, AvatolCVException  {
 		String fullpath = parentDirPath + FILESEP + name;
 		MorphobankBundle mbb = new MorphobankBundle(fullpath);
 		bundleForName.put(name, mbb);
 		return mbb;
+	}
+	public MorphobankBundle getBundle(String bundleName){
+		return this.bundleForName.get(bundleName);
 	}
 }

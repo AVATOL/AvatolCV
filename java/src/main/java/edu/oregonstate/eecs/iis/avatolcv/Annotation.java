@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
 public class Annotation {
+	public static final String ANNOTATION_DELIM = "|";
     private String coordinateList;
     private String type;
     private String charId;
@@ -61,7 +62,7 @@ public class Annotation {
     	return this.pathname;
     }
     public String getTrainingDataLine(String mediaFilename, String taxonId){
-    	return "training_data|media/" + mediaFilename + "|" + 
-                    charState + "|" + charStateText + "|" + pathname + "|" + taxonId + "|" + lineNumber;          
+    	return "training_data" + ANNOTATION_DELIM + "media/" + mediaFilename + ANNOTATION_DELIM + 
+                    charState + ANNOTATION_DELIM + charStateText + ANNOTATION_DELIM + pathname + ANNOTATION_DELIM + taxonId + ANNOTATION_DELIM + lineNumber;          
     }
 }

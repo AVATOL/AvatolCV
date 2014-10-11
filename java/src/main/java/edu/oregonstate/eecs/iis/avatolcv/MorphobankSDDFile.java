@@ -1,7 +1,11 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -21,6 +25,7 @@ public class MorphobankSDDFile {
 	private Matrix matrix;
 	private Characters characters;
 	
+	private Hashtable<String,String> viewsForImage = new Hashtable<String,String>();
 	
 	private Document document = null;
     public MorphobankSDDFile(String pathname, SPRTaxonIdMapper mapper) throws MorphobankDataException {
@@ -34,10 +39,73 @@ public class MorphobankSDDFile {
     	}
     	this.matrix.loadTaxonsForMedia();
     	this.characters = new Characters(this.document);
-    	
+    	loadViewsForImage(this.document);
     	
     }
-   
+    public void feedMessageDigestSDDContent(MessageDigest m) throws AvatolCVException {
+    	try {
+    		BufferedReader reader = new BufferedReader(new FileReader(this.pathname));
+    		String line = null;
+    		while((line = reader.readLine()) != null){
+    			m.update(line.getBytes());
+    		}
+    		reader.close();
+    	}
+    	catch(FileNotFoundException fnfe){
+    		throw new AvatolCVException("SDD not found : " + this.pathname);
+    	}
+    	catch(IOException ioe){
+    		throw new AvatolCVException("Problem loading SDD file : " + this.pathname);
+    	}
+    }
+    /*
+     * <MediaObject id='m151500'>
+     *       <Representation>
+     *           <Label>Artibeus jamaicensis 210891 (AMNH/Mammalogy:210891)</Label>
+     *           <DescriptiveConcept ref="v6825"/>
+     *       </Representation>
+     *       <Type>image/jpeg</Type>
+     *       <Data href="file:/media/M151500_"/>
+     * </MediaObject>
+     */
+    
+    public String getViewIdFromMediaObject(Node mediaObjectNode)  {
+    	NodeList nodes = mediaObjectNode.getChildNodes();
+    	for (int i = 0; i < nodes.getLength(); i++){
+    		Node node = nodes.item(i);
+    		if (node.getNodeName().equals("Representation")){
+    			NodeList children = node.getChildNodes();
+    			for (int j = 0; j < children.getLength(); j++){
+    				Node candidate = children.item(j);
+    				if (candidate.getNodeName().equals("DescriptiveConcept")){
+    					String viewId = candidate.getAttributes().getNamedItem("ref").getNodeValue();
+    					return viewId;
+    				}
+    			}
+    		}
+    	}
+    	return null;
+    }
+    public void loadViewsForImage(Document doc){
+    	NodeList nodes = doc.getElementsByTagName("MediaObjects");
+    	for (int i = 0; i < nodes.getLength(); i++){
+    		Node mediaObjectsNode = nodes.item(i);
+    		NodeList children = mediaObjectsNode.getChildNodes();
+    		for (int j = 0; j < children.getLength(); j++){
+    			Node candidate = children.item(j);
+    			if (candidate.getNodeName().equals("MediaObject")){
+    				String mediaId = candidate.getAttributes().getNamedItem("id").getNodeValue();
+    				String viewId = getViewIdFromMediaObject(candidate);
+    				if (null == viewId){
+    					viewsForImage.put(mediaId, "viewNotSpecified");
+    				}
+    				else {
+    					viewsForImage.put(mediaId, viewId);
+    				}
+    			}
+    		}
+    	}
+    }
     public String getTaxonIdForMediaId(String mediaId) throws MorphobankDataException {
     	return this.matrix.getTaxonIdForMediaId(mediaId);
     }
@@ -136,5 +204,17 @@ public class MorphobankSDDFile {
     }
     public String getCharacterNameForId(String id){
     	return this.characters.getCharacterNameForId(id);
+    }
+    public boolean isMediaOfView(String mediaId, String viewId){
+    	String mappedView = this.viewsForImage.get(mediaId);
+    	if (null == mappedView){
+    		return false;
+    	}
+    	else {
+    		if (mappedView.equals(viewId)){
+    			return true;
+    		}
+    	}
+    	return false;
     }
 }

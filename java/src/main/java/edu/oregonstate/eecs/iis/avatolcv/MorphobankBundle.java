@@ -10,15 +10,15 @@ import java.util.List;
 public class MorphobankBundle {
     private static final String FILESEP = System.getProperty("file.separator");
     private static final String NL = System.getProperty("line.separator");
-    public static final String INPUT_DIRNAME = "input";
     public static final String DETECTION_RESULTS_DIRNAME = "detection_results";
     
     private MorphobankSDDFile sddFile = null;
     private String dirName = null;
     private Annotations annotations = null;
     private Media media = null;
+    private InputFiles inputFiles = null;
     
-    public MorphobankBundle(String dirName) throws MorphobankDataException {
+    public MorphobankBundle(String dirName) throws MorphobankDataException, AvatolCVException  {
     	this.dirName = dirName;
     	String sddPath = getSDDFilePath(dirName);
     	SPRTaxonIdMapper mapper = null;
@@ -26,10 +26,11 @@ public class MorphobankBundle {
     		mapper = new SPRTaxonIdMapper(sddPath);
     	}
     	this.sddFile = new MorphobankSDDFile(sddPath, mapper);
-    	erasePriorInputData();
-        createInputDataDir();
+        
         this.media = new Media(this.dirName);
     	this.annotations = new Annotations(this.sddFile.getPresenceAbsenceCharacterCells(),this.dirName, this.sddFile, this.media);
+    	this.inputFiles = new InputFiles(this.sddFile, this.annotations, this.media, this.dirName);
+    	this.inputFiles.generateInputDataFiles();
         emitCharacterInfo();
         integrityCheck();
         //findImagesForBAT();
@@ -110,35 +111,19 @@ public class MorphobankBundle {
     	return this.dirName + FILESEP + DETECTION_RESULTS_DIRNAME + FILESEP;
     }
     public String getInputFilePathnameForCharacter(String characterName) throws MorphobankDataException {
-    	return this.annotations.getInputFilepathForCharacter(characterName);
+    	return this.inputFiles.getInputFilepathForCharacter(characterName);
     }
     public String getOutputFilePathnameForCharacter(String characterName) throws MorphobankDataException {
-    	return this.annotations.getOutputFilepathForCharacter(characterName);
+    	return this.inputFiles.getOutputFilepathForCharacter(characterName);
     }
     public String getRootDir(){
     	return this.dirName + FILESEP;
     }
     public String getInputDataDir(){
-    	return this.dirName + FILESEP + INPUT_DIRNAME;
+    	return this.inputFiles.getInputDataDir();
     }
-    public void createInputDataDir(){
-    	String inputDir = getInputDataDir();
-    	File f = new File(inputDir);
-    	f.mkdirs();
-    }
-    public void erasePriorInputData(){
-        String inputDataDir = getInputDataDir();
-        File f = new File(inputDataDir);
-        if (f.isDirectory()){
-        	File[] files = f.listFiles();
-        	for (int i = 0; i < files.length; i++){
-        		File someFile = files[i];
-        		if (someFile.getName().endsWith(".txt")){
-        			someFile.delete();
-        		}
-        	}
-        }
-    }
+    
+    
     public static void printString(String s){
     	System.out.println("the given string is " + s);
     }
@@ -146,7 +131,7 @@ public class MorphobankBundle {
     	List<String> scorableCharacterNames = new ArrayList<String>();
     	List<String> presenceAbsenceCharNames = sddFile.getPresenceAbsenceCharacterNames();
     	for (String name : presenceAbsenceCharNames){
-    		if (this.annotations.doesAnnotationInputFileExistForCharacterName(name)){
+    		if (this.inputFiles.doesAnnotationInputFileExistForCharacterName(name)){
     			scorableCharacterNames.add(name);
     		}
     	}
@@ -169,5 +154,8 @@ public class MorphobankBundle {
         	throw new MorphobankDataException("no sdd.xml file present in directory " + bundleDirPath);
         }
         return path;
+    }
+    public void filterInputsByView(List<String> charIds, String viewId, String algId) throws MorphobankDataException {
+    	this.inputFiles.filterInputsByCharsAndView(charIds, viewId, algId);
     }
 }
