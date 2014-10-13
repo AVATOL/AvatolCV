@@ -68,7 +68,9 @@ classdef Algorithms  < handle
         %   which has
         %       training_data:media/<name_of_mediafile> :char_state:annotation/<name_of_annotation_file> 
         %       or 
-        %       image_scored:media/<name_of_mediafile> :char_state:detection_results/<name_of_annotation_file> 
+        %       image_scored:media/<name_of_mediafile>:char_state:detection_results/<name_of_annotation_file>:score_confidence
+        %       or 
+        %       taxon_scored:media/<name_of_mediafile> :char_state:detection_results/<name_of_annotation_file>:score_confidence 
         %       or 
         %       image_not_scored:media/<name_of_mediafile> 
         % detection_results_folder will point to folder where detection_results should be put (in same form as annotations
