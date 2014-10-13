@@ -19,7 +19,7 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}*/
-	
+	/*
 	@Test
 	public void testDataUnix() {
 		try {
@@ -36,18 +36,22 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}
-	/*
+	*/
 	@Test
 	public void testDataWindows() {
 		try {
 		    MorphobankData md = new MorphobankData("C:\\avatol\\git\\avatol_cv\\matrix_downloads");
 		    //md.loadMatrix("BOGUS");
 		    md.loadMatrix("BAT");
+		    MorphobankBundle bundle = md.getBundle("BAT");
+		    ArrayList<String> charIds = new ArrayList<String>();
+		    charIds.add("c427749");
+		    bundle.filterInputsByView(charIds, "v3540", "DPM");
 		}
 		catch(Exception ex){
 			ex.printStackTrace();
 			fail(ex.getMessage());
 		}
 	}
-	*/
+	
 }
