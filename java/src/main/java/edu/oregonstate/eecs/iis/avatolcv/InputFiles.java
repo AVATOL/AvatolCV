@@ -138,9 +138,10 @@ public class InputFiles {
     // for each media file which needs scoring, add line
     // image_to_score:media/<name_of_mediafile>:taxonID 
     public void generateInputDataFiles() throws MorphobankDataException {
-    	if (doInputDataFilesAlreadyExist()){
-    		return;
-    	}
+    	// HAD TO COMMENT THE FOLLOWING OUT DUE TO maps not getting setup properly
+    	//if (doInputDataFilesAlreadyExist()){
+    	//	return;
+    	//}
     	for (String charId : this.annotations.getCharactersTrained()){
     		List<String> trainingDataLines = new ArrayList<String>();
     		List<String> scoringDataLines = new ArrayList<String>();
