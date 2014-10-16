@@ -44,6 +44,7 @@ public class TestMatrix {
 		    //md.loadMatrix("BOGUS");
 		    md.loadMatrix("BAT");
 		    MorphobankBundle bundle = md.getBundle("BAT");
+		    List<String> names = bundle.getScorableCharacterNames();
 		    ArrayList<String> charIds = new ArrayList<String>();
 		    charIds.add("c427749");
 		    bundle.filterInputsByView(charIds, "v3540", "DPM");
