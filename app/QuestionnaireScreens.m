@@ -260,7 +260,7 @@ classdef QuestionnaireScreens < handle
         function showNextQuestionSequencerQuestion(obj,nextAnswer)
             qquestion = obj.questionSequencer.getCurrentQuestion();
             if (strcmp(qquestion.id,'NO_MORE_QUESTIONS'))
-                obj.session.algorithmChoiceScreen.displayQuestionnaireCompleteScreenForceCRF();
+                obj.session.doneWithQuestionnaire();
             else
                 obj.displayAppropriateQuestion(qquestion);
                 if (strcmp(nextAnswer,'NOT_YET_SPECIFIED'))
@@ -276,7 +276,7 @@ classdef QuestionnaireScreens < handle
         function showCurrentQuestion(obj)
             qquestion = obj.questionSequencer.getCurrentQuestion();
             if (strcmp(qquestion.id,'NO_MORE_QUESTIONS'))
-                obj.session.algorithmChoiceScreen.displayQuestionnaireCompleteScreenForceCRF();
+                obj.session.doneWithQuestionnaire();
             else
                 obj.displayAppropriateQuestion(qquestion);
             end

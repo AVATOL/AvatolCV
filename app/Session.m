@@ -178,7 +178,11 @@ classdef Session < handle
                 answerToNextQuestion = 'ANSWER_BLOCKED_BY_ERROR';
             end
         end
-
+        
+        function doneWithQuestionnaire(obj)
+            obj.algorithmChoiceScreen.chooseAlgorithm();
+            obj.algorithmChoiceScreen.displayQuestionnaireCompleteScreen();
+        end
         function showNextQuestion(obj)
             if obj.ui.verifyAnswerPresent()
                 nextAnswer = obj.registerDisplayedAnswer();
