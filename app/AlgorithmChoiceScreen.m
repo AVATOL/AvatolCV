@@ -18,6 +18,7 @@ classdef AlgorithmChoiceScreen < handle
         function obj = AlgorithmChoiceScreen(ui, session)
             obj.ui = ui;
             obj.session = session;
+            obj.algorithms = Algorithms();
         end
         function doAnotherCharacter(obj,hObject, eventData)
             obj.session.doAnotherCharacter();
@@ -81,26 +82,34 @@ classdef AlgorithmChoiceScreen < handle
 
 
         function chooseAlgorithm(obj)
-            disqualifyingCRFMessage = obj.algorithms.getDisqualifyingMessageForCRF(obj.session.questionnaireScreens.questionSequencer.answeredQuestions);
-            disqualifyingDPMMessage = obj.algorithms.getDisqualifyingMessageForDPM(obj.session.questionnaireScreens.questionSequencer.answeredQuestions);
-            obj.showRunAlgorithmButton = false;
-            if (strcmp(disqualifyingCRFMessage,''))
-                obj.message = 'CRF algorithm has been chosen for scoring.  Press Run Algorithm to begin.';
-                obj.showRunAlgorithmButton = true;
-                obj.algorithmChosen = 'CRF';
-            elseif (strcmp(disqualifyingDPMMessage,''))
+            if (true)
                 obj.message = 'DPM algorithm has been chosen for scoring.  Press Run Algorithm to begin.';
                 obj.showRunAlgorithmButton = true;
                 obj.algorithmChosen = 'DPM';
             else
-                general_error_msg = 'The answers chosen indicate the currently in-play algorithms are not a match for scoring the images:';
-                obj.message = sprintf('%s\n\n%s\n\n%s',general_error_msg, disqualifyingCRFMessage, disqualifyingDPMMessage);
-            end
+                qs = obj.session.questionnaireScreens.questionSequencer;
+                aq = qs.answeredQuestions;
+                disqualifyingCRFMessage = obj.algorithms.getDisqualifyingMessageForCRF(aq);
+                disqualifyingDPMMessage = obj.algorithms.getDisqualifyingMessageForDPM(aq);
+                obj.showRunAlgorithmButton = false;
+                if (strcmp(disqualifyingCRFMessage,''))
+                    obj.message = 'CRF algorithm has been chosen for scoring.  Press Run Algorithm to begin.';
+                    obj.showRunAlgorithmButton = true;
+                    obj.algorithmChosen = 'CRF';
+                elseif (strcmp(disqualifyingDPMMessage,''))
+                    obj.message = 'DPM algorithm has been chosen for scoring.  Press Run Algorithm to begin.';
+                    obj.showRunAlgorithmButton = true;
+                    obj.algorithmChosen = 'DPM';
+                else
+                    general_error_msg = 'The answers chosen indicate the currently in-play algorithms are not a match for scoring the images:';
+                    obj.message = sprintf('%s\n\n%s\n\n%s',general_error_msg, disqualifyingCRFMessage, disqualifyingDPMMessage);
+                end
+            end    
+            
         end    
         function displayQuestionnaireCompleteScreen(obj) 
 
             obj.ui.deleteObsoleteControls();
-            obj.algorithms = Algorithms();
             
 
             messagePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]

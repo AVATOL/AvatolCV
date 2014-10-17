@@ -12,6 +12,7 @@ classdef Session < handle
         matrixChoiceScreen;
         characterChoiceScreen;
         algorithmChoiceScreen;
+        dpmQuestionScreens;
         mostRecentScreen = 'NOT_STARTED';
        
         matrixChoiceIndex = 1;
@@ -35,6 +36,7 @@ classdef Session < handle
             obj.matrixChoiceScreen = MatrixChoiceScreen(obj.ui, obj);
             obj.characterChoiceScreen = CharacterChoiceScreen(obj.ui, obj);
             obj.algorithmChoiceScreen = AlgorithmChoiceScreen(obj.ui, obj);
+            obj.dpmQuestionScreens = DPMQuestionScreens(obj.ui, obj);
             
             matrixDownloadsRootPath = obj.getFullPathForJava('matrix_downloads');
             obj.morphobankData = MorphobankData(matrixDownloadsRootPath);
@@ -179,9 +181,17 @@ classdef Session < handle
             end
         end
         
+        function doneWithDPMQuestions(obj)
+            obj.algorithmChoiceScreen.displayQuestionnaireCompleteScreen();
+        end    
         function doneWithQuestionnaire(obj)
             obj.algorithmChoiceScreen.chooseAlgorithm();
-            obj.algorithmChoiceScreen.displayQuestionnaireCompleteScreen();
+            if (strcmp(obj.algorithmChoiceScreen.algorithmChosen,'DPM'))
+                obj.dpmQuestionScreens.showFirstQuestion();
+            else 
+                obj.algorithmChoiceScreen.displayQuestionnaireCompleteScreen();
+            end    
+            
         end
         function showNextQuestion(obj)
             if obj.ui.verifyAnswerPresent()
