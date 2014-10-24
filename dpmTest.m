@@ -17,9 +17,12 @@ function dpmTest
     list_of_characters = [ list_of_characters , 'c427753' ];
     list_of_characters = [ list_of_characters , 'c427754' ];
     list_of_characters = [ list_of_characters , 'c427760' ];
-    input_folder = 'C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\input\\DPM\\c427749\\v3540';
-    output_folder = 'C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\output\\DPM\\c427749\\v3540';
-    detection_results_folder = 'C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\detection_results\\DPM\\c427749\\v3540';
+    %input_folder = 'C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\input\\DPM\\c427749\\v3540';
+    input_folder = '/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/matrix_downloads/BAT/input/DPM/c427749/v3540';
+    %output_folder = 'C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\output\\DPM\\c427749\\v3540';
+    output_folder = '/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/matrix_downloads/BAT/output/DPM/c427749/v3540';
+    %detection_results_folder = 'C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\detection_results\\DPM\\c427749\\v3540';
+    detection_results_folder = '/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/matrix_downloads/BAT/detection_results/DPM/c427749/v3540';
 
     fontname = 'helvetica';
     fontsize = 12;
