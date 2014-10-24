@@ -137,7 +137,28 @@ classdef UI < handle
             obj.activePanelTags = {  'titlePanel', 'questionPanel', 'answerPanel', 'imagePanel', 'navigationPanel'}; 
         end
 
-       
+        function createCheckboxChoicePanels(obj)
+        
+            obj.titlePanel = obj.createTitlePanel();
+                              
+            obj.questionPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
+                                  'BorderType', 'none',...
+                                  'Tag','questionPanel',...
+                                  'Position',[0.05 0.70 0.95 0.18]);
+                              
+            obj.answerPanel = uipanel('Background', [0.5 1 1],...%[0.3 1 0.3]
+                                  'BorderType', 'none',...
+                                  'Tag','answerPanel',...
+                                  'Position',[0.05 0.1 0.95 0.50]);
+                              
+            obj.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
+                                  'BorderType', 'none',...
+                                  'Tag','navigationPanel',...
+                                  'Position',obj.getNavigationPanelPosition());
+                              
+            obj.mostRecentQAFlavor = 'checkedInput';
+            obj.activePanelTags = { 'titlePanel', 'questionPanel', 'answerPanel', 'navigationPanel' };
+        end
         
         
         function createPopupChoicePanels(obj)
@@ -149,7 +170,7 @@ classdef UI < handle
                                   'Tag','questionPanel',...
                                   'Position',[0.05 0.70 0.95 0.18]);
                               
-            obj.answerPanel = uipanel('Background', [1 1 1],...%[0.3 1 0.3]
+            obj.answerPanel = uipanel('Background', [1 1 .8],...%[0.3 1 0.3]
                                   'BorderType', 'none',...
                                   'Tag','answerPanel',...
                                   'Position',[0.05 0.65 0.95 0.18]);
