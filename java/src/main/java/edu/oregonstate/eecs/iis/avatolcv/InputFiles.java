@@ -340,5 +340,7 @@ public class InputFiles {
 		}
 		return true;
 	}
-	
+	public List<String> getAnnotatedMediaIds(){
+		return this.annotations.getMediaAnnotated();
+    }
 }

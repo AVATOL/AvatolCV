@@ -101,6 +101,9 @@ public class MatrixRow {
     		this.charIds.add(matrixCell.getCharId());
     	}
     }
+    public String getTaxonName(){
+    	return this.taxonName;
+    }
     public String getTaxonId(){
     	return this.taxonId;
     }

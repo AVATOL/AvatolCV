@@ -26,8 +26,12 @@ public class TestMatrix {
 		    MorphobankData md = new MorphobankData("/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/matrix_downloads");
 		    md.loadMatrix("BAT");
 		    MorphobankBundle bundle = md.getBundle("BAT");
+		    List<String> names = bundle.getScorableCharacterNames();
 		    ArrayList<String> charIds = new ArrayList<String>();
 		    charIds.add("c427749");
+		    charIds.add("c427753");
+		    charIds.add("c427754");
+		    charIds.add("c427760");
 		    bundle.filterInputsByView(charIds, "v3540", "DPM");
 		    
 		}
@@ -37,6 +41,21 @@ public class TestMatrix {
 		}
 	}
 	*/
+	@Test
+	public void testGetScorableTaxonNamesUnix() {
+		try {
+		    MorphobankData md = new MorphobankData("/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/matrix_downloads");
+		    md.loadMatrix("BAT");
+		    MorphobankBundle bundle = md.getBundle("BAT");
+		    bundle.getScorableTaxonNames();
+		    
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			fail(ex.getMessage());
+		}
+	}
+	/*
 	@Test
 	public void testDataWindows() {
 		try {
@@ -54,5 +73,5 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}
-	
+	*/
 }

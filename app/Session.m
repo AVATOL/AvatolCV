@@ -64,6 +64,15 @@ classdef Session < handle
             end
         end
         
+        function javaStringList = matlabListToJavaStringList(obj, matlabList)
+            javaStringList = java.util.ArrayList();
+            for i=1:length(matlabList)
+                matlabCharString = matlabList(i);
+                javaString = java.lang.String(matlabCharString);
+                javaStringList.add(javaString);
+            end
+        end
+        
         function startQuestions(obj)
             obj.matrixChoiceScreen.displayMatrixQuestion();
         end

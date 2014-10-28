@@ -16,6 +16,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -24,7 +25,9 @@ public class MorphobankSDDFile {
 	private String pathname;
 	private Matrix matrix;
 	private Characters characters;
-	
+	private ArrayList<String> viewIds = new ArrayList<String>();
+	private Hashtable<String,String> viewNamesForId = new Hashtable<String, String>();
+	private Hashtable<String,String> viewIdsForName = new Hashtable<String, String>();
 	private Hashtable<String,String> viewsForImage = new Hashtable<String,String>();
 	
 	private Document document = null;
@@ -40,7 +43,25 @@ public class MorphobankSDDFile {
     	this.matrix.loadTaxonsForMedia();
     	this.characters = new Characters(this.document);
     	loadViewsForImage(this.document);
-    	
+    	loadViewsForDocument(this.document);
+    }
+    public String getTaxonNameForId(String taxonId) throws MorphobankDataException {
+    	return this.matrix.getTaxonNameForId(taxonId);
+    }
+    public List<String> getViewNames(){
+    	ArrayList<String> list = new ArrayList<String>();
+    	for (String id : this.viewIds){
+    		String name = this.viewNamesForId.get(id);
+    		list.add(name);
+    	}
+    	return list;
+    }
+    public String getViewIdForName(String name) throws AvatolCVException {
+    	String id = this.viewIdsForName.get(name);
+    	if (null == id){
+    		throw new AvatolCVException("no viewId for name " + name);
+    	}
+    	return id;
     }
     public void feedMessageDigestSDDContent(MessageDigest m) throws AvatolCVException {
     	try {
@@ -85,6 +106,39 @@ public class MorphobankSDDFile {
     		}
     	}
     	return null;
+    }
+    public Node getChildNodeNamed(Node n, String name) throws MorphobankDataException {
+    	NodeList list = n.getChildNodes();
+    	for (int i = 0; i < list.getLength(); i++){
+			Node curN = list.item(i);
+			String thisNodeName = curN.getNodeName();
+			if (thisNodeName.equals(name)){
+				return curN;
+			}
+		}
+    	throw new MorphobankDataException("no child node of " + n.getNodeName() + " called " + name + " found.");
+    }
+ 
+    public void loadViewsForDocument(Document doc) throws MorphobankDataException {
+    	NodeList descriptiveConceptsNodes = doc.getElementsByTagName("DescriptiveConcepts");
+    	Node descriptiveConceptsNode = descriptiveConceptsNodes.item(0);
+    	NodeList dcNodes = descriptiveConceptsNode.getChildNodes();
+    	for (int i = 0; i < dcNodes.getLength(); i++){
+    		Node dcNode = dcNodes.item(i);
+    		String name = dcNode.getNodeName();
+    		if ("DescriptiveConcept".equals(name)){
+    			//<DescriptiveConcept id="v3538"><Representation><Label>Skull - dorsal</Label></Representation></DescriptiveConcept>
+        		NamedNodeMap map = dcNode.getAttributes();
+        		Node attrNode = map.getNamedItem("id");
+        	    String viewId =	attrNode.getNodeValue();
+        		Node representationNode = getChildNodeNamed(dcNode, "Representation");
+        		Node labelNode = getChildNodeNamed(representationNode, "Label");
+        		String viewName = labelNode.getTextContent();
+        		this.viewIds.add(viewId);
+        		this.viewNamesForId.put(viewId, viewName);
+        		this.viewIdsForName.put(viewName, viewId);
+    		}
+    	}
     }
     public void loadViewsForImage(Document doc){
     	NodeList nodes = doc.getElementsByTagName("MediaObjects");
@@ -204,6 +258,9 @@ public class MorphobankSDDFile {
     }
     public String getCharacterNameForId(String id){
     	return this.characters.getCharacterNameForId(id);
+    }
+    public String getCharacterIdForName(String id){
+    	return this.characters.getCharacterIdForName(id);
     }
     public boolean isMediaOfView(String mediaId, String viewId){
     	String mappedView = this.viewsForImage.get(mediaId);

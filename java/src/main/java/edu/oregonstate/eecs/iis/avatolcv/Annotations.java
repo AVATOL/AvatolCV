@@ -44,7 +44,19 @@ public class Annotations {
         		}
         	}
         }
-        
+	}
+	public List<String> getMediaAnnotated(){
+		ArrayList<String> result = new ArrayList<String>();
+		for (String character : this.charactersTrained){
+			List<Annotation> annotations = this.annotationsForCharacterHash.get(character);
+			for (Annotation annotation: annotations){
+				String mediaId = annotation.getMediaId();
+				if (!result.contains(mediaId)){
+					result.add(mediaId);
+				}
+			}
+		}
+		return result;
 	}
 	public List<String> getCharactersTrained(){
 		ArrayList<String> result = new ArrayList<String>();

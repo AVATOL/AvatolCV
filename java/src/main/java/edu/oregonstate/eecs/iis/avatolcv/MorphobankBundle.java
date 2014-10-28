@@ -36,6 +36,9 @@ public class MorphobankBundle {
         //findImagesForBAT();
         
     }
+    public List<String> getViewNames(){
+		return this.sddFile.getViewNames();
+	}
     public boolean isSpecimenPerRowBundle(){
     	String path = this.dirName + FILESEP + "specimenPerRowMarker.txt";
     	File f = new File(path);
@@ -137,6 +140,18 @@ public class MorphobankBundle {
     	}
     	return scorableCharacterNames;
     }
+    public List<String> getScorableTaxonNames() throws MorphobankDataException {
+    	List<String> result = new ArrayList<String>();
+    	List<String> annotatedMediaIds = this.inputFiles.getAnnotatedMediaIds();
+    	for (String mediaId : annotatedMediaIds){
+    		String taxonId = this.sddFile.getTaxonIdForMediaId(mediaId);
+    		String taxonName = this.sddFile.getTaxonNameForId(taxonId);
+    		if (!result.contains(taxonName)){
+        		result.add(taxonName);
+    		}
+    	}
+    	return result;
+    }
     public String getSDDFilePath(String bundleDirPath) throws MorphobankDataException {
     	String path = "unknown";
         
@@ -157,5 +172,22 @@ public class MorphobankBundle {
     }
     public void filterInputsByView(List<String> charIds, String viewId, String algId) throws MorphobankDataException {
     	this.inputFiles.filterInputsByCharsAndView(charIds, viewId, algId);
+    }
+    public String getFilteredInputDirName(List<String> charIds, String viewId, String algId){
+    	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, InputFiles.INPUT_DIRNAME);
+    }
+
+    public String getFilteredOutputDirName(List<String> charIds, String viewId, String algId){
+    	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, InputFiles.OUTPUT_DIRNAME);
+    }
+
+    public String getFilteredDetectionResultsDirName(List<String> charIds, String viewId, String algId){
+    	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, InputFiles.DETECTION_RESULTS_DIRNAME);
+    }
+    public String getViewIdForName(String name) throws AvatolCVException {
+    	return this.sddFile.getViewIdForName(name);
+    }
+    public String getCharacterIdForName(String id){
+    	return this.sddFile.getCharacterIdForName(id);
     }
 }

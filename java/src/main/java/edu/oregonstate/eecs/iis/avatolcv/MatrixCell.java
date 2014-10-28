@@ -33,9 +33,9 @@ public class MatrixCell {
     			// do nothing for now
     		}
     	}
-    	for (String mediaId : this.mediaIds){
-    		System.out.println("cell loaded: " + charId + " " + mediaId + " " + stateId);
-    	}
+    	//for (String mediaId : this.mediaIds){
+    	//	System.out.println("cell loaded: " + charId + " " + mediaId + " " + stateId);
+    	//}
     }
     public boolean isScored(){
     	if (stateId.equals("s")){

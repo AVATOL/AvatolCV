@@ -1,11 +1,23 @@
 classdef DPMQuestionScreens < handle
     %MATRIXCHOICE Summary of this class goes here
-    %   Detailed explanation goes here
+    %   Ask two questions special to the DPM:
+    % First, specify which chars are simple characters
+    % second, which "view"  is desired
     
     properties
        ui;
        session;
-       
+       taxonNameChoice;
+       taxonChoiceWidget;
+       taxonChoiceIndex = 1;
+       taxonChoices;
+       chosenTaxon;
+       jCBList;
+       simplePresenceAbsenceCharacters;
+       viewChoiceWidget;
+       chosenView;
+       viewChoiceIndex = 1;
+       viewChoices;
     end
     
     methods
@@ -13,8 +25,63 @@ classdef DPMQuestionScreens < handle
             obj.ui = ui;
             obj.session = session;
         end
-        
+        function setTaxonChoice(obj,hObject, eventData)
+            obj.taxonChoiceIndex = get(obj.taxonChoiceWidget, 'value');
+            taxonList = get(obj.taxonChoiceWidget, 'string');
+            obj.chosenTaxon = char(taxonList(obj.taxonChoiceIndex));
+        end
         function showFirstQuestion(obj)
+            obj.ui.deleteObsoleteControls();
+            obj.ui.createPopupChoicePanels();
+
+            taxonChoicePrompt = uicontrol('style', 'text' ,...
+                                         'Parent',obj.ui.questionPanel,...
+                                         'Units','normalized',...
+                                         'String', 'Which taxon do you want to score?' ,...
+                                         'position', [0,0,1,1] ,...
+                                         'FontName', obj.ui.fontname ,...
+                                         'FontSize', obj.ui.fontsize ,...
+                                         'Tag','taxonChoicePrompt' ,...
+                                         'Background',[1 1 1],...
+                                         'HorizontalAlignment', 'left');%'BackgroundColor', [0.1 1 0.1] ,...
+
+            obj.taxonChoiceWidget = uicontrol('style', 'popupmenu' ,...
+                                         'Parent',obj.ui.answerPanel,...
+                                         'Units','normalized',...
+                                         'position', [ 0,0.71,.9, 0.29 ] ,...
+                                         'FontName', obj.ui.fontname ,...
+                                         'FontSize', obj.ui.fontsize ,...
+                                         'Tag','taxonChoice' ,...
+                                         'Background',[1 1 1],...
+                                         'HorizontalAlignment', 'left');%'BackgroundColor', [0.1 1 0.1] ,...
+
+            taxonNames = obj.session.javaStringListToMatlabCharList(obj.session.morphobankBundle.getScorableTaxonNames());
+            set(obj.taxonChoiceWidget,'string',taxonNames);
+            set(obj.taxonChoiceWidget,'Value',obj.taxonChoiceIndex);
+            obj.taxonChoices = taxonNames;
+
+            next = uicontrol('style', 'pushbutton' ,...
+                                         'Parent',obj.ui.navigationPanel,...
+                                         'Units','normalized',...
+                                         'String', 'Next' ,...
+                                         'position', obj.ui.getButtonPositionRightB() ,...
+                                         'FontName', obj.ui.fontname ,...
+                                         'FontSize', obj.ui.fontsize ,...
+                                         'Tag','next' ,...
+                                         'BackgroundColor', [0.5 0.5 0.5]);  
+            %H.activeControlTags = { 'matrixChoice',  'matrixChoicePrompt', 'next', 'tutorial' };
+            obj.ui.activeControlTags = { 'taxonChoicePrompt', 'taxonChoice', 'next' };
+            obj.ui.activeAnswerControl = obj.taxonChoiceWidget;
+            obj.session.activeQuestionId = 'DPMTaxonQuestion';
+            obj.ui.activeControlType = 'popupMenu';
+
+            set(next, 'callback', {@obj.showNextQuestion});
+            set(obj.taxonChoiceWidget, 'callback', {@obj.setTaxonChoice});
+            obj.session.mostRecentScreen = 'DPM_TAXON_QUESTION'; 
+        end
+        
+        
+        function showSecondQuestion(obj)
             obj.ui.deleteObsoleteControls();
             obj.ui.createCheckboxChoicePanels();
 
@@ -22,12 +89,13 @@ classdef DPMQuestionScreens < handle
             presenceAbsenceCharacterNames = obj.session.javaStringListToMatlabCharList(presenceAbsenceCharacterNamesJavaList);
             
             
-            LEFT OFF -  TRY FAKING THE SCROLLBAR LIKE IN SLIDER TEST
-            
+            % COULD TRY FAKING THE SCROLLBAR LIKE IN SLIDER TEST, but for
+            % now, stick with using the java component
+            instructions = 'Please specify which of the following presence/absence characters refer to only a single part. '
             prompt = uicontrol('style', 'text' ,...
                                          'Parent',obj.ui.questionPanel,...
-                                         'String', 'Please specify which of these are simple presence/absence characters.' ,...
-                                         'position', [0,0,1,1] ,...
+                                         'String', instructions ,... 
+                                         'position', [0,0,800,100] ,...%changed this last
                                          'Units','normalized',...
                                          'FontName', obj.ui.fontname ,...
                                          'FontSize', obj.ui.fontsize ,...
@@ -39,55 +107,34 @@ classdef DPMQuestionScreens < handle
             import com.mathworks.mwswing.checkboxlist.CheckBoxList;
             import com.mathworks.mwswing.MJScrollPane;
             jList = java.util.ArrayList;  % any java.util.List will be ok
-            jList.add(0,'First');
-            jList.add(1,'Second');
-            jList.add(2,'Third');
-            jList.add(3,'and last');
-
-
+            for i=1:length(presenceAbsenceCharacterNames)
+                charName = char(presenceAbsenceCharacterNames(i));
+                jList.add(i-1,charName);
+            end    
+           
             % Next prepare a CheckBoxList component within a scroll-pane
-            jCBList = com.mathworks.mwswing.checkboxlist.CheckBoxList(jList);
-            jCBList.setFont(java.awt.Font(obj.ui.fontname,java.awt.Font.PLAIN,obj.ui.fontsize));
-            jScrollPane = com.mathworks.mwswing.MJScrollPane(jCBList);
+            obj.jCBList = com.mathworks.mwswing.checkboxlist.CheckBoxList(jList);
+            cellRenderer = obj.jCBList.getCellRenderer();
+            %desiredFont = java.awt.Font(obj.ui.fontname,java.awt.Font.PLAIN,obj.ui.fontsize);
+            desiredFont = java.awt.Font(obj.ui.fontname,java.awt.Font.PLAIN,20);
+            obj.jCBList.setFont(desiredFont);
+            jScrollPane = com.mathworks.mwswing.MJScrollPane(obj.jCBList);
+            
  
             % Now place this scroll-pane within a Matlab container (figure or panel)
             %[jhScroll,hContainer] = javacomponent(jScrollPane,[10,10,80,65],obj.ui.answerPanel);
             %[jhScroll,hContainer] = javacomponent(jScrollPane,[0.0,0.0,0.9,0.9],obj.ui.answerPanel);
-            [jhScroll,hContainer] = javacomponent(jScrollPane,[10,10,600,300],obj.ui.answerPanel);
+            [jhScroll,hContainer] = javacomponent(jScrollPane,[10,0,800,400],obj.ui.answerPanel);
                                          %'FontName', obj.ui.fontname ,...
                                          %'FontSize', obj.ui.fontsize);
             %set(jhScroll,'units','norm', 'position',[0.2,0.3,0.4,0.5]);
             % Update some items' state programmatically
-            jCBModel = jCBList.getCheckModel;
-            jCBModel.checkAll;
-            jCBModel.uncheckIndex(1);
-            jCBModel.uncheckIndex(3);
- 
-            % Respond to checkbox update events
-            jhCBModel = handle(jCBModel, 'CallbackProperties');
-            set(jhCBModel, 'ValueChangedCallback', @myMatlabCallbackFcn);  
-
-                                     
- %           checkboxes =  uibuttongroup('Parent',obj.ui.answerPanel,...
-%                                         'Units','normalized',...
-%                                         'Background',[0.5 0.2 1],...
- %                                        'Position',[ 0,0.71,.9, 0.4 ]);                       
-%            
- %           obj.ui.activeControlTags = { 'prompt' };
-%            for i=1:length(presenceAbsenceCharacterNames)
-%                charName = char(presenceAbsenceCharacterNames(i));
-                
- %               cbh = uicontrol('Parent',checkboxes,'Style','checkbox',...
- %                                        'Units','normalized',...
- %                                        'String',charName,...
- %                                        'Tag',charName,...
- %                                        'position', [0,0,1,1] ,...
-  %                                       'Value',1);
- %               obj.ui.activeControlTags = [ obj.ui.activeControlTags , charName ];
-  %          end
-
+            jCBModel = obj.jCBList.getCheckModel;
+            jCBModel.uncheckAll;
             
-
+            % Respond to checkbox update events
+            %jhCBModel = handle(jCBModel, 'CallbackProperties');
+ 
             next = uicontrol('style', 'pushbutton' ,...
                                          'Parent',obj.ui.navigationPanel,...
                                          'Units','normalized',...
@@ -107,19 +154,73 @@ classdef DPMQuestionScreens < handle
             obj.session.mostRecentScreen = 'DPM_QUESTION_SIMPLE_PRESENCE_ABSENCE'; 
         end
         
+        
         function showNextQuestion(obj, hObject, eventData)
-            if strcmp(obj.session.activeQuestionId,'dpmQuestionSimplePresenceAbsenceChars')
-                
-                % need to persist answer !
-                
-                obj.showSecondScreen();
+            if strcmp(obj.session.activeQuestionId,'DPMTaxonQuestion')
+                obj.taxonNameChoice = get(obj.taxonChoiceWidget, 'value');
+                obj.showSecondQuestion();
+            elseif strcmp(obj.session.activeQuestionId,'dpmQuestionSimplePresenceAbsenceChars')
+                checkedValues = obj.jCBList.getCheckedValues();
+                obj.simplePresenceAbsenceCharacters = obj.session.javaStringListToMatlabCharList(checkedValues);
+                obj.showThirdQuestion();
             else
-                
-                % need to persist answer !
-                
-                obj.session
+                obj.session.doneWithDPMQuestions();
             end    
         end
+        
+        function showThirdQuestion(obj)
+            obj.ui.deleteObsoleteControls();
+            obj.ui.createPopupChoicePanels();
+
+            viewChoicePrompt = uicontrol('style', 'text' ,...
+                                         'Parent',obj.ui.questionPanel,...
+                                         'Units','normalized',...
+                                         'String', 'Which view do you want scored?' ,...
+                                         'position', [0,0,1,1] ,...
+                                         'FontName', obj.ui.fontname ,...
+                                         'FontSize', obj.ui.fontsize ,...
+                                         'Tag','viewChoicePrompt' ,...
+                                         'Background',[1 1 1],...
+                                         'HorizontalAlignment', 'left');%'BackgroundColor', [0.1 1 0.1] ,...
+
+            obj.viewChoiceWidget = uicontrol('style', 'popupmenu' ,...
+                                         'Parent',obj.ui.answerPanel,...
+                                         'Units','normalized',...
+                                         'position', [ 0,0.71,.9, 0.29 ] ,...
+                                         'FontName', obj.ui.fontname ,...
+                                         'FontSize', obj.ui.fontsize ,...
+                                         'Tag','viewChoiceWidget' ,...
+                                         'Background',[1 1 1],...
+                                         'HorizontalAlignment', 'left');%'BackgroundColor', [0.1 1 0.1] ,...
+
+            viewNames = obj.session.javaStringListToMatlabCharList(obj.session.morphobankBundle.getViewNames());
+            set(obj.viewChoiceWidget,'string',viewNames);
+            set(obj.viewChoiceWidget,'Value',obj.viewChoiceIndex);
+            obj.viewChoices = viewNames;
+
+            next = uicontrol('style', 'pushbutton' ,...
+                                         'Parent',obj.ui.navigationPanel,...
+                                         'Units','normalized',...
+                                         'String', 'Next' ,...
+                                         'position', obj.ui.getButtonPositionRightB() ,...
+                                         'FontName', obj.ui.fontname ,...
+                                         'FontSize', obj.ui.fontsize ,...
+                                         'Tag','next' ,...
+                                         'BackgroundColor', [0.5 0.5 0.5]);  
+            obj.ui.activeControlTags = { 'viewChoicePrompt', 'next', 'viewChoiceWidget' };
+            obj.ui.activeAnswerControl = obj.viewChoiceWidget;
+            obj.session.activeQuestionId = 'DPMViewQuestion';
+            obj.ui.activeControlType = 'popupMenu';
+
+            set(next, 'callback', {@obj.showNextQuestion});
+            set(obj.viewChoiceWidget, 'callback', {@obj.setViewChoice});
+            obj.session.mostRecentScreen = 'VIEW_QUESTION';  
+        end    
+        function setViewChoice(obj,hObject, eventData)
+            obj.viewChoiceIndex = get(obj.viewChoiceWidget, 'value');
+            viewList = get(obj.viewChoiceWidget, 'string');
+            obj.chosenView = char(viewList(obj.viewChoiceIndex));
+        end 
     end
     
 end

@@ -11,6 +11,7 @@ import org.w3c.dom.NodeList;
 public class Characters {
     private List<Character> characters = new ArrayList<Character>();
     private Hashtable<String, String> characterNameForIdMap = new Hashtable<String, String>();
+    private Hashtable<String, String> characterIdForNameMap = new Hashtable<String, String>();
     public Characters(Document doc) throws MorphobankDataException {
     	NodeList nodes = doc.getElementsByTagName("CategoricalCharacter");
     	for (int i = 0; i < nodes.getLength(); i++){
@@ -20,6 +21,7 @@ public class Characters {
     		String charName = character.getName();
     		//System.out.println("loading character " + charName + " is pa? " + character.isPresentAbsentCharacter());
     		characterNameForIdMap.put(charId, charName);
+    		characterIdForNameMap.put(charName,charId);
     		this.characters.add(character);
     	}
     }
@@ -35,5 +37,8 @@ public class Characters {
     }
     public String getCharacterNameForId(String id){
     	return characterNameForIdMap.get(id);
+    }
+    public String getCharacterIdForName(String name){
+    	return characterIdForNameMap.get(name);
     }
 }

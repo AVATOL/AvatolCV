@@ -15,6 +15,7 @@ public class Matrix {
 	protected List<String> charIds = new ArrayList<String>();
 	protected Hashtable<String,MatrixRow> matrixRowForTaxonMap = new Hashtable<String, MatrixRow>();
 	protected Hashtable<String, String> taxonsForMediaId = new Hashtable<String, String>();
+	protected Hashtable<String, String> taxonNameForId = new Hashtable<String, String>();
 	
     public Matrix(Document doc) throws MorphobankDataException {
     	NodeList nodes = doc.getElementsByTagName("CodedDescription");
@@ -31,6 +32,13 @@ public class Matrix {
     		//System.out.println("column count for row " + taxonId + " is " + row.getColumnCount());
     	}
     }
+    public String getTaxonNameForId(String taxonId) throws MorphobankDataException {
+    	String taxonName = taxonNameForId.get(taxonId);
+    	if (null == taxonName){
+    		throw new MorphobankDataException("no taxonName available for taxonId " + taxonId);
+    	}
+    	return taxonName;
+    }
     public String getTaxonIdForMediaId(String mediaId) throws MorphobankDataException {
     	String taxonId = taxonsForMediaId.get(mediaId);
     	if (null == taxonId){
@@ -44,6 +52,8 @@ public class Matrix {
     public void loadTaxonsForMedia()throws MorphobankDataException{
     	for (String rowId : this.rowIds){
     		MatrixRow row = matrixRowForTaxonMap.get(rowId);
+    		String taxonName = row.getTaxonName();
+    		this.taxonNameForId.put(rowId, taxonName);
     		List<String> mediaIds = row.getAllMediaIds();
     		for (String mediaId : mediaIds){
     			this.taxonsForMediaId.put(mediaId, rowId);

@@ -13,6 +13,7 @@ public class SPRTaxonIdMapper {
 	Hashtable<String,List<String>> taxonIdsForTaxonName = new Hashtable<String,List<String>>();
 	Hashtable<String, String> canonicalTaxonIdForName = new Hashtable<String,String>();
 	List<String> taxonNames = new ArrayList<String>();
+	Hashtable<String, String> canonicalTaxonNameForName = new Hashtable<String, String>();
     public SPRTaxonIdMapper(String path) throws MorphobankDataException {
     	Document doc = MorphobankSDDFile.getDocumentFromPathname(path);
     	loadMap(doc);
@@ -35,9 +36,17 @@ public class SPRTaxonIdMapper {
     			String identifierString = getIdentifierFromTaxonName(fullTextName);
     			String suffixToTrim = " " + identifierString;
     			String pureTaxonName = fullTextName.replace(suffixToTrim, "");
+    			this.canonicalTaxonNameForName.put(fullTextName, pureTaxonName);
     			registerEntry(pureTaxonName, taxonId);
     		}
     	}
+    }
+    public String getPureTaxonNameForName(String taxonName) throws MorphobankDataException {
+    	String pureName = this.canonicalTaxonNameForName.get(taxonName);
+    	if (null == pureName){
+    		throw new MorphobankDataException("no canonical taxon name for given name " + taxonName);
+    	}
+    	return pureName;
     }
     public void registerEntry(String taxonName, String taxonId){
     	if (taxonNames.contains(taxonName)){
