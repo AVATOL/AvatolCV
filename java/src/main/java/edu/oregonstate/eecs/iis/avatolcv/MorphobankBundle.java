@@ -103,6 +103,7 @@ public class MorphobankBundle {
         		BufferedWriter writer = new BufferedWriter(new FileWriter(pathname));
         		writer.write(character.toString());
         		writer.close();
+        		Platform.setPermissions(pathname);
         	}
     	}
     	catch(IOException ioe){

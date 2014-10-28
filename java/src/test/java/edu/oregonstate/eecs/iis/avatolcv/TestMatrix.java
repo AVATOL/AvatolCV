@@ -19,7 +19,7 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}*/
-	/*
+	
 	@Test
 	public void testDataUnix() {
 		try {
@@ -40,7 +40,7 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}
-	*/
+	/*
 	@Test
 	public void testGetTaxonIdForNameUnix() {
 		try {
@@ -55,6 +55,7 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}
+	*/
 	/*
 	@Test
 	public void testGetScorableTaxonNamesUnix() {

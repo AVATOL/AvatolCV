@@ -36,6 +36,7 @@ public class InputFiles {
     	String inputDir = getInputDataDir();
     	File f = new File(inputDir);
     	f.mkdirs();
+    	Platform.setPermissions(inputDir);
     	reactToChangingSDDFile();
     	//erasePriorInputData
     }
@@ -58,6 +59,7 @@ public class InputFiles {
     			persistMd5(newMd5OfSDD);
     			File f = new File(getInputDataDir());
     	    	f.mkdirs();
+    	    	Platform.setPermissions(getInputDataDir());
     		}
     	}
     }
@@ -190,6 +192,7 @@ public class InputFiles {
                     	writer.write(scoringLine + NL);
                     }
                     writer.close();
+                    Platform.setPermissions(inputFilePathname);
                 }
                 catch(IOException ioe){
                 	ioe.printStackTrace();
@@ -254,6 +257,7 @@ public class InputFiles {
     	}
     	else {
     		f.mkdirs();
+    		Platform.setPermissions(f.getAbsolutePath());
     	}
     }
     /*
@@ -273,7 +277,8 @@ public class InputFiles {
         		File tmpFile = new File(pathOfCharacterInputFile);
         		String filename = tmpFile.getName();
         		BufferedReader reader = new BufferedReader(new FileReader(pathOfCharacterInputFile));
-        		BufferedWriter writer = new BufferedWriter(new FileWriter(newInputDir + FILESEP + filename));
+        		String newFilePath = newInputDir + FILESEP + filename;
+        		BufferedWriter writer = new BufferedWriter(new FileWriter(newFilePath));
         		String line = null;
         		while ((line = reader.readLine()) != null){
         			if (line.startsWith("training_data")){
@@ -294,6 +299,7 @@ public class InputFiles {
         		
         		reader.close();
         		writer.close();
+        		Platform.setPermissions(newFilePath);
         	}
     	}
     	catch(IOException ioe){
