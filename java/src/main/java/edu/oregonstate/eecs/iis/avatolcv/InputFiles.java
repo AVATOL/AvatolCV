@@ -237,11 +237,11 @@ public class InputFiles {
     	}
     	return ""+sb;
     }
-    public String getFilteredDirname(List<String> charIds, String viewId, String algId, String target){
+    public String getFilteredDirname(List<String> charIds, String taxonId, String viewId, String algId, String target){
     	String algDirname = this.bundleDir + FILESEP + target + FILESEP + algId;
     	String charIdsDirname = getDirnameFromCharIds(charIds);
-    	String newInputDir = algDirname + FILESEP + charIdsDirname + FILESEP + viewId;
-    	return newInputDir;
+    	String newDir = algDirname + FILESEP + taxonId + FILESEP + charIdsDirname + FILESEP + viewId;
+    	return newDir;
     }
     public void cleanDir(String path){
     	File f = new File(path);
@@ -259,11 +259,11 @@ public class InputFiles {
     /*
      * make a dir name by cat'ing the char_ids that are valid simple, then subdir named for viewId, then can clean before filling
      */
-    public void filterInputsByCharsAndView(List<String> charIds, String viewId, String algId) throws MorphobankDataException {
+    public void filterInputs(List<String> charIds, String taxonId, String viewId, String algId) throws MorphobankDataException {
     	
-    	String newInputDir = getFilteredDirname(charIds, viewId, algId, INPUT_DIRNAME);
-    	String newOutputDir = getFilteredDirname(charIds, viewId, algId, OUTPUT_DIRNAME);
-    	String detectionResultDir = getFilteredDirname(charIds, viewId, algId, DETECTION_RESULTS_DIRNAME);
+    	String newInputDir = getFilteredDirname(charIds, taxonId, viewId, algId, INPUT_DIRNAME);
+    	String newOutputDir = getFilteredDirname(charIds, taxonId, viewId, algId, OUTPUT_DIRNAME);
+    	String detectionResultDir = getFilteredDirname(charIds, taxonId, viewId, algId, DETECTION_RESULTS_DIRNAME);
     	cleanDir(newInputDir);
     	cleanDir(newOutputDir);
     	cleanDir(detectionResultDir);
@@ -277,13 +277,17 @@ public class InputFiles {
         		String line = null;
         		while ((line = reader.readLine()) != null){
         			if (line.startsWith("training_data")){
-        				if (isTrainingDataMediaOfView(line, viewId)){
-        					writer.write(line + NL);
+        				if (isTrainingDataMediaOfTaxon(line, taxonId)){
+        					if (isTrainingDataMediaOfView(line, viewId)){
+            					writer.write(line + NL);
+            				}
         				}
         			}
         			else if (line.startsWith("image_to_score")){
-        				if (isImageToScoreMediaOfView(line, viewId)){
-        					writer.write(line + NL);
+        				if (isImageToScoreMediaOfTaxon(line, taxonId)){
+        					if (isImageToScoreMediaOfView(line, viewId)){
+            					writer.write(line + NL);
+            				}
         				}
         			}
         		}
@@ -296,7 +300,7 @@ public class InputFiles {
     		throw new MorphobankDataException("problem reading in existing input file to filter it: " +  ioe.getMessage());
     	}
     }
-    public boolean isImageToScoreMediaOfView(String line, String viewId){
+    public String getMediaIdFromLineToScore(String line){
     	String[] parts = line.split("\\" +Annotation.ANNOTATION_DELIM);
     	String mediaPath = parts[1];
     	String[] mediaParts = mediaPath.split("/");
@@ -304,9 +308,17 @@ public class InputFiles {
     	String[] mediaFilenameParts = mediaFilename.split("_");
     	String prefix = mediaFilenameParts[0];
     	String mediaId = prefix.replace("M","m");
+    	return mediaId;
+    }
+    public boolean isImageToScoreMediaOfTaxon(String line, String taxonId) throws MorphobankDataException {
+    	String mediaId = getMediaIdFromLineToScore(line);
+    	return this.sddFile.isMediaOfTaxon(mediaId, taxonId);
+    }
+    public boolean isImageToScoreMediaOfView(String line, String viewId){
+    	String mediaId = getMediaIdFromLineToScore(line);
     	return this.sddFile.isMediaOfView(mediaId, viewId);
     }
-    public boolean isTrainingDataMediaOfView(String line, String viewId){
+    public String getMediaIdFromTrainingLine(String line){
     	String[] parts = line.split("\\" + Annotation.ANNOTATION_DELIM);
     	String mediaPath = parts[1];
     	String[] mediaParts = mediaPath.split("/");
@@ -314,7 +326,15 @@ public class InputFiles {
     	String[] mediaFilenameParts = mediaFilename.split("_");
     	String prefix = mediaFilenameParts[0];
     	String mediaId = prefix.replace("M","m");
+    	return mediaId;
+    }
+    public boolean isTrainingDataMediaOfView(String line, String viewId){
+    	String mediaId = getMediaIdFromTrainingLine(line);
     	return this.sddFile.isMediaOfView(mediaId, viewId);
+    }
+    public boolean isTrainingDataMediaOfTaxon(String line, String taxonId) throws MorphobankDataException {
+    	String mediaId = getMediaIdFromTrainingLine(line);
+    	return this.sddFile.isMediaOfTaxon(mediaId, taxonId);
     }
     //return "training_data|media/" + mediaFilename + "|" + 
     //charState + "|" + charStateText + "|" + pathname + "|" + taxonId + "|" + lineNumber;  

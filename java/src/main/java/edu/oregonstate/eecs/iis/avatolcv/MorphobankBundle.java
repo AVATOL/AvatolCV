@@ -170,24 +170,27 @@ public class MorphobankBundle {
         }
         return path;
     }
-    public void filterInputsByView(List<String> charIds, String viewId, String algId) throws MorphobankDataException {
-    	this.inputFiles.filterInputsByCharsAndView(charIds, viewId, algId);
+    public void filterInputs(List<String> charIds, String taxonId, String viewId, String algId) throws MorphobankDataException {
+    	this.inputFiles.filterInputs(charIds, taxonId, viewId, algId);
     }
-    public String getFilteredInputDirName(List<String> charIds, String viewId, String algId){
-    	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, InputFiles.INPUT_DIRNAME);
-    }
-
-    public String getFilteredOutputDirName(List<String> charIds, String viewId, String algId){
-    	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, InputFiles.OUTPUT_DIRNAME);
+    public String getFilteredInputDirName(List<String> charIds, String taxonId, String viewId, String algId){
+    	return this.inputFiles.getFilteredDirname(charIds, taxonId, viewId, algId, InputFiles.INPUT_DIRNAME);
     }
 
-    public String getFilteredDetectionResultsDirName(List<String> charIds, String viewId, String algId){
-    	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, InputFiles.DETECTION_RESULTS_DIRNAME);
+    public String getFilteredOutputDirName(List<String> charIds, String taxonId, String viewId, String algId){
+    	return this.inputFiles.getFilteredDirname(charIds, taxonId, viewId, algId, InputFiles.OUTPUT_DIRNAME);
+    }
+
+    public String getFilteredDetectionResultsDirName(List<String> charIds, String taxonId, String viewId, String algId){
+    	return this.inputFiles.getFilteredDirname(charIds, taxonId, viewId, algId, InputFiles.DETECTION_RESULTS_DIRNAME);
     }
     public String getViewIdForName(String name) throws AvatolCVException {
     	return this.sddFile.getViewIdForName(name);
     }
     public String getCharacterIdForName(String id){
     	return this.sddFile.getCharacterIdForName(id);
+    } 
+    public String getTaxonIdForName(String name) throws MorphobankDataException {
+    	return this.sddFile.getTaxonIdForName(name);
     }
 }

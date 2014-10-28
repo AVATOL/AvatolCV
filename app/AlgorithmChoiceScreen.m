@@ -77,6 +77,9 @@ classdef AlgorithmChoiceScreen < handle
                 chosenViewId = mb.getViewIdForName(java.lang.String(chosenView));
                 chosenViewJavaString = java.lang.String(chosenViewId);
                 algIdString = java.lang.String('DPM');
+                chosenTaxon = obj.session.domQuestionsScreens.chosenTaxon;
+                chosenTaxonId = obj.session.getTaxonIdForName(java.lang.String(chosenTaxon));
+                chosenTaxonJavaString = java.lang.String(chosenTaxonId);
                 charNameStringList = obj.session.matlabListToJavaStringList(obj.session.dpmQuestionScreens.simplePresenceAbsenceCharacters);
                 charIdStringList = java.util.ArrayList();
                 for i=0:charNameStringList.size()-1
@@ -85,10 +88,10 @@ classdef AlgorithmChoiceScreen < handle
                     charIdStringList.add(charId);
                 end
                 
-                mb.filterInputsByView(charIdStringList, chosenViewJavaString, algIdString);
+                mb.filterInputs(charIdStringList, chosenTaxonJavaString, chosenViewJavaString, algIdString);
                 
-                inputFolderJavaString = mb.getFilteredInputDirName(charIdStringList, chosenViewJavaString, algIdString);
-                outputFolderJavaString = mb.getFilteredOutputDirName(charIdStringList, chosenViewJavaString, algIdString);
+                inputFolderJavaString = mb.getFilteredInputDirName(charIdStringList, chosenTaxonJavaString, chosenViewJavaString, algIdString);
+                outputFolderJavaString = mb.getFilteredOutputDirName(charIdStringList, chosenTaxonJavaString, chosenViewJavaString, algIdString);
                 detectionResultsFolderJavaString = mb.getFilteredDetectionResultsDirName(charIdStringList, chosenViewJavaString, algIdString);
                 
                 input_folder = char(inputFolderJavaString);

@@ -41,6 +41,7 @@ public class TestMatrix {
 		}
 	}
 	*/
+	/*
 	@Test
 	public void testGetScorableTaxonNamesUnix() {
 		try {
@@ -55,7 +56,8 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}
-	/*
+	*/
+	
 	@Test
 	public void testDataWindows() {
 		try {
@@ -66,12 +68,12 @@ public class TestMatrix {
 		    List<String> names = bundle.getScorableCharacterNames();
 		    ArrayList<String> charIds = new ArrayList<String>();
 		    charIds.add("c427749");
-		    bundle.filterInputsByView(charIds, "v3540", "DPM");
+		    bundle.filterInputs(charIds, "t281048", "v3540", "DPM");
 		}
 		catch(Exception ex){
 			ex.printStackTrace();
 			fail(ex.getMessage());
 		}
 	}
-	*/
+	
 }

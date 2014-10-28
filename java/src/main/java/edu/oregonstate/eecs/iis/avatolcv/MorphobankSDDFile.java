@@ -48,6 +48,9 @@ public class MorphobankSDDFile {
     public String getTaxonNameForId(String taxonId) throws MorphobankDataException {
     	return this.matrix.getTaxonNameForId(taxonId);
     }
+    public String getTaxonIdForName(String taxonName) throws MorphobankDataException {
+    	return this.matrix.getTaxonIdForName(taxonName);
+    }
     public List<String> getViewNames(){
     	ArrayList<String> list = new ArrayList<String>();
     	for (String id : this.viewIds){
@@ -261,6 +264,13 @@ public class MorphobankSDDFile {
     }
     public String getCharacterIdForName(String id){
     	return this.characters.getCharacterIdForName(id);
+    }
+    public boolean isMediaOfTaxon(String mediaId, String taxonId) throws MorphobankDataException {
+    	String actualTaxonId = this.matrix.getTaxonIdForMediaId(mediaId);
+    	if (taxonId.equals(actualTaxonId)){
+    		return true;
+    	}
+    	return false;
     }
     public boolean isMediaOfView(String mediaId, String viewId){
     	String mappedView = this.viewsForImage.get(mediaId);
