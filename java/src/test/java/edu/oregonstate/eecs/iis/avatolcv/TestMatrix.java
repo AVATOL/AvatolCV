@@ -19,7 +19,7 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}*/
-	
+	/*
 	@Test
 	public void testDataUnix() {
 		try {
@@ -40,7 +40,21 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}
-	
+	*/
+	@Test
+	public void testGetTaxonIdForNameUnix() {
+		try {
+		    MorphobankData md = new MorphobankData("/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/matrix_downloads");
+		    md.loadMatrix("BAT");
+		    MorphobankBundle bundle = md.getBundle("BAT");
+		    bundle.getTaxonIdForName("Thyroptera tricolor");
+		    
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			fail(ex.getMessage());
+		}
+	}
 	/*
 	@Test
 	public void testGetScorableTaxonNamesUnix() {

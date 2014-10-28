@@ -7,10 +7,10 @@ function avatol_cv
         javaaddpath('java/lib');
     end
     
-    import edu.oregonstate.eecs.iis.avatolcv.*
-    import java.util.List
-    import java.lang.String
-    import java.lang.System.*
+    import edu.oregonstate.eecs.iis.avatolcv.*;
+    import java.util.List;
+    import java.lang.String;
+    import java.lang.System.*;
     %
     clearvars();
     clearvars -global H;

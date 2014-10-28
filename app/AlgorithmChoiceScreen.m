@@ -74,12 +74,12 @@ classdef AlgorithmChoiceScreen < handle
             else
                 mb = obj.session.morphobankBundle;
                 chosenView = obj.session.dpmQuestionScreens.chosenView;
-                chosenViewId = mb.getViewIdForName(java.lang.String(chosenView));
-                chosenViewJavaString = java.lang.String(chosenViewId);
+                viewId = mb.getViewIdForName(java.lang.String(chosenView));
+                
                 algIdString = java.lang.String('DPM');
-                chosenTaxon = obj.session.domQuestionsScreens.chosenTaxon;
-                chosenTaxonId = obj.session.getTaxonIdForName(java.lang.String(chosenTaxon));
-                chosenTaxonJavaString = java.lang.String(chosenTaxonId);
+                chosenTaxon = obj.session.dpmQuestionScreens.chosenTaxon;
+                taxonId = mb.getTaxonIdForName(java.lang.String(chosenTaxon));
+                
                 charNameStringList = obj.session.matlabListToJavaStringList(obj.session.dpmQuestionScreens.simplePresenceAbsenceCharacters);
                 charIdStringList = java.util.ArrayList();
                 for i=0:charNameStringList.size()-1
@@ -88,11 +88,11 @@ classdef AlgorithmChoiceScreen < handle
                     charIdStringList.add(charId);
                 end
                 
-                mb.filterInputs(charIdStringList, chosenTaxonJavaString, chosenViewJavaString, algIdString);
+                mb.filterInputs(charIdStringList, taxonId, viewId, algIdString);
                 
-                inputFolderJavaString = mb.getFilteredInputDirName(charIdStringList, chosenTaxonJavaString, chosenViewJavaString, algIdString);
-                outputFolderJavaString = mb.getFilteredOutputDirName(charIdStringList, chosenTaxonJavaString, chosenViewJavaString, algIdString);
-                detectionResultsFolderJavaString = mb.getFilteredDetectionResultsDirName(charIdStringList, chosenViewJavaString, algIdString);
+                inputFolderJavaString = mb.getFilteredInputDirName(charIdStringList, taxonId, viewId, algIdString);
+                outputFolderJavaString = mb.getFilteredOutputDirName(charIdStringList, taxonId, viewId, algIdString);
+                detectionResultsFolderJavaString = mb.getFilteredDetectionResultsDirName(charIdStringList, taxonId, viewId, algIdString);
                 
                 input_folder = char(inputFolderJavaString);
                 output_folder = char(outputFolderJavaString);
