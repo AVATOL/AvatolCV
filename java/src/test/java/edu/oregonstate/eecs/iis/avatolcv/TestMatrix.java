@@ -19,7 +19,7 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}*/
-	/*
+	
 	@Test
 	public void testDataUnix() {
 		try {
@@ -32,7 +32,7 @@ public class TestMatrix {
 		    charIds.add("c427753");
 		    charIds.add("c427754");
 		    charIds.add("c427760");
-		    bundle.filterInputsByView(charIds, "v3540", "DPM");
+		    bundle.filterInputs(charIds, "t281048", "v3540", "DPM");
 		    
 		}
 		catch(Exception ex){
@@ -40,7 +40,7 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}
-	*/
+	
 	/*
 	@Test
 	public void testGetScorableTaxonNamesUnix() {
@@ -57,7 +57,7 @@ public class TestMatrix {
 		}
 	}
 	*/
-	
+	/*
 	@Test
 	public void testDataWindows() {
 		try {
@@ -75,5 +75,6 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}
+	*/
 	
 }
