@@ -157,6 +157,12 @@ public class InputFiles {
     			}
     		}
     		List<MatrixCell> allMatrixCellsForTrainedCharacter = sddFile.getPresenceAbsenceCellsForCharacter(charId);
+    		// need to add training lines for "not present" scored training examples since they won't have generated annotations
+    		List<MatrixCell> notPresentTrainingCells = getNotPresentCells(allMatrixCellsForTrainedCharacter);
+    		for (MatrixCell notPresentCell : notPresentTrainingCells){
+    			// LEFT OFF HERE
+    		}
+    		
     		List<MatrixCell> matrixCellsToScore = getCellsToScore(allMatrixCellsForTrainedCharacter, annotationsForCharacter);
     		for (MatrixCell cell : matrixCellsToScore){
     			List<String> mediaIds = cell.getMediaIds();
