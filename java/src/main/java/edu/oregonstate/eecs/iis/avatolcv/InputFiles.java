@@ -134,12 +134,29 @@ public class InputFiles {
         }
         return false;
     }
+    public List<MatrixCell> getNotPresentCells(List<MatrixCell> cells) throws AvatolCVException{
+    	List<MatrixCell> notPresentCells = new ArrayList<MatrixCell>();
+    	for (MatrixCell cell : cells){
+    		String stateId = cell.getState();
+    		if (stateId.equals("s")){
+    			// this indicates unscored.
+    		}
+    		else {
+    			String charId = cell.getCharId();
+        		Character character = this.sddFile.getCharacterForId(charId);
+        		if (character.isStateIdRepresentingAbsent(stateId)){
+        			notPresentCells.add(cell);
+        		}
+    		}
+    	}
+    	return notPresentCells;
+    }
 	  // sorted_input_data_<charID>_charName.txt
     // for each annotation file, add line
     // training_data:media/<name_of_mediafile>:char_state:<pathname_of_annotation_file>:taxonID:lineNumber
     // for each media file which needs scoring, add line
     // image_to_score:media/<name_of_mediafile>:taxonID 
-    public void generateInputDataFiles() throws MorphobankDataException {
+    public void generateInputDataFiles() throws AvatolCVException  {
     	// HAD TO COMMENT THE FOLLOWING OUT DUE TO maps not getting setup properly
     	//if (doInputDataFilesAlreadyExist()){
     	//	return;
@@ -160,7 +177,10 @@ public class InputFiles {
     		// need to add training lines for "not present" scored training examples since they won't have generated annotations
     		List<MatrixCell> notPresentTrainingCells = getNotPresentCells(allMatrixCellsForTrainedCharacter);
     		for (MatrixCell notPresentCell : notPresentTrainingCells){
-    			// LEFT OFF HERE
+    			List<String> notPresentTrainingDataLines = this.sddFile.getNotPresentTrainingDataLines(notPresentCell);
+    			for (String s : notPresentTrainingDataLines){
+    				trainingDataLines.add(s);
+    			}
     		}
     		
     		List<MatrixCell> matrixCellsToScore = getCellsToScore(allMatrixCellsForTrainedCharacter, annotationsForCharacter);
@@ -202,7 +222,7 @@ public class InputFiles {
                 }
                 catch(IOException ioe){
                 	ioe.printStackTrace();
-                	throw new MorphobankDataException("could not write input file " + inputFilePathname);
+                	throw new AvatolCVException("could not write input file " + inputFilePathname);
                 }
     		}
     	}
@@ -269,7 +289,7 @@ public class InputFiles {
     /*
      * make a dir name by cat'ing the char_ids that are valid simple, then subdir named for viewId, then can clean before filling
      */
-    public void filterInputs(List<String> charIds, String taxonId, String viewId, String algId) throws MorphobankDataException {
+    public void filterInputs(List<String> charIds, String taxonId, String viewId, String algId) throws AvatolCVException {
     	
     	String newInputDir = getFilteredDirname(charIds, taxonId, viewId, algId, INPUT_DIRNAME);
     	String newOutputDir = getFilteredDirname(charIds, taxonId, viewId, algId, OUTPUT_DIRNAME);
@@ -308,8 +328,11 @@ public class InputFiles {
         		Platform.setPermissions(newFilePath);
         	}
     	}
+    	catch(MorphobankDataException mde){
+    		throw new AvatolCVException("Data problem trying tp create input files.",mde);
+    	}
     	catch(IOException ioe){
-    		throw new MorphobankDataException("problem reading in existing input file to filter it: " +  ioe.getMessage());
+    		throw new AvatolCVException("problem reading in existing input file to filter it: " +  ioe.getMessage());
     	}
     }
     public String getMediaIdFromLineToScore(String line){
@@ -322,7 +345,7 @@ public class InputFiles {
     	String mediaId = prefix.replace("M","m");
     	return mediaId;
     }
-    public boolean isImageToScoreMediaOfTaxon(String line, String taxonId) throws MorphobankDataException {
+    public boolean isImageToScoreMediaOfTaxon(String line, String taxonId) throws AvatolCVException {
     	String mediaId = getMediaIdFromLineToScore(line);
     	return this.sddFile.isMediaOfTaxon(mediaId, taxonId);
     }
@@ -344,7 +367,7 @@ public class InputFiles {
     	String mediaId = getMediaIdFromTrainingLine(line);
     	return this.sddFile.isMediaOfView(mediaId, viewId);
     }
-    public boolean isTrainingDataMediaOfTaxon(String line, String taxonId) throws MorphobankDataException {
+    public boolean isTrainingDataMediaOfTaxon(String line, String taxonId) throws AvatolCVException {
     	String mediaId = getMediaIdFromTrainingLine(line);
     	return this.sddFile.isMediaOfTaxon(mediaId, taxonId);
     }

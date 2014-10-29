@@ -33,24 +33,24 @@ public class Matrix {
     		//System.out.println("column count for row " + taxonId + " is " + row.getColumnCount());
     	}
     }
-    public String getTaxonNameForId(String taxonId) throws MorphobankDataException {
+    public String getTaxonNameForId(String taxonId) throws AvatolCVException {
     	String taxonName = taxonNameForId.get(taxonId);
     	if (null == taxonName){
-    		throw new MorphobankDataException("no taxonName available for taxonId " + taxonId);
+    		throw new AvatolCVException("no taxonName available for taxonId " + taxonId);
     	}
     	return taxonName;
     }
-    public String getTaxonIdForName(String taxonName) throws MorphobankDataException {
+    public String getTaxonIdForName(String taxonName) throws AvatolCVException {
     	String taxonId = taxonIdForName.get(taxonName);
     	if (null == taxonId){
-    		throw new MorphobankDataException("no taxonId available for taxonName " + taxonName);
+    		throw new AvatolCVException("no taxonId available for taxonName " + taxonName);
     	}
     	return taxonId;
     }
-    public String getTaxonIdForMediaId(String mediaId) throws MorphobankDataException {
+    public String getTaxonIdForMediaId(String mediaId) throws AvatolCVException {
     	String taxonId = taxonsForMediaId.get(mediaId);
     	if (null == taxonId){
-    		throw new MorphobankDataException("no taxonId available for mediaId " + mediaId);
+    		throw new AvatolCVException("no taxonId available for mediaId " + mediaId);
     	}
     	return taxonId;
     }

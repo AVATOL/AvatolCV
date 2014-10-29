@@ -22,6 +22,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class MorphobankSDDFile {
+	private Media media;
 	private String pathname;
 	private Matrix matrix;
 	private Characters characters;
@@ -31,7 +32,8 @@ public class MorphobankSDDFile {
 	private Hashtable<String,String> viewsForImage = new Hashtable<String,String>();
 	
 	private Document document = null;
-    public MorphobankSDDFile(String pathname, SPRTaxonIdMapper mapper) throws MorphobankDataException {
+    public MorphobankSDDFile(String pathname, SPRTaxonIdMapper mapper, Media media) throws MorphobankDataException {
+    	this.media = media;
     	this.pathname = pathname;
     	this.document = getDocumentFromPathname(pathname);
     	if (null != mapper){
@@ -45,10 +47,10 @@ public class MorphobankSDDFile {
     	loadViewsForImage(this.document);
     	loadViewsForDocument(this.document);
     }
-    public String getTaxonNameForId(String taxonId) throws MorphobankDataException {
+    public String getTaxonNameForId(String taxonId) throws AvatolCVException {
     	return this.matrix.getTaxonNameForId(taxonId);
     }
-    public String getTaxonIdForName(String taxonName) throws MorphobankDataException {
+    public String getTaxonIdForName(String taxonName) throws AvatolCVException {
     	return this.matrix.getTaxonIdForName(taxonName);
     }
     public List<String> getViewNames(){
@@ -163,7 +165,7 @@ public class MorphobankSDDFile {
     		}
     	}
     }
-    public String getTaxonIdForMediaId(String mediaId) throws MorphobankDataException {
+    public String getTaxonIdForMediaId(String mediaId) throws AvatolCVException {
     	return this.matrix.getTaxonIdForMediaId(mediaId);
     }
     public Matrix getMatrix(){
@@ -259,13 +261,36 @@ public class MorphobankSDDFile {
     	}
     	return allMatrixCells;
     }
+    public List<String> getNotPresentTrainingDataLines(MatrixCell notPresentCell) throws AvatolCVException {
+    	List<String> trainingLines = new ArrayList<String>();
+    	String delim = Annotation.ANNOTATION_DELIM;
+    	List<String> mediaIds = notPresentCell.getMediaIds();
+    	for (String mediaId : mediaIds){
+    		String mediaFilename = this.media.getMediaFilenameForMediaId(mediaId);
+    		if (null != mediaFilename){
+    			String charId = notPresentCell.getCharId();
+        		Character character = this.characters.getCharacterForId(charId);
+        		String charStateId = notPresentCell.getState();
+        		CharacterState characterState = character.getCharacterStateForId(charStateId);
+        		String charStateText = characterState.getName();
+        		String taxonId = getTaxonIdForMediaId(mediaId);
+        		String trainingLine = "training_data" + delim + "media/" + mediaFilename + delim + 
+                        charStateId + delim + charStateText + delim + "NA" + delim + taxonId + delim + "NA";
+        		trainingLines.add(trainingLine);
+    		}
+    	}
+    	return trainingLines; 
+    }
     public String getCharacterNameForId(String id){
     	return this.characters.getCharacterNameForId(id);
     }
     public String getCharacterIdForName(String id){
     	return this.characters.getCharacterIdForName(id);
     }
-    public boolean isMediaOfTaxon(String mediaId, String taxonId) throws MorphobankDataException {
+    public Character getCharacterForId(String id) throws AvatolCVException {
+    	return this.characters.getCharacterForId(id);
+    }
+    public boolean isMediaOfTaxon(String mediaId, String taxonId) throws AvatolCVException {
     	String actualTaxonId = this.matrix.getTaxonIdForMediaId(mediaId);
     	if (taxonId.equals(actualTaxonId)){
     		return true;

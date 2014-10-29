@@ -25,7 +25,14 @@ public class Characters {
     		this.characters.add(character);
     	}
     }
-    
+    public Character getCharacterForId(String id) throws AvatolCVException {
+    	for (Character character : this.characters){
+    		if (character.getId().equals(id)){
+    			return character;
+    		}
+    	}
+    	throw new AvatolCVException("no Character instance with id " + id);
+    }
     public List<Character> getPresenceAbsenceCharacters(){
     	List<Character> paChars = new ArrayList<Character>();
     	for (Character c : this.characters){

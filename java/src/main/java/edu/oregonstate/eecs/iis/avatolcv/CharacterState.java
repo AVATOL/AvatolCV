@@ -55,4 +55,18 @@ public class CharacterState {
     public String getCharId(){
     	return this.charId;
     }
+    public boolean representsPresent(){
+    	String checkableName = this.name.trim().toLowerCase();
+    	if ("present".equals(checkableName) || checkableName.endsWith("present")){
+			return true;
+		}
+    	return false;
+    }
+    public boolean representsAbsent(){
+    	String checkableName = this.name.trim().toLowerCase();
+    	if ("absent".equals(checkableName) || checkableName.endsWith("absent")){
+    		return true;
+    	}
+    	return false;
+    }
 }

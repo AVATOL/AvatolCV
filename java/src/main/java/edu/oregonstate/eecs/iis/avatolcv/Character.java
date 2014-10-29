@@ -46,6 +46,34 @@ public class Character {
             throw new MorphobankDataException(message);
         }
     }
+    public boolean isStateIdRepresentingAbsent(String stateId) throws AvatolCVException{
+    	String normStateId = normalizeCharStateId(stateId);
+    	CharacterState cs = getCharacterStateForId(normStateId);
+    	if (cs.representsAbsent()){
+    		return true;
+    	}
+    	return false;
+    }
+    public String normalizeCharStateId(String id) throws AvatolCVException {
+    	if (id.startsWith("cs")){
+    		return id;
+    	}
+    	else if (id.startsWith("s")){
+    		return "c" + id;
+    	}
+    	else {
+    		throw new AvatolCVException("unrecognized format for stateId : " + id + " ... expecting id to start with cs or s");
+    	}
+    }
+    public CharacterState getCharacterStateForId(String stateId) throws AvatolCVException {
+    	String normStateId = normalizeCharStateId(stateId);
+    	for (CharacterState characterState : this.characterStates){
+    		if (characterState.getId().equals(normStateId)){
+    			return characterState;
+    		}
+    	}
+    	throw new AvatolCVException("No CharacterState entry with id " + stateId + " in Character " + this.id);
+    }
     public String getName(){
     	return this.name;
     }
@@ -123,13 +151,10 @@ public class Character {
     	boolean presentFound = false;
     	boolean absentFound = false;
     	for (CharacterState state : this.characterStates){
-    		String name = state.getName();
-    		name = name.trim();
-    		name = name.toLowerCase();
-    		if ("present".equals(name) || name.endsWith("present")){
+    		if (state.representsPresent()){
     			presentFound = true;
     		}
-    		else if ("absent".equals(name) || name.endsWith("absent")){
+    		else if (state.representsAbsent()){
     			absentFound = true;
     		}
     	}

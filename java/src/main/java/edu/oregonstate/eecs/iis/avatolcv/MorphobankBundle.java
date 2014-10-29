@@ -25,9 +25,9 @@ public class MorphobankBundle {
     	if (isSpecimenPerRowBundle()){
     		mapper = new SPRTaxonIdMapper(sddPath);
     	}
-    	this.sddFile = new MorphobankSDDFile(sddPath, mapper);
-        
         this.media = new Media(this.dirName);
+    	this.sddFile = new MorphobankSDDFile(sddPath, mapper, this.media);
+        
     	this.annotations = new Annotations(this.sddFile.getPresenceAbsenceCharacterCells(),this.dirName, this.sddFile, this.media);
     	this.inputFiles = new InputFiles(this.sddFile, this.annotations, this.media, this.dirName);
     	this.inputFiles.generateInputDataFiles();
@@ -141,7 +141,7 @@ public class MorphobankBundle {
     	}
     	return scorableCharacterNames;
     }
-    public List<String> getScorableTaxonNames() throws MorphobankDataException {
+    public List<String> getScorableTaxonNames() throws AvatolCVException {
     	List<String> result = new ArrayList<String>();
     	List<String> annotatedMediaIds = this.inputFiles.getAnnotatedMediaIds();
     	for (String mediaId : annotatedMediaIds){
@@ -171,7 +171,7 @@ public class MorphobankBundle {
         }
         return path;
     }
-    public void filterInputs(List<String> charIds, String taxonId, String viewId, String algId) throws MorphobankDataException {
+    public void filterInputs(List<String> charIds, String taxonId, String viewId, String algId) throws AvatolCVException {
     	this.inputFiles.filterInputs(charIds, taxonId, viewId, algId);
     }
     public String getFilteredInputDirName(List<String> charIds, String taxonId, String viewId, String algId){
@@ -191,7 +191,7 @@ public class MorphobankBundle {
     public String getCharacterIdForName(String id){
     	return this.sddFile.getCharacterIdForName(id);
     } 
-    public String getTaxonIdForName(String name) throws MorphobankDataException {
+    public String getTaxonIdForName(String name) throws AvatolCVException {
     	return this.sddFile.getTaxonIdForName(name);
     }
 }
