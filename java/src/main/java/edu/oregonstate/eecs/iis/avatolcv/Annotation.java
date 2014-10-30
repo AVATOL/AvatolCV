@@ -1,5 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
+import java.io.File;
+
 public class Annotation {
 	public static final String ANNOTATION_DELIM = "|";
     private String coordinateList;
@@ -61,8 +63,18 @@ public class Annotation {
     public String getPathname(){
     	return this.pathname;
     }
-    public String getTrainingDataLine(String mediaFilename, String taxonId){
+    public String getTrainingDataLine(String mediaFilename, String taxonId) throws AvatolCVException {
+    	String relativePath = getRelativePathForAnnotationFile(this.pathname);
     	return "training_data" + ANNOTATION_DELIM + "media/" + mediaFilename + ANNOTATION_DELIM + 
-                    charState + ANNOTATION_DELIM + charStateText + ANNOTATION_DELIM + pathname + ANNOTATION_DELIM + taxonId + ANNOTATION_DELIM + lineNumber;          
+                    charState + ANNOTATION_DELIM + charStateText + ANNOTATION_DELIM + relativePath + ANNOTATION_DELIM + taxonId + ANNOTATION_DELIM + lineNumber;          
+    }
+    public String getRelativePathForAnnotationFile(String path) throws AvatolCVException {
+    	File f = new File(path);
+        File parent = f.getParentFile();
+        if (!parent.getName().equals("annotations")){
+        	throw new AvatolCVException("expected annotation file to be in annotations directory");
+        }
+        String relativePath = "annotations" + System.getProperty("file.separator") + f.getName();
+        return relativePath;
     }
 }
