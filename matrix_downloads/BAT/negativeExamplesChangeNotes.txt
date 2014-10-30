@@ -1,0 +1,103 @@
+<CodedDescription id="row_t281048"><Representation><Label>Thyroptera tricolor 239080</Label></Representation><Scope><TaxonName ref="t281048"></TaxonName></Scope>
+<SummaryData>
+<Categorical ref="c427749"><MediaObject ref="m328543"/><MediaObject ref="m328542"/><State ref="s946108"/></Categorical>
+<Categorical ref="c427750"><Representation><Detail xml:lang="en" role="note"></Detail></Representation><MediaObject ref="m328543"/><MediaObject ref="m328542"/><State ref="s946110"/></Categorical>
+<Categorical ref="c427751"><MediaObject ref="m328543"/><MediaObject ref="m328542"/><State ref="s946113"/></Categorical>
+<Categorical ref="c427752"><MediaObject ref="m328543"/><MediaObject ref="m328542"/><State ref="s946116"/></Categorical>
+<Categorical ref="c427753"><MediaObject ref="m328543"/><MediaObject ref="m328542"/><State ref="s946117"/></Categorical>
+<Categorical ref="c427754"><MediaObject ref="m328543"/><MediaObject ref="m328542"/><State ref="s946119"/></Categorical>
+<Categorical ref="c427755"><MediaObject ref="m328542"/><State ref="s946121"/></Categorical>
+<Categorical ref="c427756"><MediaObject ref="m328543"/><MediaObject ref="m328542"/><State ref="s946123"/></Categorical>
+<Categorical ref="c427757"><MediaObject ref="m328543"/><MediaObject ref="m328542"/><State ref="s946125"/></Categorical>
+<Categorical ref="c427758"><MediaObject ref="m328543"/><MediaObject ref="m328542"/><State ref="s946127"/></Categorical>
+<Categorical ref="c427759"><MediaObject ref="m328543"/><State ref="s946129"/></Categorical>
+<Categorical ref="c427760"><MediaObject ref="m328543"/><MediaObject ref="m328542"/><State ref="s946131"/></Categorical>
+<Categorical ref="c427761"><MediaObject ref="m328543"/><State ref="s946134"/></Categorical>
+</SummaryData>
+</CodedDescription>
+
+
+
+                <TaxonName id='t281048'><Label><Text>Thyroptera tricolor 239080</Text></Label></TaxonName>
+		<TaxonName id='t281049'><Label><Text>Thyroptera tricolor 239081</Text></Label></TaxonName>
+		<TaxonName id='t281050'><Label><Text>Thyroptera tricolor 239084</Text></Label></TaxonName>
+		<TaxonName id='t281051'><Label><Text>Thyroptera tricolor 239088</Text></Label></TaxonName>
+		<TaxonName id='t281052'><Label><Text>Thyroptera tricolor 264691</Text></Label></TaxonName>
+		<TaxonName id='t281053'><Label><Text>Thyroptera tricolor 266353</Text></Label></TaxonName>
+		<TaxonName id='t281054'><Label><Text>Thyroptera tricolor 267217</Text></Label></TaxonName>
+		<TaxonName id='t281055'><Label><Text>Thyroptera tricolor 268577</Text></Label></TaxonName>
+		<TaxonName id='t281056'><Label><Text>Thyroptera tricolor 273160</Text></Label></TaxonName>
+		<TaxonName id='t281047'><Label><Text>Thyroptera tricolor 97133</Text></Label></TaxonName>
+
+
+CHANGES:
+
+
+1. here's the taxonId row I chose to make the changes in:
+
+<CodedDescription id="row_t281047"><Representation><Label>Thyroptera tricolor 97133</Label></Representation><Scope><TaxonName ref="t281047"></TaxonName></Scope>
+<SummaryData>
+<Categorical ref="c427749"><MediaObject ref="m328546"/><MediaObject ref="m328545"/><State ref="s946108"/></Categorical>
+<Categorical ref="c427750"><Representation><Detail xml:lang="en" role="note"></Detail></Representation><MediaObject ref="m328546"/><MediaObject ref="m328545"/><State ref="s946110"/></Categorical>
+<Categorical ref="c427751"><MediaObject ref="m328546"/><MediaObject ref="m328545"/><State ref="s946113"/></Categorical>
+<Categorical ref="c427752"><MediaObject ref="m328546"/><MediaObject ref="m328545"/><State ref="s946116"/></Categorical>
+<Categorical ref="c427753"><MediaObject ref="m328546"/><MediaObject ref="m328545"/><State ref="s946117"/></Categorical>
+<Categorical ref="c427754"><MediaObject ref="m328546"/><MediaObject ref="m328545"/><State ref="s946119"/></Categorical>
+<Categorical ref="c427755"><MediaObject ref="m328545"/><State ref="s946121"/></Categorical>
+<Categorical ref="c427756"><MediaObject ref="m328546"/><MediaObject ref="m328545"/><State ref="s946123"/></Categorical>
+<Categorical ref="c427757"><MediaObject ref="m328546"/><MediaObject ref="m328545"/><State ref="s946125"/></Categorical>
+<Categorical ref="c427758"><MediaObject ref="m328546"/><MediaObject ref="m328545"/><State ref="s946127"/></Categorical>
+<Categorical ref="c427759"><MediaObject ref="m328546"/><State ref="s946129"/></Categorical>
+<Categorical ref="c427760"><MediaObject ref="m328546"/><MediaObject ref="m328545"/><State ref="s946131"/></Categorical>
+<Categorical ref="c427761"><MediaObject ref="m328546"/><State ref="s946134"/></Categorical>
+</SummaryData>
+</CodedDescription>
+
+2.  I changed m328546 to m328516 so that my blurred file would be referenced
+
+<CodedDescription id="row_t281047"><Representation><Label>Thyroptera tricolor 97133</Label></Representation><Scope><TaxonName ref="t281047"></TaxonName></Scope>
+<SummaryData>
+<Categorical ref="c427749"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946108"/></Categorical>
+<Categorical ref="c427750"><Representation><Detail xml:lang="en" role="note"></Detail></Representation><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946110"/></Categorical>
+<Categorical ref="c427751"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946113"/></Categorical>
+<Categorical ref="c427752"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946116"/></Categorical>
+<Categorical ref="c427753"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946117"/></Categorical>
+<Categorical ref="c427754"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946119"/></Categorical>
+<Categorical ref="c427755"><MediaObject ref="m328545"/><State ref="s946121"/></Categorical>
+<Categorical ref="c427756"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946123"/></Categorical>
+<Categorical ref="c427757"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946125"/></Categorical>
+<Categorical ref="c427758"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946127"/></Categorical>
+<Categorical ref="c427759"><MediaObject ref="m328516"/><State ref="s946129"/></Categorical>
+<Categorical ref="c427760"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946131"/></Categorical>
+<Categorical ref="c427761"><MediaObject ref="m328516"/><State ref="s946134"/></Categorical>
+</SummaryData>
+</CodedDescription
+
+3. Then I changed :
+-char c427749 state from 946108 to 109
+-char c427753 state from 946117 to 118
+-char c427754 state from 946119 to 120
+-char c427760 state from 946131 to 132
+
+yielding 
+
+
+<CodedDescription id="row_t281047"><Representation><Label>Thyroptera tricolor 97133</Label></Representation><Scope><TaxonName ref="t281047"></TaxonName></Scope>
+<SummaryData>
+<Categorical ref="c427749"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946109"/></Categorical>
+<Categorical ref="c427750"><Representation><Detail xml:lang="en" role="note"></Detail></Representation><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946110"/></Categorical>
+<Categorical ref="c427751"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946113"/></Categorical>
+<Categorical ref="c427752"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946116"/></Categorical>
+<Categorical ref="c427753"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946118"/></Categorical>
+<Categorical ref="c427754"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946120"/></Categorical>
+<Categorical ref="c427755"><MediaObject ref="m328545"/><State ref="s946121"/></Categorical>
+<Categorical ref="c427756"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946123"/></Categorical>
+<Categorical ref="c427757"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946125"/></Categorical>
+<Categorical ref="c427758"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946127"/></Categorical>
+<Categorical ref="c427759"><MediaObject ref="m328516"/><State ref="s946129"/></Categorical>
+<Categorical ref="c427760"><MediaObject ref="m328516"/><MediaObject ref="m328545"/><State ref="s946132"/></Categorical>
+<Categorical ref="c427761"><MediaObject ref="m328516"/><State ref="s946134"/></Categorical>
+</SummaryData>
+</CodedDescription
+
+
