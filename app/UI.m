@@ -22,6 +22,12 @@ classdef UI < handle
         trainingTextPanel;
         mostRecentQAFlavor;
         
+        scoredSetTitlePanel;
+        scoredSetNavigationPanel;
+        scoredSetMetadataPanel;
+        checkboxPanePanel;
+        imageNavigationPanel;
+        
         lineHeight = 30;
         pushButtonWidth = 80;
         fontname = 'Helvetica';
@@ -137,6 +143,50 @@ classdef UI < handle
             obj.activePanelTags = {  'titlePanel', 'questionPanel', 'answerPanel', 'imagePanel', 'navigationPanel'}; 
         end
 
+
+        function createResultsReviewPanels(obj)
+            obj.titlePanel = obj.createTitlePanel();
+            % [0.02 0.02 0.96 0.05]; is navigation panel
+            obj.scoredSetTitlePanel = uipanel('Background', [1 0.3 0.3],...%[1 0.3 0.3]
+                                      'BorderType', 'none',...
+                                      'Tag', 'scoreSetTitlePanel',...
+                                      'Position',[0.02 0.85 0.46 0.10]);
+                                  
+            obj.scoredSetNavigationPanel = uipanel('Background', [1 0.4 0.4],...%[1 0.3 0.3]
+                                      'BorderType', 'none',...
+                                      'Tag', 'scoredSetNavigationPanel',...
+                                      'Position',[0.02 0.75 0.46 0.10]);
+                                  
+            obj.scoredSetMetadataPanel = uipanel('Background', [1 0.5 0.5],...%[1 0.3 0.3]
+                                      'BorderType', 'none',...
+                                      'Tag', 'scoredSetMetadataPanel',...
+                                      'Position',[0.02 0.10 0.46 0.65]);
+                                  
+                                  
+            obj.checkboxPanePanel = uipanel('Background', [0.5 1 0.5],...%[1 0.3 0.3]
+                                      'BorderType', 'none',...
+                                      'Tag', 'checkboxPanelPanel',...
+                                      'Position',[0.52 0.85 0.46 0.10]);
+
+            obj.imageNavigationPanel = uipanel('Background', [0.4 1 0.4],...%[1 0.3 0.3]
+                                      'BorderType', 'none',...
+                                      'Tag', 'imageNavigationPanel',...
+                                      'Position',[0.52 0.75 0.46 0.10]);
+                                                               
+            obj.imagePanel = uipanel('Background', [0.3 1 0.3],...%[1 0.3 0.3]
+                                      'BorderType', 'none',...
+                                      'Tag', 'imagePanel',...
+                                      'Position',[0.52 0.10 0.46 0.65]);
+                             
+
+            obj.navigationPanel = uipanel('Background', [1 0.5 0.5],...%[0.1 0.3 0.3]
+                                      'BorderType', 'none',...
+                                      'Tag', 'navigationPanel',...
+                                      'Position',obj.getNavigationPanelPosition());
+            obj.mostRecentQAFlavor = 'NA';
+            obj.activePanelTags = {  'titlePanel', 'scoreSetTitlePanel', 'scoredSetNavigationPanel', 'scoredSetMetadataPanel', 'checkboxPanelPanel', 'imageNavigationPanel',  'imagePanel', 'navigationPanel'}; 
+        end
+
         function createCheckboxChoicePanels(obj)
         
             obj.titlePanel = obj.createTitlePanel();
@@ -188,7 +238,7 @@ classdef UI < handle
             obj.mostRecentQAFlavor = 'typedInput';
             obj.activePanelTags = { 'titlePanel', 'questionPanel', 'answerPanel', 'imagePanel', 'navigationPanel' };
         end
-        function createResultsReviewPanels(obj)
+        function createResultsReviewPanelsObsolete(obj)
             obj.titlePanel = createTitlePanel();
 
             obj.messagePanel     = uipanel('Background', [1 1 1],'BorderType','none','Tag','messagePanel',     'Position',[0.05 0.70 0.67 0.18]);

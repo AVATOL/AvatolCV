@@ -14,6 +14,7 @@ classdef Session < handle
         algorithmChoiceScreen;
         dpmQuestionScreens;
         mostRecentScreen = 'NOT_STARTED';
+        resultsReviewScreen;
        
         matrixChoiceIndex = 1;
         chosenMatrix;
@@ -37,6 +38,7 @@ classdef Session < handle
             obj.characterChoiceScreen = CharacterChoiceScreen(obj.ui, obj);
             obj.algorithmChoiceScreen = AlgorithmChoiceScreen(obj.ui, obj);
             obj.dpmQuestionScreens = DPMQuestionScreens(obj.ui, obj);
+            obj.resultsReviewScreen = ResultsReviewScreen(obj.ui, obj);
             
             matrixDownloadsRootPath = obj.getFullPathForJava('matrix_downloads');
             obj.morphobankData = MorphobankData(matrixDownloadsRootPath);
@@ -91,6 +93,9 @@ classdef Session < handle
             else
                 obj.questionnaireScreens.showCurrentQuestion();
             end
+        end
+        function jumpToResultsReview(obj)
+            obj.resultsReviewScreen.showResults();
         end
         function jumpToTutorial(obj)
             if (strcmp(obj.tutorialScreens.mostRecentTutorialPage,'NOT_STARTED'))

@@ -31,6 +31,7 @@ classdef WelcomeScreen < handle
 
             beginTutorialPosition = [0.75,0,0.25,1 ];  
             skipToQuestionnaireButtonPosition = [0,0,0.25,1 ];
+            skipToResultsReviewButtonPosition = [0.25,0,0.25,1 ];
 
             beginTutorial = uicontrol('style', 'pushbutton' ,...
                                          'String', 'Begin Tutorial' ,...
@@ -53,11 +54,23 @@ classdef WelcomeScreen < handle
                                          'Tag','skipToQuestionnaire' ,...
                                          'BackgroundColor', [0.5 0.5 0.5]);  
 
+            skipToResultsReview = uicontrol('style', 'pushbutton' ,...
+                                         'String', 'Skip to Results Review' ,...
+                                         'Parent',obj.ui.navigationPanel,...
+                                         'Units','normalized',...
+                                         'position', skipToResultsReviewButtonPosition ,...
+                                         'FontName', obj.ui.fontname ,...
+                                         'FontSize', obj.ui.fontsize ,...
+                                         'Tag','skipToQuestionnaire' ,...
+                                         'BackgroundColor', [0.5 0.5 0.5]);  
+
             obj.ui.activeControlTags = { 'tutorialText', 'beginTutorial', 'skipToQuestionnaire' };   
 
             obj.session.activeScreen = 'WelcomeScreen';
             set(beginTutorial, 'callback', {@obj.startTutorial});
             set(skipToQuestionnaire, 'callback', {@obj.jumpToQuestionnaire});
+            set(skipToResultsReview, 'callback', {@obj.jumpToResultsReview});
+            
 
         end
         function startTutorial(obj,hObject, eventData)
@@ -65,6 +78,10 @@ classdef WelcomeScreen < handle
         end
         function jumpToQuestionnaire(obj,hObject, eventData)
             obj.session.jumpToQuestionnaire();
+            
+        end
+        function jumpToResultsReview(obj,hObject, eventData)
+            obj.session.jumpToResultsReview();
         end
     end
     
