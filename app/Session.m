@@ -3,6 +3,7 @@ classdef Session < handle
     %   Detailed explanation goes here
     
     properties
+        scoredSetMetadata;
         ui;
         welcomeScreen;
         questionnaireScreens;
@@ -44,6 +45,7 @@ classdef Session < handle
             obj.morphobankData = MorphobankData(matrixDownloadsRootPath);
             obj.chosenMatrix = obj.morphobankData.getMatrixNameAtIndex(obj.matrixChoiceIndex);
             obj.welcomeScreen.displayWelcomeScreen();
+            obj.scoredSetMetadata = ScoredSetMetadata(rootDir);
         end
             
     

@@ -71,7 +71,9 @@ classdef AlgorithmChoiceScreen < handle
 
                 options.PROGRESS_INDICATOR = obj.progressIndicator;
                 obj.algorithms.invoke_the_crf_system(inputFilePathname, outputFilePathname, options);
+                obj.session.scoredSetMetadata.persistForCRF(obj.session.chosenMatrix,chosenCharNameString);
             else
+                chosenCharNameString = java.lang.String(obj.session.characterChoiceScreen.characterName);
                 mb = obj.session.morphobankBundle;
                 chosenView = obj.session.dpmQuestionScreens.chosenView;
                 viewId = mb.getViewIdForName(java.lang.String(chosenView));
@@ -100,6 +102,7 @@ classdef AlgorithmChoiceScreen < handle
                 
                 list_of_characters = obj.session.javaStringListToMatlabCharList(charIdStringList);
                 obj.algorithms.invoke_dpm_system(list_of_characters, input_folder, output_folder, detection_results_folder, obj.progressIndicator);
+                obj.session.scoredSetMetadata.persistForDPM(obj.session.chosenMatrix,java.lang.String(chosenTaxon),chosenCharNameString,java.lang.String(chosenView),charIdStringList);
             end
 
             %here is where we show the results

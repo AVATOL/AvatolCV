@@ -13,6 +13,13 @@ classdef ResultsReviewScreen < handle
             obj.session = session;
         end
         function showResults(obj)
+            resultsMetadata = obj.session.scoredSetMetadata.loadAll();
+            keysEnumeration = resultsMetadata.keys();
+            while keysEnumeration.hasMoreElements()
+                key = keysEnumeration.nextElement();
+                data = resultsMetadata.get(key);
+                fprintf('data found : %s',data);
+            end    
             obj.ui.deleteObsoleteControls();
             obj.ui.createResultsReviewPanels();
             % create panel for instructions
