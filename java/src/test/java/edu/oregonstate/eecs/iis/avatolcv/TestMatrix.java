@@ -21,8 +21,9 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}*/
+	/*
 	@Test
-	public void testScoredSetMetadata(){
+	public void testScoredSetMetadataUnix(){
 		String matrixName = "BAT";
 		String taxon = "t281048";
 		String view = "v3540";
@@ -40,6 +41,33 @@ public class TestMatrix {
             while (keysEnumeration.hasMoreElements()){
                 String key = (String)keysEnumeration.nextElement();
                 String data = resultsMetadata.get(key);
+                System.out.println("data found : " + data);
+            }   
+		}
+		catch(Exception ioe){
+			ioe.printStackTrace();
+			System.out.println(ioe.getMessage());
+		}
+	}*/
+	@Test
+	public void testScoredSetMetadataWindows(){
+		String matrixName = "BAT";
+		String taxon = "t281048";
+		String view = "v3540";
+		String character = "c427749";
+		ArrayList<String> charIds = new ArrayList<String>();
+		charIds.add("c427749");
+		charIds.add("c427753");
+		charIds.add("c427754");
+		charIds.add("c427760");
+		ScoredSetMetadata ssm = new ScoredSetMetadata("C:\\avatol\\git\\avatol_cv");
+		try {
+			ssm.persistForDPM(matrixName, taxon, character, view, charIds);
+			ssm.loadAll();
+			List<String> keys = ssm.getKeys();
+			
+            for (String key : keys){
+                String data = ssm.getDataForKey(key);
                 System.out.println("data found : " + data);
             }   
 		}

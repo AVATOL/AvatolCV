@@ -6,10 +6,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
 public class ScoredSetMetadata {
+	private Hashtable<String,String> allData = new Hashtable<String,String>();
 	private String metadataDir = null;
 	private String SEP = System.getProperty("file.separator");
 	private String NL = System.getProperty("line.separator");
@@ -59,8 +62,7 @@ public class ScoredSetMetadata {
     	String path = this.metadataDir + SEP + filename;
     	return path;
     }
-    public Hashtable<String,String> loadAll() throws AvatolCVException {
-    	Hashtable<String,String> allData = new Hashtable<String,String>();
+    public void loadAll() throws AvatolCVException {
     	File f = new File(this.metadataDir);
     	File[] files = f.listFiles();
     	for (File mdFile : files){
@@ -75,13 +77,24 @@ public class ScoredSetMetadata {
     				sb.append(line + NL);
     			}
     			reader.close();
-    			allData.put(fileRoot, sb.toString());
+    			this.allData.put(fileRoot, sb.toString());
     		}
     		catch(IOException ioe){
     			ioe.printStackTrace();
     			throw new AvatolCVException(ioe.getMessage());
     		}
     	}
-    	return allData;
+    }
+    public List<String> getKeys(){
+    	List<String> keysList = new ArrayList<String>();
+    	Enumeration<String> keysEnum = this.allData.keys();
+    	while (keysEnum.hasMoreElements()){
+    		String key = keysEnum.nextElement();
+    		keysList.add(key);
+    	}
+    	return keysList;
+    }
+    public String getDataForKey(String key){
+    	return this.allData.get(key);
     }
 }
