@@ -9,6 +9,9 @@ classdef ResultsReviewScreen < handle
         metadataKeyCount = 0;
         keys;
         ssm;
+        input_folder;
+        output_folder;
+        detection_results_folder;
     end
     
     methods
@@ -22,10 +25,11 @@ classdef ResultsReviewScreen < handle
             obj.keys = obj.ssm.getKeys();
             obj.metadataKeyCount = obj.keys.size();
             obj.metadataKeyIndex = obj.metadataKeyCount - 1;
+            obj.updateFolders();
         end
         function showResults(obj)
             curKey = obj.keys.get(obj.metadataKeyIndex);
-            curMetadata = obj.ssm.getDataForKey(curKey);
+            curMetadata = obj.ssm.getDisplayableDataForKey(curKey);
             obj.ui.deleteObsoleteControls();
             obj.ui.createResultsReviewPanels();
             % create panel for instructions
@@ -123,14 +127,23 @@ classdef ResultsReviewScreen < handle
 
             set(exit, 'callback', {@obj.exit});
             set(doAnotherCharacter, 'callback', {@obj.doAnotherCharacter});
-            obj.session.mostRecentScreen = 'DPM_TAXON_QUESTION'; 
+            obj.session.mostRecentScreen = 'RESULTS_REVIEW_SCREEN'; 
+            fprintf('would now load from output folder %s', char(obj.output_folder));
+        end
+        function updateFolders(obj)
+            curKey = obj.keys.get(obj.metadataKeyIndex);
+            obj.input_folder = obj.ssm.getInputFolderForKey(curKey);
+            obj.output_folder = obj.ssm.getOutputFolderForKey(curKey);
+            obj.detection_results_folder = obj.ssm.getDetectionResultsFolderForKey(curKey);
         end
         function showNextMetadata(obj, hObject, eventData)
             obj.metadataKeyIndex = obj.metadataKeyIndex + 1;
+            obj.updateFolders();
             obj.showResults();
         end
         function showPreviousMetadata(obj, hObject, eventData)
             obj.metadataKeyIndex = obj.metadataKeyIndex - 1;
+            obj.updateFolders();
             obj.showResults();
         end
         function doAnotherCharacter(obj,hObject, eventData)

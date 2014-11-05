@@ -102,7 +102,7 @@ classdef AlgorithmChoiceScreen < handle
                 
                 list_of_characters = obj.session.javaStringListToMatlabCharList(charIdStringList);
                 obj.algorithms.invoke_dpm_system(list_of_characters, input_folder, output_folder, detection_results_folder, obj.progressIndicator);
-                obj.session.scoredSetMetadata.persistForDPM(obj.session.chosenMatrix,java.lang.String(chosenTaxon),chosenCharNameString,java.lang.String(chosenView),charIdStringList);
+                obj.session.scoredSetMetadata.persistForDPM(obj.session.chosenMatrix,java.lang.String(chosenTaxon),chosenCharNameString,java.lang.String(chosenView),charIdStringList,input_folder, output_folder, detection_results_folder);
             end
 
             %here is where we show the results

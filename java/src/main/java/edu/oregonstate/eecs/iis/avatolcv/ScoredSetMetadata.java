@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -13,6 +14,9 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class ScoredSetMetadata {
+	private static final String INPUT_FOLDER_KEY = "input_folder";
+	private static final String OUTPUT_FOLDER_KEY = "output_folder";
+	private static final String DETECTION_RESULTS_FOLDER_KEY = "detection_results_folder";
 	private Hashtable<String,String> allData = new Hashtable<String,String>();
 	private String metadataDir = null;
 	private String SEP = System.getProperty("file.separator");
@@ -22,7 +26,8 @@ public class ScoredSetMetadata {
 		File f = new File(this.metadataDir);
 		f.mkdirs();
 	}
-	public void persistForDPM(String matrixName, String taxon, String character, String view, List<String> charactersTrained) throws AvatolCVException {
+	public void persistForDPM(String matrixName, String taxon, String character, String view, List<String> charactersTrained,
+			String input_folder, String output_folder, String detection_results_folder) throws AvatolCVException {
     	String path = getPath(matrixName,"DPM");
     	try {
     		BufferedWriter writer = new BufferedWriter(new FileWriter(path));
@@ -35,6 +40,9 @@ public class ScoredSetMetadata {
     		for (String trainedChar : charactersTrained){
     			writer.write("character trained : " + trainedChar + NL);
     		}
+    		writer.write(INPUT_FOLDER_KEY + "=" + input_folder + NL);
+    		writer.write(OUTPUT_FOLDER_KEY + "=" + output_folder + NL);
+    		writer.write(DETECTION_RESULTS_FOLDER_KEY + "=" + detection_results_folder + NL);
     		writer.close();
     	}
     	catch(IOException ioe){
@@ -102,5 +110,66 @@ public class ScoredSetMetadata {
     }
     public String getDataForKey(String key){
     	return this.allData.get(key);
+    }
+    public String getInputFolderForKey(String key){
+    	return getValueFromDataForKey(key,INPUT_FOLDER_KEY);
+    }
+    public String getOutputFolderForKey(String key){
+    	return getValueFromDataForKey(key,OUTPUT_FOLDER_KEY);
+    }
+    public String getDetectionResultsFolderForKey(String key){
+    	return getValueFromDataForKey(key,DETECTION_RESULTS_FOLDER_KEY);
+    }
+    public String getValueFromDataForKey(String key, String lineStart){
+    	String result = "";
+    	String info =  this.allData.get(key);
+    	try {
+    		BufferedReader reader = new BufferedReader(new StringReader(info));
+        	String line = null;
+        	while (null != (line = reader.readLine())){
+        		if (line.startsWith(lineStart)){
+        			String[] parts = line.split("=");
+        			result = parts[1];
+        		} 
+        		else 
+        		{
+        			//do nothing
+        		}
+        	}
+        	
+    	}
+    	catch(IOException ioe){
+    		ioe.printStackTrace();
+    		System.out.println(ioe.getMessage());
+    	}
+    	return result;
+    }
+    public String getDisplayableDataForKey(String key){
+    	String result = "";
+    	String info =  this.allData.get(key);
+    	try {
+    		BufferedReader reader = new BufferedReader(new StringReader(info));
+        	String line = null;
+        	while (null != (line = reader.readLine())){
+        		if (line.startsWith(INPUT_FOLDER_KEY)){
+        			// do nothing
+        		} 
+        		else if (line.startsWith(OUTPUT_FOLDER_KEY)){
+        			// do nothing
+        		}
+        		else if (line.startsWith(DETECTION_RESULTS_FOLDER_KEY)){
+        			//do nothing
+        		}
+        		else {
+        			result = result + line + NL;
+        		}
+        	}
+        	
+    	}
+    	catch(IOException ioe){
+    		ioe.printStackTrace();
+    		System.out.println(ioe.getMessage());
+    	}
+    	return result;
     }
 }

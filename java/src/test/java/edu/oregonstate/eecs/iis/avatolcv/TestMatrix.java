@@ -49,6 +49,7 @@ public class TestMatrix {
 			System.out.println(ioe.getMessage());
 		}
 	}*/
+	
 	@Test
 	public void testScoredSetMetadataWindows(){
 		String NL = System.getProperty("line.separator");
@@ -62,14 +63,22 @@ public class TestMatrix {
 		charIds.add("c427754");
 		charIds.add("c427760");
 		ScoredSetMetadata ssm = new ScoredSetMetadata("C:\\avatol\\git\\avatol_cv");
+		String input_folder = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\input\\DPM\\t281048\\c427749c427753c427754c427760\\v3540";
+		String output_folder = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\output\\DPM\\t281048\\c427749c427753c427754c427760\\v3540";
+		String detection_results_folder = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\detection_results\\DPM\\t281048\\c427749c427753c427754c427760\\v3540";
 		try {
-			ssm.persistForDPM(matrixName, taxon, character, view, charIds);
+			ssm.persistForDPM(matrixName, taxon, character, view, charIds, input_folder,  output_folder,  detection_results_folder);
 			ssm.loadAll();
 			List<String> keys = ssm.getKeys();
 			
             for (String key : keys){
                 String data = ssm.getDataForKey(key);
                 System.out.println("key " + key + NL + " data found : " + data);
+                String displayableData = ssm.getDisplayableDataForKey(key);
+                System.out.println("key " + key + NL + "displayable data found : " + displayableData);
+                System.out.println("inputFolder " + ssm.getInputFolderForKey(key));
+                System.out.println("outputFolder " + ssm.getOutputFolderForKey(key));
+                System.out.println("detectionResultsFolder " + ssm.getDetectionResultsFolderForKey(key));
             }   
 		}
 		catch(Exception ioe){
@@ -77,6 +86,7 @@ public class TestMatrix {
 			System.out.println(ioe.getMessage());
 		}
 	}
+	
 	/*
 	@Test
 	public void testDataUnix() {
@@ -142,6 +152,9 @@ public class TestMatrix {
 		    List<String> names = bundle.getScorableCharacterNames();
 		    ArrayList<String> charIds = new ArrayList<String>();
 		    charIds.add("c427749");
+		    charIds.add("c427753");
+		    charIds.add("c427754");
+		    charIds.add("c427760");
 		    bundle.filterInputs(charIds, "t281048", "v3540", "DPM");
 		}
 		catch(Exception ex){
@@ -149,6 +162,6 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}
-	*/
 	
+	*/
 }
