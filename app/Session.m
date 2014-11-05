@@ -97,6 +97,7 @@ classdef Session < handle
             end
         end
         function jumpToResultsReview(obj)
+            obj.resultsReviewScreen.reset();
             obj.resultsReviewScreen.showResults();
         end
         function jumpToTutorial(obj)

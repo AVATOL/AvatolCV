@@ -152,15 +152,15 @@ classdef UI < handle
                                       'Tag', 'scoreSetTitlePanel',...
                                       'Position',[0.02 0.85 0.46 0.10]);
                                   
-            obj.scoredSetNavigationPanel = uipanel('Background', [1 0.4 0.4],...%[1 0.3 0.3]
+            obj.scoredSetNavigationPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                       'BorderType', 'none',...
                                       'Tag', 'scoredSetNavigationPanel',...
-                                      'Position',[0.02 0.75 0.46 0.10]);
+                                      'Position',[0.02 0.80 0.46 0.05]);
                                   
             obj.scoredSetMetadataPanel = uipanel('Background', [1 0.5 0.5],...%[1 0.3 0.3]
                                       'BorderType', 'none',...
                                       'Tag', 'scoredSetMetadataPanel',...
-                                      'Position',[0.02 0.10 0.46 0.65]);
+                                      'Position',[0.02 0.10 0.46 0.70]);
                                   
                                   
             obj.checkboxPanePanel = uipanel('Background', [0.5 1 0.5],...%[1 0.3 0.3]

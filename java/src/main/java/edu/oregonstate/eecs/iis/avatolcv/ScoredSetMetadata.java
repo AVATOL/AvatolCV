@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
@@ -91,6 +92,11 @@ public class ScoredSetMetadata {
     	while (keysEnum.hasMoreElements()){
     		String key = keysEnum.nextElement();
     		keysList.add(key);
+    	}
+    	Collections.sort(keysList);
+    	//Collections.reverse(keysList);
+    	for (String key : keysList){
+    		System.out.println(key);
     	}
     	return keysList;
     }

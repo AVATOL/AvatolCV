@@ -51,6 +51,7 @@ public class TestMatrix {
 	}*/
 	@Test
 	public void testScoredSetMetadataWindows(){
+		String NL = System.getProperty("line.separator");
 		String matrixName = "BAT";
 		String taxon = "t281048";
 		String view = "v3540";
@@ -68,7 +69,7 @@ public class TestMatrix {
 			
             for (String key : keys){
                 String data = ssm.getDataForKey(key);
-                System.out.println("data found : " + data);
+                System.out.println("key " + key + NL + " data found : " + data);
             }   
 		}
 		catch(Exception ioe){
