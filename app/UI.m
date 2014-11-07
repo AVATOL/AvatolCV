@@ -15,6 +15,7 @@ classdef UI < handle
         titlePanel;
         answerPanel;
         scoredImagePanel;
+        imageContextPanel;
         messagePanel;
         scoredTextPanel;
         feedbackPanel;
@@ -64,8 +65,12 @@ classdef UI < handle
                 for i=1:length(controlTags)
                     tag = controlTags{i};
                     %control = findobj('Tag',tag);
-                    control = getfield(handles, tag);
-                    delete(control);
+                    try
+                        control = getfield(handles, tag);
+                        delete(control);
+                    catch ME
+                        foo = 3;
+                    end
                 end
             end
         end
@@ -145,46 +150,51 @@ classdef UI < handle
 
 
         function createResultsReviewPanels(obj)
-            obj.titlePanel = obj.createTitlePanel();
+            %obj.titlePanel = obj.createTitlePanel();
             % [0.02 0.02 0.96 0.05]; is navigation panel
-            obj.scoredSetTitlePanel = uipanel('Background', [1 0.3 0.3],...%[1 0.3 0.3]
+            obj.scoredSetTitlePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                       'BorderType', 'none',...
                                       'Tag', 'scoreSetTitlePanel',...
-                                      'Position',[0.02 0.85 0.46 0.10]);
+                                      'Position',[0.02 0.88 0.3 0.10]);
                                   
             obj.scoredSetNavigationPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                       'BorderType', 'none',...
                                       'Tag', 'scoredSetNavigationPanel',...
-                                      'Position',[0.02 0.80 0.46 0.05]);
+                                      'Position',[0.02 0.83 0.3 0.05]);
                                   
             obj.scoredSetMetadataPanel = uipanel('Background', [0.9 0.9 0.9],...%[1 0.3 0.3]
                                       'BorderType', 'none',...
                                       'Tag', 'scoredSetMetadataPanel',...
-                                      'Position',[0.02 0.10 0.46 0.70]);
+                                      'Position',[0.02 0.10 0.3 0.70]);
                                   
                                   
             obj.checkboxPanePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                       'BorderType', 'none',...
                                       'Tag', 'checkboxPanelPanel',...
-                                      'Position',[0.52 0.85 0.46 0.10]);
+                                      'Position',[0.34 0.88 0.64 0.10]);
 
-            obj.imageNavigationPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
+            obj.imageNavigationPanel = uipanel('Background', [1 1 1],...
                                       'BorderType', 'none',...
                                       'Tag', 'imageNavigationPanel',...
-                                      'Position',[0.52 0.80 0.46 0.05]);
+                                      'Position',[0.34 0.83 0.64 0.05]);
                                                                
-            obj.imagePanel = uipanel('Background', [0.9 0.9 0.9],...%[1 0.3 0.3]
+            obj.imagePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                       'BorderType', 'none',...
                                       'Tag', 'imagePanel',...
-                                      'Position',[0.52 0.10 0.46 0.70]);
+                                      'Position',[0.34 0.18 0.64 0.62]);
                              
+            obj.imageContextPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
+                                      'BorderType', 'none',...
+                                      'Tag', 'imageContextPanel',...
+                                      'Position',[0.34 0.10 0.64 0.06]);
+                                              
 
             obj.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
                                       'BorderType', 'none',...
                                       'Tag', 'navigationPanel',...
                                       'Position',obj.getNavigationPanelPosition());
             obj.mostRecentQAFlavor = 'NA';
-            obj.activePanelTags = {  'titlePanel', 'scoreSetTitlePanel', 'scoredSetNavigationPanel', 'scoredSetMetadataPanel', 'checkboxPanelPanel', 'imageNavigationPanel',  'imagePanel', 'navigationPanel'}; 
+            obj.activePanelTags = {  'scoreSetTitlePanel', 'scoredSetNavigationPanel', 'scoredSetMetadataPanel', 'checkboxPanelPanel', 'imageContextPanel','imageNavigationPanel',  'imagePanel', 'navigationPanel'}; 
         end
 
         function createCheckboxChoicePanels(obj)
