@@ -19,15 +19,16 @@ public class SPRMatrix extends Matrix {
 	 */
 	public void loadTaxonsForMedia()throws MorphobankDataException{
 	    for (String rowId : this.rowIds){
-	    MatrixRow row = matrixRowForTaxonMap.get(rowId);
+	    	MatrixRow row = matrixRowForTaxonMap.get(rowId);
+	    	String actualTaxonId = taxonIdMapper.getNormalizedTaxonId(rowId);
 	        String taxonName = row.getTaxonName();
 	        String pureTaxonName = taxonIdMapper.getPureTaxonNameForName(taxonName);
-	        this.taxonNameForId.put(rowId, pureTaxonName);
-	        this.taxonIdForName.put(pureTaxonName, rowId);
-	        System.out.println("mapped rowId " + rowId + " to pureTaxonName " + pureTaxonName);
+	        this.taxonNameForId.put(actualTaxonId, pureTaxonName);
+	        this.taxonIdForName.put(pureTaxonName, actualTaxonId);
+	        System.out.println("mapped rowId " + actualTaxonId + " to pureTaxonName " + pureTaxonName);
 	    	List<String> mediaIds = row.getAllMediaIds();
 	    	for (String mediaId : mediaIds){
-	    		String actualTaxonId = taxonIdMapper.getNormalizedTaxonId(rowId);
+	    		
 	    		this.taxonsForMediaId.put(mediaId, actualTaxonId);
 	    	}
 	    }

@@ -49,7 +49,7 @@ public class TestMatrix {
 			System.out.println(ioe.getMessage());
 		}
 	}*/
-	
+	/*
 	@Test
 	public void testScoredSetMetadataWindows(){
 		String NL = System.getProperty("line.separator");
@@ -85,6 +85,29 @@ public class TestMatrix {
 			ioe.printStackTrace();
 			System.out.println(ioe.getMessage());
 		}
+	}
+	*/
+	
+	@Test
+	public void testLoadInputFilesWindows(){
+		try {
+			String rootDir = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT";
+		    MorphobankBundle mb = new MorphobankBundle(rootDir);
+		    Hashtable<String,InputFile> h = mb.getInputFilesForCharacter(rootDir + "\\input\\DPM\\t281048\\c427749c427753c427754c427760\\v3540");
+		    ScoredSetMetadata ssm = new ScoredSetMetadata("C:\\avatol\\git\\avatol_cv");
+		    ssm.loadAll();
+		    List<String> keys = ssm.getKeys();
+		    String curKey = keys.get(keys.size() - 1);
+            String input_folder = ssm.getInputFolderForKey(curKey);
+            String taxonName = "Thyroptera tricolor";
+            String taxonId = mb.getTaxonIdForName(taxonName);
+            String foo = "hello";
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			fail(ex.getMessage());
+		}
+		
 	}
 	
 	/*
@@ -162,6 +185,6 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}
-	
 	*/
+	
 }

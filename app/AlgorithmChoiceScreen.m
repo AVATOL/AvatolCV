@@ -44,7 +44,7 @@ classdef AlgorithmChoiceScreen < handle
 
             obj.progressIndicator = ProgressIndicator(statusMessage);
             obj.ui.activePanelTags = { 'messagePanel' };
-            obj.ui.activeControlTags = { 'messageText', 'statusMessage'}; 
+            obj.ui.activeControlTags = {'messageText'}; 
             obj.originalDir = pwd();
 
             bundleRootDir = char(obj.session.morphobankBundle.getRootDir());
@@ -72,6 +72,7 @@ classdef AlgorithmChoiceScreen < handle
                 options.PROGRESS_INDICATOR = obj.progressIndicator;
                 obj.algorithms.invoke_the_crf_system(inputFilePathname, outputFilePathname, options);
                 obj.session.scoredSetMetadata.persistForCRF(obj.session.chosenMatrix,chosenCharNameString);
+                obj.session.showResultsForCurrentCharacter();
             else
                 chosenCharNameString = java.lang.String(obj.session.characterChoiceScreen.characterName);
                 mb = obj.session.morphobankBundle;
@@ -101,13 +102,17 @@ classdef AlgorithmChoiceScreen < handle
                 detection_results_folder = char(detectionResultsFolderJavaString);
                 
                 list_of_characters = obj.session.javaStringListToMatlabCharList(charIdStringList);
-                obj.algorithms.invoke_dpm_system(list_of_characters, input_folder, output_folder, detection_results_folder, obj.progressIndicator);
-                obj.session.scoredSetMetadata.persistForDPM(obj.session.chosenMatrix,java.lang.String(chosenTaxon),chosenCharNameString,java.lang.String(chosenView),charIdStringList,input_folder, output_folder, detection_results_folder);
+                charId = obj.session.characterChoiceScreen.characterIdJavaString;
+                %obj.algorithms.invoke_dpm_system(list_of_characters, input_folder, output_folder, detection_results_folder, obj.progressIndicator);
+                obj.session.scoredSetMetadata.persistForDPM(obj.session.chosenMatrix,java.lang.String(chosenTaxon),chosenCharNameString,charId,java.lang.String(chosenView),charIdStringList,input_folder, output_folder, detection_results_folder);
+                obj.session.showResultsForCurrentCharacter();
             end
 
             %here is where we show the results
-            showResults();
-            cd(obj.originalDir);
+            % FIXME - do the following two steps when leaving the results
+            % area
+            %showResults();
+            %cd(obj.originalDir);
         end
 
 

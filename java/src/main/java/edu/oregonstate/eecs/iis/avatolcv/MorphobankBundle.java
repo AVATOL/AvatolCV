@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 public class MorphobankBundle {
@@ -188,10 +189,19 @@ public class MorphobankBundle {
     public String getViewIdForName(String name) throws AvatolCVException {
     	return this.sddFile.getViewIdForName(name);
     }
-    public String getCharacterIdForName(String id){
-    	return this.sddFile.getCharacterIdForName(id);
+    public String getCharacterIdForName(String name){
+    	return this.sddFile.getCharacterIdForName(name);
+    } 
+    public String getCharacterNameForId(String id){
+    	return this.sddFile.getCharacterNameForId(id);
     } 
     public String getTaxonIdForName(String name) throws AvatolCVException {
     	return this.sddFile.getTaxonIdForName(name);
+    }
+    public String getTaxonNameForId(String id) throws AvatolCVException {
+    	return this.sddFile.getTaxonNameForId(id);
+    }
+    public Hashtable<String,InputFile> getInputFilesForCharacter(String path) throws AvatolCVException {
+    	return this.inputFiles.getInputFilesForCharacter(path);
     }
 }

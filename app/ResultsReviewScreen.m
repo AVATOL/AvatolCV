@@ -12,6 +12,16 @@ classdef ResultsReviewScreen < handle
         input_folder;
         output_folder;
         detection_results_folder;
+        %focusTrainingOrResults = 'results';
+        focusTrainingOrResults = 'training';
+        currentCharName = 'unknown';
+        currentCharIdJavaString;
+        inputFilesForCharacter;
+        inputFile;
+        trainingSamplesForCharacter;
+        trainingSampleIndex;
+        outputFileList;
+        detectionResultsFileList;
     end
     
     methods
@@ -26,6 +36,11 @@ classdef ResultsReviewScreen < handle
             obj.metadataKeyCount = obj.keys.size();
             obj.metadataKeyIndex = obj.metadataKeyCount - 1;
             obj.updateFolders();
+        end
+        function setCurrentCharName(obj, charName)
+            obj.currentCharName = charName;
+            charNameJavaString = java.lang.String(obj.currentCharName);
+            obj.currentCharIdJavaString = obj.session.morphobankBundle.getCharacterIdForName(charNameJavaString);
         end
         function showResults(obj)
             curKey = obj.keys.get(obj.metadataKeyIndex);
@@ -44,6 +59,8 @@ classdef ResultsReviewScreen < handle
                                          'Tag','scoredSetPrompt' ,...
                                          'Background',[1 1 1],...
                                          'HorizontalAlignment', 'left');%'BackgroundColor', [0.1 1 0.1] ,...
+                                     
+            obj.ui.activeControlTags = { 'scoredSetPrompt' }
             metadataContent = uicontrol('style', 'text' ,...
                                          'Parent',obj.ui.scoredSetMetadataPanel,...
                                          'Units','normalized',...
@@ -55,6 +72,7 @@ classdef ResultsReviewScreen < handle
                                          'Background',[1 1 1],...
                                          'HorizontalAlignment', 'left');%'BackgroundColor', [0.1 1 0.1] ,...
             
+            obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'metadataContent' ];
             nextButtonNeeded = false;
             backButtonNeeded = false;
             if obj.metadataKeyCount==1
@@ -68,9 +86,51 @@ classdef ResultsReviewScreen < handle
                 end
             end
             
-            % create panel for training images
-		
-            % create panel for scored images
+            % create panel for training vs results showing
+            buttonGroup = uibuttongroup('Visible','on',...
+                                        'Tag','buttonGroup',...
+                                        'BorderType','none',...
+                                        'Background','white',...
+                                        'Parent',obj.ui.checkboxPanePanel,...
+                                        'Position',[0 0 1 1]);
+            
+            obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'buttonGroup' ];
+            if strcmp(obj.focusTrainingOrResults,'results') == 1
+                resultsValue = 1;
+                trainingValue = 0;
+            else
+                resultsValue = 0;
+                trainingValue = 1;
+            end
+            resultsRadio = uicontrol('Style','radiobutton',...
+                                     'visible', 'on',...
+                                     'String','show results' ,...
+                                     'Background', 'white' ,...
+                                     'Units', 'normalized',...
+                                     'Value',resultsValue,...
+                                     'Position',[0, 0, 0.3, 1.0],...
+                                     'Parent',buttonGroup,...
+                                     'FontName', obj.ui.fontname ,...
+                                     'FontSize', obj.ui.fontsize ,...
+                                     'Tag', 'resultsRadio',...
+                                     'HandleVisibility', 'off');
+
+            %obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'resultsRadio' ];
+            trainingRadio = uicontrol('Style','radiobutton',...
+                                     'visible', 'on',...
+                                     'String','show training examples' ,...
+                                     'Background', 'white' ,...
+                                     'Units', 'normalized',...
+                                     'Value',trainingValue,...
+                                     'Position',[0.45, 0, 0.6, 1.0],...
+                                     'Parent',buttonGroup,...
+                                     'FontName', obj.ui.fontname ,...
+                                     'FontSize', obj.ui.fontsize ,...
+                                     'Tag', 'trainingRadio',...
+                                     'HandleVisibility', 'off');
+
+            %obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'trainingRadio' ];
+            % create panel for images//
 		
             
              doAnotherCharacter = uicontrol('style', 'pushbutton' ,...
@@ -82,7 +142,7 @@ classdef ResultsReviewScreen < handle
                                          'FontSize', obj.ui.fontsize ,...
                                          'Tag','doAnotherCharacter' ,...
                                          'BackgroundColor', [0.5 0.5 0.5]);  
-
+             obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'doAnotherCharacter' ];
             
              exit = uicontrol('style', 'pushbutton' ,...
                                          'Parent',obj.ui.navigationPanel,...
@@ -93,7 +153,7 @@ classdef ResultsReviewScreen < handle
                                          'FontSize', obj.ui.fontsize ,...
                                          'Tag','exit' ,...
                                          'BackgroundColor', [0.5 0.5 0.5]);  
-            obj.ui.activeControlTags = { 'scoredSetPrompt', 'doAnotherCharacter', 'metadataContent', 'exit' };
+             obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'exit' ];
             if backButtonNeeded
                 prev = uicontrol('style', 'pushbutton' ,...
                                          'String', 'Previous Run' ,...
@@ -121,6 +181,35 @@ classdef ResultsReviewScreen < handle
                 set(next, 'callback', {@obj.showNextMetadata});
                 obj.ui.activeControlTags = [  obj.ui.activeControlTags , 'next' ];
             end
+            backImageButtonNeeded = obj.isPrevImageButtonNeeded();
+            if backImageButtonNeeded
+                prev = uicontrol('style', 'pushbutton' ,...
+                                         'String', 'Previous Image' ,...
+                                         'Units','normalized',...
+                                         'position', [0,0,0.4,1] ,...
+                                         'FontName', obj.ui.fontname ,...
+                                         'FontSize', obj.ui.fontsize ,...
+                                         'Parent',obj.ui.imageNavigationPanel,...
+                                         'Tag','prevImage' ,...
+                                         'BackgroundColor', [0.5 0.5 0.5]); 
+                 set(prev, 'callback', {@obj.showPreviousImage});
+                 obj.ui.activeControlTags = [  obj.ui.activeControlTags , 'prevImage' ];
+            end
+            nextImageButtonNeeded = obj.isNextImageButtonNeeded();
+            if nextImageButtonNeeded
+                next = uicontrol('style', 'pushbutton' ,...
+                                         'String', 'Next Image' ,...
+                                         'Units','normalized',...
+                                         'position', [0.6,0,0.4,1] ,...
+                                         'FontName', obj.ui.fontname ,...
+                                         'FontSize', obj.ui.fontsize ,...
+                                         'Tag','nextImage' ,...
+                                         'parent',obj.ui.imageNavigationPanel,...
+                                         'BackgroundColor', [0.5 0.5 0.5]);   
+                
+                set(next, 'callback', {@obj.showNextImage});
+                obj.ui.activeControlTags = [  obj.ui.activeControlTags , 'nextImage' ];
+            end
             % ???????? obj.ui.activeAnswerControl = obj.taxonChoiceWidget;
             obj.session.activeQuestionId = 'ResultsReview';
             obj.ui.activeControlType = 'ResultsReview';
@@ -128,13 +217,88 @@ classdef ResultsReviewScreen < handle
             set(exit, 'callback', {@obj.exit});
             set(doAnotherCharacter, 'callback', {@obj.doAnotherCharacter});
             obj.session.mostRecentScreen = 'RESULTS_REVIEW_SCREEN'; 
-            fprintf('would now load from output folder %s', char(obj.output_folder));
+            obj.loadImage();
         end
+        function nextImageButtonNeeded = isNextImageButtonNeeded(obj)
+            nextImageButtonNeeded = false;
+            if (strcmp(obj.focusTrainingOrResults,'training'))
+                sampleCount = obj.trainingSamplesForCharacter.size();
+                if obj.trainingSampleIndex < sampleCount - 1
+                    nextImageButtonNeeded = true;
+                end
+            else
+                % results
+                junk = 3;
+            end
+        end
+        function prevImageButtonNeeded = isPrevImageButtonNeeded(obj)
+             prevImageButtonNeeded = false;
+            if (strcmp(obj.focusTrainingOrResults,'training'))
+                if obj.trainingSampleIndex > 0
+                    prevImageButtonNeeded = true;
+                end
+            else
+                % results
+                junk = 3;
+            end
+        end
+        function showNextImage(obj, hObject, eventData)
+            obj.trainingSampleIndex = obj.trainingSampleIndex + 1;
+            obj.showResults();
+        end
+        function showPrevImage(obj, hObject, eventData)
+            obj.trainingSampleIndex = obj.trainingSampleIndex - 1;
+            obj.showResults();
+        end
+        function loadImage(obj)
+             if strcmp(obj.focusTrainingOrResults,'results') == 1
+                 %TBD
+                 junk = 3;
+             else
+                 % load "current" training example
+                 trainingSample = obj.trainingSamplesForCharacter.get(obj.trainingSampleIndex);
+                 mediaPath = char(trainingSample.getMediaPath());
+                 annotationCoordinates = trainingSample.getAnnotationCoordinates();
+                 point = annotationCoordinates.getPoints().get(0);
+                 x = point.getX();
+                 y = point.getY();
+                 axesPanel = uipanel('Parent',obj.ui.imagePanel,...
+                                 'Tag','imagePanel' ,...
+                                 'position',[0,0,1,1]);
+                 axes1 = axes('Parent',axesPanel,...
+                                 'Color',[1,1,1],...
+                                 'FontName', obj.ui.fontname ,...
+                                 'FontSize', obj.ui.fontsize ,...
+                                 'Tag','trainingImage' ,...
+                                 'position',[0.02,0.2,0.96,0.76]);%[0.02,0.02,0.96,0.96]
+                 %obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'trainingImage' ];
+                 imshow(mediaPath);
+                 hold on;
+                 plot(x,y,'r.','MarkerSize',8)
+                 xlabel('foo');
+             end
+        end    
         function updateFolders(obj)
             curKey = obj.keys.get(obj.metadataKeyIndex);
             obj.input_folder = obj.ssm.getInputFolderForKey(curKey);
+            fprintf('input folder : %s', char(obj.input_folder));
             obj.output_folder = obj.ssm.getOutputFolderForKey(curKey);
             obj.detection_results_folder = obj.ssm.getDetectionResultsFolderForKey(curKey);
+            mb = obj.session.morphobankBundle;
+            bar = obj.input_folder;
+            foo = mb.getInputFilesForCharacter(obj.input_folder);
+            obj.inputFilesForCharacter = obj.session.morphobankBundle.getInputFilesForCharacter(obj.input_folder);
+            if strcmp(obj.currentCharName,'unknown') == 1
+                obj.currentCharIdJavaString = obj.ssm.getFocusCharIdForKey(curKey);
+                currentCharNameJavaString = obj.session.morphobankBundle.getCharacterNameForId(obj.currentCharIdJavaString);
+                obj.currentCharName = char(currentCharNameJavaString);
+            end
+            obj.inputFile = obj.inputFilesForCharacter.get(obj.currentCharIdJavaString);
+            obj.trainingSamplesForCharacter = obj.inputFile.getTrainingSamples();
+            obj.trainingSampleIndex = 0;
+            %uncoment below when have real output to show.
+            %obj.detectionResultsFileList = obj.session.morphobankBundle.inputFiles.getDetectionResultsFiles(obj.detection_results_folder);
+            %obj.outputFileList = obj.session.morphobankBundle.outputFiles.getOutputFiles(obj.output_folder);
         end
         function showNextMetadata(obj, hObject, eventData)
             obj.metadataKeyIndex = obj.metadataKeyIndex + 1;

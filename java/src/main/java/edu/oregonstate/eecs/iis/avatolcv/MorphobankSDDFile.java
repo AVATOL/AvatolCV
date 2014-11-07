@@ -22,6 +22,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class MorphobankSDDFile {
+	private static final String FILESEP = System.getProperty("file.separator");
 	private Media media;
 	private String pathname;
 	private Matrix matrix;
@@ -274,7 +275,7 @@ public class MorphobankSDDFile {
         		CharacterState characterState = character.getCharacterStateForId(charStateId);
         		String charStateText = characterState.getName();
         		String taxonId = getTaxonIdForMediaId(mediaId);
-        		String trainingLine = "training_data" + delim + "media/" + mediaFilename + delim + 
+        		String trainingLine = "training_data" + delim + "media" + FILESEP + mediaFilename + delim + 
                         charStateId + delim + charStateText + delim + "NA" + delim + taxonId + delim + "NA";
         		trainingLines.add(trainingLine);
     		}

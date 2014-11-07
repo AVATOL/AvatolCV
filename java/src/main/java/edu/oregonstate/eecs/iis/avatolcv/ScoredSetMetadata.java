@@ -17,6 +17,7 @@ public class ScoredSetMetadata {
 	private static final String INPUT_FOLDER_KEY = "input_folder";
 	private static final String OUTPUT_FOLDER_KEY = "output_folder";
 	private static final String DETECTION_RESULTS_FOLDER_KEY = "detection_results_folder";
+	private static final String FOCUS_CHARID_KEY = "focus_character_id";
 	private Hashtable<String,String> allData = new Hashtable<String,String>();
 	private String metadataDir = null;
 	private String SEP = System.getProperty("file.separator");
@@ -26,15 +27,15 @@ public class ScoredSetMetadata {
 		File f = new File(this.metadataDir);
 		f.mkdirs();
 	}
-	public void persistForDPM(String matrixName, String taxon, String character, String view, List<String> charactersTrained,
+	public void persistForDPM(String matrixName, String taxonName, String characterName, String charId, String viewName, List<String> charactersTrained,
 			String input_folder, String output_folder, String detection_results_folder) throws AvatolCVException {
     	String path = getPath(matrixName,"DPM");
     	try {
     		BufferedWriter writer = new BufferedWriter(new FileWriter(path));
     		writer.write("matrix      : " + matrixName + NL);
-    		writer.write("taxon       : " + taxon + NL);
-    		writer.write("character   : " + character + NL);
-    		writer.write("view        : " + view + NL);
+    		writer.write("taxon       : " + taxonName + NL);
+    		writer.write("character   : " + characterName + NL);
+    		writer.write("view        : " + viewName + NL);
     		writer.write("algorithm   : DPM" + NL);
     		writer.write(NL);
     		for (String trainedChar : charactersTrained){
@@ -43,6 +44,7 @@ public class ScoredSetMetadata {
     		writer.write(INPUT_FOLDER_KEY + "=" + input_folder + NL);
     		writer.write(OUTPUT_FOLDER_KEY + "=" + output_folder + NL);
     		writer.write(DETECTION_RESULTS_FOLDER_KEY + "=" + detection_results_folder + NL);
+    		writer.write(FOCUS_CHARID_KEY + "=" + charId + NL);
     		writer.close();
     	}
     	catch(IOException ioe){
@@ -120,6 +122,9 @@ public class ScoredSetMetadata {
     public String getDetectionResultsFolderForKey(String key){
     	return getValueFromDataForKey(key,DETECTION_RESULTS_FOLDER_KEY);
     }
+    public String getFocusCharIdForKey(String key){
+    	return getValueFromDataForKey(key,FOCUS_CHARID_KEY);
+    }
     public String getValueFromDataForKey(String key, String lineStart){
     	String result = "";
     	String info =  this.allData.get(key);
@@ -158,6 +163,9 @@ public class ScoredSetMetadata {
         			// do nothing
         		}
         		else if (line.startsWith(DETECTION_RESULTS_FOLDER_KEY)){
+        			//do nothing
+        		}
+        		else if (line.startsWith(FOCUS_CHARID_KEY)){
         			//do nothing
         		}
         		else {

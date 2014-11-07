@@ -96,7 +96,16 @@ classdef Session < handle
                 obj.questionnaireScreens.showCurrentQuestion();
             end
         end
+        function showResultsForCurrentCharacter(obj)
+            charName = obj.characterChoiceScreen.characterName;
+            obj.resultsReviewScreen.reset();
+            obj.resultsReviewScreen.setCurrentCharName(charName);
+            obj.resultsReviewScreen.showResults();
+        end
         function jumpToResultsReview(obj)
+            % HACK hardcode BAT for demo - later, put matrix choice list on
+            % resultsreview page.
+            obj.matrixChoiceScreen.registerMatrixChoice('BAT');
             obj.resultsReviewScreen.reset();
             obj.resultsReviewScreen.showResults();
         end
@@ -178,7 +187,8 @@ classdef Session < handle
                         obj.characterChoiceScreen.characterChoiceIndex = 1;
                     end
                     obj.questionnaireScreens.questionSequencer.matrixName = obj.matrixChoiceScreen.chosenMatrix;
-                    if (not(strcmp(obj.questionnaireScreens.questionSequencer.characterName,'UNSPECIFIED')))
+                    %if (not(strcmp(obj.questionnaireScreens.questionSequencer.characterName,'UNSPECIFIED')))
+                    if (not(strcmp(obj.questionnaireScreens.questionSequencer.characterName,'UNDEFINED')))
                         answerToNextQuestion = obj.questionnaireScreens.questionSequencer.characterName;
                     end
                 else 

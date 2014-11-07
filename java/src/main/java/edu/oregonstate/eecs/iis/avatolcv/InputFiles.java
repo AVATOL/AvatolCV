@@ -15,11 +15,14 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class InputFiles {
+	public static final String SORTED_INPUT_DATA_PREFIX = "sorted_input_data_";
 	private static final String NL = System.getProperty("line.separator");
 	private static final String FILESEP = System.getProperty("file.separator");
     public static final String INPUT_DIRNAME = "input";
     public static final String OUTPUT_DIRNAME = "output";
     public static final String DETECTION_RESULTS_DIRNAME = "detection_results";
+    public static final String IMAGE_TO_SCORE_MARKER = "image_to_score";
+    public static final String TRAINING_DATA_MARKER = "training_data";
 	
 	private Annotations annotations = null;
 	private Media media = null;
@@ -128,7 +131,7 @@ public class InputFiles {
         File f = new File(inputDataDir);
         File[] files = f.listFiles();
         for (File file : files){
-        	if (file.getName().startsWith("sorted_input_data_")){
+        	if (file.getName().startsWith(SORTED_INPUT_DATA_PREFIX)){
         		return true;
         	}
         }
@@ -190,7 +193,7 @@ public class InputFiles {
     				String mediaFilename = this.media.getMediaFilenameForMediaId(mediaId);
     				if (null != mediaFilename){
     					String taxonId = sddFile.getTaxonIdForMediaId(mediaId);
-            			String scoringDataLine = "image_to_score" + Annotation.ANNOTATION_DELIM + "media/" + mediaFilename + Annotation.ANNOTATION_DELIM + taxonId;
+            			String scoringDataLine = IMAGE_TO_SCORE_MARKER + Annotation.ANNOTATION_DELIM + "media" + FILESEP + mediaFilename + Annotation.ANNOTATION_DELIM + taxonId;
             			scoringDataLines.add(scoringDataLine);
     				}
     				
@@ -198,7 +201,7 @@ public class InputFiles {
     		}
     		if (trainingDataLines.size() > 0){
     			String charName = sddFile.getCharacterNameForId(charId);
-                String inputFilename = "sorted_input_data_" + charId + "_" + charName + ".txt";
+                String inputFilename = SORTED_INPUT_DATA_PREFIX + charId + "_" + charName + ".txt";
                 String inputFilePathname = this.bundleDir + FILESEP + INPUT_DIRNAME + FILESEP + inputFilename;
                 String outputFilename = "sorted_output_data_" + charId + "_" + charName + ".txt";
                 String outputFilePathname = this.bundleDir + FILESEP + INPUT_DIRNAME + FILESEP + outputFilename;
@@ -247,7 +250,7 @@ public class InputFiles {
     	return this.bundleDir + FILESEP + INPUT_DIRNAME + "_" + priorMd5OfSDD;
     }
     public String getPathOfCharacterInputFile(String charId) throws MorphobankDataException{
-    	String prefix = "sorted_input_data_" + charId;
+    	String prefix = SORTED_INPUT_DATA_PREFIX + charId;
     	String inputDataDir = getInputDataDir();
     	File inputDataDirFile = new File(inputDataDir);
     	File[] files = inputDataDirFile.listFiles();
@@ -286,6 +289,25 @@ public class InputFiles {
     		Platform.setPermissions(f.getAbsolutePath());
     	}
     }
+    public Hashtable<String,InputFile> getInputFilesForCharacter(String path) throws AvatolCVException {
+    	Hashtable<String, InputFile> inputFileForChar = new Hashtable<String,InputFile>();
+    	File f = new File(path);
+    	if (!f.isDirectory()){
+    		System.out.println("getInputFiles given non-directory " + path);
+    		throw new AvatolCVException("getInputFiles given non-directory " + path);
+    	}
+    	File[] files = f.listFiles();
+    	for (int i = 0; i < files.length; i++){
+    		File curFile = files[i];
+    		if (curFile.getName().endsWith(".txt")){
+    			// treat it as a valid input file
+    			InputFile inputFile = new InputFile(curFile.getAbsolutePath(), this.bundleDir);
+    			String charId = inputFile.getCharId();
+    			inputFileForChar.put(charId,inputFile);
+    		}
+    	}
+    	return inputFileForChar;
+    }
     /*
      * make a dir name by cat'ing the char_ids that are valid simple, then subdir named for viewId, then can clean before filling
      */
@@ -307,14 +329,14 @@ public class InputFiles {
         		BufferedWriter writer = new BufferedWriter(new FileWriter(newFilePath));
         		String line = null;
         		while ((line = reader.readLine()) != null){
-        			if (line.startsWith("training_data")){
+        			if (line.startsWith(TRAINING_DATA_MARKER)){
         				if (isTrainingDataMediaOfTaxon(line, taxonId)){
         					if (isTrainingDataMediaOfView(line, viewId)){
             					writer.write(line + NL);
             				}
         				}
         			}
-        			else if (line.startsWith("image_to_score")){
+        			else if (line.startsWith(IMAGE_TO_SCORE_MARKER)){
         				if (isImageToScoreMediaOfTaxon(line, taxonId)){
         					if (isImageToScoreMediaOfView(line, viewId)){
             					writer.write(line + NL);
@@ -336,14 +358,10 @@ public class InputFiles {
     	}
     }
     public String getMediaIdFromLineToScore(String line){
-    	String[] parts = line.split("\\" +Annotation.ANNOTATION_DELIM);
+    	String[] parts = line.split(Annotation.ANNOTATION_DELIM_ESCAPED_FOR_USE_WITH_SPLIT);
     	String mediaPath = parts[1];
-    	String[] mediaParts = mediaPath.split("/");
-    	String mediaFilename = mediaParts[1];
-    	String[] mediaFilenameParts = mediaFilename.split("_");
-    	String prefix = mediaFilenameParts[0];
-    	String mediaId = prefix.replace("M","m");
-    	return mediaId;
+    	String result = getMediaIdFromMediaPath(mediaPath);
+    	return result;
     }
     public boolean isImageToScoreMediaOfTaxon(String line, String taxonId) throws AvatolCVException {
     	String mediaId = getMediaIdFromLineToScore(line);
@@ -354,10 +372,18 @@ public class InputFiles {
     	return this.sddFile.isMediaOfView(mediaId, viewId);
     }
     public String getMediaIdFromTrainingLine(String line){
-    	String[] parts = line.split("\\" + Annotation.ANNOTATION_DELIM);
+    	String[] parts = line.split(Annotation.ANNOTATION_DELIM_ESCAPED_FOR_USE_WITH_SPLIT);
     	String mediaPath = parts[1];
-    	String[] mediaParts = mediaPath.split("/");
-    	String mediaFilename = mediaParts[1];
+    	
+    	String result = getMediaIdFromMediaPath(mediaPath);
+    	return result;
+    }
+    public String getMediaIdFromMediaPath(String mediaPath){
+    	//String[] mediaParts = mediaPath.split(FILESEP); // breaks on Windows so use different approach
+    	String mediaDirname = Media.MEDIA_DIRNAME;
+    	int lengthOfMediaPlusFileSep = mediaDirname.length() + 1;
+    	
+    	String mediaFilename = mediaPath.substring(lengthOfMediaPlusFileSep,mediaPath.length());
     	String[] mediaFilenameParts = mediaFilename.split("_");
     	String prefix = mediaFilenameParts[0];
     	String mediaId = prefix.replace("M","m");

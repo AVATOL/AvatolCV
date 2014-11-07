@@ -25,11 +25,18 @@ classdef MatrixChoiceScreen < handle
         function registerAnswer(obj)
             obj.matrixChoiceIndex = get(obj.matrixChoiceWidget,'value');
             obj.chosenMatrix = char(obj.matrixChoices(obj.matrixChoiceIndex));
+            obj.registerMatrixChoice(obj.chosenMatrix);
+        end    
+        function registerMatrixChoice(obj, matrixName)
+            obj.chosenMatrix = matrixName; % as this is called from Session as part of hack
             if ispc()
-                 obj.matrixDir = sprintf('%s\\matrix_downloads\\%s', obj.session.rootDir, obj.chosenMatrix);
+                 obj.matrixDir = sprintf('%s\\matrix_downloads\\%s', obj.session.rootDir, matrixName);
             else
-                 obj.matrixDir = sprintf('%s/matrix_downloads/%s',  obj.session.rootDir, obj.chosenMatrix);
+                 obj.matrixDir = sprintf('%s/matrix_downloads/%s',  obj.session.rootDir, matrixName);
             end
+            matrixNameJavaString = java.lang.String(matrixName);
+            edu.oregonstate.eecs.iis.avatolcv.MorphobankBundle.printString(matrixNameJavaString);
+            obj.session.morphobankBundle = obj.session.morphobankData.loadMatrix(matrixNameJavaString);
         end    
         function displayMatrixQuestion(obj)
             obj.ui.deleteObsoleteControls();
@@ -92,6 +99,7 @@ classdef MatrixChoiceScreen < handle
             obj.session.mostRecentScreen = 'MATRIX_QUESTION'; 
         end
         function showNextQuestion(obj, hObject, eventData)
+            obj.session.registerDisplayedAnswer();
             obj.session.characterChoiceScreen.showCharacterQuestion();
         end
         function jumpToTutorial(obj, hObject, eventData)

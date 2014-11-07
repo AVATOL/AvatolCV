@@ -7,6 +7,7 @@ classdef CharacterChoiceScreen < handle
          ui;
          session;
          characterName;
+         characterIdJavaString;
          characterChoiceWidget;
          characterChoices;
     end
@@ -18,9 +19,13 @@ classdef CharacterChoiceScreen < handle
         end
         
         function setCharacterChoice(obj, hObject, eventData)
+            obj.setCharacterInfo();
+        end
+        function setCharacterInfo(obj)
             obj.characterChoiceIndex = get(obj.characterChoiceWidget, 'value');
             characterList = get(obj.characterChoiceWidget, 'string');
             obj.characterName = char(characterList(obj.characterChoiceIndex));
+            obj.characterIdJavaString = obj.session.morphobankBundle.getCharacterIdForName(java.lang.String(obj.characterName));
         end
         function showCharacterQuestion(obj)
             obj.ui.deleteObsoleteControls();
@@ -46,10 +51,7 @@ classdef CharacterChoiceScreen < handle
                                          'Background',[1 1 1],...
                                          'HorizontalAlignment', 'left');%'BackgroundColor', [1 0.1 0.1] ,...
 
-            %import edu.oregonstate.eecs.iis.avatolcv.*;
-            chosenMatrixString = java.lang.String(obj.session.matrixChoiceScreen.chosenMatrix);
-            edu.oregonstate.eecs.iis.avatolcv.MorphobankBundle.printString(chosenMatrixString);
-            obj.session.morphobankBundle = obj.session.morphobankData.loadMatrix(chosenMatrixString);
+            
             presenceAbsenceCharNamesJavaList = obj.session.morphobankBundle.getScorableCharacterNames();
             %for i=0:presenceAbsenceCharNamesJavaList.size() - 1
             %    fprintf('matlab name %s\n',char(presenceAbsenceCharNamesJavaList.get(i)));
@@ -119,6 +121,7 @@ classdef CharacterChoiceScreen < handle
         end    
         
         function showNextQuestion(obj,  hObject, eventData)
+            obj.setCharacterInfo();
             obj.session.showNextQuestion();
         end    
         function jumpToTutorial(obj,  hObject, eventData)
