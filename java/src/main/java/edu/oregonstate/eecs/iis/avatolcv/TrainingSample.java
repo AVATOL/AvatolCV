@@ -35,6 +35,12 @@ public class TrainingSample {
     	
     	
     }
+    public boolean hasAnnotationCoordinates(){
+    	if (this.annotationCoordinates != null){
+    		return true;
+    	}
+    	return false;
+    }
     public String getMediaPath(){
     	return this.mediaPath;
     }

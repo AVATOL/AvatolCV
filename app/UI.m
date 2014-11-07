@@ -157,29 +157,29 @@ classdef UI < handle
                                       'Tag', 'scoredSetNavigationPanel',...
                                       'Position',[0.02 0.80 0.46 0.05]);
                                   
-            obj.scoredSetMetadataPanel = uipanel('Background', [1 0.5 0.5],...%[1 0.3 0.3]
+            obj.scoredSetMetadataPanel = uipanel('Background', [0.9 0.9 0.9],...%[1 0.3 0.3]
                                       'BorderType', 'none',...
                                       'Tag', 'scoredSetMetadataPanel',...
                                       'Position',[0.02 0.10 0.46 0.70]);
                                   
                                   
-            obj.checkboxPanePanel = uipanel('Background', [0.5 1 0.5],...%[1 0.3 0.3]
+            obj.checkboxPanePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                       'BorderType', 'none',...
                                       'Tag', 'checkboxPanelPanel',...
                                       'Position',[0.52 0.85 0.46 0.10]);
 
-            obj.imageNavigationPanel = uipanel('Background', [0.4 1 0.4],...%[1 0.3 0.3]
+            obj.imageNavigationPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                       'BorderType', 'none',...
                                       'Tag', 'imageNavigationPanel',...
-                                      'Position',[0.52 0.75 0.46 0.10]);
+                                      'Position',[0.52 0.80 0.46 0.05]);
                                                                
-            obj.imagePanel = uipanel('Background', [0.3 1 0.3],...%[1 0.3 0.3]
+            obj.imagePanel = uipanel('Background', [0.9 0.9 0.9],...%[1 0.3 0.3]
                                       'BorderType', 'none',...
                                       'Tag', 'imagePanel',...
-                                      'Position',[0.52 0.10 0.46 0.65]);
+                                      'Position',[0.52 0.10 0.46 0.70]);
                              
 
-            obj.navigationPanel = uipanel('Background', [1 0.5 0.5],...%[0.1 0.3 0.3]
+            obj.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
                                       'BorderType', 'none',...
                                       'Tag', 'navigationPanel',...
                                       'Position',obj.getNavigationPanelPosition());
