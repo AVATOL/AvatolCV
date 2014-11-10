@@ -263,6 +263,7 @@ classdef Session < handle
         %end
 
         function doAnotherCharacter(obj)
+            cd(obj.rootDir);
             obj.questionnaireScreens.reset();
             obj.matrixChoiceScreen.displayMatrixQuestion();
         end

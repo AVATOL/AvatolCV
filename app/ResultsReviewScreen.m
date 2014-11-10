@@ -12,17 +12,22 @@ classdef ResultsReviewScreen < handle
         input_folder;
         output_folder;
         detection_results_folder;
-        %focusTrainingOrResults = 'results';
-        focusTrainingOrResults = 'training';
+        focusTrainingOrResults = 'results';
+        %focusTrainingOrResults = 'training';
         currentCharName = 'unknown';
         currentCharIdJavaString;
+        
         inputFilesForCharacter;
         inputFile;
+        
         trainingSamplesForCharacter;
         trainingSampleIndex;
-        outputFileList;
-        detectionResultsFileList;
         
+        outputFileList;
+        
+        detectionResultsFilesForCharacter;
+        detectionResultsFileList;
+        detectionResultsIndex;
         imageControlTags = {};
         metadataControlTags = {};
     end
@@ -315,7 +320,12 @@ classdef ResultsReviewScreen < handle
                 end
             else
                 % results
-                junk = 3;
+                detectionCount = obj.detectionResultsFileList.size();
+                fprintf('detectionCount %d index %d\n', detectionCount, obj.detectionResultsIndex);
+                4
+                if obj.detectionResultsIndex < detectionCount - 1
+                    nextImageButtonNeeded = true;
+                end
             end
         end
         function prevImageButtonNeeded = isPrevImageButtonNeeded(obj)
@@ -326,15 +336,26 @@ classdef ResultsReviewScreen < handle
                 end
             else
                 % results
-                junk = 3;
+                if obj.detectionResultsIndex > 0
+                    prevImageButtonNeeded = true;
+                end
             end
         end
         function showNextImage(obj, hObject, eventData)
-            obj.trainingSampleIndex = obj.trainingSampleIndex + 1;
+            if strcmp(obj.focusTrainingOrResults,'training')
+                obj.trainingSampleIndex = obj.trainingSampleIndex + 1;
+                
+            else
+                obj.detectionResultsIndex = obj.detectionResultsIndex + 1;
+            end
             obj.loadImageWidgets();
         end
         function showPrevImage(obj, hObject, eventData)
-            obj.trainingSampleIndex = obj.trainingSampleIndex - 1;
+            if strcmp(obj.focusTrainingOrResults,'training')
+                obj.trainingSampleIndex = obj.trainingSampleIndex - 1;
+            else
+                obj.detectionResultsIndex = obj.detectionResultsIndex - 1;
+            end
             obj.loadImageWidgets();
         end
         function loadImage(obj)
@@ -387,6 +408,7 @@ classdef ResultsReviewScreen < handle
             bar = obj.input_folder;
             foo = mb.getInputFilesForCharacter(obj.input_folder);
             obj.inputFilesForCharacter = obj.session.morphobankBundle.getInputFilesForCharacter(obj.input_folder);
+            obj.detectionResultsFilesForCharacter = obj.session.morphobankBundle.getDetectionResultsFilesForCharacter(obj.detection_results_folder);
             if strcmp(obj.currentCharName,'unknown') == 1
                 obj.currentCharIdJavaString = obj.ssm.getFocusCharIdForKey(curKey);
                 currentCharNameJavaString = obj.session.morphobankBundle.getCharacterNameForId(obj.currentCharIdJavaString);
@@ -396,7 +418,10 @@ classdef ResultsReviewScreen < handle
             obj.trainingSamplesForCharacter = obj.inputFile.getTrainingSamples();
             obj.trainingSampleIndex = 0;
             %uncoment below when have real output to show.
-            %obj.detectionResultsFileList = obj.session.morphobankBundle.inputFiles.getDetectionResultsFiles(obj.detection_results_folder);
+            obj.detectionResultsFile = obj.detectionResultsFilesForCharacter.get(obj.currentCharIdJavaString);
+            obj.detectionResultsForCharacter = obj.detectionResultsFile.getDetectionResults();
+            LEFT OFF HERE
+            obj.detectionResultsIndex = 0;
             %obj.outputFileList = obj.session.morphobankBundle.outputFiles.getOutputFiles(obj.output_folder);
         end
         function showNextMetadata(obj, hObject, eventData)

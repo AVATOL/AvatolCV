@@ -49,14 +49,14 @@ public class TestMatrix {
 			System.out.println(ioe.getMessage());
 		}
 	}*/
-	/*
+	
 	@Test
 	public void testScoredSetMetadataWindows(){
 		String NL = System.getProperty("line.separator");
 		String matrixName = "BAT";
 		String taxon = "t281048";
 		String view = "v3540";
-		String character = "c427749";
+		String characterId = "c427749";
 		ArrayList<String> charIds = new ArrayList<String>();
 		charIds.add("c427749");
 		charIds.add("c427753");
@@ -67,7 +67,7 @@ public class TestMatrix {
 		String output_folder = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\output\\DPM\\t281048\\c427749c427753c427754c427760\\v3540";
 		String detection_results_folder = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\detection_results\\DPM\\t281048\\c427749c427753c427754c427760\\v3540";
 		try {
-			ssm.persistForDPM(matrixName, taxon, character, view, charIds, input_folder,  output_folder,  detection_results_folder);
+			ssm.persistForDPM(matrixName, taxon, characterName, characterId, view, charIds, input_folder,  output_folder,  detection_results_folder);
 			ssm.loadAll();
 			List<String> keys = ssm.getKeys();
 			
@@ -86,8 +86,8 @@ public class TestMatrix {
 			System.out.println(ioe.getMessage());
 		}
 	}
-	*/
 	
+	/*
 	@Test
 	public void testLoadInputFilesWindows(){
 		try {
@@ -109,7 +109,7 @@ public class TestMatrix {
 		}
 		
 	}
-	
+	*/
 	/*
 	@Test
 	public void testDataUnix() {
