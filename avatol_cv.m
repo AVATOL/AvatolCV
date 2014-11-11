@@ -1,4 +1,11 @@
 function avatol_cv
+    currentDir = pwd();
+    [pathstr,name,ext] = fileparts(currentDir)
+    while not(strcmp(name,'avatol_cv'))
+        cd('..');
+        currentDir = pwd();
+        [pathstr,name,ext] = fileparts(currentDir);
+    end
     if ispc
         javaaddpath('.\\java\\lib');
         javaaddpath('.\\java\\bin');

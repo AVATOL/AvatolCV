@@ -10,8 +10,8 @@ classdef ProgressIndicator  < handle
             obj.statusWidget = statusWidget;
         end
         
-		function setStatus(statusMessage)
-            set(statusWidget, 'string', statusMessage);
+		function setStatus(obj, statusMessage)
+            set(obj.statusWidget, 'string', statusMessage);
 		end
     end
     
