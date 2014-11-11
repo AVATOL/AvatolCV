@@ -1,0 +1,135 @@
+This document supercedes information in JIRAs, comments, etc, and will capture all aspects of the avatol_cv data pipeline, including the API between avatol_cv and the algorithms.  
+
+This document is organized following the data pipeline, starting with 
+what we get from Morphobank.
+
+Definitions/assumptions:
+
+bundle - the directory containing all the information downloaded for a particular 
+matrix, plus any files generated within that directory by our processing.  Each is
+positioned under the matrix_downloads dir. For example, the BAT bundle is positioned here:
+
+presence/absence - we are focusing now strictly on characters who have states present/absent.
+
+simple characters - we are focusing now strictly on simple characters, i.e. single teeth, 
+rather than compound characters that involve multiple sinmple teeth  (distance between toothx and toothy)
+
+
+
+/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/matrix_downloads/BAT
+
+
+
+PHASE 1 - ingesting downloaded Morphobank (MB) info
+
+- avatol_cv uses information from the downloaded matrix *_sdd.xml file 
+in conjunction with separate annotation files.  The latter files capture 
+information captured when the user creates annotations in MB
+
+- annotation files live under <bundle_root>/annotations 
+
+- annotation files are named by the character and media file they represent, 
+for example:
+
+        c427749_m328533.txt
+
+- annotation files contain one or more lines, each representing an annotation in MB
+
+<coordinates of annotation points>:<characterID>:<characterName>:<characterStateId>:<characterStateName>
+
+for example:
+
+       4588,1822:c427749:Upper I1 presence:s946108:I1 present
+       4589,2004:c427749:Upper I1 presence:s946108:I1 present
+
+
+- coordinates can be
+
+point   : x1,y1
+box     : x1,y1;x2,y2
+polygon : x1,y1;x2,y2;x3,y3...
+
+
+PHASE 1 - step A
+
+1. avatol_cv finds all annotation files. Files found signal what training data is in play. 
+
+2. we assume the downloaded matrix data is created by having the user specify columns
+and rows of interest, so all the cells represented in the downloaded data are either 
+cells with training data or cells to score.  One nuance is that cells that have been scored as 
+"not present" (i.e. absent) won't have annotations.  So, avatol_cv scans the _sdd.xml file for 
+these.  
+
+3. avatol_cv uses the annotation data and the "not present" training samples to generate input files 
+that collect all the information for each character in one file for consumption by the algorithms.  
+This shields the algorithms from the need to parse the _sdd.xml file 
+
+- the naming convention for these files is:
+
+       .../matrix_downloads/<bundle_root>/input/sorted_input_data_<characterID>_<characterName>.txt
+
+for example,
+
+       .../matrix_downloads/BAT/input/sorted_input_data_c427749_Upper I1 presence.txt
+
+
+Within these files...
+
+-lines that represent positive training examples :
+
+       training_data|<relative path of mediafile>|<characterStateID>|<characterStateName>|<relative path of annotation file|<taxonID>|<line number in annotations file>
+
+for example,
+
+       training_data|media/M328543_Thyroptera tricolor AMNH239080Fvent.jpg|s946108|I1 present|annotations/c427749_m328543.txt|t281048|1
+
+
+- lines that represent negative training examples :
+
+       training_data|<relative path of media file>|<characterStateID>|<characterStateName>|NA|<taxonID>|NA
+
+for example,
+
+       training_data|media/M283883_.jpg|s946109|I1 absent|NA|t171416|NA
+
+
+- lines that represent images to score
+
+        image_to_score|<relative path of media file>|<taxonID>
+
+for example, 
+
+        image_to_score|media/M283883_.jpg|t171416
+
+
+
+
+4. filtering for DPM
+
+DPM special case 1: For DPM, the algorithm works by looking at all the training data for all 
+the characters at the same time.  The notion of focusing on one character at
+a time doesn't really make sense, but since that is the general use case we 
+decided on for a UI "session".
+
+DPM special case 2: For DPM, we are currently performing "within taxon training and scoring"
+LEFT OFF HERE
+
+- ask which character is of interest
+
+
+
+PHASE 2 - passing information to algorithms
+
+
+PHASE 3 - recieving information from algorithms
+
+
+PHASE 4 - displaying results
+
+
+
+ 
+
+- matlab will be positioned at the root directory of the downloaded matrix's data area, i.e.
+
+/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/matrix_downloads/BAT
