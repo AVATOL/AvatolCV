@@ -15,14 +15,9 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class InputFiles {
-	public static final String SORTED_INPUT_DATA_PREFIX = "sorted_input_data_";
+	
 	private static final String NL = System.getProperty("line.separator");
 	private static final String FILESEP = System.getProperty("file.separator");
-    public static final String INPUT_DIRNAME = "input";
-    public static final String OUTPUT_DIRNAME = "output";
-    public static final String DETECTION_RESULTS_DIRNAME = "detection_results";
-    public static final String IMAGE_TO_SCORE_MARKER = "image_to_score";
-    public static final String TRAINING_DATA_MARKER = "training_data";
 	
 	private Annotations annotations = null;
 	private Media media = null;
@@ -131,7 +126,7 @@ public class InputFiles {
         File f = new File(inputDataDir);
         File[] files = f.listFiles();
         for (File file : files){
-        	if (file.getName().startsWith(SORTED_INPUT_DATA_PREFIX)){
+        	if (file.getName().startsWith(DataIOFile.SORTED_INPUT_DATA_PREFIX)){
         		return true;
         	}
         }
@@ -193,7 +188,7 @@ public class InputFiles {
     				String mediaFilename = this.media.getMediaFilenameForMediaId(mediaId);
     				if (null != mediaFilename){
     					String taxonId = sddFile.getTaxonIdForMediaId(mediaId);
-            			String scoringDataLine = IMAGE_TO_SCORE_MARKER + Annotation.ANNOTATION_DELIM + "media" + FILESEP + mediaFilename + Annotation.ANNOTATION_DELIM + taxonId;
+            			String scoringDataLine = DataIOFile.IMAGE_TO_SCORE_MARKER + Annotation.ANNOTATION_DELIM + "media" + FILESEP + mediaFilename + Annotation.ANNOTATION_DELIM + taxonId;
             			scoringDataLines.add(scoringDataLine);
     				}
     				
@@ -201,10 +196,10 @@ public class InputFiles {
     		}
     		if (trainingDataLines.size() > 0){
     			String charName = sddFile.getCharacterNameForId(charId);
-                String inputFilename = SORTED_INPUT_DATA_PREFIX + charId + "_" + charName + ".txt";
-                String inputFilePathname = this.bundleDir + FILESEP + INPUT_DIRNAME + FILESEP + inputFilename;
+                String inputFilename = DataIOFile.SORTED_INPUT_DATA_PREFIX + charId + "_" + charName + ".txt";
+                String inputFilePathname = this.bundleDir + FILESEP + DataIOFile.INPUT_DIRNAME + FILESEP + inputFilename;
                 String outputFilename = "sorted_output_data_" + charId + "_" + charName + ".txt";
-                String outputFilePathname = this.bundleDir + FILESEP + INPUT_DIRNAME + FILESEP + outputFilename;
+                String outputFilePathname = this.bundleDir + FILESEP + DataIOFile.INPUT_DIRNAME + FILESEP + outputFilename;
                 this.inputFilepathForCharacterName.put(charName, inputFilePathname);
                 this.outputFilepathForCharacterName.put(charName, outputFilePathname);
                 File f = new File(inputFilePathname);
@@ -244,13 +239,13 @@ public class InputFiles {
 		return cellsToScore;
 	}
     public String getInputDataDir(){
-    	return this.bundleDir + FILESEP + INPUT_DIRNAME;
+    	return this.bundleDir + FILESEP + DataIOFile.INPUT_DIRNAME;
     }
     public String getArchiveDirName(String priorMd5OfSDD){
-    	return this.bundleDir + FILESEP + INPUT_DIRNAME + "_" + priorMd5OfSDD;
+    	return this.bundleDir + FILESEP + DataIOFile.INPUT_DIRNAME + "_" + priorMd5OfSDD;
     }
     public String getPathOfCharacterInputFile(String charId) throws MorphobankDataException{
-    	String prefix = SORTED_INPUT_DATA_PREFIX + charId;
+    	String prefix = DataIOFile.SORTED_INPUT_DATA_PREFIX + charId;
     	String inputDataDir = getInputDataDir();
     	File inputDataDirFile = new File(inputDataDir);
     	File[] files = inputDataDirFile.listFiles();
@@ -313,9 +308,9 @@ public class InputFiles {
      */
     public void filterInputs(List<String> charIds, String taxonId, String viewId, String algId) throws AvatolCVException {
     	
-    	String newInputDir = getFilteredDirname(charIds, taxonId, viewId, algId, INPUT_DIRNAME);
-    	String newOutputDir = getFilteredDirname(charIds, taxonId, viewId, algId, OUTPUT_DIRNAME);
-    	String detectionResultDir = getFilteredDirname(charIds, taxonId, viewId, algId, DETECTION_RESULTS_DIRNAME);
+    	String newInputDir = getFilteredDirname(charIds, taxonId, viewId, algId, DataIOFile.INPUT_DIRNAME);
+    	String newOutputDir = getFilteredDirname(charIds, taxonId, viewId, algId, DataIOFile.OUTPUT_DIRNAME);
+    	String detectionResultDir = getFilteredDirname(charIds, taxonId, viewId, algId, DataIOFile.DETECTION_RESULTS_DIRNAME);
     	cleanDir(newInputDir);
     	cleanDir(newOutputDir);
     	cleanDir(detectionResultDir);
@@ -329,14 +324,14 @@ public class InputFiles {
         		BufferedWriter writer = new BufferedWriter(new FileWriter(newFilePath));
         		String line = null;
         		while ((line = reader.readLine()) != null){
-        			if (line.startsWith(TRAINING_DATA_MARKER)){
+        			if (line.startsWith(DataIOFile.TRAINING_DATA_MARKER)){
         				if (isTrainingDataMediaOfTaxon(line, taxonId)){
         					if (isTrainingDataMediaOfView(line, viewId)){
             					writer.write(line + NL);
             				}
         				}
         			}
-        			else if (line.startsWith(IMAGE_TO_SCORE_MARKER)){
+        			else if (line.startsWith(DataIOFile.IMAGE_TO_SCORE_MARKER)){
         				if (isImageToScoreMediaOfTaxon(line, taxonId)){
         					if (isImageToScoreMediaOfView(line, viewId)){
             					writer.write(line + NL);
