@@ -5,15 +5,18 @@ what we get from Morphobank.
 
 Definitions/assumptions:
 
-bundle - the directory containing all the information downloaded for a particular 
+ -  bundle - the directory containing all the information downloaded for a particular 
 matrix, plus any files generated within that directory by our processing.  Each is
 positioned under the matrix_downloads dir. For example, the BAT bundle is positioned here:
 
-presence/absence - we are focusing now strictly on characters who have states present/absent.
+ -  presence/absence - we are focusing now strictly on characters who have states present/absent.
 
-simple characters - we are focusing now strictly on simple characters, i.e. single teeth, 
+ -  simple characters - we are focusing now strictly on simple characters, i.e. single teeth, 
 rather than compound characters that involve multiple sinmple teeth  (distance between toothx and toothy)
 
+ - matlab will be positioned at the root directory of the downloaded matrix's data area, i.e.
+
+/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/matrix_downloads/BAT
 
 
 /nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/matrix_downloads/BAT
@@ -22,32 +25,32 @@ rather than compound characters that involve multiple sinmple teeth  (distance b
 
 PHASE 1 - ingesting downloaded Morphobank (MB) info
 
-- avatol_cv uses information from the downloaded matrix *_sdd.xml file 
-in conjunction with separate annotation files.  The latter files capture 
+- avatol_cv uses information from the DOWNLOADED MATRIX *_sdd.xml file 
+in conjunction with separate ANNOTATION files.  The latter files capture 
 information captured when the user creates annotations in MB
 
 - annotation files live under <bundle_root>/annotations 
 
 - annotation files are named by the character and media file they represent, 
-for example:
+and contain one or more lines, each representing an annotation in MB
+  
+In  <charId>_<mediaId>.txt
+ 
+    <coordinates>:<characterID>:<characterName>:<characterStateId>:<characterStateName>
 
-        c427749_m328533.txt
+where coordinates can be
 
-- annotation files contain one or more lines, each representing an annotation in MB
+point   : x1,y1
+box     : x1,y1;x2,y2
+polygon : x1,y1;x2,y2;x3,y3...
+        
 
-<coordinates of annotation points>:<characterID>:<characterName>:<characterStateId>:<characterStateName>
-
-for example:
+for example, in c427749_m328533.txt:
 
        4588,1822:c427749:Upper I1 presence:s946108:I1 present
        4589,2004:c427749:Upper I1 presence:s946108:I1 present
 
 
-- coordinates can be
-
-point   : x1,y1
-box     : x1,y1;x2,y2
-polygon : x1,y1;x2,y2;x3,y3...
 
 
 PHASE 1 - step A
@@ -66,40 +69,25 @@ This shields the algorithms from the need to parse the _sdd.xml file
 
 - the naming convention for these files is:
 
-       .../matrix_downloads/<bundle_root>/input/sorted_input_data_<characterID>_<characterName>.txt
+  .../matrix_downloads/<bundle_root>/input/sorted_input_data_<characterID>_<characterName>.txt
+
+It has lines that represent positive training examples, negative training examples, and images to score:
+
+      training_data|<relative path of mediafile>|<characterStateID>|<characterStateName>|<relative path of annotation file|<taxonID>|<line number in annotations file>
+      training_data|<relative path of media file>|<characterStateID>|<characterStateName>|NA|<taxonID>|NA
+      image_to_score|<relative path of media file>|<taxonID>
 
 for example,
 
-       .../matrix_downloads/BAT/input/sorted_input_data_c427749_Upper I1 presence.txt
+  .../matrix_downloads/BAT/input/sorted_input_data_c427749_Upper I1 presence.txt
 
-
-Within these files...
-
--lines that represent positive training examples :
-
-       training_data|<relative path of mediafile>|<characterStateID>|<characterStateName>|<relative path of annotation file|<taxonID>|<line number in annotations file>
-
-for example,
+has lines like:
 
        training_data|media/M328543_Thyroptera tricolor AMNH239080Fvent.jpg|s946108|I1 present|annotations/c427749_m328543.txt|t281048|1
 
-
-- lines that represent negative training examples :
-
-       training_data|<relative path of media file>|<characterStateID>|<characterStateName>|NA|<taxonID>|NA
-
-for example,
-
        training_data|media/M283883_.jpg|s946109|I1 absent|NA|t171416|NA
 
-
-- lines that represent images to score
-
-        image_to_score|<relative path of media file>|<taxonID>
-
-for example, 
-
-        image_to_score|media/M283883_.jpg|t171416
+       image_to_score|media/M283883_.jpg|t171416
 
 
 
@@ -109,27 +97,94 @@ for example,
 DPM special case 1: For DPM, the algorithm works by looking at all the training data for all 
 the characters at the same time.  The notion of focusing on one character at
 a time doesn't really make sense, but since that is the general use case we 
-decided on for a UI "session".
+decided on for a UI "session", we will work around it.  How we do this is described below
 
 DPM special case 2: For DPM, we are currently performing "within taxon training and scoring"
-LEFT OFF HERE
+Andrea complied with this approach by filling in the BAT matrix with specimens per row vs taxon
+per row.  Each specimen has the original taxon name plus a specimen ID number (hers not the specimen
+id from the db), and gets its own taxonID from the db.  When my system sees a file in the bundle root
+called "specimentPerRowMarker.txt" it activates special code that maps all these taxonIDs to one "true"
+taxonID, so that our system can know these specimens as from the same taxon.  For the 
+DPM case, then, we only pass data to the algorithm belonging to a specific taxon.
+
+DPM special case 3: Cells might have more than one image, where each image is a different view.
+
+DPM special case 4: currently can only handle presence absence of "simple" characters (i.e. not characters
+that involve, say, multiple teeth)
+
+So the sequence of UI steps:
 
 - ask which character is of interest
+- questionnaire
+- choose DPM
+- ask user which of the characters are "simple" characters
+- ask which taxon is desired
+- ask which view is desired
+
+System then filters the input file for the character into a new file of the same format that 
+ has relevant data for that taxon and view, but all simple characters.  That file is located at
+
+<bundleRoot>/input/DPM/<taxonID>/<simpleCharIDList>/<viewID>/sorted_input_data_<charID>_<charName>.txt
+
+for example, 
+
+matrix_downloads/BAT/input/DPM/t281048/c427749c427753c427754c427760/v3540/sorted_input_data_c427749_Upper I1 presence.txt
+
+The lines of that file have the same format as
+
+.../matrix_downloads/<bundle_root>/input/sorted_input_data_<characterID>_<characterName>.txt
 
 
 
 PHASE 2 - passing information to algorithms
 
+For CRF, information passed in is 
+
+ - inputFilePathname is  <bundle_root>/input/sorted_input_data_<characterID>_<characterName>.txt
+ - outputFileName     is <bundle_root>/output/CRF/sorted_output_data_<characterID>_<characterName>.txt
+ - detectionResultsFolder is <bundle_root>/detection_results/CRF/<characterID>/
+ - datasetPath is <bundle_root>/
+ - crfTempPath is <bundle_root>/output/CRF/temp
+ - base_path is <crf_root_dir>
+ - instance of ProgressIndicator
+
+              
+For DPM, information passed in is
+                
+ - list_of_characters  (list of simple characters)
+ - input_folder  <bundleRoot>/input/DPM/<taxonID>/<simpleCharIDList>/<viewID>/sorted_input_data_<charID>_<charName>.txt
+ - output_folder  <bundleRoot>/output/DPM/<taxonID>/<simpleCharIDList>/<viewID>/
+ - detection_results_folder  <bundleRoot>/detection_results/DPM/<taxonID>/<simpleCharIDList>/<viewID>/
+ - progressIndicator instance
+                
 
 PHASE 3 - recieving information from algorithms
 
-
-PHASE 4 - displaying results
-
-
-
+Avatol system expects that the specified detection_results folder will be populated with files identical to the form
+of the ANNOTATION files, which is
+  
+In  <charId>_<mediaId>.txt
  
+    <coordinates>:<characterID>:<characterName>:<characterStateId>:<characterStateName>
 
-- matlab will be positioned at the root directory of the downloaded matrix's data area, i.e.
 
-/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/matrix_downloads/BAT
+For CRF, output information will be put into the specified file. FileName will contain entries similar to those of the sorted_input_data 
+
+For DPM, output files will be put in the specified directory.
+
+Each output file will be named as
+
+       sorted_output_data_<characterID>_<characterName>.txt
+
+Each output file will have lines of the form 
+
+      
+      *training_data|<relative path of mediafile>|<characterStateID>|<characterStateName>|<relative path of annotation file>|<taxonID>|<line number in annotations file>
+       
+      image_scored|<relative path of mediafile>|<characterStateID>|<characterStateName>|<**relative path of annotation file>|<taxonID>|<line number in annotations file>|score_confidence
+        
+      image_not_scored|<relative path of mediafile>|<taxonID>|
+
+*  training line verbatim from sorted_input_file
+** relative path of annotation file for image_scored is the annotation file created that expresses detection results, so it will be under the detection_results dir.
+
