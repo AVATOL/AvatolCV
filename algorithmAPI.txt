@@ -23,7 +23,9 @@ rather than compound characters that involve multiple sinmple teeth  (distance b
 
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 PHASE 1 - ingesting downloaded Morphobank (MB) info
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 - avatol_cv uses information from the DOWNLOADED MATRIX *_sdd.xml file 
 in conjunction with separate ANNOTATION files.  The latter files capture 
@@ -53,7 +55,9 @@ for example, in c427749_m328533.txt:
 
 
 
-PHASE 1 - step A
+===============================================================================
+PHASE 1 - steps
+===============================================================================
 
 1. avatol_cv finds all annotation files. Files found signal what training data is in play. 
 
@@ -135,8 +139,9 @@ The lines of that file have the same format as
 .../matrix_downloads/<bundle_root>/input/sorted_input_data_<characterID>_<characterName>.txt
 
 
-
-PHASE 2 - passing information to algorithms
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+PHASE 2 - PASSING INFORMATION TO ALGORITHMS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 For CRF, information passed in is 
 
@@ -155,10 +160,12 @@ For DPM, information passed in is
  - input_folder  <bundleRoot>/input/DPM/<taxonID>/<simpleCharIDList>/<viewID>/sorted_input_data_<charID>_<charName>.txt
  - output_folder  <bundleRoot>/output/DPM/<taxonID>/<simpleCharIDList>/<viewID>/
  - detection_results_folder  <bundleRoot>/detection_results/DPM/<taxonID>/<simpleCharIDList>/<viewID>/
- - progressIndicator instance
+ - instance of ProgressIndicator
                 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 PHASE 3 - recieving information from algorithms
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Avatol system expects that the specified detection_results folder will be populated with files identical to the form
 of the ANNOTATION files, which is
@@ -168,7 +175,7 @@ In  <charId>_<mediaId>.txt
     <coordinates>:<characterID>:<characterName>:<characterStateId>:<characterStateName>
 
 
-For CRF, output information will be put into the specified file. FileName will contain entries similar to those of the sorted_input_data 
+For CRF, output information will be put into the specified file. 
 
 For DPM, output files will be put in the specified directory.
 
@@ -178,13 +185,15 @@ Each output file will be named as
 
 Each output file will have lines of the form 
 
-      
       *training_data|<relative path of mediafile>|<characterStateID>|<characterStateName>|<relative path of annotation file>|<taxonID>|<line number in annotations file>
-       
-      image_scored|<relative path of mediafile>|<characterStateID>|<characterStateName>|<**relative path of annotation file>|<taxonID>|<line number in annotations file>|score_confidence
-        
+      image_scored|<relative path of mediafile>|<characterStateID>|<characterStateName>|<**relative path of annotation file>|<taxonID>|<***line number in annotations file>|<****score_confidence>
       image_not_scored|<relative path of mediafile>|<taxonID>|
 
 *  training line verbatim from sorted_input_file
-** relative path of annotation file for image_scored is the annotation file created that expresses detection results, so it will be under the detection_results dir.
-
+** relative path of annotation file for image_scored is the annotation file 
+created that expresses detection results, so it will be under the 
+detection_results dir.
+*** if detection yields multiple instances of a part in a given image, then 
+the generated annotation file will have multiple lines (one for each 
+instance), just as the downloaded annotation files may have.
+**** score_confidence - this will be discussed at the next team meeting.
