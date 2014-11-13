@@ -402,12 +402,13 @@ public class InputFiles {
 		}
 		return path;
 	}
-	public String getOutputFilepathForCharacter(String charName) throws MorphobankDataException {
-		String path = outputFilepathForCharacterName.get(charName);
-		if (null == path){
+	public String getOutputFilepathForCharacter(String charName, String algId) throws MorphobankDataException {
+		String inputPath = outputFilepathForCharacterName.get(charName);
+		if (null == inputPath){
 			throw new MorphobankDataException("no outputFile pathname for character name: " + charName);
 		}
-		return path;
+		String outputPath = inputPath.replaceAll(DataIOFile.INPUT_DIRNAME, DataIOFile.OUTPUT_DIRNAME + FILESEP + algId);
+		return outputPath;
 	}
 	public boolean doesAnnotationInputFileExistForCharacterName(String name){
 		String pathname = inputFilepathForCharacterName.get(name);

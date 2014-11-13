@@ -51,18 +51,20 @@ classdef AlgorithmChoiceScreen < handle
             cd(bundleRootDir);
 
             if (strcmp(obj.algorithmChosen,'CRF'))
+                javaStringCRF = java.lang.String('CRF');
                 chosenCharNameString = java.lang.String(obj.session.characterChoiceScreen.characterName);
                 inputFilePathname = char(obj.session.morphobankBundle.getInputFilePathnameForCharacter(chosenCharNameString));
-                outputFilePathname = char(obj.session.morphobankBundle.getOutputFilePathnameForCharacter(chosenCharNameString));
+                outputFilePathname = char(obj.session.morphobankBundle.getOutputFilePathnameForCharacter(chosenCharNameString, javaStringCRF));
                 options = struct;
 
-                detectionResultsPathname = char(obj.session.morphobankBundle.getDetectionResultsPathname());
+                charId = obj.session.characterChoiceScreen.characterIdJavaString;
+                detectionResultsPathname = char(obj.session.morphobankBundle.getDetectionResultsPathname(charId, javaStringCRF));
                 options.DETECTION_RESULTS_FOLDER = detectionResultsPathname;
 
                 dataset_path = char(obj.session.morphobankBundle.getRootDir());
                 options.DATASET_PATH = dataset_path;
 
-                crf_temp_path = sprintf('%stemp_crf',dataset_path);
+                crf_temp_path = char(obj.session.morphobankBundle.getTempDirForAlg('CRF'));
                 mkdir(crf_temp_path);
                 options.TEMP_PATH = crf_temp_path;
 
@@ -118,9 +120,9 @@ classdef AlgorithmChoiceScreen < handle
 
         function chooseAlgorithm(obj)
             if (true)
-                obj.message = 'DPM algorithm has been chosen for scoring.  Press Run Algorithm to begin.';
+                obj.message = 'CRF algorithm has been chosen for scoring.  Press Run Algorithm to begin.';
                 obj.showRunAlgorithmButton = true;
-                obj.algorithmChosen = 'DPM';
+                obj.algorithmChosen = 'CRF';
             else
                 qs = obj.session.questionnaireScreens.questionSequencer;
                 aq = qs.answeredQuestions;

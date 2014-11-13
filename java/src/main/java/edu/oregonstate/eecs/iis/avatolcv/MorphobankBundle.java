@@ -11,7 +11,6 @@ import java.util.List;
 public class MorphobankBundle {
     private static final String FILESEP = System.getProperty("file.separator");
     private static final String NL = System.getProperty("line.separator");
-    public static final String DETECTION_RESULTS_DIRNAME = "detection_results";
     
     private MorphobankSDDFile sddFile = null;
     private String dirName = null;
@@ -112,14 +111,17 @@ public class MorphobankBundle {
     		throw new MorphobankDataException(" problem emitting character info - " + ioe.getMessage());
     	}
     }
-    public String getDetectionResultsPathname(){
-    	return this.dirName + FILESEP + DETECTION_RESULTS_DIRNAME + FILESEP;
+    public String getDetectionResultsPathname(String characterId, String algId){
+    	return this.dirName + FILESEP + DataIOFile.DETECTION_RESULTS_DIRNAME + FILESEP + algId + FILESEP + characterId + FILESEP;
     }
     public String getInputFilePathnameForCharacter(String characterName) throws MorphobankDataException {
     	return this.inputFiles.getInputFilepathForCharacter(characterName);
     }
-    public String getOutputFilePathnameForCharacter(String characterName) throws MorphobankDataException {
-    	return this.inputFiles.getOutputFilepathForCharacter(characterName);
+    public String getOutputFilePathnameForCharacter(String characterName, String algId) throws MorphobankDataException {
+    	return this.inputFiles.getOutputFilepathForCharacter(characterName, algId);
+    }
+    public String getTempDirForAlg(String algId){
+    	return this.dirName + FILESEP + DataIOFile.OUTPUT_DIRNAME + FILESEP + algId + FILESEP;
     }
     public String getRootDir(){
     	return this.dirName + FILESEP;
@@ -176,15 +178,15 @@ public class MorphobankBundle {
     	this.inputFiles.filterInputs(charIds, taxonId, viewId, algId);
     }
     public String getFilteredInputDirName(List<String> charIds, String taxonId, String viewId, String algId){
-    	return this.inputFiles.getFilteredDirname(charIds, taxonId, viewId, algId, InputFiles.INPUT_DIRNAME);
+    	return this.inputFiles.getFilteredDirname(charIds, taxonId, viewId, algId, DataIOFile.INPUT_DIRNAME);
     }
 
     public String getFilteredOutputDirName(List<String> charIds, String taxonId, String viewId, String algId){
-    	return this.inputFiles.getFilteredDirname(charIds, taxonId, viewId, algId, InputFiles.OUTPUT_DIRNAME);
+    	return this.inputFiles.getFilteredDirname(charIds, taxonId, viewId, algId, DataIOFile.OUTPUT_DIRNAME);
     }
 
     public String getFilteredDetectionResultsDirName(List<String> charIds, String taxonId, String viewId, String algId){
-    	return this.inputFiles.getFilteredDirname(charIds, taxonId, viewId, algId, InputFiles.DETECTION_RESULTS_DIRNAME);
+    	return this.inputFiles.getFilteredDirname(charIds, taxonId, viewId, algId, DataIOFile.DETECTION_RESULTS_DIRNAME);
     }
     public String getViewIdForName(String name) throws AvatolCVException {
     	return this.sddFile.getViewIdForName(name);
