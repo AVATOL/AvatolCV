@@ -41,8 +41,6 @@ training_data|media\M284071_.jpg|s946109|I1 absent|NA|t171416|NA
 training_data|media\M284072_.jpg|s946109|I1 absent|NA|t171416|NA
 training_data|media\M328516_Thyroptera tricolor AMNH273160Fvent.jpg|s946109|I1 absent|NA|t281048|NA
 training_data|media\M328545_Thyroptera tricolor AMNH97133Flat.jpg|s946109|I1 absent|NA|t281048|NA
-image_to_score|media\M283883_.jpg|t171416
-image_to_score|media\M283881_.jpg|t171416
 image_to_score|media\M152020_.jpg|t171193
 image_to_score|media\M283394_.jpg|t171193
 image_to_score|media\M283392_.jpg|t171193
@@ -278,37 +276,6 @@ image_to_score|media\M283974_.jpg|t171193
 image_to_score|media\M283975_.jpg|t171193
 image_to_score|media\M284069_.jpg|t171193
 image_to_score|media\M284067_.jpg|t171193
-image_to_score|media\M152021_Saccopteryx bilineata AMNH209222F vent tooth lables.jpg|t171416
-image_to_score|media\M283444_.jpg|t171416
-image_to_score|media\M283446_.jpg|t171416
-image_to_score|media\M283576_.jpg|t171416
-image_to_score|media\M283574_.jpg|t171416
-image_to_score|media\M283596_.jpg|t171416
-image_to_score|media\M283597_.jpg|t171416
-image_to_score|media\M283637_.jpg|t171416
-image_to_score|media\M283639_.jpg|t171416
-image_to_score|media\M283663_.jpg|t171416
-image_to_score|media\M283661_.jpg|t171416
-image_to_score|media\M283686_.jpg|t171416
-image_to_score|media\M283687_.jpg|t171416
-image_to_score|media\M283710_.jpg|t171416
-image_to_score|media\M283711_.jpg|t171416
-image_to_score|media\M283778_.jpg|t171416
-image_to_score|media\M283780_.jpg|t171416
-image_to_score|media\M283804_.jpg|t171416
-image_to_score|media\M283803_.jpg|t171416
-image_to_score|media\M283857_.jpg|t171416
-image_to_score|media\M283859_.jpg|t171416
-image_to_score|media\M283905_.jpg|t171416
-image_to_score|media\M283907_.jpg|t171416
-image_to_score|media\M283931_.jpg|t171416
-image_to_score|media\M283929_.jpg|t171416
-image_to_score|media\M283955_.jpg|t171416
-image_to_score|media\M283953_.jpg|t171416
-image_to_score|media\M283979_.jpg|t171416
-image_to_score|media\M283978_.jpg|t171416
-image_to_score|media\M284071_.jpg|t171416
-image_to_score|media\M284072_.jpg|t171416
 image_to_score|media\M152022_.jpg|t171435
 image_to_score|media\M283398_.jpg|t171435
 image_to_score|media\M283399_.jpg|t171435
@@ -383,8 +350,6 @@ image_to_score|media\M328509_Rhinolophus ferrumequinum AMNH111238Mlat.jpg|t28006
 image_to_score|media\M328574_Taphozous melanopogon AMNH107665Fvent.jpg|t280064
 image_to_score|media\M328561_Taphozous melanopogon AMNH107671Fvent.jpg|t280064
 image_to_score|media\M328558_Taphozous melanopogon AMNH153507vent.jpg|t280064
-image_to_score|media\M328516_Thyroptera tricolor AMNH273160Fvent.jpg|t281048
-image_to_score|media\M328545_Thyroptera tricolor AMNH97133Flat.jpg|t281048
 image_to_score|media\M328530_Thyroptera tricolor AMNH264691Fvent.jpg|t281048
 image_to_score|media\M328529_Thyroptera tricolor AMNH264691Flat.jpg|t281048
 image_to_score|media\M328527_Thyroptera tricolor AMNH266353Mvent.jpg|t281048

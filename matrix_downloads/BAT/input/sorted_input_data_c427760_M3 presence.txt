@@ -79,8 +79,6 @@ image_to_score|media\M283769_.jpg|t171359
 image_to_score|media\M283771_.jpg|t171359
 image_to_score|media\M283698_.jpg|t171340
 image_to_score|media\M283699_.jpg|t171340
-image_to_score|media\M283456_.jpg|t171321
-image_to_score|media\M283457_.jpg|t171321
 image_to_score|media\M152011_.jpg|t171198
 image_to_score|media\M283377_.jpg|t171198
 image_to_score|media\M283379_.jpg|t171198
@@ -122,45 +120,6 @@ image_to_score|media\M284053_.jpg|t171198
 image_to_score|media\M284052_.jpg|t171198
 image_to_score|media\M284076_.jpg|t171198
 image_to_score|media\M284077_.jpg|t171198
-image_to_score|media\M152014_.jpg|t171321
-image_to_score|media\M283382_.jpg|t171321
-image_to_score|media\M283381_.jpg|t171321
-image_to_score|media\M283404_.jpg|t171321
-image_to_score|media\M283405_.jpg|t171321
-image_to_score|media\M283431_.jpg|t171321
-image_to_score|media\M283429_.jpg|t171321
-image_to_score|media\M283561_.jpg|t171321
-image_to_score|media\M283560_.jpg|t171321
-image_to_score|media\M283585_.jpg|t171321
-image_to_score|media\M283584_.jpg|t171321
-image_to_score|media\M283606_.jpg|t171321
-image_to_score|media\M283604_.jpg|t171321
-image_to_score|media\M283648_.jpg|t171321
-image_to_score|media\M283646_.jpg|t171321
-image_to_score|media\M283672_.jpg|t171321
-image_to_score|media\M283671_.jpg|t171321
-image_to_score|media\M283694_.jpg|t171321
-image_to_score|media\M283695_.jpg|t171321
-image_to_score|media\M283753_.jpg|t171321
-image_to_score|media\M283752_.jpg|t171321
-image_to_score|media\M283788_.jpg|t171321
-image_to_score|media\M283787_.jpg|t171321
-image_to_score|media\M283811_.jpg|t171321
-image_to_score|media\M283813_.jpg|t171321
-image_to_score|media\M283866_.jpg|t171321
-image_to_score|media\M283868_.jpg|t171321
-image_to_score|media\M283891_.jpg|t171321
-image_to_score|media\M283892_.jpg|t171321
-image_to_score|media\M283914_.jpg|t171321
-image_to_score|media\M283915_.jpg|t171321
-image_to_score|media\M283940_.jpg|t171321
-image_to_score|media\M283939_.jpg|t171321
-image_to_score|media\M283963_.jpg|t171321
-image_to_score|media\M283964_.jpg|t171321
-image_to_score|media\M284056_.jpg|t171321
-image_to_score|media\M284055_.jpg|t171321
-image_to_score|media\M284079_.jpg|t171321
-image_to_score|media\M284081_.jpg|t171321
 image_to_score|media\M152015_.jpg|t171340
 image_to_score|media\M283383_.jpg|t171340
 image_to_score|media\M283384_.jpg|t171340
@@ -382,31 +341,12 @@ image_to_score|media\M283980_.jpg|t171435
 image_to_score|media\M283982_.jpg|t171435
 image_to_score|media\M284074_.jpg|t171435
 image_to_score|media\M284075_.jpg|t171435
-image_to_score|media\M328374_Pteropus vampyrus AMNH107455Mvent.jpg|t280059
 image_to_score|media\M328470_Rhinolophus affinis AMNH5350Fvent.jpg|t281027
 image_to_score|media\M328469_Rhinolophus affinis AMNH5350Flat.jpg|t281027
 image_to_score|media\M328473_Rhinolophus ferrumequinum AMNH111221Mvent.jpg|t280061
 image_to_score|media\M328472_Rhinolophus ferrumequinum AMNH111221Mlat.jpg|t280061
 image_to_score|media\M328578_Taphozous melanopogon AMNH107664Fvent.jpg|t280064
 image_to_score|media\M328577_Taphozous melanopogon AMNH107664Flat.jpg|t280064
-image_to_score|media\M328377_Pteropus vampyrus AMNH107458Fvent.jpg|t280059
-image_to_score|media\M328376_Pteropus vampyrus AMNH107458Flat.jpg|t280059
-image_to_score|media\M328380_Pteropus vampyrus AMNH107459Mvent.jpg|t280059
-image_to_score|media\M328379_Pteropus vampyrus AMNH107459Mlat.jpg|t280059
-image_to_score|media\M328383_Pteropus vampyrus AMNH107460Fvent.jpg|t280059
-image_to_score|media\M328382_Pteropus vampyrus AMNH107460Flat.jpg|t280059
-image_to_score|media\M328386_Pteropus vampyrus AMNH107613Fvent.jpg|t280059
-image_to_score|media\M328385_Pteropus vampyrus AMNH107613Flat.jpg|t280059
-image_to_score|media\M328389_Pteropus vampyrus AMNH107618Mvent.jpg|t280059
-image_to_score|media\M328388_Pteropus vampyrus AMNH107618Mlat.jpg|t280059
-image_to_score|media\M328392_Pteropus vampyrus AMNH107619Mvent.jpg|t280059
-image_to_score|media\M328391_Pteropus vampyrus AMNH107619Mlat.jpg|t280059
-image_to_score|media\M328394_Pteropus vampyrus AMNH107621Mdor.jpg|t280059
-image_to_score|media\M328395_Pteropus vampyrus AMNH107621Mlat.jpg|t280059
-image_to_score|media\M328400_Pteropus vampyrus AMNH107622Mvent.jpg|t280059
-image_to_score|media\M328399_Pteropus vampyrus AMNH107622Mlat.jpg|t280059
-image_to_score|media\M328404_Pteropus vampyrus AMNH107623Mvent.jpg|t280059
-image_to_score|media\M328403_Pteropus vampyrus AMNH107623Mlat.jpg|t280059
 image_to_score|media\M328467_Rhinolophus affinis AMNH55948vent.jpg|t281027
 image_to_score|media\M328466_Rhinolophus affinis AMNH55948lat.jpg|t281027
 image_to_score|media\M328464_Rhinolophus affinis AMNH58364Fvent.jpg|t281027
@@ -461,8 +401,6 @@ image_to_score|media\M328552_Taphozous melanopogon AMNH207519Mvent.jpg|t280064
 image_to_score|media\M328551_Taphozous melanopogon AMNH207519Mlat.jpg|t280064
 image_to_score|media\M328549_Taphozous melanopogon AMNH207520Mvent.jpg|t280064
 image_to_score|media\M328548_Taphozous melanopogon AMNH207520Mlat.jpg|t280064
-image_to_score|media\M328516_Thyroptera tricolor AMNH273160Fvent.jpg|t281048
-image_to_score|media\M328545_Thyroptera tricolor AMNH97133Flat.jpg|t281048
 image_to_score|media\M328530_Thyroptera tricolor AMNH264691Fvent.jpg|t281048
 image_to_score|media\M328529_Thyroptera tricolor AMNH264691Flat.jpg|t281048
 image_to_score|media\M328527_Thyroptera tricolor AMNH266353Mvent.jpg|t281048
