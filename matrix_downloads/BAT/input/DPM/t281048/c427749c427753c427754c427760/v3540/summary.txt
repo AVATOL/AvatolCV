@@ -1,0 +1,15 @@
+character,c427749,Upper I1 presence
+character,c427753,Upper P1 presence
+character,c427754,Upper P4 presence
+character,c427760,M3 presence
+media,m328516,C:\avatol\git\avatol_cv\matrix_downloads\BAT\media\M328516_Thyroptera tricolor AMNH273160Fvent.jpg
+media,m328520,C:\avatol\git\avatol_cv\matrix_downloads\BAT\media\M328520_Thyroptera tricolor AMNH268577Mvent.jpg
+media,m328523,C:\avatol\git\avatol_cv\matrix_downloads\BAT\media\M328523_Thyroptera tricolor AMNH267217Fvent.jpg
+media,m328527,C:\avatol\git\avatol_cv\matrix_downloads\BAT\media\M328527_Thyroptera tricolor AMNH266353Mvent.jpg
+media,m328530,C:\avatol\git\avatol_cv\matrix_downloads\BAT\media\M328530_Thyroptera tricolor AMNH264691Fvent.jpg
+media,m328533,C:\avatol\git\avatol_cv\matrix_downloads\BAT\media\M328533_Thyroptera tricolor AMNH239088Fvent.jpg
+media,m328537,C:\avatol\git\avatol_cv\matrix_downloads\BAT\media\M328537_Thyroptera tricolor AMNH239084Mvent.jpg
+media,m328540,C:\avatol\git\avatol_cv\matrix_downloads\BAT\media\M328540_Thyroptera tricolor AMNH239081Mvent.jpg
+media,m328543,C:\avatol\git\avatol_cv\matrix_downloads\BAT\media\M328543_Thyroptera tricolor AMNH239080Fvent.jpg
+taxon,t281048,Thyroptera tricolor
+view,v3540,Skull - ventral
