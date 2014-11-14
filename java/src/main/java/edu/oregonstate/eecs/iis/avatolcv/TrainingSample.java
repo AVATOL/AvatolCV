@@ -84,6 +84,7 @@ public class TrainingSample {
         			curLineNumber += 1;
         		}
         	}
+        	reader.close();
         }
         catch(IOException ioe){
         	ioe.printStackTrace();

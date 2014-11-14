@@ -47,6 +47,10 @@ public class Character {
         }
     }
     public boolean isStateIdRepresentingAbsent(String stateId) throws AvatolCVException{
+    	if (this.id.equals("c427749") && stateId.equals("s")){
+    		int foo = 3;
+    		int bar = foo + 1;
+    	}
     	String normStateId = normalizeCharStateId(stateId);
     	CharacterState cs = getCharacterStateForId(normStateId);
     	if (cs.representsAbsent()){

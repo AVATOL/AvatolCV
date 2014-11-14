@@ -10,6 +10,9 @@ public class Media {
 	private String mediaDir = null;
 	private Hashtable<String, String> mediaPathForMediaId = new Hashtable<String, String>();
 	private Hashtable<String, String> mediaFilenameForMediaId = new Hashtable<String, String>();
+	private Hashtable<String, String> mediaIdForRelativeMediaPath = new Hashtable<String, String>();
+	private Hashtable<String, String> mediaIdForMediaPath = new Hashtable<String, String>();
+	private Hashtable<String, String> mediaIdForMediaFilename = new Hashtable<String, String>();
 	
     public Media(String bundleDir){
     	this.bundleDir = bundleDir;
@@ -26,8 +29,12 @@ public class Media {
         	String[] parts = filename.split("_");
         	String mediaId = parts[0].replace('M', 'm');
         	String pathname = this.mediaDir + FILESEP + filename;
+        	String relativePathname = MEDIA_DIRNAME + FILESEP + filename;
         	mediaPathForMediaId.put(mediaId, pathname);
         	mediaFilenameForMediaId.put(mediaId, filename);
+        	mediaIdForRelativeMediaPath.put(relativePathname, mediaId);
+        	mediaIdForMediaPath.put(pathname, mediaId);
+        	mediaIdForMediaFilename.put(filename, mediaId);
         }
     }
     
@@ -44,5 +51,17 @@ public class Media {
     	//	throw new MorphobankDataException("no media file present for mediaId " + mediaId + " in bundle " + this.bundleDir);
     	//}
     	return filename;
+    }
+    public String getMediaPathnameForMediaId(String mediaId)  {
+    	String path = this.mediaPathForMediaId.get(mediaId);
+    	return path;
+    }
+    public String getMediaIdForMediaPath(String pathname)  {
+    	String mediaId = this.mediaIdForMediaPath.get(pathname);
+    	return mediaId;
+    }
+    public String getMediaIdForRelativeMediaPath(String relativePathname)  {
+    	String mediaId = this.mediaIdForRelativeMediaPath.get(relativePathname);
+    	return mediaId;
     }
 }

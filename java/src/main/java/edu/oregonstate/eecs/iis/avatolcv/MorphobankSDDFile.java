@@ -15,7 +15,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -309,5 +308,13 @@ public class MorphobankSDDFile {
     		}
     	}
     	return false;
+    }
+    public String getViewIdForMediaId(String mediaId){
+    	String viewId = this.viewsForImage.get(mediaId);
+    	return viewId;
+    }
+    public String getViewNameForId(String viewId){
+    	String viewName = this.viewNamesForId.get(viewId);
+    	return viewName;
     }
 }

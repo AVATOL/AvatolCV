@@ -67,7 +67,7 @@ public class Annotation {
     }
     public String getTrainingDataLine(String mediaFilename, String taxonId) throws AvatolCVException {
     	String relativePath = getRelativePathForAnnotationFile(this.pathname);
-    	return InputFiles.TRAINING_DATA_MARKER + ANNOTATION_DELIM + "media" + FILESEP + mediaFilename + ANNOTATION_DELIM + 
+    	return DataIOFile.TRAINING_DATA_MARKER + ANNOTATION_DELIM + "media" + FILESEP + mediaFilename + ANNOTATION_DELIM + 
                     charState + ANNOTATION_DELIM + charStateText + ANNOTATION_DELIM + relativePath + ANNOTATION_DELIM + taxonId + ANNOTATION_DELIM + lineNumber;          
     }
     public String getRelativePathForAnnotationFile(String path) throws AvatolCVException {

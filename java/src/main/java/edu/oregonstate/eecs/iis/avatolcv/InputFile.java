@@ -1,7 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,17 +12,18 @@ public class InputFile extends DataIOFile {
 	private String charId;
 	private String charName;
     public InputFile(String path, String rootDir){
+    	super(path);
     	this.charId = getCharIdFromPath(path);
     	this.charName = getCharNameFromPath(path);
     	try {
         	BufferedReader reader = new BufferedReader(new FileReader(path));
     		String line = null;
     		while (null != (line = reader.readLine())){
-    			if (line.startsWith(InputFiles.TRAINING_DATA_MARKER)){
+    			if (line.startsWith(DataIOFile.TRAINING_DATA_MARKER)){
     				TrainingSample ts = new TrainingSample(line, rootDir, this.charId, this.charName); 
     				trainingSamples.add(ts);
     			}
-    			else if (line.startsWith(InputFiles.IMAGE_TO_SCORE_MARKER)){
+    			else if (line.startsWith(DataIOFile.IMAGE_TO_SCORE_MARKER)){
     				ToScoreLine tsl = new ToScoreLine(line, rootDir);
     				toScoreLines.add(tsl);
     			}

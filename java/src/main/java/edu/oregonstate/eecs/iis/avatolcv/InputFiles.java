@@ -25,6 +25,7 @@ public class InputFiles {
 	private Hashtable<String, String> inputFilepathForCharacterName = new Hashtable<String,String>();
 	private Hashtable<String, String> outputFilepathForCharacterName = new Hashtable<String,String>();
 	private MorphobankSDDFile sddFile = null;
+	private SummaryFile summaryFile = null;
 
     public InputFiles(MorphobankSDDFile sddFile, Annotations annotations, Media media, String bundleDir) throws AvatolCVException {
     	this.sddFile = sddFile;
@@ -149,12 +150,62 @@ public class InputFiles {
     	}
     	return notPresentCells;
     }
+    
+    public void registerMediaAndTaxonInSummary(String mediaId, SummaryFile summary) throws AvatolCVException {
+    	String viewId = this.sddFile.getViewIdForMediaId(mediaId);
+    	String viewName = this.sddFile.getViewNameForId(viewId);
+    	summary.addViewEntry(viewId, viewName);
+    	String mediaPath = this.media.getMediaPathnameForMediaId(mediaId);
+    	summary.addMediaEntry(mediaId, mediaPath);
+		String taxonId = this.sddFile.getTaxonIdForMediaId(mediaId);
+		String taxonName = this.sddFile.getTaxonNameForId(taxonId);
+		summary.addTaxonEntry(taxonId, taxonName);
+    }
+    public String getSummaryFilePath(){
+    	return this.bundleDir + FILESEP + DataIOFile.INPUT_DIRNAME + FILESEP + SummaryFile.SUMMARY_FILENAME;
+    }
+    public void generateSummaryFile() throws AvatolCVException {
+    	this.summaryFile = new SummaryFile(getSummaryFilePath(), this.sddFile);
+   		for (String charId : this.annotations.getCharactersTrained()){
+			String charName = this.sddFile.getCharacterNameForId(charId);
+			this.summaryFile.addCharacterEntry(charId, charName);
+			
+    		List<Annotation> annotationsForCharacter = this.annotations.getAnnotationsForCharacter(charId);
+    		for (Annotation annotation : annotationsForCharacter){
+    			String mediaId = annotation.getMediaId();
+    			registerMediaAndTaxonInSummary(mediaId, this.summaryFile);
+    		}
+    		List<MatrixCell> allMatrixCellsForTrainedCharacter = sddFile.getPresenceAbsenceCellsForCharacter(charId);
+    		// need to add training lines for "not present" scored training examples since they won't have generated annotations
+    		List<MatrixCell> notPresentTrainingCells = getNotPresentCells(allMatrixCellsForTrainedCharacter);
+    		for (MatrixCell notPresentCell : notPresentTrainingCells){
+    			List<String> notPresentTrainingDataLines = this.sddFile.getNotPresentTrainingDataLines(notPresentCell);
+    			for (String s : notPresentTrainingDataLines){
+    				String relativeMediaPath = getRelativeMediaPathFromTrainingLine(s);
+    				if (relativeMediaPath != null){
+    					String mediaId = this.media.getMediaIdForRelativeMediaPath(relativeMediaPath);
+    					registerMediaAndTaxonInSummary(mediaId, this.summaryFile);
+    				}
+    			}
+    		}
+    		
+    		List<MatrixCell> matrixCellsToScore = getCellsToScore(allMatrixCellsForTrainedCharacter, annotationsForCharacter);
+    		for (MatrixCell cell : matrixCellsToScore){
+    			List<String> mediaIds = cell.getMediaIds();
+    			for (String mediaId : mediaIds){
+    				registerMediaAndTaxonInSummary(mediaId, this.summaryFile);
+    			}
+    		}
+    	}
+   		this.summaryFile.persist();
+    }
 	  // sorted_input_data_<charID>_charName.txt
     // for each annotation file, add line
     // training_data:media/<name_of_mediafile>:char_state:<pathname_of_annotation_file>:taxonID:lineNumber
     // for each media file which needs scoring, add line
     // image_to_score:media/<name_of_mediafile>:taxonID 
     public void generateInputDataFiles() throws AvatolCVException  {
+    	generateSummaryFile();
     	// HAD TO COMMENT THE FOLLOWING OUT DUE TO maps not getting setup properly
     	//if (doInputDataFilesAlreadyExist()){
     	//	return;
@@ -225,14 +276,31 @@ public class InputFiles {
     		}
     	}
     }
-    public List<MatrixCell> getCellsToScore(List<MatrixCell> allMatrixCellsForTrainedCharacter, List<Annotation> annotationsForCharacter){
+    public boolean isCellScoredNotPresent(MatrixCell cell) throws AvatolCVException {
+    	String characterStateId = cell.getState();
+    	if (characterStateId.equals("s")){
+    		return false;
+    	}
+    	String charId = cell.getCharId();
+    	Character character = this.sddFile.getCharacterForId(charId);
+    	if (character.isStateIdRepresentingAbsent(characterStateId)){
+    		return true;
+    	}
+    	return false;
+    }
+    public List<MatrixCell> getCellsToScore(List<MatrixCell> allMatrixCellsForTrainedCharacter, List<Annotation> annotationsForCharacter) throws AvatolCVException {
 		List<MatrixCell> cellsToScore = new ArrayList<MatrixCell>();
 		for (MatrixCell cell : allMatrixCellsForTrainedCharacter){
+			
 			if (this.annotations.isMatrixCellRepresentedByAnyAnnotation(cell, annotationsForCharacter)){
-				// it's a training example	
+				// it's a positive training example	
+			}
+			else if (isCellScoredNotPresent(cell)){
+				// it's a negative training example.
 			}
 			else {
 				// it's for scoring
+				System.out.println("cell to score has state : " + cell.getState());
 				cellsToScore.add(cell);
 			}
 		}
@@ -303,17 +371,20 @@ public class InputFiles {
     	}
     	return inputFileForChar;
     }
+ 
     /*
      * make a dir name by cat'ing the char_ids that are valid simple, then subdir named for viewId, then can clean before filling
      */
     public void filterInputs(List<String> charIds, String taxonId, String viewId, String algId) throws AvatolCVException {
     	
     	String newInputDir = getFilteredDirname(charIds, taxonId, viewId, algId, DataIOFile.INPUT_DIRNAME);
+
     	String newOutputDir = getFilteredDirname(charIds, taxonId, viewId, algId, DataIOFile.OUTPUT_DIRNAME);
     	String detectionResultDir = getFilteredDirname(charIds, taxonId, viewId, algId, DataIOFile.DETECTION_RESULTS_DIRNAME);
     	cleanDir(newInputDir);
     	cleanDir(newOutputDir);
     	cleanDir(detectionResultDir);
+    	this.summaryFile.filter(charIds, taxonId, viewId, newInputDir);
     	try {
     		for (String charId : charIds){
         		String pathOfCharacterInputFile = getPathOfCharacterInputFile(charId);
@@ -355,7 +426,7 @@ public class InputFiles {
     public String getMediaIdFromLineToScore(String line){
     	String[] parts = line.split(Annotation.ANNOTATION_DELIM_ESCAPED_FOR_USE_WITH_SPLIT);
     	String mediaPath = parts[1];
-    	String result = getMediaIdFromMediaPath(mediaPath);
+    	String result = getMediaIdFromRelativeMediaPath(mediaPath);
     	return result;
     }
     public boolean isImageToScoreMediaOfTaxon(String line, String taxonId) throws AvatolCVException {
@@ -366,14 +437,17 @@ public class InputFiles {
     	String mediaId = getMediaIdFromLineToScore(line);
     	return this.sddFile.isMediaOfView(mediaId, viewId);
     }
-    public String getMediaIdFromTrainingLine(String line){
+    public String getRelativeMediaPathFromTrainingLine(String line){
     	String[] parts = line.split(Annotation.ANNOTATION_DELIM_ESCAPED_FOR_USE_WITH_SPLIT);
     	String mediaPath = parts[1];
-    	
-    	String result = getMediaIdFromMediaPath(mediaPath);
+    	return mediaPath;
+    }
+    public String getMediaIdFromTrainingLine(String line){
+    	String relativeMediaPath = getRelativeMediaPathFromTrainingLine(line);
+    	String result = getMediaIdFromRelativeMediaPath(relativeMediaPath);
     	return result;
     }
-    public String getMediaIdFromMediaPath(String mediaPath){
+    public String getMediaIdFromRelativeMediaPath(String mediaPath){
     	//String[] mediaParts = mediaPath.split(FILESEP); // breaks on Windows so use different approach
     	String mediaDirname = Media.MEDIA_DIRNAME;
     	int lengthOfMediaPlusFileSep = mediaDirname.length() + 1;

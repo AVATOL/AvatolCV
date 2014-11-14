@@ -1,10 +1,9 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
+
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.junit.Test;
@@ -49,7 +48,7 @@ public class TestMatrix {
 			System.out.println(ioe.getMessage());
 		}
 	}*/
-	
+	/*
 	@Test
 	public void testScoredSetMetadataWindows(){
 		String NL = System.getProperty("line.separator");
@@ -57,7 +56,8 @@ public class TestMatrix {
 		String taxon = "t281048";
 		String view = "v3540";
 		String characterId = "c427749";
-		ArrayList<String> charIds = new ArrayList<String>();
+		String characterName = "someCharacter";
+		List<String> charIds = new ArrayList<String>();
 		charIds.add("c427749");
 		charIds.add("c427753");
 		charIds.add("c427754");
@@ -86,7 +86,7 @@ public class TestMatrix {
 			System.out.println(ioe.getMessage());
 		}
 	}
-	
+	*/
 	/*
 	@Test
 	public void testLoadInputFilesWindows(){
@@ -164,7 +164,7 @@ public class TestMatrix {
 		}
 	}
 	*/
-	/*
+	
 	@Test
 	public void testDataWindows() {
 		try {
@@ -185,6 +185,6 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}
-	*/
+	
 	
 }
