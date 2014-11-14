@@ -1,410 +1,410 @@
-training_data|media\M328543_Thyroptera tricolor AMNH239080Fvent.jpg|s946119|P4 present|annotations\c427754_m328543.txt|t281048|1
-training_data|media\M328543_Thyroptera tricolor AMNH239080Fvent.jpg|s946119|P4 present|annotations\c427754_m328543.txt|t281048|2
-training_data|media\M328540_Thyroptera tricolor AMNH239081Mvent.jpg|s946119|P4 present|annotations\c427754_m328540.txt|t281048|1
-training_data|media\M328540_Thyroptera tricolor AMNH239081Mvent.jpg|s946119|P4 present|annotations\c427754_m328540.txt|t281048|2
-training_data|media\M328537_Thyroptera tricolor AMNH239084Mvent.jpg|s946119|P4 present|annotations\c427754_m328537.txt|t281048|1
-training_data|media\M328537_Thyroptera tricolor AMNH239084Mvent.jpg|s946119|P4 present|annotations\c427754_m328537.txt|t281048|2
-training_data|media\M328533_Thyroptera tricolor AMNH239088Fvent.jpg|s946119|P4 present|annotations\c427754_m328533.txt|t281048|1
-training_data|media\M328533_Thyroptera tricolor AMNH239088Fvent.jpg|s946119|P4 present|annotations\c427754_m328533.txt|t281048|2
-training_data|media\M283881_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283883_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M152020_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283394_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283392_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283769_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283771_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283456_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283457_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M152014_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283382_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283381_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283404_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283405_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283431_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283429_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283561_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283560_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283585_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283584_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283606_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283604_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283648_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283646_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283672_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283671_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283694_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283695_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283753_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283752_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283788_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283787_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283811_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283813_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283866_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283868_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283891_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283892_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283914_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283915_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283940_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283939_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283963_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M283964_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M284056_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M284055_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M284079_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M284081_.jpg|s946120|P4 absent|NA|t171321|NA
-training_data|media\M152018_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283387_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283388_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283412_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283411_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283436_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283435_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283463_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283462_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283567_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283566_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283591_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283589_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283616_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283617_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283652_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283654_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283678_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283676_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283700_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283701_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283794_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283795_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283850_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283848_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283874_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283873_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283897_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283896_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283922_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283920_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283944_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283946_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283969_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283970_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M284063_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M284062_.jpg|s946120|P4 absent|NA|t171359|NA
-training_data|media\M283418_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283416_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283442_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283443_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283479_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283477_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283573_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283572_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283593_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283594_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283635_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283636_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283660_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283658_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283683_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283682_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283708_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283709_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283776_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283775_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283800_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283801_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283855_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283854_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283880_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283878_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283903_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283904_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283926_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283927_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283952_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283951_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283975_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283974_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M284067_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M284069_.jpg|s946120|P4 absent|NA|t171193|NA
-training_data|media\M283395_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283397_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283420_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M152021_Saccopteryx bilineata AMNH209222F vent tooth lables.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283444_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283446_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283480_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283481_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283574_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283576_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283597_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283596_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283639_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283637_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283661_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283663_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283687_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283686_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283711_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283710_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283780_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283778_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283803_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283804_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283859_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283857_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283907_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283905_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283929_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283931_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283953_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283955_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283978_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M283979_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M284072_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M284071_.jpg|s946120|P4 absent|NA|t171416|NA
-training_data|media\M328470_Rhinolophus affinis AMNH5350Fvent.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328469_Rhinolophus affinis AMNH5350Flat.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328473_Rhinolophus ferrumequinum AMNH111221Mvent.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328472_Rhinolophus ferrumequinum AMNH111221Mlat.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328578_Taphozous melanopogon AMNH107664Fvent.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328577_Taphozous melanopogon AMNH107664Flat.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328467_Rhinolophus affinis AMNH55948vent.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328466_Rhinolophus affinis AMNH55948lat.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328464_Rhinolophus affinis AMNH58364Fvent.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328463_Rhinolophus affinis AMNH58364Flat.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328461_Rhinolophus affinis AMNH58389Fvent.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328460_Rhinolophus affinis AMNH58389Flat.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328458_Rhinolophus affinis AMNH58391Fvent.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328457_Rhinolophus affinis AMNH58391Flat.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328455_Rhinolophus affinis AMNH85239vent.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328454_Rhinolophus affinis AMNH85239lat.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328452_Rhinolophus affinis AMNH85249vent.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328451_Rhinolophus affinis AMNH85249lat.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328449_Rhinolophus affinis AMNH85256vent.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328448_Rhinolophus affinis AMNH85256lat.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328446_Rhinolophus affinis AMNH112937Fvent.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328445_Rhinolophus affinis AMNH112937Flat.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328443_Rhinolophus affinis AMNH112947Fvent.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328442_Rhinolophus affinis AMNH112947Flat.jpg|s946120|P4 absent|NA|t281027|NA
-training_data|media\M328476_Rhinolophus ferrumequinum AMNH111223Mvent.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328475_Rhinolophus ferrumequinum AMNH111223Mlat.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328479_Rhinolophus ferrumequinum AMNH111225Mvent.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328478_Rhinolophus ferrumequinum AMNH111225Mlat.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328482_Rhinolophus ferrumequinum AMNH111226Fvent.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328481_Rhinolophus ferrumequinum AMNH111226Flat.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328485_Rhinolophus ferrumequinum AMNH111228Mvent.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328484_Rhinolophus ferrumequinum AMNH111228Mlat.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328501_Rhinolophus ferrumequinum AMNH111229Fvent.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328500_Rhinolophus ferrumequinum AMNH111229Flat.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328504_Rhinolophus ferrumequinum AMNH111236Mvent.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328503_Rhinolophus ferrumequinum AMNH111236Mlat.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328507_Rhinolophus ferrumequinum AMNH111237Mvent.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328506_Rhinolophus ferrumequinum AMNH111237Mlat.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328510_Rhinolophus ferrumequinum AMNH111238Mvent.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328509_Rhinolophus ferrumequinum AMNH111238Mlat.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328513_Rhinolophus ferrumequinum AMNH111240Fvent.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328512_Rhinolophus ferrumequinum AMNH111240Flat.jpg|s946120|P4 absent|NA|t280061|NA
-training_data|media\M328574_Taphozous melanopogon AMNH107665Fvent.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328573_Taphozous melanopogon AMNH107665Flat.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328571_Taphozous melanopogon AMNH107667Fvent.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328570_Taphozous melanopogon AMNH107667Flat.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328567_Taphozous melanopogon AMNH107668Fvent.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328566_Taphozous melanopogon AMNH107668Flat.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328564_Taphozous melanopogon AMNH107670Fvent.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328563_Taphozous melanopogon AMNH107670Flat.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328561_Taphozous melanopogon AMNH107671Fvent.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328560_Taphozous melanopogon AMNH107671Flat.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328558_Taphozous melanopogon AMNH153507vent.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328557_Taphozous melanopogon AMNH153507lat.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328555_Taphozous melanopogon AMNH207518Mvent.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328554_Taphozous melanopogon AMNH207518Mlat.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328552_Taphozous melanopogon AMNH207519Mvent.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328551_Taphozous melanopogon AMNH207519Mlat.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328549_Taphozous melanopogon AMNH207520Mvent.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328548_Taphozous melanopogon AMNH207520Mlat.jpg|s946120|P4 absent|NA|t280064|NA
-training_data|media\M328516_Thyroptera tricolor AMNH273160Fvent.jpg|s946120|P4 absent|NA|t281048|NA
-training_data|media\M328545_Thyroptera tricolor AMNH97133Flat.jpg|s946120|P4 absent|NA|t281048|NA
-image_to_score|media\M283852_.jpg|t171382
-image_to_score|media\M283853_.jpg|t171382
-image_to_score|media\M283699_.jpg|t171340
-image_to_score|media\M283698_.jpg|t171340
-image_to_score|media\M152011_.jpg|t171198
-image_to_score|media\M283377_.jpg|t171198
-image_to_score|media\M283379_.jpg|t171198
-image_to_score|media\M283401_.jpg|t171198
-image_to_score|media\M283403_.jpg|t171198
-image_to_score|media\M283428_.jpg|t171198
-image_to_score|media\M283426_.jpg|t171198
-image_to_score|media\M283887_.jpg|t171198
-image_to_score|media\M283888_.jpg|t171198
-image_to_score|media\M283452_.jpg|t171198
-image_to_score|media\M283454_.jpg|t171198
-image_to_score|media\M283557_.jpg|t171198
-image_to_score|media\M283558_.jpg|t171198
-image_to_score|media\M283580_.jpg|t171198
-image_to_score|media\M283582_.jpg|t171198
-image_to_score|media\M283601_.jpg|t171198
-image_to_score|media\M283603_.jpg|t171198
-image_to_score|media\M283645_.jpg|t171198
-image_to_score|media\M283644_.jpg|t171198
-image_to_score|media\M283668_.jpg|t171198
-image_to_score|media\M283669_.jpg|t171198
-image_to_score|media\M283692_.jpg|t171198
-image_to_score|media\M283691_.jpg|t171198
-image_to_score|media\M283748_.jpg|t171198
-image_to_score|media\M283750_.jpg|t171198
-image_to_score|media\M283786_.jpg|t171198
-image_to_score|media\M283785_.jpg|t171198
-image_to_score|media\M283809_.jpg|t171198
-image_to_score|media\M283808_.jpg|t171198
-image_to_score|media\M283863_.jpg|t171198
-image_to_score|media\M283865_.jpg|t171198
-image_to_score|media\M283959_.jpg|t171198
-image_to_score|media\M283960_.jpg|t171198
-image_to_score|media\M283912_.jpg|t171198
-image_to_score|media\M283913_.jpg|t171198
-image_to_score|media\M283936_.jpg|t171198
-image_to_score|media\M283937_.jpg|t171198
-image_to_score|media\M284053_.jpg|t171198
-image_to_score|media\M284052_.jpg|t171198
-image_to_score|media\M284076_.jpg|t171198
-image_to_score|media\M284077_.jpg|t171198
-image_to_score|media\M152015_.jpg|t171340
-image_to_score|media\M283383_.jpg|t171340
-image_to_score|media\M283384_.jpg|t171340
-image_to_score|media\M283408_.jpg|t171340
-image_to_score|media\M283407_.jpg|t171340
-image_to_score|media\M283433_.jpg|t171340
-image_to_score|media\M283432_.jpg|t171340
-image_to_score|media\M283459_.jpg|t171340
-image_to_score|media\M283460_.jpg|t171340
-image_to_score|media\M283563_.jpg|t171340
-image_to_score|media\M283564_.jpg|t171340
-image_to_score|media\M283586_.jpg|t171340
-image_to_score|media\M283587_.jpg|t171340
-image_to_score|media\M283614_.jpg|t171340
-image_to_score|media\M283615_.jpg|t171340
-image_to_score|media\M283650_.jpg|t171340
-image_to_score|media\M283649_.jpg|t171340
-image_to_score|media\M283675_.jpg|t171340
-image_to_score|media\M283674_.jpg|t171340
-image_to_score|media\M283759_.jpg|t171340
-image_to_score|media\M283768_.jpg|t171340
-image_to_score|media\M283792_.jpg|t171340
-image_to_score|media\M283791_.jpg|t171340
-image_to_score|media\M283847_.jpg|t171340
-image_to_score|media\M283845_.jpg|t171340
-image_to_score|media\M283870_.jpg|t171340
-image_to_score|media\M283871_.jpg|t171340
-image_to_score|media\M283895_.jpg|t171340
-image_to_score|media\M283894_.jpg|t171340
-image_to_score|media\M283918_.jpg|t171340
-image_to_score|media\M283917_.jpg|t171340
-image_to_score|media\M283943_.jpg|t171340
-image_to_score|media\M283941_.jpg|t171340
-image_to_score|media\M283967_.jpg|t171340
-image_to_score|media\M283966_.jpg|t171340
-image_to_score|media\M284059_.jpg|t171340
-image_to_score|media\M284058_.jpg|t171340
-image_to_score|media\M152019_.jpg|t171382
-image_to_score|media\M283389_.jpg|t171382
-image_to_score|media\M283390_.jpg|t171382
-image_to_score|media\M283413_.jpg|t171382
-image_to_score|media\M283414_.jpg|t171382
-image_to_score|media\M283438_.jpg|t171382
-image_to_score|media\M283439_.jpg|t171382
-image_to_score|media\M283465_.jpg|t171382
-image_to_score|media\M283464_.jpg|t171382
-image_to_score|media\M283568_.jpg|t171382
-image_to_score|media\M283569_.jpg|t171382
-image_to_score|media\M283619_.jpg|t171382
-image_to_score|media\M283620_.jpg|t171382
-image_to_score|media\M283656_.jpg|t171382
-image_to_score|media\M283655_.jpg|t171382
-image_to_score|media\M283681_.jpg|t171382
-image_to_score|media\M283680_.jpg|t171382
-image_to_score|media\M283705_.jpg|t171382
-image_to_score|media\M283704_.jpg|t171382
-image_to_score|media\M283772_.jpg|t171382
-image_to_score|media\M283774_.jpg|t171382
-image_to_score|media\M283798_.jpg|t171382
-image_to_score|media\M283796_.jpg|t171382
-image_to_score|media\M283876_.jpg|t171382
-image_to_score|media\M283875_.jpg|t171382
-image_to_score|media\M283901_.jpg|t171382
-image_to_score|media\M283900_.jpg|t171382
-image_to_score|media\M283924_.jpg|t171382
-image_to_score|media\M283925_.jpg|t171382
-image_to_score|media\M283947_.jpg|t171382
-image_to_score|media\M283948_.jpg|t171382
-image_to_score|media\M283971_.jpg|t171382
-image_to_score|media\M283973_.jpg|t171382
-image_to_score|media\M284065_.jpg|t171382
-image_to_score|media\M284066_.jpg|t171382
-image_to_score|media\M152022_.jpg|t171435
-image_to_score|media\M283398_.jpg|t171435
-image_to_score|media\M283399_.jpg|t171435
-image_to_score|media\M283422_.jpg|t171435
-image_to_score|media\M283424_.jpg|t171435
-image_to_score|media\M283447_.jpg|t171435
-image_to_score|media\M283448_.jpg|t171435
-image_to_score|media\M283487_.jpg|t171435
-image_to_score|media\M283488_.jpg|t171435
-image_to_score|media\M283578_.jpg|t171435
-image_to_score|media\M283577_.jpg|t171435
-image_to_score|media\M283598_.jpg|t171435
-image_to_score|media\M283599_.jpg|t171435
-image_to_score|media\M283640_.jpg|t171435
-image_to_score|media\M283641_.jpg|t171435
-image_to_score|media\M283664_.jpg|t171435
-image_to_score|media\M283666_.jpg|t171435
-image_to_score|media\M283690_.jpg|t171435
-image_to_score|media\M283689_.jpg|t171435
-image_to_score|media\M283713_.jpg|t171435
-image_to_score|media\M283712_.jpg|t171435
-image_to_score|media\M283782_.jpg|t171435
-image_to_score|media\M283783_.jpg|t171435
-image_to_score|media\M283805_.jpg|t171435
-image_to_score|media\M283806_.jpg|t171435
-image_to_score|media\M283861_.jpg|t171435
-image_to_score|media\M283862_.jpg|t171435
-image_to_score|media\M283885_.jpg|t171435
-image_to_score|media\M283884_.jpg|t171435
-image_to_score|media\M283908_.jpg|t171435
-image_to_score|media\M283909_.jpg|t171435
-image_to_score|media\M283934_.jpg|t171435
-image_to_score|media\M283933_.jpg|t171435
-image_to_score|media\M283957_.jpg|t171435
-image_to_score|media\M283958_.jpg|t171435
-image_to_score|media\M283980_.jpg|t171435
-image_to_score|media\M283982_.jpg|t171435
-image_to_score|media\M284074_.jpg|t171435
-image_to_score|media\M284075_.jpg|t171435
-image_to_score|media\M328374_Pteropus vampyrus AMNH107455Mvent.jpg|t280059
-image_to_score|media\M328377_Pteropus vampyrus AMNH107458Fvent.jpg|t280059
-image_to_score|media\M328376_Pteropus vampyrus AMNH107458Flat.jpg|t280059
-image_to_score|media\M328380_Pteropus vampyrus AMNH107459Mvent.jpg|t280059
-image_to_score|media\M328379_Pteropus vampyrus AMNH107459Mlat.jpg|t280059
-image_to_score|media\M328383_Pteropus vampyrus AMNH107460Fvent.jpg|t280059
-image_to_score|media\M328382_Pteropus vampyrus AMNH107460Flat.jpg|t280059
-image_to_score|media\M328386_Pteropus vampyrus AMNH107613Fvent.jpg|t280059
-image_to_score|media\M328385_Pteropus vampyrus AMNH107613Flat.jpg|t280059
-image_to_score|media\M328389_Pteropus vampyrus AMNH107618Mvent.jpg|t280059
-image_to_score|media\M328388_Pteropus vampyrus AMNH107618Mlat.jpg|t280059
-image_to_score|media\M328392_Pteropus vampyrus AMNH107619Mvent.jpg|t280059
-image_to_score|media\M328391_Pteropus vampyrus AMNH107619Mlat.jpg|t280059
-image_to_score|media\M328394_Pteropus vampyrus AMNH107621Mdor.jpg|t280059
-image_to_score|media\M328395_Pteropus vampyrus AMNH107621Mlat.jpg|t280059
-image_to_score|media\M328400_Pteropus vampyrus AMNH107622Mvent.jpg|t280059
-image_to_score|media\M328399_Pteropus vampyrus AMNH107622Mlat.jpg|t280059
-image_to_score|media\M328404_Pteropus vampyrus AMNH107623Mvent.jpg|t280059
-image_to_score|media\M328403_Pteropus vampyrus AMNH107623Mlat.jpg|t280059
-image_to_score|media\M328530_Thyroptera tricolor AMNH264691Fvent.jpg|t281048
-image_to_score|media\M328529_Thyroptera tricolor AMNH264691Flat.jpg|t281048
-image_to_score|media\M328527_Thyroptera tricolor AMNH266353Mvent.jpg|t281048
-image_to_score|media\M328526_Thyroptera tricolor AMNH266353Mlat.jpg|t281048
-image_to_score|media\M328523_Thyroptera tricolor AMNH267217Fvent.jpg|t281048
-image_to_score|media\M328522_Thyroptera tricolor AMNH267217Flat.jpg|t281048
-image_to_score|media\M328520_Thyroptera tricolor AMNH268577Mvent.jpg|t281048
-image_to_score|media\M328519_Thyroptera tricolor AMNH268577Mlat.jpg|t281048
+training_data|media/M328543_Thyroptera tricolor AMNH239080Fvent.jpg|s946119|P4 present|annotations/c427754_m328543.txt|t281048|1
+training_data|media/M328543_Thyroptera tricolor AMNH239080Fvent.jpg|s946119|P4 present|annotations/c427754_m328543.txt|t281048|2
+training_data|media/M328540_Thyroptera tricolor AMNH239081Mvent.jpg|s946119|P4 present|annotations/c427754_m328540.txt|t281048|1
+training_data|media/M328540_Thyroptera tricolor AMNH239081Mvent.jpg|s946119|P4 present|annotations/c427754_m328540.txt|t281048|2
+training_data|media/M328537_Thyroptera tricolor AMNH239084Mvent.jpg|s946119|P4 present|annotations/c427754_m328537.txt|t281048|1
+training_data|media/M328537_Thyroptera tricolor AMNH239084Mvent.jpg|s946119|P4 present|annotations/c427754_m328537.txt|t281048|2
+training_data|media/M328533_Thyroptera tricolor AMNH239088Fvent.jpg|s946119|P4 present|annotations/c427754_m328533.txt|t281048|1
+training_data|media/M328533_Thyroptera tricolor AMNH239088Fvent.jpg|s946119|P4 present|annotations/c427754_m328533.txt|t281048|2
+training_data|media/M283881_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283883_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M152020_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283394_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283392_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283769_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283771_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283456_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283457_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M152014_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283382_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283381_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283404_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283405_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283431_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283429_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283561_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283560_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283585_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283584_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283606_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283604_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283648_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283646_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283672_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283671_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283694_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283695_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283753_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283752_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283788_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283787_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283811_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283813_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283866_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283868_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283891_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283892_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283914_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283915_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283940_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283939_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283963_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M283964_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M284056_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M284055_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M284079_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M284081_.jpg|s946120|P4 absent|NA|t171321|NA
+training_data|media/M152018_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283387_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283388_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283412_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283411_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283436_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283435_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283463_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283462_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283567_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283566_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283591_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283589_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283616_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283617_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283652_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283654_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283678_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283676_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283700_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283701_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283794_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283795_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283850_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283848_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283874_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283873_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283897_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283896_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283922_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283920_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283944_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283946_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283969_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283970_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M284063_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M284062_.jpg|s946120|P4 absent|NA|t171359|NA
+training_data|media/M283418_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283416_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283442_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283443_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283479_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283477_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283573_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283572_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283593_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283594_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283635_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283636_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283660_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283658_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283683_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283682_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283708_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283709_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283776_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283775_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283800_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283801_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283855_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283854_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283880_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283878_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283903_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283904_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283926_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283927_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283952_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283951_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283975_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283974_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M284067_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M284069_.jpg|s946120|P4 absent|NA|t171193|NA
+training_data|media/M283395_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283397_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283420_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M152021_Saccopteryx bilineata AMNH209222F vent tooth lables.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283444_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283446_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283480_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283481_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283574_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283576_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283597_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283596_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283639_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283637_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283661_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283663_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283687_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283686_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283711_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283710_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283780_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283778_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283803_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283804_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283859_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283857_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283907_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283905_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283929_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283931_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283953_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283955_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283978_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M283979_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M284072_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M284071_.jpg|s946120|P4 absent|NA|t171416|NA
+training_data|media/M328470_Rhinolophus affinis AMNH5350Fvent.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328469_Rhinolophus affinis AMNH5350Flat.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328473_Rhinolophus ferrumequinum AMNH111221Mvent.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328472_Rhinolophus ferrumequinum AMNH111221Mlat.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328578_Taphozous melanopogon AMNH107664Fvent.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328577_Taphozous melanopogon AMNH107664Flat.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328467_Rhinolophus affinis AMNH55948vent.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328466_Rhinolophus affinis AMNH55948lat.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328464_Rhinolophus affinis AMNH58364Fvent.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328463_Rhinolophus affinis AMNH58364Flat.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328461_Rhinolophus affinis AMNH58389Fvent.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328460_Rhinolophus affinis AMNH58389Flat.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328458_Rhinolophus affinis AMNH58391Fvent.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328457_Rhinolophus affinis AMNH58391Flat.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328455_Rhinolophus affinis AMNH85239vent.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328454_Rhinolophus affinis AMNH85239lat.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328452_Rhinolophus affinis AMNH85249vent.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328451_Rhinolophus affinis AMNH85249lat.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328449_Rhinolophus affinis AMNH85256vent.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328448_Rhinolophus affinis AMNH85256lat.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328446_Rhinolophus affinis AMNH112937Fvent.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328445_Rhinolophus affinis AMNH112937Flat.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328443_Rhinolophus affinis AMNH112947Fvent.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328442_Rhinolophus affinis AMNH112947Flat.jpg|s946120|P4 absent|NA|t281027|NA
+training_data|media/M328476_Rhinolophus ferrumequinum AMNH111223Mvent.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328475_Rhinolophus ferrumequinum AMNH111223Mlat.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328479_Rhinolophus ferrumequinum AMNH111225Mvent.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328478_Rhinolophus ferrumequinum AMNH111225Mlat.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328482_Rhinolophus ferrumequinum AMNH111226Fvent.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328481_Rhinolophus ferrumequinum AMNH111226Flat.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328485_Rhinolophus ferrumequinum AMNH111228Mvent.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328484_Rhinolophus ferrumequinum AMNH111228Mlat.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328501_Rhinolophus ferrumequinum AMNH111229Fvent.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328500_Rhinolophus ferrumequinum AMNH111229Flat.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328504_Rhinolophus ferrumequinum AMNH111236Mvent.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328503_Rhinolophus ferrumequinum AMNH111236Mlat.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328507_Rhinolophus ferrumequinum AMNH111237Mvent.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328506_Rhinolophus ferrumequinum AMNH111237Mlat.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328510_Rhinolophus ferrumequinum AMNH111238Mvent.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328509_Rhinolophus ferrumequinum AMNH111238Mlat.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328513_Rhinolophus ferrumequinum AMNH111240Fvent.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328512_Rhinolophus ferrumequinum AMNH111240Flat.jpg|s946120|P4 absent|NA|t280061|NA
+training_data|media/M328574_Taphozous melanopogon AMNH107665Fvent.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328573_Taphozous melanopogon AMNH107665Flat.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328571_Taphozous melanopogon AMNH107667Fvent.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328570_Taphozous melanopogon AMNH107667Flat.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328567_Taphozous melanopogon AMNH107668Fvent.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328566_Taphozous melanopogon AMNH107668Flat.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328564_Taphozous melanopogon AMNH107670Fvent.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328563_Taphozous melanopogon AMNH107670Flat.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328561_Taphozous melanopogon AMNH107671Fvent.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328560_Taphozous melanopogon AMNH107671Flat.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328558_Taphozous melanopogon AMNH153507vent.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328557_Taphozous melanopogon AMNH153507lat.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328555_Taphozous melanopogon AMNH207518Mvent.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328554_Taphozous melanopogon AMNH207518Mlat.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328552_Taphozous melanopogon AMNH207519Mvent.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328551_Taphozous melanopogon AMNH207519Mlat.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328549_Taphozous melanopogon AMNH207520Mvent.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328548_Taphozous melanopogon AMNH207520Mlat.jpg|s946120|P4 absent|NA|t280064|NA
+training_data|media/M328516_Thyroptera tricolor AMNH273160Fvent_JedTweakedBlurred.jpg|s946120|P4 absent|NA|t281048|NA
+training_data|media/M328545_Thyroptera tricolor AMNH97133Flat.jpg|s946120|P4 absent|NA|t281048|NA
+image_to_score|media/M283852_.jpg|t171382
+image_to_score|media/M283853_.jpg|t171382
+image_to_score|media/M283699_.jpg|t171340
+image_to_score|media/M283698_.jpg|t171340
+image_to_score|media/M152011_.jpg|t171198
+image_to_score|media/M283377_.jpg|t171198
+image_to_score|media/M283379_.jpg|t171198
+image_to_score|media/M283401_.jpg|t171198
+image_to_score|media/M283403_.jpg|t171198
+image_to_score|media/M283428_.jpg|t171198
+image_to_score|media/M283426_.jpg|t171198
+image_to_score|media/M283887_.jpg|t171198
+image_to_score|media/M283888_.jpg|t171198
+image_to_score|media/M283452_.jpg|t171198
+image_to_score|media/M283454_.jpg|t171198
+image_to_score|media/M283557_.jpg|t171198
+image_to_score|media/M283558_.jpg|t171198
+image_to_score|media/M283580_.jpg|t171198
+image_to_score|media/M283582_.jpg|t171198
+image_to_score|media/M283601_.jpg|t171198
+image_to_score|media/M283603_.jpg|t171198
+image_to_score|media/M283645_.jpg|t171198
+image_to_score|media/M283644_.jpg|t171198
+image_to_score|media/M283668_.jpg|t171198
+image_to_score|media/M283669_.jpg|t171198
+image_to_score|media/M283692_.jpg|t171198
+image_to_score|media/M283691_.jpg|t171198
+image_to_score|media/M283748_.jpg|t171198
+image_to_score|media/M283750_.jpg|t171198
+image_to_score|media/M283786_.jpg|t171198
+image_to_score|media/M283785_.jpg|t171198
+image_to_score|media/M283809_.jpg|t171198
+image_to_score|media/M283808_.jpg|t171198
+image_to_score|media/M283863_.jpg|t171198
+image_to_score|media/M283865_.jpg|t171198
+image_to_score|media/M283959_.jpg|t171198
+image_to_score|media/M283960_.jpg|t171198
+image_to_score|media/M283912_.jpg|t171198
+image_to_score|media/M283913_.jpg|t171198
+image_to_score|media/M283936_.jpg|t171198
+image_to_score|media/M283937_.jpg|t171198
+image_to_score|media/M284053_.jpg|t171198
+image_to_score|media/M284052_.jpg|t171198
+image_to_score|media/M284076_.jpg|t171198
+image_to_score|media/M284077_.jpg|t171198
+image_to_score|media/M152015_.jpg|t171340
+image_to_score|media/M283383_.jpg|t171340
+image_to_score|media/M283384_.jpg|t171340
+image_to_score|media/M283408_.jpg|t171340
+image_to_score|media/M283407_.jpg|t171340
+image_to_score|media/M283433_.jpg|t171340
+image_to_score|media/M283432_.jpg|t171340
+image_to_score|media/M283459_.jpg|t171340
+image_to_score|media/M283460_.jpg|t171340
+image_to_score|media/M283563_.jpg|t171340
+image_to_score|media/M283564_.jpg|t171340
+image_to_score|media/M283586_.jpg|t171340
+image_to_score|media/M283587_.jpg|t171340
+image_to_score|media/M283614_.jpg|t171340
+image_to_score|media/M283615_.jpg|t171340
+image_to_score|media/M283650_.jpg|t171340
+image_to_score|media/M283649_.jpg|t171340
+image_to_score|media/M283675_.jpg|t171340
+image_to_score|media/M283674_.jpg|t171340
+image_to_score|media/M283759_.jpg|t171340
+image_to_score|media/M283768_.jpg|t171340
+image_to_score|media/M283792_.jpg|t171340
+image_to_score|media/M283791_.jpg|t171340
+image_to_score|media/M283847_.jpg|t171340
+image_to_score|media/M283845_.jpg|t171340
+image_to_score|media/M283870_.jpg|t171340
+image_to_score|media/M283871_.jpg|t171340
+image_to_score|media/M283895_.jpg|t171340
+image_to_score|media/M283894_.jpg|t171340
+image_to_score|media/M283918_.jpg|t171340
+image_to_score|media/M283917_.jpg|t171340
+image_to_score|media/M283943_.jpg|t171340
+image_to_score|media/M283941_.jpg|t171340
+image_to_score|media/M283967_.jpg|t171340
+image_to_score|media/M283966_.jpg|t171340
+image_to_score|media/M284059_.jpg|t171340
+image_to_score|media/M284058_.jpg|t171340
+image_to_score|media/M152019_.jpg|t171382
+image_to_score|media/M283389_.jpg|t171382
+image_to_score|media/M283390_.jpg|t171382
+image_to_score|media/M283413_.jpg|t171382
+image_to_score|media/M283414_.jpg|t171382
+image_to_score|media/M283438_.jpg|t171382
+image_to_score|media/M283439_.jpg|t171382
+image_to_score|media/M283465_.jpg|t171382
+image_to_score|media/M283464_.jpg|t171382
+image_to_score|media/M283568_.jpg|t171382
+image_to_score|media/M283569_.jpg|t171382
+image_to_score|media/M283619_.jpg|t171382
+image_to_score|media/M283620_.jpg|t171382
+image_to_score|media/M283656_.jpg|t171382
+image_to_score|media/M283655_.jpg|t171382
+image_to_score|media/M283681_.jpg|t171382
+image_to_score|media/M283680_.jpg|t171382
+image_to_score|media/M283705_.jpg|t171382
+image_to_score|media/M283704_.jpg|t171382
+image_to_score|media/M283772_.jpg|t171382
+image_to_score|media/M283774_.jpg|t171382
+image_to_score|media/M283798_.jpg|t171382
+image_to_score|media/M283796_.jpg|t171382
+image_to_score|media/M283876_.jpg|t171382
+image_to_score|media/M283875_.jpg|t171382
+image_to_score|media/M283901_.jpg|t171382
+image_to_score|media/M283900_.jpg|t171382
+image_to_score|media/M283924_.jpg|t171382
+image_to_score|media/M283925_.jpg|t171382
+image_to_score|media/M283947_.jpg|t171382
+image_to_score|media/M283948_.jpg|t171382
+image_to_score|media/M283971_.jpg|t171382
+image_to_score|media/M283973_.jpg|t171382
+image_to_score|media/M284065_.jpg|t171382
+image_to_score|media/M284066_.jpg|t171382
+image_to_score|media/M152022_.jpg|t171435
+image_to_score|media/M283398_.jpg|t171435
+image_to_score|media/M283399_.jpg|t171435
+image_to_score|media/M283422_.jpg|t171435
+image_to_score|media/M283424_.jpg|t171435
+image_to_score|media/M283447_.jpg|t171435
+image_to_score|media/M283448_.jpg|t171435
+image_to_score|media/M283487_.jpg|t171435
+image_to_score|media/M283488_.jpg|t171435
+image_to_score|media/M283578_.jpg|t171435
+image_to_score|media/M283577_.jpg|t171435
+image_to_score|media/M283598_.jpg|t171435
+image_to_score|media/M283599_.jpg|t171435
+image_to_score|media/M283640_.jpg|t171435
+image_to_score|media/M283641_.jpg|t171435
+image_to_score|media/M283664_.jpg|t171435
+image_to_score|media/M283666_.jpg|t171435
+image_to_score|media/M283690_.jpg|t171435
+image_to_score|media/M283689_.jpg|t171435
+image_to_score|media/M283713_.jpg|t171435
+image_to_score|media/M283712_.jpg|t171435
+image_to_score|media/M283782_.jpg|t171435
+image_to_score|media/M283783_.jpg|t171435
+image_to_score|media/M283805_.jpg|t171435
+image_to_score|media/M283806_.jpg|t171435
+image_to_score|media/M283861_.jpg|t171435
+image_to_score|media/M283862_.jpg|t171435
+image_to_score|media/M283885_.jpg|t171435
+image_to_score|media/M283884_.jpg|t171435
+image_to_score|media/M283908_.jpg|t171435
+image_to_score|media/M283909_.jpg|t171435
+image_to_score|media/M283934_.jpg|t171435
+image_to_score|media/M283933_.jpg|t171435
+image_to_score|media/M283957_.jpg|t171435
+image_to_score|media/M283958_.jpg|t171435
+image_to_score|media/M283980_.jpg|t171435
+image_to_score|media/M283982_.jpg|t171435
+image_to_score|media/M284074_.jpg|t171435
+image_to_score|media/M284075_.jpg|t171435
+image_to_score|media/M328374_Pteropus vampyrus AMNH107455Mvent.jpg|t280059
+image_to_score|media/M328377_Pteropus vampyrus AMNH107458Fvent.jpg|t280059
+image_to_score|media/M328376_Pteropus vampyrus AMNH107458Flat.jpg|t280059
+image_to_score|media/M328380_Pteropus vampyrus AMNH107459Mvent.jpg|t280059
+image_to_score|media/M328379_Pteropus vampyrus AMNH107459Mlat.jpg|t280059
+image_to_score|media/M328383_Pteropus vampyrus AMNH107460Fvent.jpg|t280059
+image_to_score|media/M328382_Pteropus vampyrus AMNH107460Flat.jpg|t280059
+image_to_score|media/M328386_Pteropus vampyrus AMNH107613Fvent.jpg|t280059
+image_to_score|media/M328385_Pteropus vampyrus AMNH107613Flat.jpg|t280059
+image_to_score|media/M328389_Pteropus vampyrus AMNH107618Mvent.jpg|t280059
+image_to_score|media/M328388_Pteropus vampyrus AMNH107618Mlat.jpg|t280059
+image_to_score|media/M328392_Pteropus vampyrus AMNH107619Mvent.jpg|t280059
+image_to_score|media/M328391_Pteropus vampyrus AMNH107619Mlat.jpg|t280059
+image_to_score|media/M328394_Pteropus vampyrus AMNH107621Mdor.jpg|t280059
+image_to_score|media/M328395_Pteropus vampyrus AMNH107621Mlat.jpg|t280059
+image_to_score|media/M328400_Pteropus vampyrus AMNH107622Mvent.jpg|t280059
+image_to_score|media/M328399_Pteropus vampyrus AMNH107622Mlat.jpg|t280059
+image_to_score|media/M328404_Pteropus vampyrus AMNH107623Mvent.jpg|t280059
+image_to_score|media/M328403_Pteropus vampyrus AMNH107623Mlat.jpg|t280059
+image_to_score|media/M328530_Thyroptera tricolor AMNH264691Fvent.jpg|t281048
+image_to_score|media/M328529_Thyroptera tricolor AMNH264691Flat.jpg|t281048
+image_to_score|media/M328527_Thyroptera tricolor AMNH266353Mvent.jpg|t281048
+image_to_score|media/M328526_Thyroptera tricolor AMNH266353Mlat.jpg|t281048
+image_to_score|media/M328523_Thyroptera tricolor AMNH267217Fvent.jpg|t281048
+image_to_score|media/M328522_Thyroptera tricolor AMNH267217Flat.jpg|t281048
+image_to_score|media/M328520_Thyroptera tricolor AMNH268577Mvent.jpg|t281048
+image_to_score|media/M328519_Thyroptera tricolor AMNH268577Mlat.jpg|t281048
