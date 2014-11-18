@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv;
+package edu.oregonstate.eecs.iis.avatolcv.mb;
 
 import java.util.ArrayList;
 import java.util.Hashtable;

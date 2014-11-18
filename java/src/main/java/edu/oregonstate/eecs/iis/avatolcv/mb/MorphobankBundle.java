@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv;
+package edu.oregonstate.eecs.iis.avatolcv.mb;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -7,6 +7,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.DataIOFile;
+import edu.oregonstate.eecs.iis.avatolcv.InputFile;
+import edu.oregonstate.eecs.iis.avatolcv.InputFiles;
+import edu.oregonstate.eecs.iis.avatolcv.Platform;
 
 public class MorphobankBundle {
     private static final String FILESEP = System.getProperty("file.separator");

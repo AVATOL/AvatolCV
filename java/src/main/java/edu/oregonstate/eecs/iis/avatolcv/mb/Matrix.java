@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv;
+package edu.oregonstate.eecs.iis.avatolcv.mb;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,6 +8,8 @@ import java.util.List;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
 public class Matrix {
 	protected List<String> rowIds = new ArrayList<String>();

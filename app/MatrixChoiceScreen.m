@@ -35,7 +35,7 @@ classdef MatrixChoiceScreen < handle
                  obj.matrixDir = sprintf('%s/matrix_downloads/%s',  obj.session.rootDir, matrixName);
             end
             matrixNameJavaString = java.lang.String(matrixName);
-            edu.oregonstate.eecs.iis.avatolcv.MorphobankBundle.printString(matrixNameJavaString);
+            edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle.printString(matrixNameJavaString);
             obj.session.morphobankBundle = obj.session.morphobankData.loadMatrix(matrixNameJavaString);
         end    
         function displayMatrixQuestion(obj)

@@ -15,6 +15,7 @@ function avatol_cv
     end
     
     import edu.oregonstate.eecs.iis.avatolcv.*;
+    import edu.oregonstate.eecs.iis.avatolcv.mb.*;
     import java.util.List;
     import java.lang.String;
     import java.lang.System.*;

@@ -29,6 +29,7 @@ classdef Session < handle
     methods
         function obj = Session(rootDir, avatolSystem)
             import edu.oregonstate.eecs.iis.avatolcv.* ;
+            import edu.oregonstate.eecs.iis.avatolcv.mb.* ;
             obj.avatolSystem = avatolSystem;
             obj.rootDir = rootDir;
             obj.ui = UI();

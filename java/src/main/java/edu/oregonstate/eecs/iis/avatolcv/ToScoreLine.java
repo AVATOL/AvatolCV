@@ -1,5 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
+import edu.oregonstate.eecs.iis.avatolcv.mb.Annotation;
+
 public class ToScoreLine {
 	private static final String SEP = System.getProperty("file.separator");
 	private String mediaPath;

@@ -8,6 +8,7 @@ function crfTest
     end
     
     import edu.oregonstate.eecs.iis.avatolcv.*
+    import edu.oregonstate.eecs.iis.avatolcv.mb.*
     md = MorphobankData(java.lang.String('C:\\avatol\\git\\avatol_cv\\matrix_downloads'));
     md.loadMatrix('BOGUS');
     inputFilePathname = 'C:\avatol\git\avatol_cv\matrix_downloads\BOGUS\input\sorted_input_data_c521244_Premaxilla body presence.txt';

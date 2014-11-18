@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv;
+package edu.oregonstate.eecs.iis.avatolcv.mb;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,6 +19,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
 public class MorphobankSDDFile {
 	private static final String FILESEP = System.getProperty("file.separator");

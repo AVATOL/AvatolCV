@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import edu.oregonstate.eecs.iis.avatolcv.mb.Annotation;
+import edu.oregonstate.eecs.iis.avatolcv.mb.AnnotationCoordinates;
+
 public class TrainingSample {
 	private static final String SEP = System.getProperty("file.separator");
 	private String mediaPath;

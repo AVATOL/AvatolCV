@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv;
+package edu.oregonstate.eecs.iis.avatolcv.mb;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
 
 

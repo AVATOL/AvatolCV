@@ -1,7 +1,9 @@
-package edu.oregonstate.eecs.iis.avatolcv;
+package edu.oregonstate.eecs.iis.avatolcv.mb;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import edu.oregonstate.eecs.iis.avatolcv.Point;
 
 public class AnnotationCoordinates {
 	public enum AnnotationType {

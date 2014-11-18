@@ -8,6 +8,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankData;
+
 public class TestMatrix {
     /*
 	@Test

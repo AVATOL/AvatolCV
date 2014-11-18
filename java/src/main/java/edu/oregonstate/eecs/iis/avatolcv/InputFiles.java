@@ -14,6 +14,14 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.mb.Annotation;
+import edu.oregonstate.eecs.iis.avatolcv.mb.Annotations;
+import edu.oregonstate.eecs.iis.avatolcv.mb.Character;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MatrixCell;
+import edu.oregonstate.eecs.iis.avatolcv.mb.Media;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankDataException;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankSDDFile;
+
 public class InputFiles {
 	
 	private static final String NL = System.getProperty("line.separator");

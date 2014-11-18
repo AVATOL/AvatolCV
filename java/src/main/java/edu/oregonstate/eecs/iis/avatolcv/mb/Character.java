@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv;
+package edu.oregonstate.eecs.iis.avatolcv.mb;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
+
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
 /*
  *  %    <CategoricalCharacter id='c524104'>

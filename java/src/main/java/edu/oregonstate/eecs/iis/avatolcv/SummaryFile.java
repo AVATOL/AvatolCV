@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankSDDFile;
+
 public class SummaryFile {
 	private static final String DELIM = ",";
 	public static final String SUMMARY_FILENAME = "summary.txt";
