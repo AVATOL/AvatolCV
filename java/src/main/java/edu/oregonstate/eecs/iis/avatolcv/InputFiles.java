@@ -370,7 +370,7 @@ public class InputFiles {
     	File[] files = f.listFiles();
     	for (int i = 0; i < files.length; i++){
     		File curFile = files[i];
-    		if (curFile.getName().endsWith(".txt")){
+    		if (curFile.getName().startsWith("input")){
     			// treat it as a valid input file
     			InputFile inputFile = new InputFile(curFile.getAbsolutePath(), this.bundleDir);
     			String charId = inputFile.getCharId();
@@ -484,7 +484,7 @@ public class InputFiles {
 		}
 		return path;
 	}
-	public String getOutputFilepathForCharacter(String charName, String algId) throws MorphobankDataException {
+	public String getDestinationOutputFilepathForCharacter(String charName, String algId) throws MorphobankDataException {
 		String inputPath = outputFilepathForCharacterName.get(charName);
 		if (null == inputPath){
 			throw new MorphobankDataException("no outputFile pathname for character name: " + charName);

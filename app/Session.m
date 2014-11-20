@@ -87,7 +87,10 @@ classdef Session < handle
         end
         function jumpToQuestionnaire(obj)
             if (strcmp(obj.mostRecentScreen,'NOT_STARTED'))
+                currentFigure = gcf;
+                set(currentFigure, 'pointer', 'watch')
                 obj.matrixChoiceScreen.displayMatrixQuestion();
+                set(currentFigure, 'pointer', 'arrow')
             elseif (strcmp(obj.mostRecentScreen,'QUESTIONNAIRE_COMPLETE'))
                 obj.doAnotherCharacter();
             elseif (strcmp(obj.mostRecentScreen,'MATRIX_QUESTION'))
@@ -101,7 +104,7 @@ classdef Session < handle
         function showResultsForCurrentCharacter(obj)
             charName = obj.characterChoiceScreen.characterName;
             obj.resultsReviewScreen.reset();
-            obj.resultsReviewScreen.setCurrentCharName(charName);
+            %obj.resultsReviewScreen.setCurrentCharName(charName);
             obj.resultsReviewScreen.showResults();
         end
         function jumpToResultsReview(obj)
@@ -224,6 +227,8 @@ classdef Session < handle
         end
         function showNextQuestion(obj)
             if obj.ui.verifyAnswerPresent()
+                currentFigure = gcf;
+                set(currentFigure, 'pointer', 'watch');
                 nextAnswer = obj.registerDisplayedAnswer();
                 if (strcmp(nextAnswer,'ANSWER_BLOCKED_BY_ERROR'))
                     % stay on same question
@@ -248,6 +253,7 @@ classdef Session < handle
                     end
 
                 end
+                set(currentFigure, 'pointer', 'arrow');
             else
                 errordlg('Please answer the question before clicking "Next"')
             end

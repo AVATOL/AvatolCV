@@ -6,13 +6,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResultFile extends DataIOFile {
+public class OutputFile extends DataIOFile {
 	private List<TrainingSample> trainingSamples = new ArrayList<TrainingSample>();
 	private List<ScoredImage> scoredImages = new ArrayList<ScoredImage>();
 	private List<UnscoredImage> unscoredImages = new ArrayList<UnscoredImage>();
+	private String charId;
+	private String charName;
 	
-    public ResultFile(String path, String rootDir){
+    public OutputFile(String path, String rootDir) throws AvatolCVException {
     	super(path);
+    	this.charId = getCharIdFromPath(path);
+    	this.charName = getCharNameFromPath(path);
     	try {
         	BufferedReader reader = new BufferedReader(new FileReader(path));
     		String line = null;
@@ -22,11 +26,11 @@ public class ResultFile extends DataIOFile {
     				trainingSamples.add(ts);
     			}
     			else if (line.startsWith(IMAGE_SCORED_MARKER)){
-    				ScoredImage isl = new ScoredImage(line, rootDir);
+    				ScoredImage isl = new ScoredImage(line, rootDir, this.charId, this.charName);
     				scoredImages.add(isl);
     			}
     			else if (line.startsWith(IMAGE_NOT_SCORED_MARKER)){
-    				UnscoredImage isl = new UnscoredImage(line, rootDir);
+    				UnscoredImage isl = new UnscoredImage(line, rootDir, this.charId, this.charName);
     				unscoredImages.add(isl);
     			}
     			else {
@@ -38,22 +42,28 @@ public class ResultFile extends DataIOFile {
     	}
     	catch(IOException ioe){
     		ioe.printStackTrace();
-    		System.out.println(ioe.getMessage());
+    		throw new AvatolCVException(ioe.getMessage());
     	}
     }
-
-    public List<ScoredImage> getScoredImages(){
-    	List<ScoredImage> result = new ArrayList<ScoredImage>();
+    public String getCharName(){
+    	return this.charName;
+    }
+    public String getCharId(){
+    	return this.charId;
+    }
+    
+    public List<ResultImage> getScoredImages(){
+    	List<ResultImage> result = new ArrayList<ResultImage>();
     	result.addAll(this.scoredImages);
     	return result;
     }
-    public List<UnscoredImage> getUnscoredImages(){
-    	List<UnscoredImage> result = new ArrayList<UnscoredImage>();
+    public List<ResultImage> getUnscoredImages(){
+    	List<ResultImage> result = new ArrayList<ResultImage>();
     	result.addAll(this.unscoredImages);
     	return result;
     }
-    public List<TrainingSample> getTrainingSamples(){
-    	List<TrainingSample> result = new ArrayList<TrainingSample>();
+    public List<ResultImage> getTrainingSamples(){
+    	List<ResultImage> result = new ArrayList<ResultImage>();
     	result.addAll(this.trainingSamples);
     	return result;
     }

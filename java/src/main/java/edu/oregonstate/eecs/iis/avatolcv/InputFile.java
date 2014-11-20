@@ -43,8 +43,8 @@ public class InputFile extends DataIOFile {
     	return this.charId;
     }
     
-    public List<TrainingSample> getTrainingSamples(){
-    	List<TrainingSample> result = new ArrayList<TrainingSample>();
+    public List<ResultImage> getTrainingSamples(){
+    	List<ResultImage> result = new ArrayList<ResultImage>();
     	result.addAll(this.trainingSamples);
     	return result;
     }

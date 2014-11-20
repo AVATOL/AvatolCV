@@ -12,6 +12,8 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.DataIOFile;
 import edu.oregonstate.eecs.iis.avatolcv.InputFile;
 import edu.oregonstate.eecs.iis.avatolcv.InputFiles;
+import edu.oregonstate.eecs.iis.avatolcv.OutputFile;
+import edu.oregonstate.eecs.iis.avatolcv.OutputFiles;
 import edu.oregonstate.eecs.iis.avatolcv.Platform;
 
 public class MorphobankBundle {
@@ -123,8 +125,8 @@ public class MorphobankBundle {
     public String getInputFilePathnameForCharacter(String characterName) throws MorphobankDataException {
     	return this.inputFiles.getInputFilepathForCharacter(characterName);
     }
-    public String getOutputFilePathnameForCharacter(String characterName, String algId) throws MorphobankDataException {
-    	return this.inputFiles.getOutputFilepathForCharacter(characterName, algId);
+    public String getDestinationOutputFilePathnameForCharacter(String characterName, String algId) throws MorphobankDataException {
+    	return this.inputFiles.getDestinationOutputFilepathForCharacter(characterName, algId);
     }
     public String getTempDirForAlg(String algId){
     	return this.dirName + FILESEP + DataIOFile.OUTPUT_DIRNAME + FILESEP + algId + FILESEP;
@@ -211,5 +213,9 @@ public class MorphobankBundle {
     }
     public Hashtable<String,InputFile> getInputFilesForCharacter(String path) throws AvatolCVException {
     	return this.inputFiles.getInputFilesForCharacter(path);
+    }
+    public Hashtable<String,OutputFile> getOutputFilesForCharacter(String path) throws AvatolCVException {
+    	OutputFiles outputFiles = new OutputFiles(path, this.dirName);
+    	return outputFiles.getOutputFilesForCharacter();
     }
 }

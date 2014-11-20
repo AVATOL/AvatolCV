@@ -13,12 +13,16 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
+
 public class ScoredSetMetadata {
 	private static final String INPUT_FOLDER_KEY = "input_folder";
 	private static final String OUTPUT_FOLDER_KEY = "output_folder";
 	private static final String DETECTION_RESULTS_FOLDER_KEY = "detection_results_folder";
 	private static final String FOCUS_CHARID_KEY = "focus_character_id";
 	private Hashtable<String,String> allData = new Hashtable<String,String>();
+	private List<String> keyList = new ArrayList<String>();
+	private int currentKeyIndex = 0;
 	private String metadataDir = null;
 	private String SEP = System.getProperty("file.separator");
 	private String NL = System.getProperty("line.separator");
@@ -26,6 +30,29 @@ public class ScoredSetMetadata {
 		this.metadataDir = rootDir + SEP + "scoredSetMetadata";
 		File f = new File(this.metadataDir);
 		f.mkdirs();
+	}
+	public int getSetCount(){
+		return keyList.size();
+	}
+	public void goToNextSession(){
+		if (this.currentKeyIndex < this.keyList.size() - 1){
+			this.currentKeyIndex += 1;
+		}
+	}
+	public void goToPrevSession(){
+		if (this.currentKeyIndex > 0){
+			this.currentKeyIndex -= 1;
+		}
+	}
+	public boolean backButtonNeeded(){
+		return (this.currentKeyIndex > 0);
+	}
+	public boolean nextButtonNeeded(){
+		return (this.currentKeyIndex < this.keyList.size() - 1);
+	}
+	public String getPositionInList(){
+		String runPositionInList = (this.currentKeyIndex + 1) + "/" + this.keyList.size();
+		return runPositionInList;
 	}
 	public void persistForDPM(String matrixName, String taxonName, String characterName, String charId, String viewName, List<String> charactersTrained,
 			String input_folder, String output_folder, String detection_results_folder) throws AvatolCVException {
@@ -69,7 +96,7 @@ public class ScoredSetMetadata {
     	
     }
     public String getPath(String matrixName, String alg){
-    	String filename = alg + "_" + (System.currentTimeMillis() / 1000L) + ".txt";
+    	String filename = (System.currentTimeMillis() / 1000L) + alg + ".txt";
     	String path = this.metadataDir + SEP + filename;
     	return path;
     }
@@ -95,6 +122,11 @@ public class ScoredSetMetadata {
     			throw new AvatolCVException(ioe.getMessage());
     		}
     	}
+    	this.keyList = getKeys();
+    	selectMostRecentRun(); 
+    }
+    public void selectMostRecentRun(){
+    	this.currentKeyIndex = this.keyList.size() - 2;
     }
     public List<String> getKeys(){
     	List<String> keysList = new ArrayList<String>();
@@ -149,7 +181,8 @@ public class ScoredSetMetadata {
     	}
     	return result;
     }
-    public String getDisplayableDataForKey(String key){
+    public String getDisplayableDataForKey(){
+    	String key = this.keyList.get(this.currentKeyIndex);
     	String result = "";
     	String info =  this.allData.get(key);
     	try {
@@ -180,4 +213,32 @@ public class ScoredSetMetadata {
     	}
     	return result;
     }
+    public String getCurrentKey(){
+    	String currentKey = this.keyList.get(this.currentKeyIndex);
+    	return currentKey;
+    }
+    public SessionData getSessionResultsData(MorphobankBundle mb) throws AvatolCVException {
+    	String key = getCurrentKey();
+    	String input_folder = getInputFolderForKey(key);
+    	System.out.println("input folder : " + input_folder);
+    	String output_folder = getOutputFolderForKey(key);
+
+    	Hashtable<String,InputFile> inputFilesForCharacter = mb.getInputFilesForCharacter(input_folder);
+    	Hashtable<String,OutputFile> outputFilesForCharacter = mb.getOutputFilesForCharacter(output_folder);
+    	
+    	
+    	String currentCharId = getFocusCharIdForKey(key);
+        String currentCharName = mb.getCharacterNameForId(currentCharId);
+      
+
+        InputFile inputFile = inputFilesForCharacter.get(currentCharId);
+        List<ResultImage> trainingSamples = (List<ResultImage>)inputFile.getTrainingSamples();
+
+        OutputFile outputFile = outputFilesForCharacter.get(currentCharId);
+        List<ResultImage> scoredImages = outputFile.getScoredImages();
+        List<ResultImage> unscoredImages = outputFile.getUnscoredImages();
+    	SessionData srd = new SessionData(currentCharId, currentCharName,trainingSamples,scoredImages, unscoredImages);
+		return srd;
+    }
 }
+

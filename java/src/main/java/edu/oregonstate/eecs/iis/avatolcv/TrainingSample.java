@@ -7,7 +7,7 @@ import java.io.IOException;
 import edu.oregonstate.eecs.iis.avatolcv.mb.Annotation;
 import edu.oregonstate.eecs.iis.avatolcv.mb.AnnotationCoordinates;
 
-public class TrainingSample {
+public class TrainingSample extends AnnotatedItem implements ResultImage  {
 	private static final String SEP = System.getProperty("file.separator");
 	private String mediaPath;
 	private String characterStateId;
@@ -15,7 +15,6 @@ public class TrainingSample {
 	private String annotationFilePath;
 	private String taxonId;
 	private String annotationLineNumber;
-	private AnnotationCoordinates annotationCoordinates;
 	private String characterId;
 	private String characterName;
     public TrainingSample(String line, String rootDir, String charId, String charName){
@@ -33,65 +32,56 @@ public class TrainingSample {
     	this.annotationLineNumber = parts[6];
     	if (!relativeAnnotationPath.equals("NA")){
     		//annotation line has coords, character and character name : 4588,1822:c427749:Upper I1 presence:s946108:I1 present
-    		loadAnnotationEntry(this.annotationFilePath, this.annotationLineNumber);
+    		loadAnnotationCoordinates(this.annotationFilePath, this.annotationLineNumber);
     	}
     	
     	
     }
+    @Override
     public boolean hasAnnotationCoordinates(){
-    	if (this.annotationCoordinates != null){
+    	if (this.getAnnotationCoordinates() != null){
     		return true;
     	}
     	return false;
     }
+    @Override
     public String getMediaPath(){
     	return this.mediaPath;
     }
+    @Override
     public String getCharacterStateId(){
     	return this.characterStateId;
     }
+    @Override
     public String getCharacterStateName(){
     	return this.characterStateName;
     }
+    @Override
     public String getTaxonId(){
     	return this.taxonId;
     }
+    @Override
     public AnnotationCoordinates getAnnotationCoordinates(){
-    	return this.annotationCoordinates;
+    	return super.getAnnotationCoordinates();
     }
+    @Override
     public String getCharacterId(){
     	return this.characterId;
     }
+    @Override
     public String getCharacterName(){
     	return this.characterName;
     }
-    public void parseAnnotationLine(String line){
-    	// 4588,1822:c427749:Upper I1 presence:s946108:I1 present
-    	String[] parts = line.split(":");
-    	String coordsString = parts[0];
-    	// already have other info
-    	this.annotationCoordinates = new AnnotationCoordinates(coordsString);
-    }
-    public void loadAnnotationEntry(String path, String lineNumber){
-        try{
-        	int lineNumberInt = new Integer(lineNumber).intValue();
-        	BufferedReader reader = new BufferedReader(new FileReader(path));
-        	String line = null;
-        	int curLineNumber = 1;
-        	while (null != (line = reader.readLine())){
-        		if (lineNumberInt == curLineNumber){
-        			parseAnnotationLine(line);
-        			return;
-        		}
-        		else {
-        			curLineNumber += 1;
-        		}
-        	}
-        	reader.close();
-        }
-        catch(IOException ioe){
-        	ioe.printStackTrace();
-        	System.out.println(ioe.getMessage());
-        }
-    }
+	@Override
+	public boolean hasConfidence() {
+		return false;
+	}
+	@Override
+	public String getConfidence() {
+		return "NA";
+	}
+	@Override
+	public boolean hasCharacterState() {
+		return true;
+	}
 }

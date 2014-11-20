@@ -99,8 +99,11 @@ classdef MatrixChoiceScreen < handle
             obj.session.mostRecentScreen = 'MATRIX_QUESTION'; 
         end
         function showNextQuestion(obj, hObject, eventData)
+            currentFigure = gcf;
+            set(currentFigure, 'pointer', 'watch');
             obj.session.registerDisplayedAnswer();
             obj.session.characterChoiceScreen.showCharacterQuestion();
+            set(currentFigure, 'pointer', 'arrow');
         end
         function jumpToTutorial(obj, hObject, eventData)
             obj.session.jumpToTutorial();

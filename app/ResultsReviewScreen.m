@@ -5,29 +5,35 @@ classdef ResultsReviewScreen < handle
     properties
         ui;
         session;
-        metadataKeyIndex = 0;
-        metadataKeyCount = 0;
-        keys;
+        %metadataKeyIndex = 0;
+        %metadataKeyCount = 0;
+        %keys;
         ssm;
-        input_folder;
-        output_folder;
-        detection_results_folder;
-        focusTrainingOrResults = 'results';
-        %focusTrainingOrResults = 'training';
-        currentCharName = 'unknown';
-        currentCharIdJavaString;
+        %input_folder;
+        %output_folder;
+        dataFocus = 'scoredImages';
+        %dataFocus = 'unscoredImages';
+        %dataFocus = 'training';
+        %currentCharName = 'unknown';
+        %currentCharIdJavaString;
         
-        inputFilesForCharacter;
-        inputFile;
+        %inputFilesForCharacter;
+        %inputFile;
         
-        trainingSamplesForCharacter;
-        trainingSampleIndex;
+        sessionData;
         
-        outputFileList;
+        %trainingSamplesList;
+        %scoredImageList;
+        %unscoredImageList;
+        %activeList;
         
-        detectionResultsFilesForCharacter;
-        detectionResultsFileList;
-        detectionResultsIndex;
+        %trainingSampleIndex;
+        %scoredImageIndex;
+        %unscoredImageIndex;
+        %activeListIndex;
+        
+        %outputFilesForCharacter;
+        %outputFile;
         imageControlTags = {};
         metadataControlTags = {};
     end
@@ -40,16 +46,18 @@ classdef ResultsReviewScreen < handle
         function reset(obj)
             obj.ssm = obj.session.scoredSetMetadata;
             obj.ssm.loadAll();
-            obj.keys = obj.ssm.getKeys();
-            obj.metadataKeyCount = obj.keys.size();
-            obj.metadataKeyIndex = obj.metadataKeyCount - 1;
-            obj.updateFolders();
+            %obj.keys = obj.ssm.getKeys();
+            %obj.metadataKeyCount = obj.keys.size();
+            %obj.metadataKeyIndex = obj.metadataKeyCount - 1;
+            %curKey = obj.keys.get(obj.metadataKeyIndex);
+            obj.sessionData = obj.ssm.getSessionResultsData(obj.session.morphobankBundle);
+            %obj.updateFolders();
         end
-        function setCurrentCharName(obj, charName)
-            obj.currentCharName = charName;
-            charNameJavaString = java.lang.String(obj.currentCharName);
-            obj.currentCharIdJavaString = obj.session.morphobankBundle.getCharacterIdForName(charNameJavaString);
-        end
+        %function setCurrentCharName(obj, charName)
+       %     obj.currentCharName = charName;
+       %     charNameJavaString = java.lang.String(obj.currentCharName);
+       %     obj.currentCharIdJavaString = obj.session.morphobankBundle.getCharacterIdForName(charNameJavaString);
+       % end
         function showResults(obj)
             
             obj.ui.deleteObsoleteControls();
@@ -68,13 +76,16 @@ classdef ResultsReviewScreen < handle
                                          'HorizontalAlignment', 'left');%'BackgroundColor', [0.1 1 0.1] ,...
                                      
             obj.ui.activeControlTags = { 'scoredSetPrompt' }
+            scoredImagesValue = 0;
+            unscoredImagesValue = 0;
+            trainingValue = 0; 
             
-            if strcmp(obj.focusTrainingOrResults,'results') == 1
-                resultsValue = 1;
-                trainingValue = 0;
+            if obj.sessionData.isFocusScoredImages()
+                scoredImagesValue = 1;
+            elseif obj.sessionData.isFocusUnscoredImages()
+                unscoredImagesValue = 1;
             else
-                resultsValue = 0;
-                trainingValue = 1;
+                trainingValue = 1; 
             end
             % create panel for training vs results showing
             buttonGroup = uibuttongroup('Visible','on',...
@@ -85,27 +96,39 @@ classdef ResultsReviewScreen < handle
                                         'Position',[0 0 1 1]);
             
             obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'buttonGroup' ];    
-            resultsRadio = uicontrol('Style','radiobutton',...
+            scoredImagesRadio = uicontrol('Style','radiobutton',...
                                      'visible', 'on',...
-                                     'String','show results' ,...
+                                     'String','scored' ,...
                                      'Background', 'white' ,...
                                      'Units', 'normalized',...
-                                     'Value',resultsValue,...
+                                     'Value',scoredImagesValue,...
                                      'Position',[0, 0, 0.3, 1.0],...
                                      'Parent',buttonGroup,...
                                      'FontName', obj.ui.fontname ,...
                                      'FontSize', obj.ui.fontsize ,...
-                                     'Tag', 'resultsRadio',...
+                                     'Tag', 'scoredImagesRadio',...
                                      'HandleVisibility', 'off');
-
+   
+            unscoredImagesRadio = uicontrol('Style','radiobutton',...
+                                     'visible', 'on',...
+                                     'String','unscored' ,...
+                                     'Background', 'white' ,...
+                                     'Units', 'normalized',...
+                                     'Value',unscoredImagesValue,...
+                                     'Position',[0.35, 0, 0.3, 1.0],...
+                                     'Parent',buttonGroup,...
+                                     'FontName', obj.ui.fontname ,...
+                                     'FontSize', obj.ui.fontsize ,...
+                                     'Tag', 'unscoredImagesRadio',...
+                                     'HandleVisibility', 'off');
             %obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'resultsRadio' ];
             trainingRadio = uicontrol('Style','radiobutton',...
                                      'visible', 'on',...
-                                     'String','show training examples' ,...
+                                     'String','training' ,...
                                      'Background', 'white' ,...
                                      'Units', 'normalized',...
                                      'Value',trainingValue,...
-                                     'Position',[0.45, 0, 0.6, 1.0],...
+                                     'Position',[0.7, 0, 0.3, 1.0],...
                                      'Parent',buttonGroup,...
                                      'FontName', obj.ui.fontname ,...
                                      'FontSize', obj.ui.fontsize ,...
@@ -168,13 +191,13 @@ classdef ResultsReviewScreen < handle
                                          'Tag','prevImage'); 
             set(prevImage, 'callback', {@obj.showPrevImage});
             obj.imageControlTags = { 'prevImage' };
-            backImageButtonNeeded = obj.isPrevImageButtonNeeded();
+            backImageButtonNeeded = obj.sessionData.canGoToPrevImage();
             if backImageButtonNeeded
                 set(prevImage,'Enable','on');
             end
             %
             %
-            positionInListString = obj.getPositionInList();
+            positionInListString = obj.sessionData.getPositionInListString();
             positionInList = uicontrol('style', 'text' ,...
                                          'String', positionInListString ,...
                                          'Units','normalized',...
@@ -198,7 +221,7 @@ classdef ResultsReviewScreen < handle
                                          'parent',obj.ui.imageNavigationPanel);   
             %
             %
-            imageContextString = obj.getImageContextString();
+            imageContextString = obj.sessionData.getImageContextString();
             imageContext = uicontrol('style', 'text' ,...
                                          'String', imageContextString ,...
                                          'Units','normalized',...
@@ -212,15 +235,14 @@ classdef ResultsReviewScreen < handle
             
             set(nextImage, 'callback', {@obj.showNextImage});
             obj.imageControlTags = [  obj.imageControlTags , 'nextImage' ];
-            nextImageButtonNeeded = obj.isNextImageButtonNeeded();
+            nextImageButtonNeeded = obj.sessionData.canGoToNextImage();
             if nextImageButtonNeeded
                 set(nextImage,'Enable','on');
             end
             obj.loadImage();
         end
         function loadMetadataWidgets(obj)
-            curKey = obj.keys.get(obj.metadataKeyIndex);
-            curMetadata = obj.ssm.getDisplayableDataForKey(curKey);
+            curMetadata = obj.ssm.getDisplayableData();
             obj.ui.deleteControls(obj.metadataControlTags);
             metadataContent = uicontrol('style', 'text' ,...
                                          'Parent',obj.ui.scoredSetMetadataPanel,...
@@ -236,13 +258,13 @@ classdef ResultsReviewScreen < handle
             obj.metadataControlTags = { 'metadataContent' };
             nextButtonNeeded = false;
             backButtonNeeded = false;
-            if obj.metadataKeyCount==1
+            if obj.ssm.getSetCount()==1
                 % no navigationButtons
             else
-                if obj.metadataKeyIndex > 0
+                if obj.ssm.backButtonNeeded()
                     backButtonNeeded = true;
                 end
-                if obj.metadataKeyIndex < obj.metadataKeyCount - 1
+                if obj.ssm.nextButtonNeeded()
                     nextButtonNeeded = true;
                 end
             end
@@ -266,7 +288,7 @@ classdef ResultsReviewScreen < handle
             end
             %
             %
-            runPositionInListString = obj.getRunPositionInList();
+            runPositionInListString = obj.ssm.getPositionInList();
             runPositionInList = uicontrol('style', 'text' ,...
                                          'String', runPositionInListString ,...
                                          'Units','normalized',...
@@ -295,144 +317,67 @@ classdef ResultsReviewScreen < handle
                 set(next,'Enable','on');
             end
         end
-        
-        function imageContextString = getImageContextString(obj)
-            trainingSample = obj.trainingSamplesForCharacter.get(obj.trainingSampleIndex);
-            characterName = char(trainingSample.getCharacterName());
-            characterStateName = char(trainingSample.getCharacterStateName());
-            imageContextString = sprintf('%s , %s',characterName, characterStateName);
-        end
             
-        function positionInList = getPositionInList(obj)
-            positionInList = sprintf('%d / %d',obj.trainingSampleIndex + 1,obj.trainingSamplesForCharacter.size());
-        end    
-        
-        function runPositionInList = getRunPositionInList(obj)
-            runPositionInList = sprintf('%d / %d',obj.metadataKeyIndex + 1, obj.metadataKeyCount);
-        end
-        function nextImageButtonNeeded = isNextImageButtonNeeded(obj)
-            nextImageButtonNeeded = false;
-            if (strcmp(obj.focusTrainingOrResults,'training'))
-                sampleCount = obj.trainingSamplesForCharacter.size();
-                fprintf('sampleCount %d index %d\n', sampleCount, obj.trainingSampleIndex);
-                if obj.trainingSampleIndex < sampleCount - 1
-                    nextImageButtonNeeded = true;
-                end
-            else
-                % results
-                detectionCount = obj.detectionResultsFileList.size();
-                fprintf('detectionCount %d index %d\n', detectionCount, obj.detectionResultsIndex);
-                4
-                if obj.detectionResultsIndex < detectionCount - 1
-                    nextImageButtonNeeded = true;
-                end
-            end
-        end
-        function prevImageButtonNeeded = isPrevImageButtonNeeded(obj)
-             prevImageButtonNeeded = false;
-            if (strcmp(obj.focusTrainingOrResults,'training'))
-                if obj.trainingSampleIndex > 0
-                    prevImageButtonNeeded = true;
-                end
-            else
-                % results
-                if obj.detectionResultsIndex > 0
-                    prevImageButtonNeeded = true;
-                end
-            end
-        end
-        function showNextImage(obj, hObject, eventData)
-            if strcmp(obj.focusTrainingOrResults,'training')
-                obj.trainingSampleIndex = obj.trainingSampleIndex + 1;
-                
-            else
-                obj.detectionResultsIndex = obj.detectionResultsIndex + 1;
-            end
+        function showNextImage(obj, hObject, eventData
+            obj.sessionData.goToNextImage();
             obj.loadImageWidgets();
         end
         function showPrevImage(obj, hObject, eventData)
-            if strcmp(obj.focusTrainingOrResults,'training')
-                obj.trainingSampleIndex = obj.trainingSampleIndex - 1;
-            else
-                obj.detectionResultsIndex = obj.detectionResultsIndex - 1;
-            end
+            obj.sessionData.goToPrevImage();
             obj.loadImageWidgets();
         end
         function loadImage(obj)
+            if not(obj.sessionData.canShowImage())
+                return;
+            end
             currentFigure = gcf;
             set(currentFigure, 'pointer', 'watch')
             drawnow;
             
             fprintf('loadImage\n');
-            if strcmp(obj.focusTrainingOrResults,'results') == 1
-                 %TBD
-                 junk = 3;
-            else
-                 % load "current" training example
-                 trainingSample = obj.trainingSamplesForCharacter.get(obj.trainingSampleIndex);
-                 mediaPath = char(trainingSample.getMediaPath());
-                  
-                 
-                 axesPanel = uipanel('Parent',obj.ui.imagePanel,...
-                                 'Tag','imagePanel' ,...
-                                 'position',[0,0,1,1]);
-                 axes1 = axes('Parent',axesPanel,...
-                                 'Color',[1,1,1],...
-                                 'FontName', obj.ui.fontname ,...
-                                 'FontSize', obj.ui.fontsize ,...
-                                 'Tag','trainingImage' ,...
-                                 'position',[0,0,1,1]);%[0.02,0.02,0.96,0.76]
-                 %obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'trainingImage' ];
-                 imshow(mediaPath);
-                 if trainingSample.hasAnnotationCoordinates()
-                     fprintf('drawingCoords\n');
-                     annotationCoordinates = trainingSample.getAnnotationCoordinates();
-                    point = annotationCoordinates.getPoints().get(0);
-                    x = point.getX();
-                    y = point.getY();
-                    hold on;
-                    plot(x,y,'r.','MarkerSize',8)
-                 end
-                 
-                 xlabel('foo');
-                 set(currentFigure, 'pointer', 'arrow')
+            
+            resultImage = obj.sessionData.getCurrentResultImage();
+            mediaPath = char(resultImage.getMediaPath());
+            
+            axesPanel = uipanel('Parent',obj.ui.imagePanel,...
+                             'Tag','imagePanel' ,...
+                             'position',[0,0,1,1]);
+            axes1 = axes('Parent',axesPanel,...
+                             'Color',[1,1,1],...
+                             'FontName', obj.ui.fontname ,...
+                             'FontSize', obj.ui.fontsize ,...
+                             'Tag','resultImage' ,...
+                             'position',[0,0,1,1]);%[0.02,0.02,0.96,0.76]
+            %obj.ui.activeControlTags = [ obj.ui.activeControlTags,
+            %'resultImage' ];
+            imshow(mediaPath);
+            if resultImage.hasAnnotationCoordinates()
+                 fprintf('drawingCoords\n');
+                 annotationCoordinates = resultImage.getAnnotationCoordinates();
+                 %FIXME need to draw multiple coords and lines if needed
+                 point = annotationCoordinates.getPoints().get(0);
+                 x = point.getX();
+                 y = point.getY();
+                 hold on;
+                 plot(x,y,'r.','MarkerSize',8)
              end
-        end    
-        function updateFolders(obj)
-            curKey = obj.keys.get(obj.metadataKeyIndex);
-            obj.input_folder = obj.ssm.getInputFolderForKey(curKey);
-            fprintf('input folder : %s', char(obj.input_folder));
-            obj.output_folder = obj.ssm.getOutputFolderForKey(curKey);
-            obj.detection_results_folder = obj.ssm.getDetectionResultsFolderForKey(curKey);
-            mb = obj.session.morphobankBundle;
-            bar = obj.input_folder;
-            foo = mb.getInputFilesForCharacter(obj.input_folder);
-            obj.inputFilesForCharacter = obj.session.morphobankBundle.getInputFilesForCharacter(obj.input_folder);
-            obj.detectionResultsFilesForCharacter = obj.session.morphobankBundle.getDetectionResultsFilesForCharacter(obj.detection_results_folder);
-            if strcmp(obj.currentCharName,'unknown') == 1
-                obj.currentCharIdJavaString = obj.ssm.getFocusCharIdForKey(curKey);
-                currentCharNameJavaString = obj.session.morphobankBundle.getCharacterNameForId(obj.currentCharIdJavaString);
-                obj.currentCharName = char(currentCharNameJavaString);
-            end
-            obj.inputFile = obj.inputFilesForCharacter.get(obj.currentCharIdJavaString);
-            obj.trainingSamplesForCharacter = obj.inputFile.getTrainingSamples();
-            obj.trainingSampleIndex = 0;
-            %uncoment below when have real output to show.
-            obj.detectionResultsFile = obj.detectionResultsFilesForCharacter.get(obj.currentCharIdJavaString);
-            obj.detectionResultsForCharacter = obj.detectionResultsFile.getDetectionResults();
-            LEFT OFF HERE
-            obj.detectionResultsIndex = 0;
-            %obj.outputFileList = obj.session.morphobankBundle.outputFiles.getOutputFiles(obj.output_folder);
-        end
+               
+             xlabel('foo');
+             set(currentFigure, 'pointer', 'arrow')
+        end  
         function showNextMetadata(obj, hObject, eventData)
-            obj.metadataKeyIndex = obj.metadataKeyIndex + 1;
-            obj.updateFolders();
+            %obj.metadataKeyIndex = obj.metadataKeyIndex + 1;
+            %obj.updateFolders
+            obj.ssm.goToNextSession();
+            obj.sessionData = obj.ssm.getSessionResultsData(obj.session.morphobankBundle);
             obj.loadMetadataWidgets();
             obj.loadImageWidgets();
         end
         function showPreviousMetadata(obj, hObject, eventData)
-            obj.metadataKeyIndex = obj.metadataKeyIndex - 1;
-            obj.updateFolders();
+            %obj.metadataKeyIndex = obj.metadataKeyIndex - 1;
+            %obj.updateFolders();
+            obj.ssm.goToPrevSession();
+            obj.sessionData = obj.ssm.getSessionResultsData(obj.session.morphobankBundle);
             obj.loadMetadataWidgets();
             obj.loadImageWidgets();
         end
