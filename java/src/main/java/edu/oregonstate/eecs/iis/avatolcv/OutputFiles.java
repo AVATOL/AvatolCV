@@ -22,7 +22,7 @@ public class OutputFiles {
 		File[] files = f.listFiles();
 		for (File file : files){
 			if (file.getName().startsWith("sorted_output")){
-				OutputFile of = new OutputFile(path,this.bundleDir);
+				OutputFile of = new OutputFile(file.getAbsolutePath(),this.bundleDir);
 				String charId = of.getCharId();
 				outputFilesForCharacter.put(charId, of);
 			}

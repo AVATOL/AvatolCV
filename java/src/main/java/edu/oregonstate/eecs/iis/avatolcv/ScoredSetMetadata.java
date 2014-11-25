@@ -96,9 +96,31 @@ public class ScoredSetMetadata {
     	
     }
     public String getPath(String matrixName, String alg){
-    	String filename = (System.currentTimeMillis() / 1000L) + alg + ".txt";
+    	String filename = (System.currentTimeMillis() / 1000L) + "_" + alg + "_" + matrixName +".txt";
     	String path = this.metadataDir + SEP + filename;
     	return path;
+    }
+    public String getMatrixNameFromKey(String key){
+    	String[] keyParts = key.split("_");
+		String matrixName = keyParts[2];
+		return matrixName;
+    }
+
+    public String getAlgNameFromKey(String key){
+    	String[] keyParts = key.split("_");
+		String algName = keyParts[1];
+		return algName;
+    }
+    public boolean hasSessionData(){
+    	File f = new File(this.metadataDir);
+    	File[] files = f.listFiles();
+    	for (File file : files){
+        	System.out.println("FILE : " + file.getAbsolutePath());
+    		if (file.getName().endsWith(".txt")){
+    			return true;
+    		}
+    	}
+    	return false;
     }
     public void loadAll() throws AvatolCVException {
     	File f = new File(this.metadataDir);
@@ -126,7 +148,7 @@ public class ScoredSetMetadata {
     	selectMostRecentRun(); 
     }
     public void selectMostRecentRun(){
-    	this.currentKeyIndex = this.keyList.size() - 2;
+    	this.currentKeyIndex = this.keyList.size() - 1;
     }
     public List<String> getKeys(){
     	List<String> keysList = new ArrayList<String>();

@@ -9,6 +9,8 @@ public class SessionData {
 		images_scored,
 		images_not_scored
 	}
+	
+	//Need a vector of in-order taxa names, and a map for finding the result image
 	private List<ResultImage> trainingImages = null;
 	private List<ResultImage> scoredImages = null;
 	private List<ResultImage> unscoredImages = null;
@@ -155,6 +157,39 @@ public class SessionData {
 			context = ri.getCharacterName() + characterStateName;
 		}
 		return context;
+	}
+	public int getResultImageIndex(List<ResultImage> images, String taxonId, String charId){
+		for (int i = 0; i < images.size(); i++){
+			ResultImage ri = images.get(i);
+			if (ri.getTaxonId().equals(taxonId) && ri.getCharacterId().equals(charId)){
+				return i;
+			}
+		}
+		return -1;
+	}
+	public ResultImage shiftToResultImage(String charId, String taxonId) throws AvatolCVException {
+		int index = getResultImageIndex(this.scoredImages, taxonId, charId);
+		if (!(index == -1)){
+			// its a scoredImage
+			setFocusAsScored();
+			this.scoredIndex = index;
+			return this.scoredImages.get(index);
+		}
+		index = getResultImageIndex(this.unscoredImages, taxonId, charId);
+		if (!(index == -1)){
+			// its an unscoredImage
+			setFocusAsUnscored();
+			this.unscoredIndex = index;
+			return this.unscoredImages.get(index);
+		}
+		index = getResultImageIndex(this.trainingImages, taxonId, charId);
+		if (!(index == -1)){
+			// its training
+			setFocusAsTraining();
+			this.trainingIndex = index;
+			return this.trainingImages.get(index);
+		}
+		throw new AvatolCVException("no resultImage for charId " + charId + " taxonId " + taxonId + " in current session data");
 	}
 }
 

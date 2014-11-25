@@ -34,6 +34,29 @@ public class Matrix {
     		//System.out.println("column count for row " + taxonId + " is " + row.getColumnCount());
     	}
     }
+    public List<MatrixRow> getRows(){
+    	List<MatrixRow> rows = new ArrayList<MatrixRow>();
+    	for (String taxonId : rowIds){
+    		rows.add(matrixRowForTaxonMap.get(taxonId));
+    	}
+    	return rows;
+    }
+    public List<String> getScoredCharacterIds(){
+    	List<String> scoredCharacters = new ArrayList<String>();
+    	for (String taxonId : rowIds){
+    		MatrixRow row = matrixRowForTaxonMap.get(taxonId);
+    		for (String charId : charIds){
+
+        		MatrixCell cell = row.getCellForCharacter(charId);
+        		if (cell.isScored()){
+        			if (!scoredCharacters.contains(charId)){
+        				scoredCharacters.add(charId);
+        			}
+        		}
+    		}
+    	}
+    	return scoredCharacters;
+    }
     public String getTaxonNameForId(String taxonId) throws AvatolCVException {
     	String taxonName = taxonNameForId.get(taxonId);
     	if (null == taxonName){

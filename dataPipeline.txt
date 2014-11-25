@@ -164,7 +164,7 @@ For DPM, information passed in is
                 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-PHASE 3 - recieving information from algorithms
+PHASE 3 - receiving information from algorithms
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Avatol system expects that the specified detection_results folder will be populated with files identical to the form

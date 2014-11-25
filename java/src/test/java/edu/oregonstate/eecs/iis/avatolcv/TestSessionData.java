@@ -305,7 +305,7 @@ public class TestSessionData {
 	        Assert.assertEquals(sd.getCurrentListSize(), 0);
 	        Assert.assertFalse(sd.canShowImage());
 	        
-	        // navigate unscored forward
+	        // no unscored 
 	        Assert.assertEquals(sd.getCurrentListIndex(), 0);
 	        Assert.assertEquals(sd.getPositionInListString(),"");
 	        Assert.assertEquals(sd.getImageContextString(),"");

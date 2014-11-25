@@ -32,6 +32,7 @@ classdef Session < handle
             import edu.oregonstate.eecs.iis.avatolcv.mb.* ;
             obj.avatolSystem = avatolSystem;
             obj.rootDir = rootDir;
+            obj.scoredSetMetadata = ScoredSetMetadata(rootDir);
             obj.ui = UI();
             obj.welcomeScreen = WelcomeScreen(obj.ui, obj);
             obj.questionnaireScreens = QuestionnaireScreens(obj.ui, obj);
@@ -47,7 +48,6 @@ classdef Session < handle
             obj.chosenMatrix = obj.morphobankData.getMatrixNameAtIndex(obj.matrixChoiceIndex);
             fprintf('chosen Matrix %s', char(obj.chosenMatrix));
             obj.welcomeScreen.displayWelcomeScreen();
-            obj.scoredSetMetadata = ScoredSetMetadata(rootDir);
         end
             
     
@@ -102,15 +102,10 @@ classdef Session < handle
             end
         end
         function showResultsForCurrentCharacter(obj)
-            charName = obj.characterChoiceScreen.characterName;
             obj.resultsReviewScreen.reset();
-            %obj.resultsReviewScreen.setCurrentCharName(charName);
             obj.resultsReviewScreen.showResults();
         end
         function jumpToResultsReview(obj)
-            % HACK hardcode BAT for demo - later, put matrix choice list on
-            % resultsreview page.
-            obj.matrixChoiceScreen.registerMatrixChoice('BAT');
             obj.resultsReviewScreen.reset();
             obj.resultsReviewScreen.showResults();
         end

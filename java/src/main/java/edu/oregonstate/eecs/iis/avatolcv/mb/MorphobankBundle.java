@@ -218,4 +218,7 @@ public class MorphobankBundle {
     	OutputFiles outputFiles = new OutputFiles(path, this.dirName);
     	return outputFiles.getOutputFilesForCharacter();
     }
+    public MorphobankSDDFile getSDDFile(){
+    	return this.sddFile;
+    }
 }

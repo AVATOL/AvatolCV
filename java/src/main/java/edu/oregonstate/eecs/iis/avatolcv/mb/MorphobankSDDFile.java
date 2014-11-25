@@ -32,9 +32,10 @@ public class MorphobankSDDFile {
 	private Hashtable<String,String> viewNamesForId = new Hashtable<String, String>();
 	private Hashtable<String,String> viewIdsForName = new Hashtable<String, String>();
 	private Hashtable<String,String> viewsForImage = new Hashtable<String,String>();
-	
+	private SPRTaxonIdMapper mapper = null;
 	private Document document = null;
     public MorphobankSDDFile(String pathname, SPRTaxonIdMapper mapper, Media media) throws MorphobankDataException {
+    	this.mapper = mapper;
     	this.media = media;
     	this.pathname = pathname;
     	this.document = getDocumentFromPathname(pathname);
@@ -48,6 +49,9 @@ public class MorphobankSDDFile {
     	this.characters = new Characters(this.document);
     	loadViewsForImage(this.document);
     	loadViewsForDocument(this.document);
+    }
+    public SPRTaxonIdMapper getTaxonIdMapper(){
+    	return this.mapper;
     }
     public String getTaxonNameForId(String taxonId) throws AvatolCVException {
     	return this.matrix.getTaxonNameForId(taxonId);

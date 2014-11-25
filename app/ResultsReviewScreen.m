@@ -46,6 +46,8 @@ classdef ResultsReviewScreen < handle
         function reset(obj)
             obj.ssm = obj.session.scoredSetMetadata;
             obj.ssm.loadAll();
+            matrixOfMostRecentRun = char(obj.ssm.getMatrixNameFromKey(obj.ssm.getCurrentKey()));
+            obj.session.matrixChoiceScreen.registerMatrixChoice(matrixOfMostRecentRun);
             %obj.keys = obj.ssm.getKeys();
             %obj.metadataKeyCount = obj.keys.size();
             %obj.metadataKeyIndex = obj.metadataKeyCount - 1;
@@ -318,7 +320,7 @@ classdef ResultsReviewScreen < handle
             end
         end
             
-        function showNextImage(obj, hObject, eventData
+        function showNextImage(obj, hObject, eventData)
             obj.sessionData.goToNextImage();
             obj.loadImageWidgets();
         end
