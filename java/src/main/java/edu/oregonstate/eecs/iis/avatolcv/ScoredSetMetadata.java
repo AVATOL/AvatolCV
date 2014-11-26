@@ -160,7 +160,7 @@ public class ScoredSetMetadata {
     	Collections.sort(keysList);
     	//Collections.reverse(keysList);
     	for (String key : keysList){
-    		System.out.println(key);
+    		System.out.println("key found is " + key);
     	}
     	return keysList;
     }
@@ -203,7 +203,7 @@ public class ScoredSetMetadata {
     	}
     	return result;
     }
-    public String getDisplayableDataForKey(){
+    public String getDisplayableData(){
     	String key = this.keyList.get(this.currentKeyIndex);
     	String result = "";
     	String info =  this.allData.get(key);
@@ -244,6 +244,7 @@ public class ScoredSetMetadata {
     	String input_folder = getInputFolderForKey(key);
     	System.out.println("input folder : " + input_folder);
     	String output_folder = getOutputFolderForKey(key);
+    	System.out.println("output folder : " + output_folder);
 
     	Hashtable<String,InputFile> inputFilesForCharacter = mb.getInputFilesForCharacter(input_folder);
     	Hashtable<String,OutputFile> outputFilesForCharacter = mb.getOutputFilesForCharacter(output_folder);
@@ -252,10 +253,13 @@ public class ScoredSetMetadata {
     	String currentCharId = getFocusCharIdForKey(key);
         String currentCharName = mb.getCharacterNameForId(currentCharId);
       
-
+        System.out.println("....char name for Id : " + currentCharName);
         InputFile inputFile = inputFilesForCharacter.get(currentCharId);
+        System.out.println("....inputFile : " + inputFile);
+        
         List<ResultImage> trainingSamples = (List<ResultImage>)inputFile.getTrainingSamples();
 
+        
         OutputFile outputFile = outputFilesForCharacter.get(currentCharId);
         List<ResultImage> scoredImages = outputFile.getScoredImages();
         List<ResultImage> unscoredImages = outputFile.getUnscoredImages();

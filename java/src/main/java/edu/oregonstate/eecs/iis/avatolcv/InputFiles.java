@@ -370,7 +370,7 @@ public class InputFiles {
     	File[] files = f.listFiles();
     	for (int i = 0; i < files.length; i++){
     		File curFile = files[i];
-    		if (curFile.getName().startsWith("input")){
+    		if (curFile.getName().startsWith(DataIOFile.SORTED_INPUT_DATA_PREFIX)){
     			// treat it as a valid input file
     			InputFile inputFile = new InputFile(curFile.getAbsolutePath(), this.bundleDir);
     			String charId = inputFile.getCharId();

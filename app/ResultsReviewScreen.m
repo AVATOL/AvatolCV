@@ -124,7 +124,7 @@ classdef ResultsReviewScreen < handle
                                      'Tag', 'unscoredImagesRadio',...
                                      'HandleVisibility', 'off');
             %obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'resultsRadio' ];
-            trainingRadio = uicontrol('Style','radiobutton',...
+            trainingImagesRadio = uicontrol('Style','radiobutton',...
                                      'visible', 'on',...
                                      'String','training' ,...
                                      'Background', 'white' ,...
@@ -134,10 +134,10 @@ classdef ResultsReviewScreen < handle
                                      'Parent',buttonGroup,...
                                      'FontName', obj.ui.fontname ,...
                                      'FontSize', obj.ui.fontsize ,...
-                                     'Tag', 'trainingRadio',...
+                                     'Tag', 'trainingImagesRadio',...
                                      'HandleVisibility', 'off');
 
-            %obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'trainingRadio' ];
+            %obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'trainingImagesRadio' ];
             % create panel for images//
 		
             
@@ -174,9 +174,23 @@ classdef ResultsReviewScreen < handle
 
             set(exit, 'callback', {@obj.exit});
             set(doAnotherCharacter, 'callback', {@obj.doAnotherCharacter});
+            set(scoredImagesRadio, 'callback', {@obj.setFocusToScored});
+            set(unscoredImagesRadio, 'callback', {@obj.setFocusToUnscored});
+            set(trainingImagesRadio, 'callback', {@obj.setFocusToTraining});
             obj.session.mostRecentScreen = 'RESULTS_REVIEW_SCREEN'; 
         end
-        
+        function setFocusToUnscored(obj, hObject, eventData)
+            obj.sessionData.setFocusAsUnscored();
+            obj.showResults();
+        end
+        function setFocusToScored(obj, hObject, eventData)
+            obj.sessionData.setFocusAsScored();
+            obj.showResults();
+        end
+        function setFocusToTraining(obj, hObject, eventData)
+            obj.sessionData.setFocusAsTraining();
+            obj.showResults();
+        end
         function loadImageWidgets(obj)
             fprintf('loadImageWidgets\n');
             obj.ui.deleteControls(obj.imageControlTags);
@@ -199,7 +213,7 @@ classdef ResultsReviewScreen < handle
             end
             %
             %
-            positionInListString = obj.sessionData.getPositionInListString();
+            positionInListString = char(obj.sessionData.getPositionInListString());
             positionInList = uicontrol('style', 'text' ,...
                                          'String', positionInListString ,...
                                          'Units','normalized',...
@@ -223,7 +237,7 @@ classdef ResultsReviewScreen < handle
                                          'parent',obj.ui.imageNavigationPanel);   
             %
             %
-            imageContextString = obj.sessionData.getImageContextString();
+            imageContextString = char(obj.sessionData.getImageContextString());
             imageContext = uicontrol('style', 'text' ,...
                                          'String', imageContextString ,...
                                          'Units','normalized',...
@@ -290,7 +304,7 @@ classdef ResultsReviewScreen < handle
             end
             %
             %
-            runPositionInListString = obj.ssm.getPositionInList();
+            runPositionInListString = char(obj.ssm.getPositionInList());
             runPositionInList = uicontrol('style', 'text' ,...
                                          'String', runPositionInListString ,...
                                          'Units','normalized',...
