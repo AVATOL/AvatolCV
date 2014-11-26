@@ -46,11 +46,12 @@ point   : x1,y1
 box     : x1,y1;x2,y2
 polygon : x1,y1;x2,y2;x3,y3...
         
+... where x and y coordinates represent a point in the image using percent width and percent height, origin is upper left. So, a point in the center top of an image would have coordinates 50.0, 0.0
 
 for example, in c427749_m328533.txt:
 
-       4588,1822:c427749:Upper I1 presence:s946108:I1 present
-       4589,2004:c427749:Upper I1 presence:s946108:I1 present
+       33.2,43.678:c427749:Upper I1 presence:s946108:I1 present
+       50.6,60.50:c427749:Upper I1 presence:s946108:I1 present
 
 
 
