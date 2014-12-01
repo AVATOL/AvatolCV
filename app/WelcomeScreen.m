@@ -53,9 +53,7 @@ classdef WelcomeScreen < handle
                                          'FontSize', obj.ui.fontsize ,...
                                          'Tag','skipToQuestionnaire' ,...
                                          'BackgroundColor', [0.5 0.5 0.5]);  
-
-            if (obj.session.scoredSetMetadata.hasSessionData())
-                skipToResultsReview = uicontrol('style', 'pushbutton' ,...
+            skipToResultsReview = uicontrol('style', 'pushbutton' ,...
                                          'String', 'Skip to Results Review' ,...
                                          'Parent',obj.ui.navigationPanel,...
                                          'Units','normalized',...
@@ -65,9 +63,13 @@ classdef WelcomeScreen < handle
                                          'Tag','skipToResultsReview' ,...
                                          'BackgroundColor', [0.5 0.5 0.5]);  
 
-                obj.ui.activeControlTags = { 'tutorialText', 'beginTutorial', 'skipToQuestionnaire', 'skipToResultsReview' };   
-            else 
-                obj.ui.activeControlTags = { 'tutorialText', 'beginTutorial', 'skipToQuestionnaire' };
+            obj.ui.activeControlTags = { 'tutorialText', 'beginTutorial', 'skipToQuestionnaire', 'skipToResultsReview' };   
+            if (obj.session.scoredSetMetadata.hasSessionData())
+                set(skipToResultsReview, 'Enable', 'on');
+            else
+                set(skipToResultsReview, 'Enable', 'inactive');
+                set(skipToResultsReview, 'BackgroundColor', [0.8 0.8 0.8]);
+                set(skipToResultsReview, 'ForegroundColor', [0.6 0.6 0.6]);
             end
             
             obj.session.activeScreen = 'WelcomeScreen';
