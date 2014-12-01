@@ -63,7 +63,7 @@ public class SummaryFile {
     	}
     }
 
-    public void filter(List<String> charIds, String taxonId, String viewId, String newInputDir) throws AvatolCVException {
+    public void filter(List<String> charIds, String viewId, String newInputDir) throws AvatolCVException {
     	List<String> filteredList = new ArrayList<String>();
     	String path = newInputDir + FILESEP + SUMMARY_FILENAME;
     	File f = new File(path);
@@ -81,22 +81,19 @@ public class SummaryFile {
         		}
         		else if (parts[0].equals(MEDIA_PREFIX)){
         			String mediaId = parts[1];
-        			if (this.sddFile.isMediaOfView(mediaId, viewId) && this.sddFile.isMediaOfTaxon(mediaId,taxonId)){
+        			if (this.sddFile.isMediaOfView(mediaId, viewId)){
         				filteredList.add(entry);
         			}
         		}
-        		else if (parts[0].equals(TAXON_PREFIX)){
-        			if (parts[1].equals(taxonId)){
-        				filteredList.add(entry);
-        			}
-        		}
+     
         		else if (parts[0].equals(VIEW_PREFIX)){
         			if (parts[1].equals(viewId)){
         				filteredList.add(entry);
         			}
         		}
         		else {
-        			// ignore
+        			// just pass it through
+        			filteredList.add(entry);
         		}
         	}
 

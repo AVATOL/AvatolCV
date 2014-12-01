@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.Point;
+import edu.oregonstate.eecs.iis.avatolcv.PointAsPercent;
 
 public class AnnotationCoordinates {
 	public enum AnnotationType {
@@ -11,7 +12,7 @@ public class AnnotationCoordinates {
 		BOX,
 		POLYGON
 	}
-	private List<Point> annotationPoints = new ArrayList<Point>();
+	private List<PointAsPercent> annotationPoints = new ArrayList<PointAsPercent>();
     public AnnotationCoordinates(String coordString){
     	String[] parts = coordString.split(";");
     	for (int i = 0; i < parts.length; i++){
@@ -19,14 +20,14 @@ public class AnnotationCoordinates {
     		String[] pairParts = pair.split(",");
     		String x = pairParts[0];
     		String y = pairParts[1];
-    		int xInt = new Integer(x).intValue();
-    		int yInt = new Integer(y).intValue();
-    		Point p = new Point(xInt, yInt);
+    		double xDouble = new Double(x).doubleValue();
+    		double yDouble = new Double(y).doubleValue();
+    		PointAsPercent p = new PointAsPercent(xDouble, yDouble);
     		annotationPoints.add(p);
     	}
     }
-    public List<Point> getPoints(){
-    	ArrayList<Point> result = new ArrayList<Point>();
+    public List<PointAsPercent> getPoints(){
+    	ArrayList<PointAsPercent> result = new ArrayList<PointAsPercent>();
     	result.addAll(this.annotationPoints);
     	return result;
     }

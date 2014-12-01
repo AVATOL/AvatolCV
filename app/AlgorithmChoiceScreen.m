@@ -92,9 +92,10 @@ classdef AlgorithmChoiceScreen < handle
                     charId = mb.getCharacterIdForName(charName);
                     charIdStringList.add(charId);
                 end
-                
-                mb.filterInputs(charIdStringList, taxonId, viewId, algIdString);
-                
+                taxonNames = obj.session.javaStringListToMatlabCharList(obj.session.morphobankBundle.getScorableTaxonNames());
+                loop here
+                    mb.filterInputs(charIdStringList, taxonId, viewId, algIdString);
+                ...but how will I give Shell input and output folders for all?  LEFT OFF HERE
                 inputFolderJavaString = mb.getFilteredInputDirName(charIdStringList, taxonId, viewId, algIdString);
                 outputFolderJavaString = mb.getFilteredOutputDirName(charIdStringList, taxonId, viewId, algIdString);
                 detectionResultsFolderJavaString = mb.getFilteredDetectionResultsDirName(charIdStringList, taxonId, viewId, algIdString);
@@ -120,9 +121,9 @@ classdef AlgorithmChoiceScreen < handle
 
         function chooseAlgorithm(obj)
             if (true)
-                obj.message = 'CRF algorithm has been chosen for scoring.  Press Run Algorithm to begin.';
+                obj.message = 'DPM algorithm has been chosen for scoring.  Press Run Algorithm to begin.';
                 obj.showRunAlgorithmButton = true;
-                obj.algorithmChosen = 'CRF';
+                obj.algorithmChosen = 'DPM';
             else
                 qs = obj.session.questionnaireScreens.questionSequencer;
                 aq = qs.answeredQuestions;

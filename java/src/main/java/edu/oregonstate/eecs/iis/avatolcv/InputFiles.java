@@ -308,7 +308,7 @@ public class InputFiles {
 			}
 			else {
 				// it's for scoring
-				System.out.println("cell to score has state : " + cell.getState());
+				//System.out.println("cell to score has state : " + cell.getState());
 				cellsToScore.add(cell);
 			}
 		}
@@ -340,10 +340,10 @@ public class InputFiles {
     	}
     	return ""+sb;
     }
-    public String getFilteredDirname(List<String> charIds, String taxonId, String viewId, String algId, String target){
+    public String getFilteredDirname(List<String> charIds, String viewId, String algId, String target){
     	String algDirname = this.bundleDir + FILESEP + target + FILESEP + algId;
     	String charIdsDirname = getDirnameFromCharIds(charIds);
-    	String newDir = algDirname + FILESEP + taxonId + FILESEP + charIdsDirname + FILESEP + viewId;
+    	String newDir = algDirname + FILESEP + charIdsDirname + FILESEP + viewId;
     	return newDir;
     }
     public void cleanDir(String path){
@@ -383,16 +383,16 @@ public class InputFiles {
     /*
      * make a dir name by cat'ing the char_ids that are valid simple, then subdir named for viewId, then can clean before filling
      */
-    public void filterInputs(List<String> charIds, String taxonId, String viewId, String algId) throws AvatolCVException {
+    public void filterInputs(List<String> charIds,String viewId, String algId) throws AvatolCVException {
     	
-    	String newInputDir = getFilteredDirname(charIds, taxonId, viewId, algId, DataIOFile.INPUT_DIRNAME);
+    	String newInputDir = getFilteredDirname(charIds, viewId, algId, DataIOFile.INPUT_DIRNAME);
 
-    	String newOutputDir = getFilteredDirname(charIds, taxonId, viewId, algId, DataIOFile.OUTPUT_DIRNAME);
-    	String detectionResultDir = getFilteredDirname(charIds, taxonId, viewId, algId, DataIOFile.DETECTION_RESULTS_DIRNAME);
+    	String newOutputDir = getFilteredDirname(charIds, viewId, algId, DataIOFile.OUTPUT_DIRNAME);
+    	String detectionResultDir = getFilteredDirname(charIds, viewId, algId, DataIOFile.DETECTION_RESULTS_DIRNAME);
     	cleanDir(newInputDir);
     	cleanDir(newOutputDir);
     	cleanDir(detectionResultDir);
-    	this.summaryFile.filter(charIds, taxonId, viewId, newInputDir);
+    	this.summaryFile.filter(charIds, viewId, newInputDir);
     	try {
     		for (String charId : charIds){
         		String pathOfCharacterInputFile = getPathOfCharacterInputFile(charId);
@@ -404,17 +404,13 @@ public class InputFiles {
         		String line = null;
         		while ((line = reader.readLine()) != null){
         			if (line.startsWith(DataIOFile.TRAINING_DATA_MARKER)){
-        				if (isTrainingDataMediaOfTaxon(line, taxonId)){
-        					if (isTrainingDataMediaOfView(line, viewId)){
-            					writer.write(line + NL);
-            				}
+    					if (isTrainingDataMediaOfView(line, viewId)){
+        					writer.write(line + NL);
         				}
         			}
         			else if (line.startsWith(DataIOFile.IMAGE_TO_SCORE_MARKER)){
-        				if (isImageToScoreMediaOfTaxon(line, taxonId)){
-        					if (isImageToScoreMediaOfView(line, viewId)){
-            					writer.write(line + NL);
-            				}
+        				if (isImageToScoreMediaOfView(line, viewId)){
+        					writer.write(line + NL);
         				}
         			}
         		}

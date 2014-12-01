@@ -23,8 +23,10 @@ public class MatrixAssessor {
 		try {
 		    MorphobankData md = new MorphobankData("C:\\avatol\\git\\avatol_cv\\matrix_downloads");
 		    //md.loadMatrix("BOGUS");
-		    md.loadMatrix("BAT");
-		    MorphobankBundle mb = md.getBundle("BAT");
+		    //md.loadMatrix("BAT");
+		    //MorphobankBundle mb = md.getBundle("BAT");
+		    md.loadMatrix("NEMATOCYST");
+		    MorphobankBundle mb = md.getBundle("NEMATOCYST");
 		    MorphobankSDDFile sdd = mb.getSDDFile();
 		    Matrix matrix = sdd.getMatrix();
 		    List<String> scoredCharacters = matrix.getScoredCharacterIds();

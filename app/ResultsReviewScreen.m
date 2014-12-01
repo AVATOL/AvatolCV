@@ -366,14 +366,17 @@ classdef ResultsReviewScreen < handle
                              'position',[0,0,1,1]);%[0.02,0.02,0.96,0.76]
             %obj.ui.activeControlTags = [ obj.ui.activeControlTags,
             %'resultImage' ];
+            image = imread(mediaPath);
+            [imageHeight, imageWidth, imageDim] = size(image);
             imshow(mediaPath);
             if resultImage.hasAnnotationCoordinates()
                  fprintf('drawingCoords\n');
                  annotationCoordinates = resultImage.getAnnotationCoordinates();
                  %FIXME need to draw multiple coords and lines if needed
-                 point = annotationCoordinates.getPoints().get(0);
-                 x = point.getX();
-                 y = point.getY();
+                 
+                 pointAsPercent = annotationCoordinates.getPoints().get(0);
+                 x = pointAsPercent.getXPixel(imageWidth);
+                 y = pointAsPercent.getYPixel(imageHeight);
                  hold on;
                  plot(x,y,'r.','MarkerSize',8)
              end

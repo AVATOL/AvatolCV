@@ -181,7 +181,8 @@ public class TestMatrix {
 		    charIds.add("c427753");
 		    charIds.add("c427754");
 		    charIds.add("c427760");
-		    bundle.filterInputs(charIds, "t281048", "v3540", "DPM");
+		    charIds.add("c427751");
+		    bundle.filterInputs(charIds, "v3540", "DPM");
 		}
 		catch(Exception ex){
 			ex.printStackTrace();

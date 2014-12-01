@@ -7,6 +7,7 @@ import edu.oregonstate.eecs.iis.avatolcv.DataIOFile;
 
 public class Annotation {
 	public static final String FILESEP = System.getProperty("file.separator");
+	public static final String ANNOTATION_FILE_DELIM = ":";
 	public static final String ANNOTATION_DELIM = "|";
 	public static final String ANNOTATION_DELIM_ESCAPED_FOR_USE_WITH_SPLIT = "\\|";
     private String coordinateList;
@@ -19,8 +20,8 @@ public class Annotation {
     private String mediaId;
     private String pathname;
     public Annotation(String info, int lineNumber, String mediaId, String pathname){
-    	String[] parts = info.split(":");
-    	System.out.println("annotation info: " + info);
+    	String[] parts = info.split(ANNOTATION_FILE_DELIM);
+    	//System.out.println("annotation info: " + info);
         
         this.coordinateList = parts[0];
         this.type = deriveType(this.coordinateList);

@@ -25,7 +25,7 @@ public class SPRMatrix extends Matrix {
 	        String pureTaxonName = taxonIdMapper.getPureTaxonNameForName(taxonName);
 	        this.taxonNameForId.put(actualTaxonId, pureTaxonName);
 	        this.taxonIdForName.put(pureTaxonName, actualTaxonId);
-	        System.out.println("mapped rowId " + actualTaxonId + " to pureTaxonName " + pureTaxonName);
+	        //System.out.println("mapped rowId " + actualTaxonId + " to pureTaxonName " + pureTaxonName);
 	    	List<String> mediaIds = row.getAllMediaIds();
 	    	for (String mediaId : mediaIds){
 	    		

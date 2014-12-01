@@ -126,22 +126,25 @@ public class ScoredSetMetadata {
     	File f = new File(this.metadataDir);
     	File[] files = f.listFiles();
     	for (File mdFile : files){
-    		String[] parts =  mdFile.getName().split("\\.");
-    		String fileRoot = parts[0];
-    		String path = mdFile.getAbsolutePath();
-    		StringBuilder sb = new StringBuilder();
-    		try {
-    			BufferedReader reader = new BufferedReader(new FileReader(path));
-    			String line = null;
-    			while (null != (line = reader.readLine())){
-    				sb.append(line + NL);
-    			}
-    			reader.close();
-    			this.allData.put(fileRoot, sb.toString());
-    		}
-    		catch(IOException ioe){
-    			ioe.printStackTrace();
-    			throw new AvatolCVException(ioe.getMessage());
+    		System.out.println("session name " + mdFile.getName());
+    		if (mdFile.getName().endsWith(".txt")){
+    			String[] parts =  mdFile.getName().split("\\.");
+        		String fileRoot = parts[0];
+        		String path = mdFile.getAbsolutePath();
+        		StringBuilder sb = new StringBuilder();
+        		try {
+        			BufferedReader reader = new BufferedReader(new FileReader(path));
+        			String line = null;
+        			while (null != (line = reader.readLine())){
+        				sb.append(line + NL);
+        			}
+        			reader.close();
+        			this.allData.put(fileRoot, sb.toString());
+        		}
+        		catch(IOException ioe){
+        			ioe.printStackTrace();
+        			throw new AvatolCVException(ioe.getMessage());
+        		}
     		}
     	}
     	this.keyList = getKeys();

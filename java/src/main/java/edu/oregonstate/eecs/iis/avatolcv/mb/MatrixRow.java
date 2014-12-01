@@ -52,7 +52,7 @@ public class MatrixRow {
     			// do nothing for now
     		}
     	}
-    	System.out.println("LOADING MATRIX ROW FOR " + this.taxonId);
+    	//System.out.println("LOADING MATRIX ROW FOR " + this.taxonId);
     	// now we load up the MatrixCells and report unknown node names
     	for (int i =0; i < nodes.getLength(); i++){
     		Node node = nodes.item(i);

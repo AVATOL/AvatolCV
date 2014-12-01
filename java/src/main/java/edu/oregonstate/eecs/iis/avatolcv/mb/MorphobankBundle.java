@@ -182,19 +182,19 @@ public class MorphobankBundle {
         }
         return path;
     }
-    public void filterInputs(List<String> charIds, String taxonId, String viewId, String algId) throws AvatolCVException {
-    	this.inputFiles.filterInputs(charIds, taxonId, viewId, algId);
+    public void filterInputs(List<String> charIds, String viewId, String algId) throws AvatolCVException {
+    	this.inputFiles.filterInputs(charIds, viewId, algId);
     }
-    public String getFilteredInputDirName(List<String> charIds, String taxonId, String viewId, String algId){
-    	return this.inputFiles.getFilteredDirname(charIds, taxonId, viewId, algId, DataIOFile.INPUT_DIRNAME);
-    }
-
-    public String getFilteredOutputDirName(List<String> charIds, String taxonId, String viewId, String algId){
-    	return this.inputFiles.getFilteredDirname(charIds, taxonId, viewId, algId, DataIOFile.OUTPUT_DIRNAME);
+    public String getFilteredInputDirName(List<String> charIds, String viewId, String algId){
+    	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, DataIOFile.INPUT_DIRNAME);
     }
 
-    public String getFilteredDetectionResultsDirName(List<String> charIds, String taxonId, String viewId, String algId){
-    	return this.inputFiles.getFilteredDirname(charIds, taxonId, viewId, algId, DataIOFile.DETECTION_RESULTS_DIRNAME);
+    public String getFilteredOutputDirName(List<String> charIds, String viewId, String algId){
+    	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, DataIOFile.OUTPUT_DIRNAME);
+    }
+
+    public String getFilteredDetectionResultsDirName(List<String> charIds, String viewId, String algId){
+    	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, DataIOFile.DETECTION_RESULTS_DIRNAME);
     }
     public String getViewIdForName(String name) throws AvatolCVException {
     	return this.sddFile.getViewIdForName(name);

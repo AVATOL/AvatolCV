@@ -7,11 +7,11 @@ classdef DPMQuestionScreens < handle
     properties
        ui;
        session;
-       taxonNameChoice;
-       taxonChoiceWidget;
-       taxonChoiceIndex = 1;
-       taxonChoices;
-       chosenTaxon;
+       %taxonNameChoice;
+       %taxonChoiceWidget;
+       %taxonChoiceIndex = 1;
+       %taxonChoices;
+       %chosenTaxon;
        jCBList;
        simplePresenceAbsenceCharacters;
        viewChoiceWidget;
@@ -25,12 +25,12 @@ classdef DPMQuestionScreens < handle
             obj.ui = ui;
             obj.session = session;
         end
-        function setTaxonChoice(obj,hObject, eventData)
-            obj.taxonChoiceIndex = get(obj.taxonChoiceWidget, 'value');
-            taxonList = get(obj.taxonChoiceWidget, 'string');
-            obj.chosenTaxon = char(taxonList(obj.taxonChoiceIndex));
-        end
-        function showFirstQuestion(obj)
+        %function setTaxonChoice(obj,hObject, eventData)
+        %    obj.taxonChoiceIndex = get(obj.taxonChoiceWidget, 'value');
+        %    taxonList = get(obj.taxonChoiceWidget, 'string');
+         %   obj.chosenTaxon = char(taxonList(obj.taxonChoiceIndex));
+        %end
+        function showFirstQuestionObsolete(obj)
             obj.ui.deleteObsoleteControls();
             obj.ui.createPopupChoicePanels();
 
@@ -82,7 +82,7 @@ classdef DPMQuestionScreens < handle
         end
         
         
-        function showSecondQuestion(obj)
+        function showFirstQuestion(obj)
             obj.ui.deleteObsoleteControls();
             obj.ui.createCheckboxChoicePanels();
 
@@ -157,19 +157,20 @@ classdef DPMQuestionScreens < handle
         
         
         function showNextQuestion(obj, hObject, eventData)
-            if strcmp(obj.session.activeQuestionId,'DPMTaxonQuestion')
-                obj.taxonNameChoice = get(obj.taxonChoiceWidget, 'value');
-                obj.showSecondQuestion();
-            elseif strcmp(obj.session.activeQuestionId,'dpmQuestionSimplePresenceAbsenceChars')
+            %if strcmp(obj.session.activeQuestionId,'DPMTaxonQuestion')
+            %    obj.taxonNameChoice = get(obj.taxonChoiceWidget, 'value');
+            %    obj.showSecondQuestion();
+            %else
+            if strcmp(obj.session.activeQuestionId,'dpmQuestionSimplePresenceAbsenceChars')
                 checkedValues = obj.jCBList.getCheckedValues();
                 obj.simplePresenceAbsenceCharacters = obj.session.javaStringListToMatlabCharList(checkedValues);
-                obj.showThirdQuestion();
+                obj.showSecondQuestion();
             else
                 obj.session.doneWithDPMQuestions();
             end    
         end
         
-        function showThirdQuestion(obj)
+        function showSecondQuestion(obj)
             obj.ui.deleteObsoleteControls();
             obj.ui.createPopupChoicePanels();
 
