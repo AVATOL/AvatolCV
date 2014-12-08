@@ -82,8 +82,6 @@ classdef AlgorithmChoiceScreen < handle
                 viewId = mb.getViewIdForName(java.lang.String(chosenView));
                 
                 algIdString = java.lang.String('DPM');
-                chosenTaxon = obj.session.dpmQuestionScreens.chosenTaxon;
-                taxonId = mb.getTaxonIdForName(java.lang.String(chosenTaxon));
                 
                 charNameStringList = obj.session.matlabListToJavaStringList(obj.session.dpmQuestionScreens.simplePresenceAbsenceCharacters);
                 charIdStringList = java.util.ArrayList();
@@ -92,13 +90,12 @@ classdef AlgorithmChoiceScreen < handle
                     charId = mb.getCharacterIdForName(charName);
                     charIdStringList.add(charId);
                 end
-                taxonNames = obj.session.javaStringListToMatlabCharList(obj.session.morphobankBundle.getScorableTaxonNames());
-                loop here
-                    mb.filterInputs(charIdStringList, taxonId, viewId, algIdString);
-                ...but how will I give Shell input and output folders for all?  LEFT OFF HERE
-                inputFolderJavaString = mb.getFilteredInputDirName(charIdStringList, taxonId, viewId, algIdString);
-                outputFolderJavaString = mb.getFilteredOutputDirName(charIdStringList, taxonId, viewId, algIdString);
-                detectionResultsFolderJavaString = mb.getFilteredDetectionResultsDirName(charIdStringList, taxonId, viewId, algIdString);
+                %taxonNames = obj.session.javaStringListToMatlabCharList(obj.session.morphobankBundle.getScorableTaxonNames());
+                mb.filterInputs(charIdStringList, viewId, algIdString);
+                
+                inputFolderJavaString = mb.getFilteredInputDirName(charIdStringList, viewId, algIdString);
+                outputFolderJavaString = mb.getFilteredOutputDirName(charIdStringList, viewId, algIdString);
+                detectionResultsFolderJavaString = mb.getFilteredDetectionResultsDirName(charIdStringList, viewId, algIdString);
                 
                 input_folder = char(inputFolderJavaString);
                 output_folder = char(outputFolderJavaString);
@@ -106,8 +103,10 @@ classdef AlgorithmChoiceScreen < handle
                 
                 list_of_characters = obj.session.javaStringListToMatlabCharList(charIdStringList);
                 charId = obj.session.characterChoiceScreen.characterIdJavaString;
-                %obj.algorithms.invoke_dpm_system(list_of_characters, input_folder, output_folder, detection_results_folder, obj.progressIndicator);
-                obj.session.scoredSetMetadata.persistForDPM(obj.session.chosenMatrix,java.lang.String(chosenTaxon),chosenCharNameString,charId,java.lang.String(chosenView),charNameStringList,input_folder, output_folder, detection_results_folder);
+                obj.algorithms.invoke_the_dpm_system(list_of_characters, input_folder, output_folder, detection_results_folder);
+                %obj.algorithms.invoke_the_dpm_system(list_of_characters, input_folder, output_folder, detection_results_folder, obj.progressIndicator);
+                chosenMatrix = obj.session.matrixChoiceScreen.chosenMatrix;
+                obj.session.scoredSetMetadata.persistForDPM(chosenMatrix,chosenCharNameString,charId,java.lang.String(chosenView),charNameStringList,input_folder, output_folder, detection_results_folder);
                 obj.session.showResultsForCurrentCharacter();
             end
 

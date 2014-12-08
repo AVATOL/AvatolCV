@@ -17,6 +17,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.mb.Annotation;
 import edu.oregonstate.eecs.iis.avatolcv.mb.Annotations;
 import edu.oregonstate.eecs.iis.avatolcv.mb.Character;
+import edu.oregonstate.eecs.iis.avatolcv.mb.CharacterState;
 import edu.oregonstate.eecs.iis.avatolcv.mb.MatrixCell;
 import edu.oregonstate.eecs.iis.avatolcv.mb.Media;
 import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankDataException;
@@ -163,8 +164,8 @@ public class InputFiles {
     	String viewId = this.sddFile.getViewIdForMediaId(mediaId);
     	String viewName = this.sddFile.getViewNameForId(viewId);
     	summary.addViewEntry(viewId, viewName);
-    	String mediaPath = this.media.getMediaPathnameForMediaId(mediaId);
-    	summary.addMediaEntry(mediaId, mediaPath);
+    	String relativeMediaPath = this.media.getRelativeMediaPathnameForMediaId(mediaId);
+    	summary.addMediaEntry(mediaId, relativeMediaPath);
 		String taxonId = this.sddFile.getTaxonIdForMediaId(mediaId);
 		String taxonName = this.sddFile.getTaxonNameForId(taxonId);
 		summary.addTaxonEntry(taxonId, taxonName);
@@ -172,12 +173,22 @@ public class InputFiles {
     public String getSummaryFilePath(){
     	return this.bundleDir + FILESEP + DataIOFile.INPUT_DIRNAME + FILESEP + SummaryFile.SUMMARY_FILENAME;
     }
+    public void registerCharacterStatesInSummary(Character character, SummaryFile summary){
+    	List<CharacterState> characterStates = character.getCharacterStates();
+    	String charId = character.getId();
+    	for (CharacterState state : characterStates){
+    		String stateName = state.getName();
+    		String stateId = state.getId();
+    		summaryFile.addCharStateEntry(stateId,stateName, charId);
+    	}
+    }
     public void generateSummaryFile() throws AvatolCVException {
     	this.summaryFile = new SummaryFile(getSummaryFilePath(), this.sddFile);
    		for (String charId : this.annotations.getCharactersTrained()){
 			String charName = this.sddFile.getCharacterNameForId(charId);
 			this.summaryFile.addCharacterEntry(charId, charName);
-			
+			Character character = this.sddFile.getCharacterForId(charId);
+			registerCharacterStatesInSummary(character, this.summaryFile);
     		List<Annotation> annotationsForCharacter = this.annotations.getAnnotationsForCharacter(charId);
     		for (Annotation annotation : annotationsForCharacter){
     			String mediaId = annotation.getMediaId();

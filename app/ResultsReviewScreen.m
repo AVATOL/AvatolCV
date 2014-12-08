@@ -46,6 +46,7 @@ classdef ResultsReviewScreen < handle
         function reset(obj)
             obj.ssm = obj.session.scoredSetMetadata;
             obj.ssm.loadAll();
+            key = obj.ssm.getCurrentKey();
             matrixOfMostRecentRun = char(obj.ssm.getMatrixNameFromKey(obj.ssm.getCurrentKey()));
             obj.session.matrixChoiceScreen.registerMatrixChoice(matrixOfMostRecentRun);
             %obj.keys = obj.ssm.getKeys();

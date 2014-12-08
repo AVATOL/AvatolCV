@@ -49,9 +49,8 @@ public class Character {
         }
     }
     public boolean isStateIdRepresentingAbsent(String stateId) throws AvatolCVException{
-    	if (this.id.equals("c427749") && stateId.equals("s")){
-    		int foo = 3;
-    		int bar = foo + 1;
+    	if (!CharacterState.isCharacterStateIdCvFriendly(stateId)){
+    		return false;
     	}
     	String normStateId = normalizeCharStateId(stateId);
     	CharacterState cs = getCharacterStateForId(normStateId);
@@ -60,6 +59,19 @@ public class Character {
     	}
     	return false;
     }
+    public String normalizeCharStateIdBROKEN(String id) {
+    	if (id.startsWith("cs")){
+    		String s = id.substring(1);
+    		return s;
+    	}
+    	else if (id.startsWith("s")){
+    		return id;
+    	}
+    	else {
+    		return id;
+    	}
+    }
+
     public String normalizeCharStateId(String id) throws AvatolCVException {
     	if (id.startsWith("cs")){
     		return id;
@@ -179,5 +191,10 @@ public class Character {
     		sb.append(state.getName() + NL);
     	}
     	return "" + sb;
+    }
+    public List<CharacterState> getCharacterStates(){
+    	List result = new ArrayList<CharacterState>();
+    	result.addAll(this.characterStates);
+    	return result;
     }
 }

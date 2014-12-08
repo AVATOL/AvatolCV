@@ -15,6 +15,7 @@ import edu.oregonstate.eecs.iis.avatolcv.InputFiles;
 import edu.oregonstate.eecs.iis.avatolcv.OutputFile;
 import edu.oregonstate.eecs.iis.avatolcv.OutputFiles;
 import edu.oregonstate.eecs.iis.avatolcv.Platform;
+import edu.oregonstate.eecs.iis.avatolcv.TrainingDataPartitioner;
 
 public class MorphobankBundle {
     private static final String FILESEP = System.getProperty("file.separator");
@@ -35,8 +36,13 @@ public class MorphobankBundle {
     	}
         this.media = new Media(this.dirName);
     	this.sddFile = new MorphobankSDDFile(sddPath, mapper, this.media);
+        TrainingDataPartitioner tdp = new TrainingDataPartitioner(this);
+        String annotationsForTrainingDir = tdp.partitionTrainingData();
         
-    	this.annotations = new Annotations(this.sddFile.getPresenceAbsenceCharacterCells(),this.dirName, this.sddFile, this.media);
+        LEFT OFF HERE - what about views?  Need holdout to be smart about views - need to do this here, before view choice is made.  
+        		SO, need to run this whole thing on a per view basis and iterate
+        
+    	this.annotations = new Annotations(this.sddFile.getPresenceAbsenceCharacterCells(),this.dirName, this.sddFile, this.media, annotationsForTrainingDir);
     	this.inputFiles = new InputFiles(this.sddFile, this.annotations, this.media, this.dirName);
     	this.inputFiles.generateInputDataFiles();
         emitCharacterInfo();

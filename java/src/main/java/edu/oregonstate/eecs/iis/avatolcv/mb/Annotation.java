@@ -77,10 +77,11 @@ public class Annotation {
     public String getRelativePathForAnnotationFile(String path) throws AvatolCVException {
     	File f = new File(path);
         File parent = f.getParentFile();
-        if (!parent.getName().equals("annotations")){
-        	throw new AvatolCVException("expected annotation file to be in annotations directory");
+        if (!parent.getName().startsWith(Annotations.ANNOTATIONS_DIR)){
+        	throw new AvatolCVException("expected annotation file to be in an annotations directory");
         }
-        String relativePath = "annotations" + FILESEP + f.getName();
+        String parentDir = parent.getName();
+        String relativePath = parentDir + FILESEP + f.getName();
         return relativePath;
     }
 }

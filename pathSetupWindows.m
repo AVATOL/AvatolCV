@@ -15,8 +15,13 @@ path(path,'C:\avatol\git\nematocyst\avatol_system\utilities')
 path(path,'C:\avatol\git\nematocyst')
 % bat
 path(path,'C:\avatol\git\bat')
+path(path,'C:\avatol\git\bat\learning')
+path(path,'C:\avatol\git\bat\detection')
+path(path,'C:\avatol\git\bat\learning')
 path(path,'C:\avatol\git\bat\rpm')
 path(path,'C:\avatol\git\bat\siftflow')
 path(path,'C:\avatol\git\bat\ssvm')
 path(path,'C:\avatol\git\bat\util')
 path(path,'C:\avatol\git\bat\visualization')
+
+%addpath( genpath('C:\avatol\git\bat') )

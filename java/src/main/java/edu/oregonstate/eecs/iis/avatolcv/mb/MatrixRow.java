@@ -71,6 +71,12 @@ public class MatrixRow {
     		}
     	}
     }
+    public void overRideCellsWithActualTaxonId(String actualTaxonId){
+    	for (String charId : charIds){
+    		MatrixCell cell = matrixCellsForCharacter.get(charId);
+    		cell.overRideTaxonId(actualTaxonId);
+    	}
+    }
     public List<String> getAllMediaIds(){
     	ArrayList<String> mediaIds = new ArrayList<String>();
     	for (String charId : this.charIds){

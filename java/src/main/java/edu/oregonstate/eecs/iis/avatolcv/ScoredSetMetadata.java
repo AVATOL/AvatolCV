@@ -54,13 +54,12 @@ public class ScoredSetMetadata {
 		String runPositionInList = (this.currentKeyIndex + 1) + "/" + this.keyList.size();
 		return runPositionInList;
 	}
-	public void persistForDPM(String matrixName, String taxonName, String characterName, String charId, String viewName, List<String> charactersTrained,
+	public void persistForDPM(String matrixName, String characterName, String charId, String viewName, List<String> charactersTrained,
 			String input_folder, String output_folder, String detection_results_folder) throws AvatolCVException {
     	String path = getPath(matrixName,"DPM");
     	try {
     		BufferedWriter writer = new BufferedWriter(new FileWriter(path));
     		writer.write("matrix      : " + matrixName + NL);
-    		writer.write("taxon       : " + taxonName + NL);
     		writer.write("character   : " + characterName + NL);
     		writer.write("view        : " + viewName + NL);
     		writer.write("algorithm   : DPM" + NL);

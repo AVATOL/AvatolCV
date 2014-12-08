@@ -34,6 +34,7 @@ public class Matrix {
     		//System.out.println("column count for row " + taxonId + " is " + row.getColumnCount());
     	}
     }
+    
     public List<MatrixRow> getRows(){
     	List<MatrixRow> rows = new ArrayList<MatrixRow>();
     	for (String taxonId : rowIds){
@@ -48,7 +49,7 @@ public class Matrix {
     		for (String charId : charIds){
 
         		MatrixCell cell = row.getCellForCharacter(charId);
-        		if (cell.isScored()){
+        		if (cell.hasWorkableScore()){
         			if (!scoredCharacters.contains(charId)){
         				scoredCharacters.add(charId);
         			}
@@ -56,6 +57,25 @@ public class Matrix {
     		}
     	}
     	return scoredCharacters;
+    }
+    public List<String> getScoredTaxonNames() throws AvatolCVException {
+    	List<String> taxonNames = new ArrayList<String>();
+    	List<String> charIds = getScoredCharacterIds();
+    	for (String charId : charIds){
+        	List<MatrixCell> cells = this.getCellsForCharacter(charId);
+        	for (MatrixCell cell : cells){
+        		List<String> mediaIds = cell.getMediaIds();
+        		if (mediaIds.size() > 0){
+        			String mediaId = cell.getMediaIds().get(0);
+            		String taxonId = getTaxonIdForMediaId(mediaId);
+            		String taxonName = getTaxonNameForId(taxonId);
+            		if (!(taxonNames.contains(taxonName))){
+            			taxonNames.add(taxonName);
+            		}
+        		}
+        	}
+    	}
+    	return taxonNames;
     }
     public String getTaxonNameForId(String taxonId) throws AvatolCVException {
     	String taxonName = taxonNameForId.get(taxonId);
@@ -150,6 +170,16 @@ public class Matrix {
     	//System.out.println("charId count is " + allCharIds.size());
     	return allCharIds;
     }
+    public List<MatrixCell> getCellsForCharacterAndTaxon(String charId, String taxonId){
+    	List<MatrixCell> result = new ArrayList<MatrixCell>();
+    	List<MatrixCell> cellsForChar = getCellsForCharacter(charId);
+    	for (MatrixCell mc : cellsForChar){
+    		if (mc.getTaxonId().equals(taxonId)){
+    			result.add(mc);
+    		}
+    	}
+    	return result;
+    }
     public List<MatrixCell> getCellsForCharacter(String charId) {
     	List<MatrixCell> cells = new ArrayList<MatrixCell>();
     	for (String rowId : rowIds){
@@ -175,7 +205,7 @@ public class Matrix {
     	List<MatrixCell> unscoredCells = new ArrayList<MatrixCell>();
     	List<MatrixCell> cells = getCellsForCharacter(charId);
     	for (MatrixCell cell : cells){
-    		if (!cell.isScored()){
+    		if (!cell.hasWorkableScore()){
     			unscoredCells.add(cell);
     		}
     	}

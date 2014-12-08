@@ -17,8 +17,6 @@ classdef Session < handle
         mostRecentScreen = 'NOT_STARTED';
         resultsReviewScreen;
        
-        matrixChoiceIndex = 1;
-        chosenMatrix;
         morphobankData;
         morphobankBundle;
         
@@ -45,8 +43,8 @@ classdef Session < handle
             
             matrixDownloadsRootPath = obj.getFullPathForJava('matrix_downloads');
             obj.morphobankData = MorphobankData(matrixDownloadsRootPath);
-            obj.chosenMatrix = obj.morphobankData.getMatrixNameAtIndex(obj.matrixChoiceIndex);
-            fprintf('chosen Matrix %s', char(obj.chosenMatrix));
+            %obj.chosenMatrix = obj.morphobankData.getMatrixNameAtIndex(obj.matrixChoiceIndex);
+            %fprintf('chosen Matrix %s', char(obj.chosenMatrix));
             obj.welcomeScreen.displayWelcomeScreen();
         end
             

@@ -57,16 +57,32 @@ public class CharacterState {
     }
     public boolean representsPresent(){
     	String checkableName = this.name.trim().toLowerCase();
-    	if ("present".equals(checkableName) || checkableName.endsWith("present")){
+    	if ("present".equals(checkableName) || checkableName.endsWith("present") || checkableName.contains(" present")){
 			return true;
 		}
     	return false;
     }
     public boolean representsAbsent(){
     	String checkableName = this.name.trim().toLowerCase();
-    	if ("absent".equals(checkableName) || checkableName.endsWith("absent")){
+    	if ("absent".equals(checkableName) || checkableName.endsWith("absent")  || checkableName.contains(" absent")){
     		return true;
     	}
     	return false;
+    }
+    public static boolean isCharacterStateIdCvFriendly(String stateId){
+    	if (stateId.equals("")){
+    		return false;
+    	}
+    	if (stateId.equals("s")){
+    		return false;
+    	}
+    	if (stateId.equalsIgnoreCase("NPA")){
+    		return false;
+    	}
+    	if (stateId.equals("-")){
+    		return false;
+    	}
+    	return true;
+    	
     }
 }

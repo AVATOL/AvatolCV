@@ -242,6 +242,15 @@ public class MorphobankSDDFile {
     	}
     	return charNames;
     }
+    public boolean isPresenceAbsenceCharacter(String charId){
+    	List<Character> paChars = this.characters.getPresenceAbsenceCharacters();
+    	for (Character paChar : paChars){
+    		if (paChar.getId().equals(charId)){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
     public List<Character> getPresenceAbsenceCharacters(){
     	return characters.getPresenceAbsenceCharacters();
     }

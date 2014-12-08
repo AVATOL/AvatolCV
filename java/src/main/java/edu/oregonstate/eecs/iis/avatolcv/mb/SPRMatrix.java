@@ -21,6 +21,7 @@ public class SPRMatrix extends Matrix {
 	    for (String rowId : this.rowIds){
 	    	MatrixRow row = matrixRowForTaxonMap.get(rowId);
 	    	String actualTaxonId = taxonIdMapper.getNormalizedTaxonId(rowId);
+	    	row.overRideCellsWithActualTaxonId(actualTaxonId);
 	        String taxonName = row.getTaxonName();
 	        String pureTaxonName = taxonIdMapper.getPureTaxonNameForName(taxonName);
 	        this.taxonNameForId.put(actualTaxonId, pureTaxonName);

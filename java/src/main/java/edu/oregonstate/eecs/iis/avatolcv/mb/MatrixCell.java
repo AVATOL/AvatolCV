@@ -1,5 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.mb;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.w3c.dom.NodeList;
 //  <State ref="s945731"/>
 //</Categorical>
 public class MatrixCell {
+	private static final String FILESEP = System.getProperty("file.separator");
 	private String taxonId;
 	private String charId;
 	private List<String> mediaIds = new ArrayList<String>();
@@ -37,12 +39,7 @@ public class MatrixCell {
     	//	System.out.println("cell loaded: " + charId + " " + mediaId + " " + stateId);
     	//}
     }
-    public boolean isScored(){
-    	if (stateId.equals("s")){
-    		return false;
-    	}
-    	return true;
-    }
+   
     public boolean hasMedia(){
     	if (this.mediaIds.size() == 0){
     		return false;
@@ -59,11 +56,38 @@ public class MatrixCell {
     public String getTaxonId(){
     	return this.taxonId;
     }
+    /*
+     * Due to specimen-per-row matrix, we need to convert the db's taxonId to our choice of the trueTaxonId
+     */
+    public void overRideTaxonId(String trueTaxonId){
+    	this.taxonId = trueTaxonId;
+    }
     public List<String> getMediaIds(){
     	List<String> myMediaIds = new ArrayList<String>();
     	for (String mediaId : this.mediaIds){
     		myMediaIds.add(mediaId);
     	}
     	return myMediaIds;
+    }
+    public boolean isUnscored(){
+    	if (this.stateId.equals("?")){
+    		return true;
+    	}
+    	return false;
+    }
+    public boolean hasWorkableScore(){
+    	return CharacterState.isCharacterStateIdCvFriendly(this.stateId);
+    }
+    public boolean hasAnnotationFile(String annotationDir){
+    	for (String mediaId : this.mediaIds){
+
+        	String filename = mediaId + "_" + this.charId + ".txt";
+        	String path = annotationDir + FILESEP + filename;
+        	File f = new File(path);
+        	if (f.exists()){
+        		return true;
+        	}
+    	}
+    	return false;
     }
 }

@@ -80,7 +80,7 @@ public class BogusAnnotationGenerator {
 			Character character = sdd.getCharacterForId(charId);
 			String stateId = cell.getState();
 			String stateName = null;
-			if (cell.isScored()){
+			if (cell.hasWorkableScore()){
 				CharacterState charState = character.getCharacterStateForId(stateId);
 				stateName = charState.getName();
 			}

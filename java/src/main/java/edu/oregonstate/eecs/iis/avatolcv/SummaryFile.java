@@ -17,6 +17,7 @@ public class SummaryFile {
 	public static final String MEDIA_PREFIX = "media";
 	public static final String TAXON_PREFIX = "taxon";
 	public static final String VIEW_PREFIX = "view";
+	public static final String STATE_PREFIX = "state";
 	
 	private static final String NL = System.getProperty("line.separator");
 	private static final String FILESEP = System.getProperty("file.separator");
@@ -41,6 +42,16 @@ public class SummaryFile {
     }
     public void addEntry(String prefix, String id, String name){
     	String newLine = prefix + DELIM + id + DELIM + name;
+    	if (!entries.contains(newLine)){
+    		entries.add(newLine);
+    	}
+    }
+
+    public void addCharStateEntry(String id, String name, String charId){
+    	addEntry(STATE_PREFIX, id, name, charId);
+    }
+    public void addEntry(String prefix, String id, String name, String otherId){
+    	String newLine = prefix + DELIM + id + DELIM + name + DELIM + otherId;
     	if (!entries.contains(newLine)){
     		entries.add(newLine);
     	}
