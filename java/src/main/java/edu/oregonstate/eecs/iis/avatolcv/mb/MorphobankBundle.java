@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVProperties;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.DataIOFile;
 import edu.oregonstate.eecs.iis.avatolcv.InputFile;
@@ -26,9 +27,11 @@ public class MorphobankBundle {
     private Annotations annotations = null;
     private Media media = null;
     private InputFiles inputFiles = null;
+    private AvatolCVProperties properties = null;
     
     public MorphobankBundle(String dirName) throws MorphobankDataException, AvatolCVException  {
     	this.dirName = dirName;
+    	this.properties = new AvatolCVProperties(this.dirName);
     	String sddPath = getSDDFilePath(dirName);
     	SPRTaxonIdMapper mapper = null;
     	if (isSpecimenPerRowBundle()){
@@ -38,10 +41,6 @@ public class MorphobankBundle {
     	this.sddFile = new MorphobankSDDFile(sddPath, mapper, this.media);
         TrainingDataPartitioner tdp = new TrainingDataPartitioner(this);
         String annotationsForTrainingDir = tdp.partitionTrainingData();
-        
-        LEFT OFF HERE - what about views?  Need holdout to be smart about views - need to do this here, before view choice is made.  
-        		SO, need to run this whole thing on a per view basis and iterate
-        
     	this.annotations = new Annotations(this.sddFile.getPresenceAbsenceCharacterCells(),this.dirName, this.sddFile, this.media, annotationsForTrainingDir);
     	this.inputFiles = new InputFiles(this.sddFile, this.annotations, this.media, this.dirName);
     	this.inputFiles.generateInputDataFiles();
@@ -49,6 +48,9 @@ public class MorphobankBundle {
         integrityCheck();
         //findImagesForBAT();
         
+    }
+    public AvatolCVProperties getSystemProperties(){
+    	return this.properties;
     }
     public List<String> getViewNames(){
 		return this.sddFile.getViewNames();

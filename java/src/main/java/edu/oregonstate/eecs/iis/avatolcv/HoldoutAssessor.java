@@ -8,7 +8,7 @@ import edu.oregonstate.eecs.iis.avatolcv.mb.Character;
 public class HoldoutAssessor {
 	private static final String NL = System.getProperty("file.separator");
 	private int count = 0;
-	private double threshold = 0.7;
+	private double threshold;
 	private MorphobankSDDFile sdd = null;
 	List<MatrixCell> unscoredCells = new ArrayList<MatrixCell>();
 	List<MatrixCell> scoredAbsentCellsWithAnnotations = new ArrayList<MatrixCell>();
@@ -17,7 +17,8 @@ public class HoldoutAssessor {
 
 	List<MatrixCell> trainingCells = new ArrayList<MatrixCell>();
 	List<MatrixCell> holdoutCells = new ArrayList<MatrixCell>();
-    public HoldoutAssessor(String rootDir, List<MatrixCell> cells, MorphobankSDDFile sdd) throws AvatolCVException {
+    public HoldoutAssessor(String rootDir, List<MatrixCell> cells, MorphobankSDDFile sdd, double threshold) throws AvatolCVException {
+    	this.threshold = threshold;
     	this.sdd = sdd;
     	this.count = cells.size();
     	for (MatrixCell cell : cells){
@@ -46,7 +47,7 @@ public class HoldoutAssessor {
         		}
     		}
     	}
-    	int trainingSetGoalSize = (int)(this.count * threshold);
+    	int trainingSetGoalSize = (int)(this.count * this.threshold);
     	int positiveCount = 0;
 		int negativeWithAnnotationCount = 0;
 		int negativeWithoutAnnotationCount = 0;

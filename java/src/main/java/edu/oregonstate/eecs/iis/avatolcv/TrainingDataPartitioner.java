@@ -51,12 +51,8 @@ public class TrainingDataPartitioner {
     				List<String> charIds = matrix.getScoredCharacterIds();
     				for (String charId : charIds){
     					if (sdd.isPresenceAbsenceCharacter(charId)){
-    						
-    						//STUCK WAITING FOR SETH TO SEND NEW SDD FILE THAT DOESN'T LACK THE CODED Description elements
-    						
-    						
     						List<MatrixCell> relevantCells = matrix.getCellsForCharacterAndTaxon(charId, taxonId); 
-        					HoldoutAssessor ha = new HoldoutAssessor(this.bundle.getRootDir(),relevantCells,sdd);
+        					HoldoutAssessor ha = new HoldoutAssessor(this.bundle.getRootDir(),relevantCells,sdd, this.bundle.getSystemProperties().getTrainingSplitThreshold());
         					List<MatrixCell> trainingCells = ha.getTrainingCells();
         					List<MatrixCell> toScoreCells = ha.getToScoreCells();
         					copyAnnotationFilesForCells(trainingCells,trainingDirPath);
