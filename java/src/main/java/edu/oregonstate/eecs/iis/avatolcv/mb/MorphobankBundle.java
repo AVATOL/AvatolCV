@@ -35,7 +35,7 @@ public class MorphobankBundle {
     	this.properties = new AvatolCVProperties(this.dirName);
     	String sddPath = getSDDFilePath(dirName);
     	SPRTaxonIdMapper mapper = null;
-    	if (isSpecimenPerRowBundle()){
+    	if (this.properties.isSpecimenPerRowBundle()){
     		mapper = new SPRTaxonIdMapper(sddPath);
     	}
         this.media = new Media(this.dirName);
@@ -58,14 +58,7 @@ public class MorphobankBundle {
     public List<String> getViewNames(){
 		return this.sddFile.getViewNames();
 	}
-    public boolean isSpecimenPerRowBundle(){
-    	String path = this.dirName + FILESEP + "specimenPerRowMarker.txt";
-    	File f = new File(path);
-    	if (f.exists()){
-    		return true;
-    	}
-    	return false;
-    }
+   
     //public void findImagesForBAT() throws MorphobankDataException {
     //	List<String> mediaIds = sddFile.getMatrix().getImageNamesForSpecialCase();
     //	for (String mediaId : mediaIds){

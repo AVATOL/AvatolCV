@@ -32,7 +32,10 @@ public class TestScoredSetMetadata {
 			ssm.loadAll();
 			MorphobankBundle mb = new MorphobankBundle(bundleRoot);
 			SessionData sd = ssm.getSessionResultsData(mb);
-			boolean foo = sd.canShowImage();
+			if (null != sd){
+
+				boolean foo = sd.canShowImage();
+			}
 		}
 		catch(AvatolCVException e){
 			Assert.fail(e.getMessage());

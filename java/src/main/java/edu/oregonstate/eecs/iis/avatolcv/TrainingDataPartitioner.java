@@ -23,15 +23,15 @@ import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankSDDFile;
 public class TrainingDataPartitioner {
 	private MorphobankBundle bundle = null;
 	private static final String FILESEP = System.getProperty("file.separator");
-	private static final String PARTITION_FILE_FLAG = "holdoutTrainingDataMarker.txt";
+	//private static final String PARTITION_FILE_FLAG = "holdoutTrainingDataMarker.txt";
 	private static final String STATUS_TRAINING = "training";
 	private static final String STATUS_TO_SCORE = "toScore";
-	private boolean partitioningNeeded = false;
+	//private boolean partitioningNeeded = false;
 	private Hashtable<String,String> statusForKey = new Hashtable<String,String>();
 	private PartitionRegister partitionRegister = new PartitionRegister();
     public TrainingDataPartitioner(MorphobankBundle bundle) throws AvatolCVException {
     	this.bundle = bundle;
-    	this.partitioningNeeded = isPartitioningNeeded(bundle.getRootDir());
+    	//this.partitioningNeeded = ;
     }
     public void persistRegister() throws AvatolCVException {
     	this.partitionRegister.persist();
@@ -40,7 +40,7 @@ public class TrainingDataPartitioner {
     	this.partitionRegister.setPersistDirectory(dir);
     }
     public String getPartitionDirName(){
-    	double threshold = this.bundle.getSystemProperties().getTrainingSplitThreshold();
+    	double threshold = this.bundle.getSystemProperties().getTrainingDataSplitThreshold();
     	if (threshold == -1.0){
     		return "";
     	}
@@ -108,19 +108,11 @@ public class TrainingDataPartitioner {
     	}
     }
     public void partitionTrainingData(List<String> charIds, String viewId) throws AvatolCVException{
-    	if (!this.partitioningNeeded){
+    	if (!this.bundle.getSystemProperties().isPartitioningNeeded()){
     		//do nothing
     	}
     	else {
-    		//String trainingDirPath = this.bundle.getRootDir()  + TRAINING_ANNOTATIONS_DIRNAME;
-    		//File trainingDir = new File(trainingDirPath);
-    		//trainingDir.mkdirs();
-    		//String holdoutDirPath = this.bundle.getRootDir()  + HOLDOUT_ANNOTATIONS_DIRNAME;
-    		//File holdoutDir = new File(holdoutDirPath);
-    		//holdoutDir.mkdirs();
-    		if (this.bundle.isSpecimenPerRowBundle()){
-    			//List<MatrixCell> allTrainingCells= new ArrayList<MatrixCell>();
-    			//List<MatrixCell> allToScoreCells= new ArrayList<MatrixCell>();
+    		if (this.bundle.getSystemProperties().isSpecimenPerRowBundle()){
     			MorphobankSDDFile sdd = this.bundle.getSDDFile();
     			Matrix matrix = sdd.getMatrix();
     			// for each true taxon
@@ -169,7 +161,7 @@ public class TrainingDataPartitioner {
     		if (viewId.equals(focusViewId)){
     			List<MatrixCellImageUnit> unitList = unitListForView.get(viewId);
         		
-        		HoldoutAssessor ha = new HoldoutAssessor(this.bundle.getRootDir(),unitList,sdd, this.bundle.getSystemProperties().getTrainingSplitThreshold(), this.partitionRegister);
+        		HoldoutAssessor ha = new HoldoutAssessor(this.bundle.getRootDir(),unitList,sdd, this.bundle.getSystemProperties().getTrainingDataSplitThreshold(), this.partitionRegister);
         		List<MatrixCellImageUnit> trainingUnits = ha.getTrainingUnits();
         		assignUnitsToStatus(trainingUnits,STATUS_TRAINING);
         		//this.partitionRegister.registerTrainingUnits(trainingUnits);
@@ -178,21 +170,5 @@ public class TrainingDataPartitioner {
         		//this.partitionRegister.registerToScoreUnits(toScoreUnits);
     		}
     	}
-    }
-    
-   
-   
-    public boolean isPartitioningNeeded(String dirPath) throws AvatolCVException {
-    	File f = new File(dirPath);
-    	if (!f.exists()){
-    		throw new AvatolCVException("bad path given to TrainingDataPartitioner " + dirPath);
-    	}
-    	File[] files = f.listFiles();
-    	for (File curFile : files){
-    		if (curFile.getName().equals(PARTITION_FILE_FLAG)){
-    			return true;
-    		}
-    	}
-    	return false;
     }
 }

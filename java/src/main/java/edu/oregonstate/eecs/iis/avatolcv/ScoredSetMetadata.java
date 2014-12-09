@@ -151,7 +151,12 @@ public class ScoredSetMetadata {
     	selectMostRecentRun(); 
     }
     public void selectMostRecentRun(){
-    	this.currentKeyIndex = this.keyList.size() - 1;
+    	if (this.keyList.size() > 0){
+    	    this.currentKeyIndex = this.keyList.size() - 1;
+    	}
+    	else {
+    		this.currentKeyIndex = -1;
+    	}
     }
     public List<String> getKeys(){
     	List<String> keysList = new ArrayList<String>();
@@ -244,6 +249,9 @@ public class ScoredSetMetadata {
     }
     public SessionData getSessionResultsData(MorphobankBundle mb) throws AvatolCVException {
     	String key = getCurrentKey();
+    	if (this.keyList.size() == 0){
+    		
+    	}
     	String input_folder = getInputFolderForKey(key);
     	System.out.println("input folder : " + input_folder);
     	String output_folder = getOutputFolderForKey(key);
