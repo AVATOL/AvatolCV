@@ -23,11 +23,6 @@ public class PartitionRegister {
 	public void setPersistDirectory(String dir){
 		this.persistDirectory = dir;
 	}
-	//public void registerToScoreUnits(List<MatrixCellImageUnit> units){
-    //	for (MatrixCellImageUnit unit : units){
-    //		registerToScoreUnit(unit);
-    //	}
-   // }
 	public boolean isLegalTrainingUnit(MatrixCellImageUnit unit){
 		String mediaId = unit.getMediaId();
 		if (this.toScoreMedia.contains(mediaId)){
@@ -66,11 +61,6 @@ public class PartitionRegister {
 		unitInfos.add(info);
 	}
 	
-	//public void registerTrainingUnits(List<MatrixCellImageUnit> units) throws AvatolCVException{
-    //	for (MatrixCellImageUnit unit : units){
-    //		registerTrainingUnit(unit);
-    //	}
-    //}
 	public String getKey(String charId, String taxonId, String viewId, String mediaId){
 		return charId + "_" + taxonId + "_" + viewId + "_" + mediaId;
 	}
