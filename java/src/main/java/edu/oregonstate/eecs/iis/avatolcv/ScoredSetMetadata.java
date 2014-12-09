@@ -244,13 +244,18 @@ public class ScoredSetMetadata {
     	return result;
     }
     public String getCurrentKey(){
-    	String currentKey = this.keyList.get(this.currentKeyIndex);
-    	return currentKey;
+    	if (this.currentKeyIndex >=0){
+    		String currentKey = this.keyList.get(this.currentKeyIndex);
+    		return currentKey;
+    	}
+    	else {
+    		return null;
+    	}
     }
     public SessionData getSessionResultsData(MorphobankBundle mb) throws AvatolCVException {
     	String key = getCurrentKey();
-    	if (this.keyList.size() == 0){
-    		
+    	if (null == key){
+    		return null;
     	}
     	String input_folder = getInputFolderForKey(key);
     	System.out.println("input folder : " + input_folder);
