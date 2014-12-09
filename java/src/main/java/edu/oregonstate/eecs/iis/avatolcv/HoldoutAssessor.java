@@ -216,4 +216,3 @@ public class HoldoutAssessor {
     	return result;
     }
 }
-//FIXME - change isScored to factor in new info from Seth

@@ -23,8 +23,6 @@ import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankSDDFile;
 public class TrainingDataPartitioner {
 	private MorphobankBundle bundle = null;
 	private static final String FILESEP = System.getProperty("file.separator");
-	//private static final String TRAINING_ANNOTATIONS_DIRNAME = Annotations.ANNOTATIONS_DIR + "_tr";
-	//private static final String HOLDOUT_ANNOTATIONS_DIRNAME = Annotations.ANNOTATIONS_DIR + "_ho";
 	private static final String PARTITION_FILE_FLAG = "holdoutTrainingDataMarker.txt";
 	private static final String STATUS_TRAINING = "training";
 	private static final String STATUS_TO_SCORE = "toScore";
@@ -182,50 +180,8 @@ public class TrainingDataPartitioner {
     	}
     }
     
-    /*
-    public void copyAnnotationFilesForCells(List<MatrixCell> cells, String destinationDir) throws AvatolCVException {
-    	for (MatrixCell cell : cells){
-    		String charId = cell.getCharId();
-    		List<String> mediaIds = cell.getMediaIds();
-    		for (String mediaId : mediaIds){
-    			String filename = mediaId + "_" + charId + ".txt";
-    			String sourcePath = this.bundle.getRootDir() + Annotations.ANNOTATIONS_DIR + FILESEP + filename;
-    			String destPath = destinationDir + FILESEP + filename;
-    			copyFile(sourcePath,destPath);
-    		}
-    	}
-    }
-    */
-    /*
-    public void copyFile(String sourcePath, String destPath) throws AvatolCVException {
-	    InputStream is = null;
-	    OutputStream os = null;
-	    File source = new File(sourcePath);
-	    File dest = new File(destPath);
-	    try {
-	        is = new FileInputStream(source);
-	        os = new FileOutputStream(dest);
-	        byte[] buffer = new byte[1024];
-	        int length;
-	        while ((length = is.read(buffer)) > 0) {
-	            os.write(buffer, 0, length);
-	        }
-	    } 
-	    catch (IOException ioe){
-	    	throw new AvatolCVException("problem copying " + sourcePath + " to " + destPath);
-	    }
-
-	    finally {
-	    	try {
-	            is.close();
-	            os.close();
-	    	}
-	    	catch(IOException ioe){
-	    		throw new AvatolCVException("problem closing files while copying " + sourcePath + " to " + destPath);
-	    	}
-	    }
-    }
-    */
+   
+   
     public boolean isPartitioningNeeded(String dirPath) throws AvatolCVException {
     	File f = new File(dirPath);
     	if (!f.exists()){

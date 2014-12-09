@@ -41,7 +41,6 @@ public class MorphobankBundle {
         this.media = new Media(this.dirName);
     	this.sddFile = new MorphobankSDDFile(sddPath, mapper, this.media);
         this.tdp = new TrainingDataPartitioner(this);
-        //this.tdp.partitionTrainingData();
     	this.annotations = new Annotations(this.sddFile.getPresenceAbsenceCharacterCells(),this.dirName, this.sddFile, this.media);
     	this.inputFiles = new InputFiles(this.sddFile, this.annotations, this.media, this.dirName);
     	this.inputFiles.generateInputDataFiles();
