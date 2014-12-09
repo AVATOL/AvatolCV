@@ -6,9 +6,13 @@ import java.io.IOException;
 
 
 public class AvatolCVProperties {
-	private double trainingSplitThreshold = 0.5;
+	public static final String NL = System.getProperty("line.separator");
+	public static final String FILESEP = System.getProperty("file.separator");
+	public static final String METADATA_FLAG = "SYSTEM_PROPERTY";
+	public static final String TRAINING_SPLIT_THRESHOLD = "trainingSplitThreshold";
+	private double trainingSplitThreshold = -1.0;
     public AvatolCVProperties(String bundleDir) throws AvatolCVException {
-    	String path = bundleDir + "avatolcv_properties.txt";
+    	String path = bundleDir + FILESEP + "avatolcv_properties.txt";
     	try {
         	BufferedReader reader = new BufferedReader(new FileReader(path));
         	String line = null;
@@ -30,5 +34,8 @@ public class AvatolCVProperties {
     }
     public double getTrainingSplitThreshold(){
     	return this.trainingSplitThreshold;
+    }
+    public String getMetadataLines(){
+    	return METADATA_FLAG + ":" + TRAINING_SPLIT_THRESHOLD + "=" + this.trainingSplitThreshold + NL;
     }
 }

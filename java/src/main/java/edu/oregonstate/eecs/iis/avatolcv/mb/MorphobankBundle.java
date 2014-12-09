@@ -28,6 +28,7 @@ public class MorphobankBundle {
     private Media media = null;
     private InputFiles inputFiles = null;
     private AvatolCVProperties properties = null;
+    private TrainingDataPartitioner tdp = null;
     
     public MorphobankBundle(String dirName) throws MorphobankDataException, AvatolCVException  {
     	this.dirName = dirName;
@@ -39,15 +40,18 @@ public class MorphobankBundle {
     	}
         this.media = new Media(this.dirName);
     	this.sddFile = new MorphobankSDDFile(sddPath, mapper, this.media);
-        TrainingDataPartitioner tdp = new TrainingDataPartitioner(this);
-        String annotationsForTrainingDir = tdp.partitionTrainingData();
-    	this.annotations = new Annotations(this.sddFile.getPresenceAbsenceCharacterCells(),this.dirName, this.sddFile, this.media, annotationsForTrainingDir);
+        this.tdp = new TrainingDataPartitioner(this);
+        //this.tdp.partitionTrainingData();
+    	this.annotations = new Annotations(this.sddFile.getPresenceAbsenceCharacterCells(),this.dirName, this.sddFile, this.media);
     	this.inputFiles = new InputFiles(this.sddFile, this.annotations, this.media, this.dirName);
     	this.inputFiles.generateInputDataFiles();
         emitCharacterInfo();
         integrityCheck();
         //findImagesForBAT();
         
+    }
+    public TrainingDataPartitioner getTrainingDataPartitioner(){
+    	return this.tdp;
     }
     public AvatolCVProperties getSystemProperties(){
     	return this.properties;
@@ -191,18 +195,18 @@ public class MorphobankBundle {
         return path;
     }
     public void filterInputs(List<String> charIds, String viewId, String algId) throws AvatolCVException {
-    	this.inputFiles.filterInputs(charIds, viewId, algId);
+    	this.inputFiles.filterInputs(charIds, viewId, algId, this.tdp);
     }
     public String getFilteredInputDirName(List<String> charIds, String viewId, String algId){
-    	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, DataIOFile.INPUT_DIRNAME);
+    	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, DataIOFile.INPUT_DIRNAME, this.tdp);
     }
 
     public String getFilteredOutputDirName(List<String> charIds, String viewId, String algId){
-    	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, DataIOFile.OUTPUT_DIRNAME);
+    	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, DataIOFile.OUTPUT_DIRNAME, this.tdp);
     }
 
     public String getFilteredDetectionResultsDirName(List<String> charIds, String viewId, String algId){
-    	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, DataIOFile.DETECTION_RESULTS_DIRNAME);
+    	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, DataIOFile.DETECTION_RESULTS_DIRNAME, this.tdp);
     }
     public String getViewIdForName(String name) throws AvatolCVException {
     	return this.sddFile.getViewIdForName(name);

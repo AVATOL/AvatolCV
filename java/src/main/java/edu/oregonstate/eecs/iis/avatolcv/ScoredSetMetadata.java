@@ -55,7 +55,7 @@ public class ScoredSetMetadata {
 		return runPositionInList;
 	}
 	public void persistForDPM(String matrixName, String characterName, String charId, String viewName, List<String> charactersTrained,
-			String input_folder, String output_folder, String detection_results_folder) throws AvatolCVException {
+			String input_folder, String output_folder, String detection_results_folder, AvatolCVProperties properties) throws AvatolCVException {
     	String path = getPath(matrixName,"DPM");
     	try {
     		BufferedWriter writer = new BufferedWriter(new FileWriter(path));
@@ -71,6 +71,7 @@ public class ScoredSetMetadata {
     		writer.write(OUTPUT_FOLDER_KEY + "=" + output_folder + NL);
     		writer.write(DETECTION_RESULTS_FOLDER_KEY + "=" + detection_results_folder + NL);
     		writer.write(FOCUS_CHARID_KEY + "=" + charId + NL);
+    		writer.write(properties.getMetadataLines());
     		writer.close();
     	}
     	catch(IOException ioe){

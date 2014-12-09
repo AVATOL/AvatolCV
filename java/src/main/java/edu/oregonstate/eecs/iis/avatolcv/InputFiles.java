@@ -351,10 +351,14 @@ public class InputFiles {
     	}
     	return ""+sb;
     }
-    public String getFilteredDirname(List<String> charIds, String viewId, String algId, String target){
+    public String getFilteredDirname(List<String> charIds, String viewId, String algId, String target, TrainingDataPartitioner tdp){
     	String algDirname = this.bundleDir + FILESEP + target + FILESEP + algId;
     	String charIdsDirname = getDirnameFromCharIds(charIds);
     	String newDir = algDirname + FILESEP + charIdsDirname + FILESEP + viewId;
+    	String partitionDirName = tdp.getPartitionDirName();
+    	if (!partitionDirName.equals("")){
+    		newDir = newDir + FILESEP + partitionDirName;
+    	}
     	return newDir;
     }
     public void cleanDir(String path){
@@ -394,15 +398,18 @@ public class InputFiles {
     /*
      * make a dir name by cat'ing the char_ids that are valid simple, then subdir named for viewId, then can clean before filling
      */
-    public void filterInputs(List<String> charIds,String viewId, String algId) throws AvatolCVException {
+    public void filterInputs(List<String> charIds,String viewId, String algId, TrainingDataPartitioner tdp) throws AvatolCVException {
     	
-    	String newInputDir = getFilteredDirname(charIds, viewId, algId, DataIOFile.INPUT_DIRNAME);
-
-    	String newOutputDir = getFilteredDirname(charIds, viewId, algId, DataIOFile.OUTPUT_DIRNAME);
-    	String detectionResultDir = getFilteredDirname(charIds, viewId, algId, DataIOFile.DETECTION_RESULTS_DIRNAME);
+    	String newInputDir = getFilteredDirname(charIds, viewId, algId, DataIOFile.INPUT_DIRNAME, tdp);
+    	String newOutputDir = getFilteredDirname(charIds, viewId, algId, DataIOFile.OUTPUT_DIRNAME, tdp);
+    	String detectionResultDir = getFilteredDirname(charIds, viewId, algId, DataIOFile.DETECTION_RESULTS_DIRNAME, tdp);
+    	
     	cleanDir(newInputDir);
     	cleanDir(newOutputDir);
     	cleanDir(detectionResultDir);
+    	
+    	tdp.setPersistDirectory(newInputDir);
+    	tdp.partitionTrainingData(charIds, viewId);
     	this.summaryFile.filter(charIds, viewId, newInputDir);
     	try {
     		for (String charId : charIds){
@@ -416,12 +423,18 @@ public class InputFiles {
         		while ((line = reader.readLine()) != null){
         			if (line.startsWith(DataIOFile.TRAINING_DATA_MARKER)){
     					if (isTrainingDataMediaOfView(line, viewId)){
-        					writer.write(line + NL);
+    						String partitionedLine = tdp.getPartitionedLineForTrainingLine(charId, line);
+    						if (!(partitionedLine == null)){
+    							writer.write(partitionedLine + NL);
+    						}
         				}
         			}
         			else if (line.startsWith(DataIOFile.IMAGE_TO_SCORE_MARKER)){
         				if (isImageToScoreMediaOfView(line, viewId)){
-        					writer.write(line + NL);
+        					String partitionedLine = tdp.getPartitionedLineForToScoreLine(charId, line);
+        					if (!(partitionedLine == null)){
+        						writer.write(partitionedLine + NL);
+        					}
         				}
         			}
         		}
@@ -430,9 +443,10 @@ public class InputFiles {
         		writer.close();
         		Platform.setPermissions(newFilePath);
         	}
+    		tdp.persistRegister();
     	}
     	catch(MorphobankDataException mde){
-    		throw new AvatolCVException("Data problem trying tp create input files.",mde);
+    		throw new AvatolCVException("Data problem trying to create input files.",mde);
     	}
     	catch(IOException ioe){
     		throw new AvatolCVException("problem reading in existing input file to filter it: " +  ioe.getMessage());

@@ -78,6 +78,7 @@ public class MatrixCell {
     public boolean hasWorkableScore(){
     	return CharacterState.isCharacterStateIdCvFriendly(this.stateId);
     }
+    /*
     public boolean hasAnnotationFile(String annotationDir){
     	for (String mediaId : this.mediaIds){
 
@@ -89,5 +90,15 @@ public class MatrixCell {
         	}
     	}
     	return false;
+    }
+    */
+    public List<MatrixCellImageUnit> getImageUnits(MorphobankBundle bundle){
+    	List<MatrixCellImageUnit> units = new ArrayList<MatrixCellImageUnit>();
+    	for (String mediaId : this.mediaIds){
+    		String viewId = bundle.getSDDFile().getViewIdForMediaId(mediaId);
+    		MatrixCellImageUnit unit = new MatrixCellImageUnit(this, mediaId, viewId);
+    		units.add(unit);
+    	}
+    	return units;
     }
 }

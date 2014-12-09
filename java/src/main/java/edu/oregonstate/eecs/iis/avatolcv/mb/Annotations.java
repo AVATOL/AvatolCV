@@ -12,14 +12,14 @@ public class Annotations {
 	public static final String ANNOTATIONS_DIR = "annotations";
 	private String bundleDir = null;
 	private Media media = null;
-	private String annotationsForTrainingDir;
+	//private String annotationsForTrainingDir;
 	private static final String FILESEP = System.getProperty("file.separator");
 	private Hashtable<String, List<Annotation>> annotationsForCharacterHash = new Hashtable<String, List<Annotation>>();
 	private List<String> charactersTrained = new ArrayList<String>();
 	
 	
-	public Annotations(List<MatrixCell> matrixCellsOfInterest, String bundleDir, MorphobankSDDFile sddFile, Media media, String annotationsForTrainingDir) throws MorphobankDataException {
-		this.annotationsForTrainingDir = annotationsForTrainingDir;
+	public Annotations(List<MatrixCell> matrixCellsOfInterest, String bundleDir, MorphobankSDDFile sddFile, Media media) throws MorphobankDataException {
+		//this.annotationsForTrainingDir = annotationsForTrainingDir;
 		this.bundleDir = bundleDir;
 		this.media = media;
         for (MatrixCell matrixCell : matrixCellsOfInterest){
@@ -108,6 +108,6 @@ public class Annotations {
 		
 	}
 	public String getAnnotationFilePathname(String charId, String mediaId){
-        return this.bundleDir + FILESEP + this.annotationsForTrainingDir + FILESEP + mediaId + "_" + charId + ".txt";
+        return this.bundleDir + FILESEP + ANNOTATIONS_DIR + FILESEP + mediaId + "_" + charId + ".txt";
 	}
 }
