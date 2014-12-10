@@ -20,7 +20,9 @@ public class AvatolCVProperties {
     	try {
         	BufferedReader reader = new BufferedReader(new FileReader(path));
         	String line = null;
+    		System.out.println("loading properties file:");
         	while (null != (line = reader.readLine())){
+        		System.out.println(line);
         		if (line.startsWith(TRAINING_SPLIT_THRESHOLD_KEY)){
         			String[] parts = line.split("=");
         			Double threshold = new Double(parts[1]);
