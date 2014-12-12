@@ -252,7 +252,7 @@ public class ScoredSetMetadata {
     		return null;
     	}
     }
-    public SessionData getSessionResultsData(MorphobankBundle mb) throws AvatolCVException {
+    public SessionDataForTaxa getSessionResultsData(MorphobankBundle mb) throws AvatolCVException {
     	String key = getCurrentKey();
     	if (null == key){
     		return null;
@@ -279,8 +279,9 @@ public class ScoredSetMetadata {
         OutputFile outputFile = outputFilesForCharacter.get(currentCharId);
         List<ResultImage> scoredImages = outputFile.getScoredImages();
         List<ResultImage> unscoredImages = outputFile.getUnscoredImages();
-    	SessionData srd = new SessionData(currentCharId, currentCharName,trainingSamples,scoredImages, unscoredImages);
-		return srd;
+    	//SessionData srd = new SessionData(currentCharId, currentCharName,trainingSamples,scoredImages, unscoredImages);
+        SessionDataForTaxa sdt = new SessionDataForTaxa(currentCharId, currentCharName,trainingSamples,scoredImages, unscoredImages);
+		return sdt;
     }
 }
 

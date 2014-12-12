@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.mb.Annotation;
 
@@ -13,10 +15,28 @@ public class BogusOutputFileGenerator {
 	private static final String FILESEP = System.getProperty("file.separator");
 	private static final String NL = System.getProperty("line.separator");
     public static void main(String[] args){
-    	String inputDir ="C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\input\\DPM\\c427749c427751c427753c427754c427760\\v3540";
-    	String outputDir = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\output\\DPM\\c427749c427751c427753c427754c427760\\v3540";
-    	String detectionResultsRelDir =  "detection_results\\DPM\\c427749c427751c427753c427754c427760\\v3540";
+    	String inputDir ="C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\input\\DPM\\c427749c427751c427753c427754c427760\\v3540\\split_0.7";
+    	String outputDir = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\output\\DPM\\c427749c427751c427753c427754c427760\\v3540\\split_0.7";
+    	String detectionResultsDir = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\detection_results\\DPM\\c427749c427751c427753c427754c427760\\v3540\\split_0.7";
+    	String detectionResultsRelDir =  "detection_results\\DPM\\c427749c427751c427753c427754c427760\\v3540\\split_0.7";
     	BogusOutputFileGenerator g = new BogusOutputFileGenerator(inputDir, outputDir, detectionResultsRelDir);
+    	ScoredSetMetadata ssm = new ScoredSetMetadata("C:\\avatol\\git\\avatol_cv\\");
+    	try {
+    		AvatolCVProperties props = new AvatolCVProperties("C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT");
+        	List<String> charactersTrained = new ArrayList<String>();
+        	charactersTrained.add("c427749");
+        	charactersTrained.add("c427751");
+        	charactersTrained.add("c427753");
+        	charactersTrained.add("c427754");
+        	charactersTrained.add("c427760");
+        	ssm.persistForDPM( "BAT", "UPPER I1 PRESENCE", "c427749", "Ventral", charactersTrained,
+        			inputDir, outputDir, detectionResultsDir, props);
+    	}
+    	catch(AvatolCVException e){
+    		System.out.println(e.getMessage());
+    		e.printStackTrace();
+    	}
+    	
     }
     public BogusOutputFileGenerator(String inputDir, String outputDir, String detectionResultsRelDir){
     	File output = new File(outputDir);
