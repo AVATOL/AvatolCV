@@ -117,8 +117,9 @@ classdef DPMQuestionScreens < handle
             obj.jCBList = com.mathworks.mwswing.checkboxlist.CheckBoxList(jList);
             cellRenderer = obj.jCBList.getCellRenderer();
             %desiredFont = java.awt.Font(obj.ui.fontname,java.awt.Font.PLAIN,obj.ui.fontsize);
-            desiredFont = java.awt.Font(obj.ui.fontname,java.awt.Font.PLAIN,20);
-            obj.jCBList.setFont(desiredFont);
+            desiredFont = java.awt.Font(obj.ui.fontname,java.awt.Font.PLAIN,14);
+            %obj.jCBList.setFont(desiredFont);
+            cellRenderer.setFont(desiredFont);
             jScrollPane = com.mathworks.mwswing.MJScrollPane(obj.jCBList);
             
  
