@@ -42,7 +42,7 @@ public class SessionDataForTaxa {
 	public int getTaxonCount(){
 		return sessionDatas.size();
 	}
-	public List<String> getTaxonIdsFromResultImages(List<ResultImage> resultImages){
+	public static List<String> getTaxonIdsFromResultImages(List<ResultImage> resultImages){
 		List<String> taxonIds = new ArrayList<String>();
 		for (ResultImage ri : resultImages){
 			String taxonId = ri.getTaxonId();
@@ -52,7 +52,7 @@ public class SessionDataForTaxa {
 		}
 		return taxonIds;
 	}
-	public List<ResultImage> getResultImagesForTaxon(String taxonId, List<ResultImage> resultImages){
+	public static List<ResultImage> getResultImagesForTaxon(String taxonId, List<ResultImage> resultImages){
     	List<ResultImage> filteredList = new ArrayList<ResultImage>();
     	for (ResultImage ri : resultImages){
     		if (ri.getTaxonId().equals(taxonId)){

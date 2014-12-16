@@ -1,6 +1,8 @@
 package edu.oregonstate.eecs.iis.avatolcv.mb;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.DataIOFile;
@@ -45,6 +47,9 @@ public class Annotation {
             return "polygon";
         }
     }
+    public String getCoordinateList(){
+    	return this.coordinateList;
+    }
     public String getType(){
     	return this.type;
     }
@@ -83,5 +88,46 @@ public class Annotation {
         String parentDir = parent.getName();
         String relativePath = parentDir + FILESEP + f.getName();
         return relativePath;
+    }
+    public void reverseXCoord(){
+    	String[] parts = this.coordinateList.split(";");
+    	List<String> newCoords = new ArrayList<String>();
+    	for (String part : parts){
+    		String[] coordParts = part.split(",");
+    		String x = coordParts[0];
+    		String y = coordParts[1];
+    		Double xDouble = new Double(x);
+    		double xDoubleValue = xDouble.doubleValue();
+    		double newXDouble = 100.0 - xDoubleValue;
+    		String newXString = "" + newXDouble;
+    		newCoords.add(newXString + "," + y);
+    	}
+    	replaceCoordinateList(newCoords);
+    }
+
+    public void replaceCoordinateList(List<String> newCoords){
+    	StringBuilder sb = new StringBuilder();
+    	int pairsWithTrailingComma = newCoords.size() - 1;
+    	for (int i = 0; i < pairsWithTrailingComma; i++){
+    		sb.append(newCoords.get(i) + ",");
+    	}
+    	int finalIndex = newCoords.size() - 1;
+    	sb.append(newCoords.get(finalIndex));
+    	this.coordinateList = "" + sb;
+    }
+    public void reverseYCoord(){
+    	String[] parts = this.coordinateList.split(";");
+    	List<String> newCoords = new ArrayList<String>();
+    	for (String part : parts){
+    		String[] coordParts = part.split(",");
+    		String x = coordParts[0];
+    		String y = coordParts[1];
+    		Double yDouble = new Double(y);
+    		double yDoubleValue = yDouble.doubleValue();
+    		double newYDouble = 100.0 - yDoubleValue;
+    		String newYString = "" + newYDouble;
+    		newCoords.add(x + "," + newYString);
+    	}
+    	replaceCoordinateList(newCoords);
     }
 }

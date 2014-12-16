@@ -33,6 +33,12 @@ public class TrainingDataPartitioner {
     	this.bundle = bundle;
     	//this.partitioningNeeded = ;
     }
+    public MorphobankBundle getBundle(){
+    	return this.bundle;
+    }
+    public boolean isTrainingImage(String mediaId){
+    	return this.partitionRegister.isTrainingImage(mediaId);
+    }
     public void persistRegister() throws AvatolCVException {
     	this.partitionRegister.persist();
     }

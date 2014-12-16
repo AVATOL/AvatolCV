@@ -20,6 +20,14 @@ public class PartitionRegister {
 	public PartitionRegister(){
 		
 	}
+	public boolean isTrainingImage(String mediaId){
+		for (String id : this.trainingMedia){
+			if (id.equals(mediaId)){
+				return true;
+			}
+		}
+		return false;
+	}
 	public void setPersistDirectory(String dir){
 		this.persistDirectory = dir;
 	}

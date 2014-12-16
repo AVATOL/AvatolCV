@@ -83,10 +83,19 @@ public class Character {
     		throw new AvatolCVException("unrecognized format for stateId : " + id + " ... expecting id to start with cs or s");
     	}
     }
+    public boolean hasCharacterStateForId(String stateId) throws AvatolCVException {
+    	String normStateId = normalizeCharStateId(stateId);
+    	for (CharacterState characterState : this.characterStates){
+    		if (characterState.getFullId().equals(normStateId)){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
     public CharacterState getCharacterStateForId(String stateId) throws AvatolCVException {
     	String normStateId = normalizeCharStateId(stateId);
     	for (CharacterState characterState : this.characterStates){
-    		if (characterState.getId().equals(normStateId)){
+    		if (characterState.getFullId().equals(normStateId)){
     			return characterState;
     		}
     	}

@@ -49,8 +49,11 @@ public class CharacterState {
     public int getStateNumber(){
     	return this.stateNumber;
     }
-    public String getId(){
+    public String getFullId(){
     	return this.id;
+    }
+    public String getNormalizedId(){
+    	return this.id.replaceFirst("cs","s");
     }
     public String getCharId(){
     	return this.charId;

@@ -5,35 +5,9 @@ classdef ResultsReviewScreen < handle
     properties
         ui;
         session;
-        %metadataKeyIndex = 0;
-        %metadataKeyCount = 0;
-        %keys;
         ssm;
-        %input_folder;
-        %output_folder;
         dataFocus = 'scoredImages';
-        %dataFocus = 'unscoredImages';
-        %dataFocus = 'training';
-        %currentCharName = 'unknown';
-        %currentCharIdJavaString;
-        
-        %inputFilesForCharacter;
-        %inputFile;
-        
         sessionData;
-        
-        %trainingSamplesList;
-        %scoredImageList;
-        %unscoredImageList;
-        %activeList;
-        
-        %trainingSampleIndex;
-        %scoredImageIndex;
-        %unscoredImageIndex;
-        %activeListIndex;
-        
-        %outputFilesForCharacter;
-        %outputFile;
         imageControlTags = {};
         metadataControlTags = {};
     end
@@ -49,18 +23,8 @@ classdef ResultsReviewScreen < handle
             key = obj.ssm.getCurrentKey();
             matrixOfMostRecentRun = char(obj.ssm.getMatrixNameFromKey(obj.ssm.getCurrentKey()));
             obj.session.matrixChoiceScreen.registerMatrixChoice(matrixOfMostRecentRun);
-            %obj.keys = obj.ssm.getKeys();
-            %obj.metadataKeyCount = obj.keys.size();
-            %obj.metadataKeyIndex = obj.metadataKeyCount - 1;
-            %curKey = obj.keys.get(obj.metadataKeyIndex);
             obj.sessionData = obj.ssm.getSessionResultsData(obj.session.morphobankBundle);
-            %obj.updateFolders();
         end
-        %function setCurrentCharName(obj, charName)
-       %     obj.currentCharName = charName;
-       %     charNameJavaString = java.lang.String(obj.currentCharName);
-       %     obj.currentCharIdJavaString = obj.session.morphobankBundle.getCharacterIdForName(charNameJavaString);
-       % end
         function showResults(obj)
             
             obj.ui.deleteObsoleteControls();
@@ -258,6 +222,11 @@ classdef ResultsReviewScreen < handle
             end
             obj.loadImage();
         end
+        function generateMatrixColumn(obj)
+            resultColumnMatrix = ResultMatrixColumn(obj.session.morphobankBundle, obj.sessionData);
+            fprintf('cell count %c', resultColumnMatrix.getCount());
+            
+        end
         function loadMetadataWidgets(obj)
             curMetadata = obj.ssm.getDisplayableData();
             obj.ui.deleteControls(obj.metadataControlTags);
@@ -265,7 +234,7 @@ classdef ResultsReviewScreen < handle
                                          'Parent',obj.ui.scoredSetMetadataPanel,...
                                          'Units','normalized',...
                                          'String', char(curMetadata) ,...
-                                         'position', [0.02,0,0.98,0.98] ,...
+                                         'position', [0.02,0.5,0.98,0.48] ,...
                                          'FontName', obj.ui.fontname ,...
                                          'FontSize', obj.ui.fontsize ,...
                                          'Tag','metadataContent' ,...

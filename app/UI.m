@@ -37,8 +37,8 @@ classdef UI < handle
         fontsize = 13;
         %fontsize = 14;
         fontsizeHeader = 16;
-        fullWidth = 900;
-        fullHeight = 600;
+        fullWidth = 1200;
+        fullHeight = 750;
         fig;
         figurePosition;
         
@@ -46,11 +46,15 @@ classdef UI < handle
     
     methods
         function obj = UI()
-            obj.figurePosition =  [150 150 obj.fullWidth obj.fullHeight];
+            screensize = get(0,'ScreenSize');
+            xpos = ceil((screensize(3)-obj.fullWidth)/2); % center the figure on the screen horizontally
+            ypos = ceil((screensize(4)-obj.fullHeight)/2); % center the figure on the screen vertically
+            obj.figurePosition =  [xpos ypos obj.fullWidth obj.fullHeight];
             obj.fig = figure('position', obj.figurePosition ,... 
                 'MenuBar', 'none' ,...
                 'Name', 'AVATOL Computer Vision System',...
                 'Color', [1 1 1]);
+            %movegui(obj.fig,'center')
         end
         function deleteObsoleteControls(obj)
             obj.deleteControls(obj.activeControlTags);

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
+import edu.oregonstate.eecs.iis.avatolcv.mb.Character;
 import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankSDDFile;
 
 public class SummaryFile {
@@ -74,7 +76,7 @@ public class SummaryFile {
     	}
     }
 
-    public void filter(List<String> charIds, String viewId, String newInputDir) throws AvatolCVException {
+    public void filter(List<String> charIds, String viewId, String newInputDir, TrainingDataPartitioner tdp) throws AvatolCVException {
     	List<String> filteredList = new ArrayList<String>();
     	String path = newInputDir + FILESEP + SUMMARY_FILENAME;
     	File f = new File(path);
@@ -93,12 +95,25 @@ public class SummaryFile {
         		else if (parts[0].equals(MEDIA_PREFIX)){
         			String mediaId = parts[1];
         			if (this.sddFile.isMediaOfView(mediaId, viewId)){
-        				filteredList.add(entry);
+        				String suffix = "";
+        				if (tdp.isTrainingImage(mediaId)){
+        					suffix = DELIM + "training";
+        				}
+        				else {
+        					suffix = DELIM + "toScore";
+        				}
+        				filteredList.add(entry + suffix);
         			}
         		}
      
         		else if (parts[0].equals(VIEW_PREFIX)){
         			if (parts[1].equals(viewId)){
+        				filteredList.add(entry);
+        			}
+        		}
+        		else if (parts[0].equals(STATE_PREFIX)){
+        			String stateId = parts[1];
+        			if (isStateIdFromCharList(charIds, stateId, tdp.getBundle())){
         				filteredList.add(entry);
         			}
         		}
@@ -119,5 +134,14 @@ public class SummaryFile {
     		throw new AvatolCVException("problem creating filtered summary file " + path + " " + ioe.getMessage());
     	}
     	
+    }
+    public boolean isStateIdFromCharList(List<String> charIds, String stateId, MorphobankBundle bundle) throws AvatolCVException {
+    	for (String charId : charIds){
+    		Character character = bundle.getSDDFile().getCharacterForId(charId);
+    		if (character.hasCharacterStateForId(stateId)){
+    			return true;
+    		}
+    	}
+    	return false;
     }
 }

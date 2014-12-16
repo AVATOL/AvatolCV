@@ -252,7 +252,8 @@ public class ScoredSetMetadata {
     		return null;
     	}
     }
-    public SessionDataForTaxa getSessionResultsData(MorphobankBundle mb) throws AvatolCVException {
+    public SessionDataForTaxa getSessionDataForTaxa(MorphobankBundle mb) throws AvatolCVException {
+    //public SessionData getSessionResultsData(MorphobankBundle mb) throws AvatolCVException {
     	String key = getCurrentKey();
     	if (null == key){
     		return null;
@@ -282,6 +283,41 @@ public class ScoredSetMetadata {
     	//SessionData srd = new SessionData(currentCharId, currentCharName,trainingSamples,scoredImages, unscoredImages);
         SessionDataForTaxa sdt = new SessionDataForTaxa(currentCharId, currentCharName,trainingSamples,scoredImages, unscoredImages);
 		return sdt;
+		//return srd;
+    }
+
+    //public SessionDataForTaxa getSessionResultsData(MorphobankBundle mb) throws AvatolCVException {
+    public SessionData getSessionResultsData(MorphobankBundle mb) throws AvatolCVException {
+    	String key = getCurrentKey();
+    	if (null == key){
+    		return null;
+    	}
+    	String input_folder = getInputFolderForKey(key);
+    	System.out.println("input folder : " + input_folder);
+    	String output_folder = getOutputFolderForKey(key);
+    	System.out.println("output folder : " + output_folder);
+
+    	Hashtable<String,InputFile> inputFilesForCharacter = mb.getInputFilesForCharacter(input_folder);
+    	Hashtable<String,OutputFile> outputFilesForCharacter = mb.getOutputFilesForCharacter(output_folder);
+    	
+    	
+    	String currentCharId = getFocusCharIdForKey(key);
+        String currentCharName = mb.getCharacterNameForId(currentCharId);
+      
+        System.out.println("....char name for Id : " + currentCharName);
+        InputFile inputFile = inputFilesForCharacter.get(currentCharId);
+        System.out.println("....inputFile : " + inputFile);
+        
+        List<ResultImage> trainingSamples = (List<ResultImage>)inputFile.getTrainingSamples();
+
+        
+        OutputFile outputFile = outputFilesForCharacter.get(currentCharId);
+        List<ResultImage> scoredImages = outputFile.getScoredImages();
+        List<ResultImage> unscoredImages = outputFile.getUnscoredImages();
+    	SessionData srd = new SessionData(currentCharId, currentCharName,trainingSamples,scoredImages, unscoredImages);
+        //SessionDataForTaxa sdt = new SessionDataForTaxa(currentCharId, currentCharName,trainingSamples,scoredImages, unscoredImages);
+		//return sdt;
+		return srd;
     }
 }
 

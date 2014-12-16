@@ -85,7 +85,7 @@ public class Annotations {
 	
 
 
-	public List<Annotation> loadAnnotations(String path, String mediaId) throws MorphobankDataException {
+	public static List<Annotation> loadAnnotations(String path, String mediaId) throws MorphobankDataException {
 		List<Annotation> annotations = new ArrayList<Annotation>();
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(path));

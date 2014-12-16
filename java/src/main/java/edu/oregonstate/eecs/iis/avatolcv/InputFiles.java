@@ -178,7 +178,7 @@ public class InputFiles {
     	String charId = character.getId();
     	for (CharacterState state : characterStates){
     		String stateName = state.getName();
-    		String stateId = state.getId();
+    		String stateId = state.getNormalizedId();
     		summaryFile.addCharStateEntry(stateId,stateName, charId);
     	}
     }
@@ -410,7 +410,7 @@ public class InputFiles {
     	
     	tdp.setPersistDirectory(newInputDir);
     	tdp.partitionTrainingData(charIds, viewId);
-    	this.summaryFile.filter(charIds, viewId, newInputDir);
+    	this.summaryFile.filter(charIds, viewId, newInputDir, tdp);
     	try {
     		for (String charId : charIds){
         		String pathOfCharacterInputFile = getPathOfCharacterInputFile(charId);
