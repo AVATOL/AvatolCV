@@ -11,9 +11,9 @@ public class SessionData {
 	}
 	
 	//Need a vector of in-order taxa names, and a map for finding the result image
-	private List<ResultImage> trainingImages = null;
-	private List<ResultImage> scoredImages = null;
-	private List<ResultImage> unscoredImages = null;
+	protected List<ResultImage> trainingImages = null;
+	protected List<ResultImage> scoredImages = null;
+	protected List<ResultImage> unscoredImages = null;
 	private int trainingIndex = 0;
 	private int scoredIndex = 0;
 	private int unscoredIndex = 0;

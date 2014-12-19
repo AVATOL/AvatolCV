@@ -8,8 +8,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import edu.oregonstate.eecs.iis.avatolcv.mb.Annotation;
+import edu.oregonstate.eecs.iis.avatolcv.mb.Character;
+import edu.oregonstate.eecs.iis.avatolcv.mb.CharacterState;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankDataException;
 
 public class BogusOutputFileGenerator {
 	private static final String FILESEP = System.getProperty("file.separator");
@@ -19,9 +24,12 @@ public class BogusOutputFileGenerator {
     	String outputDir = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\output\\DPM\\c427749c427751c427753c427754c427760\\v3540\\split_0.7";
     	String detectionResultsDir = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\detection_results\\DPM\\c427749c427751c427753c427754c427760\\v3540\\split_0.7";
     	String detectionResultsRelDir =  "detection_results\\DPM\\c427749c427751c427753c427754c427760\\v3540\\split_0.7";
-    	BogusOutputFileGenerator g = new BogusOutputFileGenerator(inputDir, outputDir, detectionResultsRelDir);
-    	ScoredSetMetadata ssm = new ScoredSetMetadata("C:\\avatol\\git\\avatol_cv\\");
+    	
+    	
     	try {
+    		MorphobankBundle bundle = new MorphobankBundle("C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT");
+        	BogusOutputFileGenerator g = new BogusOutputFileGenerator(inputDir, outputDir, detectionResultsRelDir, bundle);
+        	ScoredSetMetadata ssm = new ScoredSetMetadata("C:\\avatol\\git\\avatol_cv\\");
     		AvatolCVProperties props = new AvatolCVProperties("C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT");
         	List<String> charactersTrained = new ArrayList<String>();
         	charactersTrained.add("c427749");
@@ -36,9 +44,13 @@ public class BogusOutputFileGenerator {
     		System.out.println(e.getMessage());
     		e.printStackTrace();
     	}
+    	catch(MorphobankDataException mde){
+    		System.out.println(mde.getMessage());
+    		mde.printStackTrace();
+    	}
     	
     }
-    public BogusOutputFileGenerator(String inputDir, String outputDir, String detectionResultsRelDir){
+    public BogusOutputFileGenerator(String inputDir, String outputDir, String detectionResultsRelDir, MorphobankBundle bundle) throws AvatolCVException {
     	File output = new File(outputDir);
     	output.mkdirs();
     	File[] files = output.listFiles();
@@ -49,7 +61,7 @@ public class BogusOutputFileGenerator {
     	File[] inputFiles = input.listFiles();
     	for (File inputFile : inputFiles){
     		if (inputFile.getName().startsWith("sorted_input_data")){
-    			generateBogusOutputFile(outputDir, inputFile, detectionResultsRelDir);
+    			generateBogusOutputFile(outputDir, inputFile, detectionResultsRelDir, bundle);
     		}
     	}
     }
@@ -59,7 +71,7 @@ public class BogusOutputFileGenerator {
     	String charId = parts[0];
     	return charId;
     }
-    public void generateBogusOutputFile(String outputDir, File inputFile, String detectionResultsRelDir){
+    public void generateBogusOutputFile(String outputDir, File inputFile, String detectionResultsRelDir, MorphobankBundle bundle) throws AvatolCVException {
     	String outputFilename = deriveOutputFilenameFromInputFile(inputFile);
     	String outputFilePath = inputFile.getParent().replaceAll("input","output") + FILESEP + outputFilename;
     	String charId = getCharIdFromFilename(outputFilename);
@@ -69,11 +81,26 @@ public class BogusOutputFileGenerator {
     		String line = null;
     		while (null != (line = reader.readLine())){
     			if (line.startsWith("training")){
+    				System.out.println("training line " + line);
     				writer.write(line + NL);
     			}
     			else if (line.startsWith("image_to_score")){
-    				String outputLine = generateScoredLine(charId, line, detectionResultsRelDir);
+    				String outputLine = generateScoredLine(charId, line, detectionResultsRelDir, bundle);
     				writer.write(outputLine + NL);
+    				
+    				File outputFile = new File(outputFilePath);
+    				File parentFile = outputFile.getParentFile();
+    				String parentFilePath = parentFile.getAbsolutePath();
+    				String detectionResultsParentPath = parentFilePath.replace("output", "detection_results");
+    				String[] parts = line.split(Annotation.ANNOTATION_DELIM_ESCAPED_FOR_USE_WITH_SPLIT);
+    				String relMediaPath = parts[1];
+    				String filename = relMediaPath.substring(6);
+    				String[] filenameParts = filename.split("_");
+    				String mediaId = filenameParts[0].replaceFirst("M","m");
+    				String drFilename = mediaId + "_" + charId + ".txt";
+    				String drPath = detectionResultsParentPath + FILESEP + drFilename;
+    				//image_to_score|media\M283379_.jpg|t171198|annotations\m283379_c427749.txt|1
+    				BogusAnnotationGenerator.generateAnnotationFile(drPath, charId, bundle.getCharacterNameForId(charId), "someStateId", "present");
     			}
     		}
     		reader.close();
@@ -92,7 +119,7 @@ public class BogusOutputFileGenerator {
     	String mediaId = mediaIdWithCapM.replaceAll("M", "m");
     	return mediaId;
     }
-    public String generateScoredLine(String charId, String imageToScoreLine, String detectionResultsRelDir){
+    public String generateScoredLine(String charId, String imageToScoreLine, String detectionResultsRelDir, MorphobankBundle bundle) throws AvatolCVException {
     	//image_scored|<relative path of mediafile>|<characterStateID>|<characterStateName>|<**relative path of annotation file>|<taxonID>|<***line number in annotations file>|<****score_confidence>
         //image_not_scored|<relative path of mediafile>|<taxonID>|
     	//image_to_score|<relative path of media file>|<taxonID>
@@ -101,11 +128,29 @@ public class BogusOutputFileGenerator {
     	String relMediaPath = parts[1];
     	String taxonId = parts[2];
     	String mediaId = getMediaIdFromRelPath(relMediaPath);
-    	String annotationFileName = charId + "_" + mediaId + ".txt";
+    	String annotationFileName = mediaId + "_" + charId + ".txt";
     	String relAnnotationPath = detectionResultsRelDir + FILESEP + annotationFileName;
     	String delim = Annotation.ANNOTATION_DELIM;
-    	String line = "image_scored" + delim + relMediaPath + delim + "someCharStateId" + delim + "someCharStateName" + delim + relAnnotationPath + delim + taxonId + delim + "1" + delim + "0.7";
+    	
+    	Character ch = bundle.getSDDFile().getCharacterForId(charId);
+    	List<CharacterState> states = ch.getCharacterStates();
+    	int count = states.size();
+    	Random r = new Random();
+    	int randomIndex = r.nextInt(count);
+    	CharacterState chosenState = states.get(randomIndex);
+    	String chosenStateName = chosenState.getName();
+    	String chosenStateId = chosenState.getFullId();
+    	String randomScore = "" + getRandomInRange(0.6,1.0);
+    	String line = "image_scored" + delim + relMediaPath + delim + chosenStateId + delim + chosenStateName + delim + relAnnotationPath + delim + taxonId + delim + "1" + delim + randomScore;
     	return line;
+    }
+    public double getRandomInRange(double min, double max){
+    	double curVal = max + 1;
+    	while(curVal < min || curVal > max){
+    		Random r = new Random();
+            curVal = r.nextDouble() % 1.0;
+    	}
+    	return curVal;
     }
     public String deriveOutputFilenameFromInputFile(File inputFile){
     	String inputFilename = inputFile.getName();

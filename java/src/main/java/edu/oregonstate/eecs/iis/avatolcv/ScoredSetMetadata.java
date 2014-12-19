@@ -231,6 +231,10 @@ public class ScoredSetMetadata {
         		else if (line.startsWith(FOCUS_CHARID_KEY)){
         			//do nothing
         		}
+        		else if (line.startsWith("SYSTEM_PROPERTY:")){
+        			line = line.replaceFirst("SYSTEM_PROPERTY:", "");
+        			result = result + line + NL;
+        		}
         		else {
         			result = result + line + NL;
         		}
@@ -280,8 +284,14 @@ public class ScoredSetMetadata {
         OutputFile outputFile = outputFilesForCharacter.get(currentCharId);
         List<ResultImage> scoredImages = outputFile.getScoredImages();
         List<ResultImage> unscoredImages = outputFile.getUnscoredImages();
+        if (null == scoredImages){
+        	System.out.println("ScoredImages null");
+        }
+        else {
+        	System.out.println("ScoredImages length : " +  scoredImages.size());
+        }
     	//SessionData srd = new SessionData(currentCharId, currentCharName,trainingSamples,scoredImages, unscoredImages);
-        SessionDataForTaxa sdt = new SessionDataForTaxa(currentCharId, currentCharName,trainingSamples,scoredImages, unscoredImages);
+        SessionDataForTaxa sdt = new SessionDataForTaxa(currentCharId, currentCharName,trainingSamples,scoredImages, unscoredImages, mb);
 		return sdt;
 		//return srd;
     }
@@ -314,6 +324,8 @@ public class ScoredSetMetadata {
         OutputFile outputFile = outputFilesForCharacter.get(currentCharId);
         List<ResultImage> scoredImages = outputFile.getScoredImages();
         List<ResultImage> unscoredImages = outputFile.getUnscoredImages();
+        
+        
     	SessionData srd = new SessionData(currentCharId, currentCharName,trainingSamples,scoredImages, unscoredImages);
         //SessionDataForTaxa sdt = new SessionDataForTaxa(currentCharId, currentCharName,trainingSamples,scoredImages, unscoredImages);
 		//return sdt;

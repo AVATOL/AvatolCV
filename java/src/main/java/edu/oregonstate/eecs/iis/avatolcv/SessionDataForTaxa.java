@@ -4,19 +4,29 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
+
 public class SessionDataForTaxa {
     private List<SessionDataForTaxon> sessionDatas = new ArrayList<SessionDataForTaxon>();
     private Hashtable<String, SessionDataForTaxon> taxonSessionDataForTaxonId = new Hashtable<String, SessionDataForTaxon>();
 	public SessionDataForTaxa(String charId, String charName,
 			List<ResultImage> trainingImages,
 			List<ResultImage> scoredImages,
-			List<ResultImage> unscoredImages){
+			List<ResultImage> unscoredImages,
+			MorphobankBundle mb) throws AvatolCVException {
 		List<String> taxonIds = getTaxonIdsFromResultImages(trainingImages);
 		for (String taxonId : taxonIds){
 			List<ResultImage> trainingImagesForTaxon = getResultImagesForTaxon(taxonId, trainingImages);
 			List<ResultImage> scoredImagesForTaxon = getResultImagesForTaxon(taxonId, scoredImages);
 			List<ResultImage> unscoredImagesForTaxon = getResultImagesForTaxon(taxonId, unscoredImages);
-			SessionDataForTaxon sdft = new SessionDataForTaxon(taxonId, 
+			String taxonName = mb.getTaxonNameForId(taxonId);
+			if (null == scoredImagesForTaxon){
+				System.out.println("taxon " + taxonName + " scoredImagesForTaxon null ");
+			}
+			else {
+				System.out.println("taxon " + taxonName + " scoredCount " + scoredImagesForTaxon.size());
+			}
+			SessionDataForTaxon sdft = new SessionDataForTaxon(taxonId, taxonName,
 					charId, 
 					charName,
 					trainingImagesForTaxon,

@@ -134,7 +134,7 @@ public class BogusAnnotationGenerator {
 		System.out.println("unscoredCount = " + unscoredCount); 
 		System.out.println("scoredCount = " + scoredCount);  
 	}
-	public void generateAnnotationFile(String filePath, String charId, String charName, String stateId, String stateName) throws AvatolCVException {
+	public static void generateAnnotationFile(String filePath, String charId, String charName, String stateId, String stateName) throws AvatolCVException {
 		try {
 			
 			BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));

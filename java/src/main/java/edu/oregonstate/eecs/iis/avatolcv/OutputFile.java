@@ -22,14 +22,17 @@ public class OutputFile extends DataIOFile {
     		String line = null;
     		while (null != (line = reader.readLine())){
     			if (line.startsWith(TRAINING_DATA_MARKER)){
+    				//System.out.println("loading TRAINING line " + line);
     				TrainingSample ts = new TrainingSample(line, rootDir, this.charId, this.charName); 
     				trainingSamples.add(ts);
     			}
     			else if (line.startsWith(IMAGE_SCORED_MARKER)){
+    				//System.out.println("loading SCORED line " + line);
     				ScoredImage isl = new ScoredImage(line, rootDir, this.charId, this.charName);
     				scoredImages.add(isl);
     			}
     			else if (line.startsWith(IMAGE_NOT_SCORED_MARKER)){
+    				//System.out.println("loading NOT_SCORED line " + line);
     				UnscoredImage isl = new UnscoredImage(line, rootDir, this.charId, this.charName);
     				unscoredImages.add(isl);
     			}
