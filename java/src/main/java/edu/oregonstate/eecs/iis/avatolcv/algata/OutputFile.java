@@ -1,10 +1,12 @@
-package edu.oregonstate.eecs.iis.avatolcv;
+package edu.oregonstate.eecs.iis.avatolcv.algata;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
 public class OutputFile extends DataIOFile {
 	private List<TrainingSample> trainingSamples = new ArrayList<TrainingSample>();

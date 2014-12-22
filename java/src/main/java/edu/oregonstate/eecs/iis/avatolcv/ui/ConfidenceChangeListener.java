@@ -5,8 +5,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import edu.oregonstate.eecs.iis.avatolcv.ResultMatrixColumn;
-
 public class ConfidenceChangeListener implements ChangeListener, Runnable {
 	private ResultMatrixColumn rmc = null;
 	private ChangeEvent mostRecentChangeEvent = null;

@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv;
+package edu.oregonstate.eecs.iis.avatolcv.algata;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.Platform;
 import edu.oregonstate.eecs.iis.avatolcv.mb.Annotation;
 import edu.oregonstate.eecs.iis.avatolcv.mb.Annotations;
 import edu.oregonstate.eecs.iis.avatolcv.mb.Character;
@@ -22,6 +24,7 @@ import edu.oregonstate.eecs.iis.avatolcv.mb.MatrixCell;
 import edu.oregonstate.eecs.iis.avatolcv.mb.Media;
 import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankDataException;
 import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankSDDFile;
+import edu.oregonstate.eecs.iis.avatolcv.split.TrainingDataPartitioner;
 
 public class InputFiles {
 	

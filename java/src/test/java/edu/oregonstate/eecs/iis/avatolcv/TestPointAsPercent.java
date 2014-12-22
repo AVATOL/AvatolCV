@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.Assert;
 import org.junit.Test;
 
+import edu.oregonstate.eecs.iis.avatolcv.mb.PointAsPercent;
+
 public class TestPointAsPercent {
 
 	@Test

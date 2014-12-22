@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.DataIOFile;
+import edu.oregonstate.eecs.iis.avatolcv.algata.DataIOFile;
 
 public class Annotation {
 	public static final String FILESEP = System.getProperty("file.separator");

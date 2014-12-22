@@ -10,6 +10,11 @@ import java.util.List;
 
 import org.junit.Test;
 
+import edu.oregonstate.eecs.iis.avatolcv.algata.ResultImage;
+import edu.oregonstate.eecs.iis.avatolcv.algata.ScoredImage;
+import edu.oregonstate.eecs.iis.avatolcv.algata.TrainingSample;
+import edu.oregonstate.eecs.iis.avatolcv.algata.UnscoredImage;
+
 public class TestSessionData {
 	private static final String SEP = System.getProperty("file.separator");
 	private static final String NL = System.getProperty("line.separator");

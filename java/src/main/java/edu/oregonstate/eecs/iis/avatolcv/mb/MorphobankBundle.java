@@ -10,13 +10,13 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVProperties;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.DataIOFile;
-import edu.oregonstate.eecs.iis.avatolcv.InputFile;
-import edu.oregonstate.eecs.iis.avatolcv.InputFiles;
-import edu.oregonstate.eecs.iis.avatolcv.OutputFile;
-import edu.oregonstate.eecs.iis.avatolcv.OutputFiles;
 import edu.oregonstate.eecs.iis.avatolcv.Platform;
-import edu.oregonstate.eecs.iis.avatolcv.TrainingDataPartitioner;
+import edu.oregonstate.eecs.iis.avatolcv.algata.DataIOFile;
+import edu.oregonstate.eecs.iis.avatolcv.algata.InputFile;
+import edu.oregonstate.eecs.iis.avatolcv.algata.InputFiles;
+import edu.oregonstate.eecs.iis.avatolcv.algata.OutputFile;
+import edu.oregonstate.eecs.iis.avatolcv.algata.OutputFiles;
+import edu.oregonstate.eecs.iis.avatolcv.split.TrainingDataPartitioner;
 
 public class MorphobankBundle {
     private static final String FILESEP = System.getProperty("file.separator");

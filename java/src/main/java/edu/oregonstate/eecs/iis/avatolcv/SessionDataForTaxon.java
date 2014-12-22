@@ -5,6 +5,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 
+import edu.oregonstate.eecs.iis.avatolcv.algata.ResultImage;
+
 public class SessionDataForTaxon extends SessionData {
 	private String taxonId = null;
 	private String taxonName = null;

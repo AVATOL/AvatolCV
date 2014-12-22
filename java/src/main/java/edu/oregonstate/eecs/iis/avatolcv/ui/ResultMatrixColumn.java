@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv;
+package edu.oregonstate.eecs.iis.avatolcv.ui;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -14,8 +14,10 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.SessionDataForTaxa;
+import edu.oregonstate.eecs.iis.avatolcv.SessionDataForTaxon;
 import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
-import edu.oregonstate.eecs.iis.avatolcv.ui.ConfidenceChangeListener;
 
 public class ResultMatrixColumn extends JPanel {
 	

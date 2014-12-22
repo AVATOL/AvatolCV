@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.Point;
-import edu.oregonstate.eecs.iis.avatolcv.PointAsPercent;
 
 public class AnnotationCoordinates {
 	public enum AnnotationType {

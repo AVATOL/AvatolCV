@@ -2,6 +2,8 @@ package edu.oregonstate.eecs.iis.avatolcv;
 
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.algata.ResultImage;
+
 public class SessionData {
 	private FOCUS focus = FOCUS.images_scored;
 	enum FOCUS {

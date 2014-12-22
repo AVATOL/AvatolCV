@@ -13,6 +13,9 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.algata.InputFile;
+import edu.oregonstate.eecs.iis.avatolcv.algata.OutputFile;
+import edu.oregonstate.eecs.iis.avatolcv.algata.ResultImage;
 import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
 
 public class ScoredSetMetadata {

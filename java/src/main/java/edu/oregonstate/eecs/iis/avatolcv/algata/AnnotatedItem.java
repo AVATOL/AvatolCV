@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv;
+package edu.oregonstate.eecs.iis.avatolcv.algata;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

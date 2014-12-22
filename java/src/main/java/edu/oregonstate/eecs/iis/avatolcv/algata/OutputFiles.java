@@ -1,8 +1,10 @@
-package edu.oregonstate.eecs.iis.avatolcv;
+package edu.oregonstate.eecs.iis.avatolcv.algata;
 
 import java.io.File;
 import java.util.Hashtable;
 import java.util.Set;
+
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
 public class OutputFiles {
 	private static final String NL = System.getProperty("line.separator");
