@@ -6,6 +6,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.algata.ResultImage;
 import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
+import edu.oregonstate.eecs.iis.avatolcv.ui.ImageBrowser;
 
 public class SessionDataForTaxa {
     private List<SessionDataForTaxon> sessionDatas = new ArrayList<SessionDataForTaxon>();
@@ -37,6 +38,7 @@ public class SessionDataForTaxa {
 			taxonSessionDataForTaxonId.put(taxonId, sdft);
 		}
 	}
+	
 	public SessionDataForTaxon getSessionDataForTaxonId(String taxonId) throws AvatolCVException {
 		SessionDataForTaxon sdft =  taxonSessionDataForTaxonId.get(taxonId);
 		if (null == sdft){

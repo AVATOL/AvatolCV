@@ -24,6 +24,7 @@ public class ResultMatrixColumn extends JPanel {
 	private SessionDataForTaxa sdft = null;
 	private List<ResultMatrixCell> cells = new ArrayList<ResultMatrixCell>();
 	private ResultMatrixCell focusCell = null;
+	private int index = 0;
 	private Hashtable<String, ResultMatrixCell> cellsForTaxonName = new Hashtable<String, ResultMatrixCell>();
     public ResultMatrixColumn(MorphobankBundle mb, SessionDataForTaxa sdft) throws AvatolCVException {
 		this.setLayout(new GridBagLayout());
@@ -59,6 +60,7 @@ public class ResultMatrixColumn extends JPanel {
 		//c.ipady = 4;
 		c.insets = new Insets(2,4,2,4);
 		this.add(spacerPanel, c);
+		focusOnCell(getCellAtIndex(0));
     }
     /*public GridBagConstraints getConstraintsForCell(int i){
     	GridBagConstraints c = new GridBagConstraints();
@@ -109,6 +111,7 @@ public class ResultMatrixColumn extends JPanel {
     public int getRowCount(){
     	return this.sdft.getTaxonCount();
     }
+    
     public ResultMatrixCell getCellAtIndex(int index){
     	return this.cells.get(index);
     }
@@ -121,5 +124,19 @@ public class ResultMatrixColumn extends JPanel {
     	}
     	this.focusCell = getCellForTaxonName(taxonName);
     	this.focusCell.setFocus(true);
+    }
+    public void focusOnCell(ResultMatrixCell cell){
+    	if (null != this.focusCell){
+    		this.focusCell.setFocus(false);
+    	}
+    	this.focusCell = cell;
+    	this.focusCell.setFocus(true);
+    }
+    public ResultMatrixCell getFocusCell(){
+    	return this.focusCell;
+    }
+    public ImageBrowser getActiveImageBrowser(){
+    	ResultMatrixCell focusCell = getFocusCell();
+    	return focusCell.getSessionDataForTaxon().getImageBrowser();
     }
 }

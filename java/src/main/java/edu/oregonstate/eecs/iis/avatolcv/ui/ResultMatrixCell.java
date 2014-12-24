@@ -52,6 +52,9 @@ public class ResultMatrixCell{
     	scoreConfidenceLabel.setOpaque(true);
     	//this.add(scoreConfidencePanel, getConfidencePanelConstraints());
     }
+    public SessionDataForTaxon getSessionDataForTaxon(){
+    	return this.sdft;
+    }
     public JLabel getConfidenceLabel(){
     	return this.scoreConfidenceLabel;
     }
@@ -111,6 +114,10 @@ public class ResultMatrixCell{
     }
     public void setFocus(boolean value){
     	this.isFocus = value;
+    	if (value){
+    		// show the imageBrowser for this taxon
+    		ImageBrowser.switchToBrowser(this.sdft.getImageBrowser());
+    	}
     }
     public String getCellScoreString(){
     	return this.sdft.getCombinedScoreString();

@@ -2,16 +2,17 @@ package edu.oregonstate.eecs.iis.avatolcv;
 
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.algata.ImageSet;
 import edu.oregonstate.eecs.iis.avatolcv.algata.ResultImage;
+import edu.oregonstate.eecs.iis.avatolcv.algata.ImageSetSupplier;
 
-public class SessionData {
+public class SessionData  implements ImageSetSupplier {
 	private FOCUS focus = FOCUS.images_scored;
 	enum FOCUS {
 		training,
 		images_scored,
 		images_not_scored
 	}
-	
 	//Need a vector of in-order taxa names, and a map for finding the result image
 	protected List<ResultImage> trainingImages = null;
 	protected List<ResultImage> scoredImages = null;
@@ -192,6 +193,21 @@ public class SessionData {
 			return this.trainingImages.get(index);
 		}
 		throw new AvatolCVException("no resultImage for charId " + charId + " taxonId " + taxonId + " in current session data");
+	}
+	
+	public ImageSet getTrainingImageSet() {
+		ImageSet is = new ImageSet(this.trainingImages);
+		return is;
+	}
+	
+	public ImageSet getScoredImageSet() {
+		ImageSet is = new ImageSet(this.scoredImages);
+		return is;
+	}
+	
+	public ImageSet getUnscoredImageSet() {
+		ImageSet is = new ImageSet(this.unscoredImages);
+		return is;
 	}
 }
 

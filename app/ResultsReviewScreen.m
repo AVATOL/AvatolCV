@@ -8,8 +8,16 @@ classdef ResultsReviewScreen < handle
         ssm;
         dataFocus = 'scoredImages';
         sessionData;
+        sessionDataForTaxa;
+        resultMatrixColumn;
         imageControlTags = {};
         metadataControlTags = {};
+        heightRatio;
+        matrixHeight;
+        
+        javaTaxaScrollPane;
+        javaTaxaConfidenceSlider;
+        javaConfidenceLabel;
     end
     
     methods
@@ -156,7 +164,38 @@ classdef ResultsReviewScreen < handle
             obj.sessionData.setFocusAsTraining();
             obj.showResults();
         end
+        
         function loadImageWidgets(obj)
+            obj.ui.deleteControls(obj.imageControlTags);
+            obj.ui.imageNavigationPanel
+            import edu.oregonstate.eecs.iis.avatolcv.ui.ImageBrowser;
+            imageBrowser = obj.resultMatrixColumn.getActiveImageBrowser();
+            imageBrowserHostPanel = imageBrowser.getImageBrowserHostPanel();
+            import javax.swing.JTextArea;
+            import javax.swing.JTabbedPane;
+            import javax.swing.JLabel;
+            import java.awt.Color;
+            import java.awt.Dimension;
+            tabbedPane = JTabbedPane();
+            label1 = JLabel('111111111111');
+            label2 = JLabel('22222222222222');
+            label3 = JLabel('3333333333333333333');
+            %tabbedPane.addTab('AAAAAAA', null, label1,'Show training examples for selected taxon');
+            %tabbedPane.addTab('BBBBBBB', null, label2,'Show training examples for selected taxon');
+            %tabbedPane.addTab('CCCCCCC', null, label3,'Show training examples for selected taxon');
+
+            %textArea = JTextArea('some long text that is taking up space and doesnt know when to end', 10,10);
+            %textArea.setBackground(Color.green);
+            % Now place this scroll-pane within a Matlab container (figure or panel)
+            %[jhScroll,hContainer] = javacomponent(jScrollPane,[10,10,80,65],obj.ui.answerPanel);
+            %[jhScroll,hContainer] = javacomponent(jScrollPane,[0.0,0.0,0.9,0.9],obj.ui.answerPanel);
+            dimension = Dimension(530,530);
+            imageBrowserHostPanel.setPreferredSize(dimension);
+            [jhPanel,hContainer] = javacomponent(imageBrowserHostPanel,[0,0,550,550],obj.ui.imageBrowserPanel);
+            %imageBrowserHostPanel.revalidate();
+            
+        end
+        function loadImageWidgetsOld(obj)
             fprintf('loadImageWidgets\n');
             obj.ui.deleteControls(obj.imageControlTags);
             %
@@ -227,18 +266,55 @@ classdef ResultsReviewScreen < handle
             fprintf('cell count %c', resultColumnMatrix.getCount());
             
         end
+       
+        function slider_callback1(obj,src,eventdata,arg1)
+            val = get(src,'Value');
+            yHiddenDistance = obj.heightRatio - 1;
+            yPosition =  -yHiddenDistance * val;
+            set(arg1,'Position',[0 yPosition 1 obj.matrixHeight])
+        end
+        function loadMatrixColumn(obj)
+            %matrixColumnOuterPanel = uipanel('Background', [0.2 0.9 0.9],...%[1 0.3 0.3]
+            %                          'BorderType', 'none',...
+            %                          'Tag', 'matrixColumnPanel',...
+            %                          'Parent',obj.ui.resultsMiddlePanel,...
+            %                          'Position',[0.0,0.0,1.0,0.8]);
+            obj.sessionDataForTaxa = obj.ssm.getSessionDataForTaxa(obj.session.morphobankBundle);
+            %import edu.oregonstate.eecs.iis.avatolcv.ui.ResultsReviewJavaLayer;
+           % resultsReviewJavaLayer = ResultsReviewJavaLayer(sessionDataForTaxa);
+            %matrixColumnPanel = resultsReviewJavaLayer.getMatrixColumnPanel();
+            %jScrollPane = com.mathworks.mwswing.MJScrollPane(matrixColumnPanel);
+            
+            import edu.oregonstate.eecs.iis.avatolcv.ui.ResultMatrixColumn;
+            obj.resultMatrixColumn = ResultMatrixColumn(obj.session.morphobankBundle, obj.sessionDataForTaxa);
+            jScrollPane = com.mathworks.mwswing.MJScrollPane(obj.resultMatrixColumn);
+            
+            % Now place this scroll-pane within a Matlab container (figure or panel)
+            %[jhScroll,hContainer] = javacomponent(jScrollPane,[10,10,80,65],obj.ui.answerPanel);
+            %[jhScroll,hContainer] = javacomponent(jScrollPane,[0.0,0.0,0.9,0.9],obj.ui.answerPanel);
+            [obj.javaTaxaScrollPane,hContainer] = javacomponent(jScrollPane,[0,0,360,530],obj.ui.resultsMiddlePanel);
+            
+            slider = obj.resultMatrixColumn.getConfidenceSlider();
+            [obj.javaTaxaConfidenceSlider,hContainer] = javacomponent(slider,[0,534,360,70],obj.ui.resultsMiddlePanel);
+             
+            label = obj.resultMatrixColumn.getConfidenceLabel();
+            [obj.javaConfidenceLabel,hContainer] = javacomponent(label,[0,610,360,30],obj.ui.resultsMiddlePanel);
+        end
         function loadMetadataWidgets(obj)
             curMetadata = obj.ssm.getDisplayableData();
             obj.ui.deleteControls(obj.metadataControlTags);
+            
+            obj.loadMatrixColumn();
+            
             metadataContent = uicontrol('style', 'text' ,...
                                          'Parent',obj.ui.scoredSetMetadataPanel,...
                                          'Units','normalized',...
                                          'String', char(curMetadata) ,...
-                                         'position', [0.02,0.5,0.98,0.48] ,...
+                                         'position', [0.00,0.00,1.0,1.0] ,...
                                          'FontName', obj.ui.fontname ,...
                                          'FontSize', obj.ui.fontsize ,...
                                          'Tag','metadataContent' ,...
-                                         'Background',[0.9 0.9 0.9],...
+                                         'Background',[1 1 1],...
                                          'HorizontalAlignment', 'left');%'BackgroundColor', [0.1 1 0.1] ,...
             
             obj.metadataControlTags = { 'metadataContent' };
@@ -351,7 +427,7 @@ classdef ResultsReviewScreen < handle
                  plot(x,y,'r.','MarkerSize',8)
              end
                
-             xlabel('foo');
+             %xlabel(char(resultImage.getCharacterName()));
              set(currentFigure, 'pointer', 'arrow')
         end  
         function showNextMetadata(obj, hObject, eventData)
@@ -371,6 +447,9 @@ classdef ResultsReviewScreen < handle
             obj.loadImageWidgets();
         end
         function doAnotherCharacter(obj,hObject, eventData)
+            delete(obj.javaConfidenceLabel);
+            delete(obj.javaTaxaConfidenceSlider);
+            delete(obj.javaTaxaScrollPane);
             obj.session.doAnotherCharacter();
         end
         function exit(obj, hobject, eventData)

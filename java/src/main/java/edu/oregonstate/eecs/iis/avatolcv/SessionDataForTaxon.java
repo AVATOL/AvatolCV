@@ -5,22 +5,29 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 
+import edu.oregonstate.eecs.iis.avatolcv.algata.ImageSet;
+import edu.oregonstate.eecs.iis.avatolcv.algata.ImageSetSupplier;
 import edu.oregonstate.eecs.iis.avatolcv.algata.ResultImage;
+import edu.oregonstate.eecs.iis.avatolcv.ui.ImageBrowser;
 
 public class SessionDataForTaxon extends SessionData {
 	private String taxonId = null;
 	private String taxonName = null;
 	private double combinedScore = -1.0;
-	
+	private ImageBrowser imageBrowser = null;
     public SessionDataForTaxon(String taxonId,String taxonName, String charId, String charName,
 			List<ResultImage> trainingImages,
 			List<ResultImage> scoredImages,
-			List<ResultImage> unscoredImages){
+			List<ResultImage> unscoredImages) throws AvatolCVException {
     	super(charId, charName, trainingImages, scoredImages, unscoredImages);
         this.taxonId = taxonId;
         this.taxonName = taxonName;
         this.combinedScore = calculateCombinedScore();
+        this.imageBrowser = new ImageBrowser(this);
 	}
+    public ImageBrowser getImageBrowser(){
+    	return this.imageBrowser;
+    }
     public double getRandomInRange(double min, double max){
     	double curVal = max + 1;
     	while(curVal < min || curVal > max){
@@ -115,4 +122,5 @@ public class SessionDataForTaxon extends SessionData {
         }
         return scoreString;
     }
+	
 }

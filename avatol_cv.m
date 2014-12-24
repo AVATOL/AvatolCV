@@ -8,6 +8,7 @@ function avatol_cv
     end
     if ispc
         javaaddpath('.\\java\\lib');
+        %javaaddpath('.\\java\\lib\\avatol_cv.jar');
         javaaddpath('.\\java\\bin');
     else
         javaaddpath('java/bin');
