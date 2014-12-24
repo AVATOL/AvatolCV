@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
+<jardesc>
+    <jar path="avatol_cv/lib/avatol_cv.jar"/>
+    <options buildIfNeeded="true" compress="false" descriptionLocation="/avatol_cv/avatol_cv.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <file path="/avatol_cv/.project"/>
+        <javaElement handleIdentifier="=avatol_cv/src\/test\/java"/>
+        <folder path="/avatol_cv/src"/>
+        <file path="/avatol_cv/.gitignore"/>
+        <javaElement handleIdentifier="=avatol_cv/src\/main\/java"/>
+        <file path="/avatol_cv/.classpath"/>
+    </selectedElements>
+</jardesc>
