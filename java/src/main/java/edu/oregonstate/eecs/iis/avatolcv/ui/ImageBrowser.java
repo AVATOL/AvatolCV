@@ -18,21 +18,23 @@ public class ImageBrowser extends JPanel {
 	private ImageNavigator trainingImageNavigator = null;
 	private ImageNavigator scoredImageNavigator = null;
 	private ImageNavigator unscoredImageNavigator = null;
+	private String taxonName = null;
 	static {
 		imageBrowserHostPanel.setLayout(new GridBagLayout());
 		imageBrowserHostPanel.setBackground(Color.red);
 	}
 	private static ImageBrowser previouslyHostedImageBrowser = null;
 	private ImageSetSupplier imageSetSupplier = null;
-    public ImageBrowser(ImageSetSupplier imageSetSupplier) throws AvatolCVException {
+    public ImageBrowser(ImageSetSupplier imageSetSupplier, String taxonName) throws AvatolCVException {
     	this.imageSetSupplier = imageSetSupplier;
+    	this.taxonName = taxonName;
     	populateImageBrowser(imageSetSupplier);
     	this.setLayout(new GridBagLayout());
     }
     public void populateImageBrowser(ImageSetSupplier imageSetSupplier) throws AvatolCVException {
-    	this.trainingImageNavigator = new ImageNavigator(imageSetSupplier.getTrainingImageSet());
-    	this.scoredImageNavigator = new ImageNavigator(imageSetSupplier.getScoredImageSet());
-    	this.unscoredImageNavigator = new ImageNavigator(imageSetSupplier.getUnscoredImageSet());
+    	this.trainingImageNavigator = new ImageNavigator(imageSetSupplier.getTrainingImageSet(), this.taxonName, "training");
+    	this.scoredImageNavigator = new ImageNavigator(imageSetSupplier.getScoredImageSet(), this.taxonName, "scored");
+    	this.unscoredImageNavigator = new ImageNavigator(imageSetSupplier.getUnscoredImageSet(), this.taxonName, "unscored");
     	JTabbedPane tp = getTabbedPane(trainingImageNavigator, scoredImageNavigator, unscoredImageNavigator);
     	this.add(tp, getUseAllSpaceConstraints());
     }
@@ -75,6 +77,7 @@ public class ImageBrowser extends JPanel {
     	imageBrowserHostPanel.add(ib,getUseAllSpaceConstraints());
     	previouslyHostedImageBrowser = ib;
     	ib.loadImages();
+    	imageBrowserHostPanel.revalidate();
     }
     public static void switchToBrowser(ImageBrowser ib){
     	ImageBrowserSwitcher ibs = new ImageBrowserSwitcher(ib);

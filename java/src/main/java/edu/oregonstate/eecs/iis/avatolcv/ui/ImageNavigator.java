@@ -25,8 +25,12 @@ public class ImageNavigator extends JPanel {
 	private JPanel imagePanel = null;
 	private JPanel iconPanel = null;
 	private JLabel picLabel = null;
-    public ImageNavigator(ImageSet imageSet) {
+	private String taxonName = null;
+	private String type = null;
+    public ImageNavigator(ImageSet imageSet, String taxonName, String type) {
 		this.imageSet = imageSet;
+		this.taxonName = taxonName;
+		this.type = type;
     	this.setLayout(new GridBagLayout());
     	this.imagePanel = new JPanel();
     	this.imagePanel.setLayout(new GridBagLayout());
@@ -82,9 +86,12 @@ public class ImageNavigator extends JPanel {
         return bi;
     }
     public void unloadImages(){
-    	this.imagePanel.remove(this.picLabel);
-    	this.picLabel = null;
-    	System.gc();
+    	System.out.println("Image Navigator " + this.taxonName + " " + this.type + " trying to unload");
+    	if (this.imageSet.hasData()){
+    		this.imagePanel.remove(this.picLabel);
+        	this.picLabel = null;
+        	System.gc();
+    	}
     }
     public JPanel getIconPanel(){
     	JPanel p = new JPanel();

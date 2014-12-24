@@ -23,7 +23,7 @@ public class SessionDataForTaxon extends SessionData {
         this.taxonId = taxonId;
         this.taxonName = taxonName;
         this.combinedScore = calculateCombinedScore();
-        this.imageBrowser = new ImageBrowser(this);
+        this.imageBrowser = new ImageBrowser(this, this.taxonName);
 	}
     public ImageBrowser getImageBrowser(){
     	return this.imageBrowser;

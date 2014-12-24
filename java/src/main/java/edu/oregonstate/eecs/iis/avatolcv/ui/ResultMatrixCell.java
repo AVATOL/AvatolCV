@@ -31,18 +31,21 @@ public class ResultMatrixCell{
     	this.sdft = sdft;
     	this.taxonId = taxonId;
     	this.taxonName = taxonName;
+    	TaxonSelectionListener tsl = new TaxonSelectionListener(this);
     	//this.setLayout(new GridBagLayout());
     	taxonNameLabel = new JLabel(taxonName);
     	taxonNameLabel.setFont(new Font("Sans Serif",Font.PLAIN,16));
     	taxonNameLabel.setBackground(backgroundColor);
     	taxonNameLabel.setOpaque(true);
     	taxonNameLabel.setForeground(Color.black);
+    	taxonNameLabel.addMouseListener(tsl);
     	
     	stateLabel = new JLabel(sdft.getBelievedState());
     	stateLabel.setFont(new Font("Sans Serif",Font.PLAIN,16));
     	stateLabel.setBackground(backgroundColor);
     	stateLabel.setOpaque(true);
     	stateLabel.setForeground(Color.black);
+    	stateLabel.addMouseListener(tsl);
     	
     	//this.add(taxonNameLabel,getLabelConstraints());
     	Color green = Color.green;
@@ -50,6 +53,7 @@ public class ResultMatrixCell{
     	scoreConfidenceLabel.setFont(new Font("Sans Serif",Font.PLAIN,16));
     	scoreConfidenceLabel.setBackground(green);
     	scoreConfidenceLabel.setOpaque(true);
+    	scoreConfidenceLabel.addMouseListener(tsl);
     	//this.add(scoreConfidencePanel, getConfidencePanelConstraints());
     }
     public SessionDataForTaxon getSessionDataForTaxon(){
