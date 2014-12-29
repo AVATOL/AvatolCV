@@ -52,21 +52,27 @@ public class ImageBrowser extends JPanel {
     	tabbedPane.addTab("Unscored Images", null, unscoredPanel,
     	                  "Show images that could not be scored");
     	tabbedPane.setMnemonicAt(2, KeyEvent.VK_U);
+    	tabbedPane.setBackground(Color.white);
     	return tabbedPane;
     }
     public static JPanel getImageBrowserHostPanel(){
     	return imageBrowserHostPanel;
     }
     public void unloadImages(){
+    	System.out.println(System.currentTimeMillis() + " unloadImages begin " + this.taxonName);
     	this.trainingImageNavigator.unloadImages();
     	this.scoredImageNavigator.unloadImages();
     	this.unscoredImageNavigator.unloadImages();
+    	System.out.println(System.currentTimeMillis() + " unloadImages end " + this.taxonName);
     }
 
     public void loadImages() throws AvatolCVException {
+
+    	System.out.println(System.currentTimeMillis() + " loadImages begin " + this.taxonName);
     	this.trainingImageNavigator.loadImages();
     	this.scoredImageNavigator.loadImages();
     	this.unscoredImageNavigator.loadImages();
+    	System.out.println(System.currentTimeMillis() + " loadImages end " + this.taxonName);
     }
     public static void hostImageBrowser(ImageBrowser ib) throws AvatolCVException {
     	if (previouslyHostedImageBrowser != null){

@@ -1,5 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.algata;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
@@ -15,6 +16,14 @@ public class ImageSet {
     	if (images.size() == 0){
     		this.index = -1;
     	}
+    }
+    public List<String> getAllThumbnailPaths(){
+    	List<String> result = new ArrayList<String>();
+    	for (ResultImage image : images){
+    		String thumbnailPath = image.getThumbnailMediaPath();
+    		result.add(thumbnailPath);
+    	}
+    	return result;
     }
     public boolean hasData(){
     	if (null != this.images && this.images.size() > 0){

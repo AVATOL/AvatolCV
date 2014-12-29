@@ -1,8 +1,10 @@
 package edu.oregonstate.eecs.iis.avatolcv.algata;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.images.ImageScaler;
 import edu.oregonstate.eecs.iis.avatolcv.mb.Annotation;
 import edu.oregonstate.eecs.iis.avatolcv.mb.AnnotationCoordinates;
+import edu.oregonstate.eecs.iis.avatolcv.mb.Media;
 
 public class ScoredImage extends AnnotatedItem implements ResultImage {
 	private static final String SEP = System.getProperty("file.separator");
@@ -54,6 +56,20 @@ public class ScoredImage extends AnnotatedItem implements ResultImage {
     public String getMediaPath(){
     	return this.mediaPath;
     }
+
+	@Override
+	public String getScaledMediaPath() {
+		String mediaPath = this.getMediaPath();
+		String scaledMediaPath = mediaPath.replaceFirst(Media.MEDIA_DIRNAME, ImageScaler.SCALED_IMAGE_DIR);
+		return scaledMediaPath;
+	}
+
+	@Override
+	public String getThumbnailMediaPath() {
+		String mediaPath = this.getMediaPath();
+		String thumbnailMediaPath = mediaPath.replaceFirst(Media.MEDIA_DIRNAME, ImageScaler.THUMBNAIL_DIR);
+		return thumbnailMediaPath;
+	}
 	@Override
     public String getConfidence(){
     	return this.confidence;

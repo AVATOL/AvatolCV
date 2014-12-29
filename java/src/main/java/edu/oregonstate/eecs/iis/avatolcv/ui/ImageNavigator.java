@@ -10,23 +10,29 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algata.ImageSet;
 import edu.oregonstate.eecs.iis.avatolcv.algata.ResultImage;
+import edu.oregonstate.eecs.iis.avatolcv.mb.PointAsPercent;
 
 public class ImageNavigator extends JPanel {
 	private ImageSet imageSet = null;
 	private JPanel imagePanel = null;
-	private JPanel iconPanel = null;
+	private JScrollPane thumbnailScrollPane = null;
+	private JPanel thumbnailPanel = null;
 	private JLabel picLabel = null;
 	private String taxonName = null;
 	private String type = null;
+	private List<JLabel> thumbnailLabels = null;
     public ImageNavigator(ImageSet imageSet, String taxonName, String type) {
 		this.imageSet = imageSet;
 		this.taxonName = taxonName;
@@ -34,25 +40,71 @@ public class ImageNavigator extends JPanel {
     	this.setLayout(new GridBagLayout());
     	this.imagePanel = new JPanel();
     	this.imagePanel.setLayout(new GridBagLayout());
-    	this.imagePanel.setBackground(Color.yellow);	
-        this.iconPanel = getIconPanel();
-        this.iconPanel.setBackground(Color.blue);
+    	this.imagePanel.setBackground(Color.white);
+    	this.thumbnailScrollPane = new JScrollPane();
+    	this.thumbnailScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        this.thumbnailPanel = getThumbnailPanel();
+        this.thumbnailPanel.setBackground(Color.white);
+
+		thumbnailScrollPane.setViewportView(this.thumbnailPanel);
         this.add(imagePanel, getImagePanelConstraints());
-        this.add(iconPanel, getIconPanelConstraints());
+        this.add(thumbnailScrollPane, getThumbnailPanelConstraints());
     }
     public void loadImages() throws AvatolCVException{
     	String imagePath = "unknown";
+		if (this.imageSet.hasData()){
+	    	//System.out.println(System.currentTimeMillis() + " Image Navigator " + this.taxonName + " " + this.type + " loading ");
+    		imagePath = this.imageSet.getCurrentResultImage().getScaledMediaPath();
+    		List<PointAsPercent> annotationPoints = this.imageSet.getCurrentResultImage().getAnnotationCoordinates().getPoints();
+    		this.picLabel = getImageAsJLabel(imagePath, annotationPoints);
+    		this.imagePanel.add(picLabel,ImageBrowser.getUseAllSpaceConstraints());
+    		List<String> thumbnailPaths = imageSet.getAllThumbnailPaths();
+    		this.thumbnailLabels = new ArrayList<JLabel>();
+            int index = 0;
+            for (String thumbnailPath : thumbnailPaths){
+            	JLabel thumbnailLabel = getImageAsJLabel(thumbnailPath,annotationPoints);
+            	this.thumbnailLabels.add(thumbnailLabel);
+            	this.thumbnailPanel.add(thumbnailLabel, getThumbnailConstraints(index++));
+            }
+        	//System.out.println(System.currentTimeMillis() + " Image Navigator " + this.taxonName + " " + this.type + " loaded ");
+		}
+    	
+    }
+    public int getPointPixelRadius(BufferedImage image){
+    	int width = image.getWidth();
+		int height = image.getHeight();
+		if (width < 100 || height < 100){
+			return 3;
+		}
+		return 5;
+    }
+    public int getPixelDistanceForPercentCoordinate(int imageDimension, double coord){
+    	int pixels = (int)(imageDimension * coord)/100;
+    	return pixels;
+    }
+    public JLabel getImageAsJLabel(String imagePath, List<PointAsPercent> annotationPoints) throws AvatolCVException {
     	try {
-    		if (this.imageSet.hasData()){
-        		imagePath = this.imageSet.getCurrentResultImage().getMediaPath();
-        		BufferedImage image = ImageIO.read(new File(imagePath));
-        		BufferedImage scaledImage = scaleImage(image);
-        		
-        		this.picLabel = new JLabel(new ImageIcon(scaledImage));
-        		this.imagePanel.add(picLabel,ImageBrowser.getUseAllSpaceConstraints());
-    		}
+    		BufferedImage image = ImageIO.read(new File(imagePath));
+    		int radius = getPointPixelRadius(image);
+    		int width = image.getWidth();
+    		int height = image.getHeight();
+    		//Graphics g2d = image.getGraphics();
+    		
+    		ImageIcon icon = new ImageIcon(image);
+    		Graphics g2d = icon.getImage().getGraphics();
+    		g2d.setColor(Color.red);
+    		for (PointAsPercent pap : annotationPoints){
+    			double x = pap.getX();
+    			int xPixel = getPixelDistanceForPercentCoordinate(width, x);
+    			double y = pap.getY();
+    			int yPixel = getPixelDistanceForPercentCoordinate(height, y);
+    			g2d.fillOval(xPixel, yPixel, radius, radius); 
+    		}  
+    		JLabel result = new JLabel(new ImageIcon(image));
+    		return result;
     	}
     	catch(IOException ioe){
+    		ioe.printStackTrace();
     		throw new AvatolCVException("problem loading images for image set " + imagePath);
     	}
     }
@@ -78,44 +130,50 @@ public class ImageNavigator extends JPanel {
 		return resizedImage;
     }
     public static BufferedImage resize(BufferedImage image, int width, int height) {
+    	System.out.println(System.currentTimeMillis() + " Image Navigator resize image begin");
         BufferedImage bi = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
         Graphics2D g2d = (Graphics2D) bi.createGraphics();
         g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
         g2d.drawImage(image, 0, 0, width, height, null);
         g2d.dispose();
+
+    	System.out.println(System.currentTimeMillis() + " Image Navigator resize image done");
         return bi;
     }
     public void unloadImages(){
-    	System.out.println("Image Navigator " + this.taxonName + " " + this.type + " trying to unload");
+    	System.out.println(System.currentTimeMillis() + " Image Navigator " + this.taxonName + " " + this.type + " trying to unload ");
     	if (this.imageSet.hasData()){
     		this.imagePanel.remove(this.picLabel);
         	this.picLabel = null;
-        	System.gc();
+        	//System.out.println(System.currentTimeMillis() + " calling gc ");
+        	//System.gc();
+        	//System.out.println( System.currentTimeMillis() + " called gc ");
+        	if (null != this.thumbnailLabels){
+        		for (JLabel label : this.thumbnailLabels){
+        			this.thumbnailPanel.remove(label);
+        		}
+        		this.thumbnailLabels = null;
+        	}
     	}
     }
-    public JPanel getIconPanel(){
+    public JPanel getThumbnailPanel(){
     	JPanel p = new JPanel();
     	p.setLayout(new GridBagLayout());
-    	int width = this.imageSet.getCurrentListSize();
-    	for (int i = 0; i < width; i ++){
-    		JPanel iconPanel = new JPanel();
-    		p.add(iconPanel, getIconConstraints(i));
-    	}
     	return p;
     }
 
 
-    public GridBagConstraints getIconConstraints(int x){
+    public GridBagConstraints getThumbnailConstraints(int x){
     	GridBagConstraints c = new GridBagConstraints();
 		c.gridx = x;
 		c.gridy = 0;
-		c.weightx = 0.0;
-		c.weighty = 1.0;
+		c.weightx = 1.0;
+		c.weighty = 0.0;
 		c.anchor = GridBagConstraints.CENTER;
 		c.fill = GridBagConstraints.BOTH;
 		c.gridheight = 1;
 		c.gridwidth = 1;
-		//c.insets = new Insets(2,4,2,4);
+		c.insets = new Insets(0,2,0,2);
 		return c;
     }
 
@@ -124,7 +182,7 @@ public class ImageNavigator extends JPanel {
 		c.gridx = 0;
 		c.gridy = 0;
 		c.weightx = 1.0;
-		c.weighty = 0.8;
+		c.weighty = 0.0;
 		c.anchor = GridBagConstraints.NORTH;
 		c.fill = GridBagConstraints.BOTH;
 		c.gridheight = 1;
@@ -132,12 +190,12 @@ public class ImageNavigator extends JPanel {
 		c.insets = new Insets(2,4,2,4);
 		return c;
     }
-    public GridBagConstraints getIconPanelConstraints(){
+    public GridBagConstraints getThumbnailPanelConstraints(){
     	GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 1;
 		c.weightx = 1.0;
-		c.weighty = 0.2;
+		c.weighty = 1.0;
 		c.anchor = GridBagConstraints.SOUTH;
 		c.fill = GridBagConstraints.BOTH;
 		c.gridheight = 1;

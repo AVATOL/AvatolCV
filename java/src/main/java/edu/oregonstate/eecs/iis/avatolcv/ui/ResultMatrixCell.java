@@ -6,9 +6,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
 
 import edu.oregonstate.eecs.iis.avatolcv.SessionDataForTaxon;
 
@@ -27,11 +30,13 @@ public class ResultMatrixCell{
 	private JLabel taxonNameLabel = null;
 	private JLabel scoreConfidenceLabel = null;
 	private JLabel stateLabel = null;
-    public ResultMatrixCell(String taxonId, String taxonName, SessionDataForTaxon sdft){
+	private ResultMatrixColumn rmc = null;
+    public ResultMatrixCell(String taxonId, String taxonName, SessionDataForTaxon sdft, ResultMatrixColumn rmc){
+    	this.rmc = rmc;
     	this.sdft = sdft;
     	this.taxonId = taxonId;
     	this.taxonName = taxonName;
-    	TaxonSelectionListener tsl = new TaxonSelectionListener(this);
+    	TaxonSelectionListener tsl = new TaxonSelectionListener(this, this.rmc);
     	//this.setLayout(new GridBagLayout());
     	taxonNameLabel = new JLabel(taxonName);
     	taxonNameLabel.setFont(new Font("Sans Serif",Font.PLAIN,16));
@@ -39,6 +44,7 @@ public class ResultMatrixCell{
     	taxonNameLabel.setOpaque(true);
     	taxonNameLabel.setForeground(Color.black);
     	taxonNameLabel.addMouseListener(tsl);
+    	
     	
     	stateLabel = new JLabel(sdft.getBelievedState());
     	stateLabel.setFont(new Font("Sans Serif",Font.PLAIN,16));
@@ -53,9 +59,32 @@ public class ResultMatrixCell{
     	scoreConfidenceLabel.setFont(new Font("Sans Serif",Font.PLAIN,16));
     	scoreConfidenceLabel.setBackground(green);
     	scoreConfidenceLabel.setOpaque(true);
-    	scoreConfidenceLabel.addMouseListener(tsl);
+    	//scoreConfidenceLabel.addMouseListener(tsl);
     	//this.add(scoreConfidencePanel, getConfidencePanelConstraints());
     }
+    public void highlightCellForSelection(boolean value){
+    	if (value){
+    		this.taxonNameLabel.setBackground(Color.green);
+        	this.stateLabel.setBackground(Color.green);
+    	}
+    	else {
+    		this.taxonNameLabel.setBackground(backgroundColor);
+        	this.stateLabel.setBackground(backgroundColor);
+    	}
+    }
+    public void highlightCellForHover(boolean value){
+    	if (!this.isFocusCell()){
+    		if (value){
+    			this.taxonNameLabel.setBackground(Color.white);
+            	this.stateLabel.setBackground(Color.white);
+    		}
+    		else {
+    			this.taxonNameLabel.setBackground(backgroundColor);
+        		this.stateLabel.setBackground(backgroundColor);
+    		}
+    	}
+    }
+    
     public SessionDataForTaxon getSessionDataForTaxon(){
     	return this.sdft;
     }
@@ -121,6 +150,12 @@ public class ResultMatrixCell{
     	if (value){
     		// show the imageBrowser for this taxon
     		ImageBrowser.switchToBrowser(this.sdft.getImageBrowser());
+    		System.out.println("focus on cell " + this.taxonName);
+    		highlightCellForSelection(true);
+    	}
+    	else {
+    		System.out.println("unfocus cell " + this.taxonName);
+    		highlightCellForSelection(false);
     	}
     }
     public String getCellScoreString(){

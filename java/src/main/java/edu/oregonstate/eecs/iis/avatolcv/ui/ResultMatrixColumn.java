@@ -35,7 +35,7 @@ public class ResultMatrixColumn extends JPanel {
     		SessionDataForTaxon sd = sdft.getSessionDataForTaxonAtIndex(i);
     		String taxonId = sd.getTaxonId();
     		String taxonName = mb.getTaxonNameForId(taxonId);
-    		ResultMatrixCell cell = new ResultMatrixCell(taxonId, taxonName, sd);
+    		ResultMatrixCell cell = new ResultMatrixCell(taxonId, taxonName, sd, this);
     		this.cellsForTaxonName.put(taxonName, cell);
     		this.cells.add(cell);
     		JLabel curTaxonLabel = cell.getTaxonLabel();
@@ -118,13 +118,7 @@ public class ResultMatrixColumn extends JPanel {
     public ResultMatrixCell getCellForTaxonName(String taxonName){
     	return this.cellsForTaxonName.get(taxonName);
     }
-    public void focusOnCell(String taxonName){
-    	if (null != this.focusCell){
-    		this.focusCell.setFocus(false);
-    	}
-    	this.focusCell = getCellForTaxonName(taxonName);
-    	this.focusCell.setFocus(true);
-    }
+    
     public void focusOnCell(ResultMatrixCell cell){
     	if (null != this.focusCell){
     		this.focusCell.setFocus(false);
