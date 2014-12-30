@@ -239,7 +239,7 @@ classdef UI < handle
             obj.resultsRightPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                       'BorderType', 'none',...
                                       'Tag', 'resultsRightPanel',...
-                                      'Position',[0.54 0.1 0.45 0.86]);
+                                      'Position',[0.54 0.0 0.45 0.86]);
                                   
             %
             obj.scoredSetTitlePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]

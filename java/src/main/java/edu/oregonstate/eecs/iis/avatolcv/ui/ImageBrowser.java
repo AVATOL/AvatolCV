@@ -60,9 +60,9 @@ public class ImageBrowser extends JPanel {
     }
     public void unloadImages(){
     	System.out.println(System.currentTimeMillis() + " unloadImages begin " + this.taxonName);
-    	this.trainingImageNavigator.unloadImages();
-    	this.scoredImageNavigator.unloadImages();
-    	this.unscoredImageNavigator.unloadImages();
+    	this.trainingImageNavigator.unloadAllImages();
+    	this.scoredImageNavigator.unloadAllImages();
+    	this.unscoredImageNavigator.unloadAllImages();
     	System.out.println(System.currentTimeMillis() + " unloadImages end " + this.taxonName);
     }
 

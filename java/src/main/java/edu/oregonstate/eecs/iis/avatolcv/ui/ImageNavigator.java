@@ -18,6 +18,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.LineBorder;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algata.ImageSet;
@@ -25,6 +26,11 @@ import edu.oregonstate.eecs.iis.avatolcv.algata.ResultImage;
 import edu.oregonstate.eecs.iis.avatolcv.mb.PointAsPercent;
 
 public class ImageNavigator extends JPanel {
+	/**
+	 * 
+	 */
+	public static final int THUMBNAIL_BORDER_WIDTH = 3;
+	private static final long serialVersionUID = 1L;
 	private ImageSet imageSet = null;
 	private JPanel imagePanel = null;
 	private JScrollPane thumbnailScrollPane = null;
@@ -50,25 +56,77 @@ public class ImageNavigator extends JPanel {
         this.add(imagePanel, getImagePanelConstraints());
         this.add(thumbnailScrollPane, getThumbnailPanelConstraints());
     }
+    public boolean isResultImageSelected(ResultImage ri) throws AvatolCVException {
+    	if (this.imageSet.isCurrentResultImage(ri)){
+    		return true;
+    	}
+    	return false;
+    }
+    public ImageSet getImageSet(){
+    	return this.imageSet;
+    }
     public void loadImages() throws AvatolCVException{
-    	String imagePath = "unknown";
-		if (this.imageSet.hasData()){
+    	if (this.imageSet.hasData()){
 	    	//System.out.println(System.currentTimeMillis() + " Image Navigator " + this.taxonName + " " + this.type + " loading ");
-    		imagePath = this.imageSet.getCurrentResultImage().getScaledMediaPath();
-    		List<PointAsPercent> annotationPoints = this.imageSet.getCurrentResultImage().getAnnotationCoordinates().getPoints();
-    		this.picLabel = getImageAsJLabel(imagePath, annotationPoints);
-    		this.imagePanel.add(picLabel,ImageBrowser.getUseAllSpaceConstraints());
-    		List<String> thumbnailPaths = imageSet.getAllThumbnailPaths();
-    		this.thumbnailLabels = new ArrayList<JLabel>();
-            int index = 0;
-            for (String thumbnailPath : thumbnailPaths){
-            	JLabel thumbnailLabel = getImageAsJLabel(thumbnailPath,annotationPoints);
-            	this.thumbnailLabels.add(thumbnailLabel);
-            	this.thumbnailPanel.add(thumbnailLabel, getThumbnailConstraints(index++));
-            }
+			ResultImage ri = this.imageSet.getCurrentResultImage();
+			loadMainImage(ri);
+    		loadThumbnails();
         	//System.out.println(System.currentTimeMillis() + " Image Navigator " + this.taxonName + " " + this.type + " loaded ");
 		}
-    	
+    }
+    public void loadMainImage(ResultImage ri) throws AvatolCVException {
+    	List<PointAsPercent> annotationPoints = ri.getAnnotationCoordinates().getPoints();
+    	String imagePath = ri.getScaledMediaPath();
+		this.picLabel = getImageAsJLabel(imagePath, annotationPoints);
+		this.imagePanel.add(picLabel,ImageBrowser.getUseAllSpaceConstraints());
+    }
+    public void loadThumbnails() throws AvatolCVException {
+    	List<ResultImage> resultImages = imageSet.getResultImages();
+    	this.thumbnailLabels = new ArrayList<JLabel>();
+    	int index = 0;
+    	for (ResultImage ri : resultImages){
+    		String thumbnailPath = ri.getThumbnailMediaPath();
+    		JLabel thumbnailLabel = null;
+    		if (ri.hasAnnotationCoordinates()){
+    			List<PointAsPercent> annotationPoints = ri.getAnnotationCoordinates().getPoints();
+        		thumbnailLabel = getImageAsJLabel(thumbnailPath,annotationPoints);
+    		}
+    		else {
+    			thumbnailLabel = getImageAsJLabel(thumbnailPath);
+    		}
+    		thumbnailLabel.addMouseListener(new ThumbnailClickListener(thumbnailLabel, ri,this));
+        	this.thumbnailLabels.add(thumbnailLabel);
+        	this.thumbnailPanel.add(thumbnailLabel, getThumbnailConstraints(index++));
+    	}
+    	highlightThumbnail(this.thumbnailLabels.get(0));
+    }
+    public void highlightThumbnail(JLabel thumbnailLabel){
+    	// clear them all...
+    	for (JLabel label : this.thumbnailLabels){
+    		label.setBorder(new LineBorder(Color.white, THUMBNAIL_BORDER_WIDTH));
+    	}
+    	// then highlight the one desired
+    	thumbnailLabel.setBorder(new LineBorder(Color.green, THUMBNAIL_BORDER_WIDTH));
+    }
+    public void unloadMainImage(){
+    	if (this.imageSet.hasData() && this.picLabel != null){
+    		this.imagePanel.remove(this.picLabel);
+        	this.picLabel = null;
+    	}
+    }
+    public void unloadThumbnails(){
+    	if (this.imageSet.hasData() && this.picLabel != null){
+    		if (null != this.thumbnailLabels){
+        		for (JLabel label : this.thumbnailLabels){
+        			this.thumbnailPanel.remove(label);
+        		}
+        		this.thumbnailLabels = null;
+        	}
+    	}
+    }
+    public void unloadAllImages(){
+    	unloadMainImage();
+    	unloadThumbnails();
     }
     public int getPointPixelRadius(BufferedImage image){
     	int width = image.getWidth();
@@ -81,6 +139,17 @@ public class ImageNavigator extends JPanel {
     public int getPixelDistanceForPercentCoordinate(int imageDimension, double coord){
     	int pixels = (int)(imageDimension * coord)/100;
     	return pixels;
+    }
+    public JLabel getImageAsJLabel(String imagePath) throws AvatolCVException {
+    	try {
+    		BufferedImage image = ImageIO.read(new File(imagePath));
+    		JLabel result = new JLabel(new ImageIcon(image));
+    		return result;
+    	}
+    	catch(IOException ioe){
+    		ioe.printStackTrace();
+    		throw new AvatolCVException("problem loading images for image set " + imagePath);
+    	}
     }
     public JLabel getImageAsJLabel(String imagePath, List<PointAsPercent> annotationPoints) throws AvatolCVException {
     	try {
@@ -140,22 +209,6 @@ public class ImageNavigator extends JPanel {
     	System.out.println(System.currentTimeMillis() + " Image Navigator resize image done");
         return bi;
     }
-    public void unloadImages(){
-    	System.out.println(System.currentTimeMillis() + " Image Navigator " + this.taxonName + " " + this.type + " trying to unload ");
-    	if (this.imageSet.hasData()){
-    		this.imagePanel.remove(this.picLabel);
-        	this.picLabel = null;
-        	//System.out.println(System.currentTimeMillis() + " calling gc ");
-        	//System.gc();
-        	//System.out.println( System.currentTimeMillis() + " called gc ");
-        	if (null != this.thumbnailLabels){
-        		for (JLabel label : this.thumbnailLabels){
-        			this.thumbnailPanel.remove(label);
-        		}
-        		this.thumbnailLabels = null;
-        	}
-    	}
-    }
     public JPanel getThumbnailPanel(){
     	JPanel p = new JPanel();
     	p.setLayout(new GridBagLayout());
@@ -173,7 +226,7 @@ public class ImageNavigator extends JPanel {
 		c.fill = GridBagConstraints.BOTH;
 		c.gridheight = 1;
 		c.gridwidth = 1;
-		c.insets = new Insets(0,2,0,2);
+		//c.insets = new Insets(0,2,0,2);
 		return c;
     }
 

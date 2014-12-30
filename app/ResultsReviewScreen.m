@@ -191,7 +191,7 @@ classdef ResultsReviewScreen < handle
             %[jhScroll,hContainer] = javacomponent(jScrollPane,[0.0,0.0,0.9,0.9],obj.ui.answerPanel);
             dimension = Dimension(530,530);
             imageBrowserHostPanel.setPreferredSize(dimension);
-            [jhPanel,hContainer] = javacomponent(imageBrowserHostPanel,[0,0,550,550],obj.ui.imageBrowserPanel);
+            [jhPanel,hContainer] = javacomponent(imageBrowserHostPanel,[0,0,550,600],obj.ui.imageBrowserPanel);
             %imageBrowserHostPanel.revalidate();
             
         end

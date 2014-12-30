@@ -17,6 +17,28 @@ public class ImageSet {
     		this.index = -1;
     	}
     }
+    public boolean isCurrentResultImage(ResultImage ri) throws AvatolCVException{
+    	if (!images.contains(ri)){
+    		throw new AvatolCVException("ResultImage " + ri.getCharacterName() + " " + ri.getTaxonId() + " does not exist in ImageSet");
+    	} 
+    	int index = images.indexOf(ri);
+    	if (index == this.index){
+    		return true;
+    	}
+    	return false;
+    }
+    public void setCurrentResultImage(ResultImage ri) throws AvatolCVException {
+    	if (!images.contains(ri)){
+    		throw new AvatolCVException("ResultImage " + ri.getCharacterName() + " " + ri.getTaxonId() + " does not exist in ImageSet");
+    	}
+    	this.index = images.indexOf(ri);
+    }
+    public List<ResultImage> getResultImages(){
+    	List<ResultImage> list = new ArrayList<ResultImage>();
+    	list.addAll(this.images);
+    	return list;
+    }
+    /*
     public List<String> getAllThumbnailPaths(){
     	List<String> result = new ArrayList<String>();
     	for (ResultImage image : images){
@@ -25,6 +47,7 @@ public class ImageSet {
     	}
     	return result;
     }
+    */
     public boolean hasData(){
     	if (null != this.images && this.images.size() > 0){
     		return true;
