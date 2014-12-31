@@ -11,8 +11,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.ScoredSetMetadata;
 import edu.oregonstate.eecs.iis.avatolcv.ScoredSetMetadatas;
+import edu.oregonstate.eecs.iis.avatolcv.SessionDataForTaxa;
 
 public class RunSelector extends JPanel {
     /**
@@ -35,7 +37,10 @@ public class RunSelector extends JPanel {
     private JButton nextButton = new JButton("next");
     private JLabel spacer = new JLabel("         ");
     private ScoredSetMetadatas ssms = null;
-    public RunSelector(ScoredSetMetadatas ssms){
+    private ScoredSetMetadata currentScoredSetMetadata = null;
+    private JavaUI javaUI = null;
+    public RunSelector(ScoredSetMetadatas ssms, JavaUI javaUI){
+    	this.javaUI = javaUI;
     	this.ssms = ssms;
     	this.setBackground(Color.white);
     	this.setLayout(new GridBagLayout());
@@ -55,14 +60,22 @@ public class RunSelector extends JPanel {
     	this.add(splitPrompt, getLabelConstraints(13));
     	this.add(splitValue, getLabelConstraints(14));
     	this.add(new JLabel(" "), getSpacerConstraints(15));
-    	this.prevButton.addMouseListener(new PrevResultSetListener(this));
-    	this.nextButton.addMouseListener(new NextResultSetListener(this));
+    	this.prevButton.addMouseListener(new PrevResultSetListener(this, this.javaUI));
+    	this.nextButton.addMouseListener(new NextResultSetListener(this, this.javaUI));
     	decorateLabels();
     	expressDataForCurrentMetadata();
+    }
+    public String getActiveMatrixName(){
+    	return this.currentScoredSetMetadata.getMatrix();
+    }
+    public SessionDataForTaxa getSessionDataForTaxaForCurrentSession() throws AvatolCVException {
+    	SessionDataForTaxa sdft = this.ssms.getSessionDataForTaxa(this.javaUI.getCurrentBundle());
+    	return sdft;
     }
     public void expressDataForCurrentMetadata(){
     	String key = ssms.getCurrentKey();
     	ScoredSetMetadata ssm = ssms.getScoredSetMetadataForKey(key);
+    	this.currentScoredSetMetadata = ssm;
     	setValues(ssm);
     	setNavigationButtonEnableStatus();
     }

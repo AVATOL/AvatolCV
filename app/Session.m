@@ -19,6 +19,7 @@ classdef Session < handle
        
         morphobankData;
         morphobankBundle;
+        javaUI;
         
         rootDir;
         avatolSystem;
@@ -44,7 +45,9 @@ classdef Session < handle
             matrixDownloadsRootPath = obj.getFullPathForJava('matrix_downloads');
             obj.morphobankData = MorphobankData(matrixDownloadsRootPath);
             %obj.chosenMatrix = obj.morphobankData.getMatrixNameAtIndex(obj.matrixChoiceIndex);
-            %fprintf('chosen Matrix %s', char(obj.chosenMatrix));
+            %fprintf('chosen Matrix %s', char(obj.chosenMatrix
+            import edu.oregonstate.eecs.iis.avatolcv.ui.JavaUI;
+            obj.javaUI = JavaUI(obj.morphobankData);
             obj.welcomeScreen.displayWelcomeScreen();
         end
             

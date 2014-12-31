@@ -26,12 +26,14 @@ public class ResultMatrixColumn extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private static JPanel containerPanel = new JPanel();
-	private static ResultMatrixColumn activeMatrixColumn = null;
 	private SessionDataForTaxa sdft = null;
 	private List<ResultMatrixCell> cells = new ArrayList<ResultMatrixCell>();
 	private ResultMatrixCell focusCell = null;
+	private JavaUI javaUI = null;
 	private Hashtable<String, ResultMatrixCell> cellsForTaxonName = new Hashtable<String, ResultMatrixCell>();
-    public ResultMatrixColumn(MorphobankBundle mb, SessionDataForTaxa sdft) throws AvatolCVException {
+    public ResultMatrixColumn(SessionDataForTaxa sdft, JavaUI javaUI) throws AvatolCVException {
+    	System.out.println("makeing new RMC");
+    	this.javaUI = javaUI;
 		this.setLayout(new GridBagLayout());
 		this.setBackground(ResultMatrixCell.backgroundColor);
     	this.sdft = sdft;
@@ -48,7 +50,7 @@ public class ResultMatrixColumn extends JPanel {
     	for (int i = 0; i < count; i++){
     		SessionDataForTaxon sd = sdft.getSessionDataForTaxonAtIndex(i);
     		String taxonId = sd.getTaxonId();
-    		String taxonName = mb.getTaxonNameForId(taxonId);
+    		String taxonName = this.sdft.getParentBundle().getTaxonNameForId(taxonId);
     		ResultMatrixCell cell = new ResultMatrixCell(taxonId, taxonName, sd, this);
     		this.cellsForTaxonName.put(taxonName, cell);
     		this.cells.add(cell);
@@ -77,7 +79,6 @@ public class ResultMatrixColumn extends JPanel {
 		this.add(spacerPanel, c);
 		focusOnCell(getCellAtIndex(0));
 		configureContainerPanel();
-		activeMatrixColumn = this;
     }
     public GridBagConstraints getContainerConstraintsForRMC(){
     	GridBagConstraints c = new GridBagConstraints();

@@ -3,16 +3,23 @@ package edu.oregonstate.eecs.iis.avatolcv.ui;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class NextResultSetListener implements MouseListener {
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.SessionDataForTaxa;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankDataException;
+
+public class NextResultSetListener extends ResultSetListener implements MouseListener {
 	private RunSelector runSelector = null;
-    public NextResultSetListener(RunSelector runSelector){
+	private JavaUI javaUI = null;
+    public NextResultSetListener(RunSelector runSelector, JavaUI javaUI){
     	this.runSelector = runSelector;
+    	this.javaUI = javaUI;
     }
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		if (this.runSelector.backButtonNeeded()){
+		if (this.runSelector.nextButtonNeeded()){
 			this.runSelector.goToNextSession();
-			this.runSelector.expressDataForCurrentMetadata();
+			expressResultSet(this.runSelector, this.javaUI);
 		}
 	}
 	@Override

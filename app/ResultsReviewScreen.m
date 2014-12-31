@@ -29,6 +29,7 @@ classdef ResultsReviewScreen < handle
         function reset(obj)
             obj.ssms = obj.session.scoredSetMetadatas;
             obj.ssms.loadAll();
+            obj.session.javaUI.setScoredSetMetadatas(obj.session.scoredSetMetadatas);
             matrixOfMostRecentRun = char(obj.ssms.getMatrixNameFromKey(obj.ssms.getCurrentKey()));
             obj.session.matrixChoiceScreen.registerMatrixChoice(matrixOfMostRecentRun);
             obj.sessionData = obj.ssms.getSessionResultsData(obj.session.morphobankBundle);
@@ -300,10 +301,9 @@ classdef ResultsReviewScreen < handle
             set(arg1,'Position',[0 yPosition 1 obj.matrixHeight])
         end
         function loadMatrixColumn(obj)
-           obj.sessionDataForTaxa = obj.ssms.getSessionDataForTaxa(obj.session.morphobankBundle);
-           
-            import edu.oregonstate.eecs.iis.avatolcv.ui.ResultMatrixColumn;
-            obj.resultMatrixColumn = ResultMatrixColumn(obj.session.morphobankBundle, obj.sessionDataForTaxa);
+            obj.sessionDataForTaxa = obj.ssms.getSessionDataForTaxa(obj.session.morphobankBundle);
+            obj.resultMatrixColumn = obj.session.javaUI.createResultMatrixColumn(obj.sessionDataForTaxa);
+            
             containingPanel = obj.resultMatrixColumn.getContainingPanel();
             %jScrollPane = com.mathworks.mwswing.MJScrollPane(obj.resultMatrixColumn);
             [hContainingPanel,hContainer] = javacomponent(containingPanel,[10,40,400,600],obj.ui.resultsLeftPanel);
@@ -317,7 +317,7 @@ classdef ResultsReviewScreen < handle
         end
         function loadRunSelector(obj)
             import edu.oregonstate.eecs.iis.avatolcv.ui.RunSelector;
-            obj.runSelector = RunSelector(obj.ssms);
+            obj.runSelector = obj.session.javaUI.createRunSelector();
            
             [runSelectorPanel,hContainer] = javacomponent(obj.runSelector,[0,5,1200,30],obj.ui.resultsTopPanel);
         end

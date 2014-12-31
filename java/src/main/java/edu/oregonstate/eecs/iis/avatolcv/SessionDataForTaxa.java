@@ -11,11 +11,13 @@ import edu.oregonstate.eecs.iis.avatolcv.ui.ImageBrowser;
 public class SessionDataForTaxa {
     private List<SessionDataForTaxon> sessionDatas = new ArrayList<SessionDataForTaxon>();
     private Hashtable<String, SessionDataForTaxon> taxonSessionDataForTaxonId = new Hashtable<String, SessionDataForTaxon>();
+    private MorphobankBundle mb = null;
 	public SessionDataForTaxa(String charId, String charName,
 			List<ResultImage> trainingImages,
 			List<ResultImage> scoredImages,
 			List<ResultImage> unscoredImages,
 			MorphobankBundle mb) throws AvatolCVException {
+		this.mb = mb;
 		List<String> taxonIds = getTaxonIdsFromResultImages(trainingImages);
 		for (String taxonId : taxonIds){
 			List<ResultImage> trainingImagesForTaxon = getResultImagesForTaxon(taxonId, trainingImages);
@@ -74,4 +76,7 @@ public class SessionDataForTaxa {
     	}
     	return filteredList;
     }
+	public MorphobankBundle getParentBundle(){
+		return this.mb;
+	}
 }

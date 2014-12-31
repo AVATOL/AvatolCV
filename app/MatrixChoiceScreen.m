@@ -37,6 +37,7 @@ classdef MatrixChoiceScreen < handle
             matrixNameJavaString = java.lang.String(matrixName);
             edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle.printString(matrixNameJavaString);
             obj.session.morphobankBundle = obj.session.morphobankData.loadMatrix(matrixNameJavaString);
+            obj.session.javaUI.setCurrentBundle(obj.session.morphobankBundle);
         end    
         function displayMatrixQuestion(obj)
             obj.ui.deleteObsoleteControls();
