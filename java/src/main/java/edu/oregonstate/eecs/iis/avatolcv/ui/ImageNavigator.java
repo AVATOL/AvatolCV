@@ -221,7 +221,7 @@ public class ImageNavigator extends JPanel {
 		c.gridx = x;
 		c.gridy = 0;
 		c.weightx = 1.0;
-		c.weighty = 0.0;
+		c.weighty = 1.0;
 		c.anchor = GridBagConstraints.CENTER;
 		c.fill = GridBagConstraints.BOTH;
 		c.gridheight = 1;
@@ -248,7 +248,7 @@ public class ImageNavigator extends JPanel {
 		c.gridx = 0;
 		c.gridy = 1;
 		c.weightx = 1.0;
-		c.weighty = 0.0;
+		c.weighty = 1.0;
 		c.anchor = GridBagConstraints.SOUTH;
 		c.fill = GridBagConstraints.BOTH;
 		c.gridheight = 1;

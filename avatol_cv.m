@@ -36,7 +36,7 @@ function avatol_cv
     %
     clearvars();
     clearvars -global H;
-    javaclasspath
+    %javaclasspath
     %global H;
     rootDir = pwd();
     avatolSystem = AvatolSystem(java.lang.String(rootDir));

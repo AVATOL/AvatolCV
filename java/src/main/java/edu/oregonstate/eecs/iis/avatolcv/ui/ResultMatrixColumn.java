@@ -21,11 +21,15 @@ import edu.oregonstate.eecs.iis.avatolcv.SessionDataForTaxon;
 import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
 
 public class ResultMatrixColumn extends JPanel {
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private static JPanel containerPanel = new JPanel();
+	private static ResultMatrixColumn activeMatrixColumn = null;
 	private SessionDataForTaxa sdft = null;
 	private List<ResultMatrixCell> cells = new ArrayList<ResultMatrixCell>();
 	private ResultMatrixCell focusCell = null;
-	private int index = 0;
 	private Hashtable<String, ResultMatrixCell> cellsForTaxonName = new Hashtable<String, ResultMatrixCell>();
     public ResultMatrixColumn(MorphobankBundle mb, SessionDataForTaxa sdft) throws AvatolCVException {
 		this.setLayout(new GridBagLayout());
@@ -72,6 +76,8 @@ public class ResultMatrixColumn extends JPanel {
 		c.insets = new Insets(2,4,2,4);
 		this.add(spacerPanel, c);
 		focusOnCell(getCellAtIndex(0));
+		configureContainerPanel();
+		activeMatrixColumn = this;
     }
     public GridBagConstraints getContainerConstraintsForRMC(){
     	GridBagConstraints c = new GridBagConstraints();
@@ -120,17 +126,20 @@ public class ResultMatrixColumn extends JPanel {
 		//c.insets = new Insets(2,4,2,4);
 		return c;
     }
-    public JPanel getContainingPanel(){
-    	JPanel p = new JPanel();
-    	p.setLayout(new GridBagLayout());
+    public void configureContainerPanel(){
+    	ResultMatrixColumn.containerPanel.removeAll();
+    	ResultMatrixColumn.containerPanel.setLayout(new GridBagLayout());
+    	ResultMatrixColumn.containerPanel.setBackground(Color.white);
     	JScrollPane scrollPane = new JScrollPane();
     	scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     	scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     	scrollPane.setViewportView(this);
-    	p.add(scrollPane, getContainerConstraintsForRMC());
-    	p.add(getConfidenceLabel(), getContainerConstraintsForSliderLabel());
-    	p.add(getConfidenceSlider(), getContainerConstraintsForSlider());
-    	return p;
+    	ResultMatrixColumn.containerPanel.add(scrollPane, getContainerConstraintsForRMC());
+    	ResultMatrixColumn.containerPanel.add(getConfidenceLabel(), getContainerConstraintsForSliderLabel());
+    	ResultMatrixColumn.containerPanel.add(getConfidenceSlider(), getContainerConstraintsForSlider());
+    }
+    public JPanel getContainingPanel(){
+    	return ResultMatrixColumn.containerPanel;
     }
     public void decorateColumnTitleLabel(JLabel label){
     	label.setFont(new Font("Sans Serif",Font.BOLD,16));

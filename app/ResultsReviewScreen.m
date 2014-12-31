@@ -319,7 +319,7 @@ classdef ResultsReviewScreen < handle
             import edu.oregonstate.eecs.iis.avatolcv.ui.RunSelector;
             obj.runSelector = RunSelector(obj.ssms);
            
-            [runSelectorPanel,hContainer] = javacomponent(obj.runSelector,[0,5,1100,30],obj.ui.resultsTopPanel);
+            [runSelectorPanel,hContainer] = javacomponent(obj.runSelector,[0,5,1200,30],obj.ui.resultsTopPanel);
         end
         function loadMetadataWidgets(obj)
             obj.ui.deleteControls(obj.metadataControlTags);

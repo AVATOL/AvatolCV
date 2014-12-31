@@ -54,12 +54,39 @@ public class RunSelector extends JPanel {
     	this.add(viewValue, getLabelConstraints(12));
     	this.add(splitPrompt, getLabelConstraints(13));
     	this.add(splitValue, getLabelConstraints(14));
+    	this.add(new JLabel(" "), getSpacerConstraints(15));
+    	this.prevButton.addMouseListener(new PrevResultSetListener(this));
+    	this.nextButton.addMouseListener(new NextResultSetListener(this));
+    	decorateLabels();
+    	expressDataForCurrentMetadata();
+    }
+    public void expressDataForCurrentMetadata(){
     	String key = ssms.getCurrentKey();
     	ScoredSetMetadata ssm = ssms.getScoredSetMetadataForKey(key);
     	setValues(ssm);
-    	decorateLabels();
+    	setNavigationButtonEnableStatus();
     }
-    
+    public void setNavigationButtonEnableStatus(){
+    	if (backButtonNeeded()){
+    		prevButton.setEnabled(true);
+    	}
+    	else {
+    		prevButton.setEnabled(false);
+    	}
+    	if (nextButtonNeeded()){
+    		nextButton.setEnabled(true);
+    	}
+    	else {
+    		nextButton.setEnabled(false);
+    	}
+    }
+    /*
+     * this is what happened for prev session button in matlab
+     *  obj.ssm.goToPrevSession();
+            obj.sessionData = obj.ssm.getSessionResultsData(obj.session.morphobankBundle);
+            obj.loadMetadataWidgets();
+            obj.loadImageWidgets();
+     */
     public void goToNextSession(){
 		this.ssms.goToNextSession();
 	}
@@ -92,7 +119,8 @@ public class RunSelector extends JPanel {
     public void decorateValueLabel(JLabel label){
     	label.setHorizontalTextPosition(SwingConstants.CENTER);
     	label.setFont(new Font("Sans Serif",Font.PLAIN,16));
-    	label.setBackground(new Color(240,240,240));
+    	label.setBackground(Color.white);
+    	label.setForeground(Color.blue);
     	label.setOpaque(true);
     }
     public void decorateLabels(){
@@ -116,6 +144,21 @@ public class RunSelector extends JPanel {
 		c.gridx = i;
 		c.gridy = 0;
 		c.weightx = 0.0;
+		c.weighty = 1.0;
+		c.anchor = GridBagConstraints.CENTER;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridheight = 1;
+		c.gridwidth = 1;
+		c.ipadx = 10;
+		c.ipady = 4;
+		c.insets = new Insets(2,10,2,0);
+		return c;
+    }
+    public GridBagConstraints getSpacerConstraints(int i){
+    	GridBagConstraints c = new GridBagConstraints();
+		c.gridx = i;
+		c.gridy = 0;
+		c.weightx = 1.0;
 		c.weighty = 1.0;
 		c.anchor = GridBagConstraints.CENTER;
 		c.fill = GridBagConstraints.HORIZONTAL;
