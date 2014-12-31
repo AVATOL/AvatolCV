@@ -198,7 +198,7 @@ public class TestMatrix {
 		    //md.loadMatrix("BOGUS");
 		    md.loadMatrix("BAT");
 		    MorphobankBundle bundle = md.getBundle("BAT");
-		    ScoredSetMetadata ssm = new ScoredSetMetadata("C:\\avatol\\git\\avatol_cv");
+		    ScoredSetMetadatas ssm = new ScoredSetMetadatas("C:\\avatol\\git\\avatol_cv");
 		    ssm.loadAll();
 		    ssm.selectMostRecentRun();
 		    SessionDataForTaxa sdft = ssm.getSessionDataForTaxa(bundle);

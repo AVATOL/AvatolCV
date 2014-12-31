@@ -14,7 +14,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeListener;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.ScoredSetMetadata;
+import edu.oregonstate.eecs.iis.avatolcv.ScoredSetMetadatas;
 import edu.oregonstate.eecs.iis.avatolcv.SessionDataForTaxa;
 import edu.oregonstate.eecs.iis.avatolcv.SessionDataForTaxon;
 

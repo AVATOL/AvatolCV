@@ -14,7 +14,7 @@ public class TestScoredSetMetadata {
 	@Test
     public void testSSMLoadAll(){
 		try {
-			ScoredSetMetadata ssm = new ScoredSetMetadata("C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT");
+			ScoredSetMetadatas ssm = new ScoredSetMetadatas("C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT");
 			ssm.loadAll();
 		}
 		catch(AvatolCVException e){
@@ -28,7 +28,7 @@ public class TestScoredSetMetadata {
 		try {
 			String rootDir = "C:\\avatol\\git\\avatol_cv";
 			String bundleRoot = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT";
-			ScoredSetMetadata ssm = new ScoredSetMetadata(rootDir);
+			ScoredSetMetadatas ssm = new ScoredSetMetadatas(rootDir);
 			ssm.loadAll();
 			MorphobankBundle mb = new MorphobankBundle(bundleRoot);
 			SessionData sd = ssm.getSessionResultsData(mb);

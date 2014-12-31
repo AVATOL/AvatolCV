@@ -97,13 +97,18 @@ public class ResultMatrixCell{
     public JLabel getStateLabel(){
     	return this.stateLabel;
     }
-    public GridBagConstraints getTaxonLabelConstraints(int i){
+    public static GridBagConstraints getTaxonLabelConstraints(int i, boolean isHeader){
     	GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = i;
 		c.weightx = 0.5;
 		//c.weighty = 1.0;
-		c.anchor = GridBagConstraints.WEST;
+		if (isHeader){
+			c.anchor = GridBagConstraints.CENTER;
+		}
+		else {
+			c.anchor = GridBagConstraints.WEST;
+		}
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridheight = 1;
 		c.gridwidth = 1;
@@ -112,13 +117,18 @@ public class ResultMatrixCell{
 		c.insets = new Insets(2,4,2,4);
 		return c;
     }
-    public GridBagConstraints getStateLabelConstraints(int i){
+    public static GridBagConstraints getStateLabelConstraints(int i, boolean isHeader){
     	GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 1;
 		c.gridy = i;
 		c.weightx = 0.3;
 		//c.weighty = 1.0;
-		c.anchor = GridBagConstraints.WEST;
+		if (isHeader){
+			c.anchor = GridBagConstraints.CENTER;
+		}
+		else {
+			c.anchor = GridBagConstraints.WEST;
+		}
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridheight = 1;
 		c.gridwidth = 1;
@@ -127,13 +137,18 @@ public class ResultMatrixCell{
 		c.insets = new Insets(2,4,2,4);
 		return c;
     }
-    public GridBagConstraints getConfidenceLabelConstraints(int i){
+    public static GridBagConstraints getConfidenceLabelConstraints(int i, boolean isHeader){
     	GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 2;
 		c.gridy = i;
 		c.weightx = 0.2;
 		//c.weighty = 1.0;
-		c.anchor = GridBagConstraints.EAST;
+		if (isHeader){
+			c.anchor = GridBagConstraints.CENTER;
+		}
+		else {
+			c.anchor = GridBagConstraints.WEST;
+		}
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridheight = 1;
 		c.gridwidth = 1;

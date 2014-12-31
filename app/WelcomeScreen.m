@@ -64,7 +64,7 @@ classdef WelcomeScreen < handle
                                          'BackgroundColor', [0.5 0.5 0.5]);  
 
             obj.ui.activeControlTags = { 'tutorialText', 'beginTutorial', 'skipToQuestionnaire', 'skipToResultsReview' };   
-            if (obj.session.scoredSetMetadata.hasSessionData())
+            if (obj.session.scoredSetMetadatas.hasSessionData())
                 set(skipToResultsReview, 'Enable', 'on');
             else
                 set(skipToResultsReview, 'Enable', 'inactive');

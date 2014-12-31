@@ -3,7 +3,7 @@ classdef Session < handle
     %   Detailed explanation goes here
     
     properties
-        scoredSetMetadata;
+        scoredSetMetadatas;
         ui;
         welcomeScreen;
         questionnaireScreens;
@@ -30,7 +30,7 @@ classdef Session < handle
             import edu.oregonstate.eecs.iis.avatolcv.mb.* ;
             obj.avatolSystem = avatolSystem;
             obj.rootDir = rootDir;
-            obj.scoredSetMetadata = ScoredSetMetadata(rootDir);
+            obj.scoredSetMetadatas = ScoredSetMetadatas(rootDir);
             obj.ui = UI();
             obj.welcomeScreen = WelcomeScreen(obj.ui, obj);
             obj.questionnaireScreens = QuestionnaireScreens(obj.ui, obj);

@@ -40,7 +40,7 @@ public class ImageBrowser extends JPanel {
     }
     public JTabbedPane getTabbedPane(JPanel trainingPanel, JPanel scoredPanel, JPanel unscoredPanel){
     	JTabbedPane tabbedPane = new JTabbedPane();
-    	tabbedPane.setPreferredSize(new Dimension(548,548));
+    	tabbedPane.setPreferredSize(new Dimension(800,600));
     	tabbedPane.addTab("Training images", null, trainingPanel,
     	                  "Show training examples for selected taxon");
     	tabbedPane.setMnemonicAt(0, KeyEvent.VK_T);

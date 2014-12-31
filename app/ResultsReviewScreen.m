@@ -5,9 +5,10 @@ classdef ResultsReviewScreen < handle
     properties
         ui;
         session;
-        ssm;
+        ssms;
         dataFocus = 'scoredImages';
         sessionData;
+        runSelector;
         sessionDataForTaxa;
         resultMatrixColumn;
         imageControlTags = {};
@@ -26,14 +27,54 @@ classdef ResultsReviewScreen < handle
             obj.session = session;
         end
         function reset(obj)
-            obj.ssm = obj.session.scoredSetMetadata;
-            obj.ssm.loadAll();
-            key = obj.ssm.getCurrentKey();
-            matrixOfMostRecentRun = char(obj.ssm.getMatrixNameFromKey(obj.ssm.getCurrentKey()));
+            obj.ssms = obj.session.scoredSetMetadatas;
+            obj.ssms.loadAll();
+            matrixOfMostRecentRun = char(obj.ssms.getMatrixNameFromKey(obj.ssms.getCurrentKey()));
             obj.session.matrixChoiceScreen.registerMatrixChoice(matrixOfMostRecentRun);
-            obj.sessionData = obj.ssm.getSessionResultsData(obj.session.morphobankBundle);
+            obj.sessionData = obj.ssms.getSessionResultsData(obj.session.morphobankBundle);
         end
         function showResults(obj)
+            
+            obj.ui.deleteObsoleteControls();
+            obj.ui.createResultsReviewPanels();
+            % create panel for instructions
+		
+            doAnotherCharacter = uicontrol('style', 'pushbutton' ,...
+                                         'String', 'Score a different character' ,...
+                                         'Parent',obj.ui.navigationPanel,...
+                                         'Units', 'normalized',...
+                                         'position', obj.ui.getButtonPositionLeft() ,...
+                                         'FontName', obj.ui.fontname ,...
+                                         'FontSize', obj.ui.fontsize ,...
+                                         'Tag','doAnotherCharacter' ,...
+                                         'BackgroundColor', [0.5 0.5 0.5]);  
+            obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'doAnotherCharacter' ];
+            
+            exit = uicontrol('style', 'pushbutton' ,...
+                                         'Parent',obj.ui.navigationPanel,...
+                                         'Units','normalized',...
+                                         'String', 'Exit' ,...
+                                         'position', obj.ui.getButtonPositionRightB() ,...
+                                         'FontName', obj.ui.fontname ,...
+                                         'FontSize', obj.ui.fontsize ,...
+                                         'Tag','exit' ,...
+                                         'BackgroundColor', [0.5 0.5 0.5]);  
+            obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'exit' ];
+          
+           
+            obj.loadMetadataWidgets();
+            obj.loadImageWidgets();
+            %
+            %
+            % ???????? obj.ui.activeAnswerControl = obj.taxonChoiceWidget;
+            obj.session.activeQuestionId = 'ResultsReview';
+            obj.ui.activeControlType = 'ResultsReview';
+
+            set(exit, 'callback', {@obj.exit});
+            set(doAnotherCharacter, 'callback', {@obj.doAnotherCharacter});
+            obj.session.mostRecentScreen = 'RESULTS_REVIEW_SCREEN'; 
+        end
+        function showResultsOld(obj)
             
             obj.ui.deleteObsoleteControls();
             obj.ui.createResultsReviewPanels();
@@ -176,24 +217,10 @@ classdef ResultsReviewScreen < handle
             import javax.swing.JLabel;
             import java.awt.Color;
             import java.awt.Dimension;
-            tabbedPane = JTabbedPane();
-            label1 = JLabel('111111111111');
-            label2 = JLabel('22222222222222');
-            label3 = JLabel('3333333333333333333');
-            %tabbedPane.addTab('AAAAAAA', null, label1,'Show training examples for selected taxon');
-            %tabbedPane.addTab('BBBBBBB', null, label2,'Show training examples for selected taxon');
-            %tabbedPane.addTab('CCCCCCC', null, label3,'Show training examples for selected taxon');
-
-            %textArea = JTextArea('some long text that is taking up space and doesnt know when to end', 10,10);
-            %textArea.setBackground(Color.green);
-            % Now place this scroll-pane within a Matlab container (figure or panel)
-            %[jhScroll,hContainer] = javacomponent(jScrollPane,[10,10,80,65],obj.ui.answerPanel);
-            %[jhScroll,hContainer] = javacomponent(jScrollPane,[0.0,0.0,0.9,0.9],obj.ui.answerPanel);
-            dimension = Dimension(530,530);
+           
+            dimension = Dimension(700,600);
             imageBrowserHostPanel.setPreferredSize(dimension);
-            [jhPanel,hContainer] = javacomponent(imageBrowserHostPanel,[0,0,550,600],obj.ui.imageBrowserPanel);
-            %imageBrowserHostPanel.revalidate();
-            
+            [jhPanel,hContainer] = javacomponent(imageBrowserHostPanel,[10,40,800,600],obj.ui.resultsRightPanel);
         end
         function loadImageWidgetsOld(obj)
             fprintf('loadImageWidgets\n');
@@ -261,11 +288,10 @@ classdef ResultsReviewScreen < handle
             end
             obj.loadImage();
         end
-        function generateMatrixColumn(obj)
-            resultColumnMatrix = ResultMatrixColumn(obj.session.morphobankBundle, obj.sessionData);
-            fprintf('cell count %c', resultColumnMatrix.getCount());
-            
-        end
+        %function generateMatrixColumn(obj)
+        %    resultColumnMatrix = ResultMatrixColumn(obj.session.morphobankBundle, obj.sessionData);
+        %    fprintf('cell count %c', resultColumnMatrix.getCount());    
+        %end
        
         function slider_callback1(obj,src,eventdata,arg1)
             val = get(src,'Value');
@@ -274,36 +300,36 @@ classdef ResultsReviewScreen < handle
             set(arg1,'Position',[0 yPosition 1 obj.matrixHeight])
         end
         function loadMatrixColumn(obj)
-            %matrixColumnOuterPanel = uipanel('Background', [0.2 0.9 0.9],...%[1 0.3 0.3]
-            %                          'BorderType', 'none',...
-            %                          'Tag', 'matrixColumnPanel',...
-            %                          'Parent',obj.ui.resultsMiddlePanel,...
-            %                          'Position',[0.0,0.0,1.0,0.8]);
-            obj.sessionDataForTaxa = obj.ssm.getSessionDataForTaxa(obj.session.morphobankBundle);
-            %import edu.oregonstate.eecs.iis.avatolcv.ui.ResultsReviewJavaLayer;
-           % resultsReviewJavaLayer = ResultsReviewJavaLayer(sessionDataForTaxa);
-            %matrixColumnPanel = resultsReviewJavaLayer.getMatrixColumnPanel();
-            %jScrollPane = com.mathworks.mwswing.MJScrollPane(matrixColumnPanel);
-            
+           obj.sessionDataForTaxa = obj.ssms.getSessionDataForTaxa(obj.session.morphobankBundle);
+           
             import edu.oregonstate.eecs.iis.avatolcv.ui.ResultMatrixColumn;
             obj.resultMatrixColumn = ResultMatrixColumn(obj.session.morphobankBundle, obj.sessionDataForTaxa);
-            jScrollPane = com.mathworks.mwswing.MJScrollPane(obj.resultMatrixColumn);
+            containingPanel = obj.resultMatrixColumn.getContainingPanel();
+            %jScrollPane = com.mathworks.mwswing.MJScrollPane(obj.resultMatrixColumn);
+            [hContainingPanel,hContainer] = javacomponent(containingPanel,[10,40,400,600],obj.ui.resultsLeftPanel);
             
-            % Now place this scroll-pane within a Matlab container (figure or panel)
-            %[jhScroll,hContainer] = javacomponent(jScrollPane,[10,10,80,65],obj.ui.answerPanel);
-            %[jhScroll,hContainer] = javacomponent(jScrollPane,[0.0,0.0,0.9,0.9],obj.ui.answerPanel);
-            [obj.javaTaxaScrollPane,hContainer] = javacomponent(jScrollPane,[0,0,360,530],obj.ui.resultsMiddlePanel);
+            %label = obj.resultMatrixColumn.getConfidenceLabel();
+            %[obj.javaConfidenceLabel,hContainer] = javacomponent(label,[0,610,380,30],obj.ui.resultsLeftPanel);
             
-            slider = obj.resultMatrixColumn.getConfidenceSlider();
-            [obj.javaTaxaConfidenceSlider,hContainer] = javacomponent(slider,[0,534,360,70],obj.ui.resultsMiddlePanel);
+            %slider = obj.resultMatrixColumn.getConfidenceSlider();
+            %[obj.javaTaxaConfidenceSlider,hContainer] = javacomponent(slider,[0,534,380,70],obj.ui.resultsLeftPanel);
              
-            label = obj.resultMatrixColumn.getConfidenceLabel();
-            [obj.javaConfidenceLabel,hContainer] = javacomponent(label,[0,610,360,30],obj.ui.resultsMiddlePanel);
+        end
+        function loadRunSelector(obj)
+            import edu.oregonstate.eecs.iis.avatolcv.ui.RunSelector;
+            obj.runSelector = RunSelector(obj.ssms);
+           
+            [runSelectorPanel,hContainer] = javacomponent(obj.runSelector,[0,5,1100,30],obj.ui.resultsTopPanel);
         end
         function loadMetadataWidgets(obj)
-            curMetadata = obj.ssm.getDisplayableData();
             obj.ui.deleteControls(obj.metadataControlTags);
-            
+            obj.loadRunSelector();
+            obj.loadMatrixColumn();
+        end
+        function loadMetadataWidgetsOld(obj)
+            curMetadata = obj.ssms.getDisplayableData();
+            obj.ui.deleteControls(obj.metadataControlTags);
+            obj.loadRunSelector();
             obj.loadMatrixColumn();
             
             metadataContent = uicontrol('style', 'text' ,...
@@ -320,13 +346,13 @@ classdef ResultsReviewScreen < handle
             obj.metadataControlTags = { 'metadataContent' };
             nextButtonNeeded = false;
             backButtonNeeded = false;
-            if obj.ssm.getSetCount()==1
+            if obj.ssms.getSetCount()==1
                 % no navigationButtons
             else
-                if obj.ssm.backButtonNeeded()
+                if obj.ssms.backButtonNeeded()
                     backButtonNeeded = true;
                 end
-                if obj.ssm.nextButtonNeeded()
+                if obj.ssms.nextButtonNeeded()
                     nextButtonNeeded = true;
                 end
             end

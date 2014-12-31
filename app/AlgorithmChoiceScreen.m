@@ -73,7 +73,7 @@ classdef AlgorithmChoiceScreen < handle
 
                 options.PROGRESS_INDICATOR = obj.progressIndicator;
                 obj.algorithms.invoke_the_crf_system(inputFilePathname, outputFilePathname, options);
-                obj.session.scoredSetMetadata.persistForCRF(obj.session.chosenMatrix,chosenCharNameString);
+                obj.session.scoredSetMetadatas.persistForCRF(obj.session.chosenMatrix,chosenCharNameString);
                 obj.session.showResultsForCurrentCharacter();
             else
                 chosenCharNameString = java.lang.String(obj.session.characterChoiceScreen.characterName);
@@ -106,7 +106,7 @@ classdef AlgorithmChoiceScreen < handle
                 obj.algorithms.invoke_the_dpm_system(list_of_characters, input_folder, output_folder, detection_results_folder);
                 %obj.algorithms.invoke_the_dpm_system(list_of_characters, input_folder, output_folder, detection_results_folder, obj.progressIndicator);
                 chosenMatrix = obj.session.matrixChoiceScreen.chosenMatrix;
-                obj.session.scoredSetMetadata.persistForDPM(chosenMatrix,chosenCharNameString,charId,java.lang.String(chosenView),charNameStringList,input_folder, output_folder, detection_results_folder);
+                obj.session.scoredSetMetadatas.persistForDPM(chosenMatrix,chosenCharNameString,charId,java.lang.String(chosenView),charNameStringList,input_folder, output_folder, detection_results_folder);
                 obj.session.showResultsForCurrentCharacter();
             end
 

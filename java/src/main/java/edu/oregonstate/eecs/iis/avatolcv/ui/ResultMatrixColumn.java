@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 
@@ -31,6 +32,15 @@ public class ResultMatrixColumn extends JPanel {
 		this.setBackground(ResultMatrixCell.backgroundColor);
     	this.sdft = sdft;
     	int count = sdft.getTaxonCount();
+    	JLabel taxonColumnTitle = new JLabel("Taxon");
+		JLabel stateColumnTitle = new JLabel("Char State");
+		JLabel confidenceColumnTitle = new JLabel("Conf");
+		decorateColumnTitleLabel(taxonColumnTitle);
+		decorateColumnTitleLabel(stateColumnTitle);
+		decorateColumnTitleLabel(confidenceColumnTitle);
+		this.add(taxonColumnTitle, ResultMatrixCell.getTaxonLabelConstraints(0, true));
+		this.add(stateColumnTitle, ResultMatrixCell.getStateLabelConstraints(0, true));
+		this.add(confidenceColumnTitle, ResultMatrixCell.getConfidenceLabelConstraints(0, true));
     	for (int i = 0; i < count; i++){
     		SessionDataForTaxon sd = sdft.getSessionDataForTaxonAtIndex(i);
     		String taxonId = sd.getTaxonId();
@@ -41,15 +51,16 @@ public class ResultMatrixColumn extends JPanel {
     		JLabel curTaxonLabel = cell.getTaxonLabel();
     		JLabel curStateLabel = cell.getStateLabel();
     		JLabel curQualityPanel = cell.getConfidenceLabel();
-    		this.add(curTaxonLabel, cell.getTaxonLabelConstraints(i));
-    		this.add(curStateLabel, cell.getStateLabelConstraints(i));
-    		this.add(curQualityPanel, cell.getConfidenceLabelConstraints(i));
+    		int trueConstraintsIndex = i+1;
+    		this.add(curTaxonLabel, ResultMatrixCell.getTaxonLabelConstraints(trueConstraintsIndex, false));
+    		this.add(curStateLabel, ResultMatrixCell.getStateLabelConstraints(trueConstraintsIndex, false));
+    		this.add(curQualityPanel, ResultMatrixCell.getConfidenceLabelConstraints(trueConstraintsIndex, false));
     	}
     	JPanel spacerPanel = new JPanel();
 		spacerPanel.setBackground(ResultMatrixCell.backgroundColor);
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
-		c.gridy = count;
+		c.gridy = count+1;
 		c.weightx = 1.0;
 		c.weighty = 1.0;
 		c.anchor = GridBagConstraints.NORTH;
@@ -61,6 +72,72 @@ public class ResultMatrixColumn extends JPanel {
 		c.insets = new Insets(2,4,2,4);
 		this.add(spacerPanel, c);
 		focusOnCell(getCellAtIndex(0));
+    }
+    public GridBagConstraints getContainerConstraintsForRMC(){
+    	GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
+		c.anchor = GridBagConstraints.NORTH;
+		c.fill = GridBagConstraints.BOTH;
+		c.gridheight = 1;
+		c.gridwidth = 1;
+		//c.ipadx = 4;
+		//c.ipady = 4;
+		//c.insets = new Insets(2,4,2,4);
+		return c;
+    }
+
+    public GridBagConstraints getContainerConstraintsForSliderLabel(){
+    	GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 1;
+		c.weightx = 1.0;
+		c.weighty = 0.0;
+		c.anchor = GridBagConstraints.NORTH;
+		c.fill = GridBagConstraints.BOTH;
+		c.gridheight = 1;
+		c.gridwidth = 1;
+		//c.ipadx = 4;
+		//c.ipady = 4;
+		c.insets = new Insets(8,0,4,0);
+		return c;
+    }
+
+    public GridBagConstraints getContainerConstraintsForSlider(){
+    	GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 2;
+		c.weightx = 1.0;
+		c.weighty = 0.0;
+		c.anchor = GridBagConstraints.NORTH;
+		c.fill = GridBagConstraints.BOTH;
+		c.gridheight = 1;
+		c.gridwidth = 1;
+		//c.ipadx = 4;
+		//c.ipady = 4;
+		//c.insets = new Insets(2,4,2,4);
+		return c;
+    }
+    public JPanel getContainingPanel(){
+    	JPanel p = new JPanel();
+    	p.setLayout(new GridBagLayout());
+    	JScrollPane scrollPane = new JScrollPane();
+    	scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    	scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+    	scrollPane.setViewportView(this);
+    	p.add(scrollPane, getContainerConstraintsForRMC());
+    	p.add(getConfidenceLabel(), getContainerConstraintsForSliderLabel());
+    	p.add(getConfidenceSlider(), getContainerConstraintsForSlider());
+    	return p;
+    }
+    public void decorateColumnTitleLabel(JLabel label){
+    	label.setFont(new Font("Sans Serif",Font.BOLD,16));
+    	label.setHorizontalTextPosition(SwingConstants.CENTER);
+    	label.setBackground(new Color(150,150,255));
+    	label.setOpaque(true);
+    	label.setForeground(Color.black);
     }
     /*public GridBagConstraints getConstraintsForCell(int i){
     	GridBagConstraints c = new GridBagConstraints();

@@ -12,7 +12,7 @@ import java.util.Random;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVProperties;
-import edu.oregonstate.eecs.iis.avatolcv.ScoredSetMetadata;
+import edu.oregonstate.eecs.iis.avatolcv.ScoredSetMetadatas;
 import edu.oregonstate.eecs.iis.avatolcv.mb.Annotation;
 import edu.oregonstate.eecs.iis.avatolcv.mb.Character;
 import edu.oregonstate.eecs.iis.avatolcv.mb.CharacterState;
@@ -32,7 +32,7 @@ public class BogusOutputFileGenerator {
     	try {
     		MorphobankBundle bundle = new MorphobankBundle("C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT");
         	BogusOutputFileGenerator g = new BogusOutputFileGenerator(inputDir, outputDir, detectionResultsRelDir, bundle);
-        	ScoredSetMetadata ssm = new ScoredSetMetadata("C:\\avatol\\git\\avatol_cv\\");
+        	ScoredSetMetadatas ssm = new ScoredSetMetadatas("C:\\avatol\\git\\avatol_cv\\");
     		AvatolCVProperties props = new AvatolCVProperties("C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT");
         	List<String> charactersTrained = new ArrayList<String>();
         	charactersTrained.add("c427749");
