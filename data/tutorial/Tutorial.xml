@@ -22,7 +22,7 @@
 		<image filename="data/tutorial/images/polygon.jpg" caption="Example corresponding annotation"/> 
 	</infoPage> 
 	<infoPage next="BOUNDING_BOX" id="ANNOTATION"> 
-		<text>Annotation. There are two options for annotating parts in images: bounding box or polygon.</text> 
+		<text>Annotation. There are three options for annotating parts in images: point, bounding box or polygon.</text> 
 		<image filename="data/tutorial/images/boundingbox.jpg" caption="Bounding box"/>
 		<image filename="data/tutorial/images/polygon.jpg" caption="Polygon"/>
 	</infoPage> 
@@ -30,14 +30,14 @@
 		<text>Bounding box. A bounding box is a box that encloses a part. A rule of thumb is to choose a bounding box for parts that do not articulate much. An example would be a tooth, which cannot articulate, bend, etc. The bounding box is currently supported by Morphobank.</text> 
 		<image filename="data/tutorial/images/boundingbox.jpg" caption="Annotating with bounding boxes"/> 
 	</infoPage> 
-	<infoPage next="ANNOTATION_PART_RELATIONSHIPS" id="POLYGON"> 
-		<text>Polygon. Use a polygon when a part is articulated. For example, a tail of an animal would be a good candidate for a polygon annotation because it can bend a lot. Make sure the polygon is tight around the part. The polygon tool is a planned enhancement to Morphobank.</text> 
+	<infoPage next="IMAGE_SHARPNESS" id="POLYGON"> 
+		<text>Polygon. Use a polygon when a part is articulated. For example, a tail of an animal would be a good candidate for a polygon annotation because it can bend a lot. Make sure the polygon is tight around the part.</text> 
 		<image filename="data/tutorial/images/polygon.jpg" caption="Annotating with polygons"/>
 	</infoPage> 
-	<infoPage next="IMAGE_SHARPNESS" id="ANNOTATION_PART_RELATIONSHIPS"> 
+	<!--<infoPage next="IMAGE_SHARPNESS" id="ANNOTATION_PART_RELATIONSHIPS"> 
 		<text>Annotating Relation Between Parts. Use a bounding box or polygon depending on if the part can vary in articulation. Then label the relationship between the parts: distance, orientation, etc.</text> 
 		<image filename="data/tutorial/images/partrelationships.jpg" caption="Annotating part relationships"/> 
-	</infoPage> 
+	</infoPage> -->
 	<infoPage next="WELL_CONTRASTED" id="IMAGE_SHARPNESS"> 
 		<text>Miscellaneous Terminology: Image sharpness. Image sharpness is subjective but also not difficult to evaluate. A rule of thumb is to eliminate images that are too blurry to the human eye. See the example.</text> 
 		<image filename="data/tutorial/images/baseline.jpg" caption="Sharp enough"/> 
