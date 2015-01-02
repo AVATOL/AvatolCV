@@ -18,29 +18,29 @@ public class AnnotationFlipXY {
 	private static final String NL = System.getProperty("line.separator");
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String bundleDir = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT";
-        String path = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\imagesFlipped.txt";
+		String bundleDir = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT2";
+        String path = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT2\\imagesFlipped.txt";
         AnnotationFlipXY afox = new AnnotationFlipXY(bundleDir, path);
 	}
-    public AnnotationFlipXY(String bundleDir, String imagesPath){
+    public AnnotationFlipXY(String bundleDir, String imageListPath){
     	try {
-    		BufferedReader reader = new BufferedReader(new FileReader(imagesPath));
+    		BufferedReader reader = new BufferedReader(new FileReader(imageListPath));
     		String line = null;
     		while (null != (line = reader.readLine())){
-    			String[] parts = line.split("_");
-    			String imageIdCapM = parts[0];
+    			//String[] parts = line.split("_");
+    			String imageIdCapM = line;
     			String imageId = imageIdCapM.replace("M", "m");
     			rotateAllAnnotationsWithImage(bundleDir, imageId);
     		}
     	}
     	catch (FileNotFoundException fnfe){
-    		System.out.println("could not find file " + imagesPath);
+    		System.out.println("could not find file " + imageListPath);
     	}
     	catch(IOException ioe){
-    		System.out.println("problem reading file " + imagesPath);
+    		System.out.println("problem reading file " + imageListPath);
     	}
     	catch(MorphobankDataException mde){
-    		System.out.println("problem reading morphobankData " + imagesPath);
+    		System.out.println("problem reading morphobankData " + imageListPath);
     	}
     }
     public static void copyToBackup(String source, String dest){
@@ -50,7 +50,7 @@ public class AnnotationFlipXY {
     	if (f.exists()){
     		f.delete();
     	}
-    	System.out.println("rotating x and y for " + orig.getName() + " and backing up to " + f.getName());
+    	System.out.println("backing up " + orig.getName() + " to " + f.getName());
     	try {
     		BufferedReader reader = new BufferedReader(new FileReader(source));
     		BufferedWriter writer = new BufferedWriter(new FileWriter(dest));
@@ -77,9 +77,9 @@ public class AnnotationFlipXY {
     		}
     	}
     }
-    public void rotateAnnotationsInFile(List<Annotation> annotations, String imagesDir, String filename){
-    	String origFilePath = imagesDir + FILESEP + filename;
-    	String backupFilePath = imagesDir + FILESEP + "ORIG_" + filename;
+    public void rotateAnnotationsInFile(List<Annotation> annotations, String annotationDir, String filename){
+    	String origFilePath = annotationDir + FILESEP + filename;
+    	String backupFilePath = annotationDir + FILESEP + "PRE_ROTATION_" + filename;
     	copyToBackup(origFilePath, backupFilePath);
     	File f = new File(origFilePath);
     	f.delete();
@@ -103,7 +103,12 @@ public class AnnotationFlipXY {
     	catch(IOException ioe){
     		System.out.println("problem writing xFlipped annotation file " + origFilePath);
     	}
-    	
-    	
+    	File annotationsDirFile = new File(annotationDir);
+    	String parentDir = annotationsDirFile.getParent();
+    	String copyDir = parentDir + FILESEP + "annotationsRotated";
+    	File copyDirFile = new File(copyDir);
+    	copyDirFile.mkdirs();
+    	String sepDirCopyPath = copyDir + FILESEP + filename;
+    	copyToBackup(origFilePath, sepDirCopyPath);
     }
 }
