@@ -19,8 +19,10 @@ function avatol_cv
         %javaaddpath('.\\java\\lib');
         javaBinDir = sprintf('%s\\java\\bin',currentDir);
         javaLibDir = sprintf('%s\\java\\lib',currentDir);
+        javaJarFile = sprintf('%s\\java\\lib\\avatol_cv.jar',currentDir);
         javaaddpath(javaBinDir);
         javaaddpath(javaLibDir);
+        javaaddpath(javaJarFile);
         %javaaddpath('.\\java\\lib\\avatol_cv.jar');
     else
         javaaddpath('java/bin');
