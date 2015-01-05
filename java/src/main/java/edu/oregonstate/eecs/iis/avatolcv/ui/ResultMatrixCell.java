@@ -16,6 +16,7 @@ import javax.swing.border.EtchedBorder;
 import edu.oregonstate.eecs.iis.avatolcv.SessionDataForTaxon;
 
 public class ResultMatrixCell{
+	public static Font textFont= new Font("Sans Serif",Font.PLAIN,16);
 	enum ScoreConfidence {
 		Unknown,
 		GoodEnough,
@@ -39,7 +40,7 @@ public class ResultMatrixCell{
     	TaxonSelectionListener tsl = new TaxonSelectionListener(this, this.rmc);
     	//this.setLayout(new GridBagLayout());
     	taxonNameLabel = new JLabel(taxonName);
-    	taxonNameLabel.setFont(new Font("Sans Serif",Font.PLAIN,16));
+    	taxonNameLabel.setFont(textFont);
     	taxonNameLabel.setBackground(backgroundColor);
     	taxonNameLabel.setOpaque(true);
     	taxonNameLabel.setForeground(Color.black);
@@ -47,7 +48,7 @@ public class ResultMatrixCell{
     	
     	
     	stateLabel = new JLabel(sdft.getBelievedState());
-    	stateLabel.setFont(new Font("Sans Serif",Font.PLAIN,16));
+    	stateLabel.setFont(textFont);
     	stateLabel.setBackground(backgroundColor);
     	stateLabel.setOpaque(true);
     	stateLabel.setForeground(Color.black);
@@ -56,7 +57,7 @@ public class ResultMatrixCell{
     	//this.add(taxonNameLabel,getLabelConstraints());
     	Color green = Color.green;
     	scoreConfidenceLabel = new JLabel("" + sdft.getCombinedScoreString(), SwingConstants.CENTER);
-    	scoreConfidenceLabel.setFont(new Font("Sans Serif",Font.PLAIN,16));
+    	scoreConfidenceLabel.setFont(textFont);
     	scoreConfidenceLabel.setBackground(green);
     	scoreConfidenceLabel.setOpaque(true);
     	//scoreConfidenceLabel.addMouseListener(tsl);

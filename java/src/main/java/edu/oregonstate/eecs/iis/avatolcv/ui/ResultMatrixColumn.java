@@ -38,9 +38,9 @@ public class ResultMatrixColumn extends JPanel {
 		this.setBackground(ResultMatrixCell.backgroundColor);
     	this.sdft = sdft;
     	int count = sdft.getTaxonCount();
-    	JLabel taxonColumnTitle = new JLabel("Taxon");
-		JLabel stateColumnTitle = new JLabel("Char State");
-		JLabel confidenceColumnTitle = new JLabel("Conf");
+    	JLabel taxonColumnTitle = new JLabel("Taxon", SwingConstants.CENTER);
+		JLabel stateColumnTitle = new JLabel("Char State", SwingConstants.CENTER);
+		JLabel confidenceColumnTitle = new JLabel("Conf", SwingConstants.CENTER);
 		decorateColumnTitleLabel(taxonColumnTitle);
 		decorateColumnTitleLabel(stateColumnTitle);
 		decorateColumnTitleLabel(confidenceColumnTitle);
@@ -180,7 +180,7 @@ public class ResultMatrixColumn extends JPanel {
 		slider.setPaintLabels(true);
 		slider.setBackground(Color.white);
 		slider.addChangeListener(new ConfidenceChangeListener(this));
-		slider.setValue(90);
+		slider.setValue(80);
 		return slider;
 	}
     public void adjustToNewThreshold(double threshold){

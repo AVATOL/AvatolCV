@@ -8,6 +8,7 @@ import java.util.Random;
 import edu.oregonstate.eecs.iis.avatolcv.algata.ImageSet;
 import edu.oregonstate.eecs.iis.avatolcv.algata.ImageSetSupplier;
 import edu.oregonstate.eecs.iis.avatolcv.algata.ResultImage;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
 import edu.oregonstate.eecs.iis.avatolcv.ui.ImageBrowser;
 
 public class SessionDataForTaxon extends SessionData {
@@ -18,12 +19,13 @@ public class SessionDataForTaxon extends SessionData {
     public SessionDataForTaxon(String taxonId,String taxonName, String charId, String charName,
 			List<ResultImage> trainingImages,
 			List<ResultImage> scoredImages,
-			List<ResultImage> unscoredImages) throws AvatolCVException {
+			List<ResultImage> unscoredImages,
+			MorphobankBundle mb) throws AvatolCVException {
     	super(charId, charName, trainingImages, scoredImages, unscoredImages);
         this.taxonId = taxonId;
         this.taxonName = taxonName;
         this.combinedScore = calculateCombinedScore();
-        this.imageBrowser = new ImageBrowser(this, this.taxonName);
+        this.imageBrowser = new ImageBrowser(this, this.taxonName, mb);
 	}
     public ImageBrowser getImageBrowser(){
     	return this.imageBrowser;
@@ -122,5 +124,16 @@ public class SessionDataForTaxon extends SessionData {
         }
         return scoreString;
     }
-	
+    @Override
+	public String getTrainingTabTitle() {
+		return this.taxonName + " - TRAINING images";
+	}
+	@Override
+	public String getScoredTabTitle() {
+		return this.taxonName + " - SCORED images";
+	}
+	@Override
+	public String getUnscoredTabTitle() {
+		return this.taxonName + " - UNSCORED images";
+	}
 }

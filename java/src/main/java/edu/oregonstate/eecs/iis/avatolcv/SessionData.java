@@ -209,6 +209,21 @@ public class SessionData  implements ImageSetSupplier {
 		ImageSet is = new ImageSet(this.unscoredImages);
 		return is;
 	}
+	@Override
+	public String getTrainingTabTitle() {
+		// TODO Auto-generated method stub
+		return "??? training";
+	}
+	@Override
+	public String getScoredTabTitle() {
+		// TODO Auto-generated method stub
+		return "??? scored";
+	}
+	@Override
+	public String getUnscoredTabTitle() {
+		// TODO Auto-generated method stub
+		return "??? unscored";
+	}
 }
 
 

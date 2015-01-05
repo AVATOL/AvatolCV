@@ -18,6 +18,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
@@ -29,17 +30,24 @@ public class ImageNavigator extends JPanel {
 	/**
 	 * 
 	 */
+	public enum DataType {
+		training,
+		scored,
+		unscored
+	}
 	public static final int THUMBNAIL_BORDER_WIDTH = 3;
 	private static final long serialVersionUID = 1L;
 	private ImageSet imageSet = null;
 	private JPanel imagePanel = null;
+	private JLabel imageInfoLabel = null;
 	private JScrollPane thumbnailScrollPane = null;
 	private JPanel thumbnailPanel = null;
 	private JLabel picLabel = null;
 	private String taxonName = null;
-	private String type = null;
+	private DataType type = null;
 	private List<JLabel> thumbnailLabels = null;
-    public ImageNavigator(ImageSet imageSet, String taxonName, String type) {
+	private static String infoSpacer = "     ";
+    public ImageNavigator(ImageSet imageSet, String taxonName, DataType type) {
 		this.imageSet = imageSet;
 		this.taxonName = taxonName;
 		this.type = type;
@@ -47,6 +55,9 @@ public class ImageNavigator extends JPanel {
     	this.imagePanel = new JPanel();
     	this.imagePanel.setLayout(new GridBagLayout());
     	this.imagePanel.setBackground(Color.white);
+    	this.imageInfoLabel = new JLabel("",SwingConstants.CENTER);
+    	this.imageInfoLabel.setOpaque(true);
+    	this.imageInfoLabel.setFont(ResultMatrixCell.textFont);
     	this.thumbnailScrollPane = new JScrollPane();
     	this.thumbnailScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.thumbnailPanel = getThumbnailPanel();
@@ -54,6 +65,7 @@ public class ImageNavigator extends JPanel {
 
 		thumbnailScrollPane.setViewportView(this.thumbnailPanel);
         this.add(imagePanel, getImagePanelConstraints());
+        this.add(imageInfoLabel, getImageInfoLabelConstraints());
         this.add(thumbnailScrollPane, getThumbnailPanelConstraints());
     }
     public boolean isResultImageSelected(ResultImage ri) throws AvatolCVException {
@@ -74,9 +86,37 @@ public class ImageNavigator extends JPanel {
         	//System.out.println(System.currentTimeMillis() + " Image Navigator " + this.taxonName + " " + this.type + " loaded ");
 		}
     }
+    public String getTrainingImageInfo(ResultImage ri){
+    	/*
+    	 * need to load the original annotation for this media character combo 
+    	 */
+    	
+    	String info = "character: " + ri.getCharacterName().toUpperCase() + infoSpacer + " state: " + ri.getCharacterStateName().toUpperCase();
+    	return info;
+    }
+    public String getScoredImageInfo(ResultImage ri){
+    	String info = "character: " + ri.getCharacterName().toUpperCase() + infoSpacer + " state: " + ri.getCharacterStateName().toUpperCase() + infoSpacer + " confidence: " + ri.getConfidence().toUpperCase();
+    	return info;
+    }
+    public String getUnscoredImageInfo(ResultImage ri){
+    	String info = "character: " + ri.getCharacterName().toUpperCase() + infoSpacer + "not scored";
+    	return info;
+    }
     public void loadMainImage(ResultImage ri) throws AvatolCVException {
     	List<PointAsPercent> annotationPoints = ri.getAnnotationCoordinates().getPoints();
     	String imagePath = ri.getMediaPath();
+    	if (this.type == DataType.training){
+    		this.imageInfoLabel.setText(getTrainingImageInfo(ri));
+    	}
+    	else if (this.type == DataType.scored){
+    		//List<Annotation> annotations = loadAnnotations(String path, String mediaId)
+    		this.imageInfoLabel.setText(getScoredImageInfo(ri));
+    	}
+    	else {
+    		//(this.type == DataType.unscored)
+    		this.imageInfoLabel.setText(getUnscoredImageInfo(ri));
+    	}
+    	this.imageInfoLabel.setText(getTrainingImageInfo(ri));
 		this.picLabel = getImageAsJLabel(imagePath, annotationPoints);
 		this.imagePanel.add(picLabel,ImageBrowser.getUseLateralSpaceConstraints());
     }
@@ -243,10 +283,23 @@ public class ImageNavigator extends JPanel {
 		//c.insets = new Insets(2,4,2,4);
 		return c;
     }
-    public GridBagConstraints getThumbnailPanelConstraints(){
+    public GridBagConstraints getImageInfoLabelConstraints(){
     	GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 1;
+		c.weightx = 0.0;
+		c.weighty = 1.0;
+		c.anchor = GridBagConstraints.CENTER;
+		c.fill = GridBagConstraints.BOTH;
+		c.gridheight = 1;
+		c.gridwidth = 1;
+		//c.insets = new Insets(2,4,2,4);
+		return c;
+    }
+    public GridBagConstraints getThumbnailPanelConstraints(){
+    	GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 2;
 		c.weightx = 1.0;
 		c.weighty = 1.0;
 		c.anchor = GridBagConstraints.SOUTH;

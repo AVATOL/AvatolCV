@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algata.ImageSetSupplier;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
 
 public class ImageBrowser extends JPanel {
 	private static JPanel imageBrowserHostPanel = new JPanel();
@@ -19,13 +20,15 @@ public class ImageBrowser extends JPanel {
 	private ImageNavigator scoredImageNavigator = null;
 	private ImageNavigator unscoredImageNavigator = null;
 	private String taxonName = null;
+	private MorphobankBundle mb = null;
 	static {
 		imageBrowserHostPanel.setLayout(new GridBagLayout());
 		imageBrowserHostPanel.setBackground(Color.red);
 	}
 	private static ImageBrowser previouslyHostedImageBrowser = null;
 	private ImageSetSupplier imageSetSupplier = null;
-    public ImageBrowser(ImageSetSupplier imageSetSupplier, String taxonName) throws AvatolCVException {
+    public ImageBrowser(ImageSetSupplier imageSetSupplier, String taxonName, MorphobankBundle mb) throws AvatolCVException {
+    	this.mb = mb;
     	this.imageSetSupplier = imageSetSupplier;
     	this.taxonName = taxonName;
     	populateImageBrowser(imageSetSupplier);
@@ -33,24 +36,24 @@ public class ImageBrowser extends JPanel {
     	this.setBackground(Color.white);
     }
     public void populateImageBrowser(ImageSetSupplier imageSetSupplier) throws AvatolCVException {
-    	this.trainingImageNavigator = new ImageNavigator(imageSetSupplier.getTrainingImageSet(), this.taxonName, "training");
-    	this.scoredImageNavigator = new ImageNavigator(imageSetSupplier.getScoredImageSet(), this.taxonName, "scored");
-    	this.unscoredImageNavigator = new ImageNavigator(imageSetSupplier.getUnscoredImageSet(), this.taxonName, "unscored");
-    	JTabbedPane tp = getTabbedPane(trainingImageNavigator, scoredImageNavigator, unscoredImageNavigator);
+    	this.trainingImageNavigator = new ImageNavigator(imageSetSupplier.getTrainingImageSet(), this.taxonName, ImageNavigator.DataType.training);
+    	this.scoredImageNavigator = new ImageNavigator(imageSetSupplier.getScoredImageSet(), this.taxonName, ImageNavigator.DataType.scored);
+    	this.unscoredImageNavigator = new ImageNavigator(imageSetSupplier.getUnscoredImageSet(), this.taxonName, ImageNavigator.DataType.unscored);
+    	JTabbedPane tp = getTabbedPane(trainingImageNavigator, scoredImageNavigator, unscoredImageNavigator, imageSetSupplier);
     	this.add(tp, getUseAllSpaceConstraints());
     }
-    public JTabbedPane getTabbedPane(JPanel trainingPanel, JPanel scoredPanel, JPanel unscoredPanel){
+    public JTabbedPane getTabbedPane(JPanel trainingPanel, JPanel scoredPanel, JPanel unscoredPanel, ImageSetSupplier imageSetSupplier){
     	JTabbedPane tabbedPane = new JTabbedPane();
     	tabbedPane.setPreferredSize(new Dimension(800,600));
-    	tabbedPane.addTab("Training images", null, trainingPanel,
+    	tabbedPane.addTab(imageSetSupplier.getTrainingTabTitle(), null, trainingPanel,
     	                  "Show training examples for selected taxon");
     	tabbedPane.setMnemonicAt(0, KeyEvent.VK_T);
 
-    	tabbedPane.addTab("Scored Images", null, scoredPanel,
+    	tabbedPane.addTab(imageSetSupplier.getScoredTabTitle(), null, scoredPanel,
     			           "Show scored images for selected taxon");
     	tabbedPane.setMnemonicAt(1, KeyEvent.VK_S);
 
-    	tabbedPane.addTab("Unscored Images", null, unscoredPanel,
+    	tabbedPane.addTab(imageSetSupplier.getUnscoredTabTitle(), null, unscoredPanel,
     	                  "Show images that could not be scored");
     	tabbedPane.setMnemonicAt(2, KeyEvent.VK_U);
     	tabbedPane.setBackground(Color.white);

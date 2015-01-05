@@ -35,7 +35,8 @@ public class SessionDataForTaxa {
 					charName,
 					trainingImagesForTaxon,
 					scoredImagesForTaxon,
-					unscoredImagesForTaxon);
+					unscoredImagesForTaxon,
+					mb);
 			sessionDatas.add(sdft);
 			taxonSessionDataForTaxonId.put(taxonId, sdft);
 		}
