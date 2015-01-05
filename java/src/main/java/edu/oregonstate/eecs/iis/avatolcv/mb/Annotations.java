@@ -113,6 +113,10 @@ public class Annotations {
 		return f.exists();
 	}
 	public String getAnnotationFilePathname(String charId, String mediaId){
-        return this.bundleDir + FILESEP + ANNOTATIONS_DIR + FILESEP + mediaId + "_" + charId + ".txt";
+		return Annotations.getAnnotationFilePathname(this.bundleDir, charId, mediaId);
+	}
+
+	public static String getAnnotationFilePathname(String bundleDir, String charId, String mediaId){
+        return bundleDir + FILESEP + ANNOTATIONS_DIR + FILESEP + mediaId + "_" + charId + ".txt";
 	}
 }

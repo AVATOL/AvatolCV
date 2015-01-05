@@ -9,6 +9,7 @@ import javax.swing.border.LineBorder;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algata.ResultImage;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankDataException;
 
 public class ThumbnailClickListener implements MouseListener {
 	private ImageNavigator im = null;
@@ -30,6 +31,10 @@ public class ThumbnailClickListener implements MouseListener {
 		}
 		
 		catch(AvatolCVException e){
+			e.printStackTrace();
+			System.out.println("problem trying to render image for thumbnail " + e.getMessage());
+		}
+		catch(MorphobankDataException e){
 			e.printStackTrace();
 			System.out.println("problem trying to render image for thumbnail " + e.getMessage());
 		}

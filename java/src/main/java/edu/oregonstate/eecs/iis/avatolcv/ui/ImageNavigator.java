@@ -22,8 +22,15 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.algata.AnnotatedItem;
 import edu.oregonstate.eecs.iis.avatolcv.algata.ImageSet;
 import edu.oregonstate.eecs.iis.avatolcv.algata.ResultImage;
+import edu.oregonstate.eecs.iis.avatolcv.mb.Annotation;
+import edu.oregonstate.eecs.iis.avatolcv.mb.AnnotationCoordinates;
+import edu.oregonstate.eecs.iis.avatolcv.mb.Annotations;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankData;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankDataException;
 import edu.oregonstate.eecs.iis.avatolcv.mb.PointAsPercent;
 
 public class ImageNavigator extends JPanel {
@@ -36,6 +43,8 @@ public class ImageNavigator extends JPanel {
 		unscored
 	}
 	public static final int THUMBNAIL_BORDER_WIDTH = 3;
+	private static final int CROSS_HALF_LENGTH = 15;
+	private static final int THUMBNAIL_CROSS_HALF_LENGTH = 3;
 	private static final long serialVersionUID = 1L;
 	private ImageSet imageSet = null;
 	private JPanel imagePanel = null;
@@ -47,7 +56,9 @@ public class ImageNavigator extends JPanel {
 	private DataType type = null;
 	private List<JLabel> thumbnailLabels = null;
 	private static String infoSpacer = "     ";
-    public ImageNavigator(ImageSet imageSet, String taxonName, DataType type) {
+	private MorphobankBundle mb = null;
+    public ImageNavigator(ImageSet imageSet, String taxonName, DataType type, MorphobankBundle mb) {
+    	this.mb = mb;
 		this.imageSet = imageSet;
 		this.taxonName = taxonName;
 		this.type = type;
@@ -77,7 +88,7 @@ public class ImageNavigator extends JPanel {
     public ImageSet getImageSet(){
     	return this.imageSet;
     }
-    public void loadImages() throws AvatolCVException{
+    public void loadImages() throws AvatolCVException, MorphobankDataException {
     	if (this.imageSet.hasData()){
 	    	//System.out.println(System.currentTimeMillis() + " Image Navigator " + this.taxonName + " " + this.type + " loading ");
 			ResultImage ri = this.imageSet.getCurrentResultImage();
@@ -94,33 +105,49 @@ public class ImageNavigator extends JPanel {
     	String info = "character: " + ri.getCharacterName().toUpperCase() + infoSpacer + " state: " + ri.getCharacterStateName().toUpperCase();
     	return info;
     }
-    public String getScoredImageInfo(ResultImage ri){
-    	String info = "character: " + ri.getCharacterName().toUpperCase() + infoSpacer + " state: " + ri.getCharacterStateName().toUpperCase() + infoSpacer + " confidence: " + ri.getConfidence().toUpperCase();
+    public String getScoredImageInfo(ResultImage ri, String humanLabel){
+    	String info = "character: " + ri.getCharacterName().toUpperCase() + 
+    			infoSpacer + " state: " + ri.getCharacterStateName().toUpperCase() + 
+    			infoSpacer + " confidence: " + ri.getConfidence().toUpperCase().substring(0, 4)  + 
+    			infoSpacer + " human score: " + humanLabel;
     	return info;
     }
     public String getUnscoredImageInfo(ResultImage ri){
     	String info = "character: " + ri.getCharacterName().toUpperCase() + infoSpacer + "not scored";
     	return info;
     }
-    public void loadMainImage(ResultImage ri) throws AvatolCVException {
-    	List<PointAsPercent> annotationPoints = ri.getAnnotationCoordinates().getPoints();
+    public void loadMainImage(ResultImage ri) throws AvatolCVException, MorphobankDataException  {
+    	int halfLength = CROSS_HALF_LENGTH;
     	String imagePath = ri.getMediaPath();
-    	if (this.type == DataType.training){
-    		this.imageInfoLabel.setText(getTrainingImageInfo(ri));
-    	}
-    	else if (this.type == DataType.scored){
-    		//List<Annotation> annotations = loadAnnotations(String path, String mediaId)
-    		this.imageInfoLabel.setText(getScoredImageInfo(ri));
+    	if (ri.hasAnnotationCoordinates()){
+    		List<PointAsPercent> annotationPoints = ri.getAnnotationCoordinates().getPoints();
+        	if (this.type == DataType.training){
+            	this.imageInfoLabel.setText(getTrainingImageInfo(ri));
+        		this.picLabel = getImageAsJLabel(imagePath, annotationPoints, halfLength);
+        	}
+        	else if (this.type == DataType.scored){
+        		//List<Annotation> annotations = loadAnnotations(String path, String mediaId)
+        		String annotationPath = Annotations.getAnnotationFilePathname(this.mb.getRootDir(), ri.getCharacterId(), ri.getMediaId());
+        		List<Annotation> humanAnnotations = Annotations.loadAnnotations(annotationPath, ri.getMediaId());
+        		String humanLabel = humanAnnotations.get(0).getCharStateText();
+        		this.imageInfoLabel.setText(getScoredImageInfo(ri, humanLabel));
+        		this.picLabel = getImageAsJLabel(imagePath, annotationPoints, humanAnnotations, halfLength);
+        	}
+        	else {
+        		//(this.type == DataType.unscored)
+        		this.imageInfoLabel.setText(getUnscoredImageInfo(ri));
+        		this.picLabel = getImageAsJLabel(imagePath, annotationPoints, halfLength);
+        	}
+    		this.imagePanel.add(picLabel,ImageBrowser.getUseLateralSpaceConstraints());
     	}
     	else {
-    		//(this.type == DataType.unscored)
-    		this.imageInfoLabel.setText(getUnscoredImageInfo(ri));
+    		this.picLabel = getImageAsJLabel(imagePath);
     	}
-    	this.imageInfoLabel.setText(getTrainingImageInfo(ri));
-		this.picLabel = getImageAsJLabel(imagePath, annotationPoints);
-		this.imagePanel.add(picLabel,ImageBrowser.getUseLateralSpaceConstraints());
+    	
     }
-    public void loadThumbnails() throws AvatolCVException {
+    
+    public void loadThumbnails() throws AvatolCVException, MorphobankDataException {
+    	int halfLength = THUMBNAIL_CROSS_HALF_LENGTH;
     	List<ResultImage> resultImages = imageSet.getResultImages();
     	this.thumbnailLabels = new ArrayList<JLabel>();
     	int index = 0;
@@ -128,8 +155,21 @@ public class ImageNavigator extends JPanel {
     		String thumbnailPath = ri.getThumbnailMediaPath();
     		JLabel thumbnailLabel = null;
     		if (ri.hasAnnotationCoordinates()){
+    	    	JLabel curLabel = null;
     			List<PointAsPercent> annotationPoints = ri.getAnnotationCoordinates().getPoints();
-        		thumbnailLabel = getImageAsJLabel(thumbnailPath,annotationPoints);
+    			if (this.type == DataType.training){
+    				thumbnailLabel = getImageAsJLabel(thumbnailPath, annotationPoints, halfLength);
+            	}
+            	else if (this.type == DataType.scored){
+            		//List<Annotation> annotations = loadAnnotations(String path, String mediaId)
+            		String annotationPath = Annotations.getAnnotationFilePathname(this.mb.getRootDir(), ri.getCharacterId(), ri.getMediaId());
+            		List<Annotation> humanAnnotations = Annotations.loadAnnotations(annotationPath, ri.getMediaId());
+            		thumbnailLabel = getImageAsJLabel(thumbnailPath, annotationPoints, humanAnnotations, halfLength);
+            	}
+            	else {
+            		//(this.type == DataType.unscored)
+            		thumbnailLabel = getImageAsJLabel(thumbnailPath, annotationPoints, halfLength);
+            	}
     		}
     		else {
     			thumbnailLabel = getImageAsJLabel(thumbnailPath);
@@ -191,7 +231,8 @@ public class ImageNavigator extends JPanel {
     		throw new AvatolCVException("problem loading images for image set " + imagePath);
     	}
     }
-    public JLabel getImageAsJLabel(String imagePath, List<PointAsPercent> annotationPoints) throws AvatolCVException {
+
+    public JLabel getImageAsJLabel(String imagePath, List<PointAsPercent> annotationPoints, int halfLength) throws AvatolCVException {
     	try {
     		BufferedImage image = ImageIO.read(new File(imagePath));
     		int radius = getPointPixelRadius(image);
@@ -201,13 +242,14 @@ public class ImageNavigator extends JPanel {
     		
     		ImageIcon icon = new ImageIcon(image);
     		Graphics g2d = icon.getImage().getGraphics();
-    		g2d.setColor(Color.red);
+    		g2d.setColor(Color.yellow);
     		for (PointAsPercent pap : annotationPoints){
     			double x = pap.getX();
     			int xPixel = getPixelDistanceForPercentCoordinate(width, x);
     			double y = pap.getY();
     			int yPixel = getPixelDistanceForPercentCoordinate(height, y);
-    			g2d.fillOval(xPixel, yPixel, radius, radius); 
+    			//g2d.fillOval(xPixel, yPixel, radius, radius); 
+    			drawCrossAtPoint(g2d,xPixel,yPixel,width,height, halfLength);
     		}  
     		JLabel result = new JLabel(new ImageIcon(image));
     		return result;
@@ -216,6 +258,87 @@ public class ImageNavigator extends JPanel {
     		ioe.printStackTrace();
     		throw new AvatolCVException("problem loading images for image set " + imagePath);
     	}
+    }
+
+    public JLabel getImageAsJLabel(String imagePath, List<PointAsPercent> annotationPoints, List<Annotation> humanAnnotations, int halfLength) throws AvatolCVException {
+    	try {
+    		BufferedImage image = ImageIO.read(new File(imagePath));
+    		int radius = getPointPixelRadius(image);
+    		int width = image.getWidth();
+    		int height = image.getHeight();
+    		
+    		ImageIcon icon = new ImageIcon(image);
+    		Graphics g2d = icon.getImage().getGraphics();
+    		g2d.setColor(Color.yellow);
+    		
+    		for (Annotation annot : humanAnnotations){
+    			String coordinateList = annot.getCoordinateList();
+    			AnnotationCoordinates coords = AnnotatedItem.parseAnnotationLine(coordinateList);
+    			List<PointAsPercent> humanAnnotationPoints = coords.getPoints();
+    			for (PointAsPercent pap : humanAnnotationPoints){
+        			double x = pap.getX();
+        			int xPixel = getPixelDistanceForPercentCoordinate(width, x);
+        			double y = pap.getY();
+        			int yPixel = getPixelDistanceForPercentCoordinate(height, y);
+        			drawCrossAtPoint(g2d,xPixel,yPixel,width,height, halfLength);
+        			//g2d.fillOval(xPixel, yPixel, radius, radius); 
+        			
+        		}  
+    		}
+    		g2d.setColor(Color.green);
+    		
+    		for (PointAsPercent pap : annotationPoints){
+    			double x = pap.getX();
+    			int xPixel = getPixelDistanceForPercentCoordinate(width, x);
+    			double y = pap.getY();
+    			int yPixel = getPixelDistanceForPercentCoordinate(height, y);
+    			drawCrossAtPoint(g2d,xPixel,yPixel,width,height, halfLength);
+    			//g2d.fillOval(xPixel, yPixel, radius, radius); 
+    		}  
+    		JLabel result = new JLabel(new ImageIcon(image));
+    		return result;
+    	}
+    	catch(IOException ioe){
+    		ioe.printStackTrace();
+    		throw new AvatolCVException("problem loading images for image set " + imagePath);
+    	}
+    }
+    public void drawCrossAtPoint(Graphics graphics, int x, int y, int width, int height, int halfLength){
+    	int verticalLineX1 = x;
+		int verticalLineX2 = x;
+		int verticalLineY1 = -1;
+		int verticalLineY2 = -1;
+		if (y < halfLength){
+			verticalLineY1 = 0;
+			verticalLineY2 = y + halfLength;
+		} 
+		else if (y > height - halfLength){
+			verticalLineY1 = y - halfLength;
+			verticalLineY2 = height;
+		}
+		else {
+			verticalLineY1 = y - halfLength;
+			verticalLineY2 = y + halfLength;
+		}
+		
+		graphics.drawLine(verticalLineX1, verticalLineY1, verticalLineX2, verticalLineY2);
+    	int horizontalLineX1 = -1;
+		int horizontalLineX2 = -1;
+		int horizontalLineY1 = y;
+		int horizontalLineY2 = y;
+		if (x < halfLength){
+			horizontalLineX1 = 0;
+			horizontalLineX2 = x + halfLength;
+		} 
+		else if (x > width - halfLength){
+			horizontalLineX1 = x - halfLength;
+			horizontalLineX2 = width;
+		}
+		else {
+			horizontalLineX1 = x - halfLength;
+			horizontalLineX2 = x + halfLength;
+		}
+		graphics.drawLine(horizontalLineX1, horizontalLineY1, horizontalLineX2, horizontalLineY2);
     }
     public static BufferedImage scaleImage(BufferedImage image){
     	int height = image.getHeight();
@@ -288,7 +411,7 @@ public class ImageNavigator extends JPanel {
 		c.gridx = 0;
 		c.gridy = 1;
 		c.weightx = 0.0;
-		c.weighty = 1.0;
+		c.weighty = 0.05;
 		c.anchor = GridBagConstraints.CENTER;
 		c.fill = GridBagConstraints.BOTH;
 		c.gridheight = 1;

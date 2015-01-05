@@ -19,6 +19,5 @@ public interface ResultImage {
     public boolean hasCharacterState();
     public String getCharacterStateId();
     public String getCharacterStateName();
-    //public String getMediaId();
-    //public String
+    public String getMediaId();
 }

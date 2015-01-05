@@ -17,6 +17,7 @@ public class ScoredImage extends AnnotatedItem implements ResultImage {
 	private String charName;
 	private String taxonId;
 	private String annotationLineNumber;
+	private String mediaId;
 	
     public ScoredImage(String line, String rootDir, String charId, String charName) throws AvatolCVException {
     	this.charId = charId;
@@ -26,6 +27,7 @@ public class ScoredImage extends AnnotatedItem implements ResultImage {
     	String[] parts = line.split(Annotation.ANNOTATION_DELIM_ESCAPED_FOR_USE_WITH_SPLIT);
     	String relativeMediaPath = parts[1];
     	this.mediaPath = rootDir + SEP + relativeMediaPath;
+    	this.mediaId = TrainingSample.getMediaIdFromRelativePath(relativeMediaPath);
     	this.stateId = parts[2];
     	this.stateName=parts[3];
     	String relativeAnnotationPath = parts[4];
@@ -111,5 +113,10 @@ public class ScoredImage extends AnnotatedItem implements ResultImage {
 	@Override
 	public boolean hasCharacterState() {
 		return true;
+	}
+
+	@Override
+	public String getMediaId() {
+		return this.mediaId;
 	}
 }

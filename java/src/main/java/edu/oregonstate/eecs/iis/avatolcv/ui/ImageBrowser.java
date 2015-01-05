@@ -13,6 +13,7 @@ import javax.swing.SwingUtilities;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algata.ImageSetSupplier;
 import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankDataException;
 
 public class ImageBrowser extends JPanel {
 	private static JPanel imageBrowserHostPanel = new JPanel();
@@ -36,9 +37,9 @@ public class ImageBrowser extends JPanel {
     	this.setBackground(Color.white);
     }
     public void populateImageBrowser(ImageSetSupplier imageSetSupplier) throws AvatolCVException {
-    	this.trainingImageNavigator = new ImageNavigator(imageSetSupplier.getTrainingImageSet(), this.taxonName, ImageNavigator.DataType.training);
-    	this.scoredImageNavigator = new ImageNavigator(imageSetSupplier.getScoredImageSet(), this.taxonName, ImageNavigator.DataType.scored);
-    	this.unscoredImageNavigator = new ImageNavigator(imageSetSupplier.getUnscoredImageSet(), this.taxonName, ImageNavigator.DataType.unscored);
+    	this.trainingImageNavigator = new ImageNavigator(imageSetSupplier.getTrainingImageSet(), this.taxonName, ImageNavigator.DataType.training, this.mb);
+    	this.scoredImageNavigator = new ImageNavigator(imageSetSupplier.getScoredImageSet(), this.taxonName, ImageNavigator.DataType.scored, this.mb);
+    	this.unscoredImageNavigator = new ImageNavigator(imageSetSupplier.getUnscoredImageSet(), this.taxonName, ImageNavigator.DataType.unscored, this.mb);
     	JTabbedPane tp = getTabbedPane(trainingImageNavigator, scoredImageNavigator, unscoredImageNavigator, imageSetSupplier);
     	this.add(tp, getUseAllSpaceConstraints());
     }
@@ -70,7 +71,7 @@ public class ImageBrowser extends JPanel {
     	System.out.println(System.currentTimeMillis() + " unloadImages end " + this.taxonName);
     }
 
-    public void loadImages() throws AvatolCVException {
+    public void loadImages() throws AvatolCVException, MorphobankDataException  {
 
     	System.out.println(System.currentTimeMillis() + " loadImages begin " + this.taxonName);
     	this.trainingImageNavigator.loadImages();
@@ -78,7 +79,7 @@ public class ImageBrowser extends JPanel {
     	this.unscoredImageNavigator.loadImages();
     	System.out.println(System.currentTimeMillis() + " loadImages end " + this.taxonName);
     }
-    public static void hostImageBrowser(ImageBrowser ib) throws AvatolCVException {
+    public static void hostImageBrowser(ImageBrowser ib) throws AvatolCVException, MorphobankDataException  {
     	if (previouslyHostedImageBrowser != null){
     		previouslyHostedImageBrowser.unloadImages();
     		imageBrowserHostPanel.remove(previouslyHostedImageBrowser);

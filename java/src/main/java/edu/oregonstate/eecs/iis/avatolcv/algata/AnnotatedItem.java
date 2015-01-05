@@ -9,12 +9,12 @@ import edu.oregonstate.eecs.iis.avatolcv.mb.AnnotationCoordinates;
 public class AnnotatedItem {
 
 	private AnnotationCoordinates annotationCoordinates;
-    public void parseAnnotationLine(String line){
+    public static AnnotationCoordinates parseAnnotationLine(String line){
     	// 4588,1822:c427749:Upper I1 presence:s946108:I1 present
     	String[] parts = line.split(":");
     	String coordsString = parts[0];
     	// already have other info
-    	this.annotationCoordinates = new AnnotationCoordinates(coordsString);
+    	return new AnnotationCoordinates(coordsString);
     }
     public void loadAnnotationCoordinates(String path, String lineNumber){
         try{
@@ -24,7 +24,7 @@ public class AnnotatedItem {
         	int curLineNumber = 1;
         	while (null != (line = reader.readLine())){
         		if (lineNumberInt == curLineNumber){
-        			parseAnnotationLine(line);
+        			this.annotationCoordinates = parseAnnotationLine(line);
         			return;
         		}
         		else {

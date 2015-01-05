@@ -11,6 +11,7 @@ public class UnscoredImage implements ResultImage {
 	private String taxonId;
 	private String charId;
 	private String charName;
+	private String mediaId = null;
     public UnscoredImage(String line, String rootDir, String charId, String charName){
     	this.charId = charId;
     	this.charName = charName;
@@ -19,6 +20,7 @@ public class UnscoredImage implements ResultImage {
     	String[] parts = line.split(Annotation.ANNOTATION_DELIM_ESCAPED_FOR_USE_WITH_SPLIT);
     	String relativeMediaPath = parts[1];
     	this.mediaPath = rootDir + SEP + relativeMediaPath;
+    	this.mediaId = TrainingSample.getMediaIdFromRelativePath(relativeMediaPath);
     	this.taxonId = parts[2];
     }
 
@@ -85,6 +87,11 @@ public class UnscoredImage implements ResultImage {
 	@Override
 	public String getCharacterStateName() {
 		return null;
+	}
+
+	@Override
+	public String getMediaId() {
+		return this.mediaId;
 	}
 
 }
