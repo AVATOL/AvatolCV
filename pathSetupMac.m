@@ -1,0 +1,22 @@
+% system
+path(path,'/Users/jedirvine/av/avatol_cv')
+path(path,'/Users/jedirvine/av/avatol_cv/questionnaire')
+path(path,'/Users/jedirvine/av/avatol_cv/tutorial')
+path(path,'/Users/jedirvine/av/avatol_cv/dataset') 
+path(path,'/Users/jedirvine/av/avatol_cv/tests') 
+path(path,'/Users/jedirvine/av/avatol_cv/algorithms') 
+path(path,'/Users/jedirvine/av/avatol_cv/app')
+% nematocyst
+path(path,'/Users/jedirvine/av/nematocyst')
+path(path,'/Users/jedirvine/av/nematocyst/avatol_system')
+path(path,'/Users/jedirvine/av/nematocyst/avatol_system/parse_input')
+path(path,'/Users/jedirvine/av/nematocyst/avatol_system/postprocess')
+path(path,'/Users/jedirvine/av/nematocyst/avatol_system/preprocess')
+path(path,'/Users/jedirvine/av/nematocyst/avatol_system/utilities')
+% bat
+path(path,'/Users/jedirvine/av/bat')
+path(path,'/Users/jedirvine/av/bat/rpm')
+path(path,'/Users/jedirvine/av/bat/siftflow')
+path(path,'/Users/jedirvine/av/bat/ssvm')
+path(path,'/Users/jedirvine/av/bat/util')
+path(path,'/Users/jedirvine/av/bat/visualization')
