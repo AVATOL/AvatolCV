@@ -167,14 +167,14 @@ public class TestMatrix {
 		}
 	}
 	*/
-	/*
+	
 	@Test
 	public void testDataWindows() {
 		try {
 		    MorphobankData md = new MorphobankData("C:\\avatol\\git\\avatol_cv\\matrix_downloads");
 		    //md.loadMatrix("BOGUS");
-		    md.loadMatrix("BAT");
-		    MorphobankBundle bundle = md.getBundle("BAT");
+		    md.loadMatrix("BAT2");
+		    MorphobankBundle bundle = md.getBundle("BAT2");
 		    List<String> names = bundle.getScorableCharacterNames();
 		    ArrayList<String> charIds = new ArrayList<String>();
 		    charIds.add("c427749");
@@ -182,7 +182,7 @@ public class TestMatrix {
 		    charIds.add("c427754");
 		    charIds.add("c427760");
 		    charIds.add("c427751");
-		    //bundle.filterInputs(charIds, "v3540", "DPM");
+		    bundle.filterInputs(charIds, "v3540", "DPM");
 		    bundle.filterInputs(charIds, "v3539", "DPM");
 		}
 		catch(Exception ex){
@@ -190,7 +190,7 @@ public class TestMatrix {
 			fail(ex.getMessage());
 		}
 	}
-	*/
+	/*
 	@Test 
 	public void testGetSessionDataForTaxa(){
 		try {
@@ -210,5 +210,6 @@ public class TestMatrix {
 		}
 		
 	}
+	*/
 	
 }

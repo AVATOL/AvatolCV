@@ -31,7 +31,7 @@ public class BogusOutputFileGenerator {
     	
     	try {
     		MorphobankBundle bundle = new MorphobankBundle("C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT2");
-        	BogusOutputFileGenerator g = new BogusOutputFileGenerator(inputDir, outputDir, detectionResultsRelDir, bundle);
+        	BogusOutputFileGenerator g = new BogusOutputFileGenerator(inputDir, outputDir, detectionResultsDir, detectionResultsRelDir, bundle);
         	ScoredSetMetadatas ssm = new ScoredSetMetadatas("C:\\avatol\\git\\avatol_cv\\");
     		AvatolCVProperties props = new AvatolCVProperties("C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT2");
         	List<String> charactersTrained = new ArrayList<String>();
@@ -53,13 +53,17 @@ public class BogusOutputFileGenerator {
     	}
     	
     }
-    public BogusOutputFileGenerator(String inputDir, String outputDir, String detectionResultsRelDir, MorphobankBundle bundle) throws AvatolCVException {
-    	File output = new File(outputDir);
-    	output.mkdirs();
-    	File[] files = output.listFiles();
+    public void prepAndCleanDir(String path){
+    	File dir = new File(path);
+    	dir.mkdirs();
+    	File[] files = dir.listFiles();
     	for (File f : files){
     		f.delete();
     	}
+    }
+    public BogusOutputFileGenerator(String inputDir, String outputDir, String detectionResultsDir, String detectionResultsRelDir, MorphobankBundle bundle) throws AvatolCVException {
+    	prepAndCleanDir(outputDir);
+    	prepAndCleanDir(detectionResultsDir);
     	File input = new File(inputDir);
     	File[] inputFiles = input.listFiles();
     	for (File inputFile : inputFiles){
@@ -98,7 +102,7 @@ public class BogusOutputFileGenerator {
     				String[] parts = line.split(Annotation.ANNOTATION_DELIM_ESCAPED_FOR_USE_WITH_SPLIT);
     				String relMediaPath = parts[1];
     				String filename = relMediaPath.substring(6);
-    				String[] filenameParts = filename.split("_");
+    				String[] filenameParts = filename.split("\\.");
     				String mediaId = filenameParts[0].replaceFirst("M","m");
     				String drFilename = mediaId + "_" + charId + ".txt";
     				String drPath = detectionResultsParentPath + FILESEP + drFilename;

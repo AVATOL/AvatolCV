@@ -102,5 +102,18 @@ public class ImageBrowser extends JPanel {
 		c.gridwidth = 1;
 		return c;
     }
+
+    public static GridBagConstraints getUseLateralSpaceConstraints(){
+    	GridBagConstraints c = new GridBagConstraints();
+    	c.gridx = 0;
+		c.gridy = 0;
+		c.weightx = 1.0;
+		c.weighty = 0.0;
+		c.anchor = GridBagConstraints.NORTHWEST;
+		c.fill = GridBagConstraints.BOTH;
+		c.gridheight = 1;
+		c.gridwidth = 1;
+		return c;
+    }
     
 }

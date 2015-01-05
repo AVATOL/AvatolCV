@@ -13,7 +13,7 @@ public class ScaleBashScriptGen {
 		String mediaDir = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT2\\media";
 		File mediaDirFile = new File(mediaDir);
 		File[] files = mediaDirFile.listFiles();
-		String outputPath = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT2\\scaledown.sh";
+		String outputPath = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT2\\media680.sh";
 		
 		try {
 
@@ -21,7 +21,7 @@ public class ScaleBashScriptGen {
 			writer.write("#!/bin/bash" + NL);
 			for (File f : files){
 				String name = f.getName();
-				writer.write("convert media/" + name + " -resize 780 mediaScaled/" + name + NL);
+				writer.write("convert media/" + name + " -resize 680 mediaScaled680/" + name + NL);
 			}
 			writer.close();
 		}

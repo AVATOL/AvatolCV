@@ -78,7 +78,7 @@ public class ImageNavigator extends JPanel {
     	List<PointAsPercent> annotationPoints = ri.getAnnotationCoordinates().getPoints();
     	String imagePath = ri.getMediaPath();
 		this.picLabel = getImageAsJLabel(imagePath, annotationPoints);
-		this.imagePanel.add(picLabel,ImageBrowser.getUseAllSpaceConstraints());
+		this.imagePanel.add(picLabel,ImageBrowser.getUseLateralSpaceConstraints());
     }
     public void loadThumbnails() throws AvatolCVException {
     	List<ResultImage> resultImages = imageSet.getResultImages();
@@ -235,7 +235,7 @@ public class ImageNavigator extends JPanel {
 		c.gridx = 0;
 		c.gridy = 0;
 		c.weightx = 1.0;
-		c.weighty = 1.0;
+		c.weighty = 0.0;
 		c.anchor = GridBagConstraints.NORTH;
 		c.fill = GridBagConstraints.BOTH;
 		c.gridheight = 1;
