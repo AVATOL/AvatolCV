@@ -79,7 +79,7 @@
         <image filename="data/questionnaire/images/parts.jpg" caption="Characteristic Part: Particular Teeth" />
     </question>
     <question type="choice" id="CHARACTER_PART_POSITIONS">
-        <text>Could positions of parts be predicted by other positions?</text>
+        <text>Could positions of parts be predicted by positions of other parts?</text>
         <answer value="yes" next="CHARACTER_PART_ARTICULATED" />
         <answer value="no" next="NO_MORE_QUESTIONS" />
         <image filename="data/questionnaire/images/rigid.jpg" caption="Positions of teeth are relatively rigid" />
