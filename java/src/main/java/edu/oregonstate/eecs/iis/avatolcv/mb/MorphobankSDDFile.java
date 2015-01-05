@@ -276,6 +276,7 @@ public class MorphobankSDDFile {
     	}
     	return allMatrixCells;
     }
+    /*
     public List<String> getNotPresentTrainingDataLines(MatrixCell notPresentCell) throws AvatolCVException {
     	List<String> trainingLines = new ArrayList<String>();
     	String delim = Annotation.ANNOTATION_DELIM;
@@ -295,6 +296,21 @@ public class MorphobankSDDFile {
     		}
     	}
     	return trainingLines; 
+    }
+*/
+    public String getTrainingDataLineSansAnnotation(String mediaId, String charId, String charStateId) throws AvatolCVException {
+    	String trainingLine = null;
+    	String delim = Annotation.ANNOTATION_DELIM;
+    	String mediaFilename = this.media.getMediaFilenameForMediaId(mediaId);
+		if (null != mediaFilename){
+    		Character character = this.characters.getCharacterForId(charId);
+    		CharacterState characterState = character.getCharacterStateForId(charStateId);
+    		String charStateText = characterState.getName();
+    		String taxonId = getTaxonIdForMediaId(mediaId);
+    		trainingLine = "training_data" + delim + "media" + FILESEP + mediaFilename + delim + 
+                    charStateId + delim + charStateText + delim + "NA" + delim + taxonId + delim + "NA";
+		}	
+    	return trainingLine; 
     }
     public String getCharacterNameForId(String id){
     	return this.characters.getCharacterNameForId(id);

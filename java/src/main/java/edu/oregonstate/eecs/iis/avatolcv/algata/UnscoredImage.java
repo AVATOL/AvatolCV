@@ -30,14 +30,14 @@ public class UnscoredImage implements ResultImage {
 	public String getCharacterName() {
 		return this.charName;
 	}
-
+/*
 	@Override
 	public String getScaledMediaPath() {
 		String mediaPath = this.getMediaPath();
 		String scaledMediaPath = mediaPath.replaceFirst(Media.MEDIA_DIRNAME, ImageScaler.SCALED_IMAGE_DIR);
 		return scaledMediaPath;
 	}
-
+*/
 	@Override
 	public String getThumbnailMediaPath() {
 		String mediaPath = this.getMediaPath();

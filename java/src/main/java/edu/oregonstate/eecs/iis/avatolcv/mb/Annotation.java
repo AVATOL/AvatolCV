@@ -31,6 +31,10 @@ public class Annotation {
         this.charNameText = parts[2];
         this.charState = parts[3];
         this.charStateText = parts[4];
+        if (charStateText.contains("bsent")){
+        	int foo = 3;
+        	int bar = foo;
+        }
         this.lineNumber = lineNumber;
         this.mediaId = mediaId;
         this.pathname = pathname;

@@ -22,12 +22,14 @@ public class Media {
     }
     /*
      * Media filenames look like M151254_.jpg, where the prefix is the mediaId, but with capital M
+     * CHANGE
+     * As of 1/1/2015, media files look like M151254.jpg, where the root is the mediaId, but with capital M - no underscores!
      */
     public void findMedia(){
     	String[] filenames = new File(mediaDir).list();
         for (int i=0; i < filenames.length; i++){
         	String filename = filenames[i];
-        	String[] parts = filename.split("_");
+        	String[] parts = filename.split("\\.");
         	String mediaId = parts[0].replace('M', 'm');
         	String pathname = this.mediaDir + FILESEP + filename;
         	String relativePathname = MEDIA_DIRNAME + FILESEP + filename;

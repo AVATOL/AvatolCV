@@ -56,14 +56,14 @@ public class ScoredImage extends AnnotatedItem implements ResultImage {
     public String getMediaPath(){
     	return this.mediaPath;
     }
-
+/*
 	@Override
 	public String getScaledMediaPath() {
 		String mediaPath = this.getMediaPath();
 		String scaledMediaPath = mediaPath.replaceFirst(Media.MEDIA_DIRNAME, ImageScaler.SCALED_IMAGE_DIR);
 		return scaledMediaPath;
 	}
-
+*/
 	@Override
 	public String getThumbnailMediaPath() {
 		String mediaPath = this.getMediaPath();

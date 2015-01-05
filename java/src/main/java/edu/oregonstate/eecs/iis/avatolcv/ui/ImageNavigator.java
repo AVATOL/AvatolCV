@@ -76,7 +76,7 @@ public class ImageNavigator extends JPanel {
     }
     public void loadMainImage(ResultImage ri) throws AvatolCVException {
     	List<PointAsPercent> annotationPoints = ri.getAnnotationCoordinates().getPoints();
-    	String imagePath = ri.getScaledMediaPath();
+    	String imagePath = ri.getMediaPath();
 		this.picLabel = getImageAsJLabel(imagePath, annotationPoints);
 		this.imagePanel.add(picLabel,ImageBrowser.getUseAllSpaceConstraints());
     }

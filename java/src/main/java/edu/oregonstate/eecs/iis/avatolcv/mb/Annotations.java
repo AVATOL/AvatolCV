@@ -107,6 +107,11 @@ public class Annotations {
 		}
 		
 	}
+	public boolean isCharAndMediaRepresentedByAnnotation(String charId, String mediaId){
+		String annotationPath = getAnnotationFilePathname(charId, mediaId);
+		File f = new File(annotationPath);
+		return f.exists();
+	}
 	public String getAnnotationFilePathname(String charId, String mediaId){
         return this.bundleDir + FILESEP + ANNOTATIONS_DIR + FILESEP + mediaId + "_" + charId + ".txt";
 	}

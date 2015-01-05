@@ -23,24 +23,24 @@ public class BogusOutputFileGenerator {
 	private static final String FILESEP = System.getProperty("file.separator");
 	private static final String NL = System.getProperty("line.separator");
     public static void main(String[] args){
-    	String inputDir ="C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\input\\DPM\\c427749c427751c427753c427754c427760\\v3540\\split_0.7";
-    	String outputDir = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\output\\DPM\\c427749c427751c427753c427754c427760\\v3540\\split_0.7";
-    	String detectionResultsDir = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\detection_results\\DPM\\c427749c427751c427753c427754c427760\\v3540\\split_0.7";
+    	String inputDir ="C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT2\\input\\DPM\\c427749c427751c427753c427754c427760\\v3540\\split_0.7";
+    	String outputDir = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT2\\output\\DPM\\c427749c427751c427753c427754c427760\\v3540\\split_0.7";
+    	String detectionResultsDir = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT2\\detection_results\\DPM\\c427749c427751c427753c427754c427760\\v3540\\split_0.7";
     	String detectionResultsRelDir =  "detection_results\\DPM\\c427749c427751c427753c427754c427760\\v3540\\split_0.7";
     	
     	
     	try {
-    		MorphobankBundle bundle = new MorphobankBundle("C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT");
+    		MorphobankBundle bundle = new MorphobankBundle("C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT2");
         	BogusOutputFileGenerator g = new BogusOutputFileGenerator(inputDir, outputDir, detectionResultsRelDir, bundle);
         	ScoredSetMetadatas ssm = new ScoredSetMetadatas("C:\\avatol\\git\\avatol_cv\\");
-    		AvatolCVProperties props = new AvatolCVProperties("C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT");
+    		AvatolCVProperties props = new AvatolCVProperties("C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT2");
         	List<String> charactersTrained = new ArrayList<String>();
         	charactersTrained.add("c427749");
         	charactersTrained.add("c427751");
         	charactersTrained.add("c427753");
         	charactersTrained.add("c427754");
         	charactersTrained.add("c427760");
-        	ssm.persistForDPM( "BAT", "UPPER I1 PRESENCE", "c427749", "Ventral", charactersTrained,
+        	ssm.persistForDPM( "BAT2", "UPPER I1 PRESENCE", "c427749", "Ventral", charactersTrained,
         			inputDir, outputDir, detectionResultsDir, props);
     	}
     	catch(AvatolCVException e){

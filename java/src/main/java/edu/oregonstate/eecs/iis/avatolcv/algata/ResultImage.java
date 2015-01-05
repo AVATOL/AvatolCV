@@ -6,7 +6,7 @@ public interface ResultImage {
     public String getCharacterId();
     public String getCharacterName();
     public String getMediaPath();
-    public String getScaledMediaPath();
+    //public String getScaledMediaPath();
     public String getThumbnailMediaPath();
     public String getTaxonId();
     

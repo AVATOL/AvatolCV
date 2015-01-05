@@ -47,7 +47,7 @@ public class TrainingSample extends AnnotatedItem implements ResultImage  {
     public static String getMediaIdFromRelativePath(String rp){
     	String prefix = Media.MEDIA_DIRNAME + SEP;
     	String mediaFilename = rp.replace(prefix,"");
-    	String[] parts = mediaFilename.split("_");
+    	String[] parts = mediaFilename.split("\\.");
     	String mediaIdCapM = parts[0];
     	String mediaId = mediaIdCapM.replace("M","m");
     	return mediaId;
@@ -64,12 +64,12 @@ public class TrainingSample extends AnnotatedItem implements ResultImage  {
     	return this.mediaPath;
     }
 
-	@Override
-	public String getScaledMediaPath() {
-		String mediaPath = this.getMediaPath();
-		String scaledMediaPath = mediaPath.replaceFirst(Media.MEDIA_DIRNAME, ImageScaler.SCALED_IMAGE_DIR);
-		return scaledMediaPath;
-	}
+	//@Override
+	//public String getScaledMediaPath() {
+	//	String mediaPath = this.getMediaPath();
+	//	String scaledMediaPath = mediaPath.replaceFirst(Media.MEDIA_DIRNAME, ImageScaler.SCALED_IMAGE_DIR);
+	//	return scaledMediaPath;
+	//}
 
 	@Override
 	public String getThumbnailMediaPath() {

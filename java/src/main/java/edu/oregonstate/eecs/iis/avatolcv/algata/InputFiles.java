@@ -198,18 +198,18 @@ public class InputFiles {
     			registerMediaAndTaxonInSummary(mediaId, this.summaryFile);
     		}
     		List<MatrixCell> allMatrixCellsForTrainedCharacter = sddFile.getPresenceAbsenceCellsForCharacter(charId);
-    		// need to add training lines for "not present" scored training examples since they won't have generated annotations
-    		List<MatrixCell> notPresentTrainingCells = getNotPresentCells(allMatrixCellsForTrainedCharacter);
-    		for (MatrixCell notPresentCell : notPresentTrainingCells){
-    			List<String> notPresentTrainingDataLines = this.sddFile.getNotPresentTrainingDataLines(notPresentCell);
-    			for (String s : notPresentTrainingDataLines){
-    				String relativeMediaPath = getRelativeMediaPathFromTrainingLine(s);
+    		List<String> trainingDataLinesLackingAnnotations = getTrainingLinesThatLackAnnotations(allMatrixCellsForTrainedCharacter);
+    		if (!trainingDataLinesLackingAnnotations.isEmpty()){
+    			System.out.println("size : " + trainingDataLinesLackingAnnotations.size());
+    			for (String s: trainingDataLinesLackingAnnotations){
+        			String relativeMediaPath = getRelativeMediaPathFromTrainingLine(s);
     				if (relativeMediaPath != null){
     					String mediaId = this.media.getMediaIdForRelativeMediaPath(relativeMediaPath);
     					registerMediaAndTaxonInSummary(mediaId, this.summaryFile);
     				}
-    			}
+        		}
     		}
+    		
     		
     		List<MatrixCell> matrixCellsToScore = getCellsToScore(allMatrixCellsForTrainedCharacter, annotationsForCharacter);
     		for (MatrixCell cell : matrixCellsToScore){
@@ -220,6 +220,24 @@ public class InputFiles {
     		}
     	}
    		this.summaryFile.persist();
+    }
+   
+    public List<String> getTrainingLinesThatLackAnnotations(List<MatrixCell> cells) throws AvatolCVException {
+    	List<String> trainingDataLines = new ArrayList<String>();
+    	for (MatrixCell cell : cells){
+			List<String> mediaIds = cell.getMediaIds();
+			for (String mediaId : mediaIds){
+				String charStateId = cell.getState();
+				String charId = cell.getCharId();
+				if (!this.annotations.isCharAndMediaRepresentedByAnnotation(charId, mediaId)){
+					String trainingDataLineSansAnnotation = sddFile.getTrainingDataLineSansAnnotation(mediaId, charId, charStateId);
+					if (null != trainingDataLineSansAnnotation){
+						trainingDataLines.add(trainingDataLineSansAnnotation);
+					}
+				}
+			}
+		}
+    	return trainingDataLines;
     }
 	  // sorted_input_data_<charID>_charName.txt
     // for each annotation file, add line
@@ -246,14 +264,21 @@ public class InputFiles {
     		}
     		List<MatrixCell> allMatrixCellsForTrainedCharacter = sddFile.getPresenceAbsenceCellsForCharacter(charId);
     		// need to add training lines for "not present" scored training examples since they won't have generated annotations
-    		List<MatrixCell> notPresentTrainingCells = getNotPresentCells(allMatrixCellsForTrainedCharacter);
-    		for (MatrixCell notPresentCell : notPresentTrainingCells){
-    			List<String> notPresentTrainingDataLines = this.sddFile.getNotPresentTrainingDataLines(notPresentCell);
-    			for (String s : notPresentTrainingDataLines){
-    				trainingDataLines.add(s);
-    			}
+    		//List<MatrixCell> notPresentTrainingCells = getNotPresentCells(allMatrixCellsForTrainedCharacter);
+    		//for (MatrixCell notPresentCell : notPresentTrainingCells){
+    		//	List<String> mediaIds = notPresentCell.getMediaIds();
+    		//	for (String mediaId : mediaIds){
+    		//		String charStateId = notPresentCell.getState();
+    		//		if (!this.annotations.isCharAndMediaRepresentedByAnnotation(charId, mediaId)){
+    		//			String trainingDataLineSansAnnotation = sddFile.getTrainingDataLineSansAnnotation(mediaId, charId, charStateId);
+    		//			trainingDataLines.add(trainingDataLineSansAnnotation);
+    		//		}
+    		//	}
+    		//}
+    		List<String> trainingDataLinesLackingAnnotations = getTrainingLinesThatLackAnnotations(allMatrixCellsForTrainedCharacter);
+    		for (String s: trainingDataLinesLackingAnnotations){
+    			trainingDataLines.add(s);
     		}
-    		
     		List<MatrixCell> matrixCellsToScore = getCellsToScore(allMatrixCellsForTrainedCharacter, annotationsForCharacter);
     		for (MatrixCell cell : matrixCellsToScore){
     			List<String> mediaIds = cell.getMediaIds();
@@ -485,7 +510,8 @@ public class InputFiles {
     	int lengthOfMediaPlusFileSep = mediaDirname.length() + 1;
     	
     	String mediaFilename = mediaPath.substring(lengthOfMediaPlusFileSep,mediaPath.length());
-    	String[] mediaFilenameParts = mediaFilename.split("_");
+    	//String[] mediaFilenameParts = mediaFilename.split("_");
+    	String[] mediaFilenameParts = mediaFilename.split("\\.");//as of 1/1/2015, no more underscores in meia filenames
     	String prefix = mediaFilenameParts[0];
     	String mediaId = prefix.replace("M","m");
     	return mediaId;
