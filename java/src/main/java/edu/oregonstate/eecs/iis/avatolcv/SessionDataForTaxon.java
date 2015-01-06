@@ -91,18 +91,22 @@ public class SessionDataForTaxon extends SessionData {
     	return maxConfidenceState;
     }
     public double calculateCombinedScore(){
+    	String maxConfidenceState = getBelievedState();
     	if (this.scoredImages == null){
     		
             double score = getRandomInRange(0.5, 1.0);
             return score;
     	}
-    	int count = this.scoredImages.size();
+    	int count = 0;
     	double total = 0;
     	for (ResultImage ri : this.scoredImages){
-    		String confidenceString = ri.getConfidence();
-    		Double d = new Double(confidenceString);
-    		double val = d.doubleValue();
-    		total += val;
+    		if (ri.getCharacterStateName().equals(maxConfidenceState)){
+    			String confidenceString = ri.getConfidence();
+        		Double d = new Double(confidenceString);
+        		double val = d.doubleValue();
+        		total += val;
+        		count += 1;
+    		}
     	}
     	double average = total / count;
     	return average;
