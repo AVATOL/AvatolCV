@@ -46,13 +46,14 @@ public class ImageBrowser extends JPanel {
     public JTabbedPane getTabbedPane(JPanel trainingPanel, JPanel scoredPanel, JPanel unscoredPanel, ImageSetSupplier imageSetSupplier){
     	JTabbedPane tabbedPane = new JTabbedPane();
     	tabbedPane.setPreferredSize(new Dimension(800,600));
-    	tabbedPane.addTab(imageSetSupplier.getTrainingTabTitle(), null, trainingPanel,
-    	                  "Show training examples for selected taxon");
-    	tabbedPane.setMnemonicAt(0, KeyEvent.VK_T);
-
+    	
     	tabbedPane.addTab(imageSetSupplier.getScoredTabTitle(), null, scoredPanel,
     			           "Show scored images for selected taxon");
-    	tabbedPane.setMnemonicAt(1, KeyEvent.VK_S);
+    	tabbedPane.setMnemonicAt(0, KeyEvent.VK_S);
+    	
+    	tabbedPane.addTab(imageSetSupplier.getTrainingTabTitle(), null, trainingPanel,
+                "Show training examples for selected taxon");
+    	tabbedPane.setMnemonicAt(1, KeyEvent.VK_T);
 
     	tabbedPane.addTab(imageSetSupplier.getUnscoredTabTitle(), null, unscoredPanel,
     	                  "Show images that could not be scored");
