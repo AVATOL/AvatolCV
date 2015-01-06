@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <questions>
     <question type="choice" id="WELL_CONTRASTED">
-        <text>Are the images well contrasted?</text>
+        <text>Are the images well contrasted?  Below is an example of an image who's contrast has been degraded to illustrate the difference.</text>
         <answer value="yes" next="SHARP_ENOUGH" />
         <answer value="no" next="SHARP_ENOUGH" />
-        <image filename="data/questionnaire/images/clutter.jpg" caption="Better Contrast" />
-        <image filename="data/questionnaire/images/poorcontrast.jpg" caption="Poorer Contrast" />
+        <image filename="data/questionnaire/images/clutter.jpg" caption="This image has good contrast contrast" />
+        <image filename="data/questionnaire/images/poorcontrast.jpg" caption="This is the same image with the contrast reduced." />
     </question>
     <question type="choice" id="SHARP_ENOUGH">
-        <text>Are the images sharp enough?</text>
+        <text>Are the images sharp enough?  Below is an example of an image who's sharpness has been degraded to illustrate the difference.</text>
         <answer value="yes" next="TARGET_AREA_SPECIMEN" />
         <answer value="no" next="TARGET_AREA_SPECIMEN" />
-        <image filename="data/questionnaire/images/clutter.jpg" caption="Sharp Enough" />
-        <image filename="data/questionnaire/images/notsharp.jpg" caption="Not Sharp Enough" />
+        <image filename="data/questionnaire/images/clutter.jpg" caption="This image is sharp" />
+        <image filename="data/questionnaire/images/notsharp.jpg" caption="This one has been blurred" />
     </question>
     <question type="choice" id="TARGET_AREA_SPECIMEN">
         <text>On average, what percent of the image is occupied by the specimen?</text>
@@ -42,54 +42,48 @@
         <text>Is there one or multiple organisms in the images?</text>
         <answer value="one" next="ORGANISM_POSITION" />
         <answer value="multiple" next="OCCLUSION" />
-        <image filename="data/questionnaire/images/rigid.jpg" caption="Exactly one organism in all images" />
-        <image filename="data/questionnaire/images/occlusion.jpg" caption="Multiple organisms possible in images" />
+        <image filename="data/questionnaire/images/rigid.jpg" caption="An example of an image with a single organism" />
+        <image filename="data/questionnaire/images/occlusion.jpg" caption="An example of an image with multiple organisms present" />
     </question>
     <question type="choice" id="ORGANISM_POSITION">
         <text>Is the organism centered in the images?</text>
         <answer value="yes" next="ORGANISM_ORIENTATION" />
         <answer value="no" next="ORGANISM_ORIENTATION" />
-        <image filename="data/questionnaire/images/rigid.jpg" caption="Object is always centered in all images" />
+        <image filename="data/questionnaire/images/rigid.jpg" caption="An example of a nicely centered organism" />
     </question>
     <question type="choice" id="ORGANISM_ORIENTATION">
         <text>Is the organism always in a certain orientation?</text>
         <answer value="yes" next="OCCLUSION" />
         <answer value="no" next="OCCLUSION" />
-        <image filename="data/questionnaire/images/rigid.jpg" caption="Object is always in this orientation in all images" />
+        <image filename="data/questionnaire/images/rigid.jpg" caption="For example, does every image have the organism facing left, like this?" />
     </question>
     <question type="choice" id="OCCLUSION">
         <text>Do other objects occlude the organism?</text>
         <answer value="yes" next="BACKGROUND_CLUTTER" />
         <answer value="no" next="BACKGROUND_CLUTTER" />
-        <image filename="data/questionnaire/images/occlusion.jpg" caption="Objects can block other objects" />
-        <image filename="data/questionnaire/images/rigid.jpg" caption="Object is not blocked by other objects" />
+        <image filename="data/questionnaire/images/occlusion.jpg" caption="An example of objects occluding an organism" />
+        <image filename="data/questionnaire/images/rigid.jpg" caption="An example of an organism that has no objects blocking it" />
     </question>
     <question type="choice" id="BACKGROUND_CLUTTER">
         <text>Is the background in the images uniform or does the background contain clutter?</text>
         <answer value="uniform" next="CHARACTER_PROPERTY_OR_PART" />
         <answer value="clutter" next="CHARACTER_PROPERTY_OR_PART" />
-        <image filename="data/questionnaire/images/rigid.jpg" caption="Uniform background" />
-        <image filename="data/questionnaire/images/clutter.jpg" caption="Cluttered background" />
+        <image filename="data/questionnaire/images/rigid.jpg" caption="An example where the background is relatively uniform" />
+        <image filename="data/questionnaire/images/clutter.jpg" caption="An example where the background is cluttered" />
     </question>
     <question type="choice" id="CHARACTER_PROPERTY_OR_PART">
         <text>Does the character involve part(s)? Or is it a more global property (e.g. texture)?</text>
-        <answer value="parts" next="CHARACTER_PART_POSITIONS" />
+        <answer value="parts" next="CHARACTER_PART_ARTICULATED" />
         <answer value="global" next="NO_MORE_QUESTIONS" />
-        <image filename="data/questionnaire/images/globalproperty.jpg" caption="Global Property: Leaf Texture" />
-        <image filename="data/questionnaire/images/parts.jpg" caption="Characteristic Part: Particular Teeth" />
-    </question>
-    <question type="choice" id="CHARACTER_PART_POSITIONS">
-        <text>Could positions of parts be predicted by positions of other parts?</text>
-        <answer value="yes" next="CHARACTER_PART_ARTICULATED" />
-        <answer value="no" next="NO_MORE_QUESTIONS" />
-        <image filename="data/questionnaire/images/rigid.jpg" caption="Positions of teeth are relatively rigid" />
+        <image filename="data/questionnaire/images/globalproperty.jpg" caption="An example of a global property is leaf texture" />
+        <image filename="data/questionnaire/images/parts.jpg" caption="An example of a part is a particular tooth" />
     </question>
     <question type="choice" id="CHARACTER_PART_ARTICULATED">
         <text>Are the parts themselves highly articulated, i.e. can they bend around or change shape easily?</text>
         <answer value="yes" next="CHARACTER_PARTS_COUNT" />
         <answer value="no" next="CHARACTER_PARTS_COUNT" />
-        <image filename="data/questionnaire/images/rigid.jpg" caption="Single tooth not articulated" />
-        <image filename="data/questionnaire/images/clutter.jpg" caption="Tubule is highly articulated" />
+        <image filename="data/questionnaire/images/rigid.jpg" caption="A tooth, for example, cannot bend" />
+        <image filename="data/questionnaire/images/clutter.jpg" caption="A tubule can bend" />
     </question>
     <question type="choice" id="CHARACTER_PARTS_COUNT">
         <text>Does the character involve one or multiple parts?</text>
