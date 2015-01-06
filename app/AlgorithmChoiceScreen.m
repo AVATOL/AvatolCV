@@ -10,6 +10,7 @@ classdef AlgorithmChoiceScreen < handle
         progressIndicator;
         originalDir;
         
+        messageText;
         showRunAlgorithmButton;
         message;
     end
@@ -23,7 +24,12 @@ classdef AlgorithmChoiceScreen < handle
         function doAnotherCharacter(obj,hObject, eventData)
             obj.session.doAnotherCharacter();
         end
+        
         function runAlgorithm(obj, hObject, eventData)
+            fprintf('algorithm unhooked for demo');
+            set(obj.messageText, 'String', 'Algorithms disengaged for B2 demo');
+        end
+        function runAlgorithmReal(obj, hObject, eventData)
             obj.ui.deleteObsoleteControls();
             messagePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                       'BorderType', 'none',...
@@ -155,7 +161,7 @@ classdef AlgorithmChoiceScreen < handle
                                       'Position',[0.1 0.2 0.8 0.7]);
 
 
-            messageText = uicontrol('style', 'text' ,...
+            obj.messageText = uicontrol('style', 'text' ,...
                                          'Parent',messagePanel,...
                                          'Units', 'normalized',...
                                          'position', [0 0 1 1] ,...
