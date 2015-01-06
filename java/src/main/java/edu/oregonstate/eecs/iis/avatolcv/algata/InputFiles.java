@@ -48,7 +48,7 @@ public class InputFiles {
     	File f = new File(inputDir);
     	f.mkdirs();
     	Platform.setPermissions(inputDir);
-    	reactToChangingSDDFile();
+    	//reactToChangingSDDFile();
     	//erasePriorInputData
     }
     public void reactToChangingSDDFile() throws AvatolCVException {
