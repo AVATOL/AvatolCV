@@ -32,6 +32,7 @@ public class AnnotationFlipXY {
     			String imageId = imageIdCapM.replace("M", "m");
     			rotateAllAnnotationsWithImage(bundleDir, imageId);
     		}
+    		reader.close();
     	}
     	catch (FileNotFoundException fnfe){
     		System.out.println("could not find file " + imageListPath);

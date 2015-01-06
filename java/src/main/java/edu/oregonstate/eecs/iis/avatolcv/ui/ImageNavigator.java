@@ -208,14 +208,7 @@ public class ImageNavigator extends JPanel {
     	unloadMainImage();
     	unloadThumbnails();
     }
-    public int getPointPixelRadius(BufferedImage image){
-    	int width = image.getWidth();
-		int height = image.getHeight();
-		if (width < 100 || height < 100){
-			return 3;
-		}
-		return 5;
-    }
+   
     public int getPixelDistanceForPercentCoordinate(int imageDimension, double coord){
     	int pixels = (int)(imageDimension * coord)/100;
     	return pixels;
@@ -235,7 +228,6 @@ public class ImageNavigator extends JPanel {
     public JLabel getImageAsJLabel(String imagePath, List<PointAsPercent> annotationPoints, int halfLength) throws AvatolCVException {
     	try {
     		BufferedImage image = ImageIO.read(new File(imagePath));
-    		int radius = getPointPixelRadius(image);
     		int width = image.getWidth();
     		int height = image.getHeight();
     		//Graphics g2d = image.getGraphics();
@@ -263,12 +255,11 @@ public class ImageNavigator extends JPanel {
     public JLabel getImageAsJLabel(String imagePath, List<PointAsPercent> annotationPoints, List<Annotation> humanAnnotations, int halfLength) throws AvatolCVException {
     	try {
     		BufferedImage image = ImageIO.read(new File(imagePath));
-    		int radius = getPointPixelRadius(image);
     		int width = image.getWidth();
     		int height = image.getHeight();
     		
     		ImageIcon icon = new ImageIcon(image);
-    		Graphics g2d = icon.getImage().getGraphics();
+    		Graphics2D g2d = (Graphics2D)(icon.getImage().getGraphics());
     		g2d.setColor(Color.yellow);
     		
     		for (Annotation annot : humanAnnotations){
@@ -285,15 +276,15 @@ public class ImageNavigator extends JPanel {
         			
         		}  
     		}
-    		g2d.setColor(Color.green);
-    		
+    		g2d.setColor(Color.yellow);
+    	    g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
     		for (PointAsPercent pap : annotationPoints){
     			double x = pap.getX();
     			int xPixel = getPixelDistanceForPercentCoordinate(width, x);
     			double y = pap.getY();
     			int yPixel = getPixelDistanceForPercentCoordinate(height, y);
-    			drawCrossAtPoint(g2d,xPixel,yPixel,width,height, halfLength);
-    			//g2d.fillOval(xPixel, yPixel, radius, radius); 
+    			drawXAtPoint(g2d,xPixel,yPixel,width,height, halfLength);
+    		    drawCircleCenteredAtPoint(g2d,xPixel, yPixel, halfLength); 
     		}  
     		JLabel result = new JLabel(new ImageIcon(image));
     		return result;
@@ -302,6 +293,12 @@ public class ImageNavigator extends JPanel {
     		ioe.printStackTrace();
     		throw new AvatolCVException("problem loading images for image set " + imagePath);
     	}
+    }
+
+    public void drawCircleCenteredAtPoint(Graphics2D graphics, int x, int y, int halfLength){
+    	int drawingOriginX = x - halfLength;
+		int drawingOriginY = y - halfLength;
+		graphics.drawOval(drawingOriginX, drawingOriginY, 2*halfLength, 2*halfLength); 
     }
     public void drawCrossAtPoint(Graphics graphics, int x, int y, int width, int height, int halfLength){
     	int verticalLineX1 = x;
@@ -339,6 +336,22 @@ public class ImageNavigator extends JPanel {
 			horizontalLineX2 = x + halfLength;
 		}
 		graphics.drawLine(horizontalLineX1, horizontalLineY1, horizontalLineX2, horizontalLineY2);
+    }
+
+    public void drawXAtPoint(Graphics graphics, int x, int y, int width, int height, int halfLength){
+    	int distance = (int)(Math.cos(Math.toRadians(45)) * halfLength);
+    	int nwseLineX1 = x - distance;
+		int nwseLineX2 = x + distance;
+		int nwseLineY1 = y - distance;
+		int nwseLineY2 = y + distance;
+		
+		graphics.drawLine(nwseLineX1, nwseLineY1, nwseLineX2, nwseLineY2);
+    	int neswLineX1 = x + distance;
+		int neswLineX2 = x - distance;
+		int neswLineY1 = y - distance;
+		int neswLineY2 = y + distance;
+		
+		graphics.drawLine(neswLineX1, neswLineY1, neswLineX2, neswLineY2);
     }
     public static BufferedImage scaleImage(BufferedImage image){
     	int height = image.getHeight();

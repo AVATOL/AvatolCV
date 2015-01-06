@@ -208,6 +208,7 @@ public class ScoredSetMetadatas {
         			//do nothing
         		}
         	}
+        	reader.close();
         	
     	}
     	catch(IOException ioe){
@@ -244,6 +245,7 @@ public class ScoredSetMetadatas {
         			result = result + line + NL;
         		}
         	}
+        	reader.close();
         	
     	}
     	catch(IOException ioe){
