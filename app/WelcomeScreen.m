@@ -15,13 +15,22 @@ classdef WelcomeScreen < handle
         function displayWelcomeScreen(obj)
             obj.ui.deleteObsoleteControls();
             obj.ui.createSimpleTextScreenPanels();
-            introText = ['Welcome to the AVATOL Computer Vision System.  '...
-                         'Choose "Begin Tutorial" to learn about scoring characters with AvatolCV. '...
-                         'Choose "Score a Character" if you are ready to do so. '...
-                         'Choose "Review Results" to examine results of prior runs.'];
-
+            
+            lineA = '                  Welcome to the AVATOL Computer Vision System.';
+            lineA1 = '';
+            lineA2 = '';
+            lineB = '   Choose "Begin Tutorial" to learn about scoring characters with AvatolCV. ';
+            lineC = '';
+            lineD = '';
+            lineE = '   Choose "Score a Character" if you are ready to do so. ';
+            lineF = '';
+            lineG = '';
+            lineH = '   Choose "Review Results" to examine results of prior runs.';
+            
+            goalText = { lineA lineA1 lineA2 lineB lineC lineD lineE lineF lineG lineH };
+            
             tutorialText = uicontrol('style', 'text' ,...
-                                         'String', introText ,...
+                                         'String', goalText ,...
                                          'Units','normalized',...
                                          'position', [0,0,1,1] ,...
                                          'FontName', obj.ui.fontname ,...
@@ -31,9 +40,9 @@ classdef WelcomeScreen < handle
                                          'Parent',obj.ui.textPanel,...
                                          'HorizontalAlignment', 'left');
 
-            beginTutorialPosition = [0.75,0,0.25,1 ];  
+            beginTutorialPosition = [0.75,0,0.23,1 ];  
             skipToQuestionnaireButtonPosition = [0,0,0.23,1 ];
-            skipToResultsReviewButtonPosition = [0.25,0,0.25,1 ];
+            skipToResultsReviewButtonPosition = [0.24,0,0.23,1 ];
 
             beginTutorial = uicontrol('style', 'pushbutton' ,...
                                          'String', 'Begin Tutorial' ,...

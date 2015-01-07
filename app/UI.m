@@ -39,8 +39,8 @@ classdef UI < handle
         fontname = 'Helvetica';
         %fontname = 'Calibri';
         %fontname = 'Times New Roman';
-        fontsize = 13;
-        %fontsize = 14;
+        %fontsize = 13;
+        fontsize = 14;
         fontsizeHeader = 16;
         fullWidth = 1260;
         fullHeight = 750;
@@ -105,12 +105,12 @@ classdef UI < handle
             obj.textPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                   'BorderType', 'none',...
                                   'Tag', 'textPanel',...
-                                  'Position',[0.05 0.70 0.9 0.18]);
+                                  'Position',[0.05 0.70 0.9 0.2]);
                              
             obj.imagePanel = uipanel('Background',[1 1 1],...%[0.3 0.3 1]
                                   'BorderType', 'none',...
                                   'Tag', 'imagePanel',...
-                                  'Position',[ 0.15 0.2 0.7 0.60]);
+                                  'Position',[ 0.15 0.15 0.7 0.60]);
                               
             obj.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
                                   'BorderType', 'none',...
