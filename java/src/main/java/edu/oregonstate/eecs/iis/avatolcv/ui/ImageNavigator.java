@@ -175,6 +175,7 @@ public class ImageNavigator extends JPanel {
     			thumbnailLabel = getImageAsJLabel(thumbnailPath);
     		}
     		thumbnailLabel.addMouseListener(new ThumbnailClickListener(thumbnailLabel, ri,this));
+    		thumbnailLabel.setToolTipText(ri.getMediaId());
         	this.thumbnailLabels.add(thumbnailLabel);
         	this.thumbnailPanel.add(thumbnailLabel, getThumbnailConstraints(index++));
     	}
