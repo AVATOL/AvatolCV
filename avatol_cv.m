@@ -28,6 +28,7 @@ function avatol_cv
     else
         javaaddpath('java/bin');
         javaaddpath('java/lib');
+        javaaddpath('java/lib/avatol_cv.jar');
     end
     
     %import java.util.List;
