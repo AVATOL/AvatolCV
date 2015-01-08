@@ -17,7 +17,7 @@ import edu.oregonstate.eecs.iis.avatolcv.SessionDataForTaxon;
 
 public class ResultMatrixCell{
 	public static Font textFont= new Font("Sans Serif",Font.PLAIN,16);
-	public static Color entrySelectionColor = new Color(230,230,255);
+	public static Color entrySelectionColor = new Color(200,200,255);
 	public static Color aboveThresholdColor = new Color(100,255,100);
 	public static Color belowThresholdColor = new Color(255,100,100);
 	public static Color backgroundColor = new Color(255,255,255);
