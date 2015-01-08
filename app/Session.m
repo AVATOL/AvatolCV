@@ -272,6 +272,7 @@ classdef Session < handle
         function doAnotherCharacter(obj)
             cd(obj.rootDir);
             obj.questionnaireScreens.reset();
+            obj.ui.deleteObsoleteControls();
             obj.matrixChoiceScreen.displayMatrixQuestion();
         end
 

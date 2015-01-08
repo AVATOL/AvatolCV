@@ -15,8 +15,8 @@ public class StatusPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JLabel status = null;
-	private JProgressBar progressBar = null;
+	private JLabel status = new JLabel();
+	private JProgressBar progressBar = new JProgressBar();
 	public StatusPanel(){
 		
 		

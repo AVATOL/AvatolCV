@@ -63,9 +63,11 @@ public class MorphobankData {
 	}
 	public MorphobankBundle loadMatrix(String name) throws MorphobankDataException, AvatolCVException  {
 		String fullpath = parentDirPath + FILESEP + name;
-		MorphobankBundle mbb = new MorphobankBundle(fullpath);
-		//mbb.init();
-		bundleForName.put(name, mbb);
+		MorphobankBundle mbb = bundleForName.get(name);
+		if (mbb == null){
+			mbb = new MorphobankBundle(fullpath);
+			bundleForName.put(name, mbb);
+		}
 		return mbb;
 	}
 	public MorphobankBundle getBundle(String bundleName){

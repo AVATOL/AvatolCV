@@ -47,6 +47,21 @@ classdef MatrixChoiceScreen < handle
             obj.session.morphobankBundle.init();
             obj.session.javaUI.setCurrentBundle(obj.session.morphobankBundle);
         end    
+        
+        function registerMatrixChoiceNoProgressBar(obj, matrixName)
+            obj.chosenMatrix = matrixName; % as this is called from Session as part of hack
+            if ispc()
+                 obj.matrixDir = sprintf('%s\\matrix_downloads\\%s', obj.session.rootDir, matrixName);
+            else
+                 obj.matrixDir = sprintf('%s/matrix_downloads/%s',  obj.session.rootDir, matrixName);
+            end
+            matrixNameJavaString = java.lang.String(matrixName);
+            edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle.printString(matrixNameJavaString);
+            obj.session.morphobankBundle = obj.session.morphobankData.loadMatrix(matrixNameJavaString);
+   
+            obj.session.morphobankBundle.init();
+            obj.session.javaUI.setCurrentBundle(obj.session.morphobankBundle);
+        end    
         function displayMatrixQuestion(obj)
             obj.ui.deleteObsoleteControls();
             obj.ui.createPopupChoicePanels();

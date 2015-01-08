@@ -8,7 +8,6 @@ classdef ResultsReviewScreen < handle
         ssms;
         dataFocus = 'scoredImages';
         sessionData;
-        runSelector;
         sessionDataForTaxa;
         resultMatrixColumn;
         imageControlTags = {};
@@ -16,9 +15,10 @@ classdef ResultsReviewScreen < handle
         heightRatio;
         matrixHeight;
         
-        javaTaxaScrollPane;
-        javaTaxaConfidenceSlider;
-        javaConfidenceLabel;
+        imageBrowserHostPanel;
+        resultMatrixPanel;
+        resultMatrixPanelGUIHandle;
+        runSelector;
     end
     
     methods
@@ -31,7 +31,7 @@ classdef ResultsReviewScreen < handle
             obj.ssms.loadAll();
             obj.session.javaUI.setScoredSetMetadatas(obj.session.scoredSetMetadatas);
             matrixOfMostRecentRun = char(obj.ssms.getMatrixNameFromKey(obj.ssms.getCurrentKey()));
-            obj.session.matrixChoiceScreen.registerMatrixChoice(matrixOfMostRecentRun);
+            obj.session.matrixChoiceScreen.registerMatrixChoiceNoProgressBar(matrixOfMostRecentRun);
             obj.sessionData = obj.ssms.getSessionResultsData(obj.session.morphobankBundle);
         end
         function showResults(obj)
@@ -212,7 +212,7 @@ classdef ResultsReviewScreen < handle
             obj.ui.imageNavigationPanel
             import edu.oregonstate.eecs.iis.avatolcv.ui.ImageBrowser;
             imageBrowser = obj.resultMatrixColumn.getActiveImageBrowser();
-            imageBrowserHostPanel = imageBrowser.getImageBrowserHostPanel();
+            obj.imageBrowserHostPanel = imageBrowser.getImageBrowserHostPanel();
             import javax.swing.JTextArea;
             import javax.swing.JTabbedPane;
             import javax.swing.JLabel;
@@ -220,8 +220,8 @@ classdef ResultsReviewScreen < handle
             import java.awt.Dimension;
            
             dimension = Dimension(700,600);
-            imageBrowserHostPanel.setPreferredSize(dimension);
-            [jhPanel,hContainer] = javacomponent(imageBrowserHostPanel,[10,40,800,600],obj.ui.resultsRightPanel);
+            obj.imageBrowserHostPanel.setPreferredSize(dimension);
+            [jhPanel,hContainer] = javacomponent(obj.imageBrowserHostPanel,[10,40,800,600],obj.ui.resultsRightPanel);
         end
         function loadImageWidgetsOld(obj)
             fprintf('loadImageWidgets\n');
@@ -304,9 +304,9 @@ classdef ResultsReviewScreen < handle
             obj.sessionDataForTaxa = obj.ssms.getSessionDataForTaxa(obj.session.morphobankBundle);
             obj.resultMatrixColumn = obj.session.javaUI.createResultMatrixColumn(obj.sessionDataForTaxa);
             
-            containingPanel = obj.resultMatrixColumn.getContainingPanel();
+            obj.resultMatrixPanel = obj.resultMatrixColumn.getContainingPanel();
             %jScrollPane = com.mathworks.mwswing.MJScrollPane(obj.resultMatrixColumn);
-            [hContainingPanel,hContainer] = javacomponent(containingPanel,[10,40,400,600],obj.ui.resultsLeftPanel);
+            [hContainingPanel,obj.resultMatrixPanelGUIHandle] = javacomponent(obj.resultMatrixPanel,[10,40,400,600],obj.ui.resultsLeftPanel);
             
             %label = obj.resultMatrixColumn.getConfidenceLabel();
             %[obj.javaConfidenceLabel,hContainer] = javacomponent(label,[0,610,380,30],obj.ui.resultsLeftPanel);
@@ -473,9 +473,12 @@ classdef ResultsReviewScreen < handle
             obj.loadImageWidgets();
         end
         function doAnotherCharacter(obj,hObject, eventData)
-            delete(obj.javaConfidenceLabel);
-            delete(obj.javaTaxaConfidenceSlider);
-            delete(obj.javaTaxaScrollPane);
+            obj.imageBrowserHostPanel.removeAll();
+            obj.imageBrowserHostPanel.revalidate();
+            obj.runSelector.removeAll();
+            obj.runSelector.revalidate();
+            obj.resultMatrixPanel.removeAll();
+            obj.resultMatrixPanel.revalidate();
             obj.session.doAnotherCharacter();
         end
         function exit(obj, hobject, eventData)

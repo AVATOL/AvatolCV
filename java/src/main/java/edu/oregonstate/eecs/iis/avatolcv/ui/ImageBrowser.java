@@ -24,7 +24,7 @@ public class ImageBrowser extends JPanel {
 	private MorphobankBundle mb = null;
 	static {
 		imageBrowserHostPanel.setLayout(new GridBagLayout());
-		imageBrowserHostPanel.setBackground(Color.red);
+		imageBrowserHostPanel.setBackground(Color.white);
 	}
 	private static ImageBrowser previouslyHostedImageBrowser = null;
 	private ImageSetSupplier imageSetSupplier = null;

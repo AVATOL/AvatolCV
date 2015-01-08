@@ -33,7 +33,7 @@ public class MorphobankBundle {
     private InputFiles inputFiles = null;
     private AvatolCVProperties properties = null;
     private TrainingDataPartitioner tdp = null;
-    
+    private boolean initialized = false;
     public MorphobankBundle(String dirName)  {
     	this.dirName = dirName;
     }
@@ -42,6 +42,9 @@ public class MorphobankBundle {
     	return this.statusPanel;
     }
     public void init() throws MorphobankDataException, AvatolCVException {
+    	if (this.initialized){
+    		return;
+    	}
     	this.properties = new AvatolCVProperties(this.dirName);
     	String sddPath = getSDDFilePath(dirName);
     	SPRTaxonIdMapper mapper = null;
@@ -67,6 +70,7 @@ public class MorphobankBundle {
     	statusPanel.setProgress(80);
         emitCharacterInfo();
         integrityCheck();
+        this.initialized = true;
         //findImagesForBAT();
     }
     public TrainingDataPartitioner getTrainingDataPartitioner(){
