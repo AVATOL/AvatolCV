@@ -17,12 +17,17 @@ import edu.oregonstate.eecs.iis.avatolcv.SessionDataForTaxon;
 
 public class ResultMatrixCell{
 	public static Font textFont= new Font("Sans Serif",Font.PLAIN,16);
+	public static Color entrySelectionColor = new Color(230,230,255);
+	public static Color aboveThresholdColor = new Color(100,255,100);
+	public static Color belowThresholdColor = new Color(255,100,100);
+	public static Color backgroundColor = new Color(255,255,255);
+	//public static Color titleRowColor = new Color(210,210,255);
+	public static Color titleRowColor = Color.white;
 	enum ScoreConfidence {
 		Unknown,
 		GoodEnough,
 		NotGoodEnough
 	};
-	public static final Color backgroundColor = new Color(230,230,255);
 	private SessionDataForTaxon sdft = null;
 	private boolean isFocus = false;
 	private String taxonId = null;
@@ -39,7 +44,7 @@ public class ResultMatrixCell{
     	this.taxonName = taxonName;
     	TaxonSelectionListener tsl = new TaxonSelectionListener(this, this.rmc);
     	//this.setLayout(new GridBagLayout());
-    	taxonNameLabel = new JLabel(taxonName);
+    	taxonNameLabel = new JLabel(" " + taxonName);
     	taxonNameLabel.setFont(textFont);
     	taxonNameLabel.setBackground(backgroundColor);
     	taxonNameLabel.setOpaque(true);
@@ -47,7 +52,7 @@ public class ResultMatrixCell{
     	taxonNameLabel.addMouseListener(tsl);
     	
     	
-    	stateLabel = new JLabel(sdft.getBelievedState());
+    	stateLabel = new JLabel(" " + sdft.getBelievedState());
     	stateLabel.setFont(textFont);
     	stateLabel.setBackground(backgroundColor);
     	stateLabel.setOpaque(true);
@@ -55,18 +60,17 @@ public class ResultMatrixCell{
     	stateLabel.addMouseListener(tsl);
     	
     	//this.add(taxonNameLabel,getLabelConstraints());
-    	Color green = Color.green;
     	scoreConfidenceLabel = new JLabel("" + sdft.getCombinedScoreString(), SwingConstants.CENTER);
     	scoreConfidenceLabel.setFont(textFont);
-    	scoreConfidenceLabel.setBackground(green);
+    	scoreConfidenceLabel.setBackground(aboveThresholdColor);
     	scoreConfidenceLabel.setOpaque(true);
     	//scoreConfidenceLabel.addMouseListener(tsl);
     	//this.add(scoreConfidencePanel, getConfidencePanelConstraints());
     }
     public void highlightCellForSelection(boolean value){
     	if (value){
-    		this.taxonNameLabel.setBackground(Color.green);
-        	this.stateLabel.setBackground(Color.green);
+    		this.taxonNameLabel.setBackground(entrySelectionColor);
+        	this.stateLabel.setBackground(entrySelectionColor);
     	}
     	else {
     		this.taxonNameLabel.setBackground(backgroundColor);
@@ -115,7 +119,7 @@ public class ResultMatrixCell{
 		c.gridwidth = 1;
 		//c.ipadx = 4;
 		//c.ipady = 4;
-		c.insets = new Insets(2,4,2,4);
+		//c.insets = new Insets(2,4,2,4);
 		return c;
     }
     public static GridBagConstraints getStateLabelConstraints(int i, boolean isHeader){
@@ -135,7 +139,7 @@ public class ResultMatrixCell{
 		c.gridwidth = 1;
 		//c.ipadx = 4;
 		//c.ipady = 4;
-		c.insets = new Insets(2,4,2,4);
+		//c.insets = new Insets(2,4,2,4);
 		return c;
     }
     public static GridBagConstraints getConfidenceLabelConstraints(int i, boolean isHeader){
@@ -155,7 +159,7 @@ public class ResultMatrixCell{
 		c.gridwidth = 1;
 		//c.ipadx = 4;
 		//c.ipady = 4;
-		c.insets = new Insets(2,4,2,4);
+		//c.insets = new Insets(2,4,2,4);
 		return c;
     }
     public boolean isFocusCell(){
@@ -189,11 +193,11 @@ public class ResultMatrixCell{
     	}
     	else if (threshold <= getCellScore() * 100){
     		this.curConfidenceState = ScoreConfidence.GoodEnough;
-    		this.scoreConfidenceLabel.setBackground(Color.green);
+    		this.scoreConfidenceLabel.setBackground(aboveThresholdColor);
     	}
     	else {
     		this.curConfidenceState = ScoreConfidence.NotGoodEnough;
-    		this.scoreConfidenceLabel.setBackground(Color.red);
+    		this.scoreConfidenceLabel.setBackground(belowThresholdColor);
     	}
     }
     public String getName(){

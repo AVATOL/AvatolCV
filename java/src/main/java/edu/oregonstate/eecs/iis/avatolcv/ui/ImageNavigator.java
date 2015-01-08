@@ -19,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
@@ -42,6 +43,9 @@ public class ImageNavigator extends JPanel {
 		scored,
 		unscored
 	}
+	
+	public static final Color thumbnailHoverColor = new Color(200,200,255);
+	public static final Color thumbNailSelectionColor = new Color(100,100,255);
 	public static final int THUMBNAIL_BORDER_WIDTH = 3;
 	private static final int CROSS_HALF_LENGTH = 15;
 	private static final int THUMBNAIL_CROSS_HALF_LENGTH = 3;
@@ -184,10 +188,12 @@ public class ImageNavigator extends JPanel {
     public void highlightThumbnail(JLabel thumbnailLabel){
     	// clear them all...
     	for (JLabel label : this.thumbnailLabels){
-    		label.setBorder(new LineBorder(Color.white, THUMBNAIL_BORDER_WIDTH));
+    		SwingUtilities.invokeLater(new ThumbnailBorderUpdater(Color.white, label));
+    		//label.setBorder(new LineBorder(Color.white, THUMBNAIL_BORDER_WIDTH));
     	}
     	// then highlight the one desired
-    	thumbnailLabel.setBorder(new LineBorder(Color.green, THUMBNAIL_BORDER_WIDTH));
+    	SwingUtilities.invokeLater(new ThumbnailBorderUpdater(thumbNailSelectionColor, thumbnailLabel));
+    	//thumbnailLabel.setBorder(new LineBorder(ResultMatrixCell.entrySelectionColor, THUMBNAIL_BORDER_WIDTH));
     }
     public void unloadMainImage(){
     	if (this.imageSet.hasData() && this.picLabel != null){

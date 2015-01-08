@@ -44,7 +44,7 @@ public class ThumbnailClickListener implements MouseListener {
 	public void mouseEntered(MouseEvent e) {
 		try {
 			if (!this.im.isResultImageSelected(this.ri)){
-				this.label.setBorder(new LineBorder(Color.gray, ImageNavigator.THUMBNAIL_BORDER_WIDTH));
+				this.label.setBorder(new LineBorder(ImageNavigator.thumbnailHoverColor, ImageNavigator.THUMBNAIL_BORDER_WIDTH));
 			}
 		}
 		catch(AvatolCVException ex){
