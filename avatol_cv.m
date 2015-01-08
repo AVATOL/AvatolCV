@@ -1,18 +1,19 @@
 function avatol_cv
     
     currentDir = pwd();
-    [pathstr,name,ext] = fileparts(currentDir);
-    fprintf('current dir name is %s',name);
+    fprintf('current dir name is %s',currentDir);
+%    [pathstr,name,ext] = fileparts(currentDir);
+%    fprintf('current dir name is %s',name);
     % the following loop is for development convenience - if avatol_cv
     % crashes after it changes to a subdir, then this code
     % ensures it "rights" itself on the next launch by cd'ing to the 
     % proper dir first.
-    while not(strcmp(name,'avatol_cv'))
-        cd('..');
-        currentDir = pwd();
-        [pathstr,name,ext] = fileparts(currentDir);
-        fprintf('current dir name is %s',name);
-    end
+%    while not(strcmp(name,'avatol_cv'))
+%        cd('..');
+%        currentDir = pwd();
+%        [pathstr,name,ext] = fileparts(currentDir);
+%        fprintf('current dir name is %s',name);
+%    end
     
     if ispc
         %javaaddpath('.\\java\\bin');
