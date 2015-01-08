@@ -114,6 +114,8 @@ classdef CharacterChoiceScreen < handle
             set(prev, 'callback', {@obj.showPrevQuestion});
             set(obj.characterChoiceWidget, 'callback', {@obj.setCharacterChoice});
             obj.session.mostRecentScreen = 'CHARACTER_QUESTION'; 
+            currentFigure = gcf;
+            set(currentFigure, 'Pointer', 'arrow');
         end
 
         function showPrevQuestion(obj,  hObject, eventData)

@@ -31,6 +31,7 @@ public class BogusOutputFileGenerator {
     	
     	try {
     		MorphobankBundle bundle = new MorphobankBundle("C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT2");
+    		bundle.init();
         	BogusOutputFileGenerator g = new BogusOutputFileGenerator(inputDir, outputDir, detectionResultsDir, detectionResultsRelDir, bundle);
         	ScoredSetMetadatas ssm = new ScoredSetMetadatas("C:\\avatol\\git\\avatol_cv\\");
     		AvatolCVProperties props = new AvatolCVProperties("C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT2");

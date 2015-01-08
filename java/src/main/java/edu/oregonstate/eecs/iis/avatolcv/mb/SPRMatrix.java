@@ -1,5 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.mb;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -23,6 +24,7 @@ public class SPRMatrix extends Matrix {
 	    	String actualTaxonId = taxonIdMapper.getNormalizedTaxonId(rowId);
 	    	row.overRideCellsWithActualTaxonId(actualTaxonId);
 	        String taxonName = row.getTaxonName();
+    		//System.out.println("loadTaxonsForMedia name " + taxonName + " rowId " + rowId);
 	        String pureTaxonName = taxonIdMapper.getPureTaxonNameForName(taxonName);
 	        this.taxonNameForId.put(actualTaxonId, pureTaxonName);
 	        this.taxonIdForName.put(pureTaxonName, actualTaxonId);
@@ -34,4 +36,22 @@ public class SPRMatrix extends Matrix {
 	    	}
 	    }
 	}
+    public List<Taxon> getAllTaxa() throws MorphobankDataException {
+    	List<Taxon> result = new ArrayList<Taxon>();
+    	List<String> taxonIdsSeen = new ArrayList<String>();
+    	for (String rowId : rowIds){
+    		
+    		MatrixRow row = matrixRowForTaxonMap.get(rowId);
+	    	String actualTaxonId = taxonIdMapper.getNormalizedTaxonId(rowId);
+	    	if (!taxonIdsSeen.contains(actualTaxonId)){
+	    		taxonIdsSeen.add(actualTaxonId);
+	    		String taxonName = row.getTaxonName();
+	    		String pureTaxonName = taxonIdMapper.getPureTaxonNameForName(taxonName);
+	    		//System.out.println("loadTaxonsForMedia purename " + pureTaxonName + " rowId " + actualTaxonId);
+	    		Taxon t = new Taxon(actualTaxonId, pureTaxonName);
+	    		result.add(t);
+	    	}
+    	}
+    	return result;
+    }
 }

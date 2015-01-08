@@ -1,5 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.mb;
 
+import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -7,6 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+
+import javax.swing.JPanel;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVProperties;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
@@ -17,11 +20,12 @@ import edu.oregonstate.eecs.iis.avatolcv.algata.InputFiles;
 import edu.oregonstate.eecs.iis.avatolcv.algata.OutputFile;
 import edu.oregonstate.eecs.iis.avatolcv.algata.OutputFiles;
 import edu.oregonstate.eecs.iis.avatolcv.split.TrainingDataPartitioner;
+import edu.oregonstate.eecs.iis.avatolcv.ui.StatusPanel;
 
 public class MorphobankBundle {
     private static final String FILESEP = System.getProperty("file.separator");
     private static final String NL = System.getProperty("line.separator");
-    
+    private StatusPanel statusPanel = new StatusPanel();
     private MorphobankSDDFile sddFile = null;
     private String dirName = null;
     private Annotations annotations = null;
@@ -30,24 +34,40 @@ public class MorphobankBundle {
     private AvatolCVProperties properties = null;
     private TrainingDataPartitioner tdp = null;
     
-    public MorphobankBundle(String dirName) throws MorphobankDataException, AvatolCVException  {
+    public MorphobankBundle(String dirName)  {
     	this.dirName = dirName;
+    }
+    
+    public StatusPanel getStatusPanel(){
+    	return this.statusPanel;
+    }
+    public void init() throws MorphobankDataException, AvatolCVException {
     	this.properties = new AvatolCVProperties(this.dirName);
     	String sddPath = getSDDFilePath(dirName);
     	SPRTaxonIdMapper mapper = null;
     	if (this.properties.isSpecimenPerRowBundle()){
     		mapper = new SPRTaxonIdMapper(sddPath);
     	}
+    	statusPanel.setMessage("loading media...");
+    	statusPanel.setProgress(5);
         this.media = new Media(this.dirName);
+    	statusPanel.setMessage("loading matrix info...");
+    	statusPanel.setProgress(20);
     	this.sddFile = new MorphobankSDDFile(sddPath, mapper, this.media);
+    	statusPanel.setMessage("loading data partitioner...");
+    	statusPanel.setProgress(40);
         this.tdp = new TrainingDataPartitioner(this);
+    	statusPanel.setMessage("loading annotations...");
+    	statusPanel.setProgress(60);
     	this.annotations = new Annotations(this.sddFile.getPresenceAbsenceCharacterCells(),this.dirName, this.sddFile, this.media);
+    	statusPanel.setMessage("generating input files...");
+    	statusPanel.setProgress(80);
     	this.inputFiles = new InputFiles(this.sddFile, this.annotations, this.media, this.dirName);
     	this.inputFiles.generateInputDataFiles();
+    	statusPanel.setProgress(80);
         emitCharacterInfo();
         integrityCheck();
         //findImagesForBAT();
-        
     }
     public TrainingDataPartitioner getTrainingDataPartitioner(){
     	return this.tdp;

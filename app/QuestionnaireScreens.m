@@ -236,8 +236,12 @@ classdef QuestionnaireScreens < handle
                 %radioButton = findobj(buttonGroup,'Tag',choiceTag);
                 % so use this workaround:
                 handles = guihandles();
-                goodRB = getfield(handles, choiceTag);
-                set(goodRB,'Value',1);
+                try 
+                    goodRB = getfield(handles, choiceTag);
+                    set(goodRB,'Value',1);
+                catch err
+                    fprintf('Problem finding widget');
+                end
             end
         end
 

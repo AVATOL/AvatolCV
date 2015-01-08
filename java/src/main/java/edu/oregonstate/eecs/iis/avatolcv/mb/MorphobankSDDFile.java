@@ -50,6 +50,9 @@ public class MorphobankSDDFile {
     	loadViewsForImage(this.document);
     	loadViewsForDocument(this.document);
     }
+    public List<Taxon> getAllTaxa() throws MorphobankDataException {
+    	return this.matrix.getAllTaxa();
+    }
     public SPRTaxonIdMapper getTaxonIdMapper(){
     	return this.mapper;
     }

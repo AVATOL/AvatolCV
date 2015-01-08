@@ -129,6 +129,10 @@ classdef Session < handle
             obj.matrixChoiceScreen.displayMatrixQuestion();
         end
         
+        function backUpFromDPMQuestions(obj)
+            obj.showPrevQuestion();
+        end
+        
         
         %
         %  NAVIGATION
@@ -204,7 +208,7 @@ classdef Session < handle
                     end
                 end
             catch exception
-                warndlg(exception.message);
+                fprintf('%s',exception.message);
                 answerToNextQuestion = 'ANSWER_BLOCKED_BY_ERROR';
             end
         end

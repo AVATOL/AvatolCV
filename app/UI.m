@@ -299,7 +299,7 @@ classdef UI < handle
             obj.answerPanel = uipanel('Background', [1 1 1],...%[0.3 1 0.3]
                                   'BorderType', 'none',...
                                   'Tag','answerPanel',...
-                                  'Position',[0.05 0.1 0.95 0.67]);
+                                  'Position',[0.05 0.15 0.95 0.67]);
                               
             obj.navigationPanel = uipanel('Background', [1 1 1],...%[0.1 0.3 0.3]
                                   'BorderType', 'none',...
@@ -447,6 +447,9 @@ classdef UI < handle
             navButtonPosition = [0,0,0.3,1 ];
         end
 
+        function statusPanelPosition = getStatusPanelPosition(obj)
+            statusPanelPosition = [0.33,0,0.37,1 ];
+        end
         %
         % image display
         %

@@ -34,7 +34,15 @@ public class Matrix {
     		//System.out.println("column count for row " + taxonId + " is " + row.getColumnCount());
     	}
     }
-    
+    public List<Taxon> getAllTaxa() throws MorphobankDataException { // have to throw this due to method overriding this one in SPRMatrix
+    	List<Taxon> result = new ArrayList<Taxon>();
+    	for (String id : rowIds){
+    		String taxonName = taxonNameForId.get(id);
+    		Taxon t = new Taxon(id, taxonName);
+    		result.add(t);
+    	}
+    	return result;
+    }
     public List<MatrixRow> getRows(){
     	List<MatrixRow> rows = new ArrayList<MatrixRow>();
     	for (String taxonId : rowIds){
@@ -106,6 +114,7 @@ public class Matrix {
     		MatrixRow row = matrixRowForTaxonMap.get(rowId);
     		String taxonName = row.getTaxonName();
     		this.taxonNameForId.put(rowId, taxonName);
+    		//System.out.println("loadTaxonsForMedia name " + taxonName + " rowId " + rowId);
     		this.taxonIdForName.put(taxonName, rowId);
     		List<String> mediaIds = row.getAllMediaIds();
     		for (String mediaId : mediaIds){

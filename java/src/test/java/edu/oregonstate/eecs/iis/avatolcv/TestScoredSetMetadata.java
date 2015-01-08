@@ -31,6 +31,7 @@ public class TestScoredSetMetadata {
 			ScoredSetMetadatas ssm = new ScoredSetMetadatas(rootDir);
 			ssm.loadAll();
 			MorphobankBundle mb = new MorphobankBundle(bundleRoot);
+			mb.init();
 			SessionData sd = ssm.getSessionResultsData(mb);
 			if (null != sd){
 

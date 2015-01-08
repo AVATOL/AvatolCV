@@ -125,7 +125,7 @@ classdef AlgorithmChoiceScreen < handle
 
 
         function chooseAlgorithm(obj)
-            if (false)
+            if (true)
                 obj.message = 'DPM algorithm has been chosen for scoring.  Press Run Algorithm to begin.';
                 obj.showRunAlgorithmButton = true;
                 obj.algorithmChosen = 'DPM';

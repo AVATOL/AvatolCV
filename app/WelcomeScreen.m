@@ -19,6 +19,7 @@ classdef WelcomeScreen < handle
             lineA = '                  Welcome to the AVATOL Computer Vision System.';
             lineA1 = '';
             lineA2 = '';
+            lineA3 = '';
             lineB = '   Choose "Begin Tutorial" to learn about scoring characters with AvatolCV. ';
             lineC = '';
             lineD = '';
@@ -27,7 +28,7 @@ classdef WelcomeScreen < handle
             lineG = '';
             lineH = '   Choose "Review Results" to examine results of prior runs.';
             
-            goalText = { lineA lineA1 lineA2 lineB lineC lineD lineE lineF lineG lineH };
+            goalText = { lineA lineA1 lineA2 lineA3 lineB lineC lineD lineE lineF lineG lineH };
             
             tutorialText = uicontrol('style', 'text' ,...
                                          'String', goalText ,...

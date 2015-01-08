@@ -10,6 +10,8 @@ classdef MatrixChoiceScreen < handle
        matrixChoiceIndex = 1;
        matrixChoices;
        matrixDir;
+       statusLabel;
+       progressBar;
     end
     
     methods
@@ -37,6 +39,12 @@ classdef MatrixChoiceScreen < handle
             matrixNameJavaString = java.lang.String(matrixName);
             edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle.printString(matrixNameJavaString);
             obj.session.morphobankBundle = obj.session.morphobankData.loadMatrix(matrixNameJavaString);
+            statusPanel = obj.session.morphobankBundle.getStatusPanel();
+            %obj.statusPanel = obj.session.morphobankBundle.getJPanel();
+            %position = obj.ui.getStatusPanelPosition();
+            statusPanel.setLabel(obj.statusLabel);
+            statusPanel.setProgressBar(obj.progressBar);
+            obj.session.morphobankBundle.init();
             obj.session.javaUI.setCurrentBundle(obj.session.morphobankBundle);
         end    
         function displayMatrixQuestion(obj)
@@ -88,6 +96,16 @@ classdef MatrixChoiceScreen < handle
                                          'FontSize', obj.ui.fontsize ,...
                                          'Tag','next' ,...
                                          'BackgroundColor', [0.8 0.8 0.8]);  
+            
+            import javax.swing.JLabel;
+            import javax.swing.JProgressBar;
+            obj.statusLabel = JLabel();
+            obj.progressBar = JProgressBar();
+            
+            [statusPanelHandle,hContainer] = javacomponent(obj.statusLabel,[300,0,200,36],obj.ui.navigationPanel);
+            
+            
+            [statusPanelHandle,hContainer] = javacomponent(obj.progressBar,[520,0,300,36],obj.ui.navigationPanel);
             %H.activeControlTags = { 'matrixChoice',  'matrixChoicePrompt', 'next', 'tutorial' };
             obj.ui.activeControlTags = { 'matrixChoicePrompt', 'next', 'tutorial' };
             obj.ui.activeAnswerControl = obj.matrixChoiceWidget;
@@ -101,10 +119,9 @@ classdef MatrixChoiceScreen < handle
         end
         function showNextQuestion(obj, hObject, eventData)
             currentFigure = gcf;
-            set(currentFigure, 'pointer', 'watch');
+            set(currentFigure, 'Pointer', 'watch');
             obj.session.registerDisplayedAnswer();
             obj.session.characterChoiceScreen.showCharacterQuestion();
-            set(currentFigure, 'pointer', 'arrow');
         end
         function jumpToTutorial(obj, hObject, eventData)
             obj.session.jumpToTutorial();
