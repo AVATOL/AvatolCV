@@ -32,8 +32,9 @@ function avatol_cv
     end
     
     %import java.util.List;
-    import java.lang.String;
+    import java.lang.*;
     %import java.lang.System.*;
+   
     import edu.oregonstate.eecs.iis.avatolcv.*;
     import edu.oregonstate.eecs.iis.avatolcv.mb.*;
     
@@ -43,10 +44,10 @@ function avatol_cv
     %javaclasspath
     %global H;
     rootDir = pwd();
-    avatolSystem = AvatolSystem(java.lang.String(rootDir));
-
-    session = Session(rootDir, avatolSystem);
-
+    %rootDirString = java.lang.String(rootDir)
+    %avatolSystem = AvatolSystem(rootDirString);
+    %session = Session(rootDir, avatolSystem);
+    session = Session(rootDir);
 end
    
 

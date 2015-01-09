@@ -22,14 +22,14 @@ classdef Session < handle
         javaUI;
         
         rootDir;
-        avatolSystem;
+        %avatolSystem;
     end
     
     methods
-        function obj = Session(rootDir, avatolSystem)
+        function obj = Session(rootDir)
             import edu.oregonstate.eecs.iis.avatolcv.* ;
             import edu.oregonstate.eecs.iis.avatolcv.mb.* ;
-            obj.avatolSystem = avatolSystem;
+            %obj.avatolSystem = avatolSystem;
             obj.rootDir = rootDir;
             obj.scoredSetMetadatas = ScoredSetMetadatas(rootDir);
             obj.ui = UI();
