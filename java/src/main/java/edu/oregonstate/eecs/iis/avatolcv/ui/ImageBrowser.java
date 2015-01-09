@@ -55,9 +55,9 @@ public class ImageBrowser extends JPanel {
                 "Show training examples for selected taxon");
     	tabbedPane.setMnemonicAt(1, KeyEvent.VK_T);
 
-    	tabbedPane.addTab(imageSetSupplier.getUnscoredTabTitle(), null, unscoredPanel,
-    	                  "Show images that could not be scored");
-    	tabbedPane.setMnemonicAt(2, KeyEvent.VK_U);
+    	//tabbedPane.addTab(imageSetSupplier.getUnscoredTabTitle(), null, unscoredPanel,
+    	//                  "Show images that could not be scored");
+    	//tabbedPane.setMnemonicAt(2, KeyEvent.VK_U);
     	tabbedPane.setBackground(Color.white);
     	return tabbedPane;
     }
