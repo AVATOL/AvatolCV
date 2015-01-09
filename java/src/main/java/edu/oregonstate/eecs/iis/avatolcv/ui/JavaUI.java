@@ -1,5 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.ui;
 
+import java.awt.GridBagConstraints;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.ScoredSetMetadatas;
 import edu.oregonstate.eecs.iis.avatolcv.SessionDataForTaxa;
@@ -41,5 +43,31 @@ public class JavaUI {
      }
      public MorphobankBundle getCurrentBundle(){
     	 return this.currentMorphobankBundle;
+     }
+     
+     public GridBagConstraints getConstraintsForRunSelector(){
+     	GridBagConstraints c = new GridBagConstraints();
+ 		c.gridx = 0;
+ 		c.gridy = 0;
+ 		c.weightx = 1.0;
+ 		c.weighty = 0.0;
+ 		c.anchor = GridBagConstraints.NORTH;
+ 		c.fill = GridBagConstraints.BOTH;
+ 		c.gridheight = 1;
+ 		c.gridwidth = 1;
+ 		return c;
+     }
+
+     public GridBagConstraints getConstraintsForSplitPane(){
+     	GridBagConstraints c = new GridBagConstraints();
+ 		c.gridx = 0;
+ 		c.gridy = 1;
+ 		c.weightx = 1.0;
+ 		c.weighty = 1.0;
+ 		c.anchor = GridBagConstraints.NORTH;
+ 		c.fill = GridBagConstraints.BOTH;
+ 		c.gridheight = 1;
+ 		c.gridwidth = 1;
+ 		return c;
      }
 }
