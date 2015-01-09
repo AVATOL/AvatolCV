@@ -16,9 +16,9 @@ public class SlashSwitch{
 		String outputDirPath = "C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT\\output";
 		String ssmPath = "C:\\avatol\\git\\avatol_cv\\scoredSetMetadata";
 		try {
-			SlashSwitch ss1 = new SlashSwitch(inputDirPath);
+			//SlashSwitch ss1 = new SlashSwitch(inputDirPath);
 			SlashSwitch ss2 = new SlashSwitch(outputDirPath);
-			SlashSwitch ss3 = new SlashSwitch(ssmPath);
+			// ss3 = new SlashSwitch(ssmPath);
 		}
 		catch(IOException ioe){
 			
