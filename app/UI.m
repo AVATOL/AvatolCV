@@ -284,7 +284,7 @@ classdef UI < handle
                                       'Tag', 'navigationPanel',...
                                       'Position',obj.getNavigationPanelPosition());
             obj.mostRecentQAFlavor = 'NA';
-            obj.activePanelTags = { 'resultsTopPanel', 'scoreSetTitlePanel', 'scoredSetNavigationPanel', 'scoredSetMetadataPanel', 'checkboxPanelPanel', 'imageContextPanel','imageBrowserPanel', 'navigationPanel'}; 
+            obj.activePanelTags = { 'resultsTopPanel','resultsRightPanel','resultsLeftPanel', 'scoreSetTitlePanel', 'scoredSetNavigationPanel', 'scoredSetMetadataPanel', 'checkboxPanelPanel', 'imageContextPanel','imageBrowserPanel', 'navigationPanel'}; 
         end
 
         function createCheckboxChoicePanels(obj)
