@@ -162,7 +162,7 @@ public class RunSelector extends JPanel {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridheight = 1;
 		c.gridwidth = 1;
-		c.ipadx = 10;
+		c.ipadx = 2;
 		c.ipady = 4;
 		c.insets = new Insets(2,10,2,0);
 		return c;
