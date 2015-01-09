@@ -132,7 +132,7 @@ public class ResultMatrixColumn extends JPanel {
     	ResultMatrixColumn.containerPanel.setLayout(new GridBagLayout());
     	ResultMatrixColumn.containerPanel.setBackground(Color.white);
     	JScrollPane scrollPane = new JScrollPane();
-    	scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    	scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     	scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     	scrollPane.setViewportView(this);
     	ResultMatrixColumn.containerPanel.add(scrollPane, getContainerConstraintsForRMC());
