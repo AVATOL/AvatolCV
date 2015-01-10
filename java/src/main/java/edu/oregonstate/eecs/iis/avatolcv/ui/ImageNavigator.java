@@ -32,7 +32,6 @@ import edu.oregonstate.eecs.iis.avatolcv.mb.Annotation;
 import edu.oregonstate.eecs.iis.avatolcv.mb.AnnotationCoordinates;
 import edu.oregonstate.eecs.iis.avatolcv.mb.Annotations;
 import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
-import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankData;
 import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankDataException;
 import edu.oregonstate.eecs.iis.avatolcv.mb.PointAsPercent;
 
@@ -89,7 +88,7 @@ public class ImageNavigator extends JPanel {
     	this.thumbnailScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     	this.thumbnailScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         this.thumbnailScrollPane.setBorder(new LineBorder(Color.white));
-        //this.thumbnailScrollPane.setMinimumSize(new Dimension(200,100));
+        this.thumbnailScrollPane.setMinimumSize(new Dimension(100,100));
         
 
         this.add(thumbnailScrollPane, getThumbnailPanelConstraints());
@@ -543,7 +542,7 @@ public class ImageNavigator extends JPanel {
     	GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 0;
-		c.weightx = 1.0;
+		c.weightx = 0.8;
 		c.weighty = 1.0;
 		c.anchor = GridBagConstraints.CENTER;
 		c.fill = GridBagConstraints.BOTH;
