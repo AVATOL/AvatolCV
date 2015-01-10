@@ -16,7 +16,7 @@ public class ResultMatrixTrainingCell extends ResultMatrixCell {
     public void init(){
     	TaxonSelectionListener tsl = new TaxonSelectionListener(this, this.rmc);
     	//this.setLayout(new GridBagLayout());
-    	taxonNameLabel = new JLabel("  [  " + taxonName + "  ]  ");
+    	taxonNameLabel = new JLabel(" " + taxonName);
     	taxonNameLabel.setFont(textFont);
     	taxonNameLabel.setBackground(backgroundColor);
     	taxonNameLabel.setOpaque(true);

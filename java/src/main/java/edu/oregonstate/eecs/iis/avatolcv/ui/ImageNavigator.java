@@ -46,7 +46,7 @@ public class ImageNavigator extends JPanel {
 	
 	public static final Color thumbnailHoverColor = new Color(200,200,255);
 	public static final Color thumbNailSelectionColor = new Color(100,100,255);
-	public static final int THUMBNAIL_BORDER_WIDTH = 3;
+	public static final int THUMBNAIL_BORDER_WIDTH = 4;
 	private static final int CROSS_HALF_LENGTH = 15;
 	private static final int THUMBNAIL_CROSS_HALF_LENGTH = 3;
 	private static final long serialVersionUID = 1L;
@@ -73,6 +73,7 @@ public class ImageNavigator extends JPanel {
     	this.imageInfoLabel = new JLabel("",SwingConstants.CENTER);
     	this.imageInfoLabel.setOpaque(true);
     	this.imageInfoLabel.setFont(ResultMatrixCell.textFont);
+    	this.imageInfoLabel.setBackground(Color.white);
     	this.thumbnailScrollPane = new JScrollPane();
     	this.thumbnailScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.thumbnailPanel = getThumbnailPanel();
@@ -183,6 +184,8 @@ public class ImageNavigator extends JPanel {
         	this.thumbnailLabels.add(thumbnailLabel);
         	this.thumbnailPanel.add(thumbnailLabel, getThumbnailConstraints(index++));
     	}
+    	JLabel thumbnailSpacer = new JLabel(" ");
+    	this.thumbnailPanel.add(thumbnailSpacer, getThumbnailSpacerConstraints(index));
     	highlightThumbnail(this.thumbnailLabels.get(0));
     }
     public void highlightThumbnail(JLabel thumbnailLabel){
@@ -399,23 +402,36 @@ public class ImageNavigator extends JPanel {
     }
 
 
-    public GridBagConstraints getThumbnailConstraints(int x){
+    public GridBagConstraints getThumbnailConstraints(int y){
     	GridBagConstraints c = new GridBagConstraints();
-		c.gridx = x;
-		c.gridy = 0;
+		c.gridx = 0;
+		c.gridy = y;
 		c.weightx = 1.0;
-		c.weighty = 1.0;
-		c.anchor = GridBagConstraints.CENTER;
-		c.fill = GridBagConstraints.BOTH;
+		c.weighty = 0.0;
+		c.anchor = GridBagConstraints.NORTH;
+		c.fill = GridBagConstraints.NONE;
 		c.gridheight = 1;
 		c.gridwidth = 1;
 		//c.insets = new Insets(0,2,0,2);
 		return c;
     }
 
-    public GridBagConstraints getImagePanelConstraints(){
+    public GridBagConstraints getThumbnailSpacerConstraints(int y){
     	GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
+		c.gridy = y;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
+		c.anchor = GridBagConstraints.NORTH;
+		c.fill = GridBagConstraints.VERTICAL;
+		c.gridheight = 1;
+		c.gridwidth = 1;
+		//c.insets = new Insets(0,2,0,2);
+		return c;
+    }
+    public GridBagConstraints getImagePanelConstraints(){
+    	GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 1;
 		c.gridy = 0;
 		c.weightx = 1.0;
 		c.weighty = 0.0;
@@ -428,10 +444,10 @@ public class ImageNavigator extends JPanel {
     }
     public GridBagConstraints getImageInfoLabelConstraints(){
     	GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0;
+		c.gridx = 1;
 		c.gridy = 1;
 		c.weightx = 0.0;
-		c.weighty = 0.05;
+		c.weighty = 1.0;
 		c.anchor = GridBagConstraints.CENTER;
 		c.fill = GridBagConstraints.BOTH;
 		c.gridheight = 1;
@@ -442,12 +458,12 @@ public class ImageNavigator extends JPanel {
     public GridBagConstraints getThumbnailPanelConstraints(){
     	GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
-		c.gridy = 2;
-		c.weightx = 1.0;
+		c.gridy = 0;
+		c.weightx = 0.0;
 		c.weighty = 1.0;
-		c.anchor = GridBagConstraints.SOUTH;
+		c.anchor = GridBagConstraints.WEST;
 		c.fill = GridBagConstraints.BOTH;
-		c.gridheight = 1;
+		c.gridheight = 2;
 		c.gridwidth = 1;
 		//c.insets = new Insets(2,4,2,4);
 		return c;
