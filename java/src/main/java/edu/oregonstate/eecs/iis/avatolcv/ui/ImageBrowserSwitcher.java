@@ -11,7 +11,7 @@ public class ImageBrowserSwitcher implements Runnable{
 	@Override
 	public void run() {
 		try {
-			System.out.println("ImageBrowserSwitcher calling ImageBrowser.hostImageBrowser");
+			//System.out.println("ImageBrowserSwitcher calling ImageBrowser.hostImageBrowser");
 			ImageBrowser.hostImageBrowser(this.ib);
 		}
 		catch(AvatolCVException ace){

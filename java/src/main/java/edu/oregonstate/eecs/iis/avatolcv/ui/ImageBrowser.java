@@ -79,6 +79,7 @@ public class ImageBrowser extends JPanel {
     	this.scoredImageNavigator.loadImages();
     	this.unscoredImageNavigator.loadImages();
     	System.out.println(System.currentTimeMillis() + " loadImages end " + this.taxonName);
+    	this.scoredImageNavigator.validate();
     }
     public static void hostImageBrowser(ImageBrowser ib) throws AvatolCVException, MorphobankDataException  {
     	if (previouslyHostedImageBrowser != null){
@@ -89,7 +90,7 @@ public class ImageBrowser extends JPanel {
     	imageBrowserHostPanel.add(ib,getUseAllSpaceConstraints());
     	previouslyHostedImageBrowser = ib;
     	ib.loadImages();
-    	imageBrowserHostPanel.revalidate();
+    	imageBrowserHostPanel.validate();
     }
     public static void switchToBrowser(ImageBrowser ib){
     	ImageBrowserSwitcher ibs = new ImageBrowserSwitcher(ib);

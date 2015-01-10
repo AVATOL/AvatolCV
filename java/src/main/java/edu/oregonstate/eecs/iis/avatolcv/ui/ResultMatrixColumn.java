@@ -164,7 +164,7 @@ public class ResultMatrixColumn extends JPanel {
     public JPanel getContainingPanel(){
     	return ResultMatrixColumn.containerPanel;
     }
-    public void decorateColumnTitleLabel(JLabel label){
+    public static void decorateColumnTitleLabel(JLabel label){
     	label.setFont(new Font("Sans Serif",Font.PLAIN,16));
     	label.setHorizontalTextPosition(SwingConstants.CENTER);
     	label.setBackground(ResultMatrixCell.titleRowColor);

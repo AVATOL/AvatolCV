@@ -62,7 +62,6 @@ public class ResultMatrixCell{
     	Font matchFont = textFont;
     	if (abbreviate(believedState).equals(abbreviate(trueScore))){
     		matchFont = boldTextFont;
-    		System.out.println("ITAL");
     	}
     	
     	stateLabel = new JLabel(" " + abbreviate(believedState), SwingConstants.CENTER);
@@ -162,7 +161,7 @@ public class ResultMatrixCell{
 		c.gridwidth = 1;
 		c.ipadx = 10;
 		//c.ipady = 4;
-		//c.insets = new Insets(2,4,2,4);
+		c.insets = new Insets(0,5,0,0);
 		return c;
     }
     public static GridBagConstraints getStateLabelConstraints(int i, boolean isHeader){
@@ -202,7 +201,7 @@ public class ResultMatrixCell{
 		c.gridwidth = 1;
 		c.ipadx = 15;
 		//c.ipady = 4;
-		//c.insets = new Insets(2,4,2,4);
+		c.insets = new Insets(0,0,0,5);
 		return c;
     }
 
