@@ -130,10 +130,10 @@ public class ImageNavigator extends JPanel {
         		this.picLabel = getImageAsJLabel(imagePath, annotationPoints, halfLength);
         	}
         	else if (this.type == DataType.scored){
-        		//List<Annotation> annotations = loadAnnotations(String path, String mediaId)
         		String annotationPath = Annotations.getAnnotationFilePathname(this.mb.getRootDir(), ri.getCharacterId(), ri.getMediaId());
         		List<Annotation> humanAnnotations = Annotations.loadAnnotations(annotationPath, ri.getMediaId());
-        		String humanLabel = humanAnnotations.get(0).getCharStateText();
+        		//String humanLabel = humanAnnotations.get(0).getCharStateText();
+        		String humanLabel = ri.getHumanLabel();
         		this.imageInfoLabel.setText(getScoredImageInfo(ri, humanLabel));
         		this.picLabel = getImageAsJLabel(imagePath, annotationPoints, humanAnnotations, halfLength);
         	}

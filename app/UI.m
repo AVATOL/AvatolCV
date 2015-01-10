@@ -27,6 +27,7 @@ classdef UI < handle
         %resultsMiddlePanel;
         resultsRightPanel;
         imageBrowserPanel;
+        javaPanel;
         
         scoredSetTitlePanel;
         scoredSetNavigationPanel;
@@ -229,22 +230,27 @@ classdef UI < handle
         function createResultsReviewPanels(obj)
             %obj.titlePanel = obj.createTitlePanel();
             % [0.02 0.02 0.96 0.05]; is navigation panel
-            obj.resultsTopPanel =  uipanel('Background', [1 1 1],...%[1 0.3 0.3]
+            obj.javaPanel =  uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                       'BorderType', 'none',...
                                       'Tag', 'resultsTopPanel',...
-                                      'Position',[0.00 0.95 0.96 0.05]);
-            obj.resultsLeftPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
-                                      'BorderType', 'none',...
-                                      'Tag', 'resultsLeftPanel',...
-                                      'Position',[0.00 0.05 0.35 0.9]);
+                                      'Position',[0.00 0.05 0.96 0.96]);
+                                  
+            %obj.resultsTopPanel =  uipanel('Background', [1 1 1],...%[1 0.3 0.3]
+            %                          'BorderType', 'none',...
+            %                          'Tag', 'resultsTopPanel',...
+            %                          'Position',[0.00 0.95 0.96 0.05]);
+            %obj.resultsLeftPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
+            %                          'BorderType', 'none',...
+            %                          'Tag', 'resultsLeftPanel',...
+           %                           'Position',[0.00 0.05 0.35 0.9]);
            % obj.resultsMiddlePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
            %                           'BorderType', 'none',...
            %                           'Tag', 'resultsMiddlePanel',...
            %                           'Position',[0.24 0.1 0.30 0.86]);
-            obj.resultsRightPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
-                                      'BorderType', 'none',...
-                                      'Tag', 'resultsRightPanel',...
-                                      'Position',[0.35 0.05 0.65 0.9]);
+           % obj.resultsRightPanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
+           %                           'BorderType', 'none',...
+           %                           'Tag', 'resultsRightPanel',...
+           %                           'Position',[0.35 0.05 0.65 0.9]);
                                   
             %
             obj.scoredSetTitlePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
@@ -284,7 +290,9 @@ classdef UI < handle
                                       'Tag', 'navigationPanel',...
                                       'Position',obj.getNavigationPanelPosition());
             obj.mostRecentQAFlavor = 'NA';
-            obj.activePanelTags = { 'resultsTopPanel','resultsRightPanel','resultsLeftPanel', 'scoreSetTitlePanel', 'scoredSetNavigationPanel', 'scoredSetMetadataPanel', 'checkboxPanelPanel', 'imageContextPanel','imageBrowserPanel', 'navigationPanel'}; 
+            %obj.activePanelTags = { 'resultsTopPanel','resultsRightPanel','resultsLeftPanel', 'scoreSetTitlePanel', 'scoredSetNavigationPanel', 'scoredSetMetadataPanel', 'checkboxPanelPanel', 'imageContextPanel','imageBrowserPanel', 'navigationPanel'}; 
+
+            obj.activePanelTags = { 'javaPanel', 'scoreSetTitlePanel', 'scoredSetNavigationPanel', 'scoredSetMetadataPanel', 'checkboxPanelPanel', 'imageContextPanel','imageBrowserPanel', 'navigationPanel'}; 
         end
 
         function createCheckboxChoicePanels(obj)

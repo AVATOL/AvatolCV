@@ -1,6 +1,13 @@
 package edu.oregonstate.eecs.iis.avatolcv.ui;
 
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.border.EmptyBorder;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.ScoredSetMetadatas;
@@ -15,8 +22,17 @@ public class JavaUI {
      private RunSelector currentRunSelector = null;
      private MorphobankBundle currentMorphobankBundle = null;
      private String currentMatrixName = null;
+     private JPanel containingPanel = new JPanel();
+     private JPanel imageBrowserHostPanel = new JPanel();
+     private JSplitPane splitPane = null;
+     private JScrollPane scrollPane = new JScrollPane();
      public JavaUI(MorphobankData mbData){
     	 this.mbData = mbData;
+    	 this.containingPanel.setLayout(new GridBagLayout());
+    	 this.containingPanel.setBorder(new EmptyBorder(new Insets(2,2,2,2)));
+    	 this.scrollPane.setViewportView(this.containingPanel);
+    	 this.scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    	 this.scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
      }
      public MorphobankData getMorphobankData(){
     	 return this.mbData;
@@ -28,15 +44,18 @@ public class JavaUI {
     	 this.ssms = ssms;
     	 this.currentMatrixName = this.ssms.getMatrixNameFromKey(ssms.getCurrentKey());
      }
-     public ResultMatrixColumn createResultMatrixColumn(SessionDataForTaxa sdft) throws AvatolCVException {
-    	 ResultMatrixColumn matrixColumn = new ResultMatrixColumn(sdft, this);
-    	 currentMatrixColumn = matrixColumn;
-    	 return matrixColumn;
+     public void createComponents(SessionDataForTaxa sdft) throws AvatolCVException {
+    	 this.currentRunSelector = new RunSelector(this.ssms, this);
+    	 this.containingPanel.add(this.currentRunSelector, getConstraintsForRunSelector());
+    	 
+    	 this.currentMatrixColumn = new ResultMatrixColumn(sdft, this);
+    	 
+    	 this.imageBrowserHostPanel = ImageBrowser.getImageBrowserHostPanel();
+    	 this.splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.currentMatrixColumn.getContainingPanel(), this.imageBrowserHostPanel);
+    	 this.containingPanel.add(splitPane, getConstraintsForSplitPane());
      }
-     public RunSelector createRunSelector(){
-    	 RunSelector runSelector = new RunSelector(this.ssms, this);
-    	 this.currentRunSelector = runSelector;
-    	 return runSelector;
+     public JScrollPane getContainingPanel(){
+    	 return this.scrollPane;
      }
      public void setCurrentBundle(MorphobankBundle mb){
     	 this.currentMorphobankBundle = mb;

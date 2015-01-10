@@ -32,8 +32,8 @@ public class ImageBrowser extends JPanel {
     	this.mb = mb;
     	this.imageSetSupplier = imageSetSupplier;
     	this.taxonName = taxonName;
-    	populateImageBrowser(imageSetSupplier);
     	this.setLayout(new GridBagLayout());
+    	populateImageBrowser(imageSetSupplier);
     	this.setBackground(Color.white);
     }
     public void populateImageBrowser(ImageSetSupplier imageSetSupplier) throws AvatolCVException {

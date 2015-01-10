@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.algata;
 
 import edu.oregonstate.eecs.iis.avatolcv.mb.AnnotationCoordinates;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankDataException;
 
 public interface ResultImage {
     public String getCharacterId();
@@ -20,4 +21,5 @@ public interface ResultImage {
     public String getCharacterStateId();
     public String getCharacterStateName();
     public String getMediaId();
+    public String getHumanLabel() throws MorphobankDataException;
 }

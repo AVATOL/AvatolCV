@@ -3,6 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,7 +20,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algata.ResultImage;
 import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
 
 public class ScoredSetMetadatas {
-	
+	private static final String FILESEP = System.getProperty("file.separator");
 	private Hashtable<String,String> allData = new Hashtable<String,String>();
 	private List<String> keyList = new ArrayList<String>();
 	private int currentKeyIndex = 0;
@@ -273,7 +274,7 @@ public class ScoredSetMetadatas {
     	System.out.println("input folder : " + input_folder);
     	String output_folder = getOutputFolderForKey(key);
     	System.out.println("output folder : " + output_folder);
-
+        List<String> regime2TrainingTaxa = getRegime2TrainingTaxa(output_folder);
     	Hashtable<String,InputFile> inputFilesForCharacter = mb.getInputFilesForCharacter(input_folder);
     	Hashtable<String,OutputFile> outputFilesForCharacter = mb.getOutputFilesForCharacter(output_folder);
     	
@@ -298,11 +299,37 @@ public class ScoredSetMetadatas {
         	System.out.println("ScoredImages length : " +  scoredImages.size());
         }
     	//SessionData srd = new SessionData(currentCharId, currentCharName,trainingSamples,scoredImages, unscoredImages);
-        SessionDataForTaxa sdt = new SessionDataForTaxa(currentCharId, currentCharName,trainingSamples,scoredImages, unscoredImages, mb);
+        SessionDataForTaxa sdt = new SessionDataForTaxa(currentCharId, currentCharName,trainingSamples,scoredImages, unscoredImages, mb, regime2TrainingTaxa);
 		return sdt;
 		//return srd;
     }
 
+    List<String>  getRegime2TrainingTaxa(String output_folder) throws AvatolCVException {
+    	List<String> result = new ArrayList<String>();
+    	String trainingTaxaPath = output_folder + FILESEP + "trainingTaxa.txt";
+    	File f = new File(trainingTaxaPath);
+    	if (!f.exists()){
+    		// no training taxa specified
+    		return result;
+    	}
+    	try {
+        	BufferedReader reader = new BufferedReader(new FileReader(trainingTaxaPath));
+        	String line = null;
+        	while (null != (line = reader.readLine())){
+        		result.add(line);
+        	}
+        	reader.close();
+        	return result;
+    	}
+    	catch(FileNotFoundException fnfe){
+    		fnfe.printStackTrace();
+    		throw new AvatolCVException("problem reading trainingTaxa file " + trainingTaxaPath + " " + fnfe.getMessage());
+    	}
+    	catch(IOException ioe){
+    		ioe.printStackTrace();
+    		throw new AvatolCVException("problem reading trainingTaxa file " + trainingTaxaPath + " " + ioe.getMessage());
+    	}
+    }
     //public SessionDataForTaxa getSessionResultsData(MorphobankBundle mb) throws AvatolCVException {
     public SessionData getSessionResultsData(MorphobankBundle mb) throws AvatolCVException {
     	String key = getCurrentKey();

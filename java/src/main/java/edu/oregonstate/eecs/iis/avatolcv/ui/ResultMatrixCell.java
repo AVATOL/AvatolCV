@@ -17,7 +17,9 @@ import edu.oregonstate.eecs.iis.avatolcv.SessionDataForTaxon;
 
 public class ResultMatrixCell{
 	public static Font textFont= new Font("Sans Serif",Font.PLAIN,16);
+	public static Font boldTextFont= new Font("Sans Serif",Font.BOLD,16);
 	public static Color entrySelectionColor = new Color(200,200,255);
+	public static Color headerColor = Color.blue;
 	public static Color aboveThresholdColor = new Color(100,255,100);
 	public static Color belowThresholdColor = new Color(255,100,100);
 	public static Color backgroundColor = new Color(255,255,255);
@@ -28,20 +30,25 @@ public class ResultMatrixCell{
 		GoodEnough,
 		NotGoodEnough
 	};
-	private SessionDataForTaxon sdft = null;
-	private boolean isFocus = false;
-	private String taxonId = null;
-	private String taxonName = null;
-	private ScoreConfidence curConfidenceState = ScoreConfidence.Unknown;
-	private JLabel taxonNameLabel = null;
-	private JLabel scoreConfidenceLabel = null;
-	private JLabel stateLabel = null;
-	private ResultMatrixColumn rmc = null;
-    public ResultMatrixCell(String taxonId, String taxonName, SessionDataForTaxon sdft, ResultMatrixColumn rmc){
+	protected SessionDataForTaxon sdft = null;
+	protected boolean isFocus = false;
+	protected String taxonId = null;
+	protected String taxonName = null;
+	protected ScoreConfidence curConfidenceState = ScoreConfidence.Unknown;
+	protected JLabel taxonNameLabel = null;
+	protected JLabel scoreConfidenceLabel = null;
+	protected JLabel stateLabel = null;
+	protected JLabel trueScoreLabel = null;
+	protected ResultMatrixColumn rmc = null;
+	protected String trueScore = null;
+    public ResultMatrixCell(String taxonId, String taxonName, String trueScore, SessionDataForTaxon sdft, ResultMatrixColumn rmc){
     	this.rmc = rmc;
     	this.sdft = sdft;
     	this.taxonId = taxonId;
     	this.taxonName = taxonName;
+    	this.trueScore = trueScore;
+    }
+    public void init(){
     	TaxonSelectionListener tsl = new TaxonSelectionListener(this, this.rmc);
     	//this.setLayout(new GridBagLayout());
     	taxonNameLabel = new JLabel(" " + taxonName);
@@ -51,13 +58,26 @@ public class ResultMatrixCell{
     	taxonNameLabel.setForeground(Color.black);
     	taxonNameLabel.addMouseListener(tsl);
     	
+    	String believedState = sdft.getBelievedState();
+    	Font matchFont = textFont;
+    	if (abbreviate(believedState).equals(abbreviate(trueScore))){
+    		matchFont = boldTextFont;
+    		System.out.println("ITAL");
+    	}
     	
-    	stateLabel = new JLabel(" " + sdft.getBelievedState());
-    	stateLabel.setFont(textFont);
+    	stateLabel = new JLabel(" " + abbreviate(believedState), SwingConstants.CENTER);
+        stateLabel.setFont(matchFont);
     	stateLabel.setBackground(backgroundColor);
     	stateLabel.setOpaque(true);
     	stateLabel.setForeground(Color.black);
     	stateLabel.addMouseListener(tsl);
+    	
+    	trueScoreLabel = new JLabel(" " + abbreviate(trueScore), SwingConstants.CENTER);
+    	trueScoreLabel.setFont(matchFont);
+    	trueScoreLabel.setBackground(backgroundColor);
+    	trueScoreLabel.setOpaque(true);
+    	trueScoreLabel.setForeground(Color.black);
+    	trueScoreLabel.addMouseListener(tsl);
     	
     	//this.add(taxonNameLabel,getLabelConstraints());
     	scoreConfidenceLabel = new JLabel("" + sdft.getCombinedScoreString(), SwingConstants.CENTER);
@@ -67,14 +87,32 @@ public class ResultMatrixCell{
     	//scoreConfidenceLabel.addMouseListener(tsl);
     	//this.add(scoreConfidencePanel, getConfidencePanelConstraints());
     }
+    public String abbreviate(String s){
+    	String x = s.toLowerCase();
+    	if (x.contains("present")){
+    		return "P";
+    	}
+    	else if (x.contains("absent")){
+    		return "A";
+    	}
+    	else if (x.equals("na")){
+    		return "-";
+    	}
+    	else {
+    		System.out.println("givenString was " + s);
+    		return "?";
+    	}
+    }
     public void highlightCellForSelection(boolean value){
     	if (value){
     		this.taxonNameLabel.setBackground(entrySelectionColor);
         	this.stateLabel.setBackground(entrySelectionColor);
+        	this.trueScoreLabel.setBackground(entrySelectionColor);
     	}
     	else {
     		this.taxonNameLabel.setBackground(backgroundColor);
         	this.stateLabel.setBackground(backgroundColor);
+        	this.trueScoreLabel.setBackground(backgroundColor);
     	}
     }
     public void highlightCellForHover(boolean value){
@@ -82,10 +120,12 @@ public class ResultMatrixCell{
     		if (value){
     			this.taxonNameLabel.setBackground(Color.white);
             	this.stateLabel.setBackground(Color.white);
+            	this.trueScoreLabel.setBackground(Color.white);
     		}
     		else {
     			this.taxonNameLabel.setBackground(backgroundColor);
         		this.stateLabel.setBackground(backgroundColor);
+            	this.trueScoreLabel.setBackground(backgroundColor);
     		}
     	}
     }
@@ -102,6 +142,9 @@ public class ResultMatrixCell{
     public JLabel getStateLabel(){
     	return this.stateLabel;
     }
+    public JLabel getTrueScoreLabel(){
+    	return this.trueScoreLabel;
+    }
     public static GridBagConstraints getTaxonLabelConstraints(int i, boolean isHeader){
     	GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
@@ -117,14 +160,14 @@ public class ResultMatrixCell{
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridheight = 1;
 		c.gridwidth = 1;
-		//c.ipadx = 4;
+		c.ipadx = 10;
 		//c.ipady = 4;
 		//c.insets = new Insets(2,4,2,4);
 		return c;
     }
     public static GridBagConstraints getStateLabelConstraints(int i, boolean isHeader){
     	GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 1;
+		c.gridx = 2;
 		c.gridy = i;
 		c.weightx = 0.3;
 		//c.weighty = 1.0;
@@ -132,19 +175,19 @@ public class ResultMatrixCell{
 			c.anchor = GridBagConstraints.CENTER;
 		}
 		else {
-			c.anchor = GridBagConstraints.WEST;
+			c.anchor = GridBagConstraints.CENTER;
 		}
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridheight = 1;
 		c.gridwidth = 1;
-		//c.ipadx = 4;
+		c.ipadx = 10;
 		//c.ipady = 4;
 		//c.insets = new Insets(2,4,2,4);
 		return c;
     }
     public static GridBagConstraints getConfidenceLabelConstraints(int i, boolean isHeader){
     	GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 2;
+		c.gridx = 3;
 		c.gridy = i;
 		c.weightx = 0.2;
 		//c.weighty = 1.0;
@@ -152,12 +195,33 @@ public class ResultMatrixCell{
 			c.anchor = GridBagConstraints.CENTER;
 		}
 		else {
-			c.anchor = GridBagConstraints.WEST;
+			c.anchor = GridBagConstraints.CENTER;
 		}
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridheight = 1;
 		c.gridwidth = 1;
-		//c.ipadx = 4;
+		c.ipadx = 15;
+		//c.ipady = 4;
+		//c.insets = new Insets(2,4,2,4);
+		return c;
+    }
+
+    public static GridBagConstraints getTrueScoreLabelConstraints(int i, boolean isHeader){
+    	GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 1;
+		c.gridy = i;
+		c.weightx = 0.2;
+		//c.weighty = 1.0;
+		if (isHeader){
+			c.anchor = GridBagConstraints.CENTER;
+		}
+		else {
+			c.anchor = GridBagConstraints.CENTER;
+		}
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridheight = 1;
+		c.gridwidth = 1;
+		c.ipadx = 10;
 		//c.ipady = 4;
 		//c.insets = new Insets(2,4,2,4);
 		return c;

@@ -113,4 +113,8 @@ public class TrainingSample extends AnnotatedItem implements ResultImage  {
 	public boolean hasCharacterState() {
 		return true;
 	}
+	@Override
+	public String getHumanLabel() {
+		return this.characterStateName;
+	}
 }

@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
@@ -9,6 +10,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algata.ImageSet;
 import edu.oregonstate.eecs.iis.avatolcv.algata.ImageSetSupplier;
 import edu.oregonstate.eecs.iis.avatolcv.algata.ResultImage;
 import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankDataException;
 import edu.oregonstate.eecs.iis.avatolcv.ui.ImageBrowser;
 
 public class SessionDataForTaxon extends SessionData {
@@ -16,19 +18,67 @@ public class SessionDataForTaxon extends SessionData {
 	private String taxonName = null;
 	private double combinedScore = -1.0;
 	private ImageBrowser imageBrowser = null;
+	private boolean isRegime2TrainingTaxon = false;
     public SessionDataForTaxon(String taxonId,String taxonName, String charId, String charName,
 			List<ResultImage> trainingImages,
 			List<ResultImage> scoredImages,
 			List<ResultImage> unscoredImages,
-			MorphobankBundle mb) throws AvatolCVException {
+			MorphobankBundle mb,
+			boolean isRegime2TrainingTaxon) throws AvatolCVException {
     	super(charId, charName, trainingImages, scoredImages, unscoredImages);
         this.taxonId = taxonId;
         this.taxonName = taxonName;
         this.combinedScore = calculateCombinedScore();
         this.imageBrowser = new ImageBrowser(this, this.taxonName, mb);
+        this.isRegime2TrainingTaxon = isRegime2TrainingTaxon;
 	}
+    public boolean isRegime2TrainingTaxon(){
+    	return this.isRegime2TrainingTaxon;
+    }
     public ImageBrowser getImageBrowser(){
     	return this.imageBrowser;
+    }
+    public String getTrueScore() throws MorphobankDataException {
+    	Hashtable<String, Integer> countsForLabelHash = new Hashtable<String, Integer>();
+    	List<String> humanLabelsTraining = getHumanLabelsFromResultImages(this.trainingImages);
+    	List<String> humanLabelsScored = getHumanLabelsFromResultImages(this.scoredImages);
+    	List<String> humanLabelsUnscored = getHumanLabelsFromResultImages(this.unscoredImages);
+    	addToCountsHash(humanLabelsTraining, countsForLabelHash);
+    	addToCountsHash(humanLabelsScored, countsForLabelHash);
+    	addToCountsHash(humanLabelsUnscored, countsForLabelHash);
+    	Enumeration<String> keysEnum = countsForLabelHash.keys();
+    	String humanLabelWithMaxCount = "";
+    	int maxCount = 0;
+    	while (keysEnum.hasMoreElements()){
+    		String key = keysEnum.nextElement();
+    		int count = countsForLabelHash.get(key).intValue();;
+    		if (count > maxCount){
+    			maxCount = count;
+    			humanLabelWithMaxCount = key;
+    		}
+    	}
+    	return humanLabelWithMaxCount;
+    }
+    public void addToCountsHash(List<String> labels, Hashtable<String, Integer> hash){
+    	for (String label : labels){
+    		Integer currentTotalInteger = hash.get(label);
+    		if (null == currentTotalInteger){
+    			currentTotalInteger = new Integer(0);
+    			hash.put(label, currentTotalInteger);
+    		}
+    		Integer newTotal = new Integer(currentTotalInteger.intValue() + 1);
+    		hash.put(label, newTotal);
+    	}
+    }
+    public List<String> getHumanLabelsFromResultImages(List<ResultImage> ris) throws MorphobankDataException {
+    	List<String> result = new ArrayList<String>();
+    	for (ResultImage ri : ris){
+    		String label = ri.getHumanLabel();
+    		if (null != label){
+        		result.add(label);
+    		}
+    	}
+    	return result;
     }
     public double getRandomInRange(double min, double max){
     	double curVal = max + 1;

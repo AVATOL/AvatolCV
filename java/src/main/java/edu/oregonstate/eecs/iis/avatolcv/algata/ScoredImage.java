@@ -1,10 +1,16 @@
 package edu.oregonstate.eecs.iis.avatolcv.algata;
 
+import java.util.List;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.images.ImageScaler;
 import edu.oregonstate.eecs.iis.avatolcv.mb.Annotation;
 import edu.oregonstate.eecs.iis.avatolcv.mb.AnnotationCoordinates;
+import edu.oregonstate.eecs.iis.avatolcv.mb.Annotations;
 import edu.oregonstate.eecs.iis.avatolcv.mb.Media;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankData;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankDataException;
 
 public class ScoredImage extends AnnotatedItem implements ResultImage {
 	private static final String SEP = System.getProperty("file.separator");
@@ -118,5 +124,17 @@ public class ScoredImage extends AnnotatedItem implements ResultImage {
 	@Override
 	public String getMediaId() {
 		return this.mediaId;
+	}
+
+	@Override
+	public String getHumanLabel() throws MorphobankDataException {
+		MorphobankBundle mb = MorphobankData.getCurrentMorphobankBundle();
+		String annotationPath = Annotations.getAnnotationFilePathname(mb.getRootDir(),getCharacterId(), getMediaId());
+		if (null == annotationPath){
+			return null;
+		}
+		List<Annotation> humanAnnotations = Annotations.loadAnnotations(annotationPath, getMediaId());
+		String humanLabel = humanAnnotations.get(0).getCharStateText();
+		return humanLabel;
 	}
 }

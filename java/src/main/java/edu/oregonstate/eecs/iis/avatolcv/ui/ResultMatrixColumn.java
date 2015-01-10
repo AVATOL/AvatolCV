@@ -19,6 +19,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.SessionDataForTaxa;
 import edu.oregonstate.eecs.iis.avatolcv.SessionDataForTaxon;
 import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankBundle;
+import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankDataException;
 
 public class ResultMatrixColumn extends JPanel {
 	/**
@@ -39,28 +40,49 @@ public class ResultMatrixColumn extends JPanel {
     	this.sdft = sdft;
     	int count = sdft.getTaxonCount();
     	JLabel taxonColumnTitle = new JLabel("Taxon", SwingConstants.CENTER);
-		JLabel stateColumnTitle = new JLabel("Char State", SwingConstants.CENTER);
+		JLabel stateColumnTitle = new JLabel("Score", SwingConstants.CENTER);
 		JLabel confidenceColumnTitle = new JLabel("Conf", SwingConstants.CENTER);
+		JLabel trueScoreColumnTitle = new JLabel("Truth", SwingConstants.CENTER);
 		decorateColumnTitleLabel(taxonColumnTitle);
 		decorateColumnTitleLabel(stateColumnTitle);
 		decorateColumnTitleLabel(confidenceColumnTitle);
+		decorateColumnTitleLabel(trueScoreColumnTitle);
 		this.add(taxonColumnTitle, ResultMatrixCell.getTaxonLabelConstraints(0, true));
 		this.add(stateColumnTitle, ResultMatrixCell.getStateLabelConstraints(0, true));
 		this.add(confidenceColumnTitle, ResultMatrixCell.getConfidenceLabelConstraints(0, true));
+		this.add(trueScoreColumnTitle, ResultMatrixCell.getTrueScoreLabelConstraints(0, true));
     	for (int i = 0; i < count; i++){
     		SessionDataForTaxon sd = sdft.getSessionDataForTaxonAtIndex(i);
     		String taxonId = sd.getTaxonId();
     		String taxonName = this.sdft.getParentBundle().getTaxonNameForId(taxonId);
-    		ResultMatrixCell cell = new ResultMatrixCell(taxonId, taxonName, sd, this);
+    		String trueScore = "?";
+    		try {
+    			trueScore = sd.getTrueScore();
+    		}
+    		catch(MorphobankDataException mde){
+    			mde.printStackTrace();
+    			throw new AvatolCVException("probelam getting true score for taxon " + mde.getMessage());
+    		}
+    		ResultMatrixCell cell = null;
+    		if (sd.isRegime2TrainingTaxon()){
+    			cell = new ResultMatrixTrainingCell(taxonId, taxonName, trueScore, sd, this);
+    			cell.init();
+    		}
+    		else{
+    			cell = new ResultMatrixCell(taxonId, taxonName, trueScore, sd, this);
+    			cell.init();
+    		}
     		this.cellsForTaxonName.put(taxonName, cell);
     		this.cells.add(cell);
     		JLabel curTaxonLabel = cell.getTaxonLabel();
     		JLabel curStateLabel = cell.getStateLabel();
     		JLabel curQualityPanel = cell.getConfidenceLabel();
+    		JLabel curTrueScoreLabel = cell.getTrueScoreLabel();
     		int trueConstraintsIndex = i+1;
     		this.add(curTaxonLabel, ResultMatrixCell.getTaxonLabelConstraints(trueConstraintsIndex, false));
     		this.add(curStateLabel, ResultMatrixCell.getStateLabelConstraints(trueConstraintsIndex, false));
     		this.add(curQualityPanel, ResultMatrixCell.getConfidenceLabelConstraints(trueConstraintsIndex, false));
+    		this.add(curTrueScoreLabel, ResultMatrixCell.getTrueScoreLabelConstraints(trueConstraintsIndex, false));
     	}
     	JPanel spacerPanel = new JPanel();
 		spacerPanel.setBackground(ResultMatrixCell.backgroundColor);
@@ -143,11 +165,11 @@ public class ResultMatrixColumn extends JPanel {
     	return ResultMatrixColumn.containerPanel;
     }
     public void decorateColumnTitleLabel(JLabel label){
-    	label.setFont(new Font("Sans Serif",Font.BOLD,16));
+    	label.setFont(new Font("Sans Serif",Font.PLAIN,16));
     	label.setHorizontalTextPosition(SwingConstants.CENTER);
     	label.setBackground(ResultMatrixCell.titleRowColor);
     	label.setOpaque(true);
-    	label.setForeground(Color.black);
+    	label.setForeground(ResultMatrixCell.headerColor);
     }
     /*public GridBagConstraints getConstraintsForCell(int i){
     	GridBagConstraints c = new GridBagConstraints();

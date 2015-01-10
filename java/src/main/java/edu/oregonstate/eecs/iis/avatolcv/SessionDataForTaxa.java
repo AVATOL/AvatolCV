@@ -16,7 +16,8 @@ public class SessionDataForTaxa {
 			List<ResultImage> trainingImages,
 			List<ResultImage> scoredImages,
 			List<ResultImage> unscoredImages,
-			MorphobankBundle mb) throws AvatolCVException {
+			MorphobankBundle mb,
+			List<String> regime2TrainingTaxa) throws AvatolCVException {
 		this.mb = mb;
 		List<String> taxonIds = getTaxonIdsFromResultImages(trainingImages);
 		for (String taxonId : taxonIds){
@@ -30,13 +31,15 @@ public class SessionDataForTaxa {
 			else {
 				System.out.println("taxon " + taxonName + " scoredCount " + scoredImagesForTaxon.size());
 			}
+			boolean isRegime2TrainingTaxon = regime2TrainingTaxa.contains(taxonName);
 			SessionDataForTaxon sdft = new SessionDataForTaxon(taxonId, taxonName,
 					charId, 
 					charName,
 					trainingImagesForTaxon,
 					scoredImagesForTaxon,
 					unscoredImagesForTaxon,
-					mb);
+					mb,
+					isRegime2TrainingTaxon);
 			sessionDatas.add(sdft);
 			taxonSessionDataForTaxonId.put(taxonId, sdft);
 		}

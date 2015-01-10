@@ -20,7 +20,7 @@ public class MorphobankData {
 	private String parentDirPath = null;
 	private ArrayList<String> matrixDirNames = new ArrayList<String>();
 	private Hashtable<String, MorphobankBundle> bundleForName = new Hashtable<String, MorphobankBundle>();
-	
+	private static MorphobankBundle currentBundle = null;
 	public MorphobankData(String parentDirPath) throws MorphobankDataException {
 		//System.setProperty("log4j.configuration","/nfs/guille/tgd/users/irvine/matlabui/java/lib/log4j.properties");
 		logger = LoggerFactory.getLogger(MorphobankData.class);
@@ -68,9 +68,13 @@ public class MorphobankData {
 			mbb = new MorphobankBundle(fullpath);
 			bundleForName.put(name, mbb);
 		}
+		currentBundle = mbb;
 		return mbb;
 	}
 	public MorphobankBundle getBundle(String bundleName){
 		return this.bundleForName.get(bundleName);
+	}
+	public static MorphobankBundle getCurrentMorphobankBundle(){
+		return currentBundle;
 	}
 }

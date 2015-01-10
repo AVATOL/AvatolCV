@@ -14,6 +14,7 @@ classdef ResultsReviewScreen < handle
         %metadataControlTags = {};
         heightRatio;
         matrixHeight;
+        javaPanel;
         
         imageBrowserHostPanel;
         resultMatrixPanel;
@@ -64,9 +65,16 @@ classdef ResultsReviewScreen < handle
           
            
             %obj.ui.deleteControls(obj.metadataControlTags);
-            obj.loadRunSelector();
-            obj.loadMatrixColumn();
-            obj.loadImageWidgets();
+           %  obj.loadRunSelector();
+           %  obj.loadMatrixColumn();
+           %  obj.loadImageWidgets();
+            
+            
+            
+            obj.sessionDataForTaxa = obj.ssms.getSessionDataForTaxa(obj.session.morphobankBundle);
+            obj.session.javaUI.createComponents(obj.sessionDataForTaxa);
+            obj.javaPanel =  obj.session.javaUI.getContainingPanel();
+            [hjavaPanel,javaPanelHandle] = javacomponent(obj.javaPanel,[10,40,1200,670],obj.ui.javaPanel);
             %
             %
             % ???????? obj.ui.activeAnswerControl = obj.taxonChoiceWidget;
