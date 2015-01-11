@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScoredSetMetadata {
+	private static final String FILESEP = System.getProperty("file.separator");
 	public static final String MATRIX_KEY = "matrix";
 	public static final String CHARACTER_KEY = "character";
 	public static final String VIEW_KEY = "view";
@@ -34,7 +35,7 @@ public class ScoredSetMetadata {
     private String split = null;
     private String matrixRowType = null;
     private String identifier = null;
-    public ScoredSetMetadata(String identifier, String info){
+    public ScoredSetMetadata(String identifier, String info, String avatolCVRootDir){
     	this.identifier = identifier;
     	try {
     		BufferedReader reader = new BufferedReader(new StringReader(info));
@@ -43,6 +44,7 @@ public class ScoredSetMetadata {
         		String[] parts = line.split("=");
         		if (line.startsWith(MATRIX_KEY)){
         			this.matrix = parts[1];
+        			System.out.println("matrix " + this.matrix);
         		} 
         		else if (line.startsWith(CHARACTER_TRAINED)){
         			this.charactersTrainedOn.add(parts[1]);
@@ -58,13 +60,14 @@ public class ScoredSetMetadata {
         			this.alg = parts[1];
         		}
         		else if (line.startsWith(INPUT_FOLDER_KEY)){
-        			this.inputFolder = parts[1];
+        			this.inputFolder = avatolCVRootDir + FILESEP + "matrix_downloads" + FILESEP + this.matrix + FILESEP + parts[1];
+        			System.out.println("input folder " + this.inputFolder);
         		} 
         		else if (line.startsWith(OUTPUT_FOLDER_KEY)){
-        			this.outputFolder = parts[1];
+        			this.outputFolder = avatolCVRootDir + FILESEP + "matrix_downloads" + FILESEP + this.matrix + FILESEP + parts[1];
         		}
         		else if (line.startsWith(DETECTION_RESULTS_FOLDER_KEY)){
-        			this.detectionResultsFolder = parts[1];
+        			this.detectionResultsFolder = avatolCVRootDir + "matrix_downloads" + FILESEP + FILESEP + this.matrix + FILESEP + parts[1];
         		}
         		else if (line.startsWith(FOCUS_CHARID_KEY)){
         			this.focusCharId = parts[1];

@@ -1,0 +1,16 @@
+matrix=BAT
+character=UPPER P1 PRESENCE
+view=Ventral
+algorithm=DPM
+
+character_trained=c427749
+character_trained=c427751
+character_trained=c427753
+character_trained=c427754
+character_trained=c427760
+input_folder=input\DPM\c427749c427751c427753c427754c427760\v3540\split_0.7
+output_folder=output\DPM\c427749c427751c427753c427754c427760\v3540\split_0.7
+detection_results_folder=detection_results\DPM\c427749c427751c427753c427754c427760\v3540\split_0.7
+focus_character_id=c427753
+SYSTEM_PROPERTY:training_data_split_threshold=taxa
+SYSTEM_PROPERTY:matrix_row_type=specimen

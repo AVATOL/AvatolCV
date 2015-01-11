@@ -27,8 +27,10 @@ public class ScoredSetMetadatas {
 	private String metadataDir = null;
 	private String SEP = System.getProperty("file.separator");
 	private String NL = System.getProperty("line.separator");
+	private String rootDir = null;
 	private Hashtable<String,ScoredSetMetadata> ssmHash = new Hashtable<String,ScoredSetMetadata>();
 	public ScoredSetMetadatas(String rootDir){
+		this.rootDir = rootDir;
 		this.metadataDir = rootDir + SEP + "scoredSetMetadata";
 		File f = new File(this.metadataDir);
 		f.mkdirs();
@@ -141,7 +143,7 @@ public class ScoredSetMetadatas {
         				sb.append(line + NL);
         			}
         			reader.close();
-        			this.ssmHash.put(fileRoot, new ScoredSetMetadata(fileRoot,sb.toString()));
+        			this.ssmHash.put(fileRoot, new ScoredSetMetadata(fileRoot,sb.toString(), this.rootDir));
         			this.allData.put(fileRoot, sb.toString());
         		}
         		catch(IOException ioe){
@@ -182,13 +184,16 @@ public class ScoredSetMetadatas {
     	return this.allData.get(key);
     }
     public String getInputFolderForKey(String key){
-    	return getValueFromDataForKey(key,ScoredSetMetadata.INPUT_FOLDER_KEY);
+    	ScoredSetMetadata ssm = ssmHash.get(key);
+    	return ssm.getInputFolder();
     }
     public String getOutputFolderForKey(String key){
-    	return getValueFromDataForKey(key,ScoredSetMetadata.OUTPUT_FOLDER_KEY);
+    	ScoredSetMetadata ssm = ssmHash.get(key);
+    	return ssm.getOutputFolder();
     }
     public String getDetectionResultsFolderForKey(String key){
-    	return getValueFromDataForKey(key,ScoredSetMetadata.DETECTION_RESULTS_FOLDER_KEY);
+    	ScoredSetMetadata ssm = ssmHash.get(key);
+    	return ssm.getDetectionResultsFolder();
     }
     public String getFocusCharIdForKey(String key){
     	return getValueFromDataForKey(key,ScoredSetMetadata.FOCUS_CHARID_KEY);
