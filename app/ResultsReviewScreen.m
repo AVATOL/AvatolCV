@@ -16,10 +16,10 @@ classdef ResultsReviewScreen < handle
         matrixHeight;
         javaPanel;
         
-        imageBrowserHostPanel;
-        resultMatrixPanel;
-        resultMatrixPanelGUIHandle;
-        runSelector;
+        %imageBrowserHostPanel;
+        %resultMatrixPanel;
+        %resultMatrixPanelGUIHandle;
+        %runSelector;
     end
     
     methods
@@ -88,37 +88,37 @@ classdef ResultsReviewScreen < handle
         
        
         
-        function loadRunSelector(obj)
-            import edu.oregonstate.eecs.iis.avatolcv.ui.RunSelector;
-            obj.runSelector = obj.session.javaUI.createRunSelector();
+        %function loadRunSelector(obj)
+        %    import edu.oregonstate.eecs.iis.avatolcv.ui.RunSelector;
+        %    obj.runSelector = obj.session.javaUI.createRunSelector();
            
-            [runSelectorPanel,hContainer] = javacomponent(obj.runSelector,[0,5,1200,30],obj.ui.resultsTopPanel);
-        end
+        %    [runSelectorPanel,hContainer] = javacomponent(obj.runSelector,[0,5,1200,30],obj.ui.resultsTopPanel);
+        %end
         
-        function loadMatrixColumn(obj)
-            obj.sessionDataForTaxa = obj.ssms.getSessionDataForTaxa(obj.session.morphobankBundle);
-            obj.resultMatrixColumn = obj.session.javaUI.createResultMatrixColumn(obj.sessionDataForTaxa);
+        %function loadMatrixColumn(obj)
+        %    obj.sessionDataForTaxa = obj.ssms.getSessionDataForTaxa(obj.session.morphobankBundle);
+        %    obj.resultMatrixColumn = obj.session.javaUI.createResultMatrixColumn(obj.sessionDataForTaxa);
             
-            obj.resultMatrixPanel = obj.resultMatrixColumn.getContainingPanel();
-            [hContainingPanel,obj.resultMatrixPanelGUIHandle] = javacomponent(obj.resultMatrixPanel,[10,40,400,600],obj.ui.resultsLeftPanel);
+        %    obj.resultMatrixPanel = obj.resultMatrixColumn.getContainingPanel();
+        %    [hContainingPanel,obj.resultMatrixPanelGUIHandle] = javacomponent(obj.resultMatrixPanel,[10,40,400,600],obj.ui.resultsLeftPanel);
        
-        end
-        function loadImageWidgets(obj)
-            obj.ui.deleteControls(obj.imageControlTags);
-            obj.ui.imageNavigationPanel
-            import edu.oregonstate.eecs.iis.avatolcv.ui.ImageBrowser;
-            imageBrowser = obj.resultMatrixColumn.getActiveImageBrowser();
-            obj.imageBrowserHostPanel = imageBrowser.getImageBrowserHostPanel();
-            import javax.swing.JTextArea;
-            import javax.swing.JTabbedPane;
-            import javax.swing.JLabel;
-            import java.awt.Color;
-            import java.awt.Dimension;
+        %end
+        %function loadImageWidgets(obj)
+        %    obj.ui.deleteControls(obj.imageControlTags);
+        %    obj.ui.imageNavigationPanel
+        %    import edu.oregonstate.eecs.iis.avatolcv.ui.ImageBrowser;
+        %    imageBrowser = obj.resultMatrixColumn.getActiveImageBrowser();
+        %    obj.imageBrowserHostPanel = imageBrowser.getImageBrowserHostPanel();
+        %    import javax.swing.JTextArea;
+        %    import javax.swing.JTabbedPane;
+        %    import javax.swing.JLabel;
+         %   import java.awt.Color;
+        %    import java.awt.Dimension;
            
-            dimension = Dimension(700,600);
-            obj.imageBrowserHostPanel.setPreferredSize(dimension);
-            [jhPanel,hContainer] = javacomponent(obj.imageBrowserHostPanel,[10,40,800,600],obj.ui.resultsRightPanel);
-        end
+       %     dimension = Dimension(700,600);
+       %     obj.imageBrowserHostPanel.setPreferredSize(dimension);
+       %     [jhPanel,hContainer] = javacomponent(obj.imageBrowserHostPanel,[10,40,800,600],obj.ui.resultsRightPanel);
+       %W end
        
         
       
@@ -174,12 +174,8 @@ classdef ResultsReviewScreen < handle
         end  
        
         function doAnotherCharacter(obj,hObject, eventData)
-            obj.imageBrowserHostPanel.removeAll();
-            obj.imageBrowserHostPanel.revalidate();
-            obj.runSelector.removeAll();
-            obj.runSelector.revalidate();
-            obj.resultMatrixPanel.removeAll();
-            obj.resultMatrixPanel.revalidate();
+            obj.javaPanel.removeAll();
+            obj.javaPanel.revalidate();
             obj.session.doAnotherCharacter();
         end
         function exit(obj, hobject, eventData)

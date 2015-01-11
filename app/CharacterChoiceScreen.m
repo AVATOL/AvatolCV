@@ -72,6 +72,16 @@ classdef CharacterChoiceScreen < handle
                                          'Tag','tutorial' ,...
                                          'BackgroundColor', [0.8 0.8 0.8]);  
 
+            skipToResultsReviewButtonPosition = [0.17,0,0.23,1 ]; 
+            skipToResultsReview = uicontrol('style', 'pushbutton' ,...
+                                         'String', 'Review Results' ,...
+                                         'Parent',obj.ui.navigationPanel,...
+                                         'Units','normalized',...
+                                         'position', skipToResultsReviewButtonPosition ,...
+                                         'FontName', obj.ui.fontname ,...
+                                         'FontSize', obj.ui.fontsize ,...
+                                         'Tag','skipToResultsReview' ,...
+                                         'BackgroundColor', [0.8 0.8 0.8]);  
 
             prev = uicontrol('style', 'pushbutton' ,...
                                          'String', 'Back' ,...
@@ -84,7 +94,7 @@ classdef CharacterChoiceScreen < handle
                                          'BackgroundColor', [0.8 0.8 0.8]);  
             if (length(presenceAbsenceCharNames) == 0)
                 set(characterChoicePrompt, 'string', 'No presence/absence characters with training data detected. Go back and try another matrix.');
-                obj.ui.activeControlTags = {'characterChoicePrompt', 'tutorial', 'prev' };
+                obj.ui.activeControlTags = {'characterChoicePrompt', 'skipToResultsReview', 'tutorial', 'prev' };
             else 
                 next = uicontrol('style', 'pushbutton' ,...
                                          'Parent',obj.ui.navigationPanel,...
@@ -101,23 +111,33 @@ classdef CharacterChoiceScreen < handle
                 set(obj.characterChoiceWidget,'string',obj.characterChoices);
                 %H.characterName = char(characterNameList(1));
                 set(obj.characterChoiceWidget,'Value',obj.characterChoiceIndex);
-                obj.ui.activeControlTags = {'characterChoicePrompt', 'next', 'tutorial', 'prev' };
+                obj.ui.activeControlTags = {'characterChoicePrompt', 'skipToResultsReview', 'next', 'tutorial', 'prev' };
             end
             %H.activeControlTags = {'characterChoice',  'characterChoicePrompt', 'next', 'tutorial', 'prev' };
 
-
+            if (obj.session.scoredSetMetadatas.hasSessionData())
+                set(skipToResultsReview, 'Enable', 'on');
+            else
+                set(skipToResultsReview, 'Enable', 'inactive');
+                set(skipToResultsReview, 'BackgroundColor', [0.8 0.8 0.8]);
+                set(skipToResultsReview, 'ForegroundColor', [0.6 0.6 0.6]);
+              end
             obj.ui.activeAnswerControl = obj.characterChoiceWidget;
             obj.session.activeQuestionId = 'characterQuestion';
             obj.ui.activeControlType = 'popupMenu';
 
             set(tutorial, 'callback', {@obj.jumpToTutorial});
             set(prev, 'callback', {@obj.showPrevQuestion});
+            set(skipToResultsReview, 'callback', {@obj.jumpToResultsReview});
             set(obj.characterChoiceWidget, 'callback', {@obj.setCharacterChoice});
             obj.session.mostRecentScreen = 'CHARACTER_QUESTION'; 
             currentFigure = gcf;
             set(currentFigure, 'Pointer', 'arrow');
         end
 
+        function jumpToResultsReview(obj,hObject, eventData)
+            obj.session.jumpToResultsReview();
+        end
         function showPrevQuestion(obj,  hObject, eventData)
             obj.session.showMatrixQuestion();
         end    

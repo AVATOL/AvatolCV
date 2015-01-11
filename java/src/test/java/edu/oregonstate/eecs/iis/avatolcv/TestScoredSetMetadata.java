@@ -14,7 +14,7 @@ public class TestScoredSetMetadata {
 	@Test
     public void testSSMLoadAll(){
 		try {
-			ScoredSetMetadatas ssm = new ScoredSetMetadatas("C:\\avatol\\git\\avatol_cv\\matrix_downloads\\BAT");
+			ScoredSetMetadatas ssm = new ScoredSetMetadatas("C:\\avatol\\git\\avatol_cv");
 			ssm.loadAll();
 		}
 		catch(AvatolCVException e){

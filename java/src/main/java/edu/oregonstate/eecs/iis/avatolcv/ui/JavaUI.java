@@ -45,6 +45,8 @@ public class JavaUI {
     	 this.currentMatrixName = this.ssms.getMatrixNameFromKey(ssms.getCurrentKey());
      }
      public void createComponents(SessionDataForTaxa sdft) throws AvatolCVException {
+    	 // we want to reload each time we get to review results in case another session has happened - then we need to load from the new ssms
+    	 this.containingPanel.removeAll();
     	 this.currentRunSelector = new RunSelector(this.ssms, this);
     	 this.containingPanel.add(this.currentRunSelector, getConstraintsForRunSelector());
     	 

@@ -95,7 +95,20 @@ classdef QuestionnaireScreens < handle
                                          'FontSize', obj.ui.fontsize ,...
                                          'Tag','tutorial' ,...
                                          'BackgroundColor', [0.8 0.8 0.8]);  
-            obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'tutorial' ];                              
+                                     
+            skipToResultsReviewButtonPosition = [0.17,0,0.23,1 ]; 
+            skipToResultsReview = uicontrol('style', 'pushbutton' ,...
+                                         'String', 'Review Results' ,...
+                                         'Parent',obj.ui.navigationPanel,...
+                                         'Units','normalized',...
+                                         'position', skipToResultsReviewButtonPosition ,...
+                                         'FontName', obj.ui.fontname ,...
+                                         'FontSize', obj.ui.fontsize ,...
+                                         'Tag','skipToResultsReview' ,...
+                                         'BackgroundColor', [0.8 0.8 0.8]);  
+
+            obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'tutorial' ]; 
+            obj.ui.activeControlTags = [ obj.ui.activeControlTags, 'skipToResultsReview' ];                              
             next = uicontrol('style', 'pushbutton' ,...
                                          'String', 'Next' ,...
                                          'Units','normalized',...
@@ -122,10 +135,19 @@ classdef QuestionnaireScreens < handle
             obj.ui.activeAnswerControl = obj.buttonGroup;
             obj.session.activeQuestionId = qquestion.id;
             obj.ui.activeControlType = 'buttonGroup';
+            
+            if (obj.session.scoredSetMetadatas.hasSessionData())
+                set(skipToResultsReview, 'Enable', 'on');
+            else
+                set(skipToResultsReview, 'Enable', 'inactive');
+                set(skipToResultsReview, 'BackgroundColor', [0.8 0.8 0.8]);
+                set(skipToResultsReview, 'ForegroundColor', [0.6 0.6 0.6]);
+            end
 
             set(next, 'callback', {@obj.showNextQuestion});
             set(prev, 'callback', {@obj.showPrevQuestion});
             set(tutorial, 'callback', {@obj.jumpToTutorial});
+            set(skipToResultsReview, 'callback', {@obj.jumpToResultsReview});
 
             if (not(isempty(qquestion.images)))
                 obj.ui.displayImages(qquestion.images);
@@ -173,6 +195,17 @@ classdef QuestionnaireScreens < handle
                                          'Tag','tutorial' ,...
                                          'BackgroundColor', [0.8 0.8 0.8]);  
 
+            skipToResultsReviewButtonPosition = [0.17,0,0.23,1 ]; 
+            skipToResultsReview = uicontrol('style', 'pushbutton' ,...
+                                         'String', 'Review Results' ,...
+                                         'Parent',obj.ui.navigationPanel,...
+                                         'Units','normalized',...
+                                         'position', skipToResultsReviewButtonPosition ,...
+                                         'FontName', obj.ui.fontname ,...
+                                         'FontSize', obj.ui.fontsize ,...
+                                         'Tag','skipToResultsReview' ,...
+                                         'BackgroundColor', [0.8 0.8 0.8]);  
+                                     
             next = uicontrol('style', 'pushbutton' ,...
                                          'String', 'Next' ,...
                                          'Parent',obj.ui.navigationPanel,...
@@ -193,15 +226,23 @@ classdef QuestionnaireScreens < handle
                                          'Tag','prev' ,...
                                          'BackgroundColor', [0.8 0.8 0.8]);  
 
-            obj.ui.activeControlTags = { 'titleText', 'questionText',  'input', 'next', 'prev', 'tutorial' };   
+            obj.ui.activeControlTags = { 'titleText', 'questionText', 'skipToResultsReview' , 'input', 'next', 'prev', 'tutorial' };   
 
             obj.ui.activeAnswerControl = inputText;
             obj.session.activeQuestionId = qquestion.id;
             obj.ui.activeControlType = 'edit';
-
+            
+            if (obj.session.scoredSetMetadatas.hasSessionData())
+                set(skipToResultsReview, 'Enable', 'on');
+            else
+                set(skipToResultsReview, 'Enable', 'inactive');
+                set(skipToResultsReview, 'BackgroundColor', [0.8 0.8 0.8]);
+                set(skipToResultsReview, 'ForegroundColor', [0.6 0.6 0.6]);
+            end
             set(next, 'callback', {@obj.showNextQuestion});
             set(prev, 'callback', {@obj.showPrevQuestion});
             set(tutorial, 'callback', {@obj.jumpToTutorial});
+            set(skipToResultsReview, 'callback', {@obj.jumpToResultsReview});
 
             if (not(isempty(qquestion.images)))
                 displayImages(qquestion.images);
@@ -220,6 +261,11 @@ classdef QuestionnaireScreens < handle
         function jumpToTutorial(obj, prevAnswer, qquestion)
             obj.session.jumpToTutorial();
         end
+        
+        function jumpToResultsReview(obj,hObject, eventData)
+            obj.session.jumpToResultsReview();
+        end
+        
         function displayPriorSetAnswer(obj, prevAnswer, qquestion)
             if strcmp(qquestion.type,'input_integer')
                 control = findobj('Tag','input');

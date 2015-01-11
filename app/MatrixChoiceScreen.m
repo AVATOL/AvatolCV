@@ -101,6 +101,17 @@ classdef MatrixChoiceScreen < handle
                                          'FontSize', obj.ui.fontsize ,...
                                          'Tag','tutorial' ,...
                                          'BackgroundColor', [0.8 0.8 0.8]);  
+                                     
+            skipToResultsReviewButtonPosition = [0.17,0,0.23,1 ]; 
+            skipToResultsReview = uicontrol('style', 'pushbutton' ,...
+                                         'String', 'Review Results' ,...
+                                         'Parent',obj.ui.navigationPanel,...
+                                         'Units','normalized',...
+                                         'position', skipToResultsReviewButtonPosition ,...
+                                         'FontName', obj.ui.fontname ,...
+                                         'FontSize', obj.ui.fontsize ,...
+                                         'Tag','skipToResultsReview' ,...
+                                         'BackgroundColor', [0.8 0.8 0.8]);  
 
             next = uicontrol('style', 'pushbutton' ,...
                                          'Parent',obj.ui.navigationPanel,...
@@ -117,18 +128,28 @@ classdef MatrixChoiceScreen < handle
             obj.statusLabel = JLabel();
             obj.progressBar = JProgressBar();
             
-            [statusPanelHandle,hContainer] = javacomponent(obj.statusLabel,[300,0,200,36],obj.ui.navigationPanel);
+            [statusPanelHandle,hContainer] = javacomponent(obj.statusLabel,[500,0,200,36],obj.ui.navigationPanel);
             
             
-            [statusPanelHandle,hContainer] = javacomponent(obj.progressBar,[520,0,300,36],obj.ui.navigationPanel);
+            [statusPanelHandle,hContainer] = javacomponent(obj.progressBar,[720,0,300,36],obj.ui.navigationPanel);
             %H.activeControlTags = { 'matrixChoice',  'matrixChoicePrompt', 'next', 'tutorial' };
-            obj.ui.activeControlTags = { 'matrixChoicePrompt', 'next', 'tutorial' };
+            
+              if (obj.session.scoredSetMetadatas.hasSessionData())
+                set(skipToResultsReview, 'Enable', 'on');
+            else
+                set(skipToResultsReview, 'Enable', 'inactive');
+                set(skipToResultsReview, 'BackgroundColor', [0.8 0.8 0.8]);
+                set(skipToResultsReview, 'ForegroundColor', [0.6 0.6 0.6]);
+              end
+             
+            obj.ui.activeControlTags = { 'matrixChoicePrompt','skipToResultsReview',  'next', 'tutorial' };
             obj.ui.activeAnswerControl = obj.matrixChoiceWidget;
             obj.session.activeQuestionId = 'matrixQuestion';
             obj.ui.activeControlType = 'popupMenu';
 
             set(next, 'callback', {@obj.showNextQuestion});
             set(tutorial, 'callback', {@obj.jumpToTutorial});
+            set(skipToResultsReview, 'callback', {@obj.jumpToResultsReview});
             set(obj.matrixChoiceWidget, 'callback', {@obj.setMatrixChoice});
             obj.session.mostRecentScreen = 'MATRIX_QUESTION'; 
         end
@@ -140,6 +161,9 @@ classdef MatrixChoiceScreen < handle
         end
         function jumpToTutorial(obj, hObject, eventData)
             obj.session.jumpToTutorial();
+        end
+        function jumpToResultsReview(obj,hObject, eventData)
+            obj.session.jumpToResultsReview();
         end
     end
     
