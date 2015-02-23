@@ -46,7 +46,7 @@ function dpmTest
     progressIndicator = ProgressIndicator(statusMessage);
     
     %algorithms.invoke_the_dpm_system(list_of_characters, input_folder, output_folder, detection_results_folder, progressIndicator);
-    algorithms.invoke_the_dpm_system(list_of_characters, input_folder, output_folder, detection_results_folder);
+    algorithms.invoke_the_dpm_system(list_of_characters, input_folder, output_folder, detection_results_folder, 'regime1');
 end
 
             
