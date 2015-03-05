@@ -25,11 +25,11 @@ classdef AlgorithmChoiceScreen < handle
             obj.session.doAnotherCharacter();
         end
         
-        function runAlgorithm(obj, hObject, eventData)
+        function runAlgorithmUnhooke(obj, hObject, eventData)
             fprintf('algorithm unhooked for demo');
             set(obj.messageText, 'String', 'Algorithms disengaged for B2 demo');
         end
-        function runAlgorithmReal(obj, hObject, eventData)
+        function runAlgorithm(obj, hObject, eventData)
             obj.ui.deleteObsoleteControls();
             messagePanel = uipanel('Background', [1 1 1],...%[1 0.3 0.3]
                                       'BorderType', 'none',...
@@ -125,7 +125,7 @@ classdef AlgorithmChoiceScreen < handle
 
 
         function chooseAlgorithm(obj)
-            if (true)
+            if (false)
                 obj.message = 'DPM algorithm has been chosen for scoring.  Press Run Algorithm to begin.';
                 obj.showRunAlgorithmButton = true;
                 obj.algorithmChosen = 'DPM';
