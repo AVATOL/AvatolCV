@@ -19,9 +19,6 @@ rather than compound characters that involve multiple sinmple teeth  (distance b
 /nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/matrix_downloads/BAT
 
 
-/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/matrix_downloads/BAT
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 PHASE 1 - ingesting downloaded Morphobank (MB) info
@@ -78,9 +75,9 @@ This shields the algorithms from the need to parse the _sdd.xml file
 
 It has lines that represent positive training examples, negative training examples, and images to score:
 
-      training_data|<relative path of mediafile>|<characterStateID>|<characterStateName>|<relative path of annotation file|<taxonID>|<line number in annotations file>
+      training_data|<relative path of mediafile>|<characterStateID>|<characterStateName>|<relative path of annotation file>|<taxonID>|<line number in annotations file>
       training_data|<relative path of media file>|<characterStateID>|<characterStateName>|NA|<taxonID>|NA
-      image_to_score|<relative path of media file>|<taxonID>
+      image_to_score|<relative path of media file>|<taxonID>|<relative path of annotation file>|<taxonID>|<line number in annotations file>
 
 for example,
 
@@ -92,7 +89,7 @@ has lines like:
 
        training_data|media/M283883_.jpg|s946109|I1 absent|NA|t171416|NA
 
-       image_to_score|media/M283883_.jpg|t171416
+       image_to_score|media\M283379.jpg|t171198|annotations\m283379_c427749.txt|1
 
 
 
@@ -123,7 +120,7 @@ So the sequence of UI steps:
 - questionnaire
 - choose DPM
 - ask user which of the characters are "simple" characters
-- ask which taxon is desired
+- ask which taxa are desired for training
 - ask which view is desired
 
 System then filters the input file for the character into a new file of the same format that 
@@ -139,7 +136,9 @@ The lines of that file have the same format as
 
 .../matrix_downloads/<bundle_root>/input/sorted_input_data_<characterID>_<characterName>.txt
 
-
+UPDATE - DPM now has:
+REGIME1 - within taxon training and scoring
+REGIME2 - score novel taxa after training on different  (which maps better to the morphobank scoring case)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 PHASE 2 - PASSING INFORMATION TO ALGORITHMS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
