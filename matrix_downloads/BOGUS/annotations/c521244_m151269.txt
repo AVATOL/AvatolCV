@@ -1,2 +1,0 @@
-10,10;1000,500;1000,200:c521244:Premaxilla body presence:s1162288:present
-100,500;200,600;200,400:c521244:Premaxilla body presence:s1162288:present
