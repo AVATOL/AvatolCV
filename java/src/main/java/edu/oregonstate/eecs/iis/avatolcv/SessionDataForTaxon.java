@@ -110,7 +110,7 @@ public class SessionDataForTaxon extends SessionData {
     	double averageConfidence = getAverageConfidence(imagesForState);
     	return "" + averageConfidence;
     }
-    public String getBelievedState(){
+    public String getBelievedStateOld(){
     	double maxConfidence = 0;
     	String maxConfidenceState = "";
     	Hashtable<String, List<ResultImage>> charStateMap = new Hashtable<String, List<ResultImage>>();
@@ -140,7 +140,114 @@ public class SessionDataForTaxon extends SessionData {
     	}
     	return maxConfidenceState;
     }
+
+    public String getBelievedState(){
+    	double maxConfidence = 0;
+    	String maxConfidenceState = "";
+    	Hashtable<String, List<ResultImage>> charStateMap = new Hashtable<String, List<ResultImage>>();
+    	if (null == this.scoredImages || this.scoredImages.size() == 0){
+    		return "NA";
+    	}
+    	List<String> states = new ArrayList<String>();
+    	for (ResultImage ri : this.scoredImages){
+    		String charStateName = ri.getCharacterStateName();
+    		if (!states.contains(charStateName)){
+    			states.add(charStateName);
+    		}
+    		List<ResultImage> ris = charStateMap.get(charStateName);
+    		if (null == ris){
+    			ris = new ArrayList<ResultImage>();
+    			charStateMap.put(charStateName, ris);
+    		}
+    		ris.add(ri);
+    	}
+    	/*
+    	 * 0 means high confident absent , 1 means high confident present
+    	 * 0.4 means low conf absent   0.6 means low conf present
+    	 * 
+    	 * for absent ,( 0.5 - score ) * 2, flag if above 0.5
+    	 * for present ( score - 0.5 ) * 2, flag if below 0.5
+    	 */
+    	double absentConf = 0.0;
+    	double presentConf = 0.0;
+    	String presentState = "";
+    	String absentState = "";
+    	for (String stateName : states){
+    		List<ResultImage> ris = charStateMap.get(stateName);
+    		double averageConfidence = getAverageConfidence(ris);
+    		if (averageConfidence < 0.5){
+    			absentConf = (0.5 - averageConfidence) * 2;
+    			absentState = stateName;
+    		}
+    		else {
+    			presentConf = (averageConfidence - 0.5 ) * 2;
+    			presentState = stateName;
+    		}
+    	}
+    	if (absentConf > presentConf){
+    		return absentState;
+    	}
+    	else {
+    		return presentState;
+    	}
+    }
     public double calculateCombinedScore(){
+    	double maxConfidence = 0;
+    	String maxConfidenceState = "";
+    	Hashtable<String, List<ResultImage>> charStateMap = new Hashtable<String, List<ResultImage>>();
+    	//if (null == this.scoredImages || this.scoredImages.size() == 0){
+    	//	return "NA";
+    	//}
+    	List<String> states = new ArrayList<String>();
+    	for (ResultImage ri : this.scoredImages){
+    		String charStateName = ri.getCharacterStateName();
+    		if (!states.contains(charStateName)){
+    			states.add(charStateName);
+    		}
+    		List<ResultImage> ris = charStateMap.get(charStateName);
+    		if (null == ris){
+    			ris = new ArrayList<ResultImage>();
+    			charStateMap.put(charStateName, ris);
+    		}
+    		ris.add(ri);
+    	}
+    	/*
+    	 * 0 means high confident absent , 1 means high confident present
+    	 * 0.4 means low conf absent   0.6 means low conf present
+    	 * 
+    	 * for absent ,( 0.5 - score ) * 2, flag if above 0.5
+    	 * for present ( score / 2, flag if below 0.5
+    	 */
+    	double absentConf = 0.0;
+    	double presentConf = 0.0;
+    	String presentState = "";
+    	String absentState = "";
+    	for (String stateName : states){
+    		List<ResultImage> ris = charStateMap.get(stateName);
+    		double averageConfidence = getAverageConfidence(ris);
+    		System.out.println("state name: " + stateName + " average confidence initially : " + averageConfidence);
+    		if (averageConfidence < 0.5){
+    			absentConf = (0.5 - averageConfidence) * 2;
+        		System.out.println("state name: " + stateName + " - absent confidence now : " + absentConf);
+    			absentState = stateName;
+    		}
+    		else {
+    			presentConf = (averageConfidence - 0.5 ) * 2;
+    			presentState = stateName;
+        		System.out.println("state name: " + stateName + " - present confidence now : " + presentConf);
+    		}
+    	}
+    	if (absentConf > presentConf){
+    		System.out.println("absent conf wins : " + absentConf);
+    		return absentConf;
+    	}
+    	else {
+    		System.out.println("present conf wins : " + presentConf);
+    		return presentConf;
+    	}
+    }
+
+    public double calculateCombinedScoreOld(){
     	String maxConfidenceState = getBelievedState();
     	if (this.scoredImages == null){
     		

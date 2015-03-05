@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
@@ -15,7 +13,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
 public class MorphobankData {
 	//System.setProperty("log4j.configuration","");;
-	Logger logger;
+
 	private static final String FILESEP = System.getProperty("file.separator");
 	private String parentDirPath = null;
 	private ArrayList<String> matrixDirNames = new ArrayList<String>();
@@ -23,8 +21,7 @@ public class MorphobankData {
 	private static MorphobankBundle currentBundle = null;
 	public MorphobankData(String parentDirPath) throws MorphobankDataException {
 		//System.setProperty("log4j.configuration","/nfs/guille/tgd/users/irvine/matlabui/java/lib/log4j.properties");
-		logger = LoggerFactory.getLogger(MorphobankData.class);
-    	this.parentDirPath = parentDirPath;
+		this.parentDirPath = parentDirPath;
     	File parentDir = new File(parentDirPath);
     	if (!parentDir.isDirectory()){
     		throw new MorphobankDataException("parent dir of MorphobankBundle not valid " + parentDirPath);
@@ -39,7 +36,6 @@ public class MorphobankData {
     			//ignore
     		}
     		else if (candidateDir.isDirectory()){
-    			logger.info("Adding matrix dir name {}.", candidateDir.getName());
     			//System.out.println("Should have logged : Adding matrix dir name...");
     			matrixDirNames.add(candidateDir.getName());
     		}
