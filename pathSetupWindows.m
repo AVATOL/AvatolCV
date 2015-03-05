@@ -23,5 +23,6 @@ path(path,'C:\avatol\git\bat\siftflow')
 path(path,'C:\avatol\git\bat\ssvm')
 path(path,'C:\avatol\git\bat\util')
 path(path,'C:\avatol\git\bat\visualization')
+path(path,'C:\avatol\git\bat\chain_rpm')
 
 %addpath( genpath('C:\avatol\git\bat') )
