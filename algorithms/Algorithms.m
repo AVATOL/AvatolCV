@@ -78,8 +78,8 @@ classdef Algorithms  < handle
         %function invoke_the_dpm_system(obj, list_of_characters, input_folder, output_folder, detection_results_folder, progress_indicator) 
         %    invoke_batskull_system(list_of_characters, input_folder, output_folder, detection_results_folder, progress_indicator);
         %end
-        function invoke_the_dpm_system(obj, list_of_characters, input_folder, output_folder, detection_results_folder, regimeChoice) 
-            invoke_batskull_system(list_of_characters, input_folder, output_folder, detection_results_folder, regimeChoice);
+        function invoke_the_dpm_system(obj, pathToSummaryFile, regimeChoice) 
+            invoke_batskull_system(pathToSummaryFile, regimeChoice);
         end
         
 	
