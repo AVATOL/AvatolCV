@@ -389,6 +389,16 @@ public class InputFiles {
     	}
     	return newDir;
     }
+    public String getRelativeFilteredDirname(List<String> charIds, String viewId, String algId, String target, TrainingDataPartitioner tdp){
+    	String algDirname = target + FILESEP + algId;
+    	String charIdsDirname = getDirnameFromCharIds(charIds);
+    	String newDir = algDirname + FILESEP + charIdsDirname + FILESEP + viewId;
+    	String partitionDirName = tdp.getPartitionDirName();
+    	if (!partitionDirName.equals("")){
+    		newDir = newDir + FILESEP + partitionDirName;
+    	}
+    	return newDir;
+    }
     public void cleanDir(String path){
     	File f = new File(path);
     	if (f.exists()){
@@ -436,9 +446,13 @@ public class InputFiles {
     	cleanDir(newOutputDir);
     	cleanDir(detectionResultDir);
     	
+    	String relativeInputDir = getRelativeFilteredDirname(charIds, viewId, algId, DataIOFile.INPUT_DIRNAME, tdp);
+    	String relativeOutputDir = getRelativeFilteredDirname(charIds, viewId, algId, DataIOFile.OUTPUT_DIRNAME, tdp);
+    	String relativeDetectionResultDir = getRelativeFilteredDirname(charIds, viewId, algId, DataIOFile.DETECTION_RESULTS_DIRNAME, tdp);
+    	
     	tdp.setPersistDirectory(newInputDir);
     	tdp.partitionTrainingData(charIds, viewId);
-    	this.summaryFile.filter(charIds, viewId, newInputDir, tdp);
+    	this.summaryFile.filter(charIds, viewId, newInputDir, tdp, relativeInputDir, relativeOutputDir, relativeDetectionResultDir);
     	try {
     		for (String charId : charIds){
         		String pathOfCharacterInputFile = getPathOfCharacterInputFile(charId);

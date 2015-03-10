@@ -78,7 +78,7 @@ public class SummaryFile {
     	}
     }
 
-    public void filter(List<String> charIds, String viewId, String newInputDir, TrainingDataPartitioner tdp) throws AvatolCVException {
+    public void filter(List<String> charIds, String viewId, String newInputDir, TrainingDataPartitioner tdp, String relativeInputDir, String relativeOutputDir, String relativeDetectionResultsDir) throws AvatolCVException {
     	List<String> filteredList = new ArrayList<String>();
     	String path = newInputDir + FILESEP + SUMMARY_FILENAME;
     	File f = new File(path);
@@ -126,6 +126,9 @@ public class SummaryFile {
         	}
 
     		BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+    		writer.write("inputDir," + relativeInputDir + NL);
+    		writer.write("outputDir," + relativeOutputDir + NL);
+    		writer.write("detectionResultsDir," + relativeDetectionResultsDir + NL);
     		Collections.sort(filteredList);
     		for (String s : filteredList){
     			writer.write(s + NL);
