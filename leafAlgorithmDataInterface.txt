@@ -51,13 +51,13 @@ runConfig_scoring.txt has these lines, and others that can be ignored:
     scoring_resultsFile,<pathname of file into which scoring algorithm will put results>
     
 trainingImages_scoring.txt have entries that are the root names of images, followed by annotation values
-    00-5xayvrdPC3o5foKMpLbZ5H_imgXyz,some_annotation_value 
-    03-uietIOuerto5foKMhUHYUh_imgAbc,some_annotation_value
+    00-5xayvrdPC3o5foKMpLbZ5H_imgXyz,charName,someCharValue 
+    03-uietIOuerto5foKMhUHYUh_imgAbc,charName,someCharValue
     
 testingImages_scoring.txt 
     04-5xayvrdPC3o5foKMpLbZ5H_imgXyz
     10-uietIOuerto5foKMhUHYUh_imgAbc
     
 results_scoring.txt has form identical to trainingImages_scoring.txt
-    04-5xayvrdPC3o5foKMpLbZ5H_imgXyz,some_annotation_value 
-    10-uietIOuerto5foKMhUHYUh_imgAbc,some_annotation_value
+    04-5xayvrdPC3o5foKMpLbZ5H_imgXyz,charName,someCharValue 
+    10-uietIOuerto5foKMhUHYUh_imgAbc,charName,someCharValue
