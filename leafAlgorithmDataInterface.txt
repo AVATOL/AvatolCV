@@ -5,7 +5,7 @@ avatolCV will invoke leaf algorithm code three times
 2. to run orientation
 3. to run scoring
 -----------------------------------------------------------------------------------------------------------
-At the SEGMENTATION step, I will pass one argument, which is the path to the runConfig_segmentation.txt file
+At the SEGMENTATION step, avatolCV will pass one argument, which is the path to the runConfig_segmentation.txt file
 
 runConfig_segmentation.txt has lines of the following form:
 
@@ -31,7 +31,7 @@ At ORIENTATION step, I will pass one argument, which is the path to the runConfi
 runConfig_orientation.txt has these lines:
     darwinOutputDir,<same as in xml file - points to where segmented files are put>
     rawImagesDir,<path of dir where right sized images from bisque are put>
-    relaventImagesFile,<path to file that lists images to orient>
+    relaventImagesFile,<path to file that lists filenames of images to orient>
     orientationResultsDir,<path to dir to put orientation normalized images>
 
 
@@ -45,7 +45,7 @@ relaventImagesFile will have entries that are the root names of images in the da
 At SCORING step, I will pass one argument, which is the path to the runConfig_scoring.txt file
 
 runConfig_scoring.txt has these lines, and others that can be ignored:
-    orientationResultsDir,<path to dir to put orientation normalized images>
+    orientationResultsDir,<path to dir where orientation normalized images are>
     trainingImagesFile,<path to training images file>  // file will be named trainingImages_scoring.txt
     testingImagesFile,<path to testing images file>    // file will be named testingImages_scoring.txt
     scoring_resultsFile,<pathname of file into which scoring algorithm will put results>
@@ -59,5 +59,5 @@ testingImages_scoring.txt
     10-uietIOuerto5foKMhUHYUh_imgAbc
     
 results_scoring.txt has form identical to trainingImages_scoring.txt
-    00-5xayvrdPC3o5foKMpLbZ5H_imgXyz,some_annotation_value 
-    03-uietIOuerto5foKMhUHYUh_imgAbc,some_annotation_value
+    04-5xayvrdPC3o5foKMpLbZ5H_imgXyz,some_annotation_value 
+    10-uietIOuerto5foKMhUHYUh_imgAbc,some_annotation_value
