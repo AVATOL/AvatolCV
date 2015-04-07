@@ -240,6 +240,85 @@ public class BisqueWSClient {
 		}
 		return false;
 	}
+	public void logout(){
+		ClientConfig config = new ClientConfig();
+		/*
+		 * Turn off redirects - by default seems to be configured to follow the first redirect only.  I need to 
+		 * see all the redirects as the auth_tkt comes in on one.
+		 */
+		config.property(ClientProperties.FOLLOW_REDIRECTS, false);
+		Client client = ClientBuilder.newClient(config);
+		/*
+		 * INITIAL REQUEST
+		 */
+        System.out.println("initial request to http://bovary.iplantcollaborative.org/auth_service/logout_handler");
+        WebTarget webTargetInitLogin = client.target("http://bovary.iplantcollaborative.org/auth_service/");
+        
+        WebTarget resourceWebTarget = webTargetInitLogin.path("logout_handler");
+        Invocation.Builder invocationBuilder =
+        		resourceWebTarget.request(MediaType.TEXT_HTML);
+        if (authenticationCookies != null){
+        	addCookiesToInvocationBuilder(invocationBuilder,authenticationCookies);
+        }
+       // NewCookie gaCookie = new NewCookie("_ga","GA1.2.1556824412.1424301652");
+        //NewCookie gatCookie = new NewCookie("_gat","1");
+        //NewCookie debugCookie1 = new NewCookie("debug1","initialRequest");
+       // invocationBuilder.cookie(gaCookie);
+        //invocationBuilder.cookie(debugCookie1);
+
+        System.out.println("\n\n\n============  response from initial request ============  ");
+        Response responseFromInitLogout = invocationBuilder.get();
+
+        
+        dumpResponse("responseFromInitLogout",responseFromInitLogout);
+        Map<String, NewCookie> cookieBatch0 = responseFromInitLogout.getCookies();
+        String redirectLocation1 = "" + responseFromInitLogout.getLocation();
+        
+        /*
+		 * SEND FIRST REDIRECT
+		 */
+        
+        System.out.println("redirectLocation1 to " + redirectLocation1);
+        WebTarget webTargetInitLogoutRedirect1 = client.target(redirectLocation1);
+        Invocation.Builder invocationBuilderRedirect1 =
+        		webTargetInitLogoutRedirect1.request(MediaType.TEXT_HTML);
+        addCookiesToInvocationBuilder(invocationBuilderRedirect1,cookieBatch0);
+        NewCookie debugCookie2 = new NewCookie("debug2","firstRedirect");
+        invocationBuilderRedirect1.cookie(debugCookie2);
+        Response responseFromRedirect1 = invocationBuilderRedirect1.get();
+        Map<String, NewCookie> cookieBatch1 = responseFromRedirect1.getCookies();
+        dumpResponse("responseFromRedirect1",responseFromRedirect1);
+
+        /*
+		 * SEND SECOND REDIRECT
+		 */
+        String redirectLocation2 = "" + responseFromRedirect1.getLocation();
+        System.out.println("redirectLocation2 to " + redirectLocation2);
+        WebTarget webTargetInitLogoutRedirect2 = client.target(redirectLocation2);
+        Invocation.Builder invocationBuilderRedirect2 =
+        		webTargetInitLogoutRedirect2.request(MediaType.TEXT_HTML);
+
+        addCookiesToInvocationBuilder(invocationBuilderRedirect2,cookieBatch1);
+        NewCookie debugCookie3 = new NewCookie("debug3","secondRedirect");
+        invocationBuilderRedirect2.cookie(debugCookie3);
+        Response responseFromRedirect2 = invocationBuilderRedirect2.get();
+        Map<String, NewCookie> cookieBatch2 = responseFromRedirect2.getCookies();
+        dumpResponse("responseFromRedirect2",responseFromRedirect2);
+        /*
+		 * SEND third REDIRECT
+		 */
+        String redirectLocation3 = "" + responseFromRedirect2.getLocation();
+        System.out.println("redirectLocation3 to " + redirectLocation3);
+        WebTarget webTargetInitLogoutRedirect3 = client.target(redirectLocation3);
+        Invocation.Builder invocationBuilderRedirect3 =
+        		webTargetInitLogoutRedirect3.request(MediaType.TEXT_HTML);
+
+        addCookiesToInvocationBuilder(invocationBuilderRedirect3,cookieBatch2);
+        NewCookie debugCookie4 = new NewCookie("debug4","thirdRedirect");
+        invocationBuilderRedirect3.cookie(debugCookie4);
+        Response responseFromRedirect3 = invocationBuilderRedirect3.get();
+        dumpResponse("responseFromRedirect3",responseFromRedirect3);
+	}
 	public void addCookiesToInvocationBuilder(Invocation.Builder ib, Map<String, NewCookie> cookies){
 		 Set<String> keySet3 = cookies.keySet();
 		 for (String key : keySet3){

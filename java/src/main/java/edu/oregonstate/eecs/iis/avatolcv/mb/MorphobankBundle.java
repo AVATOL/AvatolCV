@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVProperties;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.Platform;
+import edu.oregonstate.eecs.iis.avatolcv.RunNumber;
 import edu.oregonstate.eecs.iis.avatolcv.algata.DataIOFile;
 import edu.oregonstate.eecs.iis.avatolcv.algata.InputFile;
 import edu.oregonstate.eecs.iis.avatolcv.algata.InputFiles;
@@ -21,6 +22,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algata.OutputFile;
 import edu.oregonstate.eecs.iis.avatolcv.algata.OutputFiles;
 import edu.oregonstate.eecs.iis.avatolcv.split.TrainingDataPartitioner;
 import edu.oregonstate.eecs.iis.avatolcv.ui.StatusPanel;
+import edu.oregonstate.eecs.iis.avatolcv.ui.TaxonTrainingSelector;
 
 public class MorphobankBundle {
     private static final String FILESEP = System.getProperty("file.separator");
@@ -33,13 +35,18 @@ public class MorphobankBundle {
     private InputFiles inputFiles = null;
     private AvatolCVProperties properties = null;
     private TrainingDataPartitioner tdp = null;
+    private RunNumber runNumber = null;
     private boolean initialized = false;
     public MorphobankBundle(String dirName)  {
     	this.dirName = dirName;
+    	this.runNumber = new RunNumber(dirName);
     }
     
     public StatusPanel getStatusPanel(){
     	return this.statusPanel;
+    }
+    public RunNumber getRunNumberController(){
+    	return this.runNumber;
     }
     public void init() throws MorphobankDataException, AvatolCVException {
     	if (this.initialized){
@@ -210,18 +217,18 @@ public class MorphobankBundle {
         }
         return path;
     }
-    public void filterInputs(List<String> charIds, String viewId, String algId) throws AvatolCVException {
-    	this.inputFiles.filterInputs(charIds, viewId, algId, this.tdp);
+    public void filterInputs(List<String> charIds, String viewId, String algId, TaxonTrainingSelector tts) throws AvatolCVException {
+    	this.inputFiles.filterInputs(charIds, viewId, algId, this.tdp, tts);
     }
-    public String getFilteredInputDirName(List<String> charIds, String viewId, String algId){
+    public String getFilteredInputDirName(List<String> charIds, String viewId, String algId) throws AvatolCVException {
     	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, DataIOFile.INPUT_DIRNAME, this.tdp);
     }
 
-    public String getFilteredOutputDirName(List<String> charIds, String viewId, String algId){
+    public String getFilteredOutputDirName(List<String> charIds, String viewId, String algId) throws AvatolCVException {
     	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, DataIOFile.OUTPUT_DIRNAME, this.tdp);
     }
 
-    public String getFilteredDetectionResultsDirName(List<String> charIds, String viewId, String algId){
+    public String getFilteredDetectionResultsDirName(List<String> charIds, String viewId, String algId) throws AvatolCVException {
     	return this.inputFiles.getFilteredDirname(charIds, viewId, algId, DataIOFile.DETECTION_RESULTS_DIRNAME, this.tdp);
     }
     public String getViewIdForName(String name) throws AvatolCVException {

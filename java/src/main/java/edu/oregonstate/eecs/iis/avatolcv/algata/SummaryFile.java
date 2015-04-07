@@ -119,6 +119,21 @@ public class SummaryFile {
         				filteredList.add(entry);
         			}
         		}
+        		else if (parts[0].equals(TAXON_PREFIX)){
+        			String taxonId = parts[1];
+        			if (tdp.isRegime1()){
+        				filteredList.add(entry + ",trainingAndScoring");
+        			}
+        			else {
+        				//regime2
+        				if (tdp.isTaxonForTraining(taxonId)){
+        					filteredList.add(entry + ",training");
+        				}
+        				else {
+        					filteredList.add(entry + ",scoring");
+        				}
+        			}
+        		}
         		else {
         			// just pass it through
         			filteredList.add(entry);

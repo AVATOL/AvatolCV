@@ -58,7 +58,7 @@ public class AvatolCVProperties {
     	}
     	return false;
     }
-    public boolean isPartitioningNeeded(){
+    public boolean isSplitPartitioningSupported(){
     	if (this.trainingDataSplitThreshold == -1.0){
     		return false;
     	}

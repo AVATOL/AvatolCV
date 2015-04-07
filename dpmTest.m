@@ -46,7 +46,7 @@ function dpmTest
     progressIndicator = ProgressIndicator(statusMessage);
     
     %algorithms.invoke_the_dpm_system(list_of_characters, input_folder, output_folder, detection_results_folder, progressIndicator);
-    algorithms.invoke_the_dpm_system(list_of_characters, input_folder, output_folder, detection_results_folder, 'regime1');
+    algorithms.invoke_the_dpm_system('C:\avatol\git\avatol_cv\matrix_downloads\BAT\input\DPM\c427749c427751c427753c427754c427760\v3540\split_0.7\summaryRegime1.txt', 'regime1');
 end
 
             

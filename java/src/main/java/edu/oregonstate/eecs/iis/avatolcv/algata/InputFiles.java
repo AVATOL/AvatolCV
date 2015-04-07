@@ -25,6 +25,7 @@ import edu.oregonstate.eecs.iis.avatolcv.mb.Media;
 import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankDataException;
 import edu.oregonstate.eecs.iis.avatolcv.mb.MorphobankSDDFile;
 import edu.oregonstate.eecs.iis.avatolcv.split.TrainingDataPartitioner;
+import edu.oregonstate.eecs.iis.avatolcv.ui.TaxonTrainingSelector;
 
 public class InputFiles {
 	
@@ -379,7 +380,7 @@ public class InputFiles {
     	}
     	return ""+sb;
     }
-    public String getFilteredDirname(List<String> charIds, String viewId, String algId, String target, TrainingDataPartitioner tdp){
+    public String getFilteredDirname(List<String> charIds, String viewId, String algId, String target, TrainingDataPartitioner tdp) throws AvatolCVException {
     	String algDirname = this.bundleDir + FILESEP + target + FILESEP + algId;
     	String charIdsDirname = getDirnameFromCharIds(charIds);
     	String newDir = algDirname + FILESEP + charIdsDirname + FILESEP + viewId;
@@ -389,7 +390,7 @@ public class InputFiles {
     	}
     	return newDir;
     }
-    public String getRelativeFilteredDirname(List<String> charIds, String viewId, String algId, String target, TrainingDataPartitioner tdp){
+    public String getRelativeFilteredDirname(List<String> charIds, String viewId, String algId, String target, TrainingDataPartitioner tdp) throws AvatolCVException {
     	String algDirname = target + FILESEP + algId;
     	String charIdsDirname = getDirnameFromCharIds(charIds);
     	String newDir = algDirname + FILESEP + charIdsDirname + FILESEP + viewId;
@@ -436,8 +437,8 @@ public class InputFiles {
     /*
      * make a dir name by cat'ing the char_ids that are valid simple, then subdir named for viewId, then can clean before filling
      */
-    public void filterInputs(List<String> charIds,String viewId, String algId, TrainingDataPartitioner tdp) throws AvatolCVException {
-    	
+    public void filterInputs(List<String> charIds,String viewId, String algId, TrainingDataPartitioner tdp, TaxonTrainingSelector tts) throws AvatolCVException {
+    	tdp.setTaxonTrainingSelector(tts);
     	String newInputDir = getFilteredDirname(charIds, viewId, algId, DataIOFile.INPUT_DIRNAME, tdp);
     	String newOutputDir = getFilteredDirname(charIds, viewId, algId, DataIOFile.OUTPUT_DIRNAME, tdp);
     	String detectionResultDir = getFilteredDirname(charIds, viewId, algId, DataIOFile.DETECTION_RESULTS_DIRNAME, tdp);

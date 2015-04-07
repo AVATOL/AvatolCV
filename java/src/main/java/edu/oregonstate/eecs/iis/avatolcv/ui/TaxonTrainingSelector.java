@@ -51,12 +51,32 @@ public class TaxonTrainingSelector extends JPanel {
 		this.scrollPane.setViewportView(this.contentPanel);
 		this.add(this.scrollPane, getUseAllSpaceConstraints());
 	}
-	
+	public boolean isAllTaxaSelected(){
+		boolean allSelected = true;
+		for (String s : taxonNames){
+			JCheckBox c = checkBoxesByName.get(s);
+			if (!c.isSelected()){
+				allSelected = false;
+			}
+		}
+		return allSelected;
+	}
 	public List<Taxon> getSelectedTaxa(){
 		List<Taxon> result = new ArrayList<Taxon>();
 		for (String s : taxonNames){
 			JCheckBox c = checkBoxesByName.get(s);
 			if (c.isSelected()){
+				Taxon t = taxonsByName.get(s);
+				result.add(t);
+			}
+		}
+		return result;
+	}
+	public List<Taxon> getUnselectedTaxa(){
+		List<Taxon> result = new ArrayList<Taxon>();
+		for (String s : taxonNames){
+			JCheckBox c = checkBoxesByName.get(s);
+			if (!c.isSelected()){
 				Taxon t = taxonsByName.get(s);
 				result.add(t);
 			}

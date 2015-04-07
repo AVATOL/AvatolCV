@@ -97,7 +97,7 @@ classdef AlgorithmChoiceScreen < handle
                     charIdStringList.add(charId);
                 end
                 %taxonNames = obj.session.javaStringListToMatlabCharList(obj.session.morphobankBundle.getScorableTaxonNames());
-                mb.filterInputs(charIdStringList, viewId, algIdString);
+                mb.filterInputs(charIdStringList, viewId, algIdString, obj.session.dpmQuestionScreens.trainingTaxaSelector);
                 
                 inputFolderJavaString = mb.getFilteredInputDirName(charIdStringList, viewId, algIdString);
                 outputFolderJavaString = mb.getFilteredOutputDirName(charIdStringList, viewId, algIdString);
@@ -125,7 +125,7 @@ classdef AlgorithmChoiceScreen < handle
 
 
         function chooseAlgorithm(obj)
-            if (false)
+            if (true)
                 obj.message = 'DPM algorithm has been chosen for scoring.  Press Run Algorithm to begin.';
                 obj.showRunAlgorithmButton = true;
                 obj.algorithmChosen = 'DPM';
