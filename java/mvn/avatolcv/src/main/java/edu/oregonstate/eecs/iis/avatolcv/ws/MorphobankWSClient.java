@@ -22,6 +22,8 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBProject;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 
 public class MorphobankWSClient {
 	private String username = null;
@@ -173,14 +175,55 @@ http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/userID/987
         }
 		return characters;
 	}
+	public List<MBTaxon> getTaxaForMatrix(String matrixID){
+		/*
+		 * 
+http://morphobank.org/service.php/AVATOLCv/getTaxaForMatrix/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423
+
+{"ok":true,"taxa":[{"taxonID":"72002","taxonName":"Aetobatus"},{"taxonID":"255564","taxonName":"Testicus testing"},{"taxonID":"71967","taxonName":""},{"taxonID":"138348","taxonName":"Dodecaceria sp."},{"taxonID":"138349","taxonName":"Thelepus cincinnatus"},{"taxonID":"138350","taxonName":"Amphitritides harpa"},{"taxonID":"138351","taxonName":"Marenzelleria viridis"},{"taxonID":"138352","taxonName":"Polydora giardi"},{"taxonID":"138353","taxonName":"Augeneriella alata"},{"taxonID":"138354","taxonName":"Fabricinuda sp."},{"taxonID":"138355","taxonName":"Manayunkia athalassia"},{"taxonID":"138356","taxonName":"Novofabria labrus"},{"taxonID":"138357","taxonName":"Amphicorina mobilis"},{"taxonID":"138358","taxonName":"Amphiglen terebro"},{"taxonID":"138359","taxonName":"Bispira crassicornis"},{"taxonID":"138360","taxonName":"Bispira manicata"},{"taxonID":"138361","taxonName":"Bispira porifera"},{"taxonID":"138362","taxonName":"Bispira serrata"},{"taxonID":"138363","taxonName":"Branchiomma nt"},{"taxonID":"138364","taxonName":"Branchiomma nsw"},{"taxonID":"138365","taxonName":"Branchiomma bairdi"},{"taxonID":"138366","taxonName":"Branchiomma nigromaculata"},{"taxonID":"138367","taxonName":"Calcisabella piloseta"},{"taxonID":"138368","taxonName":"Chone sp."},{"taxonID":"138369","taxonName":"Dialychone perkinsi"},{"taxonID":"138370","taxonName":"Euchone limnicola"},{"taxonID":"138371","taxonName":"Euchone sp."},{"taxonID":"138372","taxonName":"Fabrisabella vasculosa"},{"taxonID":"138373","taxonName":"Megalomma sp. a"},{"taxonID":"138374","taxonName":"Myxicola sp."},{"taxonID":"138375","taxonName":"Notaulax nsw"},{"taxonID":"138376","taxonName":"Notaulax qld"},{"taxonID":"138377","taxonName":"Pseudopotamilla nt"},{"taxonID":"138378","taxonName":"Pseudopotamilla qld"},{"taxonID":"138379","taxonName":"Pseudopotamilla monoculata"},{"taxonID":"138380","taxonName":"Pseudopotamilla nsw"},{"taxonID":"138381","taxonName":"Eudistylia vancouveri"},{"taxonID":"138382","taxonName":"Schizobranchia insignis"},{"taxonID":"138383","taxonName":"Sabella spallanzanii"},{"taxonID":"138384","taxonName":"Sabella pavonina"},{"taxonID":"138385","taxonName":"Sabellastarte australiensis"},{"taxonID":"138386","taxonName":"Sabellastarte nt"},{"taxonID":"138387","taxonName":"Sabellastate vic"},{"taxonID":"138388","taxonName":"Sabellastarte indonesia"},{"taxonID":"138389","taxonName":"Stylomma palmatum"},{"taxonID":"138390","taxonName":"Myriochele sp."},{"taxonID":"138391","taxonName":"Owenia qld"},{"taxonID":"138392","taxonName":"Owenia fusiformis"},{"taxonID":"138393","taxonName":"Crucigera zygophora"},{"taxonID":"138394","taxonName":"Ditrupa arietina"},{"taxonID":"138395","taxonName":"Hydroides sp."},{"taxonID":"138396","taxonName":"Pomatoceros triqueter"},{"taxonID":"138397","taxonName":"Spirobranchus lima"},{"taxonID":"138398","taxonName":"Protolaeospira tricostalis"},{"taxonID":"138688","taxonName":"A. gomesii"},{"taxonID":"128957","taxonName":"\u2020Abelisauridae"},{"taxonID":"129044","taxonName":"Afrotis"},{"taxonID":"138400","taxonName":"\u2020Protula tubularia"},{"taxonID":"138406","taxonName":"Osedax frankpressi"},{"taxonID":"138405","taxonName":"Lamellibrachia columna"},{"taxonID":"138411","taxonName":"Scoloplos armiger"},{"taxonID":"138407","taxonName":"Ridgeia piscesae"},{"taxonID":"138408","taxonName":"Riftia pachyptila"},{"taxonID":"129102","taxonName":"Aegotheles"},{"taxonID":"138399","taxonName":"Protula paliata"},{"taxonID":"138404","taxonName":"Sabellaria alveolata"}]}
+
+		 */
+		List<MBTaxon> taxa = null;
+		Client client = ClientBuilder.newClient();
+        String url = "http://morphobank.org/service.php/AVATOLCv/getTaxaForMatrix/username/" + username + "/password/" + password + "/matrixID/" + matrixID;
+	    WebTarget webTarget = client.target(url);
+	    Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+	        
+	    Response response = invocationBuilder.get();
+	    System.out.println(response.getStatus());
+	    String jsonString = response.readEntity(String.class);
+	     
+	    System.out.println(jsonString);
+	    ObjectMapper mapper = new ObjectMapper();
+        try {
+        	TaxaInfo ti = mapper.readValue(jsonString, TaxaInfo.class);
+        	taxa = ti.getTaxa();
+        	for (MBTaxon taxon : taxa){
+        		System.out.println("taxonId   : " + taxon.getTaxonID());
+        		System.out.println("taxonName : " + taxon.getTaxonName());
+        	}
+        	
+        }
+        catch(JsonParseException jpe){
+        	System.out.println(jpe.getMessage());
+        	jpe.printStackTrace();
+        }
+        catch(JsonMappingException jme){
+        	System.out.println(jme.getMessage());
+        	jme.printStackTrace();
+        }
+
+        catch(IOException ioe){
+        	System.out.println(ioe.getMessage());
+        	ioe.printStackTrace();
+        }
+		return taxa;
+	}
 }
 /*
 
 
 
-http://morphobank.org/service.php/AVATOLCv/getTaxaForMatrix/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423
-
-{"ok":true,"taxa":[{"taxonID":"72002","taxonName":"Aetobatus"},{"taxonID":"255564","taxonName":"Testicus testing"},{"taxonID":"71967","taxonName":""},{"taxonID":"138348","taxonName":"Dodecaceria sp."},{"taxonID":"138349","taxonName":"Thelepus cincinnatus"},{"taxonID":"138350","taxonName":"Amphitritides harpa"},{"taxonID":"138351","taxonName":"Marenzelleria viridis"},{"taxonID":"138352","taxonName":"Polydora giardi"},{"taxonID":"138353","taxonName":"Augeneriella alata"},{"taxonID":"138354","taxonName":"Fabricinuda sp."},{"taxonID":"138355","taxonName":"Manayunkia athalassia"},{"taxonID":"138356","taxonName":"Novofabria labrus"},{"taxonID":"138357","taxonName":"Amphicorina mobilis"},{"taxonID":"138358","taxonName":"Amphiglen terebro"},{"taxonID":"138359","taxonName":"Bispira crassicornis"},{"taxonID":"138360","taxonName":"Bispira manicata"},{"taxonID":"138361","taxonName":"Bispira porifera"},{"taxonID":"138362","taxonName":"Bispira serrata"},{"taxonID":"138363","taxonName":"Branchiomma nt"},{"taxonID":"138364","taxonName":"Branchiomma nsw"},{"taxonID":"138365","taxonName":"Branchiomma bairdi"},{"taxonID":"138366","taxonName":"Branchiomma nigromaculata"},{"taxonID":"138367","taxonName":"Calcisabella piloseta"},{"taxonID":"138368","taxonName":"Chone sp."},{"taxonID":"138369","taxonName":"Dialychone perkinsi"},{"taxonID":"138370","taxonName":"Euchone limnicola"},{"taxonID":"138371","taxonName":"Euchone sp."},{"taxonID":"138372","taxonName":"Fabrisabella vasculosa"},{"taxonID":"138373","taxonName":"Megalomma sp. a"},{"taxonID":"138374","taxonName":"Myxicola sp."},{"taxonID":"138375","taxonName":"Notaulax nsw"},{"taxonID":"138376","taxonName":"Notaulax qld"},{"taxonID":"138377","taxonName":"Pseudopotamilla nt"},{"taxonID":"138378","taxonName":"Pseudopotamilla qld"},{"taxonID":"138379","taxonName":"Pseudopotamilla monoculata"},{"taxonID":"138380","taxonName":"Pseudopotamilla nsw"},{"taxonID":"138381","taxonName":"Eudistylia vancouveri"},{"taxonID":"138382","taxonName":"Schizobranchia insignis"},{"taxonID":"138383","taxonName":"Sabella spallanzanii"},{"taxonID":"138384","taxonName":"Sabella pavonina"},{"taxonID":"138385","taxonName":"Sabellastarte australiensis"},{"taxonID":"138386","taxonName":"Sabellastarte nt"},{"taxonID":"138387","taxonName":"Sabellastate vic"},{"taxonID":"138388","taxonName":"Sabellastarte indonesia"},{"taxonID":"138389","taxonName":"Stylomma palmatum"},{"taxonID":"138390","taxonName":"Myriochele sp."},{"taxonID":"138391","taxonName":"Owenia qld"},{"taxonID":"138392","taxonName":"Owenia fusiformis"},{"taxonID":"138393","taxonName":"Crucigera zygophora"},{"taxonID":"138394","taxonName":"Ditrupa arietina"},{"taxonID":"138395","taxonName":"Hydroides sp."},{"taxonID":"138396","taxonName":"Pomatoceros triqueter"},{"taxonID":"138397","taxonName":"Spirobranchus lima"},{"taxonID":"138398","taxonName":"Protolaeospira tricostalis"},{"taxonID":"138688","taxonName":"A. gomesii"},{"taxonID":"128957","taxonName":"\u2020Abelisauridae"},{"taxonID":"129044","taxonName":"Afrotis"},{"taxonID":"138400","taxonName":"\u2020Protula tubularia"},{"taxonID":"138406","taxonName":"Osedax frankpressi"},{"taxonID":"138405","taxonName":"Lamellibrachia columna"},{"taxonID":"138411","taxonName":"Scoloplos armiger"},{"taxonID":"138407","taxonName":"Ridgeia piscesae"},{"taxonID":"138408","taxonName":"Riftia pachyptila"},{"taxonID":"129102","taxonName":"Aegotheles"},{"taxonID":"138399","taxonName":"Protula paliata"},{"taxonID":"138404","taxonName":"Sabellaria alveolata"}]}
 
 http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423/characterID/383114/taxonID/72002
 
@@ -194,6 +237,8 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
 http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423/characterID/383114/taxonID/71967
 
 {"ok":true,"charStates":[{"charStateID":"inapplicable"}]}
+
+
 
 
 
