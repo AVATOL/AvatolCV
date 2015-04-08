@@ -16,6 +16,8 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.Authentication;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharStateInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharStateInfo.MBCharStateValue;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo;
@@ -275,19 +277,49 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
         }
 		return charStateValues;
 	}
-}
-/*
-
-
-
-
-
-
-
-http://morphobank.org/service.php/AVATOLCv/getMediaForCell/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423/characterID/519541/taxonID/72002
+	public List<MBMediaInfo> getMediaForCell(String matrixID, String charID, String taxonID){
+		/*
+		 * http://morphobank.org/service.php/AVATOLCv/getMediaForCell/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423/characterID/519541/taxonID/72002
 
 {"ok":true,"media":[{"mediaID":"284045","viewID":"6282"}]}
+		 */
+		List<MBMediaInfo> mediaInfo = null;
+		Client client = ClientBuilder.newClient();
+        String url = "http://morphobank.org/service.php/AVATOLCv/getMediaForCell/username/" + username + "/password/" + password + "/matrixID/" + matrixID + "/characterID/" + charID + "/taxonID/" + taxonID;
+	    WebTarget webTarget = client.target(url);
+	    Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+	        
+	    Response response = invocationBuilder.get();
+	    System.out.println(response.getStatus());
+	    String jsonString = response.readEntity(String.class);
+	     
+	    System.out.println(jsonString);
+	    ObjectMapper mapper = new ObjectMapper();
+        try {
+        	CellMediaInfo cmi = mapper.readValue(jsonString, CellMediaInfo.class);
+        	mediaInfo = cmi.getMedia();
+        	for (MBMediaInfo mi : mediaInfo){
+        		System.out.println("mediaId " + mi.getMediaID() + " viewId " + mi.getViewID() );
+        	}
+        	
+        }
+        catch(JsonParseException jpe){
+        	System.out.println(jpe.getMessage());
+        	jpe.printStackTrace();
+        }
+        catch(JsonMappingException jme){
+        	System.out.println(jme.getMessage());
+        	jme.printStackTrace();
+        }
 
+        catch(IOException ioe){
+        	System.out.println(ioe.getMessage());
+        	ioe.printStackTrace();
+        }
+		return mediaInfo;
+	}
+}
+/*
 
 
 http://morphobank.org/service.php/AVATOLCv/getAnnotationsForCellMedia/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423/characterID/519541/taxonID/72002/mediaID/284045
