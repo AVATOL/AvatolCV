@@ -16,6 +16,8 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.Authentication;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharStateInfo;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharStateInfo.MBCharStateValue;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharState;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
@@ -219,12 +221,9 @@ http://morphobank.org/service.php/AVATOLCv/getTaxaForMatrix/username/irvine@eecs
         }
 		return taxa;
 	}
-}
-/*
-
-
-
-
+	public List<MBCharStateValue> getCharStatesForCell(String matrixID, String charID, String taxonID){
+		/*
+		 * 
 http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423/characterID/383114/taxonID/72002
 
 {"ok":true,"charStates":[{"charStateID":"NPA"}]}
@@ -237,6 +236,49 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
 http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423/characterID/383114/taxonID/71967
 
 {"ok":true,"charStates":[{"charStateID":"inapplicable"}]}
+
+		 */
+	
+	
+		List<MBCharStateValue> charStateValues = null;
+		Client client = ClientBuilder.newClient();
+        String url = "http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/" + username + "/password/" + password + "/matrixID/" + matrixID + "/characterID/" + charID + "/taxonID/" + taxonID;
+	    WebTarget webTarget = client.target(url);
+	    Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+	        
+	    Response response = invocationBuilder.get();
+	    System.out.println(response.getStatus());
+	    String jsonString = response.readEntity(String.class);
+	     
+	    System.out.println(jsonString);
+	    ObjectMapper mapper = new ObjectMapper();
+        try {
+        	CharStateInfo csi = mapper.readValue(jsonString, CharStateInfo.class);
+        	charStateValues = csi.getCharStates();
+        	for (MBCharStateValue csv : charStateValues){
+        		System.out.println("charStateVal   : " + csv.getCharStateID());
+        	}
+        	
+        }
+        catch(JsonParseException jpe){
+        	System.out.println(jpe.getMessage());
+        	jpe.printStackTrace();
+        }
+        catch(JsonMappingException jme){
+        	System.out.println(jme.getMessage());
+        	jme.printStackTrace();
+        }
+
+        catch(IOException ioe){
+        	System.out.println(ioe.getMessage());
+        	ioe.printStackTrace();
+        }
+		return charStateValues;
+	}
+}
+/*
+
+
 
 
 
