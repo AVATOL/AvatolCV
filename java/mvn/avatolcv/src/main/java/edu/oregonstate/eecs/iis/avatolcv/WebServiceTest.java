@@ -38,9 +38,13 @@ public class WebServiceTest {
         System.out.println(response.getStatus());
         String jsonString = response.readEntity(String.class);
         System.out.println(jsonString);
+        //{"results":{"sunrise":"5:52:59 AM","sunset":"6:45:57 PM","solar_noon":"12:19:28 PM","day_length":"12:52:58","civil_twilight_begin":"5:26:43 AM","civil_twilight_end":"7:12:13 PM","nautical_twilight_begin":"4:55:31 AM","nautical_twilight_end":"7:43:26 PM","astronomical_twilight_begin":"4:23:19 AM","astronomical_twilight_end":"8:15:37 PM"},"status":"OK"}
+        
+
         jsonString = JsonUtils.stripOffJsonContainerLayer(jsonString);
         //jsonString = jsonString.replaceFirst(",\\\"status\\\":\\\"OK\\\"}", "");
         System.out.println(jsonString);
+        //{"sunrise":"5:52:59 AM","sunset":"6:45:57 PM","solar_noon":"12:19:28 PM","day_length":"12:52:58","civil_twilight_begin":"5:26:43 AM","civil_twilight_end":"7:12:13 PM","nautical_twilight_begin":"4:55:31 AM","nautical_twilight_end":"7:43:26 PM","astronomical_twilight_begin":"4:23:19 AM","astronomical_twilight_end":"8:15:37 PM"}
         ObjectMapper mapper = new ObjectMapper();
         //mapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
         try {

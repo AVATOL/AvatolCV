@@ -1,22 +1,125 @@
 package edu.oregonstate.eecs.iis.avatolcv.ws;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.Authentication;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBProject;
+
 public class MorphobankWSClient {
 	public boolean authenticate(String name, String password) throws MorphobankWSException{
-		return false;
-	}
-}
-/*
-
-
-http://morphobank.org/service.php/AVATOLCv/authenticateUser/username/irvine@eecs.oregonstate.edu/password/squonkmb
+		/*
+		 * http://morphobank.org/service.php/AVATOLCv/authenticateUser/username/irvine@eecs.oregonstate.edu/password/squonkmb
 
 {"ok":true,"authenticated":1,"userId":"987","user":{"user_id":"987","user_name":"irvine@eecs.oregonstate.edu","fname":"Jed","lname":"Irvine","email":"irvine@eecs.oregonstate.edu"}}
 
+		 */
+		boolean result = false;
+		Client client = ClientBuilder.newClient();
+        String url = "http://morphobank.org/service.php/AVATOLCv/authenticateUser/username/" + name + "/password/" + password;
+	    WebTarget webTarget = client.target(url);
+	    Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+	        
+	    Response response = invocationBuilder.get();
+	    System.out.println(response.getStatus());
+	    String jsonString = response.readEntity(String.class);
+	     
+	    System.out.println(jsonString);
+	    ObjectMapper mapper = new ObjectMapper();
+        try {
+        	Authentication auth = mapper.readValue(jsonString, Authentication.class);
+        	String authenticated = auth.authenticated;
+        	if (authenticated.equals("1")){
+        		result = true;
+        	}
+        	else {
+        		result = false;
+        	}
+        	System.out.println("userId " + auth.userId);
+        	System.out.println("authed " + auth.authenticated);
+        	System.out.println("ok     " + auth.ok);
+        	System.out.println("user " + auth.user);
+        }
+        catch(JsonParseException jpe){
+        	System.out.println(jpe.getMessage());
+        	jpe.printStackTrace();
+        }
+        catch(JsonMappingException jme){
+        	System.out.println(jme.getMessage());
+        	jme.printStackTrace();
+        }
+
+        catch(IOException ioe){
+        	System.out.println(ioe.getMessage());
+        	ioe.printStackTrace();
+        }
+		return result;
+	}
+	public List<MBMatrix> getMorphobankMatricesForUser(String name, String password){
+		/*
+		 * 
 http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/username/irvine@eecs.oregonstate.edu/password/squonkmb
 
 {"ok":true,"projects":[{"projectID":"139","name":"AVATOL Test Project","matrices":[{"matrixID":"1423","name":"testing"}]},{"projectID":"700","name":"Crowdsourcing test project (mammals)","matrices":[{"matrixID":"1617","name":"Crowdsourcing Pilot Project"}]}]}
 
 http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/userID/987
+
+		 */
+		List<MBMatrix> matrices = new ArrayList<MBMatrix>();
+		Client client = ClientBuilder.newClient();
+        String url = "http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/username/" + name + "/password/" + password;
+	    WebTarget webTarget = client.target(url);
+	    Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+	        
+	    Response response = invocationBuilder.get();
+	    System.out.println(response.getStatus());
+	    String jsonString = response.readEntity(String.class);
+	     
+	    System.out.println(jsonString);
+	    ObjectMapper mapper = new ObjectMapper();
+        try {
+        	MatrixInfo mi = mapper.readValue(jsonString, MatrixInfo.class);
+        	List<MBProject> projects = mi.getProjects();
+        	for (MBProject proj : projects){
+        		List<MBMatrix> curMatrices = proj.getMatrices();
+        		for (MBMatrix m : curMatrices){
+        			System.out.println("adding matrix " + m.getName());
+        			matrices.add(m);
+        		}
+        	}
+        	
+        }
+        catch(JsonParseException jpe){
+        	System.out.println(jpe.getMessage());
+        	jpe.printStackTrace();
+        }
+        catch(JsonMappingException jme){
+        	System.out.println(jme.getMessage());
+        	jme.printStackTrace();
+        }
+
+        catch(IOException ioe){
+        	System.out.println(ioe.getMessage());
+        	ioe.printStackTrace();
+        }
+		return matrices;
+	}
+}
+/*
 
 
 http://morphobank.org/service.php/AVATOLCv/getCharactersForMatrix/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423
