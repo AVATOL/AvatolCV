@@ -16,12 +16,17 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.Authentication;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharState;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBProject;
 
 public class MorphobankWSClient {
-	public boolean authenticate(String name, String password) throws MorphobankWSException{
+	private String username = null;
+	private String password = null;
+	public boolean authenticate(String name, String pw) throws MorphobankWSException{
 		/*
 		 * http://morphobank.org/service.php/AVATOLCv/authenticateUser/username/irvine@eecs.oregonstate.edu/password/squonkmb
 
@@ -30,7 +35,7 @@ public class MorphobankWSClient {
 		 */
 		boolean result = false;
 		Client client = ClientBuilder.newClient();
-        String url = "http://morphobank.org/service.php/AVATOLCv/authenticateUser/username/" + name + "/password/" + password;
+        String url = "http://morphobank.org/service.php/AVATOLCv/authenticateUser/username/" + name + "/password/" + pw;
 	    WebTarget webTarget = client.target(url);
 	    Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 	        
@@ -45,6 +50,8 @@ public class MorphobankWSClient {
         	String authenticated = auth.authenticated;
         	if (authenticated.equals("1")){
         		result = true;
+        		this.password = pw;
+        		this.username = name;
         	}
         	else {
         		result = false;
@@ -69,7 +76,7 @@ public class MorphobankWSClient {
         }
 		return result;
 	}
-	public List<MBMatrix> getMorphobankMatricesForUser(String name, String password){
+	public List<MBMatrix> getMorphobankMatricesForUser(){
 		/*
 		 * 
 http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/username/irvine@eecs.oregonstate.edu/password/squonkmb
@@ -81,7 +88,7 @@ http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/userID/987
 		 */
 		List<MBMatrix> matrices = new ArrayList<MBMatrix>();
 		Client client = ClientBuilder.newClient();
-        String url = "http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/username/" + name + "/password/" + password;
+        String url = "http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/username/" + username + "/password/" + password;
 	    WebTarget webTarget = client.target(url);
 	    Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 	        
@@ -118,13 +125,58 @@ http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/userID/987
         }
 		return matrices;
 	}
+	public List<MBCharacter> getCharactersForMatrix(String matrixID){
+		/*
+		 * 
+		 * http://morphobank.org/service.php/AVATOLCv/getCharactersForMatrix/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423
+
+{"ok":true,"characters":[{"charID":"383114","charName":"Tube material!!!","charStates":[{"charStateID":"821248","charStateName":"mucus???","charStateNum":"0"},{"charStateID":"821249","charStateName":"chitinous","charStateNum":"1"},{"charStateID":"821250","charStateName":"calcareous","charStateNum":"2"}]},{"charID":"555957","charName":"meow","charStates":[{"charStateID":"1245629","charStateName":"New state","charStateNum":"0"},{"charStateID":"1245630","charStateName":"New state","charStateNum":"1"},{"charStateID":"1245631","charStateName":"New state","charStateNum":"2"}]},{"charID":"519541","charName":"test task.","charStates":[{"charStateID":"1157844","charStateName":"state 1","charStateNum":"0"},{"charStateID":"1157845","charStateName":"state 2","charStateNum":"1"}]}]}
+
+		 */
+		List<MBCharacter> characters = null;
+		Client client = ClientBuilder.newClient();
+        String url = "http://morphobank.org/service.php/AVATOLCv/getCharactersForMatrix/username/" + username + "/password/" + password + "/matrixID/" + matrixID;
+	    WebTarget webTarget = client.target(url);
+	    Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+	        
+	    Response response = invocationBuilder.get();
+	    System.out.println(response.getStatus());
+	    String jsonString = response.readEntity(String.class);
+	     
+	    System.out.println(jsonString);
+	    ObjectMapper mapper = new ObjectMapper();
+        try {
+        	CharacterInfo ci = mapper.readValue(jsonString, CharacterInfo.class);
+        	characters = ci.getCharacters();
+        	for (MBCharacter character : characters){
+        		System.out.println("charId   : " + character.getCharID());
+        		System.out.println("charName : " + character.getCharName());
+        		List<MBCharState> charStates = character.getCharStates();
+        		for (MBCharState state : charStates){
+        			System.out.println("stateId " + state.getCharStateID() + " stateName " + state.getCharStateName() + " stateNum " + state.getCharStateNum());
+        		}
+        	}
+        	
+        }
+        catch(JsonParseException jpe){
+        	System.out.println(jpe.getMessage());
+        	jpe.printStackTrace();
+        }
+        catch(JsonMappingException jme){
+        	System.out.println(jme.getMessage());
+        	jme.printStackTrace();
+        }
+
+        catch(IOException ioe){
+        	System.out.println(ioe.getMessage());
+        	ioe.printStackTrace();
+        }
+		return characters;
+	}
 }
 /*
 
 
-http://morphobank.org/service.php/AVATOLCv/getCharactersForMatrix/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423
-
-{"ok":true,"characters":[{"charID":"383114","charName":"Tube material!!!","charStates":[{"charStateID":"821248","charStateName":"mucus???","charStateNum":"0"},{"charStateID":"821249","charStateName":"chitinous","charStateNum":"1"},{"charStateID":"821250","charStateName":"calcareous","charStateNum":"2"}]},{"charID":"555957","charName":"meow","charStates":[{"charStateID":"1245629","charStateName":"New state","charStateNum":"0"},{"charStateID":"1245630","charStateName":"New state","charStateNum":"1"},{"charStateID":"1245631","charStateName":"New state","charStateNum":"2"}]},{"charID":"519541","charName":"test task.","charStates":[{"charStateID":"1157844","charStateName":"state 1","charStateNum":"0"},{"charStateID":"1157845","charStateName":"state 2","charStateNum":"1"}]}]}
 
 http://morphobank.org/service.php/AVATOLCv/getTaxaForMatrix/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423
 
