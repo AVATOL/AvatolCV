@@ -1,6 +1,9 @@
 package edu.oregonstate.eecs.iis.avatolcv.ws;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +17,12 @@ import javax.ws.rs.core.Response;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotationPoint;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.Authentication;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
@@ -26,12 +34,16 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBProject;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MediaUrlInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
 
 public class MorphobankWSClient {
 	private String username = null;
 	private String password = null;
+	private static final String FILESEP = System.getProperty("file.separator");
 	public boolean authenticate(String name, String pw) throws MorphobankWSException{
 		/*
 		 * http://morphobank.org/service.php/AVATOLCv/authenticateUser/username/irvine@eecs.oregonstate.edu/password/squonkmb
@@ -110,7 +122,6 @@ http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/userID/987
         	for (MBProject proj : projects){
         		List<MBMatrix> curMatrices = proj.getMatrices();
         		for (MBMatrix m : curMatrices){
-        			System.out.println("adding matrix " + m.getName());
         			matrices.add(m);
         		}
         	}
@@ -154,15 +165,6 @@ http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/userID/987
         try {
         	CharacterInfo ci = mapper.readValue(jsonString, CharacterInfo.class);
         	characters = ci.getCharacters();
-        	for (MBCharacter character : characters){
-        		System.out.println("charId   : " + character.getCharID());
-        		System.out.println("charName : " + character.getCharName());
-        		List<MBCharState> charStates = character.getCharStates();
-        		for (MBCharState state : charStates){
-        			System.out.println("stateId " + state.getCharStateID() + " stateName " + state.getCharStateName() + " stateNum " + state.getCharStateNum());
-        		}
-        	}
-        	
         }
         catch(JsonParseException jpe){
         	System.out.println(jpe.getMessage());
@@ -202,11 +204,6 @@ http://morphobank.org/service.php/AVATOLCv/getTaxaForMatrix/username/irvine@eecs
         try {
         	TaxaInfo ti = mapper.readValue(jsonString, TaxaInfo.class);
         	taxa = ti.getTaxa();
-        	for (MBTaxon taxon : taxa){
-        		System.out.println("taxonId   : " + taxon.getTaxonID());
-        		System.out.println("taxonName : " + taxon.getTaxonName());
-        	}
-        	
         }
         catch(JsonParseException jpe){
         	System.out.println(jpe.getMessage());
@@ -257,10 +254,6 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
         try {
         	CharStateInfo csi = mapper.readValue(jsonString, CharStateInfo.class);
         	charStateValues = csi.getCharStates();
-        	for (MBCharStateValue csv : charStateValues){
-        		System.out.println("charStateVal   : " + csv.getCharStateID());
-        	}
-        	
         }
         catch(JsonParseException jpe){
         	System.out.println(jpe.getMessage());
@@ -298,10 +291,6 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
         try {
         	CellMediaInfo cmi = mapper.readValue(jsonString, CellMediaInfo.class);
         	mediaInfo = cmi.getMedia();
-        	for (MBMediaInfo mi : mediaInfo){
-        		System.out.println("mediaId " + mi.getMediaID() + " viewId " + mi.getViewID() );
-        	}
-        	
         }
         catch(JsonParseException jpe){
         	System.out.println(jpe.getMessage());
@@ -318,26 +307,159 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
         }
 		return mediaInfo;
 	}
-}
-/*
-
-
-http://morphobank.org/service.php/AVATOLCv/getAnnotationsForCellMedia/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423/characterID/519541/taxonID/72002/mediaID/284045
+	public List<MBAnnotation> getAnnotationsForCellMedia(String matrixID, String charID, String taxonID, String mediaID){
+		/*
+		 * http://morphobank.org/service.php/AVATOLCv/getAnnotationsForCellMedia/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423/characterID/519541/taxonID/72002/mediaID/284045
 
 {"ok":true,"annotations":[{"type":"polygon","points":[{"x":"31.891597158772733","y":"19.44466304661473"},{"x":"32.143102753789776","y":"26.495894651242097"},{"x":"39.436765009284095","y":"29.182078119671573"},{"x":"47.48494404982955","y":"32.875580388762096"},{"x":"51.76053916511931","y":"27.167440518349466"},{"x":"54.52710071030682","y":"18.437344245953675"},{"x":"50.50301119003409","y":"10.37879384066525"},{"x":"44.21537131460796","y":"6.013745704467354"}]},{"type":"polygon","points":[{"x":"46.73042726477841","y":"58.73009627239579"},{"x":"48.742472024914775","y":"55.37236693685895"},{"x":"51.00602238006818","y":"54.36504813619789"},{"x":"54.275595115289775","y":"53.69350226909053"},{"x":"56.79065106546023","y":"53.69350226909053"},{"x":"59.557212610647724","y":"54.70082106975158"},{"x":"61.82076296580114","y":"56.715458671073684"},{"x":"63.329796535903405","y":"58.73009627239579"},{"x":"64.33581891597159","y":"62.759371475040005"},{"x":"64.33581891597159","y":"66.78864667768421"},{"x":"63.58130213092045","y":"72.49678654809685"},{"x":"61.56925737078409","y":"78.54069935206317"},{"x":"58.048179040545456","y":"84.58461215602948"},{"x":"52.51505595017045","y":"85.59193095669055"},{"x":"45.47289928969318","y":"73.83987828231159"}]}]}
+		 */
+		List<MBAnnotation> annotations = null;
+		Client client = ClientBuilder.newClient();
+        String url = "http://morphobank.org/service.php/AVATOLCv/getAnnotationsForCellMedia/username/" + username + "/password/" + password + "/matrixID/" + matrixID + "/characterID/" + charID + "/taxonID/" + taxonID + "/mediaID/" + mediaID;
+	    WebTarget webTarget = client.target(url);
+	    Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+	        
+	    Response response = invocationBuilder.get();
+	    System.out.println(response.getStatus());
+	    String jsonString = response.readEntity(String.class);
+	     
+	    System.out.println(jsonString);
+	    ObjectMapper mapper = new ObjectMapper();
+        try {
+        	AnnotationInfo ai = mapper.readValue(jsonString, AnnotationInfo.class);
+        	annotations = ai.getAnnotations();
+        }
+        catch(JsonParseException jpe){
+        	System.out.println(jpe.getMessage());
+        	jpe.printStackTrace();
+        }
+        catch(JsonMappingException jme){
+        	System.out.println(jme.getMessage());
+        	jme.printStackTrace();
+        }
 
-___what are width and height on her example
-
-
-
+        catch(IOException ioe){
+        	System.out.println(ioe.getMessage());
+        	ioe.printStackTrace();
+        }
+		return annotations;
+	}
+	public List<MBView> getViewsForProject(String projectID){
+		/*
+		 * 
 http://morphobank.org/service.php/AVATOLCv/getViewsForProject/username/irvine@eecs.oregonstate.edu/password/squonkmb/projectID/139
 
 {"ok":true,"views":[{"viewID":"2236","name":"Cats"},{"viewID":"2369","name":"Cats2"},{"viewID":"4497","name":"test"},{"viewID":"4498","name":"test2"},{"viewID":"6280","name":"smith"},{"viewID":"6281","name":"wesson"},{"viewID":"6282","name":"clink"},{"viewID":"6856","name":"testing all the time, blah"}]}
+		 */
+		List<MBView> views = null;
+		Client client = ClientBuilder.newClient();
+        String url = "http://morphobank.org/service.php/AVATOLCv/getViewsForProject/username/" + username + "/password/" + password + "/projectID/" + projectID;
+	    WebTarget webTarget = client.target(url);
+	    Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+	        
+	    Response response = invocationBuilder.get();
+	    System.out.println(response.getStatus());
+	    String jsonString = response.readEntity(String.class);
+	     
+	    System.out.println(jsonString);
+	    ObjectMapper mapper = new ObjectMapper();
+        try {
+        	ViewInfo ai = mapper.readValue(jsonString, ViewInfo.class);
+        	views = ai.getViews();
+        }
+        catch(JsonParseException jpe){
+        	System.out.println(jpe.getMessage());
+        	jpe.printStackTrace();
+        }
+        catch(JsonMappingException jme){
+        	System.out.println(jme.getMessage());
+        	jme.printStackTrace();
+        }
 
+        catch(IOException ioe){
+        	System.out.println(ioe.getMessage());
+        	ioe.printStackTrace();
+        }
+		return views;
+	}
+	public boolean downloadImageForMediaId(String dirToSaveTo, String mediaID, String type){
+		/*
+		 * 
+http://morphobank.org/service.php/AVATOLCv/getMedia/username/irvine@eecs.oregonstate.edu/password/squonkmb/mediaID/284045/version/thumbnail
 
-http://morphobank.org/service.php/AVATOLCv/getMedia/username/irvine@eecs.oregonstate.edu/password/squonkmb/mediaID/284045/versionID/thumbnail
+{"ok":true,"media":"http:\/\/www.morphobank.org\/media\/morphobank3\/images\/2\/8\/4\/0\/53727_media_files_media_284045_thumbnail.jpg"}
 
-{"ok":true,"error":"invalid version"}
+http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_media_284045_thumbnail.jpg
+		 */
+		boolean result = false;
+		try {
+			// first, use the sevice to get the url of the image
+			Client client = ClientBuilder.newClient();
+			String url = "http://morphobank.org/service.php/AVATOLCv/getMedia/username/" + username + "/password/" + password + "/mediaID/" + mediaID + "/version/" + type;
+			WebTarget webTarget = client.target(url);
+			Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+	        
+			Response response = invocationBuilder.get();
+			System.out.println(response.getStatus());
+			String jsonString = response.readEntity(String.class);
+	     
+			System.out.println(jsonString);
+			ObjectMapper mapper = new ObjectMapper();
+        
+        	MediaUrlInfo mui = mapper.readValue(jsonString, MediaUrlInfo.class);
+        	String mediaUrl = mui.getMedia();
+        	//http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_media_284045_thumbnail.jpg
+        	String[] parts = mediaUrl.split("/");
+        	String filenameAtMB = parts[parts.length - 1];
+        	String[] filenameParts = filenameAtMB.split("\\.");
+        	String imageFileExtension = filenameParts[1].toLowerCase();
+        	
+        	//Now use the retrieved url to download the image
+        	/*
+        	 *  Used this excellent reference for downloading a file: http://www.benchresources.net/jersey-2-x-web-service-for-uploadingdownloading-image-file-java-client/
+        	 */
+        	
+        	ClientConfig clientConfig = new ClientConfig();
+            clientConfig.register(MultiPartFeature.class);
+            client =  ClientBuilder.newClient(clientConfig);
+            client.property("accept", "image/" + imageFileExtension);
+            webTarget = client.target(mediaUrl);
+            invocationBuilder = webTarget.request();
+            response = invocationBuilder.get();
+            
+            int responseCode = response.getStatus();
+            System.out.println("Response code: " + responseCode);
+ 
+
+            InputStream inputStream = response.readEntity(InputStream.class);
+            String pathToSaveTo = dirToSaveTo + FILESEP + mediaID + "_" + type + "." + imageFileExtension;
+            System.out.println("saving file to " + pathToSaveTo);
+            OutputStream outputStream = new FileOutputStream(pathToSaveTo);
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            outputStream.close();
+            inputStream.close();
+        }
+        catch(JsonParseException jpe){
+        	System.out.println(jpe.getMessage());
+        	jpe.printStackTrace();
+        }
+        catch(JsonMappingException jme){
+        	System.out.println(jme.getMessage());
+        	jme.printStackTrace();
+        }
+
+        catch(IOException ioe){
+        	System.out.println(ioe.getMessage());
+        	ioe.printStackTrace();
+        }
+		return result;
+	}
+}
+/*
 
 
 http://morphobank.org/service.php/AVATOLCv/getMedia/username/irvine@eecs.oregonstate.edu/password/squonkmb/mediaID/284045/version/thumbnail
@@ -363,16 +485,12 @@ http://morphobank.org/service.php/AVATOLCv/getMedia/username/irvine@eecs.oregons
 
 http://www.morphobank.org/media/morphobank3/images/2/8/4/0/11866_media_files_media_284045_small.jpg
 
-http://morphobank.org/service.php/AVATOLCv/getLargeSizeImage/username/irvine@eecs.oregonstate.edu/password/squonkmb/mediaID/284045
-
-{"ok":false,"errors":["Invalid HTTP request method for this service"]}
-
 
 
 http://morphobank.org/service.php/AVATOLCv/recordScore/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423/characterID/519541/taxonID/255564/stateID/1157845/npa/
 char : test task
 taxon: testicus testing
-
+ 
 * it was NPA, I set this to state2 and it showed up as NPA, state2.  I set it to state1 and it shows up as NPA, state2, state1
 also, what about provenance?
 
