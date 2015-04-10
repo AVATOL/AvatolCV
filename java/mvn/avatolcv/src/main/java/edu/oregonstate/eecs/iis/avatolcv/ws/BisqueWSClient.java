@@ -1,5 +1,9 @@
 package edu.oregonstate.eecs.iis.avatolcv.ws;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -23,13 +27,16 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 
-import edu.oregonstate.eecs.iis.avatol.ws.bisque.BisqueDataset;
-import edu.oregonstate.eecs.iis.avatol.ws.bisque.BisqueImage;
-import edu.oregonstate.eecs.iis.avatol.ws.bisque.DatasetResource;
-import edu.oregonstate.eecs.iis.avatol.ws.bisque.ImagesResource;
+
+
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.DatasetResource;
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.ImagesResource;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 //import org.glassfish.jersey.SslConfigurator;
 //import org.glassfish.jersey.client.ClientConfig;
 //import org.glassfish.jersey.client.ClientProperties;
@@ -42,6 +49,7 @@ import org.jsoup.Jsoup;
 
 
 public class BisqueWSClient {
+	private static final String FILESEP = System.getProperty("file.separator");
 	Map<String, NewCookie> authenticationCookies = null;
    
 	public boolean authenticate(String name, String password) throws BisqueWSException{
@@ -476,8 +484,43 @@ public class BisqueWSClient {
 		}
         return imageList;
 	}
-	public String getLargeImagePath(String imageResource_uniq){
-		return null;
+	public boolean downloadImageOfWidth(String imageResource_uniq, int width, String dirToSaveTo, String type, String imageName) throws BisqueWSException {
+		boolean result = false;
+		try {
+			ClientConfig clientConfig = new ClientConfig();
+            clientConfig.register(MultiPartFeature.class);
+            Client client =  ClientBuilder.newClient(clientConfig);
+            client.property("accept", "image/jpg");
+            String mediaUrl = "http://bovary.iplantcollaborative.org/image_service/" + imageResource_uniq + "?resize=" + width + ",0&format=jpeg";
+            WebTarget webTarget = client.target(mediaUrl);
+            Invocation.Builder invocationBuilder = webTarget.request();
+            addAuthCookie(invocationBuilder);
+            Response response = invocationBuilder.get();
+            int status = response.getStatus();
+    	    if (status!= 200){
+    	    	String reason = response.getStatusInfo().getReasonPhrase();
+    	    	throw new BisqueWSException("error code " + status + " returned by downloadImageOfWidth... " + reason);
+    	    }
+            
+            InputStream inputStream = response.readEntity(InputStream.class);
+            String pathToSaveTo = dirToSaveTo + FILESEP + imageResource_uniq + "_" + imageName + "_" + type + ".jpg";
+            System.out.println("saving file to " + pathToSaveTo);
+            OutputStream outputStream = new FileOutputStream(pathToSaveTo);
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            outputStream.close();
+            inputStream.close();
+			result = true;
+		}
+		catch(IOException ioe){
+			ioe.printStackTrace();
+			result = false;
+		}
+		
+        return result;
 	}
 	public String getMediumImagePath(String imageResource_uniq){
 		return null;

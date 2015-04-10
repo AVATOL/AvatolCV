@@ -1,9 +1,10 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
+import java.io.File;
 import java.util.List;
 
-import edu.oregonstate.eecs.iis.avatol.ws.bisque.BisqueDataset;
-import edu.oregonstate.eecs.iis.avatol.ws.bisque.BisqueImage;
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -22,12 +23,11 @@ public class TestBisqueWS extends TestCase {
 		}
 	}
 	*/
-	
+	/*
 	public void testGetDatasets() {
 		BisqueWSClient bc = new BisqueWSClient();
 		try {
 			boolean authResult = bc.authenticate("avatol-nybg","Monocots123");
-			bc.logout();
 			
 			List<BisqueDataset> datasets = bc.getDatasets();
 			for (BisqueDataset ds : datasets){
@@ -47,7 +47,7 @@ public class TestBisqueWS extends TestCase {
 			System.out.println(ex.getMessage());
 		}
 	}
-	
+	*/
 	/*
 	public void testGetImages() {
 		BisqueWSClient bc = new BisqueWSClient();
@@ -74,4 +74,24 @@ public class TestBisqueWS extends TestCase {
 		}
 	}
 	*/
+	
+
+	
+	public void testDownloadImage() {
+		BisqueWSClient bc = new BisqueWSClient();
+		try {
+			boolean authResult = bc.authenticate("avatol-nybg","Monocots123");
+			String imageDir = "C:\\\\avatol\\temp";
+			File f = new File(imageDir);
+			if (!f.exists()){
+				f.mkdirs();
+			}
+			boolean result = bc.downloadImageOfWidth("00-LJTH5L79oY5zdS6PFaYbcS", 400, imageDir, "medium", "imageX");
+			Assert.assertEquals(result, true);
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			Assert.fail(ex.getMessage());
+		}
+	}
 }
