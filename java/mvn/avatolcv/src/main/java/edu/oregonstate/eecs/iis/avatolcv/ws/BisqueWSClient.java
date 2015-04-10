@@ -29,6 +29,10 @@ import javax.xml.bind.Unmarshaller;
 
 
 
+
+
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.AnnotationsResource;
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.DatasetResource;
@@ -522,13 +526,37 @@ public class BisqueWSClient {
 		
         return result;
 	}
-	public String getMediumImagePath(String imageResource_uniq){
-		return null;
+	public List<BisqueAnnotation> getAnnotationsForImage(String imageResource_uniq) throws BisqueWSException {
+		List<BisqueAnnotation> annotations = null;
+		try {
+			Client client = ClientBuilder.newClient();
+	        //http://bovary.iplantcollaborative.org/data_service/00-sYCwqbfmiErqLsHzpds6G4/?view=deep
+			String url = "http://bovary.iplantcollaborative.org/data_service/" + imageResource_uniq + "/?view=deep";
+			System.out.println("trying url : " + url);
+	        WebTarget webTarget = client.target(url);
+	        Invocation.Builder invocationBuilder =
+	        	 	webTarget.request(MediaType.APPLICATION_XML);
+	        addAuthCookie(invocationBuilder);
+	        Response response = invocationBuilder.get();
+	        System.out.println(response.getStatus());
+	        String xmlString = response.readEntity(String.class);
+	        //http://www.javatechtipssharedbygaurav.com/2013/05/how-to-convert-pojo-to-xml-and-xml-to.html
+	        @SuppressWarnings("restriction")
+			JAXBContext context = JAXBContext.newInstance(AnnotationsResource.class);
+	        StringReader reader = new StringReader(xmlString);
+
+		    @SuppressWarnings("restriction")
+			Unmarshaller unmarshaller = context.createUnmarshaller();
+		    AnnotationsResource resource = (AnnotationsResource) unmarshaller.unmarshal(reader);
+		    annotations = resource.getTag();
+		}
+		catch(JAXBException je){
+			System.out.println(je.getMessage());
+			throw new BisqueWSException("Problem unmarshalling xml response",je);
+		}
+        return annotations;
 	}
-	public List<BisqueAnnotation> getAnnotationsForImage(String imageResource_uniq){
-		return null;
-	}
-	public List<String> getAnnotationValues(BisqueAnnotation ba){
+	public List<String> getAnnotationValues(String annotationResource_uniq){
 		return null;
 	}
 	public boolean addNewAnnotation(String imageResource_uniq, String key, String value){

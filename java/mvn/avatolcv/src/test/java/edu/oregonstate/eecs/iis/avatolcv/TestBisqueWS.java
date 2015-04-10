@@ -3,6 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv;
 import java.io.File;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
@@ -76,7 +77,7 @@ public class TestBisqueWS extends TestCase {
 	*/
 	
 
-	
+	/*
 	public void testDownloadImage() {
 		BisqueWSClient bc = new BisqueWSClient();
 		try {
@@ -92,6 +93,28 @@ public class TestBisqueWS extends TestCase {
 		catch(Exception ex){
 			ex.printStackTrace();
 			Assert.fail(ex.getMessage());
+		}
+	}
+	*/
+	public void testAnnotations() {
+		BisqueWSClient bc = new BisqueWSClient();
+		try {
+			boolean authResult = bc.authenticate("avatol-nybg","Monocots123");
+			
+			List<BisqueAnnotation> annotations = bc.getAnnotationsForImage("00-LJTH5L79oY5zdS6PFaYbcS");
+			for (BisqueAnnotation ds : annotations){
+				System.out.println("");
+				System.out.println("name          " + ds.getName());
+				System.out.println("created       " + ds.getCreated());
+				System.out.println("owner         " + ds.getOwner());
+				System.out.println("permission    " + ds.getPermission());
+				System.out.println("uri           " + ds.getUri());
+			}
+			
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			System.out.println(ex.getMessage());
 		}
 	}
 }
