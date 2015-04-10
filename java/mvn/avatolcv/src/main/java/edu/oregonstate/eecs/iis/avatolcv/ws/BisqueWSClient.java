@@ -23,6 +23,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 
+import edu.oregonstate.eecs.iis.avatol.ws.bisque.BisqueDataset;
+import edu.oregonstate.eecs.iis.avatol.ws.bisque.BisqueImage;
+import edu.oregonstate.eecs.iis.avatol.ws.bisque.DatasetResource;
+import edu.oregonstate.eecs.iis.avatol.ws.bisque.ImagesResource;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
@@ -416,8 +420,8 @@ public class BisqueWSClient {
         }
         return true;
 	}
-	public List<edu.oregonstate.eecs.iis.avatolcv.ws.bisque.dataset.Dataset> getDatasets() throws BisqueWSException {
-		List<edu.oregonstate.eecs.iis.avatolcv.ws.bisque.dataset.Dataset> datasetList = null;
+	public List<BisqueDataset> getDatasets() throws BisqueWSException {
+		List<BisqueDataset> datasetList = null;
 		try {
 			Client client = ClientBuilder.newClient();
 	        
@@ -431,12 +435,12 @@ public class BisqueWSClient {
 	        String xmlString = response.readEntity(String.class);
 	        //http://www.javatechtipssharedbygaurav.com/2013/05/how-to-convert-pojo-to-xml-and-xml-to.html
 	        @SuppressWarnings("restriction")
-			JAXBContext context = JAXBContext.newInstance(edu.oregonstate.eecs.iis.avatolcv.ws.bisque.dataset.Resource.class);
+			JAXBContext context = JAXBContext.newInstance(DatasetResource.class);
 	        StringReader reader = new StringReader(xmlString);
 
 		    @SuppressWarnings("restriction")
 			Unmarshaller unmarshaller = context.createUnmarshaller();
-		    edu.oregonstate.eecs.iis.avatolcv.ws.bisque.dataset.Resource resource = (edu.oregonstate.eecs.iis.avatolcv.ws.bisque.dataset.Resource) unmarshaller.unmarshal(reader);
+		    DatasetResource resource = (DatasetResource) unmarshaller.unmarshal(reader);
 		    datasetList = resource.getDataset();
 		}
 		catch(JAXBException je){
@@ -444,25 +448,50 @@ public class BisqueWSClient {
 		}
         return datasetList;
 	}
-	public List<BisqueImage> getImagesForDataset(BisqueDataset dataset){
+	public List<BisqueImage> getImagesForDataset(String datasetResource_uniq) throws BisqueWSException {
+		List<BisqueImage> imageList = null;
+		try {
+			Client client = ClientBuilder.newClient();
+	        //http://bovary.iplantcollaborative.org/data_service/dataset/00-kutq3fez25ntEkp5pdXhMM/value
+	        WebTarget webTarget = client.target("http://bovary.iplantcollaborative.org/data_service/");
+	        WebTarget resourceWebTarget = webTarget.path("dataset/" + datasetResource_uniq + "/value");
+	        Invocation.Builder invocationBuilder =
+	        	 	resourceWebTarget.request(MediaType.APPLICATION_XML);
+	        addAuthCookie(invocationBuilder);
+	        Response response = invocationBuilder.get();
+	        System.out.println(response.getStatus());
+	        String xmlString = response.readEntity(String.class);
+	        //http://www.javatechtipssharedbygaurav.com/2013/05/how-to-convert-pojo-to-xml-and-xml-to.html
+	        @SuppressWarnings("restriction")
+			JAXBContext context = JAXBContext.newInstance(ImagesResource.class);
+	        StringReader reader = new StringReader(xmlString);
+
+		    @SuppressWarnings("restriction")
+			Unmarshaller unmarshaller = context.createUnmarshaller();
+		    ImagesResource resource = (ImagesResource) unmarshaller.unmarshal(reader);
+		    imageList = resource.getImage();
+		}
+		catch(JAXBException je){
+			throw new BisqueWSException("Problem unmarshalling xml response",je);
+		}
+        return imageList;
+	}
+	public String getLargeImagePath(String imageResource_uniq){
 		return null;
 	}
-	public String getLargeImagePath(BisqueImage bi){
+	public String getMediumImagePath(String imageResource_uniq){
 		return null;
 	}
-	public String getMediumImagePath(BisqueImage bi){
-		return null;
-	}
-	public List<BisqueAnnotation> getAnnotationsForImage(BisqueImage bi){
+	public List<BisqueAnnotation> getAnnotationsForImage(String imageResource_uniq){
 		return null;
 	}
 	public List<String> getAnnotationValues(BisqueAnnotation ba){
 		return null;
 	}
-	public boolean addNewAnnotation(BisqueImage bi, String key, String value){
+	public boolean addNewAnnotation(String imageResource_uniq, String key, String value){
 		return false;
 	}
-	public boolean reviseAnnotation(BisqueImage bi, String key, String value){
+	public boolean reviseAnnotation(String imageResource_uniq, String key, String value){
 		return false;
 	}
 	//ssl :   https://jersey.java.net/nonav/documentation/2.0/client.html  - Securing a client
