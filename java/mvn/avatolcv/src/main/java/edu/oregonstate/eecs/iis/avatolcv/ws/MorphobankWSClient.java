@@ -31,6 +31,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharStateInfo.MBCharState
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharState;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ErrorCheck;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBProject;
@@ -41,8 +42,8 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
 
 public class MorphobankWSClient {
-	private String username = null;
-	private String password = null;
+	private String username = "undefinedUser";
+	private String password = "undefinedPassword";
 	private static final String FILESEP = System.getProperty("file.separator");
 	public boolean authenticate(String name, String pw) throws MorphobankWSException{
 		/*
@@ -94,7 +95,8 @@ public class MorphobankWSClient {
         }
 		return result;
 	}
-	public List<MBMatrix> getMorphobankMatricesForUser(){
+	public List<MBMatrix> getMorphobankMatricesForUser() throws MorphobankWSException {
+	    String thisMethodName = "getMorphobankMatricesForUser";
 		/*
 		 * 
 http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/username/irvine@eecs.oregonstate.edu/password/squonkmb
@@ -111,9 +113,16 @@ http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/userID/987
 	    Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 	        
 	    Response response = invocationBuilder.get();
-	    System.out.println(response.getStatus());
+	    int status = response.getStatus();
+	    if (status!= 200){
+	    	String reason = response.getStatusInfo().getReasonPhrase();
+	    	throw new MorphobankWSException("error code " + status + " returned by " + thisMethodName + "... " + reason);
+	    }
 	    String jsonString = response.readEntity(String.class);
-	     
+	    ErrorCheck ea = new ErrorCheck(jsonString);
+	    if (ea.isError()){
+	    	throw new MorphobankWSException("Error listing matrices for user : " + ea.getErrorMessage());
+	    }
 	    System.out.println(jsonString);
 	    ObjectMapper mapper = new ObjectMapper();
         try {
@@ -128,21 +137,18 @@ http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/userID/987
         	
         }
         catch(JsonParseException jpe){
-        	System.out.println(jpe.getMessage());
-        	jpe.printStackTrace();
+        	throw new MorphobankWSException("problem parsing response to " + thisMethodName + ".", jpe);
         }
         catch(JsonMappingException jme){
-        	System.out.println(jme.getMessage());
-        	jme.printStackTrace();
+        	throw new MorphobankWSException("problem mapping json response to " + thisMethodName + ".", jme);
         }
-
         catch(IOException ioe){
-        	System.out.println(ioe.getMessage());
-        	ioe.printStackTrace();
+        	throw new MorphobankWSException("io problem in objectMapper.readValue for " + thisMethodName + ".", ioe);
         }
 		return matrices;
 	}
-	public List<MBCharacter> getCharactersForMatrix(String matrixID){
+	public List<MBCharacter> getCharactersForMatrix(String matrixID)  throws MorphobankWSException{
+	    String thisMethodName = "getCharactersForMatrix";
 		/*
 		 * 
 		 * http://morphobank.org/service.php/AVATOLCv/getCharactersForMatrix/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423
@@ -157,7 +163,11 @@ http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/userID/987
 	    Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 	        
 	    Response response = invocationBuilder.get();
-	    System.out.println(response.getStatus());
+	    int status = response.getStatus();
+	    if (status!= 200){
+	    	String reason = response.getStatusInfo().getReasonPhrase();
+	    	throw new MorphobankWSException("error code " + status + " returned by " + thisMethodName + "... " + reason);
+	    }
 	    String jsonString = response.readEntity(String.class);
 	     
 	    System.out.println(jsonString);
@@ -166,22 +176,20 @@ http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/userID/987
         	CharacterInfo ci = mapper.readValue(jsonString, CharacterInfo.class);
         	characters = ci.getCharacters();
         }
+
         catch(JsonParseException jpe){
-        	System.out.println(jpe.getMessage());
-        	jpe.printStackTrace();
+        	throw new MorphobankWSException("problem parsing response to " + thisMethodName + ".", jpe);
         }
         catch(JsonMappingException jme){
-        	System.out.println(jme.getMessage());
-        	jme.printStackTrace();
+        	throw new MorphobankWSException("problem mapping json response to " + thisMethodName + ".", jme);
         }
-
         catch(IOException ioe){
-        	System.out.println(ioe.getMessage());
-        	ioe.printStackTrace();
+        	throw new MorphobankWSException("io problem in objectMapper.readValue for " + thisMethodName + ".", ioe);
         }
 		return characters;
 	}
-	public List<MBTaxon> getTaxaForMatrix(String matrixID){
+	public List<MBTaxon> getTaxaForMatrix(String matrixID)  throws MorphobankWSException {
+	    String thisMethodName = "getTaxaForMatrix";
 		/*
 		 * 
 http://morphobank.org/service.php/AVATOLCv/getTaxaForMatrix/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423
@@ -196,7 +204,11 @@ http://morphobank.org/service.php/AVATOLCv/getTaxaForMatrix/username/irvine@eecs
 	    Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 	        
 	    Response response = invocationBuilder.get();
-	    System.out.println(response.getStatus());
+	    int status = response.getStatus();
+	    if (status!= 200){
+	    	String reason = response.getStatusInfo().getReasonPhrase();
+	    	throw new MorphobankWSException("error code " + status + " returned by " + thisMethodName + "... " + reason);
+	    }
 	    String jsonString = response.readEntity(String.class);
 	     
 	    System.out.println(jsonString);
@@ -205,22 +217,20 @@ http://morphobank.org/service.php/AVATOLCv/getTaxaForMatrix/username/irvine@eecs
         	TaxaInfo ti = mapper.readValue(jsonString, TaxaInfo.class);
         	taxa = ti.getTaxa();
         }
+
         catch(JsonParseException jpe){
-        	System.out.println(jpe.getMessage());
-        	jpe.printStackTrace();
+        	throw new MorphobankWSException("problem parsing response to " + thisMethodName + ".", jpe);
         }
         catch(JsonMappingException jme){
-        	System.out.println(jme.getMessage());
-        	jme.printStackTrace();
+        	throw new MorphobankWSException("problem mapping json response to " + thisMethodName + ".", jme);
         }
-
         catch(IOException ioe){
-        	System.out.println(ioe.getMessage());
-        	ioe.printStackTrace();
+        	throw new MorphobankWSException("io problem in objectMapper.readValue for " + thisMethodName + ".", ioe);
         }
 		return taxa;
 	}
-	public List<MBCharStateValue> getCharStatesForCell(String matrixID, String charID, String taxonID){
+	public List<MBCharStateValue> getCharStatesForCell(String matrixID, String charID, String taxonID)  throws MorphobankWSException {
+	    String thisMethodName = "getCharStatesForCell";
 		/*
 		 * 
 http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423/characterID/383114/taxonID/72002
@@ -246,7 +256,11 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
 	    Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 	        
 	    Response response = invocationBuilder.get();
-	    System.out.println(response.getStatus());
+	    int status = response.getStatus();
+	    if (status!= 200){
+	    	String reason = response.getStatusInfo().getReasonPhrase();
+	    	throw new MorphobankWSException("error code " + status + " returned by " + thisMethodName + "... " + reason);
+	    }
 	    String jsonString = response.readEntity(String.class);
 	     
 	    System.out.println(jsonString);
@@ -255,22 +269,20 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
         	CharStateInfo csi = mapper.readValue(jsonString, CharStateInfo.class);
         	charStateValues = csi.getCharStates();
         }
+
         catch(JsonParseException jpe){
-        	System.out.println(jpe.getMessage());
-        	jpe.printStackTrace();
+        	throw new MorphobankWSException("problem parsing response to " + thisMethodName + ".", jpe);
         }
         catch(JsonMappingException jme){
-        	System.out.println(jme.getMessage());
-        	jme.printStackTrace();
+        	throw new MorphobankWSException("problem mapping json response to " + thisMethodName + ".", jme);
         }
-
         catch(IOException ioe){
-        	System.out.println(ioe.getMessage());
-        	ioe.printStackTrace();
+        	throw new MorphobankWSException("io problem in objectMapper.readValue for " + thisMethodName + ".", ioe);
         }
 		return charStateValues;
 	}
-	public List<MBMediaInfo> getMediaForCell(String matrixID, String charID, String taxonID){
+	public List<MBMediaInfo> getMediaForCell(String matrixID, String charID, String taxonID)  throws MorphobankWSException {
+	    String thisMethodName = "getMediaForCell";
 		/*
 		 * http://morphobank.org/service.php/AVATOLCv/getMediaForCell/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423/characterID/519541/taxonID/72002
 
@@ -283,7 +295,11 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
 	    Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 	        
 	    Response response = invocationBuilder.get();
-	    System.out.println(response.getStatus());
+	    int status = response.getStatus();
+	    if (status!= 200){
+	    	String reason = response.getStatusInfo().getReasonPhrase();
+	    	throw new MorphobankWSException("error code " + status + " returned by " + thisMethodName + "... " + reason);
+	    }
 	    String jsonString = response.readEntity(String.class);
 	     
 	    System.out.println(jsonString);
@@ -292,22 +308,20 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
         	CellMediaInfo cmi = mapper.readValue(jsonString, CellMediaInfo.class);
         	mediaInfo = cmi.getMedia();
         }
+
         catch(JsonParseException jpe){
-        	System.out.println(jpe.getMessage());
-        	jpe.printStackTrace();
+        	throw new MorphobankWSException("problem parsing response to " + thisMethodName + ".", jpe);
         }
         catch(JsonMappingException jme){
-        	System.out.println(jme.getMessage());
-        	jme.printStackTrace();
+        	throw new MorphobankWSException("problem mapping json response to " + thisMethodName + ".", jme);
         }
-
         catch(IOException ioe){
-        	System.out.println(ioe.getMessage());
-        	ioe.printStackTrace();
+        	throw new MorphobankWSException("io problem in objectMapper.readValue for " + thisMethodName + ".", ioe);
         }
 		return mediaInfo;
 	}
-	public List<MBAnnotation> getAnnotationsForCellMedia(String matrixID, String charID, String taxonID, String mediaID){
+	public List<MBAnnotation> getAnnotationsForCellMedia(String matrixID, String charID, String taxonID, String mediaID)  throws MorphobankWSException {
+	    String thisMethodName = "getAnnotationsForCellMedia";
 		/*
 		 * http://morphobank.org/service.php/AVATOLCv/getAnnotationsForCellMedia/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423/characterID/519541/taxonID/72002/mediaID/284045
 
@@ -320,7 +334,11 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
 	    Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 	        
 	    Response response = invocationBuilder.get();
-	    System.out.println(response.getStatus());
+	    int status = response.getStatus();
+	    if (status!= 200){
+	    	String reason = response.getStatusInfo().getReasonPhrase();
+	    	throw new MorphobankWSException("error code " + status + " returned by " + thisMethodName + "... " + reason);
+	    }
 	    String jsonString = response.readEntity(String.class);
 	     
 	    System.out.println(jsonString);
@@ -329,22 +347,20 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
         	AnnotationInfo ai = mapper.readValue(jsonString, AnnotationInfo.class);
         	annotations = ai.getAnnotations();
         }
+
         catch(JsonParseException jpe){
-        	System.out.println(jpe.getMessage());
-        	jpe.printStackTrace();
+        	throw new MorphobankWSException("problem parsing response to " + thisMethodName + ".", jpe);
         }
         catch(JsonMappingException jme){
-        	System.out.println(jme.getMessage());
-        	jme.printStackTrace();
+        	throw new MorphobankWSException("problem mapping json response to " + thisMethodName + ".", jme);
         }
-
         catch(IOException ioe){
-        	System.out.println(ioe.getMessage());
-        	ioe.printStackTrace();
+        	throw new MorphobankWSException("io problem in objectMapper.readValue for " + thisMethodName + ".", ioe);
         }
 		return annotations;
 	}
-	public List<MBView> getViewsForProject(String projectID){
+	public List<MBView> getViewsForProject(String projectID)  throws MorphobankWSException {
+	    String thisMethodName = "getViewsForProject";
 		/*
 		 * 
 http://morphobank.org/service.php/AVATOLCv/getViewsForProject/username/irvine@eecs.oregonstate.edu/password/squonkmb/projectID/139
@@ -358,7 +374,11 @@ http://morphobank.org/service.php/AVATOLCv/getViewsForProject/username/irvine@ee
 	    Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 	        
 	    Response response = invocationBuilder.get();
-	    System.out.println(response.getStatus());
+	    int status = response.getStatus();
+	    if (status!= 200){
+	    	String reason = response.getStatusInfo().getReasonPhrase();
+	    	throw new MorphobankWSException("error code " + status + " returned by " + thisMethodName + "... " + reason);
+	    }
 	    String jsonString = response.readEntity(String.class);
 	     
 	    System.out.println(jsonString);
@@ -367,22 +387,20 @@ http://morphobank.org/service.php/AVATOLCv/getViewsForProject/username/irvine@ee
         	ViewInfo ai = mapper.readValue(jsonString, ViewInfo.class);
         	views = ai.getViews();
         }
+
         catch(JsonParseException jpe){
-        	System.out.println(jpe.getMessage());
-        	jpe.printStackTrace();
+        	throw new MorphobankWSException("problem parsing response to " + thisMethodName + ".", jpe);
         }
         catch(JsonMappingException jme){
-        	System.out.println(jme.getMessage());
-        	jme.printStackTrace();
+        	throw new MorphobankWSException("problem mapping json response to " + thisMethodName + ".", jme);
         }
-
         catch(IOException ioe){
-        	System.out.println(ioe.getMessage());
-        	ioe.printStackTrace();
+        	throw new MorphobankWSException("io problem in objectMapper.readValue for " + thisMethodName + ".", ioe);
         }
 		return views;
 	}
-	public boolean downloadImageForMediaId(String dirToSaveTo, String mediaID, String type){
+	public boolean downloadImageForMediaId(String dirToSaveTo, String mediaID, String type)  throws MorphobankWSException {
+	    String thisMethodName = "downloadImageForMediaId";
 		/*
 		 * 
 http://morphobank.org/service.php/AVATOLCv/getMedia/username/irvine@eecs.oregonstate.edu/password/squonkmb/mediaID/284045/version/thumbnail
@@ -400,7 +418,11 @@ http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_med
 			Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 	        
 			Response response = invocationBuilder.get();
-			System.out.println(response.getStatus());
+			int status = response.getStatus();
+		    if (status!= 200){
+		    	String reason = response.getStatusInfo().getReasonPhrase();
+		    	throw new MorphobankWSException("error code " + status + " returned by " + thisMethodName + "... " + reason);
+		    }
 			String jsonString = response.readEntity(String.class);
 	     
 			System.out.println(jsonString);
@@ -426,9 +448,12 @@ http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_med
             webTarget = client.target(mediaUrl);
             invocationBuilder = webTarget.request();
             response = invocationBuilder.get();
+            status = response.getStatus();
+    	    if (status!= 200){
+    	    	String reason = response.getStatusInfo().getReasonPhrase();
+    	    	throw new MorphobankWSException("error code " + status + " returned by " + thisMethodName + "... " + reason);
+    	    }
             
-            int responseCode = response.getStatus();
-            System.out.println("Response code: " + responseCode);
  
 
             InputStream inputStream = response.readEntity(InputStream.class);
@@ -443,18 +468,15 @@ http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_med
             outputStream.close();
             inputStream.close();
         }
+
         catch(JsonParseException jpe){
-        	System.out.println(jpe.getMessage());
-        	jpe.printStackTrace();
+        	throw new MorphobankWSException("problem parsing response to " + thisMethodName + ".", jpe);
         }
         catch(JsonMappingException jme){
-        	System.out.println(jme.getMessage());
-        	jme.printStackTrace();
+        	throw new MorphobankWSException("problem mapping json response to " + thisMethodName + ".", jme);
         }
-
         catch(IOException ioe){
-        	System.out.println(ioe.getMessage());
-        	ioe.printStackTrace();
+        	throw new MorphobankWSException("io problem in objectMapper.readValue for " + thisMethodName + ".", ioe);
         }
 		return result;
 	}

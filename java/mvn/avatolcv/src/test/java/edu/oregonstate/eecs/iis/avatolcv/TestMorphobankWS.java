@@ -14,6 +14,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class TestMorphobankWS extends TestCase {
@@ -30,6 +31,23 @@ public class TestMorphobankWS extends TestCase {
 			me.printStackTrace();
 		}
 	}
+	
+	public void testAuthenticateBad() {
+		String username = "irvine@eecs.oregonstate.edu";
+		String pw = "foo";
+		MorphobankWSClient wsClient = new MorphobankWSClient();
+		try {
+			boolean result = wsClient.authenticate(username, pw);
+			Assert.assertEquals(result, false);
+		}
+		catch(MorphobankWSException me){
+			System.out.println(me.getMessage());
+			me.printStackTrace();
+		}
+	}
+	
+	
+	 
 	public void testGetMorphobankMatricesForUser() {
 		String username = "irvine@eecs.oregonstate.edu";
 		String pw = "squonkmb";
@@ -46,6 +64,24 @@ public class TestMorphobankWS extends TestCase {
 			me.printStackTrace();
 		}
 	}
+	*/
+	public void testGetMorphobankMatricesForUserBad() {
+		String username = "irvine@eecs.oregonstate.edu";
+		String pw = "foo";
+		MorphobankWSClient wsClient = new MorphobankWSClient();
+		try {
+			wsClient.authenticate(username, pw);
+			List<MBMatrix> matrices = wsClient.getMorphobankMatricesForUser();
+			for (MBMatrix m : matrices){
+    			System.out.println("adding matrix " + m.getName());
+    		}
+		}
+		catch(MorphobankWSException me){
+			Assert.assertEquals(me.getMessage(),"Error listing matrices for user : invalid user");
+		}
+	}
+	
+	/*
 	public void testGetCharactersForMatrix() {
 		String username = "irvine@eecs.oregonstate.edu";
 		String pw = "squonkmb";
@@ -165,6 +201,7 @@ public class TestMorphobankWS extends TestCase {
 			f.delete();
 		}
 	}
+	/*
 	public void testDownload() {
 		String username = "irvine@eecs.oregonstate.edu";
 		String pw = "squonkmb";
@@ -190,4 +227,38 @@ public class TestMorphobankWS extends TestCase {
 			me.printStackTrace();
 		}
 	}
+	*/
+	/*
+	public void testDownloadBadMediaId() {
+		String username = "irvine@eecs.oregonstate.edu";
+		String pw = "squonkmb";
+		MorphobankWSClient wsClient = new MorphobankWSClient();
+		try {
+			wsClient.authenticate(username, pw);
+			String thumbnailDir = "C:\\\\avatol\\temp";
+			File f = new File(thumbnailDir);
+			if (!f.exists()){
+				f.mkdirs();
+			}
+			String mediaID = "-1";
+			deleteIfExists("C:\\\\avatol\\temp\\" + mediaID + "_thumbnail.jpg");
+			boolean result1 = wsClient.downloadImageForMediaId(thumbnailDir,mediaID,"thumbnail");
+			
+		}
+		catch(MorphobankWSException me){
+			System.out.println(me.getMessage());
+			me.printStackTrace();
+			Throwable th = me.getCause();
+			if (null != th){
+				System.out.println(th.getMessage());
+				th.printStackTrace();
+				Throwable th2 = th.getCause();
+				if (null != th2){
+					System.out.println(th2.getMessage());
+					th2.printStackTrace();
+				}
+			}
+		}
+	}
+	*/
 }
