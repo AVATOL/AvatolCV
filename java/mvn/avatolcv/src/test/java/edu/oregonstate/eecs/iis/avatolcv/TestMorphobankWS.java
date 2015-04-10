@@ -64,7 +64,7 @@ public class TestMorphobankWS extends TestCase {
 			me.printStackTrace();
 		}
 	}
-	*/
+	
 	public void testGetMorphobankMatricesForUserBad() {
 		String username = "irvine@eecs.oregonstate.edu";
 		String pw = "foo";
@@ -80,7 +80,7 @@ public class TestMorphobankWS extends TestCase {
 			Assert.assertEquals(me.getMessage(),"Error listing matrices for user : invalid user");
 		}
 	}
-	
+	*/
 	/*
 	public void testGetCharactersForMatrix() {
 		String username = "irvine@eecs.oregonstate.edu";
@@ -103,6 +103,22 @@ public class TestMorphobankWS extends TestCase {
 			me.printStackTrace();
 		}
 	}
+	
+	public void testGetCharactersForMatrixBad() {
+		String username = "irvine@eecs.oregonstate.edu";
+		String pw = "squonkmb";
+		MorphobankWSClient wsClient = new MorphobankWSClient();
+		try {
+			wsClient.authenticate(username, pw);
+			List<MBCharacter> characters = wsClient.getCharactersForMatrix("-1");
+			
+		}
+		catch(MorphobankWSException me){
+			System.out.println(me.getMessage());
+			Assert.assertEquals(me.getMessage(),"Error getting characters for matrix : invalid matrixID");
+		}
+	}
+	
 	public void testGetTaxaForMatrix() {
 		String username = "irvine@eecs.oregonstate.edu";
 		String pw = "squonkmb";
@@ -120,7 +136,23 @@ public class TestMorphobankWS extends TestCase {
 			me.printStackTrace();
 		}
 	}
+	
 
+    public void testGetTaxaForMatrixBad() {
+		String username = "irvine@eecs.oregonstate.edu";
+		String pw = "squonkmb";
+		MorphobankWSClient wsClient = new MorphobankWSClient();
+		try {
+			wsClient.authenticate(username, pw);
+			List<MBTaxon> taxa = wsClient.getTaxaForMatrix("-1");
+			
+		}
+		catch(MorphobankWSException me){
+			System.out.println(me.getMessage());
+			Assert.assertEquals(me.getMessage(),"Error getting taxa for matrix : invalid matrixID");
+		}
+	}
+    
 	public void testGetCharStatesForCell() {
 		String username = "irvine@eecs.oregonstate.edu";
 		String pw = "squonkmb";
@@ -194,7 +226,21 @@ public class TestMorphobankWS extends TestCase {
 			me.printStackTrace();
 		}
 	}
-*/
+
+	public void testGetViewsForProjectBad() {
+		String username = "irvine@eecs.oregonstate.edu";
+		String pw = "squonkmb";
+		MorphobankWSClient wsClient = new MorphobankWSClient();
+		try {
+			wsClient.authenticate(username, pw);
+			List<MBView> views = wsClient.getViewsForProject("-1");
+		}
+		catch(MorphobankWSException me){
+			System.out.println(me.getMessage());
+			Assert.assertEquals(me.getMessage(),"Error getting views for project : user does not have access to matrix");
+		}
+	}
+	*/
 	public void deleteIfExists(String path){
 		File f = new File(path);
 		if (f.exists()){
@@ -228,7 +274,7 @@ public class TestMorphobankWS extends TestCase {
 		}
 	}
 	*/
-	/*
+	
 	public void testDownloadBadMediaId() {
 		String username = "irvine@eecs.oregonstate.edu";
 		String pw = "squonkmb";
@@ -247,18 +293,8 @@ public class TestMorphobankWS extends TestCase {
 		}
 		catch(MorphobankWSException me){
 			System.out.println(me.getMessage());
-			me.printStackTrace();
-			Throwable th = me.getCause();
-			if (null != th){
-				System.out.println(th.getMessage());
-				th.printStackTrace();
-				Throwable th2 = th.getCause();
-				if (null != th2){
-					System.out.println(th2.getMessage());
-					th2.printStackTrace();
-				}
-			}
+			Assert.assertEquals(me.getMessage(),"Error getting image for mediaID : invalid media id");
 		}
 	}
-	*/
+	
 }

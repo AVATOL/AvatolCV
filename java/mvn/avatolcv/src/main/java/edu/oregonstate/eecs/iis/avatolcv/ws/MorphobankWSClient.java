@@ -169,7 +169,12 @@ http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/userID/987
 	    	throw new MorphobankWSException("error code " + status + " returned by " + thisMethodName + "... " + reason);
 	    }
 	    String jsonString = response.readEntity(String.class);
-	     
+	    
+	    ErrorCheck ea = new ErrorCheck(jsonString);
+	    if (ea.isError()){
+	    	throw new MorphobankWSException("Error getting characters for matrix : " + ea.getErrorMessage());
+	    }
+	    
 	    System.out.println(jsonString);
 	    ObjectMapper mapper = new ObjectMapper();
         try {
@@ -210,7 +215,12 @@ http://morphobank.org/service.php/AVATOLCv/getTaxaForMatrix/username/irvine@eecs
 	    	throw new MorphobankWSException("error code " + status + " returned by " + thisMethodName + "... " + reason);
 	    }
 	    String jsonString = response.readEntity(String.class);
-	     
+	    
+	    ErrorCheck ea = new ErrorCheck(jsonString);
+	    if (ea.isError()){
+	    	throw new MorphobankWSException("Error getting taxa for matrix : " + ea.getErrorMessage());
+	    }
+	    
 	    System.out.println(jsonString);
 	    ObjectMapper mapper = new ObjectMapper();
         try {
@@ -262,7 +272,12 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
 	    	throw new MorphobankWSException("error code " + status + " returned by " + thisMethodName + "... " + reason);
 	    }
 	    String jsonString = response.readEntity(String.class);
-	     
+	    
+	    ErrorCheck ea = new ErrorCheck(jsonString);
+	    if (ea.isError()){
+	    	throw new MorphobankWSException("Error getting char states for cell : " + ea.getErrorMessage());
+	    }
+	    
 	    System.out.println(jsonString);
 	    ObjectMapper mapper = new ObjectMapper();
         try {
@@ -301,7 +316,12 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
 	    	throw new MorphobankWSException("error code " + status + " returned by " + thisMethodName + "... " + reason);
 	    }
 	    String jsonString = response.readEntity(String.class);
-	     
+
+	    ErrorCheck ea = new ErrorCheck(jsonString);
+	    if (ea.isError()){
+	    	throw new MorphobankWSException("Error getting media for cell : " + ea.getErrorMessage());
+	    }
+	    
 	    System.out.println(jsonString);
 	    ObjectMapper mapper = new ObjectMapper();
         try {
@@ -340,7 +360,12 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
 	    	throw new MorphobankWSException("error code " + status + " returned by " + thisMethodName + "... " + reason);
 	    }
 	    String jsonString = response.readEntity(String.class);
-	     
+
+	    ErrorCheck ea = new ErrorCheck(jsonString);
+	    if (ea.isError()){
+	    	throw new MorphobankWSException("Error getting annotations for cell media : " + ea.getErrorMessage());
+	    }
+	    
 	    System.out.println(jsonString);
 	    ObjectMapper mapper = new ObjectMapper();
         try {
@@ -380,7 +405,12 @@ http://morphobank.org/service.php/AVATOLCv/getViewsForProject/username/irvine@ee
 	    	throw new MorphobankWSException("error code " + status + " returned by " + thisMethodName + "... " + reason);
 	    }
 	    String jsonString = response.readEntity(String.class);
-	     
+
+	    ErrorCheck ea = new ErrorCheck(jsonString);
+	    if (ea.isError()){
+	    	throw new MorphobankWSException("Error getting views for project : " + ea.getErrorMessage());
+	    }
+	    
 	    System.out.println(jsonString);
 	    ObjectMapper mapper = new ObjectMapper();
         try {
@@ -424,7 +454,12 @@ http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_med
 		    	throw new MorphobankWSException("error code " + status + " returned by " + thisMethodName + "... " + reason);
 		    }
 			String jsonString = response.readEntity(String.class);
-	     
+
+		    ErrorCheck ea = new ErrorCheck(jsonString);
+		    if (ea.isError()){
+		    	throw new MorphobankWSException("Error getting image for mediaID : " + ea.getErrorMessage());
+		    }
+		    
 			System.out.println(jsonString);
 			ObjectMapper mapper = new ObjectMapper();
         
