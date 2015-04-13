@@ -1,8 +1,16 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
 import java.io.File;
+import java.io.StringReader;
 import java.util.List;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.JAXBException;
+
+
+
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.AnnotationComboBoxTemplateResource;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
@@ -96,6 +104,7 @@ public class TestBisqueWS extends TestCase {
 		}
 	}
 	*/
+	/*
 	public void testAnnotations() {
 		BisqueWSClient bc = new BisqueWSClient();
 		try {
@@ -117,4 +126,24 @@ public class TestBisqueWS extends TestCase {
 			System.out.println(ex.getMessage());
 		}
 	}
+	*/
+	
+	
+	public void testAnnotationValues() {
+		BisqueWSClient bc = new BisqueWSClient();
+		try {
+			boolean authResult = bc.authenticate("avatol-nybg","Monocots123");
+			String annotationTypeValue = "/data_service/template/4921264/tag/5224002";
+			List<String> annotationValues = bc.getAnnotationValueOptions(annotationTypeValue);
+			for (String s : annotationValues){
+				System.out.println("annotation value " + s);
+			}
+			
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			System.out.println(ex.getMessage());
+		}
+	}
+
 }

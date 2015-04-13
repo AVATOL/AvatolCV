@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -31,6 +32,16 @@ import javax.xml.bind.Unmarshaller;
 
 
 
+
+
+
+
+
+
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.AnnotationComboBox;
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.AnnotationComboBoxProperty;
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.AnnotationComboBoxTemplate;
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.AnnotationComboBoxTemplateResource;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.AnnotationsResource;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
@@ -436,15 +447,8 @@ public class BisqueWSClient {
 		List<BisqueDataset> datasetList = null;
 		try {
 			Client client = ClientBuilder.newClient();
-	        
-	        WebTarget webTarget = client.target("http://bovary.iplantcollaborative.org/data_service/");
-	        WebTarget resourceWebTarget = webTarget.path("dataset");
-	        Invocation.Builder invocationBuilder =
-	        	 	resourceWebTarget.request(MediaType.APPLICATION_XML);
-	        addAuthCookie(invocationBuilder);
-	        Response response = invocationBuilder.get();
-	        System.out.println(response.getStatus());
-	        String xmlString = response.readEntity(String.class);
+	        String url = "http://bovary.iplantcollaborative.org/data_service/dataset";
+	        String xmlString = getXmlResponseFromUrl(client,url);
 	        //http://www.javatechtipssharedbygaurav.com/2013/05/how-to-convert-pojo-to-xml-and-xml-to.html
 	        @SuppressWarnings("restriction")
 			JAXBContext context = JAXBContext.newInstance(DatasetResource.class);
@@ -465,14 +469,8 @@ public class BisqueWSClient {
 		try {
 			Client client = ClientBuilder.newClient();
 	        //http://bovary.iplantcollaborative.org/data_service/dataset/00-kutq3fez25ntEkp5pdXhMM/value
-	        WebTarget webTarget = client.target("http://bovary.iplantcollaborative.org/data_service/");
-	        WebTarget resourceWebTarget = webTarget.path("dataset/" + datasetResource_uniq + "/value");
-	        Invocation.Builder invocationBuilder =
-	        	 	resourceWebTarget.request(MediaType.APPLICATION_XML);
-	        addAuthCookie(invocationBuilder);
-	        Response response = invocationBuilder.get();
-	        System.out.println(response.getStatus());
-	        String xmlString = response.readEntity(String.class);
+			String url = "http://bovary.iplantcollaborative.org/data_service/dataset/" + datasetResource_uniq + "/value";
+			String xmlString = getXmlResponseFromUrl(client,url);
 	        //http://www.javatechtipssharedbygaurav.com/2013/05/how-to-convert-pojo-to-xml-and-xml-to.html
 	        @SuppressWarnings("restriction")
 			JAXBContext context = JAXBContext.newInstance(ImagesResource.class);
@@ -532,14 +530,7 @@ public class BisqueWSClient {
 			Client client = ClientBuilder.newClient();
 	        //http://bovary.iplantcollaborative.org/data_service/00-sYCwqbfmiErqLsHzpds6G4/?view=deep
 			String url = "http://bovary.iplantcollaborative.org/data_service/" + imageResource_uniq + "/?view=deep";
-			System.out.println("trying url : " + url);
-	        WebTarget webTarget = client.target(url);
-	        Invocation.Builder invocationBuilder =
-	        	 	webTarget.request(MediaType.APPLICATION_XML);
-	        addAuthCookie(invocationBuilder);
-	        Response response = invocationBuilder.get();
-	        System.out.println(response.getStatus());
-	        String xmlString = response.readEntity(String.class);
+			String xmlString = getXmlResponseFromUrl(client,url);
 	        //http://www.javatechtipssharedbygaurav.com/2013/05/how-to-convert-pojo-to-xml-and-xml-to.html
 	        @SuppressWarnings("restriction")
 			JAXBContext context = JAXBContext.newInstance(AnnotationsResource.class);
@@ -556,8 +547,77 @@ public class BisqueWSClient {
 		}
         return annotations;
 	}
-	public List<String> getAnnotationValues(String annotationResource_uniq){
-		return null;
+	public String getXmlResponseFromUrl(Client client,String url){
+		System.out.println("trying url : " + url);
+        WebTarget webTarget = client.target(url);
+        Invocation.Builder invocationBuilder =
+        	 	webTarget.request(MediaType.APPLICATION_XML);
+        addAuthCookie(invocationBuilder);
+        Response response = invocationBuilder.get();
+        System.out.println(response.getStatus());
+        String xmlString = response.readEntity(String.class);
+        return xmlString;
+	}
+	public List<String> getAnnotationValueOptions(String annotationTypeValue) throws BisqueWSException {
+		List<String> annotationValues = new ArrayList<String>();
+		try {
+			/*
+			 *  use the type to do a lookup
+			 *  
+			 *  type field will be of this form:  type="/data_service/template/4921264/tag/5224002" 
+			 */
+			
+			Client client = ClientBuilder.newClient();
+	        //http://bovary.iplantcollaborative.org/data_service/00-sYCwqbfmiErqLsHzpds6G4/?view=deep
+			String url = "http://bovary.iplantcollaborative.org/" + annotationTypeValue;
+			String xmlString = getXmlResponseFromUrl(client,url);
+	        //http://www.javatechtipssharedbygaurav.com/2013/05/how-to-convert-pojo-to-xml-and-xml-to.html
+	        @SuppressWarnings("restriction")
+			JAXBContext context = JAXBContext.newInstance(AnnotationComboBox.class);
+	        StringReader reader = new StringReader(xmlString);
+
+		    @SuppressWarnings("restriction")
+			Unmarshaller unmarshaller = context.createUnmarshaller();
+		    AnnotationComboBox comboBox = (AnnotationComboBox) unmarshaller.unmarshal(reader);
+		   
+			/*
+			 *  take the uri field from the result and look that up, adding /?view=deep
+			 */
+		    String uriFromComboBox = comboBox.getUri();
+		    url = uriFromComboBox + "/?view=deep";
+		    xmlString = getXmlResponseFromUrl(client,url);
+		    System.out.println("xml string after url " + url + "\n" + xmlString);
+		    JAXBContext context2 = JAXBContext.newInstance(AnnotationComboBoxTemplateResource.class);
+	        reader = new StringReader(xmlString);
+
+		    unmarshaller = context2.createUnmarshaller();
+		    AnnotationComboBoxTemplateResource comboBoxTemplateResource = (AnnotationComboBoxTemplateResource) unmarshaller.unmarshal(reader);
+		    
+			/*
+			 *  from that result, dig out the "string" tag from the template and it's value field has the range of values
+			 */
+		    AnnotationComboBoxTemplate template = comboBoxTemplateResource.getTemplate();
+			List<AnnotationComboBoxProperty> properties = template.getTag();
+			String selectChoices = null;
+			for (AnnotationComboBoxProperty property : properties){
+				String name = property.getName();
+				if (name.equals("select")){
+					selectChoices = property.getValue();
+					String[] parts = selectChoices.split(",");
+					for (String part: parts){
+						annotationValues.add(part);
+					}
+				}
+			}
+			if (selectChoices == null){
+				throw new BisqueWSException("couldn't find values for character " + annotationTypeValue);
+			}
+		}
+		catch(@SuppressWarnings("restriction") JAXBException je){
+			System.out.println(je.getMessage());
+			throw new BisqueWSException("Problem unmarshalling xml response",je);
+		}
+        return annotationValues;
 	}
 	public boolean addNewAnnotation(String imageResource_uniq, String key, String value){
 		return false;

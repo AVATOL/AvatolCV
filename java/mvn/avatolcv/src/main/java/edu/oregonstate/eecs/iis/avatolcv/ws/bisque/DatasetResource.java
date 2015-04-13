@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
+@SuppressWarnings("restriction")
 @XmlRootElement(name="resource")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DatasetResource {
