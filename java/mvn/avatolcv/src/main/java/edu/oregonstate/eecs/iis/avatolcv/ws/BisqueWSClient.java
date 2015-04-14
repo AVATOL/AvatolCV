@@ -213,7 +213,11 @@ public class BisqueWSClient {
 
 	        System.out.println("\n\n\n============  dumping form response ============");
 	        dumpResponse("formPostResponse",formPostResponse);
-	        
+	        int status = formPostResponse.getStatus();
+	        if (status == 200){
+	        	// no redirect given - authentication has failed.
+	        	return false;
+	        }
 	        /*
 			 * REDIRECT WITH ticket= as param TO GENERATE auth_tkt
 			 */
@@ -265,7 +269,7 @@ public class BisqueWSClient {
 		catch(Exception je){
 			throw new BisqueWSException("Problem unmarshalling xml response",je);
 		}
-		return false;
+		return true;
 	}
 	public void logout(){
 		ClientConfig config = new ClientConfig();

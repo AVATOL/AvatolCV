@@ -32,6 +32,19 @@ public class TestBisqueWS extends TestCase {
 		}
 	}
 	*/
+	
+	public void testAuthenticateBad(){
+		BisqueWSClient bc = new BisqueWSClient();
+		try {
+			boolean result = bc.authenticate("avatol-nybg","Monocots12");
+			Assert.assertEquals(result,false);
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			System.out.println(ex.getMessage());
+		}
+	}
+	
 	/*
 	public void testGetDatasets() {
 		BisqueWSClient bc = new BisqueWSClient();
@@ -127,7 +140,7 @@ public class TestBisqueWS extends TestCase {
 		}
 	}
 	*/
-	
+	/*
 	
 	public void testAnnotationValues() {
 		BisqueWSClient bc = new BisqueWSClient();
@@ -145,5 +158,5 @@ public class TestBisqueWS extends TestCase {
 			System.out.println(ex.getMessage());
 		}
 	}
-
+   */
 }
