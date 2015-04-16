@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.BisqueSegLabelsCheckStep;
+import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.BisqueSegmentationReviewStep;
+import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.BisqueSegmentationRunStep;
+import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.LeafSegmentationDataPrepStep;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
@@ -46,6 +50,20 @@ public class BisqueSessionTester extends TestCase {
 		ss.appendStep(bisqueExclusionCoachingStep);
 		Step bisqueExclusionStep = new BisqueExclusionStep(null, sessionData);
 		ss.appendStep(bisqueExclusionStep);
+		BisqueSegmentationStep bisqueSegmentationStep = new BisqueSegmentationStep(sessionData);
+		
+		// fill in the segmenation step
+		Step leafSegmentationDataPrepStep = new LeafSegmentationDataPrepStep(null, sessionData);
+		bisqueSegmentationStep.appendStep(leafSegmentationDataPrepStep);
+		Step bisqueSegLabelsCheckStep = new BisqueSegLabelsCheckStep(null, sessionData);
+		bisqueSegmentationStep.appendStep(bisqueSegLabelsCheckStep);
+		Step bisqueSegmentationRunStep = new BisqueSegmentationRunStep(null, sessionData);
+		bisqueSegmentationStep.appendStep(bisqueSegmentationRunStep);
+		Step bisqueSegmentationReviewStep = new BisqueSegmentationReviewStep(null, sessionData);
+		bisqueSegmentationStep.appendStep(bisqueSegmentationReviewStep);
+		
+		ss.appendStep(bisqueSegmentationStep);
+		
 		
 		BisqueLoginStep bls = (BisqueLoginStep)ss.getCurrentStep();
 		Assert.assertTrue(bls.needsAnswering());
@@ -153,6 +171,10 @@ public class BisqueSessionTester extends TestCase {
 		}
 		Assert.assertFalse(bes.needsAnswering());
 		Assert.assertTrue(sessionData.getIncludedImages() != null);
+		/*
+		 * segmentation
+		 */
+		
 	}
 
 	/*
