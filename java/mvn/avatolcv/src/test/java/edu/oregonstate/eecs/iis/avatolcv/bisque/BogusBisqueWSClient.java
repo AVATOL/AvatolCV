@@ -129,8 +129,8 @@ public class BogusBisqueWSClient implements BisqueWSClient {
 	@Override
 	public List<BisqueImage> getImagesForDataset(String datasetResource_uniq)
 			throws BisqueWSException {
-		if (!datasetResource_uniq.equals("homeUniq")){
-			throw new BisqueWSException("only coded to handle dataset home");
+		if (!datasetResource_uniq.equals("jedHomeUniq")){
+			throw new BisqueWSException("only coded to handle dataset jedHome");
 		}
 		List<BisqueImage> images = new ArrayList<BisqueImage>();
 		BisqueImage fo = new BisqueImage();
@@ -178,6 +178,11 @@ public class BogusBisqueWSClient implements BisqueWSClient {
 		String sourceDir = getTestSupportDataDir();
 		String sourcePath = sourceDir + FILESEP + imageName + ".jpg";
 		String destPath = dirToSaveTo + FILESEP + imageResource_uniq + "_" + imageName + "_" + width + ".jpg";
+		File destFile = new File(destPath);
+		if (destFile.exists()){
+			System.out.println(destPath + " already downloaded.");
+			return true;
+		}
 		File f = new File(sourcePath);
 		try {
 		    FileInputStream is = new FileInputStream(f);

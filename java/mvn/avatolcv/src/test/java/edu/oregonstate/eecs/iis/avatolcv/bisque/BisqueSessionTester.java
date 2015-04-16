@@ -1,5 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.bisque;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -9,17 +11,19 @@ import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueSessionException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class BisqueSessionTester extends TestCase {
+	private static final String FILESEP = System.getProperty("file.separator");
 	public BisqueWSClient getBogusWSClient(){
 		BisqueWSClient client = new BogusBisqueWSClient();
 		return client;
 	}
 	public void testSession(){
-		//BisqueWSClient client = getBogusWSClient();
-		BisqueWSClient client = new BisqueWSClientImpl();
+		BisqueWSClient client = getBogusWSClient();
+		//BisqueWSClient client = new BisqueWSClientImpl();
 		String rootDir = "C:\\avatol\\git\\avatol_cv";
 		/*
 		 * create session
@@ -40,6 +44,8 @@ public class BisqueSessionTester extends TestCase {
 		ss.appendStep(bisqueImagePullStep);
 		Step bisqueExclusionCoachingStep = new BisqueExclusionCoachingStep(null, client);
 		ss.appendStep(bisqueExclusionCoachingStep);
+		Step bisqueExclusionStep = new BisqueExclusionStep(null, sessionData);
+		ss.appendStep(bisqueExclusionStep);
 		
 		BisqueLoginStep bls = (BisqueLoginStep)ss.getCurrentStep();
 		Assert.assertTrue(bls.needsAnswering());
@@ -104,7 +110,49 @@ public class BisqueSessionTester extends TestCase {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
-		
+		List<BisqueImage> currentImages = sessionData.getCurrentImages();
+		Assert.assertTrue(currentImages.size() != 0);
+		BisqueImage image = currentImages.get(0);
+		String name = image.getImageFilename(BisqueSessionData.IMAGE_LARGE_WIDTH);
+		String imagesDir = sessionData.getImagesDir();
+		String pathOfSupposedlyDownloadedImage = imagesDir + FILESEP + name;
+		File downloadedImageFile = new File(pathOfSupposedlyDownloadedImage);
+		Assert.assertTrue(downloadedImageFile.exists());
+		/*
+		 * exclusion coaching
+		 */
+		ss.next();
+		BisqueExclusionCoachingStep becs = (BisqueExclusionCoachingStep)ss.getCurrentStep();
+		Assert.assertTrue(becs.needsAnswering());
+		becs.userHasViewed();
+		Assert.assertFalse(becs.needsAnswering());
+		/*
+		 * image exclusion
+		 */
+		ss.next();
+		BisqueExclusionStep bes = (BisqueExclusionStep)ss.getCurrentStep();
+		Assert.assertTrue(bes.needsAnswering());
+		List<BisqueImage> images = sessionData.getCurrentImages();
+		List<BisqueImage> imagesToInclude = new ArrayList<BisqueImage>();
+		List<BisqueImage> imagesToExclude = new ArrayList<BisqueImage>();
+		for (BisqueImage bi : images){
+			if (bi.getName().equals("Neph") || bi.getName().equals("Pree")){
+				imagesToInclude.add(bi);
+			}
+			else {
+				imagesToExclude.add(bi);
+			}
+		}
+		try {
+			bes.setImagesToExclude(imagesToExclude);
+			bes.setImagesToInclude(imagesToInclude);
+			bes.consumeProvidedData();
+		}
+		catch(BisqueSessionException e){
+			Assert.fail(e.getMessage());
+		}
+		Assert.assertFalse(bes.needsAnswering());
+		Assert.assertTrue(sessionData.getIncludedImages() != null);
 	}
 
 	/*

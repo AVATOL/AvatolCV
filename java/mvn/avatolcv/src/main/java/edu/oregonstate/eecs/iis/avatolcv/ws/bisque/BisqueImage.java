@@ -39,6 +39,9 @@ public class BisqueImage {
 	public BisqueImage(){
 		
 	}
+	public String getImageFilename(int width){
+		return resourceUniq + "_" + name + "_" + width + ".jpg";
+	}
 	public void setCreated(String s){
 		this.created = s;
 	}

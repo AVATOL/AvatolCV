@@ -61,6 +61,7 @@ public class BisqueImagePullStep implements Step {
 		try {
 			String datasetResourceUniq = dataset.getResourceUniq();
 			images = wsClient.getImagesForDataset(datasetResourceUniq);
+			sessionData.setCurrentImages(images);
 			double imageCount = images.size() * sessionData.getImageSizeCount();
 			List<Integer> imageWidths = sessionData.getImageWidths();
 			double curCount = 0;
@@ -73,7 +74,7 @@ public class BisqueImagePullStep implements Step {
 					String imageNameRoot = parts[0];
 					String resourceUniq = bi.getResourceUniq();
 					int imageWidth = integer.intValue();
-					String filename = sessionData.getImageFilename(resourceUniq, name, imageWidth);
+					String filename = bi.getImageFilename(imageWidth);
 					
 					String imagePath = sessionData.getImagePath(filename);
 					imagePaths.add(imagePath);
