@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @SuppressWarnings("restriction")
 @XmlRootElement(name="dataset")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class BisqueDataset {
+public class BisqueDataset implements Comparable {
 
 	@XmlAttribute
     private String created = null;
@@ -75,5 +75,12 @@ public class BisqueDataset {
 	}
 	public String getUri(){
 		return this.uri;
+	}
+	@Override
+	public int compareTo(Object arg0) {
+		BisqueDataset other = (BisqueDataset)arg0;
+		String otherName = other.getName();
+		String thisName = this.getName();
+		return thisName.compareTo(otherName);
 	}
 }

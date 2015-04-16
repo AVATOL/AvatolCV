@@ -14,7 +14,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.AnnotationComboBoxTemplateRes
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
-import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
+import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -34,7 +34,7 @@ public class TestBisqueWS extends TestCase {
 	*/
 	
 	public void testAuthenticateBad(){
-		BisqueWSClient bc = new BisqueWSClient();
+		BisqueWSClientImpl bc = new BisqueWSClientImpl();
 		try {
 			boolean result = bc.authenticate("avatol-nybg","Monocots12");
 			Assert.assertEquals(result,false);

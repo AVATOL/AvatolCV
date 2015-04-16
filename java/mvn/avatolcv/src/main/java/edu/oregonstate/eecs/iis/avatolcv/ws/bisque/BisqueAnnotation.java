@@ -26,6 +26,10 @@ public class BisqueAnnotation {
     private String owner = null;
 	@XmlAttribute
     private String permission = null;
+	@XmlAttribute
+    private String value = null;
+	@XmlAttribute
+    private String type = null;
 	
 	//@XmlAttribute(name="resource_uniq")
     //private String resourceUniq = null;
@@ -50,12 +54,12 @@ public class BisqueAnnotation {
 	public void setPermission(String s){
 		this.permission = s;
 	}
-//	public void setResourceUniq(String s){
-//		this.resourceUniq = s;
-//	}
-//	public void setTs(String s){
-//		this.ts = s;
-//	}
+	public void setValue(String s){
+		this.value = s;
+	}
+	public void setType(String s){
+		this.type = s;
+	}
 	public void setUri(String s){
 		this.uri = s;
 	}
@@ -75,12 +79,12 @@ public class BisqueAnnotation {
 	public String getPermission(){
 		return this.permission;
 	}
-	/*public String getResourceUniq(){
-		return this.resourceUniq;
+	public String getValue(){
+		return this.value;
 	}
-	public String getTs(){
-		return this.ts;
-	}*/
+	public String getType(){
+		return this.type;
+	}
 	public String getUri(){
 		return this.uri;
 	}
