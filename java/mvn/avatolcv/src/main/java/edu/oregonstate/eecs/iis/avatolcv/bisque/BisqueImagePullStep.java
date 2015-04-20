@@ -32,7 +32,7 @@ public class BisqueImagePullStep implements Step {
 		
 	}
 
-	public boolean robustImageDownload(ProgressPresenter pp, String resourceUniq, int imageWidth, String name, String imageNameRoot ) throws BisqueSessionException {
+	public boolean robustImageDownload(ProgressPresenter pp, String resourceUniq, int imageWidth, String name, String imageNameRoot, String targetDir ) throws BisqueSessionException {
 		int maxRetries = 4;
 		int tries = 0;
 		boolean imageNotYetDownloaded = true;
@@ -41,7 +41,7 @@ public class BisqueImagePullStep implements Step {
 			try {
 				tries++;
 				pp.setMessage("downloading image  : " + name);
-				this.wsClient.downloadImageOfWidth(resourceUniq, imageWidth, sessionData.getImagesDir(), "" + imageWidth, imageNameRoot);
+				this.wsClient.downloadImageOfWidth(resourceUniq, imageWidth, targetDir, "" + imageWidth, imageNameRoot);
 				imageNotYetDownloaded = false;
 			}
 			catch(BisqueWSException e){
@@ -56,14 +56,14 @@ public class BisqueImagePullStep implements Step {
 		}
 		return true;
 	}
-	public boolean downloadImageIfNeeded(ProgressPresenter pp, ImageInfo image) throws BisqueSessionException {
+	public boolean downloadImageIfNeeded(ProgressPresenter pp, ImageInfo image, String targetDir) throws BisqueSessionException {
 		String imagePath = image.getFilepath();
 		File imageFile = new File(imagePath);
 		if (imageFile.exists()){
 			pp.setMessage("already have image : " + image.getName());
 		}
 		else {
-			robustImageDownload(pp, image.getID(), image.getImageWidth(), image.getName(), image.getFilenameRoot());
+			robustImageDownload(pp, image.getID(), image.getImageWidth(), image.getName(), image.getFilenameRoot(), targetDir);
 		}
 		File f = new File(imagePath);
 		if (f.exists()){
@@ -72,7 +72,7 @@ public class BisqueImagePullStep implements Step {
 		return false;
 	}
 	public void downloadImagesForChosenDataset(ProgressPresenter pp) throws BisqueSessionException {
-		sessionData.ensureImagesDirExists();
+		sessionData.ensureImageDirsExists();
 		BisqueDataset dataset = sessionData.getChosenDataset();
 		try {
 			String datasetResourceUniq = dataset.getResourceUniq();
@@ -86,7 +86,7 @@ public class BisqueImagePullStep implements Step {
 			int imageCount = imagesThumbnail.size() + imagesMedium.size() + imagesLarge.size();
 			for (ImageInfo image : imagesLarge){
 				curCount++;
-				if (downloadImageIfNeeded(pp,image)){
+				if (downloadImageIfNeeded(pp,image,sessionData.getImagesLargeDir())){
 					successCount++;
 				}
 				int percentDone = (int) (100 *(curCount / imageCount));
@@ -94,7 +94,7 @@ public class BisqueImagePullStep implements Step {
 			}
 			for (ImageInfo image : imagesMedium){
 				curCount++;
-				if (downloadImageIfNeeded(pp,image)){
+				if (downloadImageIfNeeded(pp,image, sessionData.getImagesMediumDir())){
 					successCount++;
 				}
 				int percentDone = (int) (100 *(curCount / imageCount));
@@ -102,7 +102,7 @@ public class BisqueImagePullStep implements Step {
 			}
 			for (ImageInfo image : imagesThumbnail){
 				curCount++;
-				if (downloadImageIfNeeded(pp,image)){
+				if (downloadImageIfNeeded(pp,image, sessionData.getImagesThumbnailDir())){
 					successCount++;
 				}
 				int percentDone = (int) (100 *(curCount / imageCount));

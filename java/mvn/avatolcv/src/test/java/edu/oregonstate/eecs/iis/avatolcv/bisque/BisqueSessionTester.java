@@ -9,6 +9,7 @@ import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.BisqueSegLabelsCheckStep;
 import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.BisqueSegmentationReviewStep;
 import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.BisqueSegmentationRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.LeafSegmentationDataPrepStep;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
@@ -26,8 +27,8 @@ public class BisqueSessionTester extends TestCase {
 		return client;
 	}
 	public void testSession(){
-		BisqueWSClient client = getBogusWSClient();
-		//BisqueWSClient client = new BisqueWSClientImpl();
+		//BisqueWSClient client = getBogusWSClient();
+		BisqueWSClient client = new BisqueWSClientImpl();
 		String rootDir = "C:\\avatol\\git\\avatol_cv";
 		/*
 		 * create session
@@ -128,12 +129,12 @@ public class BisqueSessionTester extends TestCase {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
-		List<BisqueImage> currentImages = sessionData.getCurrentImages();
+		List<ImageInfo> currentImages = sessionData.getImagesLarge();
 		Assert.assertTrue(currentImages.size() != 0);
-		BisqueImage image = currentImages.get(0);
-		String name = image.getImageFilename(BisqueSessionData.IMAGE_LARGE_WIDTH);
-		String imagesDir = sessionData.getImagesDir();
-		String pathOfSupposedlyDownloadedImage = imagesDir + FILESEP + name;
+		ImageInfo image = currentImages.get(0);
+		String name = image.getFilename();
+		String imagesLargeDir = sessionData.getImagesLargeDir();
+		String pathOfSupposedlyDownloadedImage = imagesLargeDir + FILESEP + name;
 		File downloadedImageFile = new File(pathOfSupposedlyDownloadedImage);
 		Assert.assertTrue(downloadedImageFile.exists());
 		/*
@@ -150,7 +151,7 @@ public class BisqueSessionTester extends TestCase {
 		ss.next();
 		BisqueExclusionStep bes = (BisqueExclusionStep)ss.getCurrentStep();
 		Assert.assertTrue(bes.needsAnswering());
-		List<BisqueImage> images = sessionData.getCurrentImages();
+		List<BisqueImage> images = sessionData.getCurrentBisqueImages();
 		List<BisqueImage> imagesToInclude = new ArrayList<BisqueImage>();
 		List<BisqueImage> imagesToExclude = new ArrayList<BisqueImage>();
 		for (BisqueImage bi : images){

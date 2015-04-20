@@ -20,6 +20,10 @@ public class BisqueSessionData {
 	private List<BisqueImage> bisqueImages = null;
 	
 	private Hashtable<String,BisqueImage> bisqueImageForID = new Hashtable<String,BisqueImage>();
+	private Hashtable<String,ImageInfo> thumbnailForID = new Hashtable<String,ImageInfo>();
+	private Hashtable<String,ImageInfo> imageMediumForID = new Hashtable<String,ImageInfo>();
+	private Hashtable<String,ImageInfo> imageLargeForID = new Hashtable<String,ImageInfo>();
+	
 	private List<ImageInfo> imagesThumbnail = new ArrayList<ImageInfo>();
 	private List<ImageInfo> imagesMedium = new ArrayList<ImageInfo>();
 	private List<ImageInfo> imagesLarge = new ArrayList<ImageInfo>();
@@ -45,6 +49,7 @@ public class BisqueSessionData {
 		//imageWidths.add(new Integer(IMAGE_MEDIUM_WIDTH));// medium
 		//imageWidths.add(new Integer(IMAGE_THUMBNAIL_WIDTH)); // thumbnail
 		this.ssd = new SegmentationSessionData(this.sessionDatasetDir);
+		
 	}
 	/*
 	 * DATASETS
@@ -68,9 +73,14 @@ public class BisqueSessionData {
 	//public String getImageFilename(String resourceUniq, String name, int width){
 	//	return resourceUniq + "_" + name + "_" + width + ".jpg";
 	//}
-	public void ensureImagesDirExists(){
-		String imagesDir = getImagesDir();
-		File f = new File(imagesDir);
+	public void ensureImageDirsExists(){
+		ensureDirExists(getImagesThumbnailDir());
+		ensureDirExists(getImagesMediumDir());
+		ensureDirExists(getImagesLargeDir());
+		
+	}
+	public void ensureDirExists(String dir){
+		File f = new File(dir);
 		if (!f.isDirectory()){
 			f.mkdirs();
 		}
@@ -90,9 +100,11 @@ public class BisqueSessionData {
 	//public List<Integer> getImageWidths(){
 	//	return imageWidths;
 	//}
-	public String getImagesDir(){
+	
+	private String getImagesDir(){
 		return sessionDatasetDir + FILESEP + "images";
 	}
+	
 	//public String getImagePath(String filename){
 	//	return getImagesDir() + FILESEP + filename;
 	//}
@@ -128,10 +140,50 @@ public class BisqueSessionData {
 	}
 	public void setCurrentImages(List<BisqueImage> bisqueImages){
 		this.bisqueImages = bisqueImages;
+		for (BisqueImage bi : bisqueImages){
+			String id = bi.getResourceUniq();
+			bisqueImageForID.put(id, bi);
+		}
 		generateImageInfoForSize(imagesThumbnail,bisqueImages,IMAGE_THUMBNAIL_WIDTH, getImagesThumbnailDir());
+		for (ImageInfo ii : imagesThumbnail){
+			String id = ii.getID();
+			thumbnailForID.put(id, ii);
+		}
 		generateImageInfoForSize(imagesMedium,   bisqueImages,IMAGE_MEDIUM_WIDTH,    getImagesMediumDir());
+		for (ImageInfo ii : imagesMedium){
+			String id = ii.getID();
+			imageMediumForID.put(id, ii);
+		}
 		generateImageInfoForSize(imagesLarge,    bisqueImages,IMAGE_LARGE_WIDTH,     getImagesLargeDir());
+		for (ImageInfo ii : imagesLarge){
+			String id = ii.getID();
+			imageLargeForID.put(id, ii);
+		}
 		
+	}
+	public ImageInfo getThumbnailForId(String id) throws BisqueSessionException {
+		ImageInfo ii = null;
+		ii = thumbnailForID.get(id);
+		if (null == ii){
+			throw new BisqueSessionException("no thumbnail exists for ID " + id);
+		}
+		return ii;
+	}
+	public ImageInfo getImageMediumForId(String id) throws BisqueSessionException {
+		ImageInfo ii = null;
+		ii = imageMediumForID.get(id);
+		if (null == ii){
+			throw new BisqueSessionException("no medium size image exists for ID " + id);
+		}
+		return ii;
+	}
+	public ImageInfo getImageLargeForId(String id) throws BisqueSessionException {
+		ImageInfo ii = null;
+		ii = imageLargeForID.get(id);
+		if (null == ii){
+			throw new BisqueSessionException("no large size exists for ID " + id);
+		}
+		return ii;
 	}
 	public List<ImageInfo> getImagesThumbnail(){
 		return this.imagesThumbnail;
