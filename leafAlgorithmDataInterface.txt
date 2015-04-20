@@ -10,10 +10,19 @@ At the SEGMENTATION step, avatolCV will pass one argument, which is the path to 
 runConfig_segmentation.txt has lines of the following form:
 
     darwinXMLFileDir,<path to dir containing darwin xml file>
+	
+	ex:
+	darwinXMLFileDir=c:\\somewhere
+	
     trainingImagesFile,<path to training images file>  // file will be named trainingImages_segmentation.txt
     testingImagesFile,<path to testing images file>    // file will be named testingImages_segmentation.txt
     rawImagesDir,<path of dir where right sized images from bisque are put>
+	segLabelsOutputDir,<path of dir where output goes>
+	modelXmlPath,<path to generated model that will be used during test>
 
+	seg training files ..._groundtruth.jpg 
+	output files       ..._mask.jpg
+	
 lines with other prefixes that can be ignored by leaf code:
     darwinOutputDir,<same as in xml file - points to where segmented files are put>
     trainingImage,...
@@ -33,8 +42,11 @@ runConfig_orientation.txt has these lines:
     rawImagesDir,<path of dir where right sized images from bisque are put>
     relaventImagesFile,<path to file that lists filenames of images to orient>
     orientationResultsDir,<path to dir to put orientation normalized images>
+	modelFilePath,<path to pre-trained svm model for apex, base locating>
+	apexLocationConvention,left
 
-
+    output files    ..._rotated.jpg
+	
 relaventImagesFile will have entries that are the root names of images in the darwinOutputDir
     00-5xayvrdPC3o5foKMpLbZ5H_imgXyz
     03-uietIOuerto5foKMhUHYUh_imgAbc
@@ -49,6 +61,7 @@ runConfig_scoring.txt has these lines, and others that can be ignored:
     trainingImagesFile,<path to training images file>  // file will be named trainingImages_scoring_<charId>_<charName>.txt
     testingImagesFile,<path to testing images file>    // file will be named testingImages_scoring_<charId>_<charName>.txt
     scoring_resultsFile,<pathname of file into which scoring algorithm will put results> // file will be named results_scoring_<charId>_<charName>.txt
+	apexLocationConvention,left
     
 trainingImages_scoring_<charId>_<charName>.txt have entries that are the root names of images, followed by character state name
     00-5xayvrdPC3o5foKMpLbZ5H_imgXyz,charStateName 
