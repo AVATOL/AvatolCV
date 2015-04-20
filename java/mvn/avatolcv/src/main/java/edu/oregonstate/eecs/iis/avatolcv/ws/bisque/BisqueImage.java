@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+
 @SuppressWarnings("restriction")
 @XmlRootElement(name="image")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -39,9 +40,7 @@ public class BisqueImage {
 	public BisqueImage(){
 		
 	}
-	public String getImageFilename(int width){
-		return resourceUniq + "_" + name + "_" + width + ".jpg";
-	}
+	
 	public void setCreated(String s){
 		this.created = s;
 	}
@@ -72,11 +71,9 @@ public class BisqueImage {
 	public String getCreated(){
 		return this.created;
 	}
-
 	public String getName(){
 		return this.name;
 	}
-	
 	public String getOwner(){
 		return this.owner;
 	}

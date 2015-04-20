@@ -38,6 +38,9 @@ public class BisqueSegmentationStep implements Step {
 	public BisqueSegmentationStep(BisqueSessionData s){
 		this.sessionData = s;
 	}
+	public StepSequence getStepSequence(){
+		return this.ss;
+	}
 	@Override
 	public void consumeProvidedData() throws BisqueSessionException {
 		// TODO Auto-generated method stub

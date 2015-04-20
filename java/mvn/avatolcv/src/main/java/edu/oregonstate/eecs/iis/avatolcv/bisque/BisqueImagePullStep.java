@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
@@ -17,7 +18,7 @@ public class BisqueImagePullStep implements Step {
 	private BisqueWSClient wsClient = null;
 	private View view = null;
 	private BisqueSessionData sessionData = null;
-	private List<BisqueImage> images = null;
+	private List<BisqueImage> bisqueImages = null;
 	private boolean imagesLoadedSuccessfully = false;
 	
 	public BisqueImagePullStep(View view, BisqueWSClient wsClient, BisqueSessionData sessionData){
@@ -55,48 +56,62 @@ public class BisqueImagePullStep implements Step {
 		}
 		return true;
 	}
-	public boolean downloadImagesForChosenDataset(ProgressPresenter pp) throws BisqueSessionException {
+	public boolean downloadImageIfNeeded(ProgressPresenter pp, ImageInfo image) throws BisqueSessionException {
+		String imagePath = image.getFilepath();
+		File imageFile = new File(imagePath);
+		if (imageFile.exists()){
+			pp.setMessage("already have image : " + image.getName());
+		}
+		else {
+			robustImageDownload(pp, image.getID(), image.getImageWidth(), image.getName(), image.getFilenameRoot());
+		}
+		File f = new File(imagePath);
+		if (f.exists()){
+			return true;
+		}
+		return false;
+	}
+	public void downloadImagesForChosenDataset(ProgressPresenter pp) throws BisqueSessionException {
 		sessionData.ensureImagesDirExists();
 		BisqueDataset dataset = sessionData.getChosenDataset();
 		try {
 			String datasetResourceUniq = dataset.getResourceUniq();
-			images = wsClient.getImagesForDataset(datasetResourceUniq);
-			sessionData.setCurrentImages(images);
-			double imageCount = images.size() * sessionData.getImageSizeCount();
-			List<Integer> imageWidths = sessionData.getImageWidths();
+			bisqueImages = wsClient.getImagesForDataset(datasetResourceUniq);
+			sessionData.setCurrentImages(bisqueImages);
 			double curCount = 0;
-			List<String> imagePaths = new ArrayList<String>();
-			for (BisqueImage bi : images){
-				for (Integer integer : imageWidths){
-					curCount++;
-					String name = bi.getName();
-					String[] parts = name.split("\\.");
-					String imageNameRoot = parts[0];
-					String resourceUniq = bi.getResourceUniq();
-					int imageWidth = integer.intValue();
-					String filename = bi.getImageFilename(imageWidth);
-					
-					String imagePath = sessionData.getImagePath(filename);
-					imagePaths.add(imagePath);
-					File imageFile = new File(imagePath);
-					if (imageFile.exists()){
-						pp.setMessage("already have image : " + name);
-					}
-					else {
-						robustImageDownload(pp, resourceUniq, imageWidth, name, imageNameRoot);
-					}
-					int percentDone = (int) (100 *(curCount / imageCount));
-					pp.updateProgress(percentDone);
+			int successCount = 0;
+			List<ImageInfo> imagesThumbnail = sessionData.getImagesThumbnail();
+			List<ImageInfo> imagesMedium    = sessionData.getImagesMedium();
+			List<ImageInfo> imagesLarge     = sessionData.getImagesLarge();
+			int imageCount = imagesThumbnail.size() + imagesMedium.size() + imagesLarge.size();
+			for (ImageInfo image : imagesLarge){
+				curCount++;
+				if (downloadImageIfNeeded(pp,image)){
+					successCount++;
 				}
+				int percentDone = (int) (100 *(curCount / imageCount));
+				pp.updateProgress(percentDone);
 			}
-			this.imagesLoadedSuccessfully = true;
-			for (String imagePath : imagePaths){
-				File f = new File(imagePath);
-				if (!(f.exists())){
-					this.imagesLoadedSuccessfully = false;
+			for (ImageInfo image : imagesMedium){
+				curCount++;
+				if (downloadImageIfNeeded(pp,image)){
+					successCount++;
 				}
+				int percentDone = (int) (100 *(curCount / imageCount));
+				pp.updateProgress(percentDone);
 			}
-			return true;
+			for (ImageInfo image : imagesThumbnail){
+				curCount++;
+				if (downloadImageIfNeeded(pp,image)){
+					successCount++;
+				}
+				int percentDone = (int) (100 *(curCount / imageCount));
+				pp.updateProgress(percentDone);
+			}
+			if (successCount < curCount){
+				int badCount = (int)curCount - successCount;
+				throw new BisqueSessionException(badCount + " images didn't download correctly from bisque");
+			}
 		}
 		catch(BisqueWSException e){
 			throw new BisqueSessionException("problem getting images for dataset " + dataset.getName());
@@ -104,7 +119,7 @@ public class BisqueImagePullStep implements Step {
 	}
 	@Override
 	public boolean needsAnswering() {
-		if (null == images){
+		if (null == bisqueImages){
 			return true;
 		}
 		if (!imagesLoadedSuccessfully){

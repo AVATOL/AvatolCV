@@ -52,11 +52,11 @@ public class BisqueSessionTester extends TestCase {
 		ss.appendStep(bisqueExclusionStep);
 		BisqueSegmentationStep bisqueSegmentationStep = new BisqueSegmentationStep(sessionData);
 		
-		// fill in the segmenation step
-		Step leafSegmentationDataPrepStep = new LeafSegmentationDataPrepStep(null, sessionData);
-		bisqueSegmentationStep.appendStep(leafSegmentationDataPrepStep);
+		// fill in the segmentation step with sub-steps
 		Step bisqueSegLabelsCheckStep = new BisqueSegLabelsCheckStep(null, sessionData);
 		bisqueSegmentationStep.appendStep(bisqueSegLabelsCheckStep);
+		Step leafSegmentationDataPrepStep = new LeafSegmentationDataPrepStep(null, sessionData);
+		bisqueSegmentationStep.appendStep(leafSegmentationDataPrepStep);
 		Step bisqueSegmentationRunStep = new BisqueSegmentationRunStep(null, sessionData);
 		bisqueSegmentationStep.appendStep(bisqueSegmentationRunStep);
 		Step bisqueSegmentationReviewStep = new BisqueSegmentationReviewStep(null, sessionData);
@@ -174,7 +174,13 @@ public class BisqueSessionTester extends TestCase {
 		/*
 		 * segmentation
 		 */
+		ss.next();
+		BisqueSegmentationStep bss = (BisqueSegmentationStep)ss.getCurrentStep();
+		StepSequence segSs = bss.getStepSequence();
+		LeafSegmentationDataPrepStep lsdps = (LeafSegmentationDataPrepStep)segSs.getCurrentStep();
+		Assert.assertTrue(lsdps.needsAnswering());
 		
+		// test at the next level down
 	}
 
 	/*
