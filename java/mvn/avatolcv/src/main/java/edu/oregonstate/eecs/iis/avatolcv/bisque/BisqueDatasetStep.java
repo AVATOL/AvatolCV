@@ -6,7 +6,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
-import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueSessionException;
+import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
@@ -23,7 +23,7 @@ public class BisqueDatasetStep implements Step {
 		this.view = view;
 		this.sessionData = sessionData;
 	}
-	public List<String> getAvailableDatasets() throws BisqueSessionException {
+	public List<String> getAvailableDatasets() throws AvatolCVException {
 		try {
 			List<String> result = new ArrayList<String>();
 			this.datasets = wsClient.getDatasets();
@@ -36,10 +36,10 @@ public class BisqueDatasetStep implements Step {
 			return result;
 		}
 		catch(BisqueWSException e){
-			throw new BisqueSessionException("problem loading datasets from Bisque ", e);
+			throw new AvatolCVException("problem loading datasets from Bisque ", e);
 		}
 	}
-	public void setChosenDataset(String s) throws BisqueSessionException {
+	public void setChosenDataset(String s) throws AvatolCVException {
 		this.chosenDataset = null;
 		for (BisqueDataset ds : datasets){
 			String name = ds.getName();
@@ -49,13 +49,13 @@ public class BisqueDatasetStep implements Step {
 			}
 		}
 		if (this.chosenDataset == null){
-			throw new BisqueSessionException("no BisqueDataset match for name " + s);
+			throw new AvatolCVException("no BisqueDataset match for name " + s);
 		}
 	}
 	@Override
-	public void consumeProvidedData() throws BisqueSessionException {
+	public void consumeProvidedData() throws AvatolCVException {
 		if (null == this.chosenDataset){
-			throw new BisqueSessionException("chosenDataset not yet specified.");
+			throw new AvatolCVException("chosenDataset not yet specified.");
 		}
 		this.sessionData.setChosenDataset(this.chosenDataset);
 

@@ -1,9 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.core;
 
-import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueSessionException;
-
 public interface Step {
-    public void consumeProvidedData() throws BisqueSessionException;
+    public void consumeProvidedData() throws AvatolCVException;
     public boolean needsAnswering();
     public View getView();
 }

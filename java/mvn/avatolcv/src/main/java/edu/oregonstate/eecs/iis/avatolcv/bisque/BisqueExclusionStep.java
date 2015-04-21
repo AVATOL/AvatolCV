@@ -2,32 +2,31 @@ package edu.oregonstate.eecs.iis.avatolcv.bisque;
 
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
-import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueSessionException;
-import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
-import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
+import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 
 public class BisqueExclusionStep implements Step {
 	private View view = null;
 	private BisqueSessionData sessionData = null;
-	List<BisqueImage> imagesToInclude = null;
-	List<BisqueImage> imagesToExclude = null;
+	List<ImageInfo> imagesToInclude = null;
+	List<ImageInfo> imagesToExclude = null;
 	public BisqueExclusionStep(View view, BisqueSessionData sessionData){
 		this.view = view;
 		this.sessionData = sessionData;
 	}
-	public List<BisqueImage> getBisqueImages(){
-		return sessionData.getCurrentImages();
+	public List<ImageInfo> getImageInfos(){
+		return sessionData.getImagesLarge();
 	}
-	public void setImagesToInclude(List<BisqueImage> images){
+	public void setImagesToInclude(List<ImageInfo> images){
 		this.imagesToInclude = images;
 	}
-	public void setImagesToExclude(List<BisqueImage> images){
+	public void setImagesToExclude(List<ImageInfo> images){
 		this.imagesToExclude = images;
 	}
 	@Override
-	public void consumeProvidedData() throws BisqueSessionException {
+	public void consumeProvidedData() throws AvatolCVException {
 		sessionData.setImagesToInclude(this.imagesToInclude);
 		sessionData.setImagesToExclude(this.imagesToExclude);
 	}

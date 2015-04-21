@@ -2,7 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.bisque;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
-import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueSessionException;
+import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 
 public class BisqueExclusionCoachingStep implements Step {
@@ -14,7 +14,7 @@ public class BisqueExclusionCoachingStep implements Step {
 		this.view = view;
 	}
 	@Override
-	public void consumeProvidedData() throws BisqueSessionException {
+	public void consumeProvidedData() throws AvatolCVException {
 		// nothing to consume, just showing guidance
 	}
 

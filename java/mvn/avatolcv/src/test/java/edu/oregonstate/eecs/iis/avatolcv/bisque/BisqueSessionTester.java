@@ -5,15 +5,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.BisqueSegLabelsCheckStep;
-import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.BisqueSegmentationReviewStep;
-import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.BisqueSegmentationRunStep;
-import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.LeafSegmentationDataPrepStep;
+import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.ObsoleteBisqueSegLabelsCheckStep;
+import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.ObsoleteBisqueSegmentationReviewStep;
+import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.ObsoleteBisqueSegmentationRunStep;
+import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.ObsoleteLeafSegmentationDataPrepStep;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
-import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueSessionException;
+import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationContainerStep;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
@@ -37,7 +38,7 @@ public class BisqueSessionTester extends TestCase {
 		try {
 			sessionData = new BisqueSessionData(rootDir);
 		}
-		catch (BisqueSessionException e){
+		catch (AvatolCVException e){
 			Assert.fail("problem instantiating BisqueSessionData " + e.getMessage());
 		}
 		StepSequence ss = new StepSequence();
@@ -51,16 +52,16 @@ public class BisqueSessionTester extends TestCase {
 		ss.appendStep(bisqueExclusionCoachingStep);
 		Step bisqueExclusionStep = new BisqueExclusionStep(null, sessionData);
 		ss.appendStep(bisqueExclusionStep);
-		BisqueSegmentationStep bisqueSegmentationStep = new BisqueSegmentationStep(sessionData);
+		SegmentationContainerStep bisqueSegmentationStep = new SegmentationContainerStep(sessionData);
 		
 		// fill in the segmentation step with sub-steps
-		Step bisqueSegLabelsCheckStep = new BisqueSegLabelsCheckStep(null, sessionData);
+		Step bisqueSegLabelsCheckStep = new ObsoleteBisqueSegLabelsCheckStep(null, sessionData);
 		bisqueSegmentationStep.appendStep(bisqueSegLabelsCheckStep);
-		Step leafSegmentationDataPrepStep = new LeafSegmentationDataPrepStep(null, sessionData);
+		Step leafSegmentationDataPrepStep = new ObsoleteLeafSegmentationDataPrepStep(null, sessionData);
 		bisqueSegmentationStep.appendStep(leafSegmentationDataPrepStep);
-		Step bisqueSegmentationRunStep = new BisqueSegmentationRunStep(null, sessionData);
+		Step bisqueSegmentationRunStep = new ObsoleteBisqueSegmentationRunStep(null, sessionData);
 		bisqueSegmentationStep.appendStep(bisqueSegmentationRunStep);
-		Step bisqueSegmentationReviewStep = new BisqueSegmentationReviewStep(null, sessionData);
+		Step bisqueSegmentationReviewStep = new ObsoleteBisqueSegmentationReviewStep(null, sessionData);
 		bisqueSegmentationStep.appendStep(bisqueSegmentationReviewStep);
 		
 		ss.appendStep(bisqueSegmentationStep);
@@ -77,7 +78,7 @@ public class BisqueSessionTester extends TestCase {
 			bls.consumeProvidedData();
 			Assert.fail("should have thrown exception on bad password");
 		}
-		catch(BisqueSessionException bse){
+		catch(AvatolCVException bse){
 			Assert.assertTrue(true);
 		}
 		Assert.assertTrue(bls.needsAnswering());
@@ -92,7 +93,7 @@ public class BisqueSessionTester extends TestCase {
 			Assert.assertTrue(true);
 			
 		}
-		catch(BisqueSessionException bse){
+		catch(AvatolCVException bse){
 			Assert.fail("should not have thrown exception on good password");
 		}
 		Assert.assertFalse(bls.needsAnswering());
@@ -111,7 +112,7 @@ public class BisqueSessionTester extends TestCase {
 			bds.setChosenDataset("jedHome");
 			bds.consumeProvidedData();
 		}
-		catch(BisqueSessionException e){
+		catch(AvatolCVException e){
 			Assert.fail("should not have thrown exception on getDatasets");
 		}
 		Assert.assertFalse(bds.needsAnswering());
@@ -125,7 +126,7 @@ public class BisqueSessionTester extends TestCase {
 		try {
 			bips.downloadImagesForChosenDataset(pp);
 		}
-		catch(BisqueSessionException e){
+		catch(AvatolCVException e){
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
@@ -151,15 +152,15 @@ public class BisqueSessionTester extends TestCase {
 		ss.next();
 		BisqueExclusionStep bes = (BisqueExclusionStep)ss.getCurrentStep();
 		Assert.assertTrue(bes.needsAnswering());
-		List<BisqueImage> images = sessionData.getCurrentBisqueImages();
-		List<BisqueImage> imagesToInclude = new ArrayList<BisqueImage>();
-		List<BisqueImage> imagesToExclude = new ArrayList<BisqueImage>();
-		for (BisqueImage bi : images){
-			if (bi.getName().equals("Neph") || bi.getName().equals("Pree")){
-				imagesToInclude.add(bi);
+		List<ImageInfo> images = sessionData.getImagesLarge();
+		List<ImageInfo> imagesToInclude = new ArrayList<ImageInfo>();
+		List<ImageInfo> imagesToExclude = new ArrayList<ImageInfo>();
+		for (ImageInfo ii : images){
+			if (ii.getNameAsUploaded().equals("Neph") || ii.getNameAsUploaded().equals("Pree")){
+				imagesToInclude.add(ii);
 			}
 			else {
-				imagesToExclude.add(bi);
+				imagesToExclude.add(ii);
 			}
 		}
 		try {
@@ -167,7 +168,7 @@ public class BisqueSessionTester extends TestCase {
 			bes.setImagesToInclude(imagesToInclude);
 			bes.consumeProvidedData();
 		}
-		catch(BisqueSessionException e){
+		catch(AvatolCVException e){
 			Assert.fail(e.getMessage());
 		}
 		Assert.assertFalse(bes.needsAnswering());
@@ -176,9 +177,9 @@ public class BisqueSessionTester extends TestCase {
 		 * segmentation
 		 */
 		ss.next();
-		BisqueSegmentationStep bss = (BisqueSegmentationStep)ss.getCurrentStep();
+		SegmentationContainerStep bss = (SegmentationContainerStep)ss.getCurrentStep();
 		StepSequence segSs = bss.getStepSequence();
-		LeafSegmentationDataPrepStep lsdps = (LeafSegmentationDataPrepStep)segSs.getCurrentStep();
+		ObsoleteLeafSegmentationDataPrepStep lsdps = (ObsoleteLeafSegmentationDataPrepStep)segSs.getCurrentStep();
 		Assert.assertTrue(lsdps.needsAnswering());
 		
 		// test at the next level down

@@ -5,17 +5,19 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.SegmentationSessionData;
-import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueSessionException;
+import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
+//import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationToolHarness;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 
 public class BisqueSessionData {
 	private static final String FILESEP = System.getProperty("file.separator");
-	public static final int IMAGE_THUMBNAIL_WIDTH = 80;
-	public static final int IMAGE_MEDIUM_WIDTH = 200;
-	public static final int IMAGE_LARGE_WIDTH = 400;
+	public static final String STANDARD_IMAGE_FILE_EXTENSION = ".jpg";
+	public static final String IMAGE_THUMBNAIL_WIDTH = "80";
+	public static final String IMAGE_MEDIUM_WIDTH = "200";
+	public static final String IMAGE_LARGE_WIDTH = "400";
 	private BisqueDataset dataset = null;
 	private List<BisqueImage> bisqueImages = null;
 	
@@ -30,14 +32,14 @@ public class BisqueSessionData {
 	
 	private String sessionDataRootDir = null;
 	private String sessionDatasetDir = null;
-	//private List<Integer> imageWidths = new ArrayList<Integer>();
-	List<BisqueImage> imagesToInclude = null;
-	List<BisqueImage> imagesToExclude = null;
+	// TODO? imagesToInclude and imagesToExclude are now ImageInfo - may need to translate that to BisqueImage at some point.
+	List<ImageInfo> imagesToInclude = null;
+	List<ImageInfo> imagesToExclude = null;
 	SegmentationSessionData ssd = null;
-	public BisqueSessionData(String sessionDataRootParent) throws BisqueSessionException {
+	public BisqueSessionData(String sessionDataRootParent) throws AvatolCVException {
 		File f = new File(sessionDataRootParent);
 		if (!f.isDirectory()){
-			throw new BisqueSessionException("directory does not exist for being sessionDataRootParent " + sessionDataRootParent);
+			throw new AvatolCVException("directory does not exist for being sessionDataRootParent " + sessionDataRootParent);
 		}
 		
 		this.sessionDataRootDir = sessionDataRootParent + FILESEP + "sessionData";
@@ -85,29 +87,20 @@ public class BisqueSessionData {
 			f.mkdirs();
 		}
 	}
-	public int getThumbnailWidth(){
+	public String getThumbnailWidth(){
 		return IMAGE_THUMBNAIL_WIDTH;
 	}
-	public int getMediumImageWidth(){
+	public String getMediumImageWidth(){
 		return IMAGE_MEDIUM_WIDTH;
 	}
-	public int getLargeImageWidth(){
+	public String getLargeImageWidth(){
 		return IMAGE_LARGE_WIDTH;
 	}
-	//public int getImageSizeCount(){
-	//	return imageWidths.size();
-	//}
-	//public List<Integer> getImageWidths(){
-	//	return imageWidths;
-	//}
 	
 	private String getImagesDir(){
 		return sessionDatasetDir + FILESEP + "images";
 	}
 	
-	//public String getImagePath(String filename){
-	//	return getImagesDir() + FILESEP + filename;
-	//}
     public String getImagesThumbnailDir(){
     	return getImagesDir() + FILESEP + "thumbnails";
     } 
@@ -118,23 +111,9 @@ public class BisqueSessionData {
     	return getImagesDir() + FILESEP + "large";
     }
     
-	public static String getImageFilename(BisqueImage bi, int width){
-		return getImageFileRootname(bi, width) + ".jpg";
-	}
-	public static String getImageFileRootname(BisqueImage bi, int width){
-		return bi.getResourceUniq() + "_" + bi.getName() + "_" + width;
-	}
-	public static void generateImageInfoForSize(List<ImageInfo> listToFill, List<BisqueImage> bisqueImages, int width, String dir){
+	public static void generateImageInfoForSize(List<ImageInfo> listToFill, List<BisqueImage> bisqueImages, String width, String dir){
 		for (BisqueImage bi : bisqueImages){
-			ImageInfo ii = new ImageInfo();
-			ii.setID(bi.getResourceUniq());
-			ii.setName(bi.getName());
-			ii.setImageWidth(width);
-			ii.setFilenameRoot(bi.getResourceUniq() + "_" + bi.getName());
-			String filename = getImageFilename(bi,width);
-			ii.setFilename(filename);
-			String filepath = dir + FILESEP + filename;
-			ii.setFilepath(filepath);
+			ImageInfo ii = new ImageInfo(dir, bi.getResourceUniq(), bi.getName(), width, STANDARD_IMAGE_FILE_EXTENSION);
 			listToFill.add(ii);
 		}
 	}
@@ -161,27 +140,27 @@ public class BisqueSessionData {
 		}
 		
 	}
-	public ImageInfo getThumbnailForId(String id) throws BisqueSessionException {
+	public ImageInfo getThumbnailForId(String id) throws AvatolCVException {
 		ImageInfo ii = null;
 		ii = thumbnailForID.get(id);
 		if (null == ii){
-			throw new BisqueSessionException("no thumbnail exists for ID " + id);
+			throw new AvatolCVException("no thumbnail exists for ID " + id);
 		}
 		return ii;
 	}
-	public ImageInfo getImageMediumForId(String id) throws BisqueSessionException {
+	public ImageInfo getImageMediumForId(String id) throws AvatolCVException {
 		ImageInfo ii = null;
 		ii = imageMediumForID.get(id);
 		if (null == ii){
-			throw new BisqueSessionException("no medium size image exists for ID " + id);
+			throw new AvatolCVException("no medium size image exists for ID " + id);
 		}
 		return ii;
 	}
-	public ImageInfo getImageLargeForId(String id) throws BisqueSessionException {
+	public ImageInfo getImageLargeForId(String id) throws AvatolCVException {
 		ImageInfo ii = null;
 		ii = imageLargeForID.get(id);
 		if (null == ii){
-			throw new BisqueSessionException("no large size exists for ID " + id);
+			throw new AvatolCVException("no large size exists for ID " + id);
 		}
 		return ii;
 	}
@@ -197,13 +176,13 @@ public class BisqueSessionData {
 	public List<BisqueImage> getCurrentBisqueImages(){
 		return this.bisqueImages;
 	}
-	public void setImagesToInclude(List<BisqueImage> images){
+	public void setImagesToInclude(List<ImageInfo> images){
 		this.imagesToInclude = images;
 	}
-	public void setImagesToExclude(List<BisqueImage> images){
+	public void setImagesToExclude(List<ImageInfo> images){
 		this.imagesToExclude = images;
 	}
-	public List<BisqueImage> getIncludedImages(){
+	public List<ImageInfo> getIncludedImages(){
 		return this.imagesToInclude;
 	}
 	/*
@@ -213,5 +192,7 @@ public class BisqueSessionData {
     public SegmentationSessionData getSegmentationSessionData(){
     	return this.ssd;
     }
+	
+	
 	
 }

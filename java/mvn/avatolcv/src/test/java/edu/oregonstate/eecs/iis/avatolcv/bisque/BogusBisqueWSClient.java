@@ -172,8 +172,7 @@ public class BogusBisqueWSClient implements BisqueWSClient {
 		}
 	}
 	@Override
-	public boolean downloadImageOfWidth(String imageResource_uniq, int width,
-			String dirToSaveTo, String type, String imageRootName)
+	public boolean downloadImageOfWidth(String imageResource_uniq, int width, String dirToSaveTo, String imageRootName)
 			throws BisqueWSException {
 		// we have the files in the source dir as just the name, no id, so strip the id out of the imageRootName
 		String sourceImageRootName = imageRootName.replaceFirst(imageResource_uniq + "_", "");

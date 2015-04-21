@@ -1,11 +1,12 @@
-package edu.oregonstate.eecs.iis.avatolcv.bisque;
+package edu.oregonstate.eecs.iis.avatolcv.segmentation;
 
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.bisque.BisqueSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
-import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueSessionException;
+import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 
 /*
  * At the SEGMENTATION step, avatolCV will pass one argument, which is the path to the runConfig_segmentation.txt file
@@ -28,23 +29,22 @@ trainingImages_segmentation.txt and testingImages_segmentation.txt have entries 
     03-uietIOuerto5foKMhUHYUh_imgAbc
 
  */
-public class BisqueSegmentationStep implements Step {
-	private BisqueSessionData sessionData = null;
+public class SegmentationContainerStep implements Step {
+	private SegmentationSessionData sessionData = null;
 	private StepSequence ss = new StepSequence();
 	
 	public void appendStep(Step s){
 		ss.appendStep(s);
 	}
-	public BisqueSegmentationStep(BisqueSessionData s){
+	public SegmentationContainerStep(SegmentationSessionData s){
 		this.sessionData = s;
 	}
 	public StepSequence getStepSequence(){
 		return this.ss;
 	}
 	@Override
-	public void consumeProvidedData() throws BisqueSessionException {
+	public void consumeProvidedData() throws AvatolCVException {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

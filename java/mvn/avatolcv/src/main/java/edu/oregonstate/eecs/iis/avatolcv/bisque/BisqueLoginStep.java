@@ -2,7 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.bisque;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
-import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueSessionException;
+import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSException;
 
@@ -30,22 +30,22 @@ public class BisqueLoginStep implements Step {
 		return !isAuthenticated();
 	}
 	@Override
-	public void consumeProvidedData() throws BisqueSessionException {
+	public void consumeProvidedData() throws AvatolCVException {
 		// TODO Auto-generated method stub
 		if (null == username || "".equals(username)){
-			throw new BisqueSessionException("username must be specified");
+			throw new AvatolCVException("username must be specified");
 		}
 		if (null == password || "".equals(password)){
-			throw new BisqueSessionException("password must be specified");
+			throw new AvatolCVException("password must be specified");
 		}
 		try {
 			boolean authenticated = wsClient.authenticate(this.username, this.password);
 			if (!authenticated){
-				throw new BisqueSessionException("username " + this.username + " and password " + this.password + " not valid combination.");
+				throw new AvatolCVException("username " + this.username + " and password " + this.password + " not valid combination.");
 			}
 		}
 		catch(BisqueWSException bwe){
-			throw new BisqueSessionException("problem authenticating with username " + this.username + " and password " + password + ".\n\n" + bwe.getMessage());
+			throw new AvatolCVException("problem authenticating with username " + this.username + " and password " + password + ".\n\n" + bwe.getMessage());
 		}
 	}
 	public void setUsername(String s){

@@ -3,17 +3,17 @@ package edu.oregonstate.eecs.iis.avatolcv.bisque.seg;
 import edu.oregonstate.eecs.iis.avatolcv.bisque.BisqueSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
-import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueSessionException;
+import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 
-public class BisqueSegmentationReviewStep implements Step {
+public class ObsoleteBisqueSegmentationReviewStep implements Step {
 	private BisqueSessionData sessionData = null;
 	private View view = null;
-	public BisqueSegmentationReviewStep(View view, BisqueSessionData sessionData){
+	public ObsoleteBisqueSegmentationReviewStep(View view, BisqueSessionData sessionData){
 		this.sessionData = sessionData;
 		this.view = view;
 	}
 	@Override
-	public void consumeProvidedData() throws BisqueSessionException {
+	public void consumeProvidedData() throws AvatolCVException {
 		// TODO Auto-generated method stub
 		
 	}

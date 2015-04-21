@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.bisque.seg;
+package edu.oregonstate.eecs.iis.avatolcv.segmentation.files;
 
 public class DarwinDriverFile {
     private String imgDir = null;

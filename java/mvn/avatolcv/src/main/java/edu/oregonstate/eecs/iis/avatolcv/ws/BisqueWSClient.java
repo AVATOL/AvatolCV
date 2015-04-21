@@ -10,7 +10,7 @@ public interface BisqueWSClient {
 	public boolean authenticate(String name, String password) throws BisqueWSException;
 	public List<BisqueDataset> getDatasets() throws BisqueWSException;
 	public List<BisqueImage> getImagesForDataset(String datasetResource_uniq) throws BisqueWSException;
-	public boolean downloadImageOfWidth(String imageResource_uniq, int width, String dirToSaveTo, String type, String imageNameRoot) throws BisqueWSException ;
+	public boolean downloadImageOfWidth(String imageResource_uniq, int width, String dirToSaveTo, String imageNameRoot) throws BisqueWSException ;
 	public List<BisqueAnnotation> getAnnotationsForImage(String imageResource_uniq) throws BisqueWSException;
 	public List<String> getAnnotationValueOptions(String annotationTypeValue) throws BisqueWSException;
 	public boolean addNewAnnotation(String imageResource_uniq, String key, String value);

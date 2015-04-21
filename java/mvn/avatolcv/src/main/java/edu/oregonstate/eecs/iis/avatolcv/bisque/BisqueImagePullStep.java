@@ -8,7 +8,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
-import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueSessionException;
+import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
@@ -28,11 +28,11 @@ public class BisqueImagePullStep implements Step {
 		
 	}
 	@Override
-	public void consumeProvidedData() throws BisqueSessionException {
+	public void consumeProvidedData() throws AvatolCVException {
 		
 	}
 
-	public boolean robustImageDownload(ProgressPresenter pp, String resourceUniq, int imageWidth, String name, String imageNameRoot, String targetDir ) throws BisqueSessionException {
+	public boolean robustImageDownload(ProgressPresenter pp, ImageInfo ii, String targetDir ) throws AvatolCVException {
 		int maxRetries = 4;
 		int tries = 0;
 		boolean imageNotYetDownloaded = true;
@@ -40,30 +40,37 @@ public class BisqueImagePullStep implements Step {
 		while (maxRetries > tries && imageNotYetDownloaded){
 			try {
 				tries++;
-				pp.setMessage("downloading image  : " + name);
-				this.wsClient.downloadImageOfWidth(resourceUniq, imageWidth, targetDir, "" + imageWidth, imageNameRoot);
+				pp.setMessage("downloading image  : " + ii.getNameAsUploaded());
+				int imageWidthAsInt = -1;
+				try {
+					imageWidthAsInt = new Integer(ii.getImageWidth()).intValue();
+				}
+				catch(NumberFormatException nfe){
+					throw new AvatolCVException("could not convert image width " + ii.getImageWidth() + " to a number.");
+				}
+				this.wsClient.downloadImageOfWidth(ii.getID(), imageWidthAsInt, targetDir, ii.getFilename_IdName());
 				imageNotYetDownloaded = false;
 			}
 			catch(BisqueWSException e){
 				if (e.getMessage().equals("timeout")){
-					pp.setMessage("download timed out - retrying image : " + name + " - attempt " + (tries+1));
+					pp.setMessage("download timed out - retrying image : " + ii.getNameAsUploaded() + " - attempt " + (tries+1));
 				}
 				mostRecentException = e;
 			}
 		}
 		if (imageNotYetDownloaded){
-			throw new BisqueSessionException("problem downloading image: " + mostRecentException);
+			throw new AvatolCVException("problem downloading image: " + mostRecentException);
 		}
 		return true;
 	}
-	public boolean downloadImageIfNeeded(ProgressPresenter pp, ImageInfo image, String targetDir) throws BisqueSessionException {
+	public boolean downloadImageIfNeeded(ProgressPresenter pp, ImageInfo image, String targetDir) throws AvatolCVException {
 		String imagePath = image.getFilepath();
 		File imageFile = new File(imagePath);
 		if (imageFile.exists()){
-			pp.setMessage("already have image : " + image.getName());
+			pp.setMessage("already have image : " + image.getNameAsUploaded());
 		}
 		else {
-			robustImageDownload(pp, image.getID(), image.getImageWidth(), image.getName(), image.getFilenameRoot(), targetDir);
+			robustImageDownload(pp, image, targetDir);
 		}
 		File f = new File(imagePath);
 		if (f.exists()){
@@ -71,7 +78,7 @@ public class BisqueImagePullStep implements Step {
 		}
 		return false;
 	}
-	public void downloadImagesForChosenDataset(ProgressPresenter pp) throws BisqueSessionException {
+	public void downloadImagesForChosenDataset(ProgressPresenter pp) throws AvatolCVException {
 		sessionData.ensureImageDirsExists();
 		BisqueDataset dataset = sessionData.getChosenDataset();
 		try {
@@ -110,11 +117,11 @@ public class BisqueImagePullStep implements Step {
 			}
 			if (successCount < curCount){
 				int badCount = (int)curCount - successCount;
-				throw new BisqueSessionException(badCount + " images didn't download correctly from bisque");
+				throw new AvatolCVException(badCount + " images didn't download correctly from bisque");
 			}
 		}
 		catch(BisqueWSException e){
-			throw new BisqueSessionException("problem getting images for dataset " + dataset.getName());
+			throw new AvatolCVException("problem getting images for dataset " + dataset.getName());
 		}
 	}
 	@Override

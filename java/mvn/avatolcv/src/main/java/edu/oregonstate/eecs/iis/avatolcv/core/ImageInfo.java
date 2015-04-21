@@ -1,20 +1,35 @@
 package edu.oregonstate.eecs.iis.avatolcv.core;
 
 public class ImageInfo {
-	private String name = null;
+	private static final String FILESEP = System.getProperty("file.separator");
+	private String nameAsUploaded = null;
 	private String ID = null;
 	private String filename = null;
+	private String parentDir = null;
 	private String filepath = null;
-	private int imageWidth = -1;
-	private String rootName = null;
-	public ImageInfo(){
-		
+	private String imageWidth = null;
+	private String ID_name = null;
+	private String ID_name_imageWidth = null;
+	private String extension = null;
+	public ImageInfo(String parentDir, String ID, String nameAsUploaded, String imageWidth, String extension){
+		this.parentDir = parentDir;
+		this.ID = ID;
+		this.nameAsUploaded = nameAsUploaded;
+		this.imageWidth = imageWidth;
+		this.extension = extension;
+		this.ID_name = ID + "_" + nameAsUploaded;
+		this.ID_name_imageWidth = this.ID_name +  "_" + imageWidth;
+		this.filename = this.ID_name_imageWidth + "." + extension;
+		this.filepath = this.parentDir + FILESEP + this.filename;
 	}
-	public String getFilenameRoot(){
-		return this.rootName;
+	public String getFilename_IdName(){
+		return this.ID_name;
 	}
-	public String getName(){
-		return this.name;
+	public String getFilename_IdNameWidth(){
+		return this.ID_name_imageWidth;
+	}
+	public String getNameAsUploaded(){
+		return this.nameAsUploaded;
 	}
 	public String getID(){
 		return this.ID;
@@ -25,25 +40,11 @@ public class ImageInfo {
 	public String getFilepath(){
 		return this.filepath;
 	}
-	public int getImageWidth(){
+	public String getImageWidth(){
 		return this.imageWidth;
 	}
-	public void setFilenameRoot(String root){
-		this.rootName = root;
+	public String getExtension(){
+		return this.extension;
 	}
-    public void setImageWidth(int width){
-    	this.imageWidth = width;
-    }
-	public void setName(String s){
-		this.name = s;
-	}
-	public void setID(String s){
-		this.ID = s;
-	}
-	public void setFilename(String s){
-		this.filename = s;
-	}
-	public void setFilepath(String s){
-		this.filepath = s;
-	}
+	
 }

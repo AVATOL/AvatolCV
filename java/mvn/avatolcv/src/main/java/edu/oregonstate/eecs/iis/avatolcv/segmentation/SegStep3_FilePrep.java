@@ -1,23 +1,25 @@
-package edu.oregonstate.eecs.iis.avatolcv.bisque.seg;
+package edu.oregonstate.eecs.iis.avatolcv.segmentation;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
-import edu.oregonstate.eecs.iis.avatolcv.bisque.BisqueSessionData;
+import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
-import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueSessionException;
+import edu.oregonstate.eecs.iis.avatolcv.segmentation.files.DarwinDriverFile;
 
-public class LeafSegmentationDataPrepStep implements Step {
+public class SegStep3_FilePrep implements Step {
 	private static final String FILESEP = System.getProperty("file.separator");
 	private static final String NL = System.getProperty("line.separator");
-	private BisqueSessionData sessionData = null;
-	private View view = null;
+	private View view = null;	
+	private SegmentationSessionData ssd = null;
 	private boolean filesHaveBeenGenerated = false;
-	public LeafSegmentationDataPrepStep(View view, BisqueSessionData sessionData){
-		this.sessionData = sessionData;
+	public SegStep3_FilePrep(View view, SegmentationSessionData ssd){
+		this.ssd = ssd;
 		this.view = view;
 	}
 	/*
@@ -26,11 +28,10 @@ public class LeafSegmentationDataPrepStep implements Step {
 			___SegInputFileGenerator
 
 	 */
-	public void createDarwinDriverFile() throws BisqueSessionException {
-		SegmentationSessionData ssd = this.sessionData.getSegmentationSessionData();
+	public void createDarwinDriverFile() throws AvatolCVException {
 		String segmentationRootDir = ssd.getSegmentationRootDir();
 		DarwinDriverFile ddf = new DarwinDriverFile();
-		ddf.setImageDir(this.sessionData.getImagesDir());
+		ddf.setImageDir(ssd.getSourceImageDir());
 		ddf.setCachedDir(ssd.getSegmentationCacheDir());
 		ddf.setLabelDir(ssd.getSegmentationLabelDir());
 		ddf.setModelsDir(ssd.getSegmentationModelsDir());
@@ -48,11 +49,10 @@ public class LeafSegmentationDataPrepStep implements Step {
 			writer.close();
 		}
 		catch(IOException ioe){
-			throw new BisqueSessionException("could not create darwin driver xml file");
+			throw new AvatolCVException("could not create darwin driver xml file");
 		}
 		
 	}
-	
 	public void createSegmentationInputFiles(){
 		/*
 trainingImages_segmentation.txt and testingImages_segmentation.txt have entries that are the root names of images
@@ -61,7 +61,7 @@ trainingImages_segmentation.txt and testingImages_segmentation.txt have entries 
 		 */
 	}
 	@Override
-	public void consumeProvidedData() throws BisqueSessionException {
+	public void consumeProvidedData() throws AvatolCVException {
 		createDarwinDriverFile();
 		createSegmentationInputFiles();
 		filesHaveBeenGenerated = true;
@@ -79,5 +79,4 @@ trainingImages_segmentation.txt and testingImages_segmentation.txt have entries 
 	public View getView() {
 		return view;
 	}
-
 }

@@ -500,7 +500,7 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 		}
         return imageList;
 	}
-	public boolean downloadImageOfWidth(String imageResource_uniq, int width, String dirToSaveTo, String type, String imageRootName) throws BisqueWSException {
+	public boolean downloadImageOfWidth(String imageResource_uniq, int width, String dirToSaveTo, String imageRootName) throws BisqueWSException {
 		boolean result = false;
 		try {
 			ClientConfig clientConfig = new ClientConfig();
@@ -522,7 +522,7 @@ public class BisqueWSClientImpl implements BisqueWSClient {
             
             InputStream inputStream = response.readEntity(InputStream.class);
             //saving file to C:\avatol\git\avatol_cv\sessionData\jedHome\images\00-b7itcHVfYEEaBiMXFsibVS_neph.JPG_400.jpg
-            String pathToSaveTo = dirToSaveTo + FILESEP + imageRootName + "_" + type + ".jpg";
+            String pathToSaveTo = dirToSaveTo + FILESEP + imageRootName + "_" + width + ".jpg";
             System.out.println("saving file to " + pathToSaveTo);
             OutputStream outputStream = new FileOutputStream(pathToSaveTo);
             byte[] buffer = new byte[1024];
