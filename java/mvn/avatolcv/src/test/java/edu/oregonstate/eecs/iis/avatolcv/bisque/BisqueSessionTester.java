@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.SystemDependent;
+import edu.oregonstate.eecs.iis.avatolcv.TestProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
@@ -26,13 +28,15 @@ public class BisqueSessionTester extends TestCase {
 	public void testSession(){
 		BisqueWSClient client = getBogusWSClient();
 		//BisqueWSClient client = new BisqueWSClientImpl();
-		String rootDir = "C:\\avatol\\git\\avatol_cv";
+		SystemDependent sd = new SystemDependent();
+        String avatolcv_rootDir = sd.getRootDir();
+        System.out.println("root dir sensed as " + avatolcv_rootDir);
 		/*
 		 * create session
 		 */
 		BisqueSessionData sessionData = null;
 		try {
-			sessionData = new BisqueSessionData(rootDir);
+			sessionData = new BisqueSessionData(avatolcv_rootDir);
 		}
 		catch (AvatolCVException e){
 			Assert.fail("problem instantiating BisqueSessionData " + e.getMessage());
@@ -167,16 +171,5 @@ public class BisqueSessionTester extends TestCase {
 	/*
 	 * need to handle timeout situations with connections!
 	 */
-	public class TestProgressPresenter implements ProgressPresenter {
-		@Override
-		public void updateProgress(int percent) {
-			System.out.println("percent done " + percent);
-		}
-
-		@Override
-		public void setMessage(String m) {
-			System.out.println(m);	
-		}
-		
-	}
+	
 }

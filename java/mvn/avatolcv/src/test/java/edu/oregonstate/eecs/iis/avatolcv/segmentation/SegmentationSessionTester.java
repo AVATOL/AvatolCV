@@ -9,21 +9,29 @@ import javax.imageio.ImageIO;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import edu.oregonstate.eecs.iis.avatolcv.SystemDependent;
+import edu.oregonstate.eecs.iis.avatolcv.TestProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 
 public class SegmentationSessionTester extends TestCase {
 
 	private static final String FILESEP = System.getProperty("file.separator");
 	
 	public void testSession(){
-		String parentDataDir = "C:\\avatol\\git\\avatol_cv\\sessionData\\jedHome";
+	    SystemDependent sd = new SystemDependent();
+	    String avatolcv_rootDir = sd.getRootDir();
+		String parentDataDir = avatolcv_rootDir + FILESEP + "sessionData" + FILESEP +"jedHome";
 		String trainingImageDir = parentDataDir + FILESEP + "seg" + FILESEP + "trainingImages";
 		File dir = new File(trainingImageDir);
 		File[] files = dir.listFiles();
-		for (File f : files){
-			f.delete();
+		if (null != files){
+		    for (File f : files){
+	            f.delete();
+	        }
 		}
+		
 		/*
 		 * create session
 		 */
@@ -58,9 +66,9 @@ public class SegmentationSessionTester extends TestCase {
 		BufferedImage bi1 = null;
 		BufferedImage bi2 = null;
 		try {
-		    bi1 = ImageIO.read(new File("C:\\avatol\\git\\avatol_cv\\testSupportData\\cymbal1.jpg"));
-		    bi2 = ImageIO.read(new File("C:\\avatol\\git\\avatol_cv\\testSupportData\\cymbal2.jpg"));
-		} catch (IOException e) 
+		    bi1 = ImageIO.read(new File(avatolcv_rootDir + FILESEP + "testSupportData" + FILESEP + "cymbal1.jpg"));
+		    bi2 = ImageIO.read(new File(avatolcv_rootDir + FILESEP + "testSupportData" + FILESEP + "cymbal2.jpg"));
+		} catch (IOException e)
 		{
 			Assert.fail("couldn't load images");
 		}
@@ -96,7 +104,18 @@ public class SegmentationSessionTester extends TestCase {
 		
 		Assert.assertFalse(labelStep.needsAnswering());
 
-		SegStep3_Run segRunStep = new SegStep3_Run(null, ssd);
+		SegmentationRunner segRunner = new BogusSegmentationRunner();
+		SegStep3_Run segRunStep = new SegStep3_Run(null, ssd, segRunner);
+		Assert.assertTrue(segRunStep.needsAnswering());
+		ProgressPresenter pp = new TestProgressPresenter();
+		segRunStep.run(pp);
+		try {
+		    segRunStep.consumeProvidedData();
+		}
+		catch(AvatolCVException e){
+            Assert.fail("problem consuming data " + e.getMessage());
+        }
+		Assert.assertFalse(segRunStep.needsAnswering());
 		SegStep4_Review reviewStep = new SegStep4_Review(null, ssd);
 		
 		

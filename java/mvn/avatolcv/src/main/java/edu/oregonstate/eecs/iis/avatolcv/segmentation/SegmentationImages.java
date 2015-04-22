@@ -18,6 +18,14 @@ public class SegmentationImages {
 		this.segTrainingImageDir = segTrainingImageDir;
 		this.segOutputImageDir = segOutputImageDir;
 		this.candidateImages = candidateImages;
+		File f = new File(this.segTrainingImageDir);
+		if (!f.isDirectory()){
+		    f.mkdirs();
+		}
+		f = new File(this.segOutputImageDir);
+        if (!f.isDirectory()){
+            f.mkdirs();
+        }
 	}
 	public void reload()  throws SegmentationException {
 		trainingImages = new ArrayList<ImageInfo>();
