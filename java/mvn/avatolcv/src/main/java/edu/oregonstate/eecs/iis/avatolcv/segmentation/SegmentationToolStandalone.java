@@ -15,14 +15,7 @@ public class SegmentationToolStandalone {
 		segStep = new SegmentationContainerStep(this.ssd);
 		SegStep1_TrainingExamplesCheck checkStep = new SegStep1_TrainingExamplesCheck(null, this.ssd);
 		SegStep2_LabelTrainingExamples labelStep = new SegStep2_LabelTrainingExamples(null, this.ssd);
-		SegStep3_FilePrep dataPrepStep = new SegStep3_FilePrep(null, this.ssd);
-		SegStep4_Run segRunStep = new SegStep4_Run(null, this.ssd);
-		SegStep5_Review reviewStep = new SegStep5_Review(null, this.ssd);
-		segStep.appendStep(checkStep);
-		segStep.appendStep(labelStep);
-		segStep.appendStep(dataPrepStep);
-		segStep.appendStep(segRunStep);
-		segStep.appendStep(reviewStep);
+		
 	}
 
 }

@@ -4,10 +4,10 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
 
-public class SegStep4_Run implements Step {
+public class SegStep4_Review implements Step {
 	private View view = null;	
 	private SegmentationSessionData ssd = null;
-	public SegStep4_Run(View view, SegmentationSessionData ssd){
+	public SegStep4_Review(View view, SegmentationSessionData ssd){
 		this.ssd = ssd;
 		this.view = view;
 	}

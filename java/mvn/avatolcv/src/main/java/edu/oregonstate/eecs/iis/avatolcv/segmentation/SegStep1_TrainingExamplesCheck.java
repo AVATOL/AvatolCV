@@ -27,7 +27,7 @@ public class SegStep1_TrainingExamplesCheck implements Step {
 	
 	public void assess()  throws SegmentationException {
 		segLabelFileAssessmentHasBeenRun = true;
-		String segTrainingImageDirPath = this.ssd.getSegmentationLabelDir();
+		String segTrainingImageDirPath = this.ssd.getSegmentationTrainingImageDir();
 		File segLabelDir = new File(segTrainingImageDirPath);
 		if (!segLabelDir.isDirectory()){
 			throw new SegmentationException("given segmentationLabelDir does not exist " + segTrainingImageDirPath);

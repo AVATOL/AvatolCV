@@ -96,9 +96,8 @@ public class SegmentationSessionTester extends TestCase {
 		
 		Assert.assertFalse(labelStep.needsAnswering());
 
-		SegStep3_FilePrep dataPrepStep = new SegStep3_FilePrep(null, ssd);
-		SegStep4_Run segRunStep = new SegStep4_Run(null, ssd);
-		SegStep5_Review reviewStep = new SegStep5_Review(null, ssd);
+		SegStep3_Run segRunStep = new SegStep3_Run(null, ssd);
+		SegStep4_Review reviewStep = new SegStep4_Review(null, ssd);
 		
 		
 		

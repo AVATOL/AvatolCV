@@ -10,16 +10,27 @@ public class ImageInfo {
 	private String imageWidth = null;
 	private String ID_name = null;
 	private String ID_name_imageWidth = null;
+	private String ID_name_imagewidth_type = null;
+	private String outputType = null;
 	private String extension = null;
-	public ImageInfo(String parentDir, String ID, String nameAsUploaded, String imageWidth, String extension){
+	public ImageInfo(String parentDir, String ID, String nameAsUploaded, String imageWidth, String outputType, String extension){
 		this.parentDir = parentDir;
 		this.ID = ID;
 		this.nameAsUploaded = nameAsUploaded;
 		this.imageWidth = imageWidth;
+		this.outputType = outputType;
 		this.extension = extension;
 		this.ID_name = ID + "_" + nameAsUploaded;
 		this.ID_name_imageWidth = this.ID_name +  "_" + imageWidth;
-		this.filename = this.ID_name_imageWidth + "." + extension;
+		this.ID_name_imagewidth_type = this.ID_name_imageWidth + "_" + outputType;
+		// filename
+		if (this.outputType.equals("")){
+			this.filename = this.ID_name_imageWidth + "." + extension;
+		}
+		else {
+			this.filename = this.ID_name_imagewidth_type + "." + extension;
+		}
+		
 		this.filepath = this.parentDir + FILESEP + this.filename;
 	}
 	public String getFilename_IdName(){
@@ -27,6 +38,9 @@ public class ImageInfo {
 	}
 	public String getFilename_IdNameWidth(){
 		return this.ID_name_imageWidth;
+	}
+	public String getFilename_IdNameWidthType(){
+		return this.ID_name_imagewidth_type;
 	}
 	public String getNameAsUploaded(){
 		return this.nameAsUploaded;

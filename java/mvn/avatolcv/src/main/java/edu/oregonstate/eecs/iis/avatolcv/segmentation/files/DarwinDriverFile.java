@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.segmentation.files;
 
 public class DarwinDriverFile {
+	private static final String NL = System.getProperty("line.separator");
     private String imgDir = null;
     private String lblDir = null;
     private String segDir = null;
@@ -27,43 +28,43 @@ public class DarwinDriverFile {
     }
 	public String getXMLContentString(){
 		String s = 
-			"<drwn>" +
-		   "<drwnMultiSegConfig>" +
-		   "<!-- data options -->" +
-		   "<option name=\"baseDir\" value=\"./\" />" +
-		   "<option name=\"imgDir\" value=\"" + imgDir + "\" />" + //   <-----------
-		   "<option name=\"lblDir\" value=\"" + lblDir + "\" />" + // <-----------
-		   "<option name=\"segDir\" value=\"" + segDir + "\" />" + // <-----------
-		   "<option name=\"cacheDir\" value=\"" + cachedDir + "\" />" + // <-----------
-		   "<option name=\"modelsDir\" value=\"" + modelsDir + "\" />" + // <-----------
-		   "<option name=\"outputDir\" value=\"" + outputDir + "\" />" + // <-----------
-		   "<option name=\"imgExt\" value=\".jpg\" />" +
-		   "<option name=\"lblExt\" value=\".txt\" />" +
-		   "<option name=\"segExt\" value=\".sp\" />" +
-		   "<option name=\"useCache\" value=\"true\" />" +
-		   "<!-- region definitions -->" +
-		   "<regionDefinitions>  leaf, background, tag, other" +
-		      "<region id=\"-1\" name=\"other\" color=\"0 0 0\"/>" +
-		      "<region id=\"0\" name=\"leaf\" color=\"0 128 0\"/>" +
-		      "<region id=\"1\" name=\"background\" color=\"0 0 128\"/>" +
-		      "<region id=\"2\" name=\"tag\" color=\"128 0 0\"/>" +
-		   "</regionDefinitions>" +
-		  "</drwnMultiSegConfig>" +
-	      "<drwnSegImagePixelFeatures>" +
-	      "<!-- feature options -->" +
-	      "<option name=\"filterBandwidth\" value=\"1\" />" +
-	      "<option name=\"featureGridSpacing\" value=\"5\" />" +
-	      "<option name=\"includeRGB\" value=\"true\" />" +
-	      "<option name=\"includeHOG\" value=\"true\" />" +
-	      "<option name=\"includeLBP\" value=\"true\" />" +
-	      "<option name=\"includeRowCol\" value=\"true\" />" +
-	      "<option name=\"includeLocation\" value=\"true\" />" +
-	      "</drwnSegImagePixelFeatures>" +
-	      "<drwnCodeProfiler enabled=\"true\" />" +
-	      "<drwnLogger logLevel=\"VERBOSE\" logFile=\"msrc.log\" />" +
-		  " <drwnThreadPool threads=\"4\" />" +
-		  "<drwnConfusionMatrix colSep=\" || \" rowBegin=\"    || \" rowEnd=\" \\\" />" +   
-	      "<drwnHOGFeatures blockSize=\"1\" normClippingLB=\"0.1\" normClippingUB=\"0.5\" />" +
+			"<drwn>" + NL +
+		   "<drwnMultiSegConfig>" + NL +
+		   "<!-- data options -->" + NL +
+		   "<option name=\"baseDir\" value=\"./\" />" + NL +
+		   "<option name=\"imgDir\" value=\"" + imgDir + "\" />" + NL + //   <-----------
+		   "<option name=\"lblDir\" value=\"" + lblDir + "\" />" + NL + // <-----------
+		   "<option name=\"segDir\" value=\"" + segDir + "\" />" + NL + // <-----------
+		   "<option name=\"cacheDir\" value=\"" + cachedDir + "\" />" + NL + // <-----------
+		   "<option name=\"modelsDir\" value=\"" + modelsDir + "\" />" + NL + // <-----------
+		   "<option name=\"outputDir\" value=\"" + outputDir + "\" />" + NL + // <-----------
+		   "<option name=\"imgExt\" value=\".jpg\" />" + NL +
+		   "<option name=\"lblExt\" value=\".txt\" />" + NL +
+		   "<option name=\"segExt\" value=\".sp\" />" + NL +
+		   "<option name=\"useCache\" value=\"true\" />" + NL +
+		   "<!-- region definitions -->" + NL +
+		   "<regionDefinitions>  leaf, background, tag, other" + NL +
+		      "<region id=\"-1\" name=\"other\" color=\"0 0 0\"/>" + NL +
+		      "<region id=\"0\" name=\"leaf\" color=\"0 128 0\"/>" + NL +
+		      "<region id=\"1\" name=\"background\" color=\"0 0 128\"/>" + NL +
+		      "<region id=\"2\" name=\"tag\" color=\"128 0 0\"/>" + NL +
+		   "</regionDefinitions>" + NL +
+		  "</drwnMultiSegConfig>" + NL +
+	      "<drwnSegImagePixelFeatures>" + NL +
+	      "<!-- feature options -->" + NL +
+	      "<option name=\"filterBandwidth\" value=\"1\" />" + NL +
+	      "<option name=\"featureGridSpacing\" value=\"5\" />" + NL +
+	      "<option name=\"includeRGB\" value=\"true\" />" + NL +
+	      "<option name=\"includeHOG\" value=\"true\" />" + NL +
+	      "<option name=\"includeLBP\" value=\"true\" />" + NL +
+	      "<option name=\"includeRowCol\" value=\"true\" />" + NL +
+	      "<option name=\"includeLocation\" value=\"true\" />" + NL +
+	      "</drwnSegImagePixelFeatures>" + NL +
+	      "<drwnCodeProfiler enabled=\"true\" />" + NL +
+	      "<drwnLogger logLevel=\"VERBOSE\" logFile=\"msrc.log\" />" + NL +
+		  " <drwnThreadPool threads=\"4\" />" + NL +
+		  "<drwnConfusionMatrix colSep=\" || \" rowBegin=\"    || \" rowEnd=\" \\\" />" + NL +   
+	      "<drwnHOGFeatures blockSize=\"1\" normClippingLB=\"0.1\" normClippingUB=\"0.5\" />" + NL +
 	   "</drwn>";
 		return s;
 	}

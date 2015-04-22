@@ -10,10 +10,13 @@ public class SegmentationImages {
 
 	private List<ImageInfo> trainingImages = null;
 	private List<ImageInfo> testImages = null;
+	private List<ImageInfo> resultImages = null; 
 	private String segTrainingImageDir = null;
+	private String segOutputImageDir = null;
 	private List<ImageInfo> candidateImages = null;
-	public SegmentationImages(String segTrainingImageDir, List<ImageInfo> candidateImages) throws SegmentationException {
+	public SegmentationImages(String segTrainingImageDir, String segOutputImageDir, List<ImageInfo> candidateImages) throws SegmentationException {
 		this.segTrainingImageDir = segTrainingImageDir;
+		this.segOutputImageDir = segOutputImageDir;
 		this.candidateImages = candidateImages;
 	}
 	public void reload()  throws SegmentationException {
@@ -40,6 +43,34 @@ public class SegmentationImages {
 				this.testImages.add(ii);
 			}
 		}
+		
+		resultImages = new ArrayList<ImageInfo>();
+		File segOutputDir = new File(segOutputImageDir);
+		if (!segOutputDir.isDirectory()){
+			throw new SegmentationException("given segmentationOutputDir does not exist " + segOutputImageDir);
+		}
+		File[] outputFiles = segOutputDir.listFiles();
+		
+		for (ImageInfo ii : candidateImages){
+			String fileRootToLookFor  = ii.getFilename_IdName();
+			for (File f : labelFiles){
+				if (f.getName().startsWith(fileRootToLookFor)){
+					String filename = f.getName();
+					String parentDir = f.getParent();
+					String[] filenameParts = filename.split("\\.");
+					String rootName = filenameParts[0];
+					String extension = filenameParts[1];
+					String[] rootNameParts = rootName.split("_");
+					String ID = rootNameParts[0];
+					String nameAsUploaded = rootNameParts[1];
+					String imageWidth = rootNameParts[2];
+					String outputType = rootNameParts[3];
+					ImageInfo resultImageInfo = new ImageInfo(parentDir, ID, nameAsUploaded, imageWidth, outputType, extension);
+					this.resultImages.add(resultImageInfo);
+				}
+			}
+		}
+		
 	}
 	public List<ImageInfo> getTrainingImages(){
 		List<ImageInfo> result = new ArrayList<ImageInfo>();

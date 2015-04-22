@@ -1,8 +1,11 @@
 package edu.oregonstate.eecs.iis.avatolcv.segmentation;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -11,6 +14,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.segmentation.files.DarwinDriverFile;
 
 /*
 * This step supports the UI that allows for segmentation labeling or reviewing of segmentation labels
@@ -18,6 +22,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 public class SegStep2_LabelTrainingExamples implements Step {
 	public static final String GROUND_TRUTH_SUFFIX = "_groundtruth";	
 	private static final String FILESEP = System.getProperty("file.separator");
+	private static final String NL = System.getProperty("line.separator");
 	private View view = null;
 	private SegmentationSessionData ssd = null;
 	SegmentationImages si = null;
@@ -28,7 +33,7 @@ public class SegStep2_LabelTrainingExamples implements Step {
 		this.si = ssd.getSegmentationImages();
 	}
 	public void deleteTrainingImage(ImageInfo ii)  throws AvatolCVException{
-		String targetDir = this.ssd.getSegmentationLabelDir();
+		String targetDir = this.ssd.getSegmentationTrainingImageDir();
 		String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + GROUND_TRUTH_SUFFIX + "." + ii.getExtension();
 		File f = new File(targetPath);
 		if (f.exists()){
@@ -42,7 +47,7 @@ public class SegStep2_LabelTrainingExamples implements Step {
 		}
 	}
 	public void saveSegmentationTrainingImage(BufferedImage bi, ImageInfo ii) throws AvatolCVException {
-		String targetDir = this.ssd.getSegmentationLabelDir();
+		String targetDir = this.ssd.getSegmentationTrainingImageDir();
 		String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + GROUND_TRUTH_SUFFIX + "." + ii.getExtension();
 		try {
 		    File outputfile = new File(targetPath);
@@ -55,10 +60,17 @@ public class SegStep2_LabelTrainingExamples implements Step {
 			throw new AvatolCVException("could not reload SegmentationImages after training image add: " + se.getMessage(), se);
 		}
 	}
+	
+	
+	
 	@Override
 	public void consumeProvidedData() throws AvatolCVException {
 		try {
 			this.si.reload();
+			this.ssd.createDarwinDriverFile();
+			this.ssd.createTrainingImageListFile();
+			this.ssd.createTestImageListFile();
+			this.ssd.createSegmentationConfigFile();
 			this.needsAnswering = false;
 		}
 		catch(SegmentationException se){

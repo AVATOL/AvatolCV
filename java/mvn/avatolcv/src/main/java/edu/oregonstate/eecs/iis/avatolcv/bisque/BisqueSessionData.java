@@ -134,7 +134,7 @@ public class BisqueSessionData {
 		for (BisqueImage bi : bisqueImages){
 			String[] nameParts = bi.getName().split("\\.");
 			String name = nameParts[0];
-			ImageInfo ii = new ImageInfo(dir, bi.getResourceUniq(), name, width, STANDARD_IMAGE_FILE_EXTENSION);
+			ImageInfo ii = new ImageInfo(dir, bi.getResourceUniq(), name, width, "", STANDARD_IMAGE_FILE_EXTENSION);
 			listToFill.add(ii);
 		}
 	}
