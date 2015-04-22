@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.segmentation;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
@@ -11,54 +12,34 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 public class SegStep1_TrainingExamplesCheck implements Step {
 
 	private View view = null;	
-	private boolean segLabelFileDetectionHasBeenRun = false;
-    //private SegmentationToolHarness segToolHarness= null;
+	private boolean segLabelFileAssessmentHasBeenRun = false;
 	private SegmentationSessionData ssd = null;
+	SegmentationImages si = null;
 	public SegStep1_TrainingExamplesCheck(View view, SegmentationSessionData ssd){
 		this.ssd = ssd;
 		this.view = view;
 	}
-	/*public SegLabelsCheckStep(View view, SegmentationToolHarness segToolHarness){
-		this.segToolHarness = segToolHarness;
-		
-		this.view = view;
-	}*/
+	
 	@Override
 	public void consumeProvidedData() throws AvatolCVException {
-		// TODO Auto-generated method stub
-
+		this.ssd.setSegmentationImages(this.si);
 	}
 	
-	public int percentSegTrainingFileExist() throws SegmentationException {
-		segLabelFileDetectionHasBeenRun = true;
-		String segLabelDirPath = this.ssd.getSegmentationLabelDir();
-		File segLabelDir = new File(segLabelDirPath);
+	public void assess()  throws SegmentationException {
+		segLabelFileAssessmentHasBeenRun = true;
+		String segTrainingImageDirPath = this.ssd.getSegmentationLabelDir();
+		File segLabelDir = new File(segTrainingImageDirPath);
 		if (!segLabelDir.isDirectory()){
-			throw new SegmentationException("given segmentationLabelDir does not exist " + segLabelDirPath);
+			throw new SegmentationException("given segmentationLabelDir does not exist " + segTrainingImageDirPath);
 		}
-		File[] labelFiles = segLabelDir.listFiles();
-		
-		/*
-		 * to avoid having to know about potential suffixes on the root names, search just by root names
-		 */
 		List<ImageInfo> candidateImages = ssd.getCandidateImages();
-		int count = 0;
-		int targetCount = candidateImages.size();
-		for (ImageInfo ii : candidateImages){
-			
-			String fileRootToLookFor  = ii.getFilename_IdName();
-			for (File f : labelFiles){
-				if (f.getName().startsWith(fileRootToLookFor)){
-					count++;
-				}
-			}
-		}
-		int percent = (int)(100 * ((double)count / (double)targetCount));
-		return percent;
+		si = new SegmentationImages(segTrainingImageDirPath, candidateImages);
+		si.reload();
 	}
+	
 	@Override
 	public boolean needsAnswering() {
-		if (segLabelFileDetectionHasBeenRun){
+		if (segLabelFileAssessmentHasBeenRun){
 			return false;
 		}
 		return true;

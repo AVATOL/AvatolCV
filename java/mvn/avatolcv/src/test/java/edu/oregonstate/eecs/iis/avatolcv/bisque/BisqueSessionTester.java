@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.ObsoleteBisqueSegLabelsCheckStep;
-import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.ObsoleteBisqueSegmentationReviewStep;
-import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.ObsoleteBisqueSegmentationRunStep;
-import edu.oregonstate.eecs.iis.avatolcv.bisque.seg.ObsoleteLeafSegmentationDataPrepStep;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
@@ -28,8 +24,8 @@ public class BisqueSessionTester extends TestCase {
 		return client;
 	}
 	public void testSession(){
-		//BisqueWSClient client = getBogusWSClient();
-		BisqueWSClient client = new BisqueWSClientImpl();
+		BisqueWSClient client = getBogusWSClient();
+		//BisqueWSClient client = new BisqueWSClientImpl();
 		String rootDir = "C:\\avatol\\git\\avatol_cv";
 		/*
 		 * create session
@@ -52,19 +48,6 @@ public class BisqueSessionTester extends TestCase {
 		ss.appendStep(bisqueExclusionCoachingStep);
 		Step bisqueExclusionStep = new BisqueExclusionStep(null, sessionData);
 		ss.appendStep(bisqueExclusionStep);
-		SegmentationContainerStep bisqueSegmentationStep = new SegmentationContainerStep(sessionData);
-		
-		// fill in the segmentation step with sub-steps
-		Step bisqueSegLabelsCheckStep = new ObsoleteBisqueSegLabelsCheckStep(null, sessionData);
-		bisqueSegmentationStep.appendStep(bisqueSegLabelsCheckStep);
-		Step leafSegmentationDataPrepStep = new ObsoleteLeafSegmentationDataPrepStep(null, sessionData);
-		bisqueSegmentationStep.appendStep(leafSegmentationDataPrepStep);
-		Step bisqueSegmentationRunStep = new ObsoleteBisqueSegmentationRunStep(null, sessionData);
-		bisqueSegmentationStep.appendStep(bisqueSegmentationRunStep);
-		Step bisqueSegmentationReviewStep = new ObsoleteBisqueSegmentationReviewStep(null, sessionData);
-		bisqueSegmentationStep.appendStep(bisqueSegmentationReviewStep);
-		
-		ss.appendStep(bisqueSegmentationStep);
 		
 		
 		BisqueLoginStep bls = (BisqueLoginStep)ss.getCurrentStep();
@@ -176,11 +159,7 @@ public class BisqueSessionTester extends TestCase {
 		/*
 		 * segmentation
 		 */
-		ss.next();
-		SegmentationContainerStep bss = (SegmentationContainerStep)ss.getCurrentStep();
-		StepSequence segSs = bss.getStepSequence();
-		ObsoleteLeafSegmentationDataPrepStep lsdps = (ObsoleteLeafSegmentationDataPrepStep)segSs.getCurrentStep();
-		Assert.assertTrue(lsdps.needsAnswering());
+		
 		
 		// test at the next level down
 	}

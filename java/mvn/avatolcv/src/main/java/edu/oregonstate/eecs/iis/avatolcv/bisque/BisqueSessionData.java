@@ -14,7 +14,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 
 public class BisqueSessionData {
 	private static final String FILESEP = System.getProperty("file.separator");
-	public static final String STANDARD_IMAGE_FILE_EXTENSION = ".jpg";
+	public static final String STANDARD_IMAGE_FILE_EXTENSION = "jpg";
 	public static final String IMAGE_THUMBNAIL_WIDTH = "80";
 	public static final String IMAGE_MEDIUM_WIDTH = "200";
 	public static final String IMAGE_LARGE_WIDTH = "400";
@@ -81,6 +81,25 @@ public class BisqueSessionData {
 		ensureDirExists(getImagesLargeDir());
 		
 	}
+	public void clearImageDirs(){
+		clearDir(getImagesThumbnailDir());
+		clearDir(getImagesMediumDir());
+		clearDir(getImagesLargeDir());
+	}
+	public void clearDir(String dir){
+		File dirFile = new File(dir);
+		if (dirFile.isDirectory()){
+			File[] files = dirFile.listFiles();
+			for (File f : files){
+				if (f.getName().equals(".") || f.getName().equals("..")){
+					//leave these
+				}
+				else {
+					f.delete();
+				}
+			}
+		}
+	}
 	public void ensureDirExists(String dir){
 		File f = new File(dir);
 		if (!f.isDirectory()){
@@ -113,7 +132,9 @@ public class BisqueSessionData {
     
 	public static void generateImageInfoForSize(List<ImageInfo> listToFill, List<BisqueImage> bisqueImages, String width, String dir){
 		for (BisqueImage bi : bisqueImages){
-			ImageInfo ii = new ImageInfo(dir, bi.getResourceUniq(), bi.getName(), width, STANDARD_IMAGE_FILE_EXTENSION);
+			String[] nameParts = bi.getName().split("\\.");
+			String name = nameParts[0];
+			ImageInfo ii = new ImageInfo(dir, bi.getResourceUniq(), name, width, STANDARD_IMAGE_FILE_EXTENSION);
 			listToFill.add(ii);
 		}
 	}

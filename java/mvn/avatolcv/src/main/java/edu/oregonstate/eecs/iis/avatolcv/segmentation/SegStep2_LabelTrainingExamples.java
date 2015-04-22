@@ -20,19 +20,25 @@ public class SegStep2_LabelTrainingExamples implements Step {
 	private static final String FILESEP = System.getProperty("file.separator");
 	private View view = null;
 	private SegmentationSessionData ssd = null;
-    //private SegmentationToolHarness segToolHarness= null;
-
+	SegmentationImages si = null;
+	boolean needsAnswering = true;
 	public SegStep2_LabelTrainingExamples(View view, SegmentationSessionData ssd){
 		this.view = view;
-		//this.segToolHarness = segToolHarness;
 		this.ssd = ssd;
+		this.si = ssd.getSegmentationImages();
 	}
-	public void deleteTrainingImage(ImageInfo ii){
+	public void deleteTrainingImage(ImageInfo ii)  throws AvatolCVException{
 		String targetDir = this.ssd.getSegmentationLabelDir();
 		String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + GROUND_TRUTH_SUFFIX + "." + ii.getExtension();
 		File f = new File(targetPath);
 		if (f.exists()){
 			f.delete();
+		}
+		try {
+			this.si.reload();
+		}
+		catch(SegmentationException se){
+			throw new AvatolCVException("could not reload SegmentationImages after training image delete: " + se.getMessage(), se);
 		}
 	}
 	public void saveSegmentationTrainingImage(BufferedImage bi, ImageInfo ii) throws AvatolCVException {
@@ -41,20 +47,28 @@ public class SegStep2_LabelTrainingExamples implements Step {
 		try {
 		    File outputfile = new File(targetPath);
 		    ImageIO.write(bi, ii.getExtension() , outputfile);
+		    this.si.reload();
 		} catch (IOException e) {
 		    throw new AvatolCVException("could not save segmentation training image " + targetPath);
+		}
+		catch(SegmentationException se){
+			throw new AvatolCVException("could not reload SegmentationImages after training image add: " + se.getMessage(), se);
 		}
 	}
 	@Override
 	public void consumeProvidedData() throws AvatolCVException {
-		// TODO Auto-generated method stub
-
+		try {
+			this.si.reload();
+			this.needsAnswering = false;
+		}
+		catch(SegmentationException se){
+			throw new AvatolCVException("problem reloading SegmentationImages ",se);
+		}
 	}
 
 	@Override
 	public boolean needsAnswering() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.needsAnswering;
 	}
 
 	@Override

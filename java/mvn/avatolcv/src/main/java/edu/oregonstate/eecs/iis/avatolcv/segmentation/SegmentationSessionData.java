@@ -17,20 +17,42 @@ public class SegmentationSessionData {
 	private String segmentationDir = null;
 	private String sourceImageDir = null;
 	private List<ImageInfo> candidateImages = new ArrayList<ImageInfo>();
-
+    private List<ImageInfo> trainingImages = new ArrayList<ImageInfo>();
+    private List<ImageInfo> testImages = new ArrayList<ImageInfo>();
+    private SegmentationImages si = null;
+    
 	public SegmentationSessionData(String parentDataDir){
 		this.parentDataDir = parentDataDir;
 		this.rootSegDir = this.parentDataDir + FILESEP + "seg";
-		File f = new File(rootSegDir);
+		ensureDirExists(this.rootSegDir);
+		this.cacheDir = this.rootSegDir + FILESEP + "cache";
+		ensureDirExists(this.cacheDir);
+		this.labelDir = this.rootSegDir + FILESEP + "trainingImages";
+		ensureDirExists(this.labelDir);
+		this.modelsDir = this.rootSegDir + FILESEP + "models";
+		ensureDirExists(this.modelsDir);
+		this.outputDir = this.rootSegDir + FILESEP + "output";
+		ensureDirExists(this.outputDir);
+	}
+	public void ensureDirExists(String dir){
+		File f = new File(dir);
 		if (!f.isDirectory()){
 			f.mkdirs();
 		}
-		this.cacheDir = this.rootSegDir + FILESEP + "cache";
-		this.labelDir = this.rootSegDir + FILESEP + "labels";
-		this.modelsDir = this.rootSegDir + FILESEP + "models";
-		this.modelsDir = this.rootSegDir + FILESEP + "output";
 	}
-	
+	public int percentSegTrainingFileExist(){
+		double trainingImageCount = this.trainingImages.size();
+		double testImageCount = this.testImages.size();
+		double total = testImageCount + trainingImageCount;
+		int percent = (int)(100 * ((double)trainingImageCount / (double)total));
+		return percent;
+	}
+	public void setSegmentationImages(SegmentationImages si){
+		this.si = si;
+	}
+	public SegmentationImages getSegmentationImages(){
+		return this.si;
+	}
 	public List<ImageInfo> getCandidateImages(){
 		return this.candidateImages;
 	}
