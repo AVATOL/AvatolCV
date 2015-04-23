@@ -17,7 +17,7 @@ runConfig_segmentation.txt has lines of the following form:
     trainingImagesFile,<path to training images file>  // file will be named trainingImages_segmentation.txt
     testingImagesFile,<path to testing images file>    // file will be named testingImages_segmentation.txt
     rawImagesDir,<path of dir where right sized images from bisque are put>
-	segLabelsOutputDir,<path of dir where output goes>
+	segmentationOutputDir,<path of dir where output goes>
 	modelXmlPath,<path to generated model that will be used during test>
 
 	seg training files ..._groundtruth.jpg 
