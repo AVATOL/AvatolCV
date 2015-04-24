@@ -1,10 +1,10 @@
 package edu.oregonstate.eecs.iis.avatolcv.segmentation;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForStage;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
@@ -14,7 +14,7 @@ public class SegStep1_TrainingExamplesCheck implements Step {
 	private View view = null;	
 	private boolean segLabelFileAssessmentHasBeenRun = false;
 	private SegmentationSessionData ssd = null;
-	SegmentationImages si = null;
+	ImagesForStage ifs = null;
 	public SegStep1_TrainingExamplesCheck(View view, SegmentationSessionData ssd){
 		this.ssd = ssd;
 		this.view = view;
@@ -22,10 +22,10 @@ public class SegStep1_TrainingExamplesCheck implements Step {
 	
 	@Override
 	public void consumeProvidedData() throws AvatolCVException {
-		this.ssd.setSegmentationImages(this.si);
+		this.ssd.setImagesForStage(this.ifs);
 	}
 	
-	public void assess()  throws SegmentationException {
+	public void assess()  throws AvatolCVException {
 		segLabelFileAssessmentHasBeenRun = true;
 		String segTrainingImageDirPath = this.ssd.getSegmentationTrainingImageDir();
 		File segLabelDir = new File(segTrainingImageDirPath);
@@ -33,8 +33,8 @@ public class SegStep1_TrainingExamplesCheck implements Step {
 			segLabelDir.mkdirs();
 		}
 		List<ImageInfo> candidateImages = ssd.getCandidateImages();
-		si = new SegmentationImages(segTrainingImageDirPath, this.ssd.getSegmentationOutputDir(), candidateImages);
-		si.reload();
+		ifs = new ImagesForStage(segTrainingImageDirPath, this.ssd.getSegmentationOutputDir(), candidateImages);
+		ifs.reload();
 	}
 	
 	@Override

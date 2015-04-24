@@ -43,19 +43,17 @@ public class SegmentationSessionTester extends TestCase {
 		try {
 			checkStep.assess();
 			checkStep.consumeProvidedData();
-			int trainingCount = ssd.getSegmentationImages().getTrainingImages().size();
-			int testingCount = ssd.getSegmentationImages().getTestImages().size();
+			int trainingCount = ssd.getImagesForStage().getTrainingImages().size();
+			int testingCount = ssd.getImagesForStage().getTestImages().size();
 			int total = trainingCount + testingCount;
 			Assert.assertTrue(total != 0);
 		}
-		catch(SegmentationException se){
-			Assert.fail(se.getMessage());
-		}
+		
 		catch(AvatolCVException acve){
 			Assert.fail(acve.getMessage());
 		}
 
-		Assert.assertTrue(ssd.getSegmentationImages().getTrainingImages().size() == 0);
+		Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 0);
 		Assert.assertFalse(checkStep.needsAnswering());
 		
 		
@@ -77,10 +75,13 @@ public class SegmentationSessionTester extends TestCase {
 		try {
 			ii1 = ssd.getCandidateImages().get(0);
 			labelStep.saveSegmentationTrainingImage(bi1, ii1);
+			Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 1);
+			Assert.assertTrue(ssd.getImagesForStage().getTestImages().size() == 4);
 			// add another image
 			ii2 = ssd.getCandidateImages().get(1);
 			labelStep.saveSegmentationTrainingImage(bi2, ii2);
-			Assert.assertTrue(ssd.getSegmentationImages().getTrainingImages().size() == 2);
+			Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 2);
+			Assert.assertTrue(ssd.getImagesForStage().getTestImages().size() == 3);
 		}
 		catch(AvatolCVException e){
 			Assert.fail("problem saving Training image " + e.getMessage());
@@ -94,7 +95,66 @@ public class SegmentationSessionTester extends TestCase {
 			Assert.fail("problem deleting image " + e.getMessage());
 		}
 		
-		Assert.assertTrue(ssd.getSegmentationImages().getTrainingImages().size() == 1);
+		Assert.assertTrue(ssd.getImagesForStage().getDisqualifiedImages().size() == 0);
+		Assert.assertTrue(ssd.getImagesForStage().getInPlayImages().size() == 5);
+		
+		Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 1);
+		Assert.assertTrue(ssd.getImagesForStage().getTestImages().size() == 4);
+		
+		// disqualification
+		try {
+			labelStep.disqualifyImage(ii1);
+			
+			Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 0);
+			Assert.assertTrue(ssd.getImagesForStage().getTestImages().size() == 4);
+
+			Assert.assertTrue(ssd.getImagesForStage().getDisqualifiedImages().contains(ii1));
+			Assert.assertTrue(ssd.getImagesForStage().getDisqualifiedImages().size() == 1);
+			Assert.assertFalse(ssd.getImagesForStage().getInPlayImages().contains(ii1));
+			Assert.assertTrue(ssd.getImagesForStage().getInPlayImages().size() == 4);
+			
+			labelStep.disqualifyImage(ii2);
+
+			Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 0);
+			Assert.assertTrue(ssd.getImagesForStage().getTestImages().size() == 3);
+
+			Assert.assertTrue(ssd.getImagesForStage().getDisqualifiedImages().contains(ii2));
+			Assert.assertTrue(ssd.getImagesForStage().getDisqualifiedImages().size() == 2);
+			Assert.assertFalse(ssd.getImagesForStage().getInPlayImages().contains(ii2));
+			Assert.assertTrue(ssd.getImagesForStage().getInPlayImages().size() == 3);
+		}
+		catch(AvatolCVException se){
+			Assert.fail("problem disqualifying image " + se.getMessage());
+		}
+		
+		// requalification 
+		try {
+			labelStep.requalifyImage(ii1);
+			Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 1);
+			Assert.assertTrue(ssd.getImagesForStage().getTestImages().size() == 3);
+
+			Assert.assertFalse(ssd.getImagesForStage().getDisqualifiedImages().contains(ii1));
+			Assert.assertTrue(ssd.getImagesForStage().getDisqualifiedImages().size() == 1);
+			Assert.assertTrue(ssd.getImagesForStage().getInPlayImages().contains(ii1));
+			Assert.assertTrue(ssd.getImagesForStage().getInPlayImages().size() == 4);
+			
+			labelStep.requalifyImage(ii2);
+			Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 1);
+			Assert.assertTrue(ssd.getImagesForStage().getTestImages().size() == 4);
+
+			Assert.assertFalse(ssd.getImagesForStage().getDisqualifiedImages().contains(ii2));
+			Assert.assertTrue(ssd.getImagesForStage().getDisqualifiedImages().size() == 0);
+			Assert.assertTrue(ssd.getImagesForStage().getInPlayImages().contains(ii2));
+			Assert.assertTrue(ssd.getImagesForStage().getInPlayImages().size() == 5);
+		}
+		catch(AvatolCVException se){
+			Assert.fail("problem requalifying image " + se.getMessage());
+		}
+		
+		
+		
+		
+		
 		try {
 			labelStep.consumeProvidedData();
 		}
@@ -116,8 +176,9 @@ public class SegmentationSessionTester extends TestCase {
             Assert.fail("problem consuming data " + e.getMessage());
         }
 		Assert.assertFalse(segRunStep.needsAnswering());
-		SegStep4_Review reviewStep = new SegStep4_Review(null, ssd);
 		
+		SegStep4_Review reviewStep = new SegStep4_Review(null, ssd);
+		// nothing unique to test for reviewStep - all interesting functionality covered at step2 labeling.
 		
 		
 		

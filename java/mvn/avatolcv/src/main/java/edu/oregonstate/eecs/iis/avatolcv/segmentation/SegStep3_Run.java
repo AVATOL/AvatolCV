@@ -15,17 +15,13 @@ public class SegStep3_Run implements Step {
 		this.segRunner = segRunner;
 	}
 	public void run(ProgressPresenter pp){
+		this.ssd.cleanResults();
 		this.segRunner.run(ssd.getConfigFilePath(), pp);
 	}
 	@Override
 	public void consumeProvidedData() throws AvatolCVException {
-		try {
-			// pull the result files into the program's consciousness
-			this.ssd.getSegmentationImages().reload();
-		}
-		catch(SegmentationException se){
-			throw new AvatolCVException("problem consuming results of segmentation: " + se.getMessage(), se);
-		}
+		// pull the result files into the program's consciousness
+		this.ssd.getImagesForStage().reload();	
 	}
 
 	@Override
