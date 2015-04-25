@@ -7,6 +7,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
 //import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationToolHarness;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
@@ -36,6 +37,8 @@ public class BisqueSessionData {
 	List<ImageInfo> imagesToInclude = null;
 	List<ImageInfo> imagesToExclude = null;
 	SegmentationSessionData ssd = null;
+	
+	private BisqueAnnotation currentCharacter = null;
 	public BisqueSessionData(String sessionDataRootParent) throws AvatolCVException {
 		File f = new File(sessionDataRootParent);
 		if (!f.isDirectory()){
@@ -214,6 +217,13 @@ public class BisqueSessionData {
     	return this.ssd;
     }
 	
-	
-	
+	/*
+	 * Scoring
+	 */
+	public void setCurrentCharacter(BisqueAnnotation character){
+	    this.currentCharacter = character;
+	}
+	public BisqueAnnotation getCurrentCharacter(){
+	    return this.currentCharacter;
+	}
 }

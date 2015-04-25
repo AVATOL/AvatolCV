@@ -124,9 +124,11 @@ public class OrientationSessionData {
 			f.mkdirs();
 		}
 	}
-	//TODO WAITING ON YAO RESPONSE___do I need to provide the segmentation training images as input in addition to the segmentation output
+	//do I need to provide the segmentation training images as input in addition to the segmentation output
+	// Answer is no - these images are actually not the same format as the _mask images so Yao says "ok to skip"  
+	// TODO WAITING ON YAO RESPONSE___but I say, user needs those images labeled - doesn't want any "good images" left out of process, otherwise they have to go dig around and fix.
 	
-	LEFT OFF WAITING FOR THE ABOVE AND PONDERING...
+	
 	
 	now that I put ImagesForStage in play - it assumes training and test data.  should I not add steps to allow that to be there in case ther is no model?
 			
