@@ -14,7 +14,7 @@ public class BisqueCharChoiceStep implements Step {
     private BisqueWSClient wsClient  = null;
     private BisqueSessionData sessionData = null;
     private View view = null;
-    
+    private BisqueAnnotation chosenCharacter = null;
     public BisqueCharChoiceStep(View view, BisqueWSClient wsClient, BisqueSessionData sessionData){
         this.wsClient = wsClient;
         this.view = view;
@@ -38,15 +38,19 @@ public class BisqueCharChoiceStep implements Step {
         }
         
     }
+    public void setChosenAnnotation(BisqueAnnotation bi){
+        this.chosenCharacter = bi;
+    }
     @Override
     public void consumeProvidedData() throws AvatolCVException {
-        // TODO Auto-generated method stub
-
+        this.sessionData.setChosenCharacter(this.chosenCharacter);
     }
 
     @Override
     public boolean needsAnswering() {
-        // TODO Auto-generated method stub
+        if (null == chosenCharacter){
+            return true;
+        }
         return false;
     }
 
