@@ -11,14 +11,14 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 public class QQuestions {
 	List<QQuestion> questions = new ArrayList<QQuestion>();
 	
-	public QQuestions(Node domNode){
+	public QQuestions(Node domNode) throws AvatolCVException {
 		parseDomNodeIntoQuestions(domNode);
 	}
 	
 	public List<QQuestion> getQuestions(){
 		return questions;
 	}
-	public void parseDomNodeIntoQuestions(Node domNode){
+	public void parseDomNodeIntoQuestions(Node domNode) throws AvatolCVException {
 		Node questionsNode = domNode.getFirstChild();
 		System.out.println("docNode name " + questionsNode.getNodeName());
 		NodeList questionNodesAndWhiteSpaceNodes = questionsNode.getChildNodes();

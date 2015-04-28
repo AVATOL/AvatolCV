@@ -20,7 +20,7 @@ public class QuestionSequencer {
     private String matrixName = "UNDEFINED";
     private String characterName = "UNDEFINED";
     
-    public QuestionSequencer(List<QQuestion> qquestions){
+    public QuestionSequencer(List<QQuestion> qquestions) throws AvatolCVException {
     	this.qquestions = qquestions;
         this.nextAnswerIndex = 1;
         this.currentQuestion = this.qquestions.get(0);
@@ -96,7 +96,7 @@ public class QuestionSequencer {
         return existingAnswerToNextQuestion;
     }
     
-    public QQuestion findQuestionById(String id){
+    public QQuestion findQuestionById(String id) throws AvatolCVException {
     	 QQuestion question = new QQuestion(null, null, null);
          for (QQuestion aQuestion : this.qquestions){
              
@@ -110,7 +110,7 @@ public class QuestionSequencer {
     
     public String answerQuestion(String answer) throws AvatolCVException {
         String existingAnswerToNextQuestion = "NOT_YET_SPECIFIED";
-        if (!(this.currentQuestion.isValidAnswer(answer))){
+        if (!(this.currentQuestion.getAnswerIntegrity(answer).isValid())){
         	throw new AvatolCVException("invalid answer " + answer + " given to question " + this.currentQuestion.getId());
         } 
         int answerQuestionCount = answeredQuestions.size();
@@ -155,7 +155,7 @@ public class QuestionSequencer {
         }
     	return result;
     }
-    public AnsweredQuestion backUp(){
+    public AnsweredQuestion backUp() throws AvatolCVException {
     	this.nextAnswerIndex = this.nextAnswerIndex - 1;
         AnsweredQuestion prevAnswerToQuestion = this.answeredQuestions.get(this.nextAnswerIndex);
         this.currentQuestion = findQuestionById(prevAnswerToQuestion.getQuestionID());

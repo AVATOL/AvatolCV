@@ -14,7 +14,10 @@ public class QQuestion {
     private String text = null;
     private List<QAnswer> answers = new ArrayList<QAnswer>();
     private List<QImage> images = new ArrayList<QImage>();
-    public QQuestion(String type, String id, String text){
+    public QQuestion(String type, String id, String text) throws AvatolCVException {
+    	if (!(type.equals(INPUT_TYPE_INTEGER) || type.equals(INPUT_TYPE_STRING) || type.equals(INPUT_TYPE_CHOICE))){
+    		throw new AvatolCVException("bad type given for QQuestion " + type + " + must be " + INPUT_TYPE_INTEGER + " or " + INPUT_TYPE_STRING + " or " + INPUT_TYPE_CHOICE);
+    	}
         this.type = type;
         this.id = id;
         this.text = text;
@@ -41,39 +44,33 @@ public class QQuestion {
         images.add(image);
     }
     
-    public boolean isValidAnswer(String givenAnswer) throws AvatolCVException {
+    public QAnswerIntegrity getAnswerIntegrity(String givenAnswer) throws AvatolCVException {
         if (this.type.equals(INPUT_TYPE_INTEGER)){
             try {
                 Integer integer = new Integer(givenAnswer);
                 int value = integer.intValue();
-                return true;
+                return new QAnswerIntegrity(true,"ok");
             }
             catch(Exception e){
-                throw new AvatolCVException("Answer must be an integer.");
+                return new QAnswerIntegrity(false, "Answer must be valid integer.");
             }
         }
         else if (this.type.equals(INPUT_TYPE_STRING)){
             if (isStringValid(givenAnswer)){
-                return true;
+                return new QAnswerIntegrity(true,"ok");
             }
             else {
-                throw new AvatolCVException("Answer must be non-empty character string.");
+                return new QAnswerIntegrity(false,"Answer must be non-empty character string.");
             }
         }
-        else if (this.type.equals(INPUT_TYPE_CHOICE)){
-            boolean foundAnswer = false;
+        else { // (this.type.equals(INPUT_TYPE_CHOICE))
             for (QAnswer answer : this.answers){
                 if (givenAnswer.equals(answer.getValue())){
-                    return true;
+                    return new QAnswerIntegrity(true,"ok");
                 }
             }
-            if (!foundAnswer){
-                throw new AvatolCVException("Given answer does not match available choices.");
-            }
-        else
-            throw new AvatolCVException("Unknown question type " + this.type + " for question " + this.id);
+            return new QAnswerIntegrity(false,"Given choice not valid answer for question: " + givenAnswer);
         }
-        return false;
     }
     
     public boolean isStringValid(String s){
@@ -100,7 +97,7 @@ public class QQuestion {
         }
     }
     public QAnswer getQAnswerForChoiceAnswerValue(String value){
-        QAnswer result = new QAnswer(null, null);
+        QAnswer result = null;
         for (QAnswer answer : this.answers){
             if (answer.getValue().equals(value)){
                 result = answer;
