@@ -1,155 +1,165 @@
 package edu.oregonstate.eecs.iis.avatolcv.questionnaire;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+
 public class QuestionSequencer {
+	private static final String FILESEP = System.getProperty("file.separator");
+	private static final String NL = System.getProperty("line.separator");
     private int nextAnswerIndex = 0;
-    qquestions;
-    currentQuestion;
-    answeredQuestions = {};
-    noMoreQuestionsMarker;
-    matrixName = 'UNDEFINED'
-    characterName = 'UNDEFINED';
-}
-/*
- * properties
-        
-    end
-    methods
-        
-        function obj = QuestionSequencer(qquestions)
-            obj.qquestions = qquestions;
-            obj.nextAnswerIndex = 1;
-            obj.currentQuestion = obj.qquestions.questions(1);
-            obj.noMoreQuestionsMarker = QQuestion('NO_MORE_QUESTIONS','NO_MORE_QUESTIONS','NO_MORE_QUESTIONS');
-        end
-        
-        function persist(obj)
-            resultsDirExists = exist('results', 'dir');
-            if (not(resultsDirExists))
-                mkdir('results');
-            end
-            curDir = pwd();
-            if ispc
-                parentPath = sprintf('%s\\results\\%s',curDir,obj.matrixName);
-                filepath = sprintf('%s\\results\\%s\\%s.out',curDir,obj.matrixName,obj.characterName);
-            else
-                parentPath = sprintf('%s/results/%s',curDir,obj.matrixName);
-                filepath = sprintf('%s/results/%s/%s.out',curDir,obj.matrixName,obj.characterName);
-            end
-            parentPathExists = exist(parentPath, 'dir');
-            if (not(parentPathExists))
-                mkdir(parentPath);
-            end
-            disp(filepath);
-            fileID = fopen(filepath,'w');
-            for i=1:length(obj.answeredQuestions)
-                aq = obj.answeredQuestions(i);
-                fprintf(fileID,'%s=%s\n',aq.questionID, aq.answer);
-            end
-            fprintf(fileID,'\n'); % not sure why I needed to add an extra linefeed, but if didn't, final linefeed doesn't express
-            fclose(fileID);
-        end
-        
-        function currentQuestion = getCurrentQuestion(obj)
-            currentQuestion = obj.currentQuestion;
-        end
-        
-        function existingAnswerToNextQuestion = answerQuestionAfterBackup(obj, answer)
-            existingAnswerToNextQuestion = 'NOT_YET_SPECIFIED';
-            % check to see if the incoming answer is the same as the
-            % existing answer
-            existingAnsweredQuestion = obj.answeredQuestions(obj.nextAnswerIndex);
-            if strcmp(existingAnsweredQuestion.answer,answer)
-                % same answer given, any later AnsweredQuestions still
-                % valid, and can reuse existing AnsweredQuestion
-                obj.nextAnswerIndex = obj.nextAnswerIndex + 1;
-                % check to see if this is the final question
-                qAnswer = obj.currentQuestion.getQAnswerForAnswerValue(answer);
-                nextQuestionId = qAnswer.nextQuestion;
-                if (strcmp(nextQuestionId, 'NO_MORE_QUESTIONS'))
-                    %final question is being reanswered the same
-                    obj.currentQuestion = obj.noMoreQuestionsMarker;
-                    existingAnswerToNextQuestion = 'NOT_YET_SPECIFIED';
-                else 
-                    % non-final question being answered the same; look up answer to reuse 
-                    answerQuestionCount = length(obj.answeredQuestions);
-                    if (obj.nextAnswerIndex > answerQuestionCount)
-                        %revisiting the last question we already answered
-                        existingAnswerToNextQuestion = 'NOT_YET_SPECIFIED';
-                    else
-                        % we have later answers we reused
-                        existingAnsweredNextQuestion = obj.answeredQuestions(obj.nextAnswerIndex);
-                        existingAnswerToNextQuestion = existingAnsweredNextQuestion.answer;
-                    end
-                    obj.currentQuestion = obj.findQuestionById(nextQuestionId);
-                end
-            else
-                % different answer given, invalidating later answers, flush
-                % later answer starting at obj.nextAnswerindex
-                indexOfLastToSave = obj.nextAnswerIndex - 1;
-                obj.answeredQuestions = obj.answeredQuestions(1:indexOfLastToSave);
-                existingAnswerToNextQuestion = obj.answerQuestion(answer);
-            end
-        end
-        
-        function existingAnswerToNextQuestion = answerQuestion(obj, answer)
-            existingAnswerToNextQuestion = 'NOT_YET_SPECIFIED';
-            if (not(obj.currentQuestion.isValidAnswer(answer)))
-                message = sprintf('invalid answer %s given to question %s', answer, obj.currentQuestion.id);
-                exception = MException('QuestionSequencer:IllegalAnswer', message);
-                throw(exception);
-            end 
-            answerQuestionCount = length(obj.answeredQuestions);
-            if (obj.nextAnswerIndex <= answerQuestionCount)
-                existingAnswerToNextQuestion = obj.answerQuestionAfterBackup(answer);
-            else 
-                % we ensured answer validity above so assume it here
-                aq = AnsweredQuestion(obj.currentQuestion.id, answer);
-                obj.answeredQuestions = [ obj.answeredQuestions, aq ];
-                obj.nextAnswerIndex = obj.nextAnswerIndex + 1;
-                qAnswer = obj.currentQuestion.getQAnswerForAnswerValue(answer);
-                nextQuestionId = qAnswer.nextQuestion;
-                if (strcmp(nextQuestionId,'NO_MORE_QUESTIONS'))
-                    obj.currentQuestion = obj.noMoreQuestionsMarker;
-                else
-                    nextQuestion = obj.findQuestionById(nextQuestionId);
-                    if (strcmp(nextQuestion.id,'NULL'))
-                        message = sprintf('could not find question %s in qquestions', nextQuestionId);
-                        exception = MException('QuestionSequencer:UnknownQuestionId', message);
-                        throw(exception);
-                    else
-                        obj.currentQuestion = nextQuestion;
-                    end
-                end
-            end
-        end
-        
-        function result = isAllQuestionsAnswered(obj)
-            result = false;
-            if (strcmp(obj.currentQuestion.id,'NO_MORE_QUESTIONS'))
-                result = true;
-            end
-        end
-        
-        function question = findQuestionById(obj, id)
-            question = obj.qquestions.findQuestionById(id);
-        end
-        
-        function result = canBackUp(obj)
-            result = false;
-            answerCount = obj.nextAnswerIndex;
-            if (answerCount > 1) % don't use zero due to sspecial boundary action with CharacterQuestion
-                result = true;
-            end
-        end
-        
-        function prevAnswerToQuestion = backUp(obj)
-            obj.nextAnswerIndex = obj.nextAnswerIndex - 1;
-            prevAnswerToQuestion = obj.answeredQuestions(obj.nextAnswerIndex);
-            %obj.answeredQuestions = obj.answeredQuestions(1:length(obj.answeredQuestions) - 1);
-            obj.currentQuestion = obj.findQuestionById(prevAnswerToQuestion.questionID);
-        end
-    end
+    private List<QQuestion> qquestions;
+    private QQuestion currentQuestion;
+    private List<AnsweredQuestion> answeredQuestions = new ArrayList<AnsweredQuestion>();
+    private QQuestion noMoreQuestionsMarker;
+    private String matrixName = "UNDEFINED";
+    private String characterName = "UNDEFINED";
     
-end
- */
-*/
+    public QuestionSequencer(List<QQuestion> qquestions){
+    	this.qquestions = qquestions;
+        this.nextAnswerIndex = 1;
+        this.currentQuestion = this.qquestions.get(0);
+        this.noMoreQuestionsMarker = new QQuestion("NO_MORE_QUESTIONS","NO_MORE_QUESTIONS","NO_MORE_QUESTIONS");
+    }
+    public void persist() throws AvatolCVException {
+    	File f = new File("results");
+    	if (!f.isDirectory()){
+    		f.mkdirs();
+    	}
+    	String curDir = System.getProperty("user.dir");
+    	String parentPath = curDir + FILESEP + "results" + FILESEP + this.matrixName;
+    	String filepath = parentPath + FILESEP + this.characterName + ".out";
+        
+        File parentPathDir = new File(parentPath);
+        if (!parentPathDir.exists()){
+        	parentPathDir.mkdir();
+        }
+        try{
+        	BufferedWriter writer = new BufferedWriter(new FileWriter(filepath));
+        	for (AnsweredQuestion aq : this.answeredQuestions){
+        		writer.write(aq.getQuestionID() + "=" + aq.getAnswer() + NL);
+        	}
+        	writer.close();
+        }
+        catch(IOException ioe){
+        	throw new AvatolCVException("problem writing answer file");
+        }
+    }
+    
+    public QQuestion getCurrentQuestion(){
+    	return this.currentQuestion;
+    }
+    public String answerQuestionAfterBackup(String answer) throws AvatolCVException {
+    	String existingAnswerToNextQuestion = "NOT_YET_SPECIFIED";
+        // check to see if the incoming answer is the same as the
+        // existing answer
+        AnsweredQuestion existingAnsweredQuestion = this.answeredQuestions.get(nextAnswerIndex);
+        if (existingAnsweredQuestion.getAnswer().equals(answer)){
+            // same answer given, any later AnsweredQuestions still
+            // valid, and can reuse existing AnsweredQuestion
+            this.nextAnswerIndex = this.nextAnswerIndex + 1;
+            // check to see if this is the final question
+            QAnswer qAnswer = this.currentQuestion.getQAnswerForAnswerValue(answer);
+            String nextQuestionId = qAnswer.getNextQuestion();
+            if (nextQuestionId.equals("NO_MORE_QUESTIONS")){
+                // final question is being reanswered the same
+                this.currentQuestion = noMoreQuestionsMarker;
+                existingAnswerToNextQuestion = "NOT_YET_SPECIFIED";
+            }
+            else {
+                // non-final question being answered the same; look up answer to reuse 
+                int answerQuestionCount = answeredQuestions.size();
+                if (this.nextAnswerIndex > answerQuestionCount){
+                    // revisiting the last question we already answered
+                    existingAnswerToNextQuestion = "NOT_YET_SPECIFIED";
+            	}
+                else {
+                    //% we have later answers we reused
+                    AnsweredQuestion existingAnsweredNextQuestion = this.answeredQuestions.get(nextAnswerIndex);
+                    existingAnswerToNextQuestion = existingAnsweredNextQuestion.getAnswer();
+            	}
+                this.currentQuestion = findQuestionById(nextQuestionId);
+            }
+        }
+        else {
+            // different answer given, invalidating later answers, flush
+            // later answer starting at obj.nextAnswerindex
+            int indexOfLastToSave = this.nextAnswerIndex;  // OR  this.nextAnswerIndex - 1?
+            this.answeredQuestions = this.answeredQuestions.subList(0,indexOfLastToSave);
+            existingAnswerToNextQuestion = answerQuestion(answer);
+        }
+        return existingAnswerToNextQuestion;
+    }
+    
+    public QQuestion findQuestionById(String id){
+    	 QQuestion question = new QQuestion(null, null, null);
+         for (QQuestion aQuestion : this.qquestions){
+             
+             if (aQuestion.getId().equals(id)) {
+                 question = aQuestion;
+                 break;
+             }
+         }
+         return question;
+    }
+    
+    public String answerQuestion(String answer) throws AvatolCVException {
+        String existingAnswerToNextQuestion = "NOT_YET_SPECIFIED";
+        if (!(this.currentQuestion.isValidAnswer(answer))){
+        	throw new AvatolCVException("invalid answer " + answer + " given to question " + this.currentQuestion.getId());
+        } 
+        int answerQuestionCount = answeredQuestions.size();
+        if (this.nextAnswerIndex <= answerQuestionCount){
+            existingAnswerToNextQuestion = this.answerQuestionAfterBackup(answer);
+        }
+        else {
+            //% we ensured answer validity above so assume it here
+            AnsweredQuestion aq = new AnsweredQuestion(this.currentQuestion.getId(), answer);
+            this.answeredQuestions.add(aq);
+            this.nextAnswerIndex = this.nextAnswerIndex + 1;
+            QAnswer qAnswer = this.currentQuestion.getQAnswerForAnswerValue(answer);
+            String nextQuestionId = qAnswer.getNextQuestion();
+            if (nextQuestionId.equals("NO_MORE_QUESTIONS")) {
+                this.currentQuestion = this.noMoreQuestionsMarker;
+            }
+            else {
+                QQuestion nextQuestion = findQuestionById(nextQuestionId);
+                if (nextQuestion.getId() == null){
+                	throw new AvatolCVException("could not find question " + nextQuestionId + " in qquestions.");
+                }
+                else {
+                    this.currentQuestion = nextQuestion;
+                }
+            }
+        }
+        return existingAnswerToNextQuestion;
+    }
+    
+    public boolean isAllQuestionsAnswered(){
+        boolean result = false;
+        if (this.currentQuestion.getId().equals("NO_MORE_QUESTIONS")){
+                result = true;
+        }
+    	return result;
+	}
+    public boolean canBackUp(){
+        boolean result = false;
+        int answerCount = this.nextAnswerIndex + 1;
+        if (answerCount > 1){ // don't use zero due to sspecial boundary action with CharacterQuestion
+            result = true;
+        }
+    	return result;
+    }
+    public AnsweredQuestion backUp(){
+    	this.nextAnswerIndex = this.nextAnswerIndex - 1;
+        AnsweredQuestion prevAnswerToQuestion = this.answeredQuestions.get(this.nextAnswerIndex);
+        this.currentQuestion = findQuestionById(prevAnswerToQuestion.getQuestionID());
+        return prevAnswerToQuestion;
+    } 
+}
+

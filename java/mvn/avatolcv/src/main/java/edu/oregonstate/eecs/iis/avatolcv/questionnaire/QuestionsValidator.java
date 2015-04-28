@@ -1,370 +1,281 @@
 package edu.oregonstate.eecs.iis.avatolcv.questionnaire;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+
 public class QuestionsValidator {
-
-}
-/*
- * classdef QuestionsValidator < handle
-    properties
+    private static final String FILESEP = System.getProperty("file.separator");
+	public boolean validate(List<QQuestion> questions) throws AvatolCVException {
+        boolean questionCountValid = validateQuestionCount(questions);
+        if (!questionCountValid){
+        	throw new AvatolCVException("bad question count found during questions validation");
+        }
         
-    end
-    methods
-        function obj = QuestionsValidator()
-        end
-
-        function result = validate(obj, questions)
-            questionCountValid = obj.validateQuestionCount(questions);
-            if (not(questionCountValid))
-                msg = sprintf('Invalid number of questions.');
-                err = MException('Validate:BadQuestionsCount', msg);
-                throw(err);
-            end
-            replicatedIds = obj.getDuplicateIds(questions);
-            if (not(isempty(replicatedIds)))
-                msg = sprintf('Duplicate key in questions file: %s', replicatedId);
-                err = MException('Validate:DupicateId', msg);
-                throw(err);
-            end
-            unusedIds = obj.getUnusedQuestions(questions);
-            if (not(isempty(unusedIds)))
-                msg = sprintf('unused questions : %s', unusedIds);
-                err = MException('Validate:UnusedIds', msg);
-                throw(err);
-            end
-            questionMalformations = obj.getQuestionsMalformations(questions);
-            if (not(isempty(questionMalformations)))
-                msg = 'malformed questions : ';
-                questionMalformationCount = length(questionMalformations);
-                for i=1:questionMalformationCount
-                    msg = sprintf('%s%s ', msg, questionMalformations{i});
-                end
-                err = MException('Validate:QuestionMalformed', msg);
-                throw(err);
-            end
-            %noLoopsDetected = obj.validateNoLoops(questions);
-            %noBadNextPointers = obj.validateNoBadNextPointers(questions);
-            %result = questionCountValid & idsUnique & questionsAllUsed & allQuestionsWellFormed & noLoopsDetected & noBadNextPointers;
-        end
-        
-        function malformations = getQuestionsMalformations(obj,questions)
-            malformations = {};
-            for i=1:length(questions)
-                question = questions(i);
-                curQuestionMalformations = obj.getQuestionMalformations(question);
-                if (not(isempty(curQuestionMalformations)))
-                    questionMalformationCount = length(curQuestionMalformations);
-                    for j=1,questionMalformationCount
-                        malformations = [ malformations, curQuestionMalformations(j) ];
-                    end
-                end
-                
-             end
-        end
-        
-        function malformations = getQuestionMalformations(obj, question)
-            malformations = {};
-            % id is not ''
-            if (strcmp(question.id,''))
-                malformations = [ malformations, 'question id empty' ];
-            end
-            % text is not ''
-            if (strcmp(question.text,''))
-                textError = sprintf('question text empty for %s',question.id);
-                malformations = [ malformations, textError ];
-            end
-            % type is either choice or integer_input, not ''
-            
-            if (strcmp(question.type,'choice'))
-                choiceQuestionMalformations = obj.getChoiceQuestionMalformations(question);
-                if (not(isempty(choiceQuestionMalformations)))
-                    choiceQuestionMalformationCount = length(choiceQuestionMalformations);
-                    for i=1,choiceQuestionMalformationCount
-                        malformations =  [ malformations, choiceQuestionMalformations(i) ];
-                    end
-                end
-            elseif (strcmp(question.type,'input_integer'))
-                integerQuestionMalformations = obj.getInputIntegerQuestionMalformations(question);
-                if (not(isempty(integerQuestionMalformations)))
-                    integerQuestionMalformationCount = length(integerQuestionMalformations)
-                    for i=1,integerQuestionMalformationCount
-                        malformations =  [ malformations, integerQuestionMalformations(i) ];
-                    end
-                end
-            elseif (strcmp(question.type,'input_string'))
-                stringQuestionMalformations = obj.getInputStringQuestionMalformations(question);
-                if (not(isempty(stringQuestionMalformations)))
-                    stringMalformationCount = length(stringQuestionMalformations);
-                    for i=1,stringMalformationCount
-                        malformations =  [ malformations, stringQuestionMalformations(i) ];
-                    end
-                end
-            else
-                typeError = 'question type must be either choice, input_integer, or input_string';
-                malformations = [ malformations, typeError ];
-            end
-        end
-      
-        function malformations = getChoiceQuestionMalformations(obj, question)
-            malformations = {};
-            % more than one answer
-            answerCount = length(question.answers);
-            if (answerCount < 2)
-                tooFewAnswerError = sprintf('at least two answers required of a choice question, not %s',int2str(answerCount));
-                malformations = [ malformations,  tooFewAnswerError ];
-            end
-             % answer valid
-            answerMalformations = obj.getAnswerMalformationsForChoiceQuestion(question);
-            if (not(isempty(answerMalformations)))
-                answerMalformationCount = length(answerMalformations);
-                for i=1,answerMalformationCount
-                    malformations =  [ malformations, answerMalformations(i) ];
-                end
-            end
-            
-            % if images, images valid
-            imageMalformations = obj.getImageMalformationsForQuestion(question);
-            if (not(isempty(imageMalformations)))
-                imageMalformationCount = length(imageMalformations)
-                for i=1,imageMalformationCount
-                    malformations =  [ malformations, imageMalformations(i) ];
-                end
-            end
-        end
-        
-        function malformations = getInputIntegerQuestionMalformations(obj, question)
-            % single answer element
-            malformations = {};
-            answerCount = length(question.answers);
-            if (answerCount ~= 1)
-                singleAnwserError = sprintf('input_integer questions should have one answer: %s', question.id);
-                malformations = [ malformations,  singleAnwserError ];
-            end
-            % answer valid
-            answerMalformations = obj.getAnswerMalformationsForInputIntegerQuestion(question);
-            if (not(isempty(answerMalformations)))
-                answerMalformationCount = length(answerMalformations);
-                for i=1,answerMalformationCount
-                    malformations =  [ malformations, answerMalformations(i) ];
-                end
-            end
-            
-            % if images, images valid
-            imageMalformations = obj.getImageMalformationsForQuestion(question);
-            if (not(isempty(imageMalformations)))
-                imageMalformationCount = length(imageMalformations)
-                for i=1,imageMalformationCount
-                    malformations =  [ malformations, imageMalformations(i) ];
-                end
-            end
-        end
-        
-        
-        function malformations = getInputStringQuestionMalformations(obj, question)
-            % single answer element
-            malformations = {};
-            answerCount = length(question.answers);
-            if (answerCount ~= 1)
-                singleAnwserError = sprintf('input_string questions should have one answer: %s', question.id);
-                malformations = [ malformations,  singleAnwserError ];
-            end
-            % answer valid
-            answerMalformations = obj.getAnswerMalformationsForInputStringQuestion(question);
-            if (not(isempty(answerMalformations)))
-                answerMalformationCount = length(answerMalformations);
-                for i=1,answerMalformationCount
-                    malformations =  [ malformations, answerMalformations(i) ];
-                end
-            end
-            
-            % if images, images valid
-            imageMalformations = obj.getImageMalformationsForQuestion(question);
-            if (not(isempty(imageMalformations)))
-                imageMalformationCount = length(imageMalformations)
-                for i=1,imageMalformationCount
-                    malformations =  [ malformations, imageMalformations(i) ];
-                end
-            end
-        end
-        
-        
-        
-        function malformations = getAnswerMalformationsForChoiceQuestion(obj, question)
-            malformations = {};
-            answerCount = length(question.answers);
-            for i=1:answerCount
-                answer = question.answers(i);
-                answerMalformations = obj.getChoiceAnswerMalformations(answer);
-                if (not(isempty(answerMalformations)))
-                    answerMalformationCount = length(answerMalformations);
-                    for j=1,answerMalformationCount
-                        malformations = [ malformations, answerMalformations(j) ];
-                    end
-                end
-            end
-        end
-         function malformations = getChoiceAnswerMalformations(obj, qanswer)
-            malformations = {};
-            % value not ''
-            if (strcmp(qanswer.value,''))
-                malformations = [ malformations, 'answer value empty' ];
-            end
-            % next not ''
-            if (strcmp(qanswer.nextQuestion,''))
-                malformations = [ malformations, 'answer nextQuestion empty' ];
-            end
-        end
-        
-        
-        
-        
-        function malformations = getAnswerMalformationsForInputIntegerQuestion(obj, question)
-            malformations = {};
-            answer = question.answers(1);
-            answerMalformations = obj.getInputIntegerAnswerMalformations(answer);
-            if (not(isempty(answerMalformations)))
-                count = length(answerMalformations);
-                for j=1,count
-                    malformations = [ malformations, answerMalformations(j) ];
-                end
-            end
-        end
-        
-        function malformations = getInputIntegerAnswerMalformations(obj, qanswer)
-            malformations = {};
-            % value not ''
-            if (strcmp(qanswer.value,''))
-                malformations = [ malformations, 'answer value empty' ];
-            end
-            % next not ''
-            if (strcmp(qanswer.nextQuestion,''))
-                malformations = [ malformations, 'answer nextQuestion empty' ];
-            end
-        end
-        
-        
-        
-        
-        function malformations = getAnswerMalformationsForInputStringQuestion(obj, question)
-            malformations = {};
-            answer = question.answers(1);
-            answerMalformations = obj.getInputStringAnswerMalformations(answer);
-            if (not(isempty(answerMalformations)))
-                answerMalformationsCount = length(answerMalformations);
-                for j=1,answerMalformationsCount
-                    malformations = [ malformations, answerMalformations(j) ];
-                end
-            end
-        end
-        
-        function malformations = getInputStringAnswerMalformations(obj, qanswer)
-            malformations = {};
-            % next not ''
-            if (strcmp(qanswer.nextQuestion,''))
-                malformations = [ malformations, 'answer nextQuestion empty' ];
-            end
-        end
-        
-        
-        
-        
-        function malformations = getImageMalformationsForQuestion(obj, question)
-            malformations = {};
-            imageCount = length(question.images);
-            if (imageCount > 0)
-                for i=1:imageCount
-                    image = question.images(i);
-                    imageMalformations = obj.getImageMalformations(image);
-                    if (not(isempty(imageMalformations)))
-                        imageMalformationCount = length(imageMalformations);
-                        for j=1,imageMalformationCount
-                            malformations = [ malformations, imageMalformations(j) ];
-                        end
-                    end
-                end
-            end
-        end
-        
-        function malformations = getImageMalformations(obj, qimage)
-            malformations = {};
-            % filename not ''
-            currentDir = pwd();
-            relPath = qimage.imageFilePath;
-            if ispc
-                imagePath = sprintf('%s\\%s',currentDir, relPath);
-            else
-                imagePath = sprintf('%s/%s',currentDir, relPath);
-            end
-            if (strcmp(qimage.imageFilePath,''))
-                malformations = [ malformations,  'image filename empty'];
-            elseif exist(imagePath, 'file') ~= 2
-                error = sprintf('image filename does not exist: %s',relPath);
-                malformations = [ malformations, error ] ;
-            end
-                
-            % caption not ''
-            if (strcmp(qimage.imageCaption,''))
-                malformations = [ malformations, 'image caption empty' ];
-            end
-        end
-        
-       
-        
-        
-        
-        function result = validateQuestionCount(obj, questions)
-            result = true;
-            questionsLength = length(questions);
-            if (questionsLength == 0)
-                result = false;
-            end
-        end
-        
-        function replicatedIds = getDuplicateIds(obj, questions)
-            replicatedIds = {};
-            ids = {};
-            questionsLength = length(questions);
-            for i=1:questionsLength
-                question = questions(i);
-                newId = question.id;
-                if (ismember( newId, ids))
-                    replicatedIds = [ replicatedIds, newId ];
-                else
-                    ids = [ ids, newId ];
-                end
-            end
-        end
-        
-        function unusedIds = getUnusedQuestions(obj, questions)
-           ids = {};
-           questionsLength = length(questions);
-           for i=2:questionsLength
-               question = questions(i);
-               ids = [ ids, question.id ];
-           end
+        List<String> replicatedIds = getDuplicateIds(questions);
+        if (replicatedIds.size() != 0){
+        	throw new AvatolCVException("Duplicate key in questions file found during questions validation: " + replicatedIds.get(0));
+        }
            
-           for i=1:questionsLength
-               question = questions(i);
-               answersLength = length(question.answers);
-               for j=1:answersLength
-                   qanswer = question.answers(j);
-                   nextQuestionId = qanswer.nextQuestion;
-                   ids = obj.removeMatchStringFromList(nextQuestionId, ids);
-               end
-           end
-           unusedIds = ids;
-        end
+        List<String> unusedIds = getUnusedQuestions(questions);
+        if (unusedIds.size() != 0){
+        	throw new AvatolCVException("unused question found during questions validation: " + unusedIds.get(0));
+        }
         
-        function newList = removeMatchStringFromList(obj, s, oldList)
-            newList = {};
-            count = length(oldList);
-            for i=1:count
-                member = oldList(i);
-                if (not(strcmp(member,s)))
-                    newList = [ newList, member ];
-                end
-            end
-        end
-    end
-end
+        List<String> questionMalformations = getQuestionsMalformations(questions);
+        if (questionMalformations.size() != 0){
+            String msg = "malformed questions : ";
+            int questionMalformationCount = questionMalformations.size();
+            for (String malformation : questionMalformations){
+                msg = msg + " " + malformation;
+            }
+            throw new AvatolCVException("malformed questions " + msg);
+        }
+        //noLoopsDetected = obj.validateNoLoops(questions);
+        //noBadNextPointers = obj.validateNoBadNextPointers(questions);
+        //result = questionCountValid & idsUnique & questionsAllUsed & allQuestionsWellFormed & noLoopsDetected & noBadNextPointers;
+        return true;
+	}
+	public List<String> getQuestionsMalformations(List<QQuestion> questions){
+		List<String> malformations = new ArrayList<String>();
+		for (QQuestion question : questions){
+            List<String> curQuestionMalformations = getQuestionMalformations(question);
+            if (curQuestionMalformations.size() != 0){
+                int questionMalformationCount = curQuestionMalformations.size();
+                for (String malformation : curQuestionMalformations){
+                	malformations.add(malformation);
+                }
+            }
+		}
+		return malformations;
+	}
+	public List<String> getQuestionMalformations(QQuestion question){
+		List<String> malformations = new ArrayList<String>();
+		// id is not ''
+        if (question.getId().equals("")){
+            malformations.add("question id empty");
+        }
+        // text is not ''
+        if (question.getText().equals("")){
+            malformations.add("question text empty for " + question.getId());
+        }
+        // type is either choice or integer_input, not ''
+        
+        if (question.getType().equals("choice")){
+            List<String> choiceQuestionMalformations = getChoiceQuestionMalformations(question);
+            for (String mf : choiceQuestionMalformations){
+            	malformations.add(mf);
+            }
+        }
+        else if (question.getType().equals("input_integer")){
+            List<String> integerQuestionMalformations = getInputIntegerQuestionMalformations(question);
+            for (String mf : integerQuestionMalformations) {
+                malformations.add(mf);
+            }
+        }
+        else if (question.getType().equals("input_string")){
+            List<String> stringQuestionMalformations = getInputStringQuestionMalformations(question);
+            for (String mf : stringQuestionMalformations){
+            	malformations.add(mf);
+            }
+        }
+        else{
+            malformations.add("question type must be either choice, input_integer, or input_string");
+        }
+        return malformations;
+	}
+	            
+	public  List<String> getChoiceQuestionMalformations(QQuestion question){
+        List<String >malformations = new ArrayList<String>();
+        // should be more than one answer
+        if (question.getAnswers().size() < 2){
+            malformations.add("at least two answers required of a choice question " + question.getId());
+        }
+        // % answer valid
+        List<String> answerMalformations = getAnswerMalformationsForChoiceQuestion(question);
+        for (String mf : answerMalformations){
+        	malformations.add(mf);
+        }
+        
+        //if images, images valid
+        List<String> imageMalformations = getImageMalformationsForQuestion(question);
+        
+        for (String mf : imageMalformations){
+           malformations.add(mf);
+        }
+        return malformations;
+	}  
+	
+	public List<String> getInputIntegerQuestionMalformations(QQuestion question){
+	   // single answer element
+	   List<String> malformations = new ArrayList<String>();
+	   if (question.getAnswers().size()  != 1){
+	        malformations.add("input_integer questions should have one answer " + question.getId());
+	   }
+	   // answer valid
+	   List<String> answerMalformations = getAnswerMalformationsForInputIntegerQuestion(question);
+	   for (String mf : answerMalformations){
+		   malformations.add(mf);
+	   }
+	   //if images, images valid
+	   List<String> imageMalformations = getImageMalformationsForQuestion(question);
+	   for (String mf : imageMalformations){
+		   malformations.add(mf);
+	   }
+	   return malformations;
+	}
 
- */
+    public List<String> getInputStringQuestionMalformations( QQuestion question){
+		// single answer element
+    	List<String> malformations = new ArrayList<String>();
+    	if (question.getAnswers().size()  != 1){
+	        malformations.add("input_string questions should have one answer " + question.getId());
+	   }
+    	// answer valid
+ 	   List<String> answerMalformations = getAnswerMalformationsForInputStringQuestion(question);
+ 	   for (String mf : answerMalformations){
+ 		   malformations.add(mf);
+ 	   }
+ 	   //if images, images valid
+ 	   List<String> imageMalformations = getImageMalformationsForQuestion(question);
+ 	   for (String mf : imageMalformations){
+ 		   malformations.add(mf);
+ 	   }
+ 	   return malformations;
+ 	}
+    public List<String> getAnswerMalformationsForChoiceQuestion(QQuestion question){
+    	List<String> malformations = new ArrayList<String>();
+    	List<QAnswer> answers = question.getAnswers();
+        for (QAnswer answer : answers){
+        	List<String> answerMalformations = getChoiceAnswerMalformations(answer);
+        	for (String mf : answerMalformations){
+        		malformations.add(mf);
+        	}
+        }
+        return malformations;
+    }
+    public List<String> getChoiceAnswerMalformations(QAnswer qanswer){
+    	List<String> malformations = new ArrayList<String>();
+        //value not ''
+        if (qanswer.getValue().equals("")){
+        	malformations.add("answer value empty");
+        }
+        //next not ''
+        if (qanswer.getNextQuestion().equals("")){
+          malformations.add("answer's nextQuestion reference is empty");
+        }
+        return malformations;
+    }
+    public List<String>  getAnswerMalformationsForInputIntegerQuestion(QQuestion question){
+    	List<String> malformations = new ArrayList<String>();
+        QAnswer answer = question.getAnswers().get(0);
+        List<String> answerMalformations = getInputIntegerAnswerMalformations(answer);
+        for (String mf : answerMalformations){
+        	malformations.add(mf);
+        }
+        return malformations;
+    }
+    public  List<String> getInputIntegerAnswerMalformations(QAnswer qanswer){
+    	List<String> malformations = new ArrayList<String>();
+        // value not ''
+        if (qanswer.getValue().equals("")){
+            malformations.add("answer value empty");
+        }
+        // next not ''
+        if (qanswer.getNextQuestion().equals("")){
+           malformations.add("answer nextQuestion empty");
+        }
+        return malformations;
+    }
+    
+    public List<String> getAnswerMalformationsForInputStringQuestion(QQuestion question){
+    	List<String> malformations = new ArrayList<String>();
+        QAnswer answer = question.getAnswers().get(0);
+        List<String> answerMalformations = getInputStringAnswerMalformations(answer);
+        for (String mf: answerMalformations){
+            malformations.add(mf);
+        }
+        return malformations;
+    }
+    
+    public List<String> getInputStringAnswerMalformations(QAnswer qanswer){
+    	List<String> malformations = new ArrayList<String>();
+        // next not ''
+        if (qanswer.getNextQuestion().equals("")){
+            malformations.add("answer nextQuestion empty");
+        }
+        return malformations;
+    }
+    public List<String> getImageMalformationsForQuestion(QQuestion question){
+    	List<String> malformations = new ArrayList<String>();
+        List<QImage> images = question.getImages();
+        for(QImage image : images){
+        	List<String> imageMalformations = getImageMalformations(image);
+        	for (String mf : imageMalformations){
+        		malformations.add(mf);
+        	}
+        }
+        return malformations;
+    }
+    
+    public List<String> getImageMalformations(QImage qimage){
+    	List<String> malformations = new ArrayList<String>();
+        // filename not ''
+        String currentDir = System.getProperty("user.dir");
+        String relPath = qimage.getPath();
+        String imagePath = currentDir + FILESEP + relPath;
+        File imageFile = new File(imagePath);
+        if (qimage.getPath().equals("")){
+            malformations.add("image filename empty");
+        }
+        else if (!imageFile.exists()){
+            malformations.add("'image filename does not exist: " + imagePath);
+        }
+                
+        // caption not ''
+        if (qimage.getCaption().equals("")){
+            malformations.add("image caption empty");
+        }
+        return malformations;
+    }
+    public boolean validateQuestionCount(List<QQuestion> questions){
+        if (questions.size() == 0){
+           return false;
+    	}
+    	return true;
+    }
+    public List<String> getDuplicateIds(List<QQuestion> questions){
+        List<String> replicatedIds = new ArrayList<String>();
+        List<String> ids = new ArrayList<String>();
+        for (QQuestion q: questions){
+        	String newId = q.getId();
+        	if (ids.contains(newId)){
+        		replicatedIds.add(newId);
+        	}
+        	else {
+        		ids.add(newId);
+        	}
+        }
+        return replicatedIds;
+    }
+    public List<String> getUnusedQuestions(List<QQuestion> questions){
+        List<String> futureIds = new ArrayList<String>();
+        int questionsLength = questions.size();
+        for (int i=1; i < questionsLength; i++){
+            QQuestion question = questions.get(i);
+            futureIds.add(question.getId());
+        }
+        for (QQuestion q : questions){
+        	List<QAnswer> answers = q.getAnswers();
+        	for (QAnswer a : answers){
+        		String nextQuestionId = a.getNextQuestion();
+        		futureIds.remove(nextQuestionId);
+        	}
+        }
+        // remaining ones are unused
+        return futureIds;
+    }
+}
+

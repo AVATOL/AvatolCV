@@ -1,108 +1,103 @@
 package edu.oregonstate.eecs.iis.avatolcv.questionnaire;
 
-public class QQuestions {
+import java.util.ArrayList;
+import java.util.List;
 
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+
+public class QQuestions {
+	List<QQuestion> questions = new ArrayList<QQuestion>();
+	
+	public QQuestions(Node domNode){
+		parseDomNodeIntoQuestions(domNode);
+	}
+	
+	public List<QQuestion> getQuestions(){
+		return questions;
+	}
+	public void parseDomNodeIntoQuestions(Node domNode){
+		Node questionsNode = domNode.getFirstChild();
+		System.out.println("docNode name " + questionsNode.getNodeName());
+		NodeList questionNodesAndWhiteSpaceNodes = questionsNode.getChildNodes();
+        int count = questionNodesAndWhiteSpaceNodes.getLength(); 
+        for (int i = 0; i < count; i++){
+            Node questionNode = questionNodesAndWhiteSpaceNodes.item(i);
+            String nodeName = questionNode.getNodeName();
+            if (nodeName.equals("#text")){
+                // skip blank text
+            }
+            else {
+                System.out.println("questionNode name " + questionNode.getNodeName());
+                QQuestion question = createQQuestion(questionNode);
+                this.questions.add(question);
+            }
+        }
+        QuestionsValidator validator = new  QuestionsValidator();
+        validator.validate(questions);
+	}
+	
+	public QQuestion createQQuestion(Node qnode) throws AvatolCVException {
+		 NodeList childNodes = qnode.getChildNodes();
+         List<QAnswer> answers = new ArrayList<QAnswer>();
+         List<QImage> images = new ArrayList<QImage>();
+         String questionText = "";
+         String questionType = "";
+         String questionId = "";
+         int childCount = childNodes.getLength();
+         for (int i=0; i < childCount; i++){
+             Node child = childNodes.item(i);
+             String name = child.getNodeName();
+             if (name.equals("#text")){
+                 //ignore
+             }
+             else if (name.equals("answer")){
+                 QAnswer answer = createQAnswer(child);
+                 answers.add(answer);
+             }
+             else if (name.equals("text")){
+                 questionText = child.getTextContent();
+             }
+             else if (name.equals("image")){
+                 QImage image = createQImage(child);
+                 images.add(image);
+             }
+             else {
+            	 throw new AvatolCVException("Unrecognized element in QuestionNode " + name);
+         	}
+         }
+         questionType = qnode.getAttributes().getNamedItem("type").getTextContent();
+         questionId = qnode.getAttributes().getNamedItem("id").getTextContent();
+         QQuestion question = new QQuestion(questionType, questionId, questionText);
+         int answerCount = answers.size();
+         for (QAnswer answer : answers){
+             question.addAnswer(answer);
+         }
+         
+         for (QImage image : images){
+             question.addImage(image);
+         }
+         return question;
+	}
+	// <image filename="elephant.jpg" caption="elephants are bigger than a breadbox"/> 
+	public QImage createQImage(Node inode){
+		 String filename = inode.getAttributes().getNamedItem("filename").getTextContent();
+         System.out.println("filename : " + filename);
+         String caption = inode.getAttributes().getNamedItem("caption").getTextContent();
+         System.out.println("caption : " + caption);
+         QImage image = new QImage(filename, caption);
+         return image;
+	}
+	// <answer value="yes" next="COLOR"/> 
+    public  QAnswer createQAnswer(Node anode){
+        String answerValue = anode.getAttributes().getNamedItem("value").getTextContent();
+        System.out.println("answerValue :" +  answerValue);
+        String nextQuestion = anode.getAttributes().getNamedItem("next").getTextContent();
+        System.out.println("nextQuestion :" +  nextQuestion);
+        QAnswer answer = new QAnswer(answerValue, nextQuestion);
+        return answer;
+    }
+    
 }
-/*
- * classdef QQuestions < handle
-    properties
-        questions = {};
-    end
-    methods
-        function obj = QQuestions(domNode)
-            obj.parseDomNodeIntoQuestions(domNode);
-        end
-        function value = getQuestions(obj)
-            value = obj.questions; 
-        end
-        function parseDomNodeIntoQuestions(obj,domNode)
-            questionsNode = domNode.getDocumentElement;
-            %fprintf('docNode name %s\n', char(questionsNode.getNodeName()));
-            questionNodesAndWhiteSpaceNodes = questionsNode.getChildNodes;
-            count = questionNodesAndWhiteSpaceNodes.getLength; 
-            for i=0:count-1
-                questionNode = questionNodesAndWhiteSpaceNodes.item(i);
-                nodeName = questionNode.getNodeName();
-                if (strcmp(nodeName, '#text'))
-                    % skip blank text
-                else
-                    %fprintf('questionNode name %s\n', char(questionNode.getNodeName()));
-                    question = obj.createQQuestion(questionNode);
-                    obj.questions = [ obj.questions, question ];
-                end
-            end
-            validator = QuestionsValidator();
-            validator.validate(obj.questions);
-        end
-        function question = createQQuestion(obj,qnode)
-            childNodes = qnode.getChildNodes;
-            answers = {};
-            images = {};
-            questionText = '';
-            questionType = '';
-            questionId = '';
-            childCount = childNodes.getLength;
-            for i=0:childCount-1
-                child = childNodes.item(i);
-                name = child.getNodeName();
-                if (strcmp(name,'#text'))
-                    %ignore
-                elseif (strcmp(name,'answer'))
-                    answer = obj.createQAnswer(child);
-                    answers = [ answers, answer ];
-                elseif (strcmp(name,'text'))
-                    questionText = char(child.getTextContent);
-                elseif (strcmp(name,'image'))
-                    image = obj.createQImage(child);
-                    images = [ images, image ];
-                else
-                    msg = sprintf('Unrecognized element in QuestionNode: %s',char(name));
-                    err = MException('QuestionsParse:UnrecognizedElement', msg);
-                    throw(err);
-                end
-            end
-            questionType = char(qnode.getAttribute('type'));
-            questionId = char(qnode.getAttribute('id'));
-            question = QQuestion(questionType, questionId, questionText);
-            answerCount = numel(answers);
-            for i = 1:answerCount
-                answer = answers(i);
-                question.addAnswer(answer);
-            end
-            imageCount = numel(images);
-            for i = 1:imageCount
-                image = images(i);
-                question.addImage(image);
-            end
-        end
-         % <image filename="elephant.jpg" caption="elephants are bigger than a breadbox"/> 
-        function image = createQImage(obj,inode)
-            filename = char(inode.getAttribute('filename'));
-            %fprintf('filename : %s\n', filename);
-            caption = char(inode.getAttribute('caption'));
-            %fprintf('caption : %s\n', caption);
-            image = QImage(filename, caption);
-        end
-        
-        % <answer value="yes" next="COLOR"/> 
-        function answer = createQAnswer(obj, anode)
-            answerValue = char(anode.getAttribute('value'));
-            %fprintf('answerValue : %s\n', answerValue);
-            nextQuestion = char(anode.getAttribute('next'));
-            %fprintf('nextQuestion : %s\n', nextQuestion);
-            answer = QAnswer(answerValue, nextQuestion);
-        end
-        
-        function question = findQuestionById(obj, id)
-            question = QQuestion('NULL', 'NULL', 'NULL');
-            for i=1:length(obj.questions)
-                cur_question = obj.questions(i);
-                if (strcmp(cur_question.id,id))
-                    question = cur_question;
-                    break;
-                end
-            end
-        end
-    end
-end
- */

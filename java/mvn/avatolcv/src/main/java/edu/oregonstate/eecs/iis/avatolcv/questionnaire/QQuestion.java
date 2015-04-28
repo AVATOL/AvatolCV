@@ -19,7 +19,21 @@ public class QQuestion {
         this.id = id;
         this.text = text;
     }
-    
+    public String getText(){
+    	return text;
+    }
+    public String getId(){
+    	return id;
+    }
+    public String getType(){
+    	return this.type;
+    }
+    public List<QAnswer> getAnswers(){
+    	return this.answers;
+    }
+    public List<QImage> getImages(){
+    	return this.images;
+    }
     public void addAnswer(QAnswer answer){
         answers.add(answer);
     }
