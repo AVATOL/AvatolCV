@@ -18,10 +18,21 @@ public class QQuestions {
 	public List<QQuestion> getQuestions(){
 		return questions;
 	}
+	public Node getQuestionsNode(Node domNode){
+		NodeList nodes = domNode.getChildNodes();
+		for (int i = 0; i < nodes.getLength(); i++){
+			Node curNode  = nodes.item(i);
+			System.out.println(curNode.getNodeName() + " " + curNode.getNodeValue());
+			if (curNode.getNodeName().equals("questions")){
+				return curNode;
+			}
+		}
+		return null;
+	}
 	public void parseDomNodeIntoQuestions(Node domNode) throws AvatolCVException {
-		Node questionsNode = domNode.getFirstChild();
-		System.out.println("docNode name " + questionsNode.getNodeName());
-		NodeList questionNodesAndWhiteSpaceNodes = questionsNode.getChildNodes();
+		//Node questionsNode = getQuestionsNode(domNode);
+		//System.out.println("docNode name " + questionsNode.getNodeName());
+		NodeList questionNodesAndWhiteSpaceNodes = domNode.getChildNodes();
         int count = questionNodesAndWhiteSpaceNodes.getLength(); 
         for (int i = 0; i < count; i++){
             Node questionNode = questionNodesAndWhiteSpaceNodes.item(i);
@@ -99,5 +110,4 @@ public class QQuestions {
         QAnswer answer = new QAnswer(answerValue, nextQuestion);
         return answer;
     }
-    
 }

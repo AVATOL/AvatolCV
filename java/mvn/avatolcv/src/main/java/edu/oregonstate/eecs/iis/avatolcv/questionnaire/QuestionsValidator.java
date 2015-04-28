@@ -223,6 +223,7 @@ public class QuestionsValidator {
     public List<String> getImageMalformations(QImage qimage){
     	List<String> malformations = new ArrayList<String>();
         // filename not ''
+    	SystemDependent sd = new SystemDependent
         String currentDir = System.getProperty("user.dir");
         String relPath = qimage.getPath();
         String imagePath = currentDir + FILESEP + relPath;

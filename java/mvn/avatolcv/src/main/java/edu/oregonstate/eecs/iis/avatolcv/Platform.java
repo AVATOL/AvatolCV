@@ -20,7 +20,7 @@ public class Platform {
         }
     }
     public static String convertUnixPathToWindows(String s){
-        return s.replaceAll("/", "\\");
+        return s.replaceAll("/", "\\\\");
     }
     public static boolean isWindows() {
         return (OS.indexOf("win") >= 0);
