@@ -16,6 +16,10 @@ public class BisqueLoginStep implements Step {
 		this.view = view;
 	}
 	@Override
+    public void init() {
+        // nothing to do
+    }
+	@Override
 	public View getView(){
 		return this.view;
 	}

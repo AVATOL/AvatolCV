@@ -26,5 +26,10 @@ public class OrientStep2_LabelTrainingExamples implements Step {
     public View getView() {
         return null;
     }
+    @Override
+    public void init() throws AvatolCVException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

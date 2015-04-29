@@ -24,8 +24,8 @@ public class SegStep2_LabelTrainingExamples implements Step {
 	public void deleteTrainingImage(ImageInfo ii)  throws AvatolCVException{
 		this.ssd.deleteTrainingImage(ii);
 	}
-	public void saveSegmentationTrainingImage(BufferedImage bi, ImageInfo ii) throws AvatolCVException {
-		this.ssd.saveSegmentationTrainingImage(bi,ii);
+	public void saveTrainingImage(BufferedImage bi, ImageInfo ii) throws AvatolCVException {
+		this.ssd.saveTrainingImage(bi,ii);
 	}
 
 	public void disqualifyImage(ImageInfo ii) throws AvatolCVException {
@@ -53,4 +53,9 @@ public class SegStep2_LabelTrainingExamples implements Step {
 	public View getView() {
 		return this.view;
 	}
+    @Override
+    public void init() throws AvatolCVException {
+        // nothing to do
+        
+    }
 }

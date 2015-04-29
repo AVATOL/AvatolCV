@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.orientation.OrientationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
 //import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationToolHarness;
@@ -34,9 +35,10 @@ public class BisqueSessionData {
 	private String sessionDataRootDir = null;
 	private String sessionDatasetDir = null;
 	// TODO? imagesToInclude and imagesToExclude are now ImageInfo - may need to translate that to BisqueImage at some point.
-	List<ImageInfo> imagesToInclude = null;
-	List<ImageInfo> imagesToExclude = null;
-	SegmentationSessionData ssd = null;
+	private List<ImageInfo> imagesToInclude = null;
+	private List<ImageInfo> imagesToExclude = null;
+	private SegmentationSessionData ssd = null;
+	private OrientationSessionData osd = null;
 	
 	private BisqueAnnotation currentCharacter = null;
 	public BisqueSessionData(String sessionDataRootParent) throws AvatolCVException {
@@ -50,11 +52,6 @@ public class BisqueSessionData {
 		if (!f.isDirectory()){
 			f.mkdirs();
 		}
-		//imageWidths.add(new Integer(IMAGE_LARGE_WIDTH));// large
-		//imageWidths.add(new Integer(IMAGE_MEDIUM_WIDTH));// medium
-		//imageWidths.add(new Integer(IMAGE_THUMBNAIL_WIDTH)); // thumbnail
-		this.ssd = new SegmentationSessionData(this.sessionDatasetDir);
-		
 	}
 	/*
 	 * DATASETS
@@ -67,6 +64,7 @@ public class BisqueSessionData {
 	    if (!f.isDirectory()){
 	    	f.mkdirs();
 	    }
+	    
 	}
 	public BisqueDataset getChosenDataset(){
 		return this.dataset;
@@ -162,7 +160,11 @@ public class BisqueSessionData {
 			String id = ii.getID();
 			imageLargeForID.put(id, ii);
 		}
-		
+		 
+        
+	}
+	public void createSegmentationSessionData(String sourceImageDirPath){
+	    this.ssd = new SegmentationSessionData(this.sessionDatasetDir, sourceImageDirPath);
 	}
 	public ImageInfo getThumbnailForId(String id) throws AvatolCVException {
 		ImageInfo ii = null;
@@ -216,7 +218,15 @@ public class BisqueSessionData {
     public SegmentationSessionData getSegmentationSessionData(){
     	return this.ssd;
     }
-	
+	/*
+	 * Orientation
+	 * 
+	 */
+    // TODO - have to decide when to set this, or if even this class should have references to the subsessionDatas - maybe
+    // the wrapper step should won it entirely - might be cleaner
+    public OrientationSessionData getOrientationSessionData(){
+        return this.osd;
+    }
 	/*
 	 * Scoring
 	 */

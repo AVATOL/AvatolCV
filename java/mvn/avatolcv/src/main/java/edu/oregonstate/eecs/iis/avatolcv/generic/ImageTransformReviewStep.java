@@ -53,6 +53,10 @@ public class ImageTransformReviewStep implements Step {
 		this.itrd.requalifyImage(ii);
 	}
 	@Override
+    public void init() {
+        // nothing to do
+    }
+	@Override
 	public void consumeProvidedData() throws AvatolCVException {
 	    
 		userReviewComplete = true;

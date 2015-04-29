@@ -35,5 +35,10 @@ public class BisqueCharScoringLoopStep implements Step {
         // TODO Auto-generated method stub
         return null;
     }
+    @Override
+    public void init() {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

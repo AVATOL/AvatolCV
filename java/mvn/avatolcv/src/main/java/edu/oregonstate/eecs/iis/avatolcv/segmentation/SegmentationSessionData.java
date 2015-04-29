@@ -35,8 +35,8 @@ public class SegmentationSessionData implements ImageTranformReviewData {
     
 	public SegmentationSessionData(String parentDataDir, String testImageDir){
 		this.parentDataDir = parentDataDir;
-		this.testImageDir = testImageDir;
-		loadCandidateImages();
+	    this.testImageDir = testImageDir;
+	    loadCandidateImages();
 		this.rootSegDir = this.parentDataDir + FILESEP + "seg";
 		ensureDirExists(this.rootSegDir);
 		this.cacheDir = this.rootSegDir + FILESEP + "cache";
@@ -129,6 +129,7 @@ public class SegmentationSessionData implements ImageTranformReviewData {
 		int percent = (int)(100 * ((double)trainingImageCount / (double)total));
 		return percent;
 	}
+	
 	public void loadCandidateImages(){
 		File dir = new File(this.testImageDir);
 		File[] files = dir.listFiles();

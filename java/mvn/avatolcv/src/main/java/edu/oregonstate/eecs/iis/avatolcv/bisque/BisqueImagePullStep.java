@@ -28,6 +28,10 @@ public class BisqueImagePullStep implements Step {
 		
 	}
 	@Override
+    public void init() {
+        // nothing to do
+    }
+	@Override
 	public void consumeProvidedData() throws AvatolCVException {
 		
 	}
@@ -120,6 +124,7 @@ public class BisqueImagePullStep implements Step {
 				int badCount = (int)curCount - successCount;
 				throw new AvatolCVException(badCount + " images didn't download correctly from bisque");
 			}
+			sessionData.createSegmentationSessionData(sessionData.getImagesLargeDir());
 		}
 		catch(BisqueWSException e){
 			throw new AvatolCVException("problem getting images for dataset " + dataset.getName());

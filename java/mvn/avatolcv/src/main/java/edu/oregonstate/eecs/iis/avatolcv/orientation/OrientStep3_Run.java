@@ -22,6 +22,10 @@ public class OrientStep3_Run implements Step {
         this.runner.run(osd.getConfigFilePath(), pp);
     }
     @Override
+    public void init() throws AvatolCVException {
+        // nothing to do
+    }
+    @Override
     public void consumeProvidedData() throws AvatolCVException {
         // pull the result files into the program's consciousness
         this.osd.getImagesForStage().reload();  

@@ -24,4 +24,10 @@ public class BisqueCharLabelingLoopStep implements Step{
         return null;
     }
 
+    @Override
+    public void init() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

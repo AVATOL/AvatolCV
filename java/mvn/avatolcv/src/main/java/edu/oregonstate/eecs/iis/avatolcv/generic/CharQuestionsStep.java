@@ -11,6 +11,10 @@ public class CharQuestionsStep implements Step {
         this.questionsFilePath = questionsFilePath;
     }
     @Override
+    public void init() {
+        // TODO
+    }
+    @Override
     public void consumeProvidedData() throws AvatolCVException {
         // TODO Auto-generated method stub
     }

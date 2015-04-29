@@ -16,6 +16,11 @@ public class SegStep1_TrainingExamplesCheck implements Step {
 	ImagesForStage ifs = null;
 	public SegStep1_TrainingExamplesCheck(SegmentationSessionData ssd) throws AvatolCVException {
 		this.ssd = ssd;
+        
+	}
+
+    @Override
+    public void init() throws AvatolCVException {
         String segTrainingImageDirPath = this.ssd.getSegmentationTrainingImageDir();
         File segLabelDir = new File(segTrainingImageDirPath);
         if (!segLabelDir.isDirectory()){
@@ -25,8 +30,7 @@ public class SegStep1_TrainingExamplesCheck implements Step {
         ifs = new ImagesForStage(segTrainingImageDirPath, this.ssd.getSegmentationOutputDir(), candidateImages);
         ifs.reload();
         segLabelFileAssessmentHasBeenRun = true;
-	}
-	
+    }
 	@Override
 	public void consumeProvidedData() throws AvatolCVException {
 		this.ssd.setImagesForStage(this.ifs);
@@ -45,5 +49,6 @@ public class SegStep1_TrainingExamplesCheck implements Step {
 	public View getView() {
 		return null;
 	}
+
 
 }

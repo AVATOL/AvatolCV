@@ -17,6 +17,11 @@ public class OrientStep1_TrainingExamplesCheck implements Step {
     ImagesForStage ifs = null;
     public OrientStep1_TrainingExamplesCheck(OrientationSessionData osd) throws AvatolCVException {
         this.osd = osd;
+        
+    }
+
+    @Override
+    public void init() throws AvatolCVException {
         String orientTrainingImageDirPath = this.osd.getTrainingImageDir();
         File orientLabelDir = new File(orientTrainingImageDirPath);
         if (!orientLabelDir.isDirectory()){
@@ -26,8 +31,8 @@ public class OrientStep1_TrainingExamplesCheck implements Step {
         ifs = new ImagesForStage(orientTrainingImageDirPath, this.osd.getOrientationOutputDir(), candidateImages);
         ifs.reload();
         orientLabelFileAssessmentHasBeenRun = true;
+        
     }
-    
     @Override
     public void consumeProvidedData() throws AvatolCVException {
         this.osd.setImagesForStage(this.ifs);
@@ -46,4 +51,5 @@ public class OrientStep1_TrainingExamplesCheck implements Step {
     public View getView() {
         return null;
     }
+
 }

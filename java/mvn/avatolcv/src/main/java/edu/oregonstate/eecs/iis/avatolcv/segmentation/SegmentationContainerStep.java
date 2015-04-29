@@ -58,5 +58,10 @@ public class SegmentationContainerStep implements Step {
 		// TODO Auto-generated method stub
 		return null;
 	}
+    @Override
+    public void init() throws AvatolCVException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

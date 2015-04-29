@@ -23,6 +23,10 @@ public class BisqueDatasetStep implements Step {
 		this.view = view;
 		this.sessionData = sessionData;
 	}
+	@Override
+    public void init() {
+        // nothing to do
+    }
 	public List<String> getAvailableDatasets() throws AvatolCVException {
 		try {
 			List<String> result = new ArrayList<String>();

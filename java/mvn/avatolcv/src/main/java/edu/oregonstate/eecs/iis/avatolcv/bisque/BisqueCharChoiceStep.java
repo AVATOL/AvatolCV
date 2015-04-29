@@ -20,6 +20,10 @@ public class BisqueCharChoiceStep implements Step {
         this.view = view;
         this.sessionData = sessionData;
     }
+    @Override
+    public void init() {
+        // nothing to do
+    }
     public List<BisqueAnnotation> getCharacters()  throws AvatolCVException {
         List<ImageInfo> imagesLarge = this.sessionData.getImagesLarge();
         if (null == imagesLarge){
@@ -58,5 +62,6 @@ public class BisqueCharChoiceStep implements Step {
     public View getView() {
         return this.view;
     }
+   
 
 }

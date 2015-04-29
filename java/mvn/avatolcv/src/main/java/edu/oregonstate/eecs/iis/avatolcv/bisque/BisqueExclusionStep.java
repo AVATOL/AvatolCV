@@ -26,6 +26,10 @@ public class BisqueExclusionStep implements Step {
 		this.imagesToExclude = images;
 	}
 	@Override
+    public void init() {
+        // nothing to do
+    }
+	@Override
 	public void consumeProvidedData() throws AvatolCVException {
 		sessionData.setImagesToInclude(this.imagesToInclude);
 		sessionData.setImagesToExclude(this.imagesToExclude);
