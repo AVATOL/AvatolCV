@@ -14,6 +14,8 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForStage;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.files.DarwinDriverFile;
+import edu.oregonstate.eecs.iis.avatolcv.segmentation.files.SegmentationInputFile;
+import edu.oregonstate.eecs.iis.avatolcv.segmentation.files.SegmentationRunConfig;
 
 public class SegmentationSessionData {
 	public static final String GROUND_TRUTH_SUFFIX = "_groundtruth";
@@ -42,6 +44,9 @@ public class SegmentationSessionData {
 		ensureDirExists(this.modelsDir);
 		this.outputDir = this.rootSegDir + FILESEP + "output";
 		ensureDirExists(this.outputDir);
+	}
+	public String getRootSegmentationDir(){
+	    return this.rootSegDir;
 	}
 	public void cleanResults(){
 		File dir = new File(this.outputDir);
@@ -78,80 +83,25 @@ public class SegmentationSessionData {
 		}
 		
 	}
-	/*
-	trainingImages_segmentation.txt and testingImages_segmentation.txt have entries that are the root names of images
-	    00-5xayvrdPC3o5foKMpLbZ5H_imgXyz
-	    03-uietIOuerto5foKMhUHYUh_imgAbc
-    */
+	
+	
 	public void createTrainingImageListFile() throws AvatolCVException {
-		List<ImageInfo> images = this.ifs.getTrainingImages();
-		String path = getTrainingImageFilePath();
-		File f = new File(path);
-		if (f.exists()){
-			f.delete();
-		}
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(path));
-			for (ImageInfo ii : images){
-				String nameRoot = ii.getFilename_IdNameWidth();
-				writer.write(nameRoot + NL);
-			}
-			writer.close();
-		}
-		catch(IOException ioe){
-			throw new AvatolCVException("problem creating training image list file: " + ioe.getMessage(),ioe);
-		}	
+	    List<ImageInfo> images = this.ifs.getTrainingImages();
+        String path = getTrainingImageFilePath();
+        SegmentationInputFile sif = new SegmentationInputFile(path, images);
+        sif.persist();
+	}
+	public void createTestImageListFile() throws AvatolCVException {
+	    List<ImageInfo> images = this.ifs.getTestImages();
+        String path = getTestImageFilePath();
+        SegmentationInputFile sif = new SegmentationInputFile(path, images);
+        sif.persist();
 	}
 	
-	public void createTestImageListFile() throws AvatolCVException {
-		List<ImageInfo> images = this.ifs.getTestImages();
-		String path = getTestImageFilePath();
-		File f = new File(path);
-		if (f.exists()){
-			f.delete();
-		}
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(path));
-			for (ImageInfo ii : images){
-				String nameRoot = ii.getFilename_IdNameWidth();
-				writer.write(nameRoot + NL);
-			}
-			writer.close();
-		}
-		catch(IOException ioe){
-			throw new AvatolCVException("problem creating test image list file: " + ioe.getMessage(),ioe);
-		}	
-	}
+	
 	public void createSegmentationConfigFile() throws AvatolCVException {
-		String path = getConfigFilePath();
-		File f = new File(path);
-		if (f.exists()){
-			f.delete();
-		}
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(path));
-			writer.write("darwinXMLFileDir=" + rootSegDir + NL);
-			writer.write("trainingImagesFile=" + getTrainingImageFilePath() + NL);
-			writer.write("testingImagesFile=" + getTestImageFilePath() + NL);
-			writer.write("rawImagesDir=" + sourceImageDir + NL);
-			writer.write("segmentationOutputDir=" + outputDir + NL);
-			writer.write("modelXmlPath=" + rootSegDir + FILESEP + "model.xml" +NL);
-			writer.write("trainingFileSuffix=_groundtruth" + NL);
-			writer.write("outputFileSuffix=_mask" + NL);
-			writer.write("#" + NL);
-			for (ImageInfo ii : this.ifs.getTrainingImages()){
-				writer.write("trainingImage="+ii.getFilename() + NL);
-			}
-			for (ImageInfo ii : this.ifs.getTestImages()){
-				writer.write("testImage="+ii.getFilename() + NL);
-			}
-			writer.close();
-		}
-		catch(IOException ioe){
-			throw new AvatolCVException("problem creating segmentation config file: " + ioe.getMessage(), ioe);
-		}
-		
-
+	    SegmentationRunConfig src = new SegmentationRunConfig(this, this.ifs);
+	    src.persist();
 	}
 
 	public String getConfigFilePath(){
@@ -225,7 +175,10 @@ public class SegmentationSessionData {
 	public String getSourceImageDir(){
 		return this.sourceImageDir;
 	}
-	
+
+    public String getOutputDir(){
+        return this.outputDir;
+    }
 	public void deleteTrainingImage(ImageInfo ii)  throws AvatolCVException{
 		String targetDir = getSegmentationTrainingImageDir();
 		String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + GROUND_TRUTH_SUFFIX + "." + ii.getExtension();

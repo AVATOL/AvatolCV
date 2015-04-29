@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.SystemDirs;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 
 public class QuestionsValidator {
@@ -223,10 +224,10 @@ public class QuestionsValidator {
     public List<String> getImageMalformations(QImage qimage){
     	List<String> malformations = new ArrayList<String>();
         // filename not ''
-    	SystemDependent sd = new SystemDependent
-        String currentDir = System.getProperty("user.dir");
+    	
+        String root = SystemDirs.getAvatolCVRootDir();
         String relPath = qimage.getPath();
-        String imagePath = currentDir + FILESEP + relPath;
+        String imagePath = root + FILESEP + relPath;
         File imageFile = new File(imagePath);
         if (qimage.getPath().equals("")){
             malformations.add("image filename empty");

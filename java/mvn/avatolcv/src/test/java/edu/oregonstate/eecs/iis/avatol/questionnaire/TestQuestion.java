@@ -89,32 +89,3 @@ public class TestQuestion extends TestCase {
 		}
 	}
 }
-/*
- * 
- * classdef TestQuestion < matlab.unittest.TestCase
-    properties 
-        OriginalPath
-    end
-    
-    methods (TestMethodSetup)
-        function addSrcToPath(testCase)
-            testCase.OriginalPath = path;
-            addpath(fullfile(pwd, "../questionnaire"));
-            addpath(fullfile(pwd, ".."));
-        end
-    end
-    
-    methods (TestMethodTeardown)
-        function restorePath(testCase)
-            path(testCase.OriginalPath);
-        end
-    end
-    
-    methods (Test)
-        
-        
- 
-    end
-end
-
- */

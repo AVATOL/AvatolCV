@@ -43,7 +43,7 @@ public class BisqueCharChoiceStep implements Step {
     }
     @Override
     public void consumeProvidedData() throws AvatolCVException {
-        this.sessionData.setChosenCharacter(this.chosenCharacter);
+        this.sessionData.setCurrentCharacter(this.chosenCharacter);
     }
 
     @Override

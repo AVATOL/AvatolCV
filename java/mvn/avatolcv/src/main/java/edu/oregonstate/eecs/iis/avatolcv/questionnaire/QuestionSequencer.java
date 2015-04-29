@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.SystemDirs;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 
 public class QuestionSequencer {
@@ -26,13 +27,18 @@ public class QuestionSequencer {
         this.currentQuestion = this.qquestions.get(0);
         this.noMoreQuestionsMarker = new QQuestion("NO_MORE_QUESTIONS","NO_MORE_QUESTIONS","NO_MORE_QUESTIONS");
     }
+    public List<AnsweredQuestion> getAnsweredQuestions(){
+        return this.answeredQuestions;
+    }
+    public int getNextAnswerIndex(){
+        return this.nextAnswerIndex;
+    }
     public void persist() throws AvatolCVException {
     	File f = new File("results");
     	if (!f.isDirectory()){
     		f.mkdirs();
     	}
-    	String curDir = System.getProperty("user.dir");
-    	String parentPath = curDir + FILESEP + "results" + FILESEP + this.matrixName;
+    	String parentPath = SystemDirs.getUserAnswerDir();
     	String filepath = parentPath + FILESEP + this.characterName + ".out";
         
         File parentPathDir = new File(parentPath);
