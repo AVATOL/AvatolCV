@@ -44,7 +44,7 @@ public class SegmentationSessionTester extends TestCase {
 		
 		try {
 		    checkStep = new SegStep1_TrainingExamplesCheck(ssd);
-	        Assert.assertTrue(checkStep.needsAnswering());
+	        Assert.assertFalse(checkStep.needsAnswering());
 			checkStep.consumeProvidedData();
 			int trainingCount = ssd.getImagesForStage().getTrainingImages().size();
 			int testingCount = ssd.getImagesForStage().getNonTrainingImages().size();
@@ -77,12 +77,12 @@ public class SegmentationSessionTester extends TestCase {
 		ImageInfo ii2 = null;
 		try {
 			ii1 = ssd.getCandidateImages().get(0);
-			labelStep.saveSegmentationTrainingImage(bi1, ii1);
+			labelStep.saveTrainingImage(bi1, ii1);
 			Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 1);
 			Assert.assertTrue(ssd.getImagesForStage().getNonTrainingImages().size() == 4);
 			// add another image
 			ii2 = ssd.getCandidateImages().get(1);
-			labelStep.saveSegmentationTrainingImage(bi2, ii2);
+			labelStep.saveTrainingImage(bi2, ii2);
 			Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 2);
 			Assert.assertTrue(ssd.getImagesForStage().getNonTrainingImages().size() == 3);
 		}
