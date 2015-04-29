@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.segmentation.files;
+package edu.oregonstate.eecs.iis.avatolcv.generic;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -9,16 +9,16 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 /*
-trainingImages_segmentation.txt and testingImages_segmentation.txt have entries that are the root names of images
+trainingImages_segmentation.txt and testingImages_segmentation.txt, etc have entries that are the root names of images
     00-5xayvrdPC3o5foKMpLbZ5H_imgXyz
     03-uietIOuerto5foKMhUHYUh_imgAbc
 */
-public class SegmentationInputFile {
+public class FileRootNameList {
     private static final String NL = System.getProperty("line.separator");
 
     private String path = null;
     private List<ImageInfo> images = null;
-    public SegmentationInputFile(String path, List<ImageInfo> images){
+    public FileRootNameList(String path, List<ImageInfo> images){
         this.images = images;
         this.path = path;
     }

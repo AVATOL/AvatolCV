@@ -13,6 +13,7 @@ public class ImageInfo {
 	private String ID_name_imagewidth_type = null;
 	private String outputType = null;
 	private String extension = null;
+	private ImageInfo ancestorImage = null;
 	public ImageInfo(String parentDir, String ID, String nameAsUploaded, String imageWidth, String outputType, String extension){
 		this.parentDir = parentDir;
 		this.ID = ID;
@@ -23,16 +24,25 @@ public class ImageInfo {
 		this.ID_name = ID + "_" + nameAsUploaded;
 		this.ID_name_imageWidth = this.ID_name +  "_" + imageWidth;
 		this.ID_name_imagewidth_type = this.ID_name_imageWidth + "_" + outputType;
-		// filename
-		if (this.outputType.equals("")){
-			this.filename = this.ID_name_imageWidth + "." + extension;
-		}
-		else {
-			this.filename = this.ID_name_imagewidth_type + "." + extension;
-		}
-		
-		this.filepath = this.parentDir + FILESEP + this.filename;
+		ingestOutputType();
 	}
+	private void ingestOutputType(){
+	 // filename
+        if (this.outputType.equals("")){
+            this.filename = this.ID_name_imageWidth + "." + extension;
+        }
+        else {
+            this.filename = this.ID_name_imagewidth_type + "." + extension;
+        }
+        
+        this.filepath = this.parentDir + FILESEP + this.filename;
+	}
+	public String getParentDir(){
+	    return this.parentDir;
+	}
+    public String getOutputType(){
+        return this.outputType;
+    }
 	public String getFilename_IdName(){
 		return this.ID_name;
 	}
@@ -60,5 +70,18 @@ public class ImageInfo {
 	public String getExtension(){
 		return this.extension;
 	}
-	
+	public ImageInfo clone(){
+	    ImageInfo clone = new ImageInfo(this.parentDir, this.ID, this.nameAsUploaded, this.imageWidth, this.outputType, this.extension);
+	    return clone;
+	}
+	public void setOutputType(String outputType){
+	    this.outputType = outputType;
+	    ingestOutputType();
+	}
+	public void setAncestorImage(ImageInfo ancestorImage){
+	    this.ancestorImage = ancestorImage;
+	}
+	public ImageInfo getAncestorImage(){
+	    return this.ancestorImage;
+	}
 }

@@ -4,7 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-
+/*
+ * ImagesForStage is a generic image file handler that each tool can use.  
+ * - it starts out with candidate images
+ * - images can be disqualified or re-qualified
+ * - it maintains lists of training, test and result images
+ */
 public class ImagesForStage {
 	 public static final String TRAINING_IMAGE = "train";
 	    public static final String TEST_IMAGE = "test";
@@ -31,6 +36,8 @@ public class ImagesForStage {
 	            f.mkdirs();
 	        }
 		}
+		
+		
 		public List<ImageInfo> getInPlayImages(){
 			List<ImageInfo> result = new ArrayList<ImageInfo>();
 			for (ImageInfo ii : this.inPlayImages){
@@ -109,18 +116,24 @@ public class ImagesForStage {
 		    }
 		    return imageStatusForId.get(ID);
 		}
+		/*
+		 * First, find training files that match inPlayImages reference list
+		 * Use their presence/absence to divide inPlayImage list entries into training and test image lists ,
+		 * keeping track of their assignment with the imagesStatusForId hash.
+		 */
 		public void reload()  throws AvatolCVException {
 		    imageStatusForId = new Hashtable<String, String>();
 			trainingImages = new ArrayList<ImageInfo>();
 			testImages = new ArrayList<ImageInfo>();
-			File trainingImageDir = new File(trainingImageDirPath);
-			if (!trainingImageDir.isDirectory()){
-				throw new AvatolCVException("given segmentationLabelDir does not exist " + trainingImageDirPath);
-			}
-			File[] trainingImageFiles = trainingImageDir.listFiles();
+			
 			/*
-			 * to avoid having to know about potential suffixes on the root names, search just by root names
+			 * sense the training image files now in play
 			 */
+			File trainingImageDir = new File(trainingImageDirPath);
+            if (!trainingImageDir.isDirectory()){
+                throw new AvatolCVException("given segmentationLabelDir does not exist " + trainingImageDirPath);
+            }
+            File[] trainingImageFiles = trainingImageDir.listFiles();
 			for (ImageInfo ii : inPlayImages){
 			    String ID = ii.getID();
 				String fileRootToLookFor  = ii.getFilename_IdName();
@@ -137,18 +150,43 @@ public class ImagesForStage {
 					imageStatusForId.put(ID, TEST_IMAGE);
 				}
 			}
+			/*
+	         * Some stages are preparatory stages to get images ready for character scoring.
+	         * In order for the images that were used for training at one of the prep stages to be 
+	         * available to the following stage, we can't leave them behind at that stage.  If 
+	         * we did leave them behind, each stage would remove "good" images from the final 
+	         * set that will be scored for character state
+	         * 
+	         * Thus, we have the concept of ancestor images. An ancestor image of a training image is the 
+	         * raw image that was used to create the training image.  These can be consulted later to help
+	         * build the full testing list - the test images plus the ancestors of the training images.
+	         */
 			
-			resultImages = new ArrayList<ImageInfo>();
+			/*
+			 * Set ancestor images on the training images
+			 * - assume parent dir should be same as test image
+			 * - assume outputType should be same as test image
+			 */
+			String parentDirFromTestImage = testImages.get(0).getParentDir();
+			String outputTypeFromTestImage = testImages.get(0).getOutputType();
+			for (ImageInfo tii : this.trainingImages){
+			    ImageInfo ancestorImage = new ImageInfo(parentDirFromTestImage, tii.getID(), tii.getNameAsUploaded(), tii.getImageWidth(), outputTypeFromTestImage, tii.getExtension());
+			    tii.setAncestorImage(ancestorImage);
+			}
+			/*
+			 * sense the result files now in play
+			 */
 			File segOutputDir = new File(outputImageDirPath);
 			if (!segOutputDir.isDirectory()){
 				throw new AvatolCVException("given segmentationOutputDir does not exist " + outputImageDirPath);
 			}
 			File[] outputFiles = segOutputDir.listFiles();
-			
-			for (ImageInfo ii : inPlayImages){
+	        resultImages = new ArrayList<ImageInfo>();
+
+			for (ImageInfo ii : inPlayImages){   // for each in play image
 				String fileRootToLookFor  = ii.getFilename_IdName();
-				for (File f : trainingImageFiles){
-					if (f.getName().startsWith(fileRootToLookFor)){
+				for (File f : outputFiles){
+					if (f.getName().startsWith(fileRootToLookFor)){ // find the associated training image, if exists
 						String filename = f.getName();
 						String parentDir = f.getParent();
 						String[] filenameParts = filename.split("\\.");
@@ -158,12 +196,12 @@ public class ImagesForStage {
 						String ID = rootNameParts[0];
 						String nameAsUploaded = rootNameParts[1];
 						String imageWidth = rootNameParts[2];
-						String outputType = rootNameParts[3];
+						String outputType = rootNameParts[3];// and make a new entry for that, for the resultImage list
 						ImageInfo resultImageInfo = new ImageInfo(parentDir, ID, nameAsUploaded, imageWidth, outputType, extension);
 						this.resultImages.add(resultImageInfo);
 					}
 				}
-			}
+			} 
 			
 		}
 		public List<ImageInfo> getTrainingImages(){
@@ -173,7 +211,19 @@ public class ImagesForStage {
 			}
 			return result;
 		}
-		public List<ImageInfo> getTestImages(){
+		
+		public List<ImageInfo> getTestImagesPlusTrainingImageAncestors() throws AvatolCVException {
+		    List<ImageInfo> result = getNonTrainingImages();
+		    for (ImageInfo ii : trainingImages){
+		        ImageInfo ancestor = ii.getAncestorImage();
+		        if (null == ancestor){
+		            throw new AvatolCVException("training image does not have ancestor image recorded");
+		        }
+		        result.add(ancestor);
+		    }
+		    return result;
+		}
+		public List<ImageInfo> getNonTrainingImages(){
 			List<ImageInfo> result = new ArrayList<ImageInfo>();
 			for (ImageInfo ii : testImages){
 				result.add(ii);

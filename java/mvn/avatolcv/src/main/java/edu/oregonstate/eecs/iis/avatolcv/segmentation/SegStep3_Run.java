@@ -4,19 +4,20 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
+import edu.oregonstate.eecs.iis.avatolcv.generic.AlgorithmRunner;
 
 public class SegStep3_Run implements Step {
 	private View view = null;	
 	private SegmentationSessionData ssd = null;
-	private SegmentationRunner segRunner = null;
-	public SegStep3_Run(View view, SegmentationSessionData ssd, SegmentationRunner segRunner){
+	private AlgorithmRunner runner = null;
+	public SegStep3_Run(View view, SegmentationSessionData ssd, AlgorithmRunner runner){
 		this.ssd = ssd;
 		this.view = view;
-		this.segRunner = segRunner;
+		this.runner = runner;
 	}
 	public void run(ProgressPresenter pp){
 		this.ssd.cleanResults();
-		this.segRunner.run(ssd.getConfigFilePath(), pp);
+		this.runner.run(ssd.getConfigFilePath(), pp);
 	}
 	@Override
 	public void consumeProvidedData() throws AvatolCVException {
@@ -26,7 +27,7 @@ public class SegStep3_Run implements Step {
 
 	@Override
 	public boolean needsAnswering() {
-		return !segRunner.isRunComplete();
+		return !runner.isRunComplete();
 	}
 
 	@Override

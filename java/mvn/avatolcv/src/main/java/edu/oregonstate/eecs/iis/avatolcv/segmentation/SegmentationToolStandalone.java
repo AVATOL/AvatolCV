@@ -11,7 +11,7 @@ public class SegmentationToolStandalone {
 	}
 	public SegmentationToolStandalone(String parentDataDir){
 		this.ssd = new SegmentationSessionData(parentDataDir);
-		this.ssd.setSourceImageDir(parentDataDir + FILESEP + "images" + FILESEP + "large");
+		this.ssd.setRawImageDir(parentDataDir + FILESEP + "images" + FILESEP + "large");
 		segStep = new SegmentationContainerStep(this.ssd);
 		SegStep1_TrainingExamplesCheck checkStep = new SegStep1_TrainingExamplesCheck(null, this.ssd);
 		SegStep2_LabelTrainingExamples labelStep = new SegStep2_LabelTrainingExamples(null, this.ssd);

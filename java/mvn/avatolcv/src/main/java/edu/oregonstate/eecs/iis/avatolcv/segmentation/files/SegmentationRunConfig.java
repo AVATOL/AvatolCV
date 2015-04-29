@@ -30,7 +30,7 @@ public class SegmentationRunConfig {
             writer.write("darwinXMLFileDir=" + ssd.getRootSegmentationDir() + NL);
             writer.write("trainingImagesFile=" + ssd.getTrainingImageFilePath() + NL);
             writer.write("testingImagesFile=" + ssd.getTestImageFilePath() + NL);
-            writer.write("rawImagesDir=" + ssd.getSourceImageDir() + NL);
+            writer.write("rawImagesDir=" + ssd.getTestImageDir() + NL);
             writer.write("trainingImagesDir=" + ssd.getSegmentationTrainingImageDir());
             writer.write("segmentationOutputDir=" + ssd.getOutputDir() + NL);
             writer.write("modelXmlPath=" + ssd.getRootSegmentationDir() + FILESEP + "model.xml" +NL);
@@ -40,7 +40,7 @@ public class SegmentationRunConfig {
             for (ImageInfo ii : ifs.getTrainingImages()){
                 writer.write("trainingImage="+ii.getFilename() + NL);
             }
-            for (ImageInfo ii : ifs.getTestImages()){
+            for (ImageInfo ii : ifs.getTestImagesPlusTrainingImageAncestors()){
                 writer.write("testImage="+ii.getFilename() + NL);
             }
             writer.close();

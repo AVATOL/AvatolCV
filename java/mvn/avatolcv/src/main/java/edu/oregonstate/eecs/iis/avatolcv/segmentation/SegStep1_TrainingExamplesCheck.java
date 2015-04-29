@@ -11,13 +11,20 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 
 public class SegStep1_TrainingExamplesCheck implements Step {
 
-	private View view = null;	
 	private boolean segLabelFileAssessmentHasBeenRun = false;
 	private SegmentationSessionData ssd = null;
 	ImagesForStage ifs = null;
-	public SegStep1_TrainingExamplesCheck(View view, SegmentationSessionData ssd){
+	public SegStep1_TrainingExamplesCheck(SegmentationSessionData ssd) throws AvatolCVException {
 		this.ssd = ssd;
-		this.view = view;
+        String segTrainingImageDirPath = this.ssd.getSegmentationTrainingImageDir();
+        File segLabelDir = new File(segTrainingImageDirPath);
+        if (!segLabelDir.isDirectory()){
+            segLabelDir.mkdirs();
+        }
+        List<ImageInfo> candidateImages = ssd.getCandidateImages();
+        ifs = new ImagesForStage(segTrainingImageDirPath, this.ssd.getSegmentationOutputDir(), candidateImages);
+        ifs.reload();
+        segLabelFileAssessmentHasBeenRun = true;
 	}
 	
 	@Override
@@ -25,17 +32,6 @@ public class SegStep1_TrainingExamplesCheck implements Step {
 		this.ssd.setImagesForStage(this.ifs);
 	}
 	
-	public void assess()  throws AvatolCVException {
-		segLabelFileAssessmentHasBeenRun = true;
-		String segTrainingImageDirPath = this.ssd.getSegmentationTrainingImageDir();
-		File segLabelDir = new File(segTrainingImageDirPath);
-		if (!segLabelDir.isDirectory()){
-			segLabelDir.mkdirs();
-		}
-		List<ImageInfo> candidateImages = ssd.getCandidateImages();
-		ifs = new ImagesForStage(segTrainingImageDirPath, this.ssd.getSegmentationOutputDir(), candidateImages);
-		ifs.reload();
-	}
 	
 	@Override
 	public boolean needsAnswering() {
@@ -47,7 +43,7 @@ public class SegStep1_TrainingExamplesCheck implements Step {
 
 	@Override
 	public View getView() {
-		return this.view;
+		return null;
 	}
 
 }

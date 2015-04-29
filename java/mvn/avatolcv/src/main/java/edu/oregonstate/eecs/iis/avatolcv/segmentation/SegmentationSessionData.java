@@ -13,33 +13,35 @@ import javax.imageio.ImageIO;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForStage;
+import edu.oregonstate.eecs.iis.avatolcv.generic.FileRootNameList;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.files.DarwinDriverFile;
-import edu.oregonstate.eecs.iis.avatolcv.segmentation.files.SegmentationInputFile;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.files.SegmentationRunConfig;
 
 public class SegmentationSessionData {
-	public static final String GROUND_TRUTH_SUFFIX = "_groundtruth";
+	public static final String OUTPUT_TYPE_SUFFIX = "_groundtruth";
 	private static final String FILESEP = System.getProperty("file.separator");
 	private static final String NL = System.getProperty("line.separator");
 	private String parentDataDir = null;
 	private String rootSegDir = null;
 	private String cacheDir = null;
-	private String labelDir = null;
+	private String trainingImageDir = null;
 	private String modelsDir = null;
 	private String outputDir = null;
 	private String segmentationDir = null;
-	private String sourceImageDir = null;
+	private String testImageDir = null;
 	private List<ImageInfo> candidateImages = new ArrayList<ImageInfo>();
     private ImagesForStage ifs = null;
     
-	public SegmentationSessionData(String parentDataDir){
+	public SegmentationSessionData(String parentDataDir, String testImageDir){
 		this.parentDataDir = parentDataDir;
+		this.testImageDir = testImageDir;
+		loadCandidateImages();
 		this.rootSegDir = this.parentDataDir + FILESEP + "seg";
 		ensureDirExists(this.rootSegDir);
 		this.cacheDir = this.rootSegDir + FILESEP + "cache";
 		ensureDirExists(this.cacheDir);
-		this.labelDir = this.rootSegDir + FILESEP + "trainingImages";
-		ensureDirExists(this.labelDir);
+		this.trainingImageDir = this.rootSegDir + FILESEP + "trainingImages";
+		ensureDirExists(this.trainingImageDir);
 		this.modelsDir = this.rootSegDir + FILESEP + "models";
 		ensureDirExists(this.modelsDir);
 		this.outputDir = this.rootSegDir + FILESEP + "output";
@@ -61,7 +63,7 @@ public class SegmentationSessionData {
 	public void createDarwinDriverFile() throws AvatolCVException {
 		String segmentationRootDir = getSegmentationRootDir();
 		DarwinDriverFile ddf = new DarwinDriverFile();
-		ddf.setImageDir(getSourceImageDir());
+		ddf.setImageDir(getTestImageDir());
 		ddf.setCachedDir(getSegmentationCacheDir());
 		ddf.setLabelDir(getSegmentationTrainingImageDir());
 		ddf.setModelsDir(getSegmentationModelsDir());
@@ -88,13 +90,13 @@ public class SegmentationSessionData {
 	public void createTrainingImageListFile() throws AvatolCVException {
 	    List<ImageInfo> images = this.ifs.getTrainingImages();
         String path = getTrainingImageFilePath();
-        SegmentationInputFile sif = new SegmentationInputFile(path, images);
+        FileRootNameList sif = new FileRootNameList(path, images);
         sif.persist();
 	}
 	public void createTestImageListFile() throws AvatolCVException {
-	    List<ImageInfo> images = this.ifs.getTestImages();
+	    List<ImageInfo> images = this.ifs.getTestImagesPlusTrainingImageAncestors();
         String path = getTestImageFilePath();
-        SegmentationInputFile sif = new SegmentationInputFile(path, images);
+        FileRootNameList sif = new FileRootNameList(path, images);
         sif.persist();
 	}
 	
@@ -121,7 +123,7 @@ public class SegmentationSessionData {
 	}
 	public int percentSegTrainingFileExist(){
 		double trainingImageCount = this.ifs.getTrainingImages().size();
-		double testImageCount = this.ifs.getTestImages().size();
+		double testImageCount = this.ifs.getNonTrainingImages().size();
 		double total = testImageCount + trainingImageCount;
 		int percent = (int)(100 * ((double)trainingImageCount / (double)total));
 		return percent;
@@ -135,9 +137,8 @@ public class SegmentationSessionData {
 	public List<ImageInfo> getCandidateImages(){
 		return this.candidateImages;
 	}
-	public void setSourceImageDir(String s){
-		this.sourceImageDir = s;
-		File dir = new File(this.sourceImageDir);
+	public void loadCandidateImages(){
+		File dir = new File(this.testImageDir);
 		File[] files = dir.listFiles();
 		for (File f : files){
 			String name = f.getName();
@@ -149,7 +150,7 @@ public class SegmentationSessionData {
 				String ID = rootParts[0];
 				String nameAsUploaded = rootParts[1];
 				String width = rootParts[2];
-				ImageInfo ii = new ImageInfo(this.sourceImageDir, ID, nameAsUploaded, width, "", extension);
+				ImageInfo ii = new ImageInfo(this.testImageDir, ID, nameAsUploaded, width, "", extension);
 				this.candidateImages.add(ii);
 			}
 		}
@@ -161,7 +162,7 @@ public class SegmentationSessionData {
     	return this.cacheDir;
     }
     public String getSegmentationTrainingImageDir(){
-    	return this.labelDir;
+    	return this.trainingImageDir;
     }
 	public String getSegmentationModelsDir(){
 		return this.modelsDir;
@@ -172,8 +173,8 @@ public class SegmentationSessionData {
 	public String getSegmentationDir(){
 		return this.segmentationDir;
 	}
-	public String getSourceImageDir(){
-		return this.sourceImageDir;
+	public String getTestImageDir(){
+		return this.testImageDir;
 	}
 
     public String getOutputDir(){
@@ -181,7 +182,7 @@ public class SegmentationSessionData {
     }
 	public void deleteTrainingImage(ImageInfo ii)  throws AvatolCVException{
 		String targetDir = getSegmentationTrainingImageDir();
-		String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + GROUND_TRUTH_SUFFIX + "." + ii.getExtension();
+		String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + OUTPUT_TYPE_SUFFIX + "." + ii.getExtension();
 		File f = new File(targetPath);
 		if (f.exists()){
 			f.delete();
@@ -190,7 +191,7 @@ public class SegmentationSessionData {
 	}
 	public void saveSegmentationTrainingImage(BufferedImage bi, ImageInfo ii) throws AvatolCVException {
 		String targetDir = getSegmentationTrainingImageDir();
-		String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + GROUND_TRUTH_SUFFIX + "." + ii.getExtension();
+		String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + OUTPUT_TYPE_SUFFIX + "." + ii.getExtension();
 		try {
 		    File outputfile = new File(targetPath);
 		    ImageIO.write(bi, ii.getExtension() , outputfile);

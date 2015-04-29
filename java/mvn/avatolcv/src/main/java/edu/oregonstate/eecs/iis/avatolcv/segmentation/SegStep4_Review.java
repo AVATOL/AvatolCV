@@ -29,7 +29,6 @@ public class SegStep4_Review implements Step {
 	    return this.ssd.getImagesForStage().getResultImage(ID);
 	}
 	/*
-	 * LEFT OFF HERE 4/22/15
 	 * Use cases from this screen
 	 * - user is ok with results and wants to move on
 	 *      For this case, just move on, data is in place

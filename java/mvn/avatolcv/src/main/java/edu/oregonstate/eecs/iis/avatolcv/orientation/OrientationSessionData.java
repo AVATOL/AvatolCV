@@ -1,39 +1,44 @@
 package edu.oregonstate.eecs.iis.avatolcv.orientation;
 
-import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
+
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.imageio.ImageIO;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForStage;
-import edu.oregonstate.eecs.iis.avatolcv.segmentation.files.DarwinDriverFile;
+import edu.oregonstate.eecs.iis.avatolcv.generic.FileRootNameList;
+import edu.oregonstate.eecs.iis.avatolcv.orientation.files.OrientationRunConfig;
 
 public class OrientationSessionData {
-	public static final String GROUND_TRUTH_SUFFIX = "_groundtruth";
-	public static final String MASK_SUFFIX = "_mask";
+	public static String INPUT_TYPE_SUFFIX = "toBeSetByConstructor";
+	public static final String OUTPUT_TYPE_SUFFIX = "_mask";
 	private static final String FILESEP = System.getProperty("file.separator");
-	private static final String NL = System.getProperty("line.separator");
 	private String parentDataDir = null;
 	private String rootOrientationDir = null;
+	private String trainingImageDir = null;
 	private String outputDir = null;
-	private String sourceImageDir = null;
+	private String testImageDir = null;
 	private String rawImagesDir = null;
     private ImagesForStage ifs = null;
-    private List<ImageInfo> inPlaySegmentedImages = null;
+    private List<ImageInfo> candidateImages = new ArrayList<ImageInfo>();
     
-	public OrientationSessionData(String parentDataDir){
+	public OrientationSessionData(String parentDataDir, String rawImagesDir, String testImageDir, String groundTruthSuffix){
+	    INPUT_TYPE_SUFFIX = groundTruthSuffix;
 		this.parentDataDir = parentDataDir;
+		this.rawImagesDir = rawImagesDir;
+		this.testImageDir = testImageDir;
+		loadCandidateImages();
 		this.rootOrientationDir = this.parentDataDir + FILESEP + "orient";
 		ensureDirExists(this.rootOrientationDir);
 		this.outputDir = this.rootOrientationDir + FILESEP + "output";
 		ensureDirExists(this.outputDir);
+		this.trainingImageDir = this.rootOrientationDir + FILESEP + "trainingImages";
+        ensureDirExists(this.trainingImageDir);
+	}
+	public String getTrainingImageDir(){
+	    return this.trainingImageDir;
 	}
 	public void cleanResults(){
 		File dir = new File(this.outputDir);
@@ -45,76 +50,64 @@ public class OrientationSessionData {
 			f.delete();
 		}
 	}
-	public void setRawImagesDir(String s){
-		this.rawImagesDir = s;
-	}
-	/*
-	trainingImages_segmentation.txt and testingImages_segmentation.txt have entries that are the root names of images
-	    00-5xayvrdPC3o5foKMpLbZ5H_imgXyz
-	    03-uietIOuerto5foKMhUHYUh_imgAbc
-    */
-	public void createRelevantImageListFile() throws AvatolCVException {
-		List<ImageInfo> images = this.ifs.getInPlayImages();
-		String path = getRelevantImageFilePath();
-		File f = new File(path);
-		if (f.exists()){
-			f.delete();
-		}
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(path));
-			for (ImageInfo ii : images){
-				String nameRoot = ii.getFilename_IdNameWidth();
-				writer.write(nameRoot + NL);
-			}
-			writer.close();
-		}
-		catch(IOException ioe){
-			throw new AvatolCVException("problem creating relevant image list file: " + ioe.getMessage(),ioe);
-		}	
-	}
 	
-	/*
-	 * darwinOutputDir,<same as in xml file - points to where segmented files are put>
-    rawImagesDir,<path of dir where right sized images from bisque are put>
-    relaventImagesFile,<path to file that lists filenames of images to orient>
-    orientationResultsDir,<path to dir to put orientation normalized images>
-	modelFilePath,<path to pre-trained svm model for apex, base locating>
-	apexLocationConvention,left
-
-    output files    ..._rotated.jpg
-	 */
-	public void createOrientationConfigFile() throws AvatolCVException {
-		String path = getConfigFilePath();
-		File f = new File(path);
-		if (f.exists()){
-			f.delete();
-		}
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(path));
-			writer.write("darwinOutputDir=" + this.sourceImageDir + NL);	
-			writer.write("rawImagesDir=" + this.rawImagesDir + NL);
-			writer.write("segmentationOutputDir=" + this.sourceImageDir + NL);
-			writer.write("relevantImagesFile=" + getRelevantImageFilePath() + NL);
-			writer.write("orientationResultsDir=" + this.outputDir + NL);
-			writer.write("outputFileSuffix=_rotated" + NL);
-			writer.write("modelFilePath=" + getModelFilePath() + NL);
-			writer.write("apexLocationConvention=left" + NL);
-			writer.close();
-		}
-		catch(IOException ioe){
-			throw new AvatolCVException("problem creating orientation config file: " + ioe.getMessage(), ioe);
-		}
-		
-
+	public void loadCandidateImages(){
+        File dir = new File(this.testImageDir);
+        File[] files = dir.listFiles();
+        for (File f : files){
+            String name = f.getName();
+            if (!(name.equals(".") || name.equals(".."))){
+                String[] parts = name.split("\\.");
+                String root = parts[0];
+                String extension = parts[1];
+                String[] rootParts = root.split("_");
+                String ID = rootParts[0];
+                String nameAsUploaded = rootParts[1];
+                String width = rootParts[2];
+                ImageInfo ii = new ImageInfo(this.testImageDir, ID, nameAsUploaded, width, "", extension);
+                this.candidateImages.add(ii);
+            }
+        }
+    }
+	public List<ImageInfo> getCandidateImages(){
+	    return this.candidateImages;
 	}
-
+    public void createTrainingImageListFile() throws AvatolCVException {
+        List<ImageInfo> images = this.ifs.getTrainingImages();
+        String path = getTrainingImageFilePath();
+        FileRootNameList sif = new FileRootNameList(path, images);
+        sif.persist();
+    }
+    public void createTestImageListFile() throws AvatolCVException {
+        List<ImageInfo> images = this.ifs.getTestImagesPlusTrainingImageAncestors();
+        String path = getTestImageFilePath();
+        FileRootNameList sif = new FileRootNameList(path, images);
+        sif.persist();
+    }
+	
+	public void createOrientationConfigFile() throws AvatolCVException {
+	    OrientationRunConfig orc = new OrientationRunConfig(this, this.ifs);
+	    orc.persist();
+	}
+    public String getRawImagesDir(){
+        return this.rawImagesDir;
+    }
+    public String getOutputDir(){
+        return this.outputDir;
+    }
 	public String getModelFilePath(){
 		return rootOrientationDir + FILESEP + "orientationModel.txt";
 	}
 	public String getConfigFilePath(){
 		return rootOrientationDir + FILESEP + "runConfig_orientation.txt";
 	}
-	
+
+    public String getTestImageFilePath(){
+        return rootOrientationDir + FILESEP + "testingImages_orientation.txt";
+    }
+    public String getTrainingImageFilePath(){
+        return rootOrientationDir + FILESEP + "trainingImages_orientation.txt";
+    }
 	public String getRelevantImageFilePath(){
 		return rootOrientationDir + FILESEP + "relevantImages.txt";
 	}
@@ -123,15 +116,7 @@ public class OrientationSessionData {
 		if (!f.isDirectory()){
 			f.mkdirs();
 		}
-	}
-	//do I need to provide the segmentation training images as input in addition to the segmentation output
-	// Answer is no - these images are actually not the same format as the _mask images so Yao says "ok to skip"  
-	// TODO WAITING ON YAO RESPONSE___but I say, user needs those images labeled - doesn't want any "good images" left out of process, otherwise they have to go dig around and fix.
-	
-	
-	
-	now that I put ImagesForStage in play - it assumes training and test data.  should I not add steps to allow that to be there in case ther is no model?
-			
+	}			
 			
 	public void setImagesForStage(ImagesForStage ifs){
 		this.ifs = ifs;
@@ -142,17 +127,12 @@ public class OrientationSessionData {
 	public List<ImageInfo> getInPlayRawImages(){
 		return this.ifs.getInPlayImages();
 	}
-	public void setInPlaySegOutputImages(List<ImageInfo> images){
-		this.inPlaySegmentedImages = images;
-	}
-	public void setSourceImageDir(String s){
-		this.sourceImageDir = s;
-	}
+	
 	public String getOrientationOutputDir(){
 		return this.outputDir;
 	}
-	public String getSourceImageDir(){
-		return this.sourceImageDir;
+	public String getTestImageDir(){
+		return this.testImageDir;
 	}
 	
 	

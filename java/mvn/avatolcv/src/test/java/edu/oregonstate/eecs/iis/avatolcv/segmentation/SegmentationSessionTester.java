@@ -14,6 +14,7 @@ import edu.oregonstate.eecs.iis.avatolcv.TestProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
+import edu.oregonstate.eecs.iis.avatolcv.generic.AlgorithmRunner;
 
 public class SegmentationSessionTester extends TestCase {
 
@@ -35,16 +36,17 @@ public class SegmentationSessionTester extends TestCase {
 		/*
 		 * create session
 		 */
-		SegmentationSessionData ssd = new SegmentationSessionData(parentDataDir);
-		ssd.setSourceImageDir(parentDataDir + FILESEP + "images" + FILESEP + "large");
+		String rawImageDir = parentDataDir + FILESEP + "images" + FILESEP + "large";
+		SegmentationSessionData ssd = new SegmentationSessionData(parentDataDir, rawImageDir);
 		
-		SegStep1_TrainingExamplesCheck checkStep = new SegStep1_TrainingExamplesCheck(null, ssd);
-		Assert.assertTrue(checkStep.needsAnswering());
+		SegStep1_TrainingExamplesCheck checkStep = null;
+		
 		try {
-			checkStep.assess();
+		    checkStep = new SegStep1_TrainingExamplesCheck(ssd);
+	        Assert.assertTrue(checkStep.needsAnswering());
 			checkStep.consumeProvidedData();
 			int trainingCount = ssd.getImagesForStage().getTrainingImages().size();
-			int testingCount = ssd.getImagesForStage().getTestImages().size();
+			int testingCount = ssd.getImagesForStage().getNonTrainingImages().size();
 			int total = trainingCount + testingCount;
 			Assert.assertTrue(total != 0);
 		}
@@ -76,12 +78,12 @@ public class SegmentationSessionTester extends TestCase {
 			ii1 = ssd.getCandidateImages().get(0);
 			labelStep.saveSegmentationTrainingImage(bi1, ii1);
 			Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 1);
-			Assert.assertTrue(ssd.getImagesForStage().getTestImages().size() == 4);
+			Assert.assertTrue(ssd.getImagesForStage().getNonTrainingImages().size() == 4);
 			// add another image
 			ii2 = ssd.getCandidateImages().get(1);
 			labelStep.saveSegmentationTrainingImage(bi2, ii2);
 			Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 2);
-			Assert.assertTrue(ssd.getImagesForStage().getTestImages().size() == 3);
+			Assert.assertTrue(ssd.getImagesForStage().getNonTrainingImages().size() == 3);
 		}
 		catch(AvatolCVException e){
 			Assert.fail("problem saving Training image " + e.getMessage());
@@ -99,14 +101,14 @@ public class SegmentationSessionTester extends TestCase {
 		Assert.assertTrue(ssd.getImagesForStage().getInPlayImages().size() == 5);
 		
 		Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 1);
-		Assert.assertTrue(ssd.getImagesForStage().getTestImages().size() == 4);
+		Assert.assertTrue(ssd.getImagesForStage().getNonTrainingImages().size() == 4);
 		
 		// disqualification
 		try {
 			labelStep.disqualifyImage(ii1);
 			
 			Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 0);
-			Assert.assertTrue(ssd.getImagesForStage().getTestImages().size() == 4);
+			Assert.assertTrue(ssd.getImagesForStage().getNonTrainingImages().size() == 4);
 
 			Assert.assertTrue(ssd.getImagesForStage().getDisqualifiedImages().contains(ii1));
 			Assert.assertTrue(ssd.getImagesForStage().getDisqualifiedImages().size() == 1);
@@ -116,7 +118,7 @@ public class SegmentationSessionTester extends TestCase {
 			labelStep.disqualifyImage(ii2);
 
 			Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 0);
-			Assert.assertTrue(ssd.getImagesForStage().getTestImages().size() == 3);
+			Assert.assertTrue(ssd.getImagesForStage().getNonTrainingImages().size() == 3);
 
 			Assert.assertTrue(ssd.getImagesForStage().getDisqualifiedImages().contains(ii2));
 			Assert.assertTrue(ssd.getImagesForStage().getDisqualifiedImages().size() == 2);
@@ -131,7 +133,7 @@ public class SegmentationSessionTester extends TestCase {
 		try {
 			labelStep.requalifyImage(ii1);
 			Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 1);
-			Assert.assertTrue(ssd.getImagesForStage().getTestImages().size() == 3);
+			Assert.assertTrue(ssd.getImagesForStage().getNonTrainingImages().size() == 3);
 
 			Assert.assertFalse(ssd.getImagesForStage().getDisqualifiedImages().contains(ii1));
 			Assert.assertTrue(ssd.getImagesForStage().getDisqualifiedImages().size() == 1);
@@ -140,7 +142,7 @@ public class SegmentationSessionTester extends TestCase {
 			
 			labelStep.requalifyImage(ii2);
 			Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 1);
-			Assert.assertTrue(ssd.getImagesForStage().getTestImages().size() == 4);
+			Assert.assertTrue(ssd.getImagesForStage().getNonTrainingImages().size() == 4);
 
 			Assert.assertFalse(ssd.getImagesForStage().getDisqualifiedImages().contains(ii2));
 			Assert.assertTrue(ssd.getImagesForStage().getDisqualifiedImages().size() == 0);
@@ -164,7 +166,7 @@ public class SegmentationSessionTester extends TestCase {
 		
 		Assert.assertFalse(labelStep.needsAnswering());
 
-		SegmentationRunner segRunner = new BogusSegmentationRunner();
+		AlgorithmRunner segRunner = new BogusSegmentationRunner();
 		SegStep3_Run segRunStep = new SegStep3_Run(null, ssd, segRunner);
 		Assert.assertTrue(segRunStep.needsAnswering());
 		ProgressPresenter pp = new TestProgressPresenter();
