@@ -1,17 +1,22 @@
 package edu.oregonstate.eecs.iis.avatolcv.orientation;
 
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageTranformReviewData;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForStage;
 import edu.oregonstate.eecs.iis.avatolcv.generic.FileRootNameList;
 import edu.oregonstate.eecs.iis.avatolcv.orientation.files.OrientationRunConfig;
 
-public class OrientationSessionData {
+public class OrientationSessionData implements ImageTranformReviewData {
 	public static String INPUT_TYPE_SUFFIX = "toBeSetByConstructor";
 	public static final String OUTPUT_TYPE_SUFFIX = "_mask";
 	private static final String FILESEP = System.getProperty("file.separator");
@@ -24,7 +29,7 @@ public class OrientationSessionData {
     private ImagesForStage ifs = null;
     private List<ImageInfo> candidateImages = new ArrayList<ImageInfo>();
     
-	public OrientationSessionData(String parentDataDir, String rawImagesDir, String testImageDir, String groundTruthSuffix){
+	public OrientationSessionData(String parentDataDir, String rawImagesDir, String testImageDir, String groundTruthSuffix)  {
 	    INPUT_TYPE_SUFFIX = groundTruthSuffix;
 		this.parentDataDir = parentDataDir;
 		this.rawImagesDir = rawImagesDir;
@@ -69,9 +74,7 @@ public class OrientationSessionData {
             }
         }
     }
-	public List<ImageInfo> getCandidateImages(){
-	    return this.candidateImages;
-	}
+	
     public void createTrainingImageListFile() throws AvatolCVException {
         List<ImageInfo> images = this.ifs.getTrainingImages();
         String path = getTrainingImageFilePath();
@@ -121,9 +124,6 @@ public class OrientationSessionData {
 	public void setImagesForStage(ImagesForStage ifs){
 		this.ifs = ifs;
 	}
-	public ImagesForStage getImagesForStage(){
-		return this.ifs;
-	}
 	public List<ImageInfo> getInPlayRawImages(){
 		return this.ifs.getInPlayImages();
 	}
@@ -135,11 +135,44 @@ public class OrientationSessionData {
 		return this.testImageDir;
 	}
 	
-	
+    @Override
+    public ImagesForStage getImagesForStage(){
+        return this.ifs;
+    }
+	@Override
+    public List<ImageInfo> getCandidateImages(){
+        return this.candidateImages;
+    }
+	@Override
 	public void disqualifyImage(ImageInfo ii) throws AvatolCVException {
 		this.ifs.disqualifyImage(ii);
 	}
+	@Override
 	public void requalifyImage(ImageInfo ii) throws AvatolCVException {
 		this.ifs.requalifyImage(ii);
 	}
+    @Override
+    public void deleteTrainingImage(ImageInfo ii) throws AvatolCVException  {
+        String targetDir = getTrainingImageDir();
+        String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + OUTPUT_TYPE_SUFFIX + "." + ii.getExtension();
+        File f = new File(targetPath);
+        if (f.exists()){
+            f.delete();
+        }
+        this.ifs.reload();
+        
+    }
+    @Override
+    public void saveTrainingImage(BufferedImage bi, ImageInfo ii) throws AvatolCVException {
+        String targetDir = getTrainingImageDir();
+        String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + OUTPUT_TYPE_SUFFIX + "." + ii.getExtension();
+        try {
+            File outputfile = new File(targetPath);
+            ImageIO.write(bi, ii.getExtension() , outputfile);
+            this.ifs.reload();
+        } catch (IOException e) {
+            throw new AvatolCVException("could not save segmentation training image " + targetPath);
+        }
+        
+    }
 }

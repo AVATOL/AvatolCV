@@ -1,32 +1,33 @@
-package edu.oregonstate.eecs.iis.avatolcv.segmentation;
+package edu.oregonstate.eecs.iis.avatolcv.generic;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageTranformReviewData;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
 
-public class SegStep4_Review implements Step {
+public class ImageTransformReviewStep implements Step {
 	private View view = null;	
-	private SegmentationSessionData ssd = null;
+	private ImageTranformReviewData itrd = null;
 	private boolean userReviewComplete = false;
-	public SegStep4_Review(View view, SegmentationSessionData ssd){
-		this.ssd = ssd;
+	public ImageTransformReviewStep(View view, ImageTranformReviewData itrd){
+		this.itrd = itrd;
 		this.view = view;
 	}
 	public List<ImageInfo> getOriginalImages(){
-	    return this.ssd.getCandidateImages();
+	    return this.itrd.getCandidateImages();
 	}
 	public String getImageStatus(String ID) throws AvatolCVException {
-	    return this.ssd.getImagesForStage().getStatusForImage(ID);
+	    return this.itrd.getImagesForStage().getStatusForImage(ID);
 	}
 	public ImageInfo getTrainingImage(String ID) throws AvatolCVException {
-	    return this.ssd.getImagesForStage().getTrainingImage(ID);
+	    return this.itrd.getImagesForStage().getTrainingImage(ID);
 	}
 	public ImageInfo getResultImage(String ID) throws AvatolCVException{
-	    return this.ssd.getImagesForStage().getResultImage(ID);
+	    return this.itrd.getImagesForStage().getResultImage(ID);
 	}
 	/*
 	 * Use cases from this screen
@@ -40,16 +41,16 @@ public class SegStep4_Review implements Step {
 	 *      For this case, the UI needs to be able to launch a window to do the edit, like it supported at the labeling step.
 	 */
 	public void deleteTrainingImage(ImageInfo ii)  throws AvatolCVException{
-		this.ssd.deleteTrainingImage(ii);
+		this.itrd.deleteTrainingImage(ii);
 	}
-	public void saveSegmentationTrainingImage(BufferedImage bi, ImageInfo ii) throws AvatolCVException {
-		this.ssd.saveSegmentationTrainingImage(bi,ii);
+	public void saveTrainingImage(BufferedImage bi, ImageInfo ii) throws AvatolCVException {
+		this.itrd.saveTrainingImage(bi,ii);
 	}
 	public void disqualifyImage(ImageInfo ii) throws AvatolCVException {
-		this.ssd.disqualifyImage(ii);
+		this.itrd.disqualifyImage(ii);
 	}
 	public void requalifyImage(ImageInfo ii) throws AvatolCVException {
-		this.ssd.requalifyImage(ii);
+		this.itrd.requalifyImage(ii);
 	}
 	@Override
 	public void consumeProvidedData() throws AvatolCVException {

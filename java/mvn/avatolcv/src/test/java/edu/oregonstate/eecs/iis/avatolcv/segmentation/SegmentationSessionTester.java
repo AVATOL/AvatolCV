@@ -15,6 +15,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.generic.AlgorithmRunner;
+import edu.oregonstate.eecs.iis.avatolcv.generic.ImageTransformReviewStep;
 
 public class SegmentationSessionTester extends TestCase {
 
@@ -154,9 +155,6 @@ public class SegmentationSessionTester extends TestCase {
 		}
 		
 		
-		
-		
-		
 		try {
 			labelStep.consumeProvidedData();
 		}
@@ -179,7 +177,7 @@ public class SegmentationSessionTester extends TestCase {
         }
 		Assert.assertFalse(segRunStep.needsAnswering());
 		
-		SegStep4_Review reviewStep = new SegStep4_Review(null, ssd);
+		ImageTransformReviewStep reviewStep = new ImageTransformReviewStep(null, ssd);
 		// nothing unique to test for reviewStep - all interesting functionality covered at step2 labeling.
 		
 		

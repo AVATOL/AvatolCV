@@ -12,12 +12,13 @@ import javax.imageio.ImageIO;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageTranformReviewData;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForStage;
 import edu.oregonstate.eecs.iis.avatolcv.generic.FileRootNameList;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.files.DarwinDriverFile;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.files.SegmentationRunConfig;
 
-public class SegmentationSessionData {
+public class SegmentationSessionData implements ImageTranformReviewData {
 	public static final String OUTPUT_TYPE_SUFFIX = "_groundtruth";
 	private static final String FILESEP = System.getProperty("file.separator");
 	private static final String NL = System.getProperty("line.separator");
@@ -128,15 +129,6 @@ public class SegmentationSessionData {
 		int percent = (int)(100 * ((double)trainingImageCount / (double)total));
 		return percent;
 	}
-	public void setImagesForStage(ImagesForStage ifs){
-		this.ifs = ifs;
-	}
-	public ImagesForStage getImagesForStage(){
-		return this.ifs;
-	}
-	public List<ImageInfo> getCandidateImages(){
-		return this.candidateImages;
-	}
 	public void loadCandidateImages(){
 		File dir = new File(this.testImageDir);
 		File[] files = dir.listFiles();
@@ -180,6 +172,20 @@ public class SegmentationSessionData {
     public String getOutputDir(){
         return this.outputDir;
     }
+
+    public void setImagesForStage(ImagesForStage ifs){
+        this.ifs = ifs;
+    }
+    @Override
+    public ImagesForStage getImagesForStage(){
+        return this.ifs;
+    }
+    @Override
+    public List<ImageInfo> getCandidateImages(){
+        return this.candidateImages;
+    }
+    
+    @Override
 	public void deleteTrainingImage(ImageInfo ii)  throws AvatolCVException{
 		String targetDir = getSegmentationTrainingImageDir();
 		String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + OUTPUT_TYPE_SUFFIX + "." + ii.getExtension();
@@ -189,7 +195,8 @@ public class SegmentationSessionData {
 		}
 		this.ifs.reload();
 	}
-	public void saveSegmentationTrainingImage(BufferedImage bi, ImageInfo ii) throws AvatolCVException {
+	@Override
+	public void saveTrainingImage(BufferedImage bi, ImageInfo ii) throws AvatolCVException {
 		String targetDir = getSegmentationTrainingImageDir();
 		String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + OUTPUT_TYPE_SUFFIX + "." + ii.getExtension();
 		try {
@@ -200,10 +207,14 @@ public class SegmentationSessionData {
 		    throw new AvatolCVException("could not save segmentation training image " + targetPath);
 		}
 	}
+	@Override
 	public void disqualifyImage(ImageInfo ii) throws AvatolCVException {
 		this.ifs.disqualifyImage(ii);
 	}
+	@Override
 	public void requalifyImage(ImageInfo ii) throws AvatolCVException {
 		this.ifs.requalifyImage(ii);
 	}
+    
+   
 }
