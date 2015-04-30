@@ -30,12 +30,11 @@ public class OrientStep1_TrainingExamplesCheck implements Step {
         List<ImageInfo> candidateImages = osd.getCandidateImages();
         ifs = new ImagesForStage(orientTrainingImageDirPath, this.osd.getOrientationOutputDir(), candidateImages);
         ifs.reload();
-        orientLabelFileAssessmentHasBeenRun = true;
-        
     }
     @Override
     public void consumeProvidedData() throws AvatolCVException {
         this.osd.setImagesForStage(this.ifs);
+        orientLabelFileAssessmentHasBeenRun = true;
     }
     
     

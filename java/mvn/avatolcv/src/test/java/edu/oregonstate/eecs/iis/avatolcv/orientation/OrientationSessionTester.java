@@ -67,11 +67,35 @@ private static final String FILESEP = System.getProperty("file.separator");
         Assert.assertFalse(checkStep.needsAnswering());
         
         
-        OrientStep2_LabelTrainingExamples labelStep = new OrientStep2_LabelTrainingExamples();
+        OrientStep2_LabelTrainingExamples labelStep = new OrientStep2_LabelTrainingExamples(null,osd);
+        try {
+        	labelStep.init();
+        }
+        catch(AvatolCVException e){
+        	Assert.fail("problem calling init on labelStep.");
+        }
         Assert.assertTrue(labelStep.needsAnswering());
         // add an image
         
-       
+        BufferedImage bi1 = null;
+		BufferedImage bi2 = null;
+		try {
+		    bi1 = ImageIO.read(new File(avatolcv_rootDir + FILESEP + "testSupportData" + FILESEP + "cymbal1.jpg"));
+		} catch (IOException e)
+		{
+			Assert.fail("couldn't load images");
+		}
+		ImageInfo ii1 = null;
+		ImageInfo ii2 = null;
+		try {
+			ii1 = osd.getCandidateImages().get(0);
+			labelStep.saveTrainingImage(bi1, ii1);
+			Assert.assertTrue(osd.getImagesForStage().getTrainingImages().size() == 1);
+			Assert.assertTrue(osd.getImagesForStage().getNonTrainingImages().size() == 4);
+		}
+		catch(AvatolCVException e){
+			Assert.fail("problem saving Training image " + e.getMessage());
+		}
         
         try {
             labelStep.consumeProvidedData();

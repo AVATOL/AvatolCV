@@ -131,7 +131,7 @@ public class ImagesForStage {
 			 */
 			File trainingImageDir = new File(trainingImageDirPath);
             if (!trainingImageDir.isDirectory()){
-                throw new AvatolCVException("given segmentationLabelDir does not exist " + trainingImageDirPath);
+                throw new AvatolCVException("training image dir does not exist " + trainingImageDirPath);
             }
             File[] trainingImageFiles = trainingImageDir.listFiles();
 			for (ImageInfo ii : inPlayImages){
@@ -149,6 +149,9 @@ public class ImagesForStage {
 					this.testImages.add(ii);
 					imageStatusForId.put(ID, TEST_IMAGE);
 				}
+			}
+			if (testImages.size() == 0){
+				throw new AvatolCVException("test image directory is empty.");
 			}
 			/*
 	         * Some stages are preparatory stages to get images ready for character scoring.
