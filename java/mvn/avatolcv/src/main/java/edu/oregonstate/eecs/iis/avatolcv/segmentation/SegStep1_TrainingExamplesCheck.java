@@ -29,11 +29,11 @@ public class SegStep1_TrainingExamplesCheck implements Step {
         List<ImageInfo> candidateImages = ssd.getCandidateImages();
         ifs = new ImagesForStage(segTrainingImageDirPath, this.ssd.getSegmentationOutputDir(), candidateImages);
         ifs.reload();
-        segLabelFileAssessmentHasBeenRun = true;
     }
 	@Override
 	public void consumeProvidedData() throws AvatolCVException {
 		this.ssd.setImagesForStage(this.ifs);
+		segLabelFileAssessmentHasBeenRun = true;
 	}
 	
 	

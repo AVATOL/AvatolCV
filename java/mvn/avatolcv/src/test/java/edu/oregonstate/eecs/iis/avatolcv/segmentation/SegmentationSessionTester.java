@@ -46,14 +46,16 @@ public class SegmentationSessionTester extends TestCase {
 		    checkStep = new SegStep1_TrainingExamplesCheck(ssd);
 		    checkStep.init();
 		    Assert.assertTrue(ssd.getCandidateImages().size() != 0);
+		    
+		    Assert.assertTrue(checkStep.needsAnswering());
+            checkStep.consumeProvidedData();
+            
 		    Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 0);
             Assert.assertTrue(ssd.getImagesForStage().getNonTrainingImages().size() == 5);
             Assert.assertTrue(ssd.getImagesForStage().getDisqualifiedImages().size() == 0);
             Assert.assertTrue(ssd.getImagesForStage().getInPlayImages().size() == 5);
-             LEFT OFF HEREAssert.assertTrue(ssd.getImagesForStage().get ().size() == 5);
             
-	        Assert.assertTrue(checkStep.needsAnswering());
-			checkStep.consumeProvidedData();
+	        
 			int trainingCount = ssd.getImagesForStage().getTrainingImages().size();
 			int testingCount = ssd.getImagesForStage().getNonTrainingImages().size();
 			int total = trainingCount + testingCount;
@@ -64,7 +66,6 @@ public class SegmentationSessionTester extends TestCase {
 			Assert.fail(acve.getMessage());
 		}
 
-		Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 0);
 		Assert.assertFalse(checkStep.needsAnswering());
 		
 		

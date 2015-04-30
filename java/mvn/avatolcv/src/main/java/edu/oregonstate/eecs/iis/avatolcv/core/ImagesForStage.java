@@ -13,9 +13,9 @@ import java.util.List;
 public class ImagesForStage {
 	 public static final String TRAINING_IMAGE = "train";
 	    public static final String TEST_IMAGE = "test";
-		private List<ImageInfo> trainingImages = null;
-		private List<ImageInfo> testImages = null;
-		private List<ImageInfo> resultImages = null; 
+		private List<ImageInfo> trainingImages = new ArrayList<ImageInfo>();
+		private List<ImageInfo> testImages = new ArrayList<ImageInfo>();
+		private List<ImageInfo> resultImages = new ArrayList<ImageInfo>(); 
 		private String trainingImageDirPath = null;
 		private String outputImageDirPath = null;
 		private List<ImageInfo> inPlayImages = null;
