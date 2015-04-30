@@ -1,20 +1,33 @@
 package edu.oregonstate.eecs.iis.avatolcv.orientation;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForStage;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
+import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 
-/*
- * place holder step for when we add labeling step for orientation
- */
 public class OrientStep2_LabelTrainingExamples implements Step {
     
-    public OrientStep2_LabelTrainingExamples(){
+    private View view = null;
+    private OrientationSessionData osd = null;
+    ImagesForStage ifs = null;
+    boolean needsAnswering = true;
+    public OrientStep2_LabelTrainingExamples(View view, OrientationSessionData osd){
+        this.view = view;
+        this.osd = osd;
         
     }
     @Override
+    public void init() throws AvatolCVException {
+        this.ifs = osd.getImagesForStage();
+    }
+    @Override
     public void consumeProvidedData() throws AvatolCVException {
-
+        this.ifs.reload();
+        this.osd.createTrainingImageListFile();
+        this.osd.createTestImageListFile();
+        this.osd.createOrientationConfigFile();
+        this.needsAnswering = false;
     }
 
     @Override
@@ -26,10 +39,6 @@ public class OrientStep2_LabelTrainingExamples implements Step {
     public View getView() {
         return null;
     }
-    @Override
-    public void init() throws AvatolCVException {
-        // TODO Auto-generated method stub
-        
-    }
+   
 
 }

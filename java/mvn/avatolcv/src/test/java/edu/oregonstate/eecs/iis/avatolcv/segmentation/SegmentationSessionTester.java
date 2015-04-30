@@ -44,7 +44,15 @@ public class SegmentationSessionTester extends TestCase {
 		
 		try {
 		    checkStep = new SegStep1_TrainingExamplesCheck(ssd);
-	        Assert.assertFalse(checkStep.needsAnswering());
+		    checkStep.init();
+		    Assert.assertTrue(ssd.getCandidateImages().size() != 0);
+		    Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 0);
+            Assert.assertTrue(ssd.getImagesForStage().getNonTrainingImages().size() == 5);
+            Assert.assertTrue(ssd.getImagesForStage().getDisqualifiedImages().size() == 0);
+            Assert.assertTrue(ssd.getImagesForStage().getInPlayImages().size() == 5);
+             LEFT OFF HEREAssert.assertTrue(ssd.getImagesForStage().get ().size() == 5);
+            
+	        Assert.assertTrue(checkStep.needsAnswering());
 			checkStep.consumeProvidedData();
 			int trainingCount = ssd.getImagesForStage().getTrainingImages().size();
 			int testingCount = ssd.getImagesForStage().getNonTrainingImages().size();
@@ -61,6 +69,12 @@ public class SegmentationSessionTester extends TestCase {
 		
 		
 		SegStep2_LabelTrainingExamples labelStep = new SegStep2_LabelTrainingExamples(null, ssd);
+		try {
+		    labelStep.init();
+		}
+		catch(AvatolCVException e){
+		    Assert.fail("problem calling init on seg step 2 " + e.getMessage());
+		}
 		Assert.assertTrue(labelStep.needsAnswering());
 		// add an image
 		
@@ -164,8 +178,14 @@ public class SegmentationSessionTester extends TestCase {
 		
 		Assert.assertFalse(labelStep.needsAnswering());
 
-		AlgorithmRunner segRunner = new BogusSegmentationRunner();
+		AlgorithmRunner segRunner = new BogusAlgorithmRunner();
 		SegStep3_Run segRunStep = new SegStep3_Run(null, ssd, segRunner);
+		try {
+		    segRunStep.init();
+		}
+		catch(AvatolCVException e){
+		    Assert.fail("problem calling init on segRunStep " + e.getMessage());
+		}
 		Assert.assertTrue(segRunStep.needsAnswering());
 		ProgressPresenter pp = new TestProgressPresenter();
 		segRunStep.run(pp);
@@ -178,6 +198,9 @@ public class SegmentationSessionTester extends TestCase {
 		Assert.assertFalse(segRunStep.needsAnswering());
 		
 		ImageTransformReviewStep reviewStep = new ImageTransformReviewStep(null, ssd);
+		reviewStep.init();
+		
+        
 		// nothing unique to test for reviewStep - all interesting functionality covered at step2 labeling.
 		
 		

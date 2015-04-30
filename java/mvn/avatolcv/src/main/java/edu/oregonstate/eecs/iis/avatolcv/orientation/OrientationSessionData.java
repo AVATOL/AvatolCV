@@ -29,8 +29,8 @@ public class OrientationSessionData implements ImageTranformReviewData {
     private ImagesForStage ifs = null;
     private List<ImageInfo> candidateImages = new ArrayList<ImageInfo>();
     
-	public OrientationSessionData(String parentDataDir, String rawImagesDir, String testImageDir, String groundTruthSuffix)  {
-	    INPUT_TYPE_SUFFIX = groundTruthSuffix;
+	public OrientationSessionData(String parentDataDir, String rawImagesDir, String testImageDir, String inputTypeSuffix)  {
+	    INPUT_TYPE_SUFFIX = inputTypeSuffix;
 		this.parentDataDir = parentDataDir;
 		this.rawImagesDir = rawImagesDir;
 		this.testImageDir = testImageDir;
