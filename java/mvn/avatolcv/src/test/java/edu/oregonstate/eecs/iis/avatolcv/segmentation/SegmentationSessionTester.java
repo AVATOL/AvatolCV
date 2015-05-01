@@ -38,7 +38,13 @@ public class SegmentationSessionTester extends TestCase {
 		 * create session
 		 */
 		String rawImageDir = parentDataDir + FILESEP + "images" + FILESEP + "large";
-		SegmentationSessionData ssd = new SegmentationSessionData(parentDataDir, rawImageDir);
+		SegmentationSessionData ssd = null;
+		try {
+		    ssd = new SegmentationSessionData(parentDataDir, rawImageDir);
+		}
+		catch(AvatolCVException e){
+		    Assert.fail("problem instantiating SegmentationSessionData " + e.getMessage());
+		}
 		
 		SegStep1_TrainingExamplesCheck checkStep = null;
 		

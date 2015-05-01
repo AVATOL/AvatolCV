@@ -33,7 +33,7 @@ public class SegmentationSessionData implements ImageTranformReviewData {
 	private List<ImageInfo> candidateImages = new ArrayList<ImageInfo>();
     private ImagesForStage ifs = null;
     
-	public SegmentationSessionData(String parentDataDir, String testImageDir){
+	public SegmentationSessionData(String parentDataDir, String testImageDir) throws AvatolCVException {
 		this.parentDataDir = parentDataDir;
 	    this.testImageDir = testImageDir;
 	    loadCandidateImages();
@@ -130,20 +130,13 @@ public class SegmentationSessionData implements ImageTranformReviewData {
 		return percent;
 	}
 	
-	public void loadCandidateImages(){
+	public void loadCandidateImages() throws AvatolCVException {
 		File dir = new File(this.testImageDir);
 		File[] files = dir.listFiles();
 		for (File f : files){
 			String name = f.getName();
 			if (!(name.equals(".") || name.equals(".."))){
-				String[] parts = name.split("\\.");
-				String root = parts[0];
-				String extension = parts[1];
-				String[] rootParts = root.split("_");
-				String ID = rootParts[0];
-				String nameAsUploaded = rootParts[1];
-				String width = rootParts[2];
-				ImageInfo ii = new ImageInfo(this.testImageDir, ID, nameAsUploaded, width, "", extension);
+			    ImageInfo ii = ImageInfo.loadImageInfoFromFilename(name, f.getParent());
 				this.candidateImages.add(ii);
 			}
 		}
