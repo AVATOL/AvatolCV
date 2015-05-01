@@ -84,4 +84,25 @@ public class ImageInfo {
 	public ImageInfo getAncestorImage(){
 	    return this.ancestorImage;
 	}
+	public static ImageInfo loadImageInfoFromFilename(String filename, String parentDir) throws AvatolCVException {
+	    String[] filenameParts = filename.split("\\.");
+        String rootName = filenameParts[0];
+        String extension = filenameParts[1];
+        String[] rootNameParts = rootName.split("_");
+        String ID = rootNameParts[0];
+        String nameAsUploaded = rootNameParts[1];
+        String imageWidth = rootNameParts[2];
+        String outputType = "?";
+        if (rootNameParts.length == 3){
+            outputType = "";
+        }
+        else if (rootNameParts.length == 4){
+            outputType = rootNameParts[3];
+        }
+        else {
+            throw new AvatolCVException("more rootNameParts than expected in image filename " + filename);
+        }
+        ImageInfo ii = new ImageInfo(parentDir, ID, nameAsUploaded, imageWidth, outputType, extension);
+        return ii;
+	}
 }

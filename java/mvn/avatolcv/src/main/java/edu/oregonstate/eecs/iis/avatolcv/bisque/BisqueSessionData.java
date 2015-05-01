@@ -176,7 +176,7 @@ public class BisqueSessionData {
 		 
         
 	}
-	public void createSegmentationSessionData(String sourceImageDirPath){
+	public void createSegmentationSessionData(String sourceImageDirPath) throws AvatolCVException {
 	    this.ssd = new SegmentationSessionData(this.sessionDatasetDir, sourceImageDirPath);
 	}
 	public ImageInfo getThumbnailForId(String id) throws AvatolCVException {

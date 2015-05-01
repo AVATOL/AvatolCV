@@ -140,7 +140,8 @@ public class ImagesForStage {
 				boolean match = false;
 				for (File f : trainingImageFiles){
 					if (f.getName().startsWith(fileRootToLookFor)){
-						this.trainingImages.add(ii);
+					    ImageInfo trainingImage = ImageInfo.loadImageInfoFromFilename(f.getName(), trainingImageDirPath);
+						this.trainingImages.add(trainingImage);
 						imageStatusForId.put(ID, TRAINING_IMAGE);
 						match = true;
 					}
@@ -192,16 +193,8 @@ public class ImagesForStage {
 					if (f.getName().startsWith(fileRootToLookFor)){ // find the associated training image, if exists
 						String filename = f.getName();
 						String parentDir = f.getParent();
-						String[] filenameParts = filename.split("\\.");
-						String rootName = filenameParts[0];
-						String extension = filenameParts[1];
-						String[] rootNameParts = rootName.split("_");
-						String ID = rootNameParts[0];
-						String nameAsUploaded = rootNameParts[1];
-						String imageWidth = rootNameParts[2];
-						String outputType = rootNameParts[3];// and make a new entry for that, for the resultImage list
-						ImageInfo resultImageInfo = new ImageInfo(parentDir, ID, nameAsUploaded, imageWidth, outputType, extension);
-						this.resultImages.add(resultImageInfo);
+						ImageInfo outputImageInfo = ImageInfo.loadImageInfoFromFilename(filename, parentDir);
+						this.resultImages.add(outputImageInfo);
 					}
 				}
 			} 

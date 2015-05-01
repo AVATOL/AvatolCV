@@ -14,10 +14,6 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.generic.AlgorithmRunner;
 import edu.oregonstate.eecs.iis.avatolcv.generic.ImageTransformReviewStep;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.BogusAlgorithmRunner;
-import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegStep1_TrainingExamplesCheck;
-import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegStep2_LabelTrainingExamples;
-import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegStep3_Run;
-import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -43,7 +39,13 @@ private static final String FILESEP = System.getProperty("file.separator");
          */
         String rawImageDir = parentDataDir + FILESEP + "images" + FILESEP + "large";
         String testImageDir = parentDataDir + FILESEP + "seg" + FILESEP + "output";
-        OrientationSessionData osd = new OrientationSessionData(parentDataDir, rawImageDir, testImageDir, "_segOut");
+        OrientationSessionData osd = null;
+        try {
+            osd = new OrientationSessionData(parentDataDir, rawImageDir, testImageDir, "_segOut");
+        }
+        catch(AvatolCVException e){
+            Assert.fail("problem instatiating OrientationSessionData " + e.getMessage());
+        }
         
         OrientStep1_TrainingExamplesCheck checkStep = null;
         

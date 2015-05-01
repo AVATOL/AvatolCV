@@ -29,7 +29,7 @@ public class OrientationSessionData implements ImageTranformReviewData {
     private ImagesForStage ifs = null;
     private List<ImageInfo> candidateImages = new ArrayList<ImageInfo>();
     
-	public OrientationSessionData(String parentDataDir, String rawImagesDir, String testImageDir, String inputTypeSuffix)  {
+	public OrientationSessionData(String parentDataDir, String rawImagesDir, String testImageDir, String inputTypeSuffix) throws AvatolCVException  {
 	    INPUT_TYPE_SUFFIX = inputTypeSuffix;
 		this.parentDataDir = parentDataDir;
 		this.rawImagesDir = rawImagesDir;
@@ -56,20 +56,13 @@ public class OrientationSessionData implements ImageTranformReviewData {
 		}
 	}
 	
-	public void loadCandidateImages(){
+	public void loadCandidateImages() throws AvatolCVException {
         File dir = new File(this.testImageDir);
         File[] files = dir.listFiles();
         for (File f : files){
             String name = f.getName();
             if (!(name.equals(".") || name.equals(".."))){
-                String[] parts = name.split("\\.");
-                String root = parts[0];
-                String extension = parts[1];
-                String[] rootParts = root.split("_");
-                String ID = rootParts[0];
-                String nameAsUploaded = rootParts[1];
-                String width = rootParts[2];
-                ImageInfo ii = new ImageInfo(this.testImageDir, ID, nameAsUploaded, width, "", extension);
+                ImageInfo ii = ImageInfo.loadImageInfoFromFilename(name, f.getParent());
                 this.candidateImages.add(ii);
             }
         }
