@@ -510,6 +510,7 @@ public class BisqueWSClientImpl implements BisqueWSClient {
             client.property(ClientProperties.CONNECT_TIMEOUT, 5000);
             client.property(ClientProperties.READ_TIMEOUT,    5000);
             String mediaUrl = "http://bovary.iplantcollaborative.org/image_service/" + imageResource_uniq + "?resize=" + width + ",0&format=jpeg";
+            System.out.println(mediaUrl);
             WebTarget webTarget = client.target(mediaUrl);
             Invocation.Builder invocationBuilder = webTarget.request();
             addAuthCookie(invocationBuilder);

@@ -93,9 +93,10 @@ public class BisqueImagePullStep implements Step {
 			double curCount = 0;
 			int successCount = 0;
 			List<ImageInfo> imagesThumbnail = sessionData.getImagesThumbnail();
+			List<ImageInfo> imagesSmall    = sessionData.getImagesSmall();
 			List<ImageInfo> imagesMedium    = sessionData.getImagesMedium();
 			List<ImageInfo> imagesLarge     = sessionData.getImagesLarge();
-			int imageCount = imagesThumbnail.size() + imagesMedium.size() + imagesLarge.size();
+			int imageCount = imagesThumbnail.size() * 4;
 			for (ImageInfo image : imagesLarge){
 				curCount++;
 				if (downloadImageIfNeeded(pp,image,sessionData.getImagesLargeDir())){
@@ -107,6 +108,14 @@ public class BisqueImagePullStep implements Step {
 			for (ImageInfo image : imagesMedium){
 				curCount++;
 				if (downloadImageIfNeeded(pp,image, sessionData.getImagesMediumDir())){
+					successCount++;
+				}
+				int percentDone = (int) (100 *(curCount / imageCount));
+				pp.updateProgress(percentDone);
+			}
+			for (ImageInfo image : imagesSmall){
+				curCount++;
+				if (downloadImageIfNeeded(pp,image, sessionData.getImagesSmallDir())){
 					successCount++;
 				}
 				int percentDone = (int) (100 *(curCount / imageCount));
