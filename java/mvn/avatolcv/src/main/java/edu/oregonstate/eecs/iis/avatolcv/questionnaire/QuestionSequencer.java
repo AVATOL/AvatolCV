@@ -25,7 +25,7 @@ public class QuestionSequencer {
     	this.qquestions = qquestions;
         this.nextAnswerIndex = 1;
         this.currentQuestion = this.qquestions.get(0);
-        this.noMoreQuestionsMarker = new QQuestion("NO_MORE_QUESTIONS","NO_MORE_QUESTIONS","NO_MORE_QUESTIONS");
+        this.noMoreQuestionsMarker = new QQuestion(QQuestion.NO_MORE_QUESTIONS_TYPE,"NO_MORE_QUESTIONS","NO_MORE_QUESTIONS");
     }
     public List<AnsweredQuestion> getAnsweredQuestions(){
         return this.answeredQuestions;
@@ -103,13 +103,16 @@ public class QuestionSequencer {
     }
     
     public QQuestion findQuestionById(String id) throws AvatolCVException {
-    	 QQuestion question = new QQuestion(null, null, null);
+    	 QQuestion question = null;
          for (QQuestion aQuestion : this.qquestions){
              
              if (aQuestion.getId().equals(id)) {
                  question = aQuestion;
                  break;
              }
+         }
+         if (null == question){
+        	 throw new AvatolCVException("no question with id " + id + " could be found");
          }
          return question;
     }
@@ -135,12 +138,7 @@ public class QuestionSequencer {
             }
             else {
                 QQuestion nextQuestion = findQuestionById(nextQuestionId);
-                if (nextQuestion.getId() == null){
-                	throw new AvatolCVException("could not find question " + nextQuestionId + " in qquestions.");
-                }
-                else {
-                    this.currentQuestion = nextQuestion;
-                }
+                this.currentQuestion = nextQuestion;
             }
         }
         return existingAnswerToNextQuestion;

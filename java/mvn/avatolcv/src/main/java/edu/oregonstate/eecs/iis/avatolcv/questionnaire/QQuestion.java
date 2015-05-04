@@ -9,13 +9,17 @@ public class QQuestion {
     public static final String INPUT_TYPE_INTEGER = "input_integer";
     public static final String INPUT_TYPE_STRING = "input_string";
     public static final String INPUT_TYPE_CHOICE = "choice";
+    public static final String NO_MORE_QUESTIONS_TYPE = "NO_MORE_QUESTIONS";
     private String type = null;
     private String id = null;
     private String text = null;
     private List<QAnswer> answers = new ArrayList<QAnswer>();
     private List<QImage> images = new ArrayList<QImage>();
     public QQuestion(String type, String id, String text) throws AvatolCVException {
-    	if (!(type.equals(INPUT_TYPE_INTEGER) || type.equals(INPUT_TYPE_STRING) || type.equals(INPUT_TYPE_CHOICE))){
+    	if (!(   type.equals(NO_MORE_QUESTIONS_TYPE) || 
+    			 type.equals(INPUT_TYPE_INTEGER) || 
+    			 type.equals(INPUT_TYPE_STRING) || 
+    			 type.equals(INPUT_TYPE_CHOICE)  )){
     		throw new AvatolCVException("bad type given for QQuestion " + type + " + must be " + INPUT_TYPE_INTEGER + " or " + INPUT_TYPE_STRING + " or " + INPUT_TYPE_CHOICE);
     	}
         this.type = type;

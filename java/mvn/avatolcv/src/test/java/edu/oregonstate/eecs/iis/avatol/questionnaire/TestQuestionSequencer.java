@@ -17,6 +17,9 @@ public class TestQuestionSequencer extends TestCase {
     private static final String FILESEP = System.getProperty("file.separator");
     private AnsweredQuestion prevAnswer = null;
     private QQuestion question2 = null;
+    private QQuestion question3 = null;
+    private QQuestion question4 = null;
+    private QQuestion question5 = null;
     public QuestionsXMLFile getQuestionsXMLFile(){
         SystemDependent sd = new SystemDependent();
         String rootDir = sd.getRootDir();
@@ -97,12 +100,12 @@ public class TestQuestionSequencer extends TestCase {
         Assert.assertTrue(qs.isAllQuestionsAnswered());
     
         Assert.assertTrue(qs.getAnsweredQuestions().size() == 3);
-        Assert.assertEquals(qs.getAnsweredQuestions().get(1).getQuestionID(), "BREADBOX");
-        Assert.assertEquals(qs.getAnsweredQuestions().get(2).getQuestionID(), "COLOR");
-        Assert.assertEquals(qs.getAnsweredQuestions().get(3).getQuestionID(), "COVER_PERCENT");
-        Assert.assertEquals(qs.getAnsweredQuestions().get(1).getAnswer(), "yes");
-        Assert.assertEquals(qs.getAnsweredQuestions().get(2).getAnswer(), "red");
-        Assert.assertEquals(qs.getAnsweredQuestions().get(3).getAnswer(), "40");
+        Assert.assertEquals(qs.getAnsweredQuestions().get(0).getQuestionID(), "BREADBOX");
+        Assert.assertEquals(qs.getAnsweredQuestions().get(1).getQuestionID(), "COLOR");
+        Assert.assertEquals(qs.getAnsweredQuestions().get(2).getQuestionID(), "COVER_PERCENT");
+        Assert.assertEquals(qs.getAnsweredQuestions().get(0).getAnswer(), "yes");
+        Assert.assertEquals(qs.getAnsweredQuestions().get(1).getAnswer(), "red");
+        Assert.assertEquals(qs.getAnsweredQuestions().get(2).getAnswer(), "40");
     }
 
     public void testQuestionSequencerCASE_Keep1(){
@@ -278,12 +281,12 @@ public class TestQuestionSequencer extends TestCase {
         // move forward the same path, ensure prior set answers are
         // right
         try {
-            
+        	existingAnswerToNextQuestion = qs.answerQuestion("40");
         }
         catch(AvatolCVException e){
             Assert.fail(e.getMessage());
         }
-        existingAnswerToNextQuestion = qs.answerQuestion("40");
+        
         Assert.assertEquals(existingAnswerToNextQuestion,"NOT_YET_SPECIFIED");
         Assert.assertEquals(qs.getNextAnswerIndex(),4);
         Assert.assertTrue(qs.isAllQuestionsAnswered());
@@ -325,7 +328,12 @@ public class TestQuestionSequencer extends TestCase {
         
         // step backward 
         Assert.assertTrue(qs.canBackUp());
-        prevAnswer = qs.backUp();
+        try {
+            prevAnswer = qs.backUp();
+        }
+        catch(AvatolCVException e){
+            Assert.fail(e.getMessage());
+        }
         Assert.assertEquals(prevAnswer.getQuestionID(),"COVER_PERCENT");
         Assert.assertEquals(prevAnswer.getAnswer(),"40");
         question3 = qs.getCurrentQuestion();
@@ -342,7 +350,12 @@ public class TestQuestionSequencer extends TestCase {
         
         // step backward
         Assert.assertTrue(qs.canBackUp());
-        prevAnswer = qs.backUp();
+        try {
+            prevAnswer = qs.backUp();
+        }
+        catch(AvatolCVException e){
+            Assert.fail(e.getMessage());
+        }
         Assert.assertEquals(prevAnswer.getQuestionID(),"COLOR");
         Assert.assertEquals(prevAnswer.getAnswer(),"red");
         QQuestion question2 = qs.getCurrentQuestion();
@@ -372,7 +385,12 @@ public class TestQuestionSequencer extends TestCase {
         QQuestion question3 = qs.getCurrentQuestion();
         Assert.assertEquals(question3.getId(),"COVER_PERCENT");
         
-        existingAnswerToNextQuestion = qs.answerQuestion("40");
+        try {
+            existingAnswerToNextQuestion = qs.answerQuestion("40");
+        }
+        catch(AvatolCVException e){
+            Assert.fail(e.getMessage());
+        }
         Assert.assertEquals(existingAnswerToNextQuestion,"NOT_YET_SPECIFIED");
         Assert.assertEquals(qs.getNextAnswerIndex(),4);
         Assert.assertTrue(qs.isAllQuestionsAnswered());
@@ -415,7 +433,12 @@ public class TestQuestionSequencer extends TestCase {
         
         // step backward 
         Assert.assertTrue(qs.canBackUp());
-        AnsweredQuestion prevAnswer = qs.backUp();
+        try {
+            AnsweredQuestion prevAnswer = qs.backUp();
+        }
+        catch(AvatolCVException e){
+            Assert.fail(e.getMessage());
+        }
         Assert.assertEquals(prevAnswer.getQuestionID(),"COVER_PERCENT");
         Assert.assertEquals(prevAnswer.getAnswer(),"40");
         QQuestion question3 = qs.getCurrentQuestion();
@@ -432,7 +455,12 @@ public class TestQuestionSequencer extends TestCase {
         
         // step backward
         Assert.assertTrue(qs.canBackUp());
-        prevAnswer = qs.backUp();
+        try {
+            prevAnswer = qs.backUp();
+        }
+        catch(AvatolCVException e){
+            Assert.fail(e.getMessage());
+        }
         Assert.assertEquals(prevAnswer.getQuestionID(),"COLOR");
         Assert.assertEquals(prevAnswer.getAnswer(),"red");
         QQuestion question2 = qs.getCurrentQuestion();
@@ -449,7 +477,12 @@ public class TestQuestionSequencer extends TestCase {
         
         // step backward
         Assert.assertTrue(qs.canBackUp());
-        prevAnswer = qs.backUp();
+        try {
+            prevAnswer = qs.backUp();
+        }
+        catch(AvatolCVException e){
+            Assert.fail(e.getMessage());
+        }
         Assert.assertEquals(prevAnswer.getQuestionID(),"BREADBOX");
         Assert.assertEquals(prevAnswer.getAnswer(),"yes");
         QQuestion question1 = qs.getCurrentQuestion();
@@ -541,7 +574,12 @@ public class TestQuestionSequencer extends TestCase {
         
         // step backward 
         Assert.assertTrue(qs.canBackUp());
-        prevAnswer = qs.backUp();
+        try {
+            prevAnswer = qs.backUp();	
+        }
+        catch(AvatolCVException e){
+            Assert.fail(e.getMessage());
+        }
         Assert.assertEquals(prevAnswer.getQuestionID(),"BREADBOX");
         Assert.assertEquals(prevAnswer.getAnswer(),"yes");
         QQuestion question2 = qs.getCurrentQuestion();
@@ -557,12 +595,11 @@ public class TestQuestionSequencer extends TestCase {
         // flushed
         
         try {
-            
+            existingAnswerToNextQuestion = qs.answerQuestion("no");
         }
         catch(AvatolCVException e){
             Assert.fail(e.getMessage());
         }
-        existingAnswerToNextQuestion = qs.answerQuestion("no");
         Assert.assertEquals(existingAnswerToNextQuestion,"NOT_YET_SPECIFIED");
         Assert.assertEquals(qs.getNextAnswerIndex(),2);
         Assert.assertFalse(qs.isAllQuestionsAnswered());
@@ -601,7 +638,12 @@ public class TestQuestionSequencer extends TestCase {
         
         // step backward 
         Assert.assertTrue(qs.canBackUp());
-        prevAnswer = qs.backUp();
+        try {
+            prevAnswer = qs.backUp();
+        }
+        catch(AvatolCVException e){
+            Assert.fail(e.getMessage());
+        }
         Assert.assertEquals(prevAnswer.getQuestionID(),"COLOR");
         Assert.assertEquals(prevAnswer.getAnswer(),"red");
         QQuestion question2 = qs.getCurrentQuestion();
@@ -619,12 +661,11 @@ public class TestQuestionSequencer extends TestCase {
         // flushed
 
         try {
-            
+            existingAnswerToNextQuestion = qs.answerQuestion("blue");
         }
         catch(AvatolCVException e){
             Assert.fail(e.getMessage());
         }
-        existingAnswerToNextQuestion = qs.answerQuestion("blue");
         Assert.assertEquals(existingAnswerToNextQuestion,"NOT_YET_SPECIFIED");
         Assert.assertEquals(qs.getNextAnswerIndex(),3);
         Assert.assertFalse(qs.isAllQuestionsAnswered());
@@ -665,7 +706,12 @@ public class TestQuestionSequencer extends TestCase {
         
         // step backward 
         Assert.assertTrue(qs.canBackUp());
-        prevAnswer = qs.backUp();
+        try {
+            prevAnswer = qs.backUp();
+        }
+        catch(AvatolCVException e){
+            Assert.fail(e.getMessage());
+        }
         Assert.assertEquals(prevAnswer.getQuestionID(),"COVER_PERCENT");
         Assert.assertEquals(prevAnswer.getAnswer(),"40");
         question3 = qs.getCurrentQuestion();
@@ -685,12 +731,11 @@ public class TestQuestionSequencer extends TestCase {
         // flushed
 
         try {
-            
+            existingAnswerToNextQuestion = qs.answerQuestion("50");
         }
         catch(AvatolCVException e){
             Assert.fail(e.getMessage());
         }
-        existingAnswerToNextQuestion = qs.answerQuestion("50");
         Assert.assertEquals(existingAnswerToNextQuestion,"NOT_YET_SPECIFIED");
         Assert.assertEquals(qs.getNextAnswerIndex(),4);
         Assert.assertTrue(qs.isAllQuestionsAnswered());
@@ -734,7 +779,12 @@ public class TestQuestionSequencer extends TestCase {
         
         // step backward 
         Assert.assertTrue(qs.canBackUp());
-        prevAnswer = qs.backUp();
+        try {
+            prevAnswer = qs.backUp();
+        }
+        catch(AvatolCVException e){
+            Assert.fail(e.getMessage());
+        }
         Assert.assertEquals(prevAnswer.getQuestionID(),"COVER_PERCENT");
         Assert.assertEquals(prevAnswer.getAnswer(),"40");
         QQuestion question3 = qs.getCurrentQuestion();
@@ -751,7 +801,12 @@ public class TestQuestionSequencer extends TestCase {
         
         // step backward
         Assert.assertTrue(qs.canBackUp());
-        prevAnswer = qs.backUp();
+        try {
+            prevAnswer = qs.backUp();
+        }
+        catch(AvatolCVException e){
+            Assert.fail(e.getMessage());
+        }
         Assert.assertEquals(prevAnswer.getQuestionID(),"COLOR");
         Assert.assertEquals(prevAnswer.getAnswer(),"red");
         question2 = qs.getCurrentQuestion();
@@ -772,12 +827,11 @@ public class TestQuestionSequencer extends TestCase {
         // flushed
         
         try {
-            
+            existingAnswerToNextQuestion = qs.answerQuestion("blue");
         }
         catch(AvatolCVException e){
             Assert.fail(e.getMessage());
         }
-        existingAnswerToNextQuestion = qs.answerQuestion("blue");
         Assert.assertEquals(existingAnswerToNextQuestion,"NOT_YET_SPECIFIED");
         Assert.assertEquals(qs.getNextAnswerIndex(),3);
         Assert.assertFalse(qs.isAllQuestionsAnswered());
@@ -813,15 +867,18 @@ public class TestQuestionSequencer extends TestCase {
         catch(AvatolCVException e){
             Assert.fail(e.getMessage());
         }
-        existingAnswerToNextQuestion = qs.answerQuestion("yes");
-        existingAnswerToNextQuestion = qs.answerQuestion("red");
-        existingAnswerToNextQuestion = qs.answerQuestion("40");
+        
         Assert.assertEquals(existingAnswerToNextQuestion,"NOT_YET_SPECIFIED");
         Assert.assertTrue(qs.isAllQuestionsAnswered());
         
         // step backward 
         Assert.assertTrue(qs.canBackUp());
-        prevAnswer = qs.backUp();
+        try {
+        	prevAnswer = qs.backUp();
+        }
+        catch(AvatolCVException e){
+            Assert.fail(e.getMessage());
+        }
         Assert.assertEquals(prevAnswer.getQuestionID(),"COVER_PERCENT");
         Assert.assertEquals(prevAnswer.getAnswer(),"40");
         QQuestion question3 = qs.getCurrentQuestion();
@@ -838,7 +895,12 @@ public class TestQuestionSequencer extends TestCase {
         
         // step backward
         Assert.assertTrue(qs.canBackUp());
-        prevAnswer = qs.backUp();
+        try {
+        	prevAnswer = qs.backUp();
+        }
+        catch(AvatolCVException e){
+            Assert.fail(e.getMessage());
+        }
         Assert.assertEquals(prevAnswer.getQuestionID(),"COLOR");
         Assert.assertEquals(prevAnswer.getAnswer(),"red");
         QQuestion question2 = qs.getCurrentQuestion();
@@ -855,7 +917,12 @@ public class TestQuestionSequencer extends TestCase {
         
         // step backward
         Assert.assertTrue(qs.canBackUp());
-        prevAnswer = qs.backUp();
+        try {
+        	prevAnswer = qs.backUp();
+        }
+        catch(AvatolCVException e){
+            Assert.fail(e.getMessage());
+        }
         Assert.assertEquals(prevAnswer.getQuestionID(),"BREADBOX");
         Assert.assertEquals(prevAnswer.getAnswer(),"yes");
         QQuestion question1 = qs.getCurrentQuestion();
@@ -873,8 +940,13 @@ public class TestQuestionSequencer extends TestCase {
         Assert.assertFalse(qs.canBackUp());
         // move forward a different path, ensure prior set answers are
         // flushed
+        try {
+        	existingAnswerToNextQuestion = qs.answerQuestion("no");
+        }
+        catch(AvatolCVException e){
+            Assert.fail(e.getMessage());
+        }
         
-        existingAnswerToNextQuestion = qs.answerQuestion("no");
         Assert.assertEquals(existingAnswerToNextQuestion,"NOT_YET_SPECIFIED");
         Assert.assertEquals(qs.getNextAnswerIndex(),2);
         Assert.assertFalse(qs.isAllQuestionsAnswered());
@@ -905,13 +977,13 @@ public class TestQuestionSequencer extends TestCase {
         Assert.assertEquals(question1.getAnswers().get(0).getNextQuestion(),"COLOR");
         Assert.assertEquals(question1.getAnswers().get(1).getValue(),"no");
         Assert.assertEquals(question1.getAnswers().get(1).getNextQuestion(),"WEIGHT");
-        Assert.assertEquals(question1.images(0).imageFilePath,"data/questionnaire/images/elephant.jpg");
-        Assert.assertEquals(question1.images(0).imageCaption,"elephants are bigger than a breadbox");
-        Assert.assertEquals(question1.images(1).imageFilePath,"data/questionnaire/images/mouse.jpg");
-        Assert.assertEquals(question1.images(1).imageCaption,"mice are smaller than a breadbox");
+        Assert.assertEquals(question1.getImages().get(0).getPath(),"data/questionnaire/images/elephant.jpg");
+        Assert.assertEquals(question1.getImages().get(0).getCaption(),"elephants are bigger than a breadbox");
+        Assert.assertEquals(question1.getImages().get(1).getPath(),"data/questionnaire/images/mouse.jpg");
+        Assert.assertEquals(question1.getImages().get(1).getCaption(),"mice are smaller than a breadbox");
         
-        question2 = theQuestions(2);
-        Assert.assertEquals(question2.type,"choice");
+        question2 = theQuestions.get(2);
+        Assert.assertEquals(question2.getType(),"choice");
         Assert.assertEquals(question2.getId(),"COLOR");
         Assert.assertEquals(question2.getText(),"What color is the larger-than-breadbox item?");
         Assert.assertEquals(question2.getAnswers().get(1).getValue(),"red");
@@ -921,22 +993,22 @@ public class TestQuestionSequencer extends TestCase {
         Assert.assertEquals(question2.getAnswers().get(3).getValue(),"blue");
         Assert.assertEquals(question2.getAnswers().get(3).getNextQuestion(),"RESOLUTION");
          
-        question3 = theQuestions(3);
-        Assert.assertEquals(question3.type,"input_integer");
+        question3 = theQuestions.get(3);
+        Assert.assertEquals(question3.getType(),"input_integer");
         Assert.assertEquals(question3.getId(),"WEIGHT");
         Assert.assertEquals(question3.getText(),"What is the weight in kilograms of the smaller-than-breadbox item?");
         Assert.assertEquals(question3.getAnswers().get(1).getValue(),"0");
         Assert.assertEquals(question3.getAnswers().get(1).getNextQuestion(),"COVER_PERCENT");
         
-        question4 = theQuestions(4);
-        Assert.assertEquals(question4.type,"input_string");
+        question4 = theQuestions.get(4);
+        Assert.assertEquals(question4.getType(),"input_string");
         Assert.assertEquals(question4.getId(),"RESOLUTION");
         Assert.assertEquals(question4.getText(),"What is the resolution of the smaller-than-breadbox item?");
         Assert.assertEquals(question4.getAnswers().get(1).getValue(),"");
         Assert.assertEquals(question4.getAnswers().get(1).getNextQuestion(),"NO_MORE_QUESTIONS");
         
-        question5 = theQuestions(5);
-        Assert.assertEquals(question5.type,"input_integer");
+        question5 = theQuestions.get(5);
+        Assert.assertEquals(question5.getType(),"input_integer");
         Assert.assertEquals(question5.getId(),"COVER_PERCENT");
         Assert.assertEquals(question5.getText(),"What percent of image is occupied?");
         Assert.assertEquals(question5.getAnswers().get(1).getValue(),"0");
