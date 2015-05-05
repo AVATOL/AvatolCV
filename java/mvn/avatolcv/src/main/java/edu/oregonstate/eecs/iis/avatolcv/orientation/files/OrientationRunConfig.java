@@ -42,7 +42,8 @@ public class OrientationRunConfig {
             writer.write("trainingImagesFile=" + osd.getTrainingImageFilePath() + NL);
             writer.write("testingImagesFile=" + osd.getTestImageFilePath() + NL);
             writer.write("orientationResultsDir=" + osd.getOutputDir() + NL);
-            writer.write("outputFileSuffix=_rotated" + NL);
+            writer.write("inputFileSuffix=_" + OrientationSessionData.TYPE_SUFFIX_INPUT+ NL);
+            writer.write("outputFileSuffix=_" + OrientationSessionData.TYPE_SUFFIX_OUTPUT+ NL);
             writer.write("modelFilePath=" + osd.getModelFilePath() + NL);
             writer.write("apexLocationConvention=left" + NL);
             for (ImageInfo ii : ifs.getTrainingImages()){

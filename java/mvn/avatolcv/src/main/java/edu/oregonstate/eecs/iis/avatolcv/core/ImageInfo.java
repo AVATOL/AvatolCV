@@ -2,7 +2,8 @@ package edu.oregonstate.eecs.iis.avatolcv.core;
 
 public class ImageInfo {
 	private static final String FILESEP = System.getProperty("file.separator");
-	private String nameAsUploaded = null;
+	private String nameAsUploadedNormalized = null;
+	private String nameAsUploadedOriginal = null;
 	private String ID = null;
 	private String filename = null;
 	private String parentDir = null;
@@ -14,14 +15,14 @@ public class ImageInfo {
 	private String outputType = null;
 	private String extension = null;
 	private ImageInfo ancestorImage = null;
-	public ImageInfo(String parentDir, String ID, String nameAsUploaded, String imageWidth, String outputType, String extension){
+	public ImageInfo(String parentDir, String ID, String nameAsUploadedNormalized, String imageWidth, String outputType, String extension){
 		this.parentDir = parentDir;
 		this.ID = ID;
-		this.nameAsUploaded = nameAsUploaded;
+		this.nameAsUploadedNormalized = nameAsUploadedNormalized;
 		this.imageWidth = imageWidth;
 		this.outputType = outputType;
 		this.extension = extension;
-		this.ID_name = ID + "_" + nameAsUploaded;
+		this.ID_name = ID + "_" + nameAsUploadedNormalized;
 		this.ID_name_imageWidth = this.ID_name +  "_" + imageWidth;
 		this.ID_name_imagewidth_type = this.ID_name_imageWidth + "_" + outputType;
 		ingestOutputType();
@@ -52,8 +53,8 @@ public class ImageInfo {
 	public String getFilename_IdNameWidthType(){
 		return this.ID_name_imagewidth_type;
 	}
-	public String getNameAsUploaded(){
-		return this.nameAsUploaded;
+	public String getNameAsUploadedNormalized(){
+		return this.nameAsUploadedNormalized;
 	}
 	public String getID(){
 		return this.ID;
@@ -70,8 +71,15 @@ public class ImageInfo {
 	public String getExtension(){
 		return this.extension;
 	}
+	public void setNameAsUploadedOriginalForm(String originalName){
+		this.nameAsUploadedOriginal = originalName;
+	}
+	public String getNameAsUploadedOriginalForm(){
+		return this.nameAsUploadedOriginal;
+	}
 	public ImageInfo clone(){
-	    ImageInfo clone = new ImageInfo(this.parentDir, this.ID, this.nameAsUploaded, this.imageWidth, this.outputType, this.extension);
+	    ImageInfo clone = new ImageInfo(this.parentDir, this.ID, this.nameAsUploadedNormalized, this.imageWidth, this.outputType, this.extension);
+	    clone.setNameAsUploadedOriginalForm(this.nameAsUploadedOriginal);
 	    return clone;
 	}
 	public void setOutputType(String outputType){
@@ -84,6 +92,9 @@ public class ImageInfo {
 	public ImageInfo getAncestorImage(){
 	    return this.ancestorImage;
 	}
+	/*
+	 * challenge - what if nameAsUploaded has underscores - need to translate underscores to dashes upone initial download
+	 */
 	public static ImageInfo loadImageInfoFromFilename(String filename, String parentDir) throws AvatolCVException {
 	    String[] filenameParts = filename.split("\\.");
         String rootName = filenameParts[0];

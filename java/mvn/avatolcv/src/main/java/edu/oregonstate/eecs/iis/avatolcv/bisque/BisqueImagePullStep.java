@@ -44,7 +44,7 @@ public class BisqueImagePullStep implements Step {
 		while (maxRetries > tries && imageNotYetDownloaded){
 			try {
 				tries++;
-				pp.setMessage("downloading image  : " + ii.getNameAsUploaded());
+				pp.setMessage("downloading image  : " + ii.getNameAsUploadedNormalized());
 				int imageWidthAsInt = -1;
 				try {
 					imageWidthAsInt = new Integer(ii.getImageWidth()).intValue();
@@ -57,7 +57,7 @@ public class BisqueImagePullStep implements Step {
 			}
 			catch(BisqueWSException e){
 				if (e.getMessage().equals("timeout")){
-					pp.setMessage("download timed out - retrying image : " + ii.getNameAsUploaded() + " - attempt " + (tries+1));
+					pp.setMessage("download timed out - retrying image : " + ii.getNameAsUploadedNormalized() + " - attempt " + (tries+1));
 				}
 				mostRecentException = e;
 			}
@@ -71,7 +71,7 @@ public class BisqueImagePullStep implements Step {
 		String imagePath = image.getFilepath();
 		File imageFile = new File(imagePath);
 		if (imageFile.exists()){
-			pp.setMessage("already have image : " + image.getNameAsUploaded());
+			pp.setMessage("already have image : " + image.getNameAsUploadedNormalized());
 		}
 		else {
 			robustImageDownload(pp, image, targetDir);

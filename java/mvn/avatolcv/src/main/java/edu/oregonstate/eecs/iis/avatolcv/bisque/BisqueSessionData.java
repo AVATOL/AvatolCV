@@ -143,7 +143,10 @@ public class BisqueSessionData {
 		for (BisqueImage bi : bisqueImages){
 			String[] nameParts = bi.getName().split("\\.");
 			String name = nameParts[0];
-			ImageInfo ii = new ImageInfo(dir, bi.getResourceUniq(), name, width, "", STANDARD_IMAGE_FILE_EXTENSION);
+			// we use underscore as delimiter so can't have them in filename
+			String normalizedName = name.replaceAll("_", "-");
+			ImageInfo ii = new ImageInfo(dir, bi.getResourceUniq(), normalizedName, width, "", STANDARD_IMAGE_FILE_EXTENSION);
+			ii.setNameAsUploadedOriginalForm(name);
 			listToFill.add(ii);
 		}
 	}

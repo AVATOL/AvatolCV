@@ -143,7 +143,7 @@ public class BisqueSessionTester extends TestCase {
 		List<ImageInfo> imagesToInclude = new ArrayList<ImageInfo>();
 		List<ImageInfo> imagesToExclude = new ArrayList<ImageInfo>();
 		for (ImageInfo ii : images){
-			if (ii.getNameAsUploaded().equals("Neph") || ii.getNameAsUploaded().equals("Pree")){
+			if (ii.getNameAsUploadedNormalized().equals("Neph") || ii.getNameAsUploadedNormalized().equals("Pree")){
 				imagesToInclude.add(ii);
 			}
 			else {

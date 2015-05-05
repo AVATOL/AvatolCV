@@ -17,8 +17,8 @@ import edu.oregonstate.eecs.iis.avatolcv.generic.FileRootNameList;
 import edu.oregonstate.eecs.iis.avatolcv.orientation.files.OrientationRunConfig;
 
 public class OrientationSessionData implements ImageTranformReviewData {
-	public static String INPUT_TYPE_SUFFIX = "toBeSetByConstructor";
-	public static final String OUTPUT_TYPE_SUFFIX = "_mask";
+	public static String TYPE_SUFFIX_INPUT = "toBeSetByConstructor";
+	public static final String TYPE_SUFFIX_OUTPUT = "rotated";
 	private static final String FILESEP = System.getProperty("file.separator");
 	private String parentDataDir = null;
 	private String rootOrientationDir = null;
@@ -30,7 +30,7 @@ public class OrientationSessionData implements ImageTranformReviewData {
     private List<ImageInfo> candidateImages = new ArrayList<ImageInfo>();
     
 	public OrientationSessionData(String parentDataDir, String rawImagesDir, String testImageDir, String inputTypeSuffix) throws AvatolCVException  {
-	    INPUT_TYPE_SUFFIX = inputTypeSuffix;
+	    TYPE_SUFFIX_INPUT = inputTypeSuffix;
 		this.parentDataDir = parentDataDir;
 		this.rawImagesDir = rawImagesDir;
 		this.testImageDir = testImageDir;
@@ -147,7 +147,7 @@ public class OrientationSessionData implements ImageTranformReviewData {
     @Override
     public void deleteTrainingImage(ImageInfo ii) throws AvatolCVException  {
         String targetDir = getTrainingImageDir();
-        String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + OUTPUT_TYPE_SUFFIX + "." + ii.getExtension();
+        String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + TYPE_SUFFIX_OUTPUT + "." + ii.getExtension();
         File f = new File(targetPath);
         if (f.exists()){
             f.delete();
@@ -158,7 +158,7 @@ public class OrientationSessionData implements ImageTranformReviewData {
     @Override
     public void saveTrainingImage(BufferedImage bi, ImageInfo ii) throws AvatolCVException {
         String targetDir = getTrainingImageDir();
-        String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + OUTPUT_TYPE_SUFFIX + "." + ii.getExtension();
+        String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + TYPE_SUFFIX_OUTPUT + "." + ii.getExtension();
         try {
             File outputfile = new File(targetPath);
             ImageIO.write(bi, ii.getExtension() , outputfile);
