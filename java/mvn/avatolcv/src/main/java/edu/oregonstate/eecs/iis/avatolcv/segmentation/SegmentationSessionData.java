@@ -19,7 +19,8 @@ import edu.oregonstate.eecs.iis.avatolcv.segmentation.files.DarwinDriverFile;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.files.SegmentationRunConfig;
 
 public class SegmentationSessionData implements ImageTranformReviewData {
-	public static final String OUTPUT_TYPE_SUFFIX = "_groundtruth";
+	public static final String TYPE_SUFFIX_TRAINING = "groundtruth";
+	public static final String TYPE_SUFFIX_OUTPUT = "mask";
 	private static final String FILESEP = System.getProperty("file.separator");
 	private static final String NL = System.getProperty("line.separator");
 	private String parentDataDir = null;
@@ -182,7 +183,7 @@ public class SegmentationSessionData implements ImageTranformReviewData {
     @Override
 	public void deleteTrainingImage(ImageInfo ii)  throws AvatolCVException{
 		String targetDir = getSegmentationTrainingImageDir();
-		String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + OUTPUT_TYPE_SUFFIX + "." + ii.getExtension();
+		String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + "_" + TYPE_SUFFIX_TRAINING + "." + ii.getExtension();
 		File f = new File(targetPath);
 		if (f.exists()){
 			f.delete();
@@ -192,7 +193,7 @@ public class SegmentationSessionData implements ImageTranformReviewData {
 	@Override
 	public void saveTrainingImage(BufferedImage bi, ImageInfo ii) throws AvatolCVException {
 		String targetDir = getSegmentationTrainingImageDir();
-		String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + OUTPUT_TYPE_SUFFIX + "." + ii.getExtension();
+		String targetPath = targetDir + FILESEP + ii.getFilename_IdNameWidth() + "_" + TYPE_SUFFIX_TRAINING + "." + ii.getExtension();
 		try {
 		    File outputfile = new File(targetPath);
 		    ImageIO.write(bi, ii.getExtension() , outputfile);

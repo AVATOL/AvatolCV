@@ -500,7 +500,7 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 		}
         return imageList;
 	}
-	public boolean downloadImageOfWidth(String imageResource_uniq, int width, String dirToSaveTo, String imageRootName) throws BisqueWSException {
+	public boolean downloadImageOfWidth(String imageResource_uniq, int maxDimension, String dirToSaveTo, String imageRootName) throws BisqueWSException {
 		boolean result = false;
 		try {
 			ClientConfig clientConfig = new ClientConfig();
@@ -509,7 +509,8 @@ public class BisqueWSClientImpl implements BisqueWSClient {
             client.property("accept", "image/jpg");
             client.property(ClientProperties.CONNECT_TIMEOUT, 5000);
             client.property(ClientProperties.READ_TIMEOUT,    5000);
-            String mediaUrl = "http://bovary.iplantcollaborative.org/image_service/" + imageResource_uniq + "?resize=" + width + ",0&format=jpeg";
+            // asking for a square with AR (preserve aspect ratio) fits image into square bounding box, so maxDimension is obeyed
+            String mediaUrl = "http://bovary.iplantcollaborative.org/image_service/" + imageResource_uniq + "?resize=" + maxDimension + "," + maxDimension + ",NN,AR&format=jpeg";
             System.out.println(mediaUrl);
             WebTarget webTarget = client.target(mediaUrl);
             Invocation.Builder invocationBuilder = webTarget.request();
@@ -523,7 +524,7 @@ public class BisqueWSClientImpl implements BisqueWSClient {
             
             InputStream inputStream = response.readEntity(InputStream.class);
             //saving file to C:\avatol\git\avatol_cv\sessionData\jedHome\images\00-b7itcHVfYEEaBiMXFsibVS_neph.JPG_400.jpg
-            String pathToSaveTo = dirToSaveTo + FILESEP + imageRootName + "_" + width + ".jpg";
+            String pathToSaveTo = dirToSaveTo + FILESEP + imageRootName + "_" + maxDimension + ".jpg";
             System.out.println("saving file to " + pathToSaveTo);
             OutputStream outputStream = new FileOutputStream(pathToSaveTo);
             byte[] buffer = new byte[1024];

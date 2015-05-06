@@ -14,6 +14,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.generic.AlgorithmRunner;
 import edu.oregonstate.eecs.iis.avatolcv.generic.ImageTransformReviewStep;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.BogusAlgorithmRunner;
+import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -41,7 +42,7 @@ private static final String FILESEP = System.getProperty("file.separator");
         String testImageDir = parentDataDir + FILESEP + "seg" + FILESEP + "output";
         OrientationSessionData osd = null;
         try {
-            osd = new OrientationSessionData(parentDataDir, rawImageDir, testImageDir, "_segOut");
+            osd = new OrientationSessionData(parentDataDir, rawImageDir, testImageDir, SegmentationSessionData.TYPE_SUFFIX_OUTPUT);
         }
         catch(AvatolCVException e){
             Assert.fail("problem instatiating OrientationSessionData " + e.getMessage());

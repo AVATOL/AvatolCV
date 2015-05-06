@@ -140,8 +140,8 @@ public class ImagesForStage {
 				boolean match = false;
 				for (File f : trainingImageFiles){
 					if (f.getName().startsWith(fileRootToLookFor)){
-					    ImageInfo trainingImage = ImageInfo.loadImageInfoFromFilename(f.getName(), trainingImageDirPath);
-						this.trainingImages.add(trainingImage);
+					    //ImageInfo trainingImage = ImageInfo.loadImageInfoFromFilename(f.getName(), trainingImageDirPath);
+						this.trainingImages.add(ii);
 						imageStatusForId.put(ID, TRAINING_IMAGE);
 						match = true;
 					}
@@ -174,7 +174,7 @@ public class ImagesForStage {
 			String parentDirFromTestImage = testImages.get(0).getParentDir();
 			String outputTypeFromTestImage = testImages.get(0).getOutputType();
 			for (ImageInfo tii : this.trainingImages){
-			    ImageInfo ancestorImage = new ImageInfo(parentDirFromTestImage, tii.getID(), tii.getNameAsUploaded(), tii.getImageWidth(), outputTypeFromTestImage, tii.getExtension());
+			    ImageInfo ancestorImage = new ImageInfo(parentDirFromTestImage, tii.getID(), tii.getNameAsUploadedNormalized(), tii.getImageWidth(), outputTypeFromTestImage, tii.getExtension());
 			    tii.setAncestorImage(ancestorImage);
 			}
 			/*

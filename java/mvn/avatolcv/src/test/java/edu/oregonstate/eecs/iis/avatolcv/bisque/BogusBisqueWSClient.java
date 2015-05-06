@@ -157,8 +157,8 @@ public class BogusBisqueWSClient implements BisqueWSClient {
 	}
 
 	public String getTestSupportDataDir(){
-		String laptopDir = "C:\\avatol\\git\\avatol_cv\\testSupportData";
-		String desktopDir = "C:\\jed\\avatol\\git\\avatol_cv\\testSupportData";
+		String laptopDir = "C:\\avatol\\git\\avatol_cv\\testSupportData\\bisqueImages";
+		String desktopDir = "C:\\jed\\avatol\\git\\avatol_cv\\testSupportData\\bisqueImages";
 		File f = new File(laptopDir);
 		File f2 = new File(desktopDir);
 		if (f.exists()){
