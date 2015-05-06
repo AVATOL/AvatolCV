@@ -53,7 +53,6 @@ public class BisqueLeafDevSessionTester extends TestCase {
 		
 		
 		BisqueLoginStep bls = (BisqueLoginStep)ss.getCurrentStep();
-		Assert.assertTrue(bls.needsAnswering());
 		/*
 		 * throw exception on failed login 
 		 */
@@ -66,7 +65,6 @@ public class BisqueLeafDevSessionTester extends TestCase {
 		catch(AvatolCVException bse){
 			Assert.assertTrue(true);
 		}
-		Assert.assertTrue(bls.needsAnswering());
 		
 		/*
 		 *  good password should change state
@@ -81,14 +79,12 @@ public class BisqueLeafDevSessionTester extends TestCase {
 		catch(AvatolCVException bse){
 			Assert.fail("should not have thrown exception on good password");
 		}
-		Assert.assertFalse(bls.needsAnswering());
 		
 		/*
 		 * load datasets
 		 */
 		ss.next();
 		BisqueDatasetStep bds = (BisqueDatasetStep)ss.getCurrentStep();
-		Assert.assertTrue(bds.needsAnswering());
 		try {
 			List<String> datasets = bds.getAvailableDatasets();
 			Collections.sort(datasets);
@@ -101,13 +97,11 @@ public class BisqueLeafDevSessionTester extends TestCase {
 		catch(AvatolCVException e){
 			Assert.fail("should not have thrown exception on getDatasets");
 		}
-		Assert.assertFalse(bds.needsAnswering());
 		/*
 		 * load images
 		 */
 		ss.next();
 		BisqueImagePullStep bips = (BisqueImagePullStep)ss.getCurrentStep();
-		Assert.assertTrue(bips.needsAnswering());
 		ProgressPresenter pp = new TestProgressPresenter();
 		try {
 			bips.downloadImagesForChosenDataset(pp);
@@ -129,15 +123,12 @@ public class BisqueLeafDevSessionTester extends TestCase {
 		 */
 		ss.next();
 		BisqueExclusionCoachingStep becs = (BisqueExclusionCoachingStep)ss.getCurrentStep();
-		Assert.assertTrue(becs.needsAnswering());
 		becs.userHasViewed();
-		Assert.assertFalse(becs.needsAnswering());
 		/*
 		 * image exclusion
 		 */
 		ss.next();
 		BisqueExclusionStep bes = (BisqueExclusionStep)ss.getCurrentStep();
-		Assert.assertTrue(bes.needsAnswering());
 		List<ImageInfo> images = sessionData.getImagesLarge();
 		List<ImageInfo> imagesToInclude = new ArrayList<ImageInfo>();
 		List<ImageInfo> imagesToExclude = new ArrayList<ImageInfo>();
@@ -157,7 +148,6 @@ public class BisqueLeafDevSessionTester extends TestCase {
 		catch(AvatolCVException e){
 			Assert.fail(e.getMessage());
 		}
-		Assert.assertFalse(bes.needsAnswering());
 		Assert.assertTrue(sessionData.getIncludedImages() != null);
 		/*
 		 * segmentation

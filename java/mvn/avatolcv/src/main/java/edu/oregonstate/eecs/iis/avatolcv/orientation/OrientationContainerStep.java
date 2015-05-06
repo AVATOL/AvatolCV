@@ -13,12 +13,6 @@ public class OrientationContainerStep implements Step {
 	}
 
 	@Override
-	public boolean needsAnswering() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public View getView() {
 		// TODO Auto-generated method stub
 		return null;

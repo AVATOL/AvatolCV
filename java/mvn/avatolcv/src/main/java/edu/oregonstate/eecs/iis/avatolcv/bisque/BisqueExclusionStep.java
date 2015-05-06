@@ -36,13 +36,6 @@ public class BisqueExclusionStep implements Step {
 	}
 
 	@Override
-	public boolean needsAnswering() {
-		if (null == this.imagesToInclude){
-			return true;
-		}
-		return false;
-	}
-	@Override
 	public View getView() {
 		return this.view;
 	}

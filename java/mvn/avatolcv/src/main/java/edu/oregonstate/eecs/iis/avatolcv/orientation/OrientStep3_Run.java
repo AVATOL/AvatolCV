@@ -31,10 +31,6 @@ public class OrientStep3_Run implements Step {
         this.osd.getImagesForStage().reload();  
     }
 
-    @Override
-    public boolean needsAnswering() {
-        return !runner.isRunComplete();
-    }
 
     @Override
     public View getView() {

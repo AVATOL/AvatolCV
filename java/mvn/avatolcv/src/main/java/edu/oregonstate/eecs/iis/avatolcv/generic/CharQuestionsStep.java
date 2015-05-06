@@ -19,11 +19,6 @@ public class CharQuestionsStep implements Step {
         // TODO Auto-generated method stub
     }
 
-    @Override
-    public boolean needsAnswering() {
-        // TODO Auto-generated method stub
-        return false;
-    }
 
     @Override
     public View getView() {

@@ -14,7 +14,7 @@ public class OrientStep2_LabelTrainingExamples implements Step {
     private View view = null;
     private OrientationSessionData osd = null;
     ImagesForStage ifs = null;
-    boolean needsAnswering = true;
+    
     public OrientStep2_LabelTrainingExamples(View view, OrientationSessionData osd){
         this.view = view;
         this.osd = osd;
@@ -43,13 +43,9 @@ public class OrientStep2_LabelTrainingExamples implements Step {
         this.osd.createTrainingImageListFile();
         this.osd.createTestImageListFile();
         this.osd.createOrientationConfigFile();
-        this.needsAnswering = false;
+       
     }
 
-    @Override
-    public boolean needsAnswering() {
-        return this.needsAnswering;
-    }
 
     @Override
     public View getView() {

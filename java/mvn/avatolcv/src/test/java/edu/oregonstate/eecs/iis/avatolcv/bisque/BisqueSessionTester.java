@@ -15,6 +15,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationContainerStep;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -46,8 +47,10 @@ public class BisqueSessionTester extends TestCase {
 		ss.appendStep(bisqueLoginStep);
 		Step bisqueDatasetStep = new BisqueDatasetStep(null, client, sessionData);
 		ss.appendStep(bisqueDatasetStep);
-		Step bisqueImagePullStep = new BisqueImagePullStep(null, client, sessionData);
-		ss.appendStep(bisqueImagePullStep);
+		Step bisqueCharChoiceStep = new BisqueCharChoiceStep(null, client, sessionData);
+		ss.appendStep(bisqueCharChoiceStep);
+        Step bisqueImagePullStep = new BisqueImagePullStep(null, client, sessionData);
+        ss.appendStep(bisqueImagePullStep);
 		Step bisqueExclusionCoachingStep = new BisqueExclusionCoachingStep(null, client);
 		ss.appendStep(bisqueExclusionCoachingStep);
 		Step bisqueExclusionStep = new BisqueExclusionStep(null, sessionData);
@@ -55,7 +58,6 @@ public class BisqueSessionTester extends TestCase {
 		
 		
 		BisqueLoginStep bls = (BisqueLoginStep)ss.getCurrentStep();
-		Assert.assertTrue(bls.needsAnswering());
 		/*
 		 * throw exception on failed login 
 		 */
@@ -68,7 +70,6 @@ public class BisqueSessionTester extends TestCase {
 		catch(AvatolCVException bse){
 			Assert.assertTrue(true);
 		}
-		Assert.assertTrue(bls.needsAnswering());
 		
 		/*
 		 *  good password should change state
@@ -83,14 +84,12 @@ public class BisqueSessionTester extends TestCase {
 		catch(AvatolCVException bse){
 			Assert.fail("should not have thrown exception on good password");
 		}
-		Assert.assertFalse(bls.needsAnswering());
 		
 		/*
 		 * load datasets
 		 */
 		ss.next();
 		BisqueDatasetStep bds = (BisqueDatasetStep)ss.getCurrentStep();
-		Assert.assertTrue(bds.needsAnswering());
 		try {
 			List<String> datasets = bds.getAvailableDatasets();
 			Collections.sort(datasets);
@@ -102,13 +101,34 @@ public class BisqueSessionTester extends TestCase {
 		catch(AvatolCVException e){
 			Assert.fail("should not have thrown exception on getDatasets");
 		}
-		Assert.assertFalse(bds.needsAnswering());
+		/*
+		 * choose character
+		 */
+		ss.next();
+		BisqueCharChoiceStep bccs = (BisqueCharChoiceStep)ss.getCurrentStep();
+		try {
+		    List<BisqueAnnotation> chars = bccs.getCharacters();
+		    Assert.assertTrue(chars.size() == 2);
+            Assert.assertTrue(annotationsContainName(chars,"gender"));
+            Assert.assertTrue(annotationsContainName(chars,"name"));
+            bccs.setChosenAnnotation(chars.get(0));
+            
+            
+		}
+		catch(AvatolCVException e){
+            Assert.fail("should not have thrown exception on getCharacters");
+        }
+		try{
+		    bccs.consumeProvidedData();
+		}
+		catch(AvatolCVException e){
+            Assert.fail("should not have thrown exception on consumeProvidedData");
+        }
 		/*
 		 * load images
 		 */
 		ss.next();
 		BisqueImagePullStep bips = (BisqueImagePullStep)ss.getCurrentStep();
-		Assert.assertTrue(bips.needsAnswering());
 		ProgressPresenter pp = new TestProgressPresenter();
 		try {
 			bips.downloadImagesForChosenDataset(pp);
@@ -130,15 +150,12 @@ public class BisqueSessionTester extends TestCase {
 		 */
 		ss.next();
 		BisqueExclusionCoachingStep becs = (BisqueExclusionCoachingStep)ss.getCurrentStep();
-		Assert.assertTrue(becs.needsAnswering());
 		becs.userHasViewed();
-		Assert.assertFalse(becs.needsAnswering());
 		/*
 		 * image exclusion
 		 */
 		ss.next();
 		BisqueExclusionStep bes = (BisqueExclusionStep)ss.getCurrentStep();
-		Assert.assertTrue(bes.needsAnswering());
 		List<ImageInfo> images = sessionData.getImagesLarge();
 		List<ImageInfo> imagesToInclude = new ArrayList<ImageInfo>();
 		List<ImageInfo> imagesToExclude = new ArrayList<ImageInfo>();
@@ -158,7 +175,6 @@ public class BisqueSessionTester extends TestCase {
 		catch(AvatolCVException e){
 			Assert.fail(e.getMessage());
 		}
-		Assert.assertFalse(bes.needsAnswering());
 		Assert.assertTrue(sessionData.getIncludedImages() != null);
 		/*
 		 * segmentation
@@ -168,6 +184,14 @@ public class BisqueSessionTester extends TestCase {
 		// test at the next level down
 	}
 
+	private boolean annotationsContainName(List<BisqueAnnotation> annotations, String s){
+	    for (BisqueAnnotation a : annotations){
+	        if (a.getName().equals(s)){
+	            return true;
+	        }
+	    }
+	    return false;
+	}
 	/*
 	 * need to handle timeout situations with connections!
 	 */

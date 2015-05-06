@@ -53,7 +53,6 @@ public class SegmentationSessionTester extends TestCase {
 		    checkStep.init();
 		    Assert.assertTrue(ssd.getCandidateImages().size() != 0);
 		    
-		    Assert.assertTrue(checkStep.needsAnswering());
             checkStep.consumeProvidedData();
             
 		    Assert.assertTrue(ssd.getImagesForStage().getTrainingImages().size() == 0);
@@ -72,7 +71,6 @@ public class SegmentationSessionTester extends TestCase {
 			Assert.fail(acve.getMessage());
 		}
 
-		Assert.assertFalse(checkStep.needsAnswering());
 		
 		
 		SegStep2_LabelTrainingExamples labelStep = new SegStep2_LabelTrainingExamples(null, ssd);
@@ -82,7 +80,6 @@ public class SegmentationSessionTester extends TestCase {
 		catch(AvatolCVException e){
 		    Assert.fail("problem calling init on seg step 2 " + e.getMessage());
 		}
-		Assert.assertTrue(labelStep.needsAnswering());
 		// add an image
 		
 		BufferedImage bi1 = null;
@@ -183,7 +180,6 @@ public class SegmentationSessionTester extends TestCase {
 			Assert.fail("problem consuming data " + e.getMessage());
 		}
 		
-		Assert.assertFalse(labelStep.needsAnswering());
 
 		AlgorithmRunner segRunner = new BogusAlgorithmRunner();
 		SegStep3_Run segRunStep = new SegStep3_Run(null, ssd, segRunner);
@@ -193,7 +189,6 @@ public class SegmentationSessionTester extends TestCase {
 		catch(AvatolCVException e){
 		    Assert.fail("problem calling init on segRunStep " + e.getMessage());
 		}
-		Assert.assertTrue(segRunStep.needsAnswering());
 		ProgressPresenter pp = new TestProgressPresenter();
 		segRunStep.run(pp);
 		try {
@@ -202,7 +197,6 @@ public class SegmentationSessionTester extends TestCase {
 		catch(AvatolCVException e){
             Assert.fail("problem consuming data " + e.getMessage());
         }
-		Assert.assertFalse(segRunStep.needsAnswering());
 		
 		ImageTransformReviewStep reviewStep = new ImageTransformReviewStep(null, ssd);
 		reviewStep.init();

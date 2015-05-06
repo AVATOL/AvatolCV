@@ -30,10 +30,6 @@ public class BisqueLoginStep implements Step {
 		return false;
 	}
 	@Override
-	public boolean needsAnswering() {
-		return !isAuthenticated();
-	}
-	@Override
 	public void consumeProvidedData() throws AvatolCVException {
 		// TODO Auto-generated method stub
 		if (null == username || "".equals(username)){

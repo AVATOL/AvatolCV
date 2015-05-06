@@ -44,10 +44,6 @@ public class SegStep2_LabelTrainingExamples implements Step {
 		this.needsAnswering = false;
 	}
 
-	@Override
-	public boolean needsAnswering() {
-		return this.needsAnswering;
-	}
 
 	@Override
 	public View getView() {

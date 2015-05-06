@@ -52,7 +52,6 @@ private static final String FILESEP = System.getProperty("file.separator");
         try {
             checkStep = new OrientStep1_TrainingExamplesCheck(osd);
             checkStep.init();
-            Assert.assertTrue(checkStep.needsAnswering());
             checkStep.consumeProvidedData();
             int trainingCount = osd.getImagesForStage().getTrainingImages().size();
             Assert.assertTrue(trainingCount == 0);
@@ -66,7 +65,6 @@ private static final String FILESEP = System.getProperty("file.separator");
         }
 
         Assert.assertTrue(osd.getImagesForStage().getTrainingImages().size() == 0);
-        Assert.assertFalse(checkStep.needsAnswering());
         
         
         OrientStep2_LabelTrainingExamples labelStep = new OrientStep2_LabelTrainingExamples(null,osd);
@@ -76,7 +74,6 @@ private static final String FILESEP = System.getProperty("file.separator");
         catch(AvatolCVException e){
         	Assert.fail("problem calling init on labelStep.");
         }
-        Assert.assertTrue(labelStep.needsAnswering());
         // add an image
         
         BufferedImage bi1 = null;
@@ -106,11 +103,9 @@ private static final String FILESEP = System.getProperty("file.separator");
             Assert.fail("problem consuming data " + e.getMessage());
         }
         
-        Assert.assertFalse(labelStep.needsAnswering());
 
         AlgorithmRunner runner = new BogusAlgorithmRunner();
         OrientStep3_Run orientRunStep = new OrientStep3_Run(null, osd, runner);
-        Assert.assertTrue(orientRunStep.needsAnswering());
         ProgressPresenter pp = new TestProgressPresenter();
         orientRunStep.run(pp);
         try {
@@ -119,7 +114,6 @@ private static final String FILESEP = System.getProperty("file.separator");
         catch(AvatolCVException e){
             Assert.fail("problem consuming data " + e.getMessage());
         }
-        Assert.assertFalse(orientRunStep.needsAnswering());
         
         ImageTransformReviewStep reviewStep = new ImageTransformReviewStep(null, osd);
         // nothing unique to test for reviewStep - all interesting functionality covered at step2 labeling.
