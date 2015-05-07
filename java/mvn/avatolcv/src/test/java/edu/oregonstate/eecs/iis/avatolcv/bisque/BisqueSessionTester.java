@@ -31,8 +31,8 @@ public class BisqueSessionTester extends TestCase {
 		return client;
 	}
 	public void testSession(){
-		BisqueWSClient client = getBogusWSClient();
-		//BisqueWSClient client = new BisqueWSClientImpl();
+	    //BisqueWSClient client = getBogusWSClient();
+		BisqueWSClient client = new BisqueWSClientImpl();
 		SystemDependent sd = new SystemDependent();
         String avatolcv_rootDir = sd.getRootDir();
         System.out.println("root dir sensed as " + avatolcv_rootDir);
@@ -120,7 +120,7 @@ public class BisqueSessionTester extends TestCase {
 		BisqueCharChoiceStep bccs = (BisqueCharChoiceStep)ss.getCurrentStep();
 		try {
 		    List<BisqueAnnotation> chars = bccs.getCharacters();
-		    Assert.assertTrue(chars.size() == 2);
+		    //Assert.assertTrue(chars.size() == 2); had to comment this out - there are more than two on the live site
             Assert.assertTrue(annotationsContainName(chars,"gender"));
             Assert.assertTrue(annotationsContainName(chars,"name"));
             bccs.setChosenAnnotation(chars.get(0));
@@ -209,9 +209,23 @@ public class BisqueSessionTester extends TestCase {
 		catch(AvatolCVException e){
 		    Assert.fail("problem getting answer integrity");
 		}
-		
-		
-		// test at the next level down
+		try {
+		    qs.answerQuestion("perimeter");
+		}
+		catch(AvatolCVException e){
+            Assert.fail("problem answering question");
+        }
+		try {
+		    File f = new File(sessionData.getCharQuestionsAnsweredQuestionsPath());
+		    if (f.exists()){
+		        f.delete();
+		    }
+            cqs.consumeProvidedData();
+            Assert.assertTrue(f.exists());
+        }
+        catch(AvatolCVException e){
+            Assert.fail("problem consuming data");
+        }
 	}
 
 	private boolean annotationsContainName(List<BisqueAnnotation> annotations, String s){

@@ -28,11 +28,13 @@ public class BogusBisqueWSClient implements BisqueWSClient {
     	
     	nephName.setName("name");
     	nephName.setValue("Neph");
+    	nephName.setType("some/type/with/id/123");
     	annotationsNeph.add(nephName);
 
 		BisqueAnnotation nephGender = new BisqueAnnotation();
 		nephGender.setName("gender");
 		nephGender.setValue("male");
+		nephGender.setType("some/type/with/id/777");
 		annotationsNeph.add(nephGender);
 		
 		annotationHash.put("nephUniq", annotationsNeph);
@@ -42,11 +44,13 @@ public class BogusBisqueWSClient implements BisqueWSClient {
     	
     	foName.setName("name");
     	foName.setValue("Fo");
+    	foName.setType("some/type/with/id/123");
     	annotationsFo.add(foName);
 
 		BisqueAnnotation foGender = new BisqueAnnotation();
 		foGender.setName("gender");
 		foGender.setValue("male");
+		foGender.setType("some/type/with/id/777");
 		annotationsFo.add(foGender);
 		
 		annotationHash.put("foUniq", annotationsFo);
@@ -56,11 +60,13 @@ public class BogusBisqueWSClient implements BisqueWSClient {
     	
     	ewName.setName("name");
     	ewName.setValue("ew");
+    	ewName.setType("some/type/with/id/123");
     	annotationsEw.add(ewName);
 
 		BisqueAnnotation ewGender = new BisqueAnnotation();
 		ewGender.setName("gender");
 		ewGender.setValue("male");
+		ewGender.setType("some/type/with/id/777");
 		annotationsEw.add(ewGender);
 		
 		annotationHash.put("ewUniq", annotationsEw);
@@ -70,11 +76,13 @@ public class BogusBisqueWSClient implements BisqueWSClient {
     	
     	lbName.setName("name");
     	lbName.setValue("lb");
+    	lbName.setType("some/type/with/id/123");
     	annotationsLb.add(lbName);
 
 		BisqueAnnotation lbGender = new BisqueAnnotation();
 		lbGender.setName("gender");
 		lbGender.setValue("female");
+		lbGender.setType("some/type/with/id/777");
 		annotationsLb.add(lbGender);
 		
 		annotationHash.put("lbUniq", annotationsLb);
@@ -84,11 +92,13 @@ public class BogusBisqueWSClient implements BisqueWSClient {
     	
     	preeName.setName("name");
     	preeName.setValue("pree");
+    	preeName.setType("some/type/with/id/123");
     	annotationsPree.add(preeName);
 
 		BisqueAnnotation preeGender = new BisqueAnnotation();
 		preeGender.setName("gender");
 		preeGender.setValue("male");
+		preeGender.setType("some/type/with/id/777");
 		annotationsPree.add(preeGender);
 		
 		annotationHash.put("preeUniq", annotationsPree);
