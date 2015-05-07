@@ -553,6 +553,7 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 	}
 	public List<BisqueAnnotation> getAnnotationsForImage(String imageResource_uniq) throws BisqueWSException {
 		List<BisqueAnnotation> annotations = null;
+		List<BisqueAnnotation> wellFormedAnnotations = new ArrayList<BisqueAnnotation>();
 		try {
 			Client client = ClientBuilder.newClient();
 	        //http://bovary.iplantcollaborative.org/data_service/00-sYCwqbfmiErqLsHzpds6G4/?view=deep
@@ -568,13 +569,18 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 		    AnnotationsResource resource = (AnnotationsResource) unmarshaller.unmarshal(reader);
 		    annotations = resource.getTag();
 		    
-		    LEFT OFF HERE - need to screen out ones that don't have well formed type field /dataset/.../tag/number
+		    
+		    for (BisqueAnnotation ba : annotations){
+		        if (ba.hasTypeValueConsistentWithComboBox()){
+		            wellFormedAnnotations.add(ba);
+		        }
+		    }
 		}
 		catch(JAXBException je){
 			System.out.println(je.getMessage());
 			throw new BisqueWSException("Problem unmarshalling xml response",je);
 		}
-        return annotations;
+        return wellFormedAnnotations;
 	}
 	public String getXmlResponseFromUrl(Client client,String url){
 		System.out.println("trying url : " + url);

@@ -93,4 +93,27 @@ public class BisqueAnnotation {
 	    String annotationID = parts[parts.length - 1];
 	    return annotationID;
 	}
+	public boolean hasTypeValueConsistentWithComboBox(){
+	    if (null == type) {
+	        return false;
+	    }
+	    String[] parts = this.type.split("/");
+	    if (!(parts.length == 5)){
+	        return false;
+	    }
+	    if (!(parts[1].equals("data_service"))){
+	        return false;
+	    }
+	    if (!(parts[3].equals("tag"))){
+            return false;
+        }
+	    String idNumberString = parts[4];
+	    try {
+	        Integer idNumberInteger = new Integer(idNumberString);
+	    }
+	    catch(NumberFormatException e){
+	        return false;
+	    }
+	    return true;
+	}
 }
