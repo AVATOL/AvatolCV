@@ -3,7 +3,7 @@ package edu.oregonstate.eecs.iis.avatol.questionnaire;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.SystemDependent;
-import edu.oregonstate.eecs.iis.avatolcv.SystemDirs;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.questionnaire.AnsweredQuestion;
 import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QQuestion;
@@ -23,7 +23,7 @@ public class TestQuestionSequencer extends TestCase {
     public QuestionsXMLFile getQuestionsXMLFile(){
         SystemDependent sd = new SystemDependent();
         String rootDir = sd.getRootDir();
-        SystemDirs re = new SystemDirs(rootDir);
+        AvatolCVFileSystem re = new AvatolCVFileSystem(rootDir);
         
         String simpleXMLPath = rootDir + FILESEP + "tests" + FILESEP + "simple.xml";
         QuestionsXMLFile xmlFile = null;

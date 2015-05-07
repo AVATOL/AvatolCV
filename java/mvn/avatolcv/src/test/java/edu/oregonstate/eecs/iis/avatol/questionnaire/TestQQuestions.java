@@ -1,6 +1,6 @@
 package edu.oregonstate.eecs.iis.avatol.questionnaire;
 
-import edu.oregonstate.eecs.iis.avatolcv.SystemDirs;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.SystemDependent;
 import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QQuestion;
 import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QQuestions;
@@ -13,7 +13,7 @@ public class TestQQuestions extends TestCase {
     public void testFindQuestionById(){
     	SystemDependent sd = new SystemDependent();
     	String rootDir = sd.getRootDir();
-    	SystemDirs re = new SystemDirs(rootDir);
+    	AvatolCVFileSystem re = new AvatolCVFileSystem(rootDir);
     	try {
     		String simpleXMLPath = rootDir + FILESEP + "tests" + FILESEP + "simple.xml";
         	QuestionsXMLFile xmlFile = new QuestionsXMLFile(simpleXMLPath);

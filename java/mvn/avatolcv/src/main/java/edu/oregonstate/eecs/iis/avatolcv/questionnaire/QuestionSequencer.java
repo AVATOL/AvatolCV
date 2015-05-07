@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.oregonstate.eecs.iis.avatolcv.SystemDirs;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 
 public class QuestionSequencer {
@@ -19,11 +19,9 @@ public class QuestionSequencer {
     private List<AnsweredQuestion> answeredQuestions = new ArrayList<AnsweredQuestion>();
     private QQuestion noMoreQuestionsMarker;
     private String matrixName = "UNDEFINED";
-    private String savedAnswerPathname = "UNDEFINED";
     
-    public QuestionSequencer(List<QQuestion> qquestions, String savedAnswerPathname) throws AvatolCVException {
+    public QuestionSequencer(List<QQuestion> qquestions) throws AvatolCVException {
     	this.qquestions = qquestions;
-    	this.savedAnswerPathname = savedAnswerPathname;
         this.nextAnswerIndex = 1;
         this.currentQuestion = this.qquestions.get(0);
         this.noMoreQuestionsMarker = new QQuestion(QQuestion.NO_MORE_QUESTIONS_TYPE,"NO_MORE_QUESTIONS","NO_MORE_QUESTIONS");
@@ -34,7 +32,7 @@ public class QuestionSequencer {
     public int getNextAnswerIndex(){
         return this.nextAnswerIndex;
     }
-    public void persist() throws AvatolCVException {
+    public void persist(String savedAnswerPathname) throws AvatolCVException {
     	File f = new File(savedAnswerPathname);
     	File parent = f.getParentFile();
     	if (!parent.isDirectory()){
@@ -42,7 +40,7 @@ public class QuestionSequencer {
     	}
     	
         try{
-        	BufferedWriter writer = new BufferedWriter(new FileWriter(this.savedAnswerPathname));
+        	BufferedWriter writer = new BufferedWriter(new FileWriter(savedAnswerPathname));
         	for (AnsweredQuestion aq : this.answeredQuestions){
         		writer.write(aq.getQuestionID() + "=" + aq.getAnswer() + NL);
         	}

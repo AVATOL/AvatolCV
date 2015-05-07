@@ -88,4 +88,9 @@ public class BisqueAnnotation {
 	public String getUri(){
 		return this.uri;
 	}
+	public String getAnnotationID(){
+	    String[] parts = this.type.split("/");
+	    String annotationID = parts[parts.length - 1];
+	    return annotationID;
+	}
 }

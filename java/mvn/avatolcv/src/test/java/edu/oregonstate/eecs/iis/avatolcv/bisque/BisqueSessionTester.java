@@ -56,7 +56,7 @@ public class BisqueSessionTester extends TestCase {
 		ss.appendStep(bisqueExclusionCoachingStep);
 		Step bisqueExclusionStep = new BisqueExclusionStep(null, sessionData);
 		ss.appendStep(bisqueExclusionStep);
-        Step bisqueCharQuestionsStep = new CharQuestionsStep(null, sessionData);
+		Step bisqueCharQuestionsStep = new CharQuestionsStep(null, sessionData);
         ss.appendStep(bisqueExclusionStep);
 		
 		
@@ -180,7 +180,7 @@ public class BisqueSessionTester extends TestCase {
 		}
 		Assert.assertTrue(sessionData.getIncludedImages() != null);
 		/*
-		 * segmentation
+		 * character questions
 		 */
 		
 		

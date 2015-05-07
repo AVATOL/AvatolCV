@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.SessionData;
 import edu.oregonstate.eecs.iis.avatolcv.orientation.OrientationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
@@ -14,13 +16,14 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 
-public class BisqueSessionData {
+public class BisqueSessionData implements SessionData{
 	private static final String FILESEP = System.getProperty("file.separator");
 	public static final String STANDARD_IMAGE_FILE_EXTENSION = "jpg";
 	public static final String IMAGE_THUMBNAIL_WIDTH = "80";
 	public static final String IMAGE_SMALL_WIDTH = "200";
 	public static final String IMAGE_MEDIUM_WIDTH = "400";
 	public static final String IMAGE_LARGE_WIDTH = "1000";
+	public static final String BISQUE_CHAR_QUESIONS_FILENAME = "bisqueCharQuestions.xml";
 	private BisqueDataset dataset = null;
 	private List<BisqueImage> bisqueImages = null;
 	
@@ -263,4 +266,20 @@ public class BisqueSessionData {
 	public BisqueAnnotation getCurrentCharacter(){
 	    return this.currentCharacter;
 	}
+    @Override
+    public String getCharQuestionsSourcePath() throws AvatolCVException {
+        String charQuestionsDir = AvatolCVFileSystem.getCharacterQuestionsDir();
+        String path = charQuestionsDir + FILESEP + BISQUE_CHAR_QUESIONS_FILENAME;
+        return path;
+    }
+    @Override
+    public String getCharQuestionsAnsweredQuestionsPath()
+            throws AvatolCVException {
+        BisqueAnnotation ba = getCurrentCharacter();
+        if (null == ba){
+            throw new AvatolCVException("undefined currentCharacter prevents generation of pathname");
+        }
+        String path = sessionDatasetDir + FILESEP + ba.getAnnotationID() + "_" + ba.getName() + FILESEP + "charQuestionAnswers.txt";
+        return path;
+    }
 }
