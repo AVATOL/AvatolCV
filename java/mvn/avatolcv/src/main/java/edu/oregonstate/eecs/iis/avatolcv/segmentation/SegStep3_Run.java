@@ -30,10 +30,6 @@ public class SegStep3_Run implements Step {
 		this.ssd.getImagesForStage().reload();	
 	}
 
-	@Override
-	public boolean needsAnswering() {
-		return !runner.isRunComplete();
-	}
 
 	@Override
 	public View getView() {

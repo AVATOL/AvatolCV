@@ -9,12 +9,16 @@ import edu.oregonstate.eecs.iis.avatolcv.core.View;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
 
 public class BisqueCharChoiceStep implements Step {
     private BisqueWSClient wsClient  = null;
     private BisqueSessionData sessionData = null;
     private View view = null;
     private BisqueAnnotation chosenCharacter = null;
+            
+            
     public BisqueCharChoiceStep(View view, BisqueWSClient wsClient, BisqueSessionData sessionData){
         this.wsClient = wsClient;
         this.view = view;
@@ -25,20 +29,20 @@ public class BisqueCharChoiceStep implements Step {
         // nothing to do
     }
     public List<BisqueAnnotation> getCharacters()  throws AvatolCVException {
-        List<ImageInfo> imagesLarge = this.sessionData.getImagesLarge();
-        if (null == imagesLarge){
-            throw new AvatolCVException("no large images in place to get annotation info from.");
-        }
-        if (imagesLarge.size() == 0){
-            throw new AvatolCVException("no large images in place to get annotation info from.");
-        }
-        String imageID = imagesLarge.get(0).getID();
         try {
-            List<BisqueAnnotation> annotations = this.wsClient.getAnnotationsForImage(imageID);
+            BisqueDataset ds = this.sessionData.getChosenDataset();
+            List<BisqueImage> images = this.wsClient.getImagesForDataset(ds.getResourceUniq());
+            if (null == images){
+                throw new AvatolCVException("no images available to get annotation info from.");
+            }
+            if (images.size() == 0){
+                throw new AvatolCVException("no images available to get annotation info from.");
+            }
+            List<BisqueAnnotation> annotations = this.wsClient.getAnnotationsForImage(images.get(0).getResourceUniq());
             return annotations;
         }
         catch(BisqueWSException e){
-            throw new AvatolCVException("problem loading annotations. " + e.getMessage(), e);
+            throw new AvatolCVException("problem loading character annotations. " + e.getMessage(), e);
         }
         
     }
@@ -50,14 +54,7 @@ public class BisqueCharChoiceStep implements Step {
         this.sessionData.setCurrentCharacter(this.chosenCharacter);
     }
 
-    @Override
-    public boolean needsAnswering() {
-        if (null == chosenCharacter){
-            return true;
-        }
-        return false;
-    }
-
+    
     @Override
     public View getView() {
         return this.view;

@@ -567,6 +567,8 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 		    AnnotationsResource resource = (AnnotationsResource) unmarshaller.unmarshal(reader);
 		    annotations = resource.getTag();
+		    
+		    LEFT OFF HERE - need to screen out ones that don't have well formed type field /dataset/.../tag/number
 		}
 		catch(JAXBException je){
 			System.out.println(je.getMessage());

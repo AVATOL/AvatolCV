@@ -38,14 +38,6 @@ public class SegStep1_TrainingExamplesCheck implements Step {
 	
 	
 	@Override
-	public boolean needsAnswering() {
-		if (segLabelFileAssessmentHasBeenRun){
-			return false;
-		}
-		return true;
-	}
-
-	@Override
 	public View getView() {
 		return null;
 	}

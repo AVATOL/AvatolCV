@@ -65,6 +65,7 @@ public class BisqueImagePullStep implements Step {
 		if (imageNotYetDownloaded){
 			throw new AvatolCVException("problem downloading image: " + mostRecentException);
 		}
+		imagesLoadedSuccessfully = true;
 		return true;
 	}
 	public boolean downloadImageIfNeeded(ProgressPresenter pp, ImageInfo image, String targetDir) throws AvatolCVException {
@@ -138,16 +139,6 @@ public class BisqueImagePullStep implements Step {
 		catch(BisqueWSException e){
 			throw new AvatolCVException("problem getting images for dataset " + dataset.getName());
 		}
-	}
-	@Override
-	public boolean needsAnswering() {
-		if (null == bisqueImages){
-			return true;
-		}
-		if (!imagesLoadedSuccessfully){
-			return true;
-		}
-		return false;
 	}
 	@Override
 	public View getView() {

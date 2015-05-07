@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.oregonstate.eecs.iis.avatolcv.SystemDirs;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 
 public class QuestionsValidator {
@@ -225,7 +225,7 @@ public class QuestionsValidator {
     	List<String> malformations = new ArrayList<String>();
         // filename not ''
     	
-        String root = SystemDirs.getAvatolCVRootDir();
+        String root = AvatolCVFileSystem.getAvatolCVRootDir();
         String relPath = qimage.getPath();
         String imagePath = root + FILESEP + relPath;
         File imageFile = new File(imagePath);

@@ -66,13 +66,6 @@ public class BisqueDatasetStep implements Step {
 	}
 
 	@Override
-	public boolean needsAnswering() {
-		if (null == this.chosenDataset){
-			return true;
-		}
-		return false;
-	}
-	@Override
 	public View getView() {
 		return this.view;
 	}

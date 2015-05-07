@@ -1,34 +1,47 @@
 package edu.oregonstate.eecs.iis.avatolcv.generic;
 
+import java.util.List;
+
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.SessionData;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
+import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QQuestion;
+import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QQuestions;
+import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QuestionSequencer;
+import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QuestionsXMLFile;
 
 public class CharQuestionsStep implements Step {
-
-    private String questionsFilePath = null;
-    public CharQuestionsStep(String questionsFilePath){
-        this.questionsFilePath = questionsFilePath;
+    private QuestionSequencer questionSequencer = null;
+    private SessionData sessionData = null;
+    private View view = null;
+    public CharQuestionsStep(View view, SessionData sessionData) {
+        this.sessionData = sessionData;
+        this.view = view;
+    }
+    public QuestionSequencer getQuestionSequencer(){
+        return this.questionSequencer;
     }
     @Override
-    public void init() {
-        // TODO
+    public void init() throws AvatolCVException{
+        QuestionsXMLFile xmlFile = new QuestionsXMLFile(this.sessionData.getCharQuestionsSourcePath());
+        QQuestions qquestions = new QQuestions(xmlFile.getDomNode());
+        List<QQuestion> qquestionList = qquestions.getQuestions();
+        this.questionSequencer = new QuestionSequencer(qquestionList);
+        
     }
     @Override
     public void consumeProvidedData() throws AvatolCVException {
-        // TODO Auto-generated method stub
+        this.questionSequencer.persist(this.sessionData.getCharQuestionsAnsweredQuestionsPath());
     }
 
-    @Override
-    public boolean needsAnswering() {
-        // TODO Auto-generated method stub
-        return false;
-    }
 
     @Override
     public View getView() {
-        // TODO Auto-generated method stub
-        return null;
+        /*
+         * For charQuestions, the view will be a container that fills itself out with subPanel appropriate for current QQuestion
+         */
+        return this.view;
     }
 
 }

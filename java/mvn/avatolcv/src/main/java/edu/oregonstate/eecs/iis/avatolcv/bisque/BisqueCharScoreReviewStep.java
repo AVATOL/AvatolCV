@@ -12,11 +12,6 @@ public class BisqueCharScoreReviewStep implements Step {
 
     }
 
-    @Override
-    public boolean needsAnswering() {
-        // TODO Auto-generated method stub
-        return false;
-    }
 
     @Override
     public View getView() {

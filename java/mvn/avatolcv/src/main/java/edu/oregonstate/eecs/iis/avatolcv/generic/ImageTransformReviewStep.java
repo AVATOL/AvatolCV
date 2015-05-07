@@ -62,10 +62,6 @@ public class ImageTransformReviewStep implements Step {
 		userReviewComplete = true;
 	}
 
-	@Override
-	public boolean needsAnswering() {
-		return !userReviewComplete;
-	}
 
 	@Override
 	public View getView() {

@@ -23,13 +23,6 @@ public class BisqueExclusionCoachingStep implements Step {
 	}
 
 	@Override
-	public boolean needsAnswering() {
-		if (userHasViewed){
-			return false;
-		}
-		return true;
-	}
-	@Override
 	public View getView() {
 		return this.view;
 	}
