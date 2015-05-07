@@ -23,13 +23,22 @@ public class SegmentationSessionData implements ImageTranformReviewData {
 	public static final String TYPE_SUFFIX_OUTPUT = "mask";
 	private static final String FILESEP = System.getProperty("file.separator");
 	private static final String NL = System.getProperty("line.separator");
+	
+	public static final String DIR_NAME_MODELS = "models";
+	public static final String DIR_NAME_SEG_ROOT = "seg";
+	public static final String DIR_NAME_CACHE = "cache";
+	public static final String DIR_NAME_TRAINING_IMAGES = "trainingImages";
+	public static final String DIR_NAME_OUTPUT = "output";
+	
+	public static final String FILENAME_DARWIN_DRIVER_XML = "darwinDriver.xml";
+	public static final String FILENAME_MODEL_XML = "model.xml";
 	private String parentDataDir = null;
 	private String rootSegDir = null;
 	private String cacheDir = null;
 	private String trainingImageDir = null;
 	private String modelsDir = null;
 	private String outputDir = null;
-	private String segmentationDir = null;
+	//private String segmentationDir = null;
 	private String testImageDir = null;
 	private List<ImageInfo> candidateImages = new ArrayList<ImageInfo>();
     private ImagesForStage ifs = null;
@@ -38,15 +47,15 @@ public class SegmentationSessionData implements ImageTranformReviewData {
 		this.parentDataDir = parentDataDir;
 	    this.testImageDir = testImageDir;
 	    loadCandidateImages();
-		this.rootSegDir = this.parentDataDir + FILESEP + "seg";
+		this.rootSegDir = this.parentDataDir + FILESEP + DIR_NAME_SEG_ROOT;
 		ensureDirExists(this.rootSegDir);
-		this.cacheDir = this.rootSegDir + FILESEP + "cache";
+		this.cacheDir = this.rootSegDir + FILESEP + DIR_NAME_CACHE;
 		ensureDirExists(this.cacheDir);
-		this.trainingImageDir = this.rootSegDir + FILESEP + "trainingImages";
+		this.trainingImageDir = this.rootSegDir + FILESEP + DIR_NAME_TRAINING_IMAGES;
 		ensureDirExists(this.trainingImageDir);
-		this.modelsDir = this.rootSegDir + FILESEP + "models";
+		this.modelsDir = this.rootSegDir + FILESEP + DIR_NAME_MODELS;
 		ensureDirExists(this.modelsDir);
-		this.outputDir = this.rootSegDir + FILESEP + "output";
+		this.outputDir = this.rootSegDir + FILESEP + DIR_NAME_OUTPUT;
 		ensureDirExists(this.outputDir);
 	}
 	public String getRootSegmentationDir(){
@@ -70,9 +79,9 @@ public class SegmentationSessionData implements ImageTranformReviewData {
 		ddf.setLabelDir(getSegmentationTrainingImageDir());
 		ddf.setModelsDir(getSegmentationModelsDir());
 		ddf.setOutputDir(getSegmentationOutputDir());
-		ddf.setSegmentationDir(getSegmentationDir());
+		ddf.setSegmentationDir(getSegmentationRootDir());
 		String xml = ddf.getXMLContentString();
-		String darwinDriverFilePath = segmentationRootDir + FILESEP + "darwinDriver.xml";
+		String darwinDriverFilePath = segmentationRootDir + FILESEP + FILENAME_DARWIN_DRIVER_XML;
 		File f = new File(darwinDriverFilePath);
 		if (f.exists()){
 			f.delete();
@@ -157,9 +166,9 @@ public class SegmentationSessionData implements ImageTranformReviewData {
 	public String getSegmentationOutputDir(){
 		return this.outputDir;
 	}
-	public String getSegmentationDir(){
-		return this.segmentationDir;
-	}
+	//public String getSegmentationDir(){
+	//	return this.segmentationDir;
+	//}
 	public String getTestImageDir(){
 		return this.testImageDir;
 	}

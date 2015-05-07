@@ -33,7 +33,7 @@ public class SegmentationRunConfig {
             writer.write("rawImagesDir=" + ssd.getTestImageDir() + NL);
             writer.write("trainingImagesDir=" + ssd.getSegmentationTrainingImageDir());
             writer.write("segmentationOutputDir=" + ssd.getOutputDir() + NL);
-            writer.write("modelXmlPath=" + ssd.getRootSegmentationDir() + FILESEP + "model.xml" +NL);
+            writer.write("modelXmlPath=" + ssd.getRootSegmentationDir() + FILESEP + SegmentationSessionData.DIR_NAME_MODELS + FILESEP + SegmentationSessionData.FILENAME_MODEL_XML +NL);
             writer.write("trainingFileSuffix=_" + SegmentationSessionData.TYPE_SUFFIX_TRAINING + NL);
             writer.write("outputFileSuffix=_" + SegmentationSessionData.TYPE_SUFFIX_OUTPUT + NL);
             writer.write("#" + NL);

@@ -84,7 +84,7 @@ public class BisqueImagePullStep implements Step {
 	}
 	public void downloadImagesForChosenDataset(ProgressPresenter pp) throws AvatolCVException {
 		sessionData.ensureImageDirsExists();
-		sessionData.clearImageDirs();
+		//sessionData.clearImageDirs();
 		BisqueDataset dataset = sessionData.getChosenDataset();
 		try {
 			String datasetResourceUniq = dataset.getResourceUniq();

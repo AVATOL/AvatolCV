@@ -23,9 +23,9 @@ public class OrientStep1_TrainingExamplesCheck implements Step {
     @Override
     public void init() throws AvatolCVException {
         String orientTrainingImageDirPath = this.osd.getTrainingImageDir();
-        File orientLabelDir = new File(orientTrainingImageDirPath);
-        if (!orientLabelDir.isDirectory()){
-            orientLabelDir.mkdirs();
+        File orientTrainingImageDir = new File(orientTrainingImageDirPath);
+        if (!orientTrainingImageDir.isDirectory()){
+        	orientTrainingImageDir.mkdirs();
         }
         List<ImageInfo> candidateImages = osd.getCandidateImages();
         ifs = new ImagesForStage(orientTrainingImageDirPath, this.osd.getOrientationOutputDir(), candidateImages);

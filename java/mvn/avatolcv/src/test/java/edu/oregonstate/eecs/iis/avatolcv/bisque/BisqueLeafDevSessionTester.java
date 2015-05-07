@@ -1,9 +1,13 @@
 package edu.oregonstate.eecs.iis.avatolcv.bisque;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -14,6 +18,17 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
+import edu.oregonstate.eecs.iis.avatolcv.generic.AlgorithmRunner;
+import edu.oregonstate.eecs.iis.avatolcv.generic.ImageTransformReviewStep;
+import edu.oregonstate.eecs.iis.avatolcv.orientation.OrientStep1_TrainingExamplesCheck;
+import edu.oregonstate.eecs.iis.avatolcv.orientation.OrientStep2_LabelTrainingExamples;
+import edu.oregonstate.eecs.iis.avatolcv.orientation.OrientStep3_Run;
+import edu.oregonstate.eecs.iis.avatolcv.orientation.OrientationSessionData;
+import edu.oregonstate.eecs.iis.avatolcv.segmentation.BogusAlgorithmRunner;
+import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegStep1_TrainingExamplesCheck;
+import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegStep2_LabelTrainingExamples;
+import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegStep3_Run;
+import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
 
@@ -164,7 +179,137 @@ public class BisqueLeafDevSessionTester extends TestCase {
 		 */
 		
 		
-		// test at the next level down
+		String parentDataDir = avatolcv_rootDir + FILESEP + "sessionData" + FILESEP +"leafDev";
+		// leave training images intact - put them there by hand
+		/*
+		 * create session
+		 */
+		String rawImageDir = parentDataDir + FILESEP + "images" + FILESEP + "large";
+		SegmentationSessionData ssd = null;
+		try {
+		    ssd = new SegmentationSessionData(parentDataDir, rawImageDir);
+		}
+		catch(AvatolCVException e){
+		    Assert.fail("problem instantiating SegmentationSessionData " + e.getMessage());
+		}
+		
+		SegStep1_TrainingExamplesCheck segmentationCheckStep = null;
+		
+		try {
+			segmentationCheckStep = new SegStep1_TrainingExamplesCheck(ssd);
+			segmentationCheckStep.init();
+			segmentationCheckStep.consumeProvidedData();
+		}
+		
+		catch(AvatolCVException acve){
+			Assert.fail(acve.getMessage());
+		}
+
+		Assert.assertFalse(segmentationCheckStep.needsAnswering());
+		
+		
+		SegStep2_LabelTrainingExamples labelStep = new SegStep2_LabelTrainingExamples(null, ssd);
+		try {
+		    labelStep.init();
+		}
+		catch(AvatolCVException e){
+		    Assert.fail("problem calling init on seg step 2 " + e.getMessage());
+		}
+		Assert.assertTrue(labelStep.needsAnswering());
+		
+		
+		try {
+			labelStep.consumeProvidedData();
+		}
+		catch(AvatolCVException e){
+			Assert.fail("problem consuming data " + e.getMessage());
+		}
+		
+		Assert.assertFalse(labelStep.needsAnswering());
+
+		AlgorithmRunner segRunner = new BogusAlgorithmRunner();
+		SegStep3_Run segRunStep = new SegStep3_Run(null, ssd, segRunner);
+		try {
+		    segRunStep.init();
+		}
+		catch(AvatolCVException e){
+		    Assert.fail("problem calling init on segRunStep " + e.getMessage());
+		}
+		Assert.assertTrue(segRunStep.needsAnswering());
+		pp = new TestProgressPresenter();
+		segRunStep.run(pp);
+		try {
+		    segRunStep.consumeProvidedData();
+		}
+		catch(AvatolCVException e){
+            Assert.fail("problem consuming data " + e.getMessage());
+        }
+		Assert.assertFalse(segRunStep.needsAnswering());
+		
+		ImageTransformReviewStep reviewStep = new ImageTransformReviewStep(null, ssd);
+		reviewStep.init();
+		
+        
+		/*
+		 * Orientation
+		 */
+		
+        
+        /*
+         * create session
+         */
+        String orientationTestImageDir = parentDataDir + FILESEP + "seg" + FILESEP + "output";
+        OrientationSessionData osd = null;
+        try {
+            osd = new OrientationSessionData(parentDataDir, rawImageDir, orientationTestImageDir, SegmentationSessionData.TYPE_SUFFIX_OUTPUT);
+        }
+        catch(AvatolCVException e){
+            Assert.fail("problem instatiating OrientationSessionData " + e.getMessage());
+        }
+        
+        OrientStep1_TrainingExamplesCheck orientationCheckStep = null;
+        
+        try {
+        	orientationCheckStep = new OrientStep1_TrainingExamplesCheck(osd);
+        	orientationCheckStep.init();
+            Assert.assertTrue(orientationCheckStep.needsAnswering());
+            orientationCheckStep.consumeProvidedData();
+            int trainingCount = osd.getImagesForStage().getTrainingImages().size();
+            Assert.assertTrue(trainingCount == 0);
+            int testingCount = osd.getImagesForStage().getNonTrainingImages().size();
+            int total = trainingCount + testingCount;
+            Assert.assertTrue(total != 0);
+        }
+        
+        catch(AvatolCVException acve){
+            Assert.fail(acve.getMessage());
+        }
+
+        Assert.assertTrue(osd.getImagesForStage().getTrainingImages().size() == 0);
+        Assert.assertFalse(orientationCheckStep.needsAnswering());
+        
+        
+        OrientStep2_LabelTrainingExamples orientationLabelStep = new OrientStep2_LabelTrainingExamples(null,osd);
+        try {
+        	orientationLabelStep.init();
+        }
+        catch(AvatolCVException e){
+        	Assert.fail("problem calling init on labelStep.");
+        }
+        Assert.assertTrue(orientationLabelStep.needsAnswering());
+        
+        
+        try {
+        	orientationLabelStep.consumeProvidedData();
+        }
+        catch(AvatolCVException e){
+            Assert.fail("problem consuming data " + e.getMessage());
+        }
+        
+        Assert.assertFalse(orientationLabelStep.needsAnswering());
+
+        
+        
 	}
 
 	/*
