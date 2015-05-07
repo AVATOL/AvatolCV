@@ -13,8 +13,9 @@ public class TestQQuestions extends TestCase {
     public void testFindQuestionById(){
     	SystemDependent sd = new SystemDependent();
     	String rootDir = sd.getRootDir();
-    	AvatolCVFileSystem re = new AvatolCVFileSystem(rootDir);
+    	
     	try {
+    	    AvatolCVFileSystem fs = new AvatolCVFileSystem(rootDir);
     		String simpleXMLPath = rootDir + FILESEP + "tests" + FILESEP + "simple.xml";
         	QuestionsXMLFile xmlFile = new QuestionsXMLFile(simpleXMLPath);
             QQuestions qquestions = new QQuestions(xmlFile.getDomNode());

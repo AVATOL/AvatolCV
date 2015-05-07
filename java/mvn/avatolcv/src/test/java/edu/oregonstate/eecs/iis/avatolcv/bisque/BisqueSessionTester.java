@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.SystemDependent;
 import edu.oregonstate.eecs.iis.avatolcv.TestProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
@@ -13,6 +14,8 @@ import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.generic.CharQuestionsStep;
+import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QQuestion;
+import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QuestionSequencer;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationContainerStep;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
@@ -33,6 +36,12 @@ public class BisqueSessionTester extends TestCase {
 		SystemDependent sd = new SystemDependent();
         String avatolcv_rootDir = sd.getRootDir();
         System.out.println("root dir sensed as " + avatolcv_rootDir);
+        try {
+            AvatolCVFileSystem afs = new AvatolCVFileSystem(avatolcv_rootDir);
+        }
+        catch(AvatolCVException e){
+            Assert.fail("problem instantiating AvatolCVFileSystem : " + e.getMessage());
+        }
 		/*
 		 * create session
 		 */
@@ -57,7 +66,7 @@ public class BisqueSessionTester extends TestCase {
 		Step bisqueExclusionStep = new BisqueExclusionStep(null, sessionData);
 		ss.appendStep(bisqueExclusionStep);
 		Step bisqueCharQuestionsStep = new CharQuestionsStep(null, sessionData);
-        ss.appendStep(bisqueExclusionStep);
+        ss.appendStep(bisqueCharQuestionsStep);
 		
 		
 		BisqueLoginStep bls = (BisqueLoginStep)ss.getCurrentStep();
@@ -182,6 +191,24 @@ public class BisqueSessionTester extends TestCase {
 		/*
 		 * character questions
 		 */
+		ss.next();
+		CharQuestionsStep cqs = (CharQuestionsStep)ss.getCurrentStep();
+		try {
+		    cqs.init();
+		}
+		catch(AvatolCVException e){
+            Assert.fail("problem initializing CharQuestionStep " + e.getMessage());
+		}
+		QuestionSequencer qs = cqs.getQuestionSequencer();
+		QQuestion qquestion = qs.getCurrentQuestion();
+		try {
+		    Assert.assertTrue(qquestion.getAnswerIntegrity("perimeter").isValid());
+            Assert.assertTrue(qquestion.getAnswerIntegrity("interior").isValid());
+            Assert.assertFalse(qquestion.getAnswerIntegrity("an African swallow").isValid());
+		}
+		catch(AvatolCVException e){
+		    Assert.fail("problem getting answer integrity");
+		}
 		
 		
 		// test at the next level down

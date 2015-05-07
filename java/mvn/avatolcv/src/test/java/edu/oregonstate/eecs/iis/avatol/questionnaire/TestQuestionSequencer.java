@@ -23,8 +23,12 @@ public class TestQuestionSequencer extends TestCase {
     public QuestionsXMLFile getQuestionsXMLFile(){
         SystemDependent sd = new SystemDependent();
         String rootDir = sd.getRootDir();
-        AvatolCVFileSystem re = new AvatolCVFileSystem(rootDir);
-        
+        try {
+            AvatolCVFileSystem fs = new AvatolCVFileSystem(rootDir);
+        }
+        catch(AvatolCVException e){
+            Assert.fail("problem instanitation QuestionsXMLFile.");
+        }
         String simpleXMLPath = rootDir + FILESEP + "tests" + FILESEP + "simple.xml";
         QuestionsXMLFile xmlFile = null;
         try {

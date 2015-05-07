@@ -5,7 +5,7 @@ import java.io.File;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 
 public class AvatolCVFileSystem {
-	public static final String FILESEP = System.getProperty("line.separator");
+	public static final String FILESEP = System.getProperty("file.separator");
 	private static String avatolCVRootDir = null;
 	private static String sessionDataDir = null;
 	private static String currentProjectDir = null;
@@ -15,10 +15,13 @@ public class AvatolCVFileSystem {
 	public AvatolCVFileSystem(String launchDir) throws AvatolCVException {
 		avatolCVRootDir = launchDir;
 		sessionDataDir = avatolCVRootDir + FILESEP + "sessionData";
+		System.out.println("sessionDataDir: " + sessionDataDir);
 		ensureDir(sessionDataDir);
 		uiContentXmlDir = avatolCVRootDir + FILESEP + "uiContentXml";
+		System.out.println("uiContentXmlDir: " + uiContentXmlDir);
 		ensureDirIsPresent(uiContentXmlDir);
 		charQuestionsDir = uiContentXmlDir + FILESEP + "characterQuestions";
+		System.out.println("charQuestionsDir: " + charQuestionsDir);
 		ensureDirHasContents(charQuestionsDir, "xml");
 	}
 	public static String getAvatolCVRootDir(){
