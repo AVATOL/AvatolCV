@@ -12,6 +12,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.generic.CharQuestionsStep;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationContainerStep;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
@@ -55,6 +56,8 @@ public class BisqueSessionTester extends TestCase {
 		ss.appendStep(bisqueExclusionCoachingStep);
 		Step bisqueExclusionStep = new BisqueExclusionStep(null, sessionData);
 		ss.appendStep(bisqueExclusionStep);
+        Step bisqueCharQuestionsStep = new CharQuestionsStep(null, sessionData);
+        ss.appendStep(bisqueExclusionStep);
 		
 		
 		BisqueLoginStep bls = (BisqueLoginStep)ss.getCurrentStep();

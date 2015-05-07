@@ -19,10 +19,11 @@ public class QuestionSequencer {
     private List<AnsweredQuestion> answeredQuestions = new ArrayList<AnsweredQuestion>();
     private QQuestion noMoreQuestionsMarker;
     private String matrixName = "UNDEFINED";
-    private String characterName = "UNDEFINED";
+    private String savedAnswerPathname = "UNDEFINED";
     
-    public QuestionSequencer(List<QQuestion> qquestions) throws AvatolCVException {
+    public QuestionSequencer(List<QQuestion> qquestions, String savedAnswerPathname) throws AvatolCVException {
     	this.qquestions = qquestions;
+    	this.savedAnswerPathname = savedAnswerPathname;
         this.nextAnswerIndex = 1;
         this.currentQuestion = this.qquestions.get(0);
         this.noMoreQuestionsMarker = new QQuestion(QQuestion.NO_MORE_QUESTIONS_TYPE,"NO_MORE_QUESTIONS","NO_MORE_QUESTIONS");
@@ -34,19 +35,14 @@ public class QuestionSequencer {
         return this.nextAnswerIndex;
     }
     public void persist() throws AvatolCVException {
-    	File f = new File("results");
-    	if (!f.isDirectory()){
-    		f.mkdirs();
+    	File f = new File(savedAnswerPathname);
+    	File parent = f.getParentFile();
+    	if (!parent.isDirectory()){
+    	    parent.mkdirs();
     	}
-    	String parentPath = SystemDirs.getUserAnswerDir();
-    	String filepath = parentPath + FILESEP + this.characterName + ".out";
-        
-        File parentPathDir = new File(parentPath);
-        if (!parentPathDir.exists()){
-        	parentPathDir.mkdir();
-        }
+    	
         try{
-        	BufferedWriter writer = new BufferedWriter(new FileWriter(filepath));
+        	BufferedWriter writer = new BufferedWriter(new FileWriter(this.savedAnswerPathname));
         	for (AnsweredQuestion aq : this.answeredQuestions){
         		writer.write(aq.getQuestionID() + "=" + aq.getAnswer() + NL);
         	}
