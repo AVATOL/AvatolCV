@@ -1,10 +1,16 @@
-package edu.oregonstate.eecs.iis.avatolcv.bisque;
+package edu.oregonstate.eecs.iis.avatolcv.morphobank;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
 
-public class BisqueCharScoringRunStep implements Step {
+public class MBViewChoiceStep implements Step {
+
+    @Override
+    public void init() throws AvatolCVException {
+        // TODO Auto-generated method stub
+
+    }
 
     @Override
     public void consumeProvidedData() throws AvatolCVException {
@@ -16,12 +22,6 @@ public class BisqueCharScoringRunStep implements Step {
     public View getView() {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    @Override
-    public void init() {
-        // TODO Auto-generated method stub
-        
     }
 
 }

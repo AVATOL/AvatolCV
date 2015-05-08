@@ -1,18 +1,19 @@
-package edu.oregonstate.eecs.iis.avatolcv.bisque;
+package edu.oregonstate.eecs.iis.avatolcv.bisque.charscore;
 
+import edu.oregonstate.eecs.iis.avatolcv.bisque.BisqueSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 
-public class BisqueCharScoringLoopStep implements Step {
+public class BisqueCharScoringContainerStep implements Step {
     private StepSequence ss = new StepSequence();
     private BisqueSessionData bsd = null;
     public void appendStep(Step s){
         ss.appendStep(s);
     }
-    public BisqueCharScoringLoopStep(BisqueSessionData bsd){
+    public BisqueCharScoringContainerStep(BisqueSessionData bsd){
         this.bsd = bsd;
     }
     public StepSequence getStepSequence(){
