@@ -1,0 +1,77 @@
+avatolCV will invoke leaf algorithm code three times
+
+
+1. to run segmentation
+2. to run orientation
+3. to run scoring
+-----------------------------------------------------------------------------------------------------------
+At the SEGMENTATION step, avatolCV will pass one argument, which is the path to the runConfig_segmentation.txt file
+
+runConfig_segmentation.txt has lines of the following form:
+
+    darwinXMLFileDir,<path to dir containing darwin xml file>
+	
+	ex:
+	darwinXMLFileDir=c:\\somewhere
+	
+    trainingImagesFile,<path to training images file>  // file will be named trainingImages_segmentation.txt
+    testingImagesFile,<path to testing images file>    // file will be named testingImages_segmentation.txt
+    rawImagesDir,<path of dir where right sized images from bisque are put>
+    trainingImagesDir,<path of dir where _groundtruth trainnig eamples are put>
+	segmentationOutputDir,<path of dir where output goes>
+	modelXmlPath,<path to generated model that will be used during test>
+
+	seg training files ..._groundtruth.jpg 
+	output files       ..._mask.jpg
+	
+lines with other prefixes that can be ignored by leaf code:
+    darwinOutputDir,<same as in xml file - points to where segmented files are put>
+    trainingImage,...
+    testImage,...
+
+
+trainingImages_segmentation.txt and testingImages_segmentation.txt have entries that are the root names of images
+    00-5xayvrdPC3o5foKMpLbZ5H_imgXyz
+    03-uietIOuerto5foKMhUHYUh_imgAbc
+
+
+-----------------------------------------------------------------------------------------------------------
+At ORIENTATION step, I will pass one argument, which is the path to the runConfig_orientation.txt file
+
+runConfig_orientation.txt has these lines:
+    darwinOutputDir,<same as in xml file - points to where segmented files are put>
+    rawImagesDir,<path of dir where right sized images from bisque are put>
+    relaventImagesFile,<path to file that lists filenames of images to orient>
+    orientationResultsDir,<path to dir to put orientation normalized images>
+	modelFilePath,<path to pre-trained svm model for apex, base locating>
+	apexLocationConvention,left
+
+    output files    ..._rotated.jpg
+	
+relaventImagesFile will have entries that are the root names of images in the darwinOutputDir
+    00-5xayvrdPC3o5foKMpLbZ5H_imgXyz
+    03-uietIOuerto5foKMhUHYUh_imgAbc
+ 
+
+
+-----------------------------------------------------------------------------------------------------------
+At SCORING step, I will pass one argument, which is the path to the runConfig_scoring.txt file
+
+runConfig_scoring.txt has these lines, and others that can be ignored:
+    orientationResultsDir,<path to dir where orientation normalized images are>
+    trainingImagesFile,<path to training images file>  // file will be named trainingImages_scoring_<charId>_<charName>.txt
+    testingImagesFile,<path to testing images file>    // file will be named testingImages_scoring_<charId>_<charName>.txt
+    scoring_resultsFile,<pathname of file into which scoring algorithm will put results> // file will be named results_scoring_<charId>_<charName>.txt
+	apexLocationConvention,left
+    
+trainingImages_scoring_<charId>_<charName>.txt have entries that are the root names of images, followed by character state name
+    00-5xayvrdPC3o5foKMpLbZ5H_imgXyz,charStateName 
+    03-uietIOuerto5foKMhUHYUh_imgAbc,charStateName
+    
+testingImages_scoring_<charId>_<charName>.txt 
+    04-5xayvrdPC3o5foKMpLbZ5H_imgXyz
+    10-uietIOuerto5foKMhUHYUh_imgAbc
+    
+results_scoring_<charId>_<charName>.txt , to be created by SCORING step, has form identical to trainingImages_scoring_<charId>_<charName>.txt
+    04-5xayvrdPC3o5foKMpLbZ5H_imgXyz,charStateName 
+    10-uietIOuerto5foKMhUHYUh_imgAbc,charStateName
