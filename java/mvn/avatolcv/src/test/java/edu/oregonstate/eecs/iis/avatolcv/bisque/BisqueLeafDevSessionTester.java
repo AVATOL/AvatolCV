@@ -66,7 +66,6 @@ public class BisqueLeafDevSessionTester extends TestCase {
 		Step bisqueExclusionStep = new BisqueExclusionStep(null, sessionData);
 		ss.appendStep(bisqueExclusionStep);
 		
-		
 		BisqueLoginStep bls = (BisqueLoginStep)ss.getCurrentStep();
 		/*
 		 * throw exception on failed login 
@@ -195,7 +194,6 @@ public class BisqueLeafDevSessionTester extends TestCase {
 			Assert.fail(acve.getMessage());
 		}
 
-		Assert.assertFalse(segmentationCheckStep.needsAnswering());
 		
 		
 		SegStep2_LabelTrainingExamples labelStep = new SegStep2_LabelTrainingExamples(null, ssd);
@@ -205,7 +203,6 @@ public class BisqueLeafDevSessionTester extends TestCase {
 		catch(AvatolCVException e){
 		    Assert.fail("problem calling init on seg step 2 " + e.getMessage());
 		}
-		Assert.assertTrue(labelStep.needsAnswering());
 		
 		
 		try {
@@ -215,7 +212,6 @@ public class BisqueLeafDevSessionTester extends TestCase {
 			Assert.fail("problem consuming data " + e.getMessage());
 		}
 		
-		Assert.assertFalse(labelStep.needsAnswering());
 
 		AlgorithmRunner segRunner = new BogusAlgorithmRunner();
 		SegStep3_Run segRunStep = new SegStep3_Run(null, ssd, segRunner);
@@ -225,7 +221,6 @@ public class BisqueLeafDevSessionTester extends TestCase {
 		catch(AvatolCVException e){
 		    Assert.fail("problem calling init on segRunStep " + e.getMessage());
 		}
-		Assert.assertTrue(segRunStep.needsAnswering());
 		pp = new TestProgressPresenter();
 		segRunStep.run(pp);
 		try {
@@ -234,7 +229,6 @@ public class BisqueLeafDevSessionTester extends TestCase {
 		catch(AvatolCVException e){
             Assert.fail("problem consuming data " + e.getMessage());
         }
-		Assert.assertFalse(segRunStep.needsAnswering());
 		
 		ImageTransformReviewStep reviewStep = new ImageTransformReviewStep(null, ssd);
 		reviewStep.init();
@@ -262,7 +256,6 @@ public class BisqueLeafDevSessionTester extends TestCase {
         try {
         	orientationCheckStep = new OrientStep1_TrainingExamplesCheck(osd);
         	orientationCheckStep.init();
-            Assert.assertTrue(orientationCheckStep.needsAnswering());
             orientationCheckStep.consumeProvidedData();
             int trainingCount = osd.getImagesForStage().getTrainingImages().size();
             Assert.assertTrue(trainingCount == 0);
@@ -276,7 +269,6 @@ public class BisqueLeafDevSessionTester extends TestCase {
         }
 
         Assert.assertTrue(osd.getImagesForStage().getTrainingImages().size() == 0);
-        Assert.assertFalse(orientationCheckStep.needsAnswering());
         
         
         OrientStep2_LabelTrainingExamples orientationLabelStep = new OrientStep2_LabelTrainingExamples(null,osd);
@@ -286,7 +278,6 @@ public class BisqueLeafDevSessionTester extends TestCase {
         catch(AvatolCVException e){
         	Assert.fail("problem calling init on labelStep.");
         }
-        Assert.assertTrue(orientationLabelStep.needsAnswering());
         
         
         try {
@@ -294,12 +285,7 @@ public class BisqueLeafDevSessionTester extends TestCase {
         }
         catch(AvatolCVException e){
             Assert.fail("problem consuming data " + e.getMessage());
-        }
-        
-        Assert.assertFalse(orientationLabelStep.needsAnswering());
-
-        
-        
+        }   
 	}
 
 	/*

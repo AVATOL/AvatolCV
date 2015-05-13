@@ -1,5 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.ws.morphobank;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CellMediaInfo {
@@ -21,6 +22,9 @@ public class CellMediaInfo {
 	}
 	
 	public static class MBMediaInfo {
+	    public static String IMAGE_SIZE_THUMBNAIL = "thumbnail";
+	    public static String IMAGE_SIZE_SMALL    = "small";
+	    public static String IMAGE_SIZE_LARGE     = "large";
 		private String mediaID;
 		private String viewID;
 		
@@ -35,6 +39,16 @@ public class CellMediaInfo {
 		}
 		public String getViewID(){
 			return this.viewID;
+		}
+		public static List<String> getMediaTypes(){
+		    List<String> list = new ArrayList<String>();
+		    list.add(IMAGE_SIZE_THUMBNAIL);
+            list.add(IMAGE_SIZE_SMALL);
+            list.add(IMAGE_SIZE_LARGE);
+		    return list;    
+		}
+		public String getName(){
+		    return ""; // morphobank images don't have names with them
 		}
 	}
 }

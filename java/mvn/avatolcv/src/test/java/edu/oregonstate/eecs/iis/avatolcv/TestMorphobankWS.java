@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
+import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotationPoint;
@@ -263,9 +264,9 @@ public class TestMorphobankWS extends TestCase {
 			deleteIfExists("C:\\\\avatol\\temp\\" + mediaID + "_thumbnail.jpg");
 			deleteIfExists("C:\\\\avatol\\temp\\" + mediaID + "_small.jpg");
 			deleteIfExists("C:\\\\avatol\\temp\\" + mediaID + "_large.jpg");
-			boolean result1 = wsClient.downloadImageForMediaId(thumbnailDir,mediaID,"thumbnail");
-			boolean result2 = wsClient.downloadImageForMediaId(thumbnailDir,mediaID,"small");
-			boolean result3 = wsClient.downloadImageForMediaId(thumbnailDir,mediaID,"large");
+			boolean result1 = wsClient.downloadImageForMediaId(thumbnailDir,mediaID,"","thumbnail");
+			boolean result2 = wsClient.downloadImageForMediaId(thumbnailDir,mediaID,"","small");
+			boolean result3 = wsClient.downloadImageForMediaId(thumbnailDir,mediaID,"","large");
 			
 		}
 		catch(MorphobankWSException me){
@@ -278,7 +279,7 @@ public class TestMorphobankWS extends TestCase {
 	public void testDownloadBadMediaId() {
 		String username = "irvine@eecs.oregonstate.edu";
 		String pw = "squonkmb";
-		MorphobankWSClient wsClient = new MorphobankWSClient();
+		MorphobankWSClient wsClient = new MorphobankWSClientImpl();
 		try {
 			wsClient.authenticate(username, pw);
 			String thumbnailDir = "C:\\\\avatol\\temp";
@@ -288,7 +289,7 @@ public class TestMorphobankWS extends TestCase {
 			}
 			String mediaID = "-1";
 			deleteIfExists("C:\\\\avatol\\temp\\" + mediaID + "_thumbnail.jpg");
-			boolean result1 = wsClient.downloadImageForMediaId(thumbnailDir,mediaID,"thumbnail");
+			boolean result1 = wsClient.downloadImageForMediaId(thumbnailDir,mediaID,"","thumbnail");
 			
 		}
 		catch(MorphobankWSException me){

@@ -3,16 +3,11 @@ what we get from Morphobank.
 
 Definitions/assumptions:
 
- -  bundle - the directory containing all the information downloaded for a particular 
-matrix, plus any files generated within that directory by our processing.  Each is
-positioned under the matrix_downloads dir. For example, the BAT bundle is positioned here:
-
  -  presence/absence - we are focusing now strictly on characters who have states present/absent.
 
  -  simple characters - we are focusing now strictly on simple characters, i.e. single teeth, 
 rather than compound characters that involve multiple sinmple teeth  (distance between toothx and toothy)
 
- - matlab will be positioned at the root directory of the downloaded matrix's data area, i.e.
 
 /nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/matrix_downloads/BAT
 

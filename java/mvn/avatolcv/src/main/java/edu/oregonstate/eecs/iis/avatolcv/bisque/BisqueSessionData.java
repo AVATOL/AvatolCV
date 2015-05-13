@@ -7,6 +7,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.FileUtils;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionData;
 import edu.oregonstate.eecs.iis.avatolcv.orientation.OrientationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
@@ -83,38 +84,19 @@ public class BisqueSessionData implements SessionData{
 	//	return resourceUniq + "_" + name + "_" + width + ".jpg";
 	//}
 	public void ensureImageDirsExists(){
-		ensureDirExists(getImagesThumbnailDir());
-		ensureDirExists(getImagesSmallDir());
-		ensureDirExists(getImagesMediumDir());
-		ensureDirExists(getImagesLargeDir());
+		FileUtils.ensureDirExists(getImagesThumbnailDir());
+		FileUtils.ensureDirExists(getImagesSmallDir());
+		FileUtils.ensureDirExists(getImagesMediumDir());
+		FileUtils.ensureDirExists(getImagesLargeDir());
 		
 	}
 	public void clearImageDirs(){
-		clearDir(getImagesThumbnailDir());
-		clearDir(getImagesSmallDir());
-		clearDir(getImagesMediumDir());
-		clearDir(getImagesLargeDir());
+	    FileUtils.clearDir(getImagesThumbnailDir());
+	    FileUtils.clearDir(getImagesSmallDir());
+		FileUtils.clearDir(getImagesMediumDir());
+		FileUtils.clearDir(getImagesLargeDir());
 	}
-	public void clearDir(String dir){
-		File dirFile = new File(dir);
-		if (dirFile.isDirectory()){
-			File[] files = dirFile.listFiles();
-			for (File f : files){
-				if (f.getName().equals(".") || f.getName().equals("..")){
-					//leave these
-				}
-				else {
-					f.delete();
-				}
-			}
-		}
-	}
-	public void ensureDirExists(String dir){
-		File f = new File(dir);
-		if (!f.isDirectory()){
-			f.mkdirs();
-		}
-	}
+	
 	public String getThumbnailWidth(){
 		return IMAGE_THUMBNAIL_WIDTH;
 	}
@@ -179,8 +161,6 @@ public class BisqueSessionData implements SessionData{
 			String id = ii.getID();
 			imageLargeForID.put(id, ii);
 		}
-		 
-        
 	}
 	public void createSegmentationSessionData(String sourceImageDirPath) throws AvatolCVException {
 	    this.ssd = new SegmentationSessionData(this.sessionDatasetDir, sourceImageDirPath);

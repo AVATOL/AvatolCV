@@ -3,9 +3,17 @@ package edu.oregonstate.eecs.iis.avatolcv.morphobank;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
+import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
+import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 
 public class MBExclusionCoachingStep implements Step {
-
+    private MorphobankWSClient wsClient = null;
+    private View view = null;
+    private boolean userHasViewed = false;
+    public MBExclusionCoachingStep(View view, MorphobankWSClient wsClient){
+        this.wsClient = wsClient;
+        this.view = view;
+    }
     @Override
     public void init() throws AvatolCVException {
         // TODO Auto-generated method stub

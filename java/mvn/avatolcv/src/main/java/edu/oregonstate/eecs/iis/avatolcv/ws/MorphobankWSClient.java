@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.ws;
 
 import java.util.List;
+
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharStateInfo.MBCharStateValue;
@@ -19,5 +20,5 @@ public interface MorphobankWSClient {
 	public List<MBMediaInfo> getMediaForCell(String matrixID, String charID, String taxonID)  throws MorphobankWSException;
 	public List<MBAnnotation> getAnnotationsForCellMedia(String matrixID, String charID, String taxonID, String mediaID)  throws MorphobankWSException ;
 	public List<MBView> getViewsForProject(String projectID)  throws MorphobankWSException ;
-	public boolean downloadImageForMediaId(String dirToSaveTo, String mediaID, String type)  throws MorphobankWSException ;
+	public boolean downloadImageForMediaId(String dirToSaveTo, String mediaID, String mediaFileName, String type)  throws MorphobankWSException ;
 }

@@ -128,8 +128,10 @@ http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/userID/987
             MatrixInfo mi = mapper.readValue(jsonString, MatrixInfo.class);
             List<MBProject> projects = mi.getProjects();
             for (MBProject proj : projects){
+                String projectID = proj.getProjectID();
                 List<MBMatrix> curMatrices = proj.getMatrices();
                 for (MBMatrix m : curMatrices){
+                    m.setProjectID(projectID);
                     matrices.add(m);
                 }
             }
@@ -428,7 +430,13 @@ http://morphobank.org/service.php/AVATOLCv/getViewsForProject/username/irvine@ee
         }
         return views;
     }
-    public boolean downloadImageForMediaId(String dirToSaveTo, String mediaID, String type)  throws MorphobankWSException {
+    /*
+     * HACK - we pass in mediaFileName so that we can be compliant with ImageInfo, which expects a name, 
+     * after I wrote it for the Bisque data source case.  As of this writing, for Morphobank images, 
+     * mediaName will always be the empty string ("") since filename is not returned by the web service that gets the imageInfo.
+     * Thus the resulting name will have two consecutive underscores.
+     */
+    public boolean downloadImageForMediaId(String dirToSaveTo, String mediaID, String mediaFileName, String type)  throws MorphobankWSException {
         String thisMethodName = "downloadImageForMediaId";
         /*
          * 
@@ -491,7 +499,7 @@ http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_med
  
 
             InputStream inputStream = response.readEntity(InputStream.class);
-            String pathToSaveTo = dirToSaveTo + FILESEP + mediaID + "_" + type + "." + imageFileExtension;
+            String pathToSaveTo = dirToSaveTo + FILESEP + mediaID + "_" + mediaFileName + "_" + type + "." + imageFileExtension;// see comment above method re mediaFileName
             System.out.println("saving file to " + pathToSaveTo);
             OutputStream outputStream = new FileOutputStream(pathToSaveTo);
             byte[] buffer = new byte[1024];
