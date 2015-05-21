@@ -9,11 +9,11 @@ import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
 
 public class MBExclusionStep implements Step {
-    private View view = null;
+    private String view = null;
     private MBSessionData sessionData = null;
     List<ImageInfo> imagesToInclude = null;
     List<ImageInfo> imagesToExclude = null;
-    public MBExclusionStep(View view, MBSessionData sessionData){
+    public MBExclusionStep(String view, MBSessionData sessionData){
         this.view = view;
         this.sessionData = sessionData;
     }
@@ -30,7 +30,7 @@ public class MBExclusionStep implements Step {
     }
 
     @Override
-    public View getView() {
+    public String getView() {
         // TODO Auto-generated method stub
         return null;
     }

@@ -12,11 +12,11 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 * This step supports the UI that allows for segmentation labeling or reviewing of segmentation labels
 */
 public class SegStep2_LabelTrainingExamples implements Step {	
-	private View view = null;
+	private String view = null;
 	private SegmentationSessionData ssd = null;
 	ImagesForStage ifs = null;
 	boolean needsAnswering = true;
-	public SegStep2_LabelTrainingExamples(View view, SegmentationSessionData ssd){
+	public SegStep2_LabelTrainingExamples(String view, SegmentationSessionData ssd){
 		this.view = view;
 		this.ssd = ssd;
 		this.ifs = ssd.getImagesForStage();
@@ -46,7 +46,7 @@ public class SegStep2_LabelTrainingExamples implements Step {
 
 
 	@Override
-	public View getView() {
+	public String getView() {
 		return this.view;
 	}
     @Override

@@ -12,12 +12,12 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
 
 public class MBViewChoiceStep implements Step {
     private MorphobankWSClient wsClient = null;
-    private View view = null;
+    private String view = null;
     private MBSessionData sessionData = null;
     private List<MBView> mbImages = null;
     private MBView chosenView = null;
     
-    public MBViewChoiceStep(View view, MorphobankWSClient wsClient, MBSessionData sessionData){
+    public MBViewChoiceStep(String view, MorphobankWSClient wsClient, MBSessionData sessionData){
         this.wsClient = wsClient;
         this.view = view;
         this.sessionData = sessionData;
@@ -48,7 +48,7 @@ public class MBViewChoiceStep implements Step {
     }
 
     @Override
-    public View getView() {
+    public String getView() {
         // TODO Auto-generated method stub
         return null;
     }

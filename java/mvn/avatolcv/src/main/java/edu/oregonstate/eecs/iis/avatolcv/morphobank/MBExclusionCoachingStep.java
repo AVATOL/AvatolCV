@@ -8,9 +8,9 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 
 public class MBExclusionCoachingStep implements Step {
     private MorphobankWSClient wsClient = null;
-    private View view = null;
+    private String view = null;
     private boolean userHasViewed = false;
-    public MBExclusionCoachingStep(View view, MorphobankWSClient wsClient){
+    public MBExclusionCoachingStep(String view, MorphobankWSClient wsClient){
         this.wsClient = wsClient;
         this.view = view;
     }
@@ -27,7 +27,7 @@ public class MBExclusionCoachingStep implements Step {
     }
 
     @Override
-    public View getView() {
+    public String getView() {
         // TODO Auto-generated method stub
         return null;
     }

@@ -27,7 +27,7 @@ public class BisqueCharScoringContainerStep implements Step {
 
 
     @Override
-    public View getView() {
+    public String getView() {
         // TODO Auto-generated method stub
         return null;
     }

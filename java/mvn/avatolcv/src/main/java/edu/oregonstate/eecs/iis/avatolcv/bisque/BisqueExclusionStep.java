@@ -8,11 +8,11 @@ import edu.oregonstate.eecs.iis.avatolcv.core.View;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 
 public class BisqueExclusionStep implements Step {
-	private View view = null;
+	private String view = null;
 	private BisqueSessionData sessionData = null;
 	List<ImageInfo> imagesToInclude = null;
 	List<ImageInfo> imagesToExclude = null;
-	public BisqueExclusionStep(View view, BisqueSessionData sessionData){
+	public BisqueExclusionStep(String view, BisqueSessionData sessionData){
 		this.view = view;
 		this.sessionData = sessionData;
 	}
@@ -36,7 +36,7 @@ public class BisqueExclusionStep implements Step {
 	}
 
 	@Override
-	public View getView() {
+	public String getView() {
 		return this.view;
 	}
 	

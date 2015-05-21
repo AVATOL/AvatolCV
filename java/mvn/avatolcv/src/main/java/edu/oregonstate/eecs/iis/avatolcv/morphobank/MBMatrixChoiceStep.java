@@ -16,11 +16,11 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 
 public class MBMatrixChoiceStep implements Step {
     private MorphobankWSClient wsClient = null;
-    private View view = null;
+    private String view = null;
     private MBMatrix chosenMatrix = null;
     private List<MBMatrix> matrices = null;
     private MBSessionData sessionData = null;
-    public MBMatrixChoiceStep(View view, MorphobankWSClient wsClient, MBSessionData sessionData){
+    public MBMatrixChoiceStep(String view, MorphobankWSClient wsClient, MBSessionData sessionData){
         this.wsClient = wsClient;
         this.view = view;
         this.sessionData = sessionData;
@@ -76,7 +76,7 @@ public class MBMatrixChoiceStep implements Step {
     }
 
     @Override
-    public View getView() {
+    public String getView() {
         // TODO Auto-generated method stub
         return null;
     }

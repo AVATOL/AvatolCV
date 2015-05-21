@@ -23,12 +23,12 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 
 public class MBImagePullStep implements Step {
     private MorphobankWSClient wsClient = null;
-    private View view = null;
+    private String view = null;
     private MBSessionData sessionData = null;
     private List<MBMediaInfo> mbImages = null;
     private boolean imagesLoadedSuccessfully = false;
     
-    public MBImagePullStep(View view, MorphobankWSClient wsClient, MBSessionData sessionData){
+    public MBImagePullStep(String view, MorphobankWSClient wsClient, MBSessionData sessionData){
         this.wsClient = wsClient;
         this.view = view;
         this.sessionData = sessionData;
@@ -148,7 +148,7 @@ public class MBImagePullStep implements Step {
     }
 
     @Override
-    public View getView() {
+    public String getView() {
         return this.view;
     }
 

@@ -14,8 +14,8 @@ import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QuestionsXMLFile;
 public class CharQuestionsStep implements Step {
     private QuestionSequencer questionSequencer = null;
     private SessionData sessionData = null;
-    private View view = null;
-    public CharQuestionsStep(View view, SessionData sessionData) {
+    private String view = null;
+    public CharQuestionsStep(String view, SessionData sessionData) {
         this.sessionData = sessionData;
         this.view = view;
     }
@@ -37,7 +37,7 @@ public class CharQuestionsStep implements Step {
 
 
     @Override
-    public View getView() {
+    public String getView() {
         /*
          * For charQuestions, the view will be a container that fills itself out with subPanel appropriate for current QQuestion
          */

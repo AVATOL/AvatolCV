@@ -14,11 +14,11 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
 public class BisqueDatasetStep implements Step {
 
 	private BisqueWSClient wsClient = null;
-	private View view = null;
+	private String view = null;
 	private BisqueDataset chosenDataset = null;
 	private List<BisqueDataset> datasets = null;
 	private BisqueSessionData sessionData = null;
-	public BisqueDatasetStep(View view, BisqueWSClient wsClient, BisqueSessionData sessionData){
+	public BisqueDatasetStep(String view, BisqueWSClient wsClient, BisqueSessionData sessionData){
 		this.wsClient = wsClient;
 		this.view = view;
 		this.sessionData = sessionData;
@@ -66,7 +66,7 @@ public class BisqueDatasetStep implements Step {
 	}
 
 	@Override
-	public View getView() {
+	public String getView() {
 		return this.view;
 	}
 

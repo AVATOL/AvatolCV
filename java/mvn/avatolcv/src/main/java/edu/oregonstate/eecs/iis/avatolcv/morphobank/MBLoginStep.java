@@ -10,8 +10,8 @@ public class MBLoginStep implements Step {
     private String username = null;
     private String password = null;
     private MorphobankWSClient wsClient = null;
-    private View view = null;
-    public MBLoginStep(View view, MorphobankWSClient wsClient){
+    private String view = null;
+    public MBLoginStep(String view, MorphobankWSClient wsClient){
         this.wsClient = wsClient;
         this.view = view;
     }
@@ -20,7 +20,7 @@ public class MBLoginStep implements Step {
         // nothing to do
     }
     @Override
-    public View getView(){
+    public String getView(){
         return this.view;
     }
     public boolean isAuthenticated(){

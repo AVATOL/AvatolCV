@@ -16,12 +16,12 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
 
 public class BisqueImagePullStep implements Step {
 	private BisqueWSClient wsClient = null;
-	private View view = null;
+	private String view = null;
 	private BisqueSessionData sessionData = null;
 	private List<BisqueImage> bisqueImages = null;
 	private boolean imagesLoadedSuccessfully = false;
 	
-	public BisqueImagePullStep(View view, BisqueWSClient wsClient, BisqueSessionData sessionData){
+	public BisqueImagePullStep(String view, BisqueWSClient wsClient, BisqueSessionData sessionData){
 		this.wsClient = wsClient;
 		this.view = view;
 		this.sessionData = sessionData;
@@ -141,7 +141,7 @@ public class BisqueImagePullStep implements Step {
 		}
 	}
 	@Override
-	public View getView() {
+	public String getView() {
 		return this.view;
 	}
 

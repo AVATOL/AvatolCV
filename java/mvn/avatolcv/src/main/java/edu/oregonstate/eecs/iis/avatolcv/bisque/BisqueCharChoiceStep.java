@@ -15,11 +15,11 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
 public class BisqueCharChoiceStep implements Step {
     private BisqueWSClient wsClient  = null;
     private BisqueSessionData sessionData = null;
-    private View view = null;
+    private String  view = null;
     private BisqueAnnotation chosenCharacter = null;
             
             
-    public BisqueCharChoiceStep(View view, BisqueWSClient wsClient, BisqueSessionData sessionData){
+    public BisqueCharChoiceStep(String view, BisqueWSClient wsClient, BisqueSessionData sessionData){
         this.wsClient = wsClient;
         this.view = view;
         this.sessionData = sessionData;
@@ -56,7 +56,7 @@ public class BisqueCharChoiceStep implements Step {
 
     
     @Override
-    public View getView() {
+    public String getView() {
         return this.view;
     }
    

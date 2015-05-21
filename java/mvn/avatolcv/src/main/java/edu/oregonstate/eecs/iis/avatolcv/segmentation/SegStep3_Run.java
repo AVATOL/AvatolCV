@@ -7,10 +7,10 @@ import edu.oregonstate.eecs.iis.avatolcv.core.View;
 import edu.oregonstate.eecs.iis.avatolcv.generic.AlgorithmRunner;
 
 public class SegStep3_Run implements Step {
-	private View view = null;	
+	private String view = null;	
 	private SegmentationSessionData ssd = null;
 	private AlgorithmRunner runner = null;
-	public SegStep3_Run(View view, SegmentationSessionData ssd, AlgorithmRunner runner){
+	public SegStep3_Run(String view, SegmentationSessionData ssd, AlgorithmRunner runner){
 		this.ssd = ssd;
 		this.view = view;
 		this.runner = runner;
@@ -32,7 +32,7 @@ public class SegStep3_Run implements Step {
 
 
 	@Override
-	public View getView() {
+	public String getView() {
 		return this.view;
 	}
 

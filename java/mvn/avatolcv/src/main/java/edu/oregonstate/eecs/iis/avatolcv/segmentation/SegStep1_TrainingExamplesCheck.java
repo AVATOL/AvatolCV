@@ -38,7 +38,7 @@ public class SegStep1_TrainingExamplesCheck implements Step {
 	
 	
 	@Override
-	public View getView() {
+	public String getView() {
 		return null;
 	}
 

@@ -7,9 +7,9 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 
 public class BisqueExclusionCoachingStep implements Step {
 	private BisqueWSClient wsClient = null;
-	private View view = null;
+	private String view = null;
 	private boolean userHasViewed = false;
-	public BisqueExclusionCoachingStep(View view, BisqueWSClient wsClient){
+	public BisqueExclusionCoachingStep(String view, BisqueWSClient wsClient){
 		this.wsClient = wsClient;
 		this.view = view;
 	}
@@ -23,7 +23,7 @@ public class BisqueExclusionCoachingStep implements Step {
 	}
 
 	@Override
-	public View getView() {
+	public String getView() {
 		return this.view;
 	}
 	public void userHasViewed(){

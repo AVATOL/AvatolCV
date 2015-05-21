@@ -10,8 +10,8 @@ public class BisqueLoginStep implements Step {
 	private String username = null;
 	private String password = null;
 	private BisqueWSClient wsClient = null;
-	private View view = null;
-	public BisqueLoginStep(View view, BisqueWSClient wsClient){
+	private String view = null;
+	public BisqueLoginStep(String view, BisqueWSClient wsClient){
 		this.wsClient = wsClient;
 		this.view = view;
 	}
@@ -20,7 +20,7 @@ public class BisqueLoginStep implements Step {
         // nothing to do
     }
 	@Override
-	public View getView(){
+	public String getView(){
 		return this.view;
 	}
 	public boolean isAuthenticated(){

@@ -10,10 +10,10 @@ import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
 
 public class ImageTransformReviewStep implements Step {
-	private View view = null;	
+	private String view = null;	
 	private ImageTranformReviewData itrd = null;
 	private boolean userReviewComplete = false;
-	public ImageTransformReviewStep(View view, ImageTranformReviewData itrd){
+	public ImageTransformReviewStep(String view, ImageTranformReviewData itrd){
 		this.itrd = itrd;
 		this.view = view;
 	}
@@ -64,7 +64,7 @@ public class ImageTransformReviewStep implements Step {
 
 
 	@Override
-	public View getView() {
+	public String getView() {
 		return this.view;
 	}
 

@@ -41,7 +41,9 @@ public class AvatolCVJavaFX extends Application {
 		try {
 		    if (startError.equals("")){
 		        this.mainWindow = stage;
-	            Parent root = FXMLLoader.load(getClass().getResource("avatolCvHome.fxml"));
+		        FXMLLoader loader = new FXMLLoader(getClass().getResource("avatolCvHome.fxml"));
+		        loader.setController(this);;
+	            Parent root = loader.load();
 	            stage.setTitle("AvatolCV");
 	            scene = new Scene(root, MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT);
 	            scene.getStylesheets().add("javafx.css");
@@ -65,7 +67,8 @@ public class AvatolCVJavaFX extends Application {
 	    try {
 	       
 	        if (radioMBSession.isSelected()){
-	            MorphobankSessionJavaFX mbsession = new MorphobankSessionJavaFX(rootDir, mainWindow);
+	            MorphobankSessionJavaFX mbsession = new MorphobankSessionJavaFX();
+	            mbsession.init(rootDir, mainWindow);
 	        }
 	        else if (radioBisqueSession.isSelected()){
 	            

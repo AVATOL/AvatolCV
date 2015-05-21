@@ -9,10 +9,10 @@ import edu.oregonstate.eecs.iis.avatolcv.generic.AlgorithmRunner;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 
 public class OrientStep3_Run implements Step {
-    private View view = null;   
+    private String view = null;   
     private OrientationSessionData osd = null;
     private AlgorithmRunner runner = null;
-    public OrientStep3_Run(View view, OrientationSessionData osd, AlgorithmRunner runner){
+    public OrientStep3_Run(String view, OrientationSessionData osd, AlgorithmRunner runner){
         this.osd = osd;
         this.view = view;
         this.runner = runner;
@@ -33,7 +33,7 @@ public class OrientStep3_Run implements Step {
 
 
     @Override
-    public View getView() {
+    public String getView() {
         return this.view;
     }
 }

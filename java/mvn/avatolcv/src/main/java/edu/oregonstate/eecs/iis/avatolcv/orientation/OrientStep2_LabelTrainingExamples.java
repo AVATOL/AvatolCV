@@ -11,11 +11,11 @@ import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 
 public class OrientStep2_LabelTrainingExamples implements Step {
     
-    private View view = null;
+    private String view = null;
     private OrientationSessionData osd = null;
     ImagesForStage ifs = null;
     
-    public OrientStep2_LabelTrainingExamples(View view, OrientationSessionData osd){
+    public OrientStep2_LabelTrainingExamples(String view, OrientationSessionData osd){
         this.view = view;
         this.osd = osd;
         
@@ -48,7 +48,7 @@ public class OrientStep2_LabelTrainingExamples implements Step {
 
 
     @Override
-    public View getView() {
+    public String getView() {
         return null;
     }
    
