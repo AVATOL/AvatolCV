@@ -60,7 +60,7 @@ public class MorphobankSessionJavaFX {
             FXMLLoader loader = new FXMLLoader(MorphobankSessionJavaFX.class.getResource(fxmlDoc));
             loader.setController(step);
             Node content = loader.load();
-            Pane contentPane = (Pane)scene.lookup("navigationShellContentPane");
+            Pane contentPane = (Pane)scene.lookup("#navigationShellContentPane");
             ObservableList<Node> children = contentPane.getChildren();
             if (null != children){
                 contentPane.getChildren().add(content);
@@ -77,18 +77,11 @@ public class MorphobankSessionJavaFX {
             Parent navShell = loader.load();
             
             this.scene = new Scene(navShell, AvatolCVJavaFX.MAIN_WINDOW_WIDTH, AvatolCVJavaFX.MAIN_WINDOW_HEIGHT);
-            
             this.mainWindow.setScene(scene);
-            //Pane contentPane = (Pane)scene.lookup("#contentPane");
-            //Node content = FXMLLoader.load(getClass().getResource("content1.fxml"));
-            //contentPane.getChildren().add(content);
-            //thi.show();
         }
         catch(Exception e){
             throw new AvatolCVException(e.getMessage(),e);
         }
     }
-    public void init(){
-        
-    }
+    
 }

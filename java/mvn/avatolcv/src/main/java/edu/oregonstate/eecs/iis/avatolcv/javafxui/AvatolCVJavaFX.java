@@ -46,7 +46,6 @@ public class AvatolCVJavaFX extends Application {
 	            Parent root = loader.load();
 	            stage.setTitle("AvatolCV");
 	            scene = new Scene(root, MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT);
-	            scene.getStylesheets().add("javafx.css");
 	            stage.setScene(scene);
 	            stage.show();
 		    }

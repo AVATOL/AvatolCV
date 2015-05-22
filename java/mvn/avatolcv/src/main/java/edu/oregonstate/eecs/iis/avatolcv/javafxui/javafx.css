@@ -6,12 +6,20 @@
 .red {
 	-fx-background-color: red;
 }
-.control-text {
+
+
+.label {
 	-fx-font-size: 16px;
+	-fx-text-fill: black;
+	/*-fx-effect: dropshadow( gaussian, rgba(255,255,255,0.5), 0,0,0,1);*/
+}
+.button {
 	
 }
+
 .title-text {
 	-fx-font-size: 20px;
+	/*-fx-effect: innershadow( three-pass-box, rgba(0,0,0,0.7), 6, 0.0, 0,2);*/
 }
 
 .heading-text {

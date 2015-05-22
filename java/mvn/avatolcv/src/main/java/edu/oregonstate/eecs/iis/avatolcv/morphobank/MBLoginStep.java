@@ -54,5 +54,6 @@ public class MBLoginStep implements Step {
     public void setPassword(String s){
         this.password = s;
     }
-
+LEFT OFF TRYING TO MAKE THE LAYOUT EXPAND CORRECTLY
+ALSO, CONSIDERING HAVING SESSION MAP VERTICALLY ON LEFT
 }
