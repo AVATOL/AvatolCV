@@ -23,7 +23,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label text="Please provide your Morphobank credentials" GridPane.columnSpan="3" />
+                  <Label styleClass="heading-text" text="Log in to data source" GridPane.columnSpan="3" />
                   <PasswordField GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label text="Username" GridPane.rowIndex="1" />

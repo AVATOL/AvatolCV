@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
@@ -60,11 +61,8 @@ public class MorphobankSessionJavaFX {
             FXMLLoader loader = new FXMLLoader(MorphobankSessionJavaFX.class.getResource(fxmlDoc));
             loader.setController(step);
             Node content = loader.load();
-            Pane contentPane = (Pane)scene.lookup("#navigationShellContentPane");
-            ObservableList<Node> children = contentPane.getChildren();
-            if (null != children){
-                contentPane.getChildren().add(content);
-            }
+            ScrollPane scrollPane = (ScrollPane)scene.lookup("#navigationShellContentPane");
+            scrollPane.setContent(content);
         }
         catch(IOException ioe){
             throw new AvatolCVException("problem loading ui " + fxmlDoc + " for step " + step.getClass().getName());

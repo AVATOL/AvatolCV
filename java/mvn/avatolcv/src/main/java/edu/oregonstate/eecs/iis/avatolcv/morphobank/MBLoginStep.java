@@ -31,7 +31,6 @@ public class MBLoginStep implements Step {
     }
     @Override
     public void consumeProvidedData() throws AvatolCVException {
-        // TODO Auto-generated method stub
         if (null == username || "".equals(username)){
             throw new AvatolCVException("username must be specified");
         }
@@ -54,6 +53,5 @@ public class MBLoginStep implements Step {
     public void setPassword(String s){
         this.password = s;
     }
-LEFT OFF TRYING TO MAKE THE LAYOUT EXPAND CORRECTLY
-ALSO, CONSIDERING HAVING SESSION MAP VERTICALLY ON LEFT
+
 }

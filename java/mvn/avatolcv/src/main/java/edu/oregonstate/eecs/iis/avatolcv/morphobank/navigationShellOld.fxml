@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../javafxui/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox id="navShellTop">
+         <children>
+            <Label contentDisplay="CENTER" text="Morphobank Session">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </Label>
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </HBox>
+      <Pane id="navigationShellContentPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+      <HBox spacing="6.0">
+         <children>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="navigationBackButton" mnemonicParsing="false" text="Back" />
+            <Button fx:id="navigationNextButton" mnemonicParsing="false" text="Next" />
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+   </padding>
+</VBox>
