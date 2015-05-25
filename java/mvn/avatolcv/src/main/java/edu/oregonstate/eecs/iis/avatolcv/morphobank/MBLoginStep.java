@@ -7,7 +7,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
 
 public class MBLoginStep implements Step {
-    private String username = null;
+    public String username = null;
     private String password = null;
     private MorphobankWSClient wsClient = null;
     private String view = null;

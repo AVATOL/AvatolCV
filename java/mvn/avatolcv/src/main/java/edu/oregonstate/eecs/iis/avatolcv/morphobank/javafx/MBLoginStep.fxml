@@ -5,7 +5,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../javafxui/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Region HBox.hgrow="ALWAYS" />
       <VBox maxWidth="500.0" HBox.hgrow="ALWAYS">
@@ -23,8 +23,8 @@
               </rowConstraints>
                <children>
                   <Label styleClass="heading-text" text="Log in to data source" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" />
-                  <PasswordField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <PasswordField fx:id="passwordTextField" onMouseClicked="#clearBadCredentialWarning" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <TextField fx:id="usernameTextField" onMouseClicked="#clearBadCredentialWarning" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label text="Username" GridPane.rowIndex="1" />
                   <Label text="Password" GridPane.rowIndex="2" />
                </children>
@@ -32,6 +32,11 @@
                   <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
                </VBox.margin>
             </GridPane>
+            <Label fx:id="badCredentialLabel">
+               <VBox.margin>
+                  <Insets bottom="6.0" left="6.0" right="6.0" top="20.0" />
+               </VBox.margin>
+            </Label>
             <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>

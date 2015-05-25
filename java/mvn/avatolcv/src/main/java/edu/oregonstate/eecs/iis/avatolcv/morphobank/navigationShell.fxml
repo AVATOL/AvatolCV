@@ -5,7 +5,6 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <SplitPane dividerPositions="0.2" prefHeight="160.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
@@ -47,7 +46,7 @@
          <children>
             <Region HBox.hgrow="ALWAYS" />
             <Button mnemonicParsing="false" text="Back" />
-            <Button mnemonicParsing="false" text="Next" />
+            <Button mnemonicParsing="false" onAction="#nextStep" text="Next" />
          </children>
       </HBox>
    </children>

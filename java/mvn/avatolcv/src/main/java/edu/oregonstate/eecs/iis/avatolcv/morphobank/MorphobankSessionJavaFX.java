@@ -1,12 +1,15 @@
 package edu.oregonstate.eecs.iis.avatolcv.morphobank;
 
 import java.io.IOException;
+import java.util.Hashtable;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -16,6 +19,8 @@ import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.generic.CharQuestionsStep;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBLoginStepController;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
 
@@ -27,6 +32,7 @@ public class MorphobankSessionJavaFX {
     private Stage mainWindow = null;
     private Scene scene = null;
   
+    private Hashtable<Step,StepController> controllerForStep = new Hashtable<Step,StepController>();
     public void init(String avatolCVRootDir, Stage mainWindow) throws AvatolCVException {
         this.avatolCVRootDir = avatolCVRootDir;
         this.mainWindow = mainWindow;
@@ -35,9 +41,12 @@ public class MorphobankSessionJavaFX {
         sessionData = new MBSessionData(avatolCVRootDir);
         ss = new StepSequence();
         
-        Step loginStep = new MBLoginStep("MBLoginStep.fxml", client);
+        MBLoginStep loginStep = new MBLoginStep(null, client);
         ss.appendStep(loginStep);
-        Step matrixStep = new MBMatrixChoiceStep(null, client, sessionData);
+        MBLoginStepController loginController = new MBLoginStepController(loginStep,"MBLoginStep.fxml");
+        controllerForStep.put(loginStep, loginController);
+        
+        Step matrixStep = new MBMatrixChoiceStep("MBMatrixChoiceStep.fxml", client, sessionData);
         ss.appendStep(matrixStep);
         Step charChoiceStep = new MBCharChoiceStep(null, client, sessionData);
         ss.appendStep(charChoiceStep);
@@ -56,17 +65,10 @@ public class MorphobankSessionJavaFX {
     }
     private void activateCurrentStep() throws AvatolCVException {
         Step step = ss.getCurrentStep();
-        String fxmlDoc = step.getView();
-        try {
-            FXMLLoader loader = new FXMLLoader(MorphobankSessionJavaFX.class.getResource(fxmlDoc));
-            loader.setController(step);
-            Node content = loader.load();
-            ScrollPane scrollPane = (ScrollPane)scene.lookup("#navigationShellContentPane");
-            scrollPane.setContent(content);
-        }
-        catch(IOException ioe){
-            throw new AvatolCVException("problem loading ui " + fxmlDoc + " for step " + step.getClass().getName());
-        }
+        StepController controller = controllerForStep.get(step);
+        Node contentNode = controller.getContentNode();
+        ScrollPane scrollPane = (ScrollPane)scene.lookup("#navigationShellContentPane");
+        scrollPane.setContent(contentNode);
     }
     public void initUI() throws AvatolCVException {
         try {
@@ -80,6 +82,28 @@ public class MorphobankSessionJavaFX {
         catch(Exception e){
             throw new AvatolCVException(e.getMessage(),e);
         }
+    }
+    public void nextStep(){
+    	Step step = ss.getCurrentStep();
+    	StepController controller = controllerForStep.get(step);
+    	boolean success = controller.consumeUIData();
+    	if (success){
+    		ss.next();
+    		try {
+    			activateCurrentStep();
+    		}
+    		catch (AvatolCVException ace){
+    			Alert alert = new Alert(AlertType.ERROR);
+    			alert.setTitle("Error Dialog");
+    			alert.setHeaderText("An error was encountered while trying to move to next screen.");
+    			alert.setContentText(ace.getMessage());
+    			alert.showAndWait();
+    		}
+    	}
+    	else {
+    		controller.clearUIFields();
+    	}
+    	
     }
     
 }
