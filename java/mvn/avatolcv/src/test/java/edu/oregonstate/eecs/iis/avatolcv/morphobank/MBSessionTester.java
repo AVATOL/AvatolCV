@@ -62,9 +62,9 @@ public class MBSessionTester extends TestCase {
         ss.appendStep(viewChoiceStep);
         Step imagePullStep = new MBImagePullStep(null, client, sessionData);
         ss.appendStep(imagePullStep);
-        Step exclusionCoachingStep = new MBExclusionCoachingStep(null, client);
+        Step exclusionCoachingStep = new MBExclusionQualityStep(null, client);
         ss.appendStep(exclusionCoachingStep);
-        Step exclusionStep = new MBExclusionStep(null, sessionData);
+        Step exclusionStep = new MBExclusionPropertyStep(null, sessionData);
         ss.appendStep(exclusionStep);
         Step charQuestionsStep = new CharQuestionsStep(null, sessionData);
         ss.appendStep(charQuestionsStep);

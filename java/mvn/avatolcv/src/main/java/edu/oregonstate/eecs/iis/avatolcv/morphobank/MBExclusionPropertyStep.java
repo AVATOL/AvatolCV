@@ -1,18 +1,21 @@
 package edu.oregonstate.eecs.iis.avatolcv.morphobank;
 
+import java.util.List;
+
+import edu.oregonstate.eecs.iis.avatolcv.bisque.BisqueSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
-import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
-import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 
-public class MBExclusionCoachingStep implements Step {
-    private MorphobankWSClient wsClient = null;
+public class MBExclusionPropertyStep implements Step {
     private String view = null;
-    private boolean userHasViewed = false;
-    public MBExclusionCoachingStep(String view, MorphobankWSClient wsClient){
-        this.wsClient = wsClient;
+    private MBSessionData sessionData = null;
+    List<ImageInfo> imagesToInclude = null;
+    List<ImageInfo> imagesToExclude = null;
+    public MBExclusionPropertyStep(String view, MBSessionData sessionData){
         this.view = view;
+        this.sessionData = sessionData;
     }
     @Override
     public void init() throws AvatolCVException {
