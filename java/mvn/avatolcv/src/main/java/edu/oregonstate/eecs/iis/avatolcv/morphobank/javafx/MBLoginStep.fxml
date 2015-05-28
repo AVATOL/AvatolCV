@@ -23,8 +23,8 @@
               </rowConstraints>
                <children>
                   <Label styleClass="heading-text" text="Log in to data source" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" />
-                  <PasswordField fx:id="passwordTextField" onMouseClicked="#clearBadCredentialWarning" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <TextField fx:id="usernameTextField" onMouseClicked="#clearBadCredentialWarning" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <PasswordField fx:id="passwordTextField" onMouseClicked="#clearBadCredentialWarning" text="squonkmb" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <TextField fx:id="usernameTextField" onMouseClicked="#clearBadCredentialWarning" text="irvine@eecs.oregonstate.edu" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label text="Username" GridPane.rowIndex="1" />
                   <Label text="Password" GridPane.rowIndex="2" />
                </children>

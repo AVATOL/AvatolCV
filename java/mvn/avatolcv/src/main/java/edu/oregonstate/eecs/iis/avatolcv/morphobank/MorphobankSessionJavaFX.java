@@ -20,6 +20,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.generic.CharQuestionsStep;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBLoginStepController;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBMatrixChoiceStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
@@ -46,8 +47,12 @@ public class MorphobankSessionJavaFX {
         MBLoginStepController loginController = new MBLoginStepController(loginStep,"MBLoginStep.fxml");
         controllerForStep.put(loginStep, loginController);
         
-        Step matrixStep = new MBMatrixChoiceStep("MBMatrixChoiceStep.fxml", client, sessionData);
+        
+        MBMatrixChoiceStep matrixStep = new MBMatrixChoiceStep(null, client, sessionData);
         ss.appendStep(matrixStep);
+        MBMatrixChoiceStepController matrixController = new MBMatrixChoiceStepController(matrixStep, "MBMatrixChoiceStep.fxml");
+        controllerForStep.put(matrixStep, matrixController);
+        
         Step charChoiceStep = new MBCharChoiceStep(null, client, sessionData);
         ss.appendStep(charChoiceStep);
         Step viewChoiceStep = new MBViewChoiceStep(null, client, sessionData);
