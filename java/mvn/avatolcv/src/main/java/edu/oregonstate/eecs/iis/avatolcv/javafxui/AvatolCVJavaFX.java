@@ -40,7 +40,7 @@ public class AvatolCVJavaFX extends Application {
 		    if (startError.equals("")){
 		        this.mainWindow = stage;
 		        FXMLLoader loader = new FXMLLoader(getClass().getResource("avatolCvHome.fxml"));
-		        loader.setController(this);;
+		        loader.setController(this);
 	            Parent root = loader.load();
 	            stage.setTitle("AvatolCV");
 	            scene = new Scene(root, MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT);

@@ -19,8 +19,11 @@ import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.generic.CharQuestionsStep;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBCharChoiceStepController;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBImagePullStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBLoginStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBMatrixChoiceStepController;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBViewChoiceStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
@@ -53,16 +56,31 @@ public class MorphobankSessionJavaFX {
         MBMatrixChoiceStepController matrixController = new MBMatrixChoiceStepController(matrixStep, "MBMatrixChoiceStep.fxml");
         controllerForStep.put(matrixStep, matrixController);
         
-        Step charChoiceStep = new MBCharChoiceStep(null, client, sessionData);
+        MBCharChoiceStep charChoiceStep = new MBCharChoiceStep(null, client, sessionData);
         ss.appendStep(charChoiceStep);
-        Step viewChoiceStep = new MBViewChoiceStep(null, client, sessionData);
+        MBCharChoiceStepController charChoiceController = new MBCharChoiceStepController(charChoiceStep, "MBCharChoiceStep.fxml");
+        controllerForStep.put(charChoiceStep, charChoiceController);
+        
+        MBViewChoiceStep viewChoiceStep = new MBViewChoiceStep(client, sessionData);
         ss.appendStep(viewChoiceStep);
-        Step imagePullStep = new MBImagePullStep(null, client, sessionData);
+        MBViewChoiceStepController viewChoiceController = new MBViewChoiceStepController(viewChoiceStep, "MBViewChoiceStep.fxml");
+        controllerForStep.put(viewChoiceStep, viewChoiceController);
+        
+        
+        MBImagePullStep imagePullStep = new MBImagePullStep(null, client, sessionData);
         ss.appendStep(imagePullStep);
-        Step exclusionCoachingStep = new MBExclusionQualityStep(null, client);
-        ss.appendStep(exclusionCoachingStep);
-        Step exclusionStep = new MBExclusionPropertyStep(null, sessionData);
-        ss.appendStep(exclusionStep);
+        MBImagePullStepController imagePullController = new MBImagePullStepController(this, imagePullStep, "MBImagePullStep.fxml");
+        controllerForStep.put(imagePullStep, imagePullController);
+        
+        MBExclusionQualityStep exclusionQualityStep = new MBExclusionQualityStep(null, client);
+        ss.appendStep(exclusionQualityStep);
+        MBExclusionQualityStepController qualityStepController = new MBExclusionQualityStepController(exclusionQualityStep, "MBExclusionQualityStep.fxml");
+        controllerForStep.put(exclusionQualityStep, qualityStepController);
+        
+        //Step exclusionStep = new MBExclusionPropertyStep(null, sessionData);
+        //ss.appendStep(exclusionStep);
+        
+        
         Step charQuestionsStep = new CharQuestionsStep(null, sessionData);
         ss.appendStep(charQuestionsStep);   
         initUI();

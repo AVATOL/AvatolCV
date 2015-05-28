@@ -1,5 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.morphobank;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.bisque.BisqueSessionData;
@@ -21,6 +23,7 @@ public class MBCharChoiceStep implements Step {
     private MBSessionData sessionData = null;
     private String view = null;
     private MBCharacter chosenCharacter = null;
+    private List<MBCharacter> mbChars = null;
             
             
     public MBCharChoiceStep(String view, MorphobankWSClient wsClient, MBSessionData sessionData){
@@ -31,8 +34,27 @@ public class MBCharChoiceStep implements Step {
     public List<MBCharacter> getCharacters()  throws AvatolCVException {
         return sessionData.getCharactersForCurrentMatrix();
     }
-    public void setChosenCharacter(MBCharacter bi){
-        this.chosenCharacter = bi;
+    public List<String> getAvailableCharNames() throws AvatolCVException {
+        List<String> charNames = new ArrayList<String>();
+        this.mbChars = getCharacters();
+        for (MBCharacter ch : mbChars){
+            charNames.add(ch.getCharName());
+        }
+        Collections.sort(charNames);
+        return charNames;
+    }
+    public void setChosenCharacter(String s) throws AvatolCVException{
+        this.chosenCharacter = null;
+        for (MBCharacter ch : this.mbChars){
+            String name = ch.getCharName();
+            if (name.equals(s)){
+                this.chosenCharacter = ch;
+                //this.sessionData.setChosenDataset(ds);
+            }
+        }
+        if (this.chosenCharacter == null){
+            throw new AvatolCVException("no MBCharacter match for name " + s);
+        }
     }
     @Override
     public void init() throws AvatolCVException {

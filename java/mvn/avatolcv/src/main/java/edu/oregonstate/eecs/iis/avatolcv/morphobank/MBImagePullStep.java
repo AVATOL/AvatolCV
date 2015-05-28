@@ -65,7 +65,7 @@ public class MBImagePullStep implements Step {
         String imagePath = image.getFilepath();
         File imageFile = new File(imagePath);
         if (imageFile.exists()){
-            pp.setMessage("already have image : " + image.getNameAsUploadedNormalized());
+            pp.setMessage("already have image : " + image.getID());
         }
         else {
             robustImageDownload(pp, image, targetDir);

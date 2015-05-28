@@ -16,6 +16,7 @@ public class MBMatrixChoiceStepController implements StepController {
     public ComboBox<String> selectedDataset;
     private MBMatrixChoiceStep step;
     private String fxmlDocName;
+    private List<String> matrices = null;
 	public MBMatrixChoiceStepController(MBMatrixChoiceStep step, String fxmlDocName){
 		this.step = step;
 		this.fxmlDocName = fxmlDocName;
@@ -34,7 +35,7 @@ public class MBMatrixChoiceStepController implements StepController {
 
 	@Override
 	public void clearUIFields() {
-		
+	    selectedDataset.setValue(matrices.get(0));
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class MBMatrixChoiceStepController implements StepController {
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
-            List<String> matrices = this.step.getAvailableMatrices();
+            this.matrices = this.step.getAvailableMatrices();
             if (matrices.size() < 1){
             	throw new AvatolCVException("no valid matrices detected.");
             }
