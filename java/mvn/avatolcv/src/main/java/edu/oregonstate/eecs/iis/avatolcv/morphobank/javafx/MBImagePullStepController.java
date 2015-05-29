@@ -57,9 +57,6 @@ public class MBImagePullStepController implements StepController, ProgressPresen
     @Override
     public void updateProgress(int percent) {
         imageDownloadProgress.setProgress((double)percent);
-        if (percent == 100){
-            this.fxSession.nextStep();
-        }
     }
     @Override
     public void setMessage(String m) {

@@ -20,6 +20,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.generic.CharQuestionsStep;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBCharChoiceStepController;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBExclusionQualityStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBImagePullStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBLoginStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBMatrixChoiceStepController;
@@ -72,7 +73,7 @@ public class MorphobankSessionJavaFX {
         MBImagePullStepController imagePullController = new MBImagePullStepController(this, imagePullStep, "MBImagePullStep.fxml");
         controllerForStep.put(imagePullStep, imagePullController);
         
-        MBExclusionQualityStep exclusionQualityStep = new MBExclusionQualityStep(null, client);
+        MBExclusionQualityStep exclusionQualityStep = new MBExclusionQualityStep(null, client, sessionData);
         ss.appendStep(exclusionQualityStep);
         MBExclusionQualityStepController qualityStepController = new MBExclusionQualityStepController(exclusionQualityStep, "MBExclusionQualityStep.fxml");
         controllerForStep.put(exclusionQualityStep, qualityStepController);
