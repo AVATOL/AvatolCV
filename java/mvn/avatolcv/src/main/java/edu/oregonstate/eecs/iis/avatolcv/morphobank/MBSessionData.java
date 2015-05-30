@@ -41,6 +41,7 @@ public class MBSessionData implements SessionData {
     private List<ImageInfo> imagesSmall = new ArrayList<ImageInfo>();
     private List<ImageInfo> imagesLarge = new ArrayList<ImageInfo>();
     
+    private String chosenAlgorithm = null;
     public MBSessionData(String sessionDataRootParent) throws AvatolCVException {
         File f = new File(sessionDataRootParent);
         if (!f.isDirectory()){
@@ -184,5 +185,9 @@ public class MBSessionData implements SessionData {
             throws AvatolCVException {
         // TODO Auto-generated method stub
         return null;
+    }
+    @Override
+    public void setChosenAlgorithm(String s) {
+        this.chosenAlgorithm = s;
     }
 }

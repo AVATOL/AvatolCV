@@ -16,11 +16,13 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.generic.CharQuestionsStep;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBCharChoiceStepController;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBCharQuestionsController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBExclusionQualityStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBImagePullStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBLoginStepController;
@@ -92,6 +94,13 @@ public class MorphobankSessionJavaFX {
         ss.appendStep(exclusionOrientationStep);
         MBExclusionQualityStepController orientationStepController = new MBExclusionQualityStepController(exclusionOrientationStep, "MBExclusionOrientationStep.fxml");
         controllerForStep.put(exclusionOrientationStep, orientationStepController);
+        
+        ScoringAlgorithms scoringAlgorithms = new ScoringAlgorithms();
+        MBCharQuestionsStep charQuestionsStep = new MBCharQuestionsStep(null, scoringAlgorithms, sessionData);
+        ss.appendStep(charQuestionsStep);
+        MBCharQuestionsController charQuestionsStepController = new MBCharQuestionsController(charQuestionsStep, "MBCharQuestionsStep.fxml");
+        controllerForStep.put(charQuestionsStep, charQuestionsStepController);
+        
         
         initUI();
         activateCurrentStep();

@@ -262,4 +262,9 @@ public class BisqueSessionData implements SessionData{
         String path = sessionDatasetDir + FILESEP + ba.getAnnotationID() + "_" + ba.getName() + FILESEP + "charQuestionAnswers.txt";
         return path;
     }
+    @Override
+    public void setChosenAlgorithm(String s) {
+        // TODO Auto-generated method stub
+        
+    }
 }
