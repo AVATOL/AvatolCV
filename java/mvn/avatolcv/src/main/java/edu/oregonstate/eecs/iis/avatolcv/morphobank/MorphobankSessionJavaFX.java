@@ -75,7 +75,7 @@ public class MorphobankSessionJavaFX {
         
         MBExclusionQualityStep exclusionQualityStep = new MBExclusionQualityStep(null, client, sessionData);
         ss.appendStep(exclusionQualityStep);
-        MBExclusionQualityStepController qualityStepController = new MBExclusionQualityStepController(exclusionQualityStep, "MBExclusionQualityStep.fxml");
+        MBExclusionQualityStepController qualityStepController = new MBExclusionQualityStepController(exclusionQualityStep, "MBExclusionQualityStep2.fxml");
         controllerForStep.put(exclusionQualityStep, qualityStepController);
         
         //Step exclusionStep = new MBExclusionPropertyStep(null, sessionData);
@@ -91,12 +91,13 @@ public class MorphobankSessionJavaFX {
         Step step = ss.getCurrentStep();
         StepController controller = controllerForStep.get(step);
         Node contentNode = controller.getContentNode();
-        ScrollPane scrollPane = (ScrollPane)scene.lookup("#navigationShellContentPane");
-        scrollPane.setContent(contentNode);
+        Pane pane = (Pane)scene.lookup("#navigationShellContentPane");
+        pane.getChildren().clear();
+        pane.getChildren().add(contentNode);
     }
     public void initUI() throws AvatolCVException {
         try {
-            FXMLLoader loader = new FXMLLoader(MorphobankSessionJavaFX.class.getResource("navigationShell.fxml"));
+            FXMLLoader loader = new FXMLLoader(MorphobankSessionJavaFX.class.getResource("navigationShellNoSplit.fxml"));
             loader.setController(this);
             Parent navShell = loader.load();
             

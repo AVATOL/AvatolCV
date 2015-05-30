@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" style="-fx-background-color: green;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label text="Excluding poor quality images" />
+      <HBox fillHeight="false">
+         <children>
+            <TextArea editable="false" maxWidth="1.7976931348623157E308" prefRowCount="6" text="Images that have quality problems can degrade scoring accuracy.  Click the  button on the right to see examples of images with quality issues.  &#10;&#10;Select images below that you wish to exclude.&#10;" wrapText="true" HBox.hgrow="ALWAYS" />
+            <Button minWidth="-Infinity" mnemonicParsing="false" text="Show examples" />
+         </children>
+      </HBox>
+      <AnchorPane VBox.vgrow="ALWAYS">
+         <children>
+            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <content>
+                <AnchorPane minHeight="-Infinity" minWidth="-Infinity">
+                     <children>
+                        <HBox fx:id="excludeImageSequence" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <VBox prefHeight="200.0" prefWidth="100.0">
+                                 <children>
+                                    <CheckBox mnemonicParsing="false" text="CheckBox" />
+                                    <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                              </VBox>
+                              <VBox prefHeight="200.0" prefWidth="100.0">
+                                 <children>
+                                    <CheckBox mnemonicParsing="false" text="CheckBox" />
+                                    <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                              </VBox>
+                              <VBox prefHeight="200.0" prefWidth="100.0">
+                                 <children>
+                                    <CheckBox mnemonicParsing="false" text="CheckBox" />
+                                    <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </ScrollPane>
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>

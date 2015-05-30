@@ -20,6 +20,7 @@ import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBExclusionQualityStep;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBViewChoiceStep;
 
 public class MBExclusionQualityStepController implements StepController {
+    public HBox excludeImageSequence;
     public VBox imageVBox;
     private MBExclusionQualityStep step;
     private String fxmlDocName;
@@ -51,24 +52,27 @@ public class MBExclusionQualityStepController implements StepController {
     @Override
     public Node getContentNode() throws AvatolCVException {
         try {
+            
             System.out.println("trying to load " +  this.fxmlDocName);
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
+            excludeImageSequence.getChildren().clear();
             List<ImageInfo> images = this.step.getImagesLarge();
             for (ImageInfo ii : images){
-                HBox hbox = new HBox();
-                CheckBox checkBox = new CheckBox("");
-                checkBox.setSelected(true);
+                VBox vbox = new VBox();
+                CheckBox checkBox = new CheckBox("reject this image");
+                checkBox.setSelected(false);
                 ImageView iv = new ImageView();
                 iv.setPreserveRatio(true);
-                iv.setFitWidth(400);
+                iv.setFitHeight(300);
                 Image image = new Image("file:" + ii.getFilepath());
                 iv.setImage(image);
-                hbox.getChildren().addAll(checkBox, iv);
-                imageVBox.getChildren().add(hbox);
+                vbox.getChildren().addAll(checkBox, iv);
+                excludeImageSequence.getChildren().add(vbox);
                 //hbox.setStyle("-fx-padding: 8;");
             }
+            content.autosize();
             return content;
         }
         catch(IOException ioe){
