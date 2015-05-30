@@ -6,6 +6,8 @@ import java.util.List;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -61,8 +63,10 @@ public class MBExclusionQualityStepController implements StepController {
             List<ImageInfo> images = this.step.getImagesLarge();
             for (ImageInfo ii : images){
                 VBox vbox = new VBox();
+                vbox.setAlignment(Pos.CENTER);
                 CheckBox checkBox = new CheckBox("reject this image");
                 checkBox.setSelected(false);
+                checkBox.setPadding(new Insets(4,4,4,4));
                 ImageView iv = new ImageView();
                 iv.setPreserveRatio(true);
                 iv.setFitHeight(300);

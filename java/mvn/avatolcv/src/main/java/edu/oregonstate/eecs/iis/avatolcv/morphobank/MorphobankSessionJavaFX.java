@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
@@ -91,9 +92,13 @@ public class MorphobankSessionJavaFX {
         Step step = ss.getCurrentStep();
         StepController controller = controllerForStep.get(step);
         Node contentNode = controller.getContentNode();
-        Pane pane = (Pane)scene.lookup("#navigationShellContentPane");
-        pane.getChildren().clear();
-        pane.getChildren().add(contentNode);
+        AnchorPane anchorPane = (AnchorPane)scene.lookup("#navigationShellContentPane");
+        anchorPane.getChildren().clear();
+        anchorPane.getChildren().add(contentNode);
+        AnchorPane.setBottomAnchor(contentNode, 0.0);
+        AnchorPane.setTopAnchor(contentNode, 0.0);
+        AnchorPane.setLeftAnchor(contentNode, 0.0);
+        AnchorPane.setRightAnchor(contentNode, 0.0);
     }
     public void initUI() throws AvatolCVException {
         try {
