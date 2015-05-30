@@ -21,12 +21,14 @@ import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.generic.CharQuestionsStep;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.charscore.MBTrainingExampleCheckStep;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBCharChoiceStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBCharQuestionsController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBExclusionQualityStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBImagePullStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBLoginStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBMatrixChoiceStepController;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBTrainingExampleCheckStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBViewChoiceStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationStep;
@@ -101,6 +103,10 @@ public class MorphobankSessionJavaFX {
         MBCharQuestionsController charQuestionsStepController = new MBCharQuestionsController(charQuestionsStep, "MBCharQuestionsStep.fxml");
         controllerForStep.put(charQuestionsStep, charQuestionsStepController);
         
+        MBTrainingExampleCheckStep scoringTrainingExampleCheckStep = new MBTrainingExampleCheckStep(null, sessionData);
+        ss.appendStep(scoringTrainingExampleCheckStep);
+        MBTrainingExampleCheckStepController trainingExampleCheckStepController = new MBTrainingExampleCheckStepController(scoringTrainingExampleCheckStep, "MBTrainingExampleCheckStep.fxml");
+        controllerForStep.put(scoringTrainingExampleCheckStep, trainingExampleCheckStepController);
         
         initUI();
         activateCurrentStep();
