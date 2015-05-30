@@ -7,6 +7,8 @@ import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBSessionData;
+import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 
 /*
  * At the SEGMENTATION step, avatolCV will pass one argument, which is the path to the runConfig_segmentation.txt file
@@ -29,14 +31,15 @@ trainingImages_segmentation.txt and testingImages_segmentation.txt have entries 
     03-uietIOuerto5foKMhUHYUh_imgAbc
 
  */
-public class SegmentationContainerStep implements Step {
+public class SegmentationStep implements Step {
 	private SegmentationSessionData sessionData = null;
 	private StepSequence ss = new StepSequence();
 	
 	public void appendStep(Step s){
 		ss.appendStep(s);
 	}
-	public SegmentationContainerStep(SegmentationSessionData s){
+	    
+	public SegmentationStep(SegmentationSessionData s){
 		this.sessionData = s;
 	}
 	public StepSequence getStepSequence(){
@@ -55,7 +58,6 @@ public class SegmentationContainerStep implements Step {
     @Override
     public void init() throws AvatolCVException {
         // TODO Auto-generated method stub
-        
     }
 
 }

@@ -16,7 +16,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.generic.CharQuestionsStep;
 import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QQuestion;
 import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QuestionSequencer;
-import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationContainerStep;
+import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationStep;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;

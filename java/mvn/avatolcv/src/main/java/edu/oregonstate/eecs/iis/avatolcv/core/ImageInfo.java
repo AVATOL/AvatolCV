@@ -2,6 +2,8 @@ package edu.oregonstate.eecs.iis.avatolcv.core;
 
 public class ImageInfo {
 	private static final String FILESEP = System.getProperty("file.separator");
+	public static final String EXCLUSION_REASON_IMAGE_QUALITY = "imageQuality";
+
 	private String nameAsUploadedNormalized = null;
 	private String nameAsUploadedOriginal = null;
 	private String ID = null;
@@ -15,6 +17,7 @@ public class ImageInfo {
 	private String outputType = null;
 	private String extension = null;
 	private ImageInfo ancestorImage = null;
+	private String exclusionReason = null;
 	public ImageInfo(String parentDir, String ID, String nameAsUploadedNormalized, String imageWidth, String outputType, String extension){
 		this.parentDir = parentDir;
 		this.ID = ID;
@@ -115,5 +118,17 @@ public class ImageInfo {
         }
         ImageInfo ii = new ImageInfo(parentDir, ID, nameAsUploaded, imageWidth, outputType, extension);
         return ii;
+	}
+	public boolean isExcluded(){
+	    if (this.exclusionReason != null){
+	        return true;
+	    }
+	    return false;
+	}
+	public void setExclusionReason(String s){
+	    this.exclusionReason = s;
+	}
+	public String getExclusionReason(){
+	    return this.exclusionReason;
 	}
 }

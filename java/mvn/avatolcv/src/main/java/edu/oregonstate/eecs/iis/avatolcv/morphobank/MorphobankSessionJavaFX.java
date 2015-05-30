@@ -27,6 +27,7 @@ import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBLoginStepController
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBMatrixChoiceStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBViewChoiceStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.StepController;
+import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationStep;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
 
@@ -76,15 +77,22 @@ public class MorphobankSessionJavaFX {
         
         MBExclusionQualityStep exclusionQualityStep = new MBExclusionQualityStep(null, client, sessionData);
         ss.appendStep(exclusionQualityStep);
-        MBExclusionQualityStepController qualityStepController = new MBExclusionQualityStepController(exclusionQualityStep, "MBExclusionQualityStep2.fxml");
+        MBExclusionQualityStepController qualityStepController = new MBExclusionQualityStepController(exclusionQualityStep, "MBExclusionQualityStep.fxml");
         controllerForStep.put(exclusionQualityStep, qualityStepController);
         
         //Step exclusionStep = new MBExclusionPropertyStep(null, sessionData);
         //ss.appendStep(exclusionStep);
         
         
-        Step charQuestionsStep = new CharQuestionsStep(null, sessionData);
-        ss.appendStep(charQuestionsStep);   
+        //Step charQuestionsStep = new CharQuestionsStep(null, sessionData);
+        //ss.appendStep(charQuestionsStep);   
+        
+        // Turns out that the Step and Step controller for orientation exclusion can reuse the quality step ones - same mechanisms and data flow
+        MBExclusionQualityStep exclusionOrientationStep = new MBExclusionQualityStep(null, client, sessionData);
+        ss.appendStep(exclusionOrientationStep);
+        MBExclusionQualityStepController orientationStepController = new MBExclusionQualityStepController(exclusionOrientationStep, "MBExclusionOrientationStep.fxml");
+        controllerForStep.put(exclusionOrientationStep, orientationStepController);
+        
         initUI();
         activateCurrentStep();
     }

@@ -24,16 +24,16 @@ public class OrientationSessionData implements ImageTranformReviewData {
 	private String rootOrientationDir = null;
 	private String trainingImageDir = null;
 	private String outputDir = null;
-	private String testImageDir = null;
+	private String imagesToOrientDir = null;
 	private String rawImagesDir = null;
     private ImagesForStage ifs = null;
     private List<ImageInfo> candidateImages = new ArrayList<ImageInfo>();
     
-	public OrientationSessionData(String parentDataDir, String rawImagesDir, String testImageDir, String inputTypeSuffix) throws AvatolCVException  {
+	public OrientationSessionData(String parentDataDir, String rawImagesDir, String imagesToOrientDir, String inputTypeSuffix) throws AvatolCVException  {
 	    TYPE_SUFFIX_INPUT = inputTypeSuffix;
 		this.parentDataDir = parentDataDir;
 		this.rawImagesDir = rawImagesDir;
-		this.testImageDir = testImageDir;
+		this.imagesToOrientDir = imagesToOrientDir;
 		loadCandidateImages();
 		this.rootOrientationDir = this.parentDataDir + FILESEP + "orient";
 		ensureDirExists(this.rootOrientationDir);
@@ -56,8 +56,8 @@ public class OrientationSessionData implements ImageTranformReviewData {
 		}
 	}
 	
-	public void loadCandidateImages() throws AvatolCVException {
-        File dir = new File(this.testImageDir);
+	private void loadCandidateImages() throws AvatolCVException {
+        File dir = new File(this.imagesToOrientDir);
         File[] files = dir.listFiles();
         for (File f : files){
             String name = f.getName();
@@ -125,7 +125,7 @@ public class OrientationSessionData implements ImageTranformReviewData {
 		return this.outputDir;
 	}
 	public String getTestImageDir(){
-		return this.testImageDir;
+		return this.imagesToOrientDir;
 	}
 	
     @Override

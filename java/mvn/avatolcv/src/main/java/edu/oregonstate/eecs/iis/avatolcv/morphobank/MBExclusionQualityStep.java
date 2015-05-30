@@ -22,6 +22,9 @@ public class MBExclusionQualityStep implements Step {
     public List<ImageInfo> getImagesLarge(){
         return this.sessionData.getImagesLarge();
     }
+    public void acceptExclusions(){
+        this.sessionData.acceptExclusions();
+    }
     @Override
     public void init() throws AvatolCVException {
         // TODO Auto-generated method stub

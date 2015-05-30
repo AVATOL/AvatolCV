@@ -56,6 +56,9 @@ public class MBSessionData implements SessionData {
     /*
      * Images
      */
+    public void acceptExclusions(){
+        // for now the plan is to always check the exclusion property of ImageInfo when used, so no need to keep that data separate;
+    }
     public void ensureImageDirsExists(){
         FileUtils.ensureDirExists(getImagesThumbnailDir());
         FileUtils.ensureDirExists(getImagesSmallDir());
