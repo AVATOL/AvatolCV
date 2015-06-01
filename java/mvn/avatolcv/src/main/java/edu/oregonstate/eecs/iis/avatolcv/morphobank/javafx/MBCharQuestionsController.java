@@ -82,4 +82,13 @@ public class MBCharQuestionsController implements StepController {
         }
     }
 
+    @Override
+    public boolean hasActionToAutoStart() {
+        return false;
+    }
+
+    @Override
+    public void startAction() throws AvatolCVException {
+    }
+
 }

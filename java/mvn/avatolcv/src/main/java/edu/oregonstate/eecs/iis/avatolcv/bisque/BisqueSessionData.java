@@ -15,6 +15,10 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
 //import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationToolHarness;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 
 public class BisqueSessionData implements SessionData{
@@ -266,5 +270,37 @@ public class BisqueSessionData implements SessionData{
     public void setChosenAlgorithm(String s) {
         // TODO Auto-generated method stub
         
+    }
+    @Override
+    public String getTrainingTestingDescriminatorName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public List<MBTaxon> getTaxa() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public MBMatrix getChosenMatrix() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public MBCharacter getChosenCharacter() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public void setImagesForCell(String matrixID, String charID,
+            String taxonID, List<MBMediaInfo> mediaInfos) {
+        // TODO Auto-generated method stub
+        
+    }
+    @Override
+    public List<MBMediaInfo> getImagesForCell(String matrixID, String charID,
+            String taxonID) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

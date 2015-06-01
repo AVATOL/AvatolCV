@@ -12,6 +12,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.SessionData;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
 
@@ -40,6 +41,8 @@ public class MBSessionData implements SessionData {
     private List<ImageInfo> imagesThumbnail = new ArrayList<ImageInfo>();
     private List<ImageInfo> imagesSmall = new ArrayList<ImageInfo>();
     private List<ImageInfo> imagesLarge = new ArrayList<ImageInfo>();
+    
+    private Hashtable<String, List<MBMediaInfo>> mediaForCell = new Hashtable<String,  List<MBMediaInfo>>();
     
     private String chosenAlgorithm = null;
     public MBSessionData(String sessionDataRootParent) throws AvatolCVException {
@@ -138,6 +141,7 @@ public class MBSessionData implements SessionData {
         }
         
     }
+    @Override
     public MBMatrix getChosenMatrix(){
         return this.currentMatrix;
     }
@@ -154,6 +158,7 @@ public class MBSessionData implements SessionData {
     public void setChosenCharacter(MBCharacter ch){
         this.currentCharacter = ch;
     }
+    @Override
     public MBCharacter getChosenCharacter(){
         return this.currentCharacter;
     }
@@ -189,5 +194,25 @@ public class MBSessionData implements SessionData {
     @Override
     public void setChosenAlgorithm(String s) {
         this.chosenAlgorithm = s;
+    }
+    @Override
+    public String getTrainingTestingDescriminatorName() {
+        return "Taxon";
+    }
+    @Override
+    public List<MBTaxon> getTaxa() {
+        return taxaForCurrentMatrix;
+    }
+    @Override
+    public void setImagesForCell(String matrixID, String charID,
+            String taxonID, List<MBMediaInfo> mediaInfos) {
+        String key = matrixID + "_" + charID + "_" + taxonID;
+        this.mediaForCell.put(key,mediaInfos);
+    }
+    @Override
+    public List<MBMediaInfo> getImagesForCell(String matrixID, String charID,
+            String taxonID){
+        String key = matrixID + "_" + charID + "_" + taxonID;
+        return this.mediaForCell.get(key);
     }
 }

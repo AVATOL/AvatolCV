@@ -103,7 +103,7 @@ public class MorphobankSessionJavaFX {
         MBCharQuestionsController charQuestionsStepController = new MBCharQuestionsController(charQuestionsStep, "MBCharQuestionsStep.fxml");
         controllerForStep.put(charQuestionsStep, charQuestionsStepController);
         
-        MBTrainingExampleCheckStep scoringTrainingExampleCheckStep = new MBTrainingExampleCheckStep(null, sessionData);
+        MBTrainingExampleCheckStep scoringTrainingExampleCheckStep = new MBTrainingExampleCheckStep(null, sessionData, client);
         ss.appendStep(scoringTrainingExampleCheckStep);
         MBTrainingExampleCheckStepController trainingExampleCheckStepController = new MBTrainingExampleCheckStepController(scoringTrainingExampleCheckStep, "MBTrainingExampleCheckStep.fxml");
         controllerForStep.put(scoringTrainingExampleCheckStep, trainingExampleCheckStepController);
@@ -122,6 +122,9 @@ public class MorphobankSessionJavaFX {
         AnchorPane.setTopAnchor(contentNode, 0.0);
         AnchorPane.setLeftAnchor(contentNode, 0.0);
         AnchorPane.setRightAnchor(contentNode, 0.0);
+        if (controller.hasActionToAutoStart()){
+            controller.startAction();
+        }
     }
     public void initUI() throws AvatolCVException {
         try {

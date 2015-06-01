@@ -35,7 +35,7 @@ public class MBImagePullStep implements Step {
         
     }
    
-    public boolean robustImageDownload(ProgressPresenter pp, ImageInfo ii, String targetDir ) throws AvatolCVException {
+    public boolean robustImageDownload(ProgressPresenter pp, ImageInfo ii, String targetDir , String processNameFileDownload) throws AvatolCVException {
         int maxRetries = 4;
         int tries = 0;
         boolean imageNotYetDownloaded = true;
@@ -43,14 +43,14 @@ public class MBImagePullStep implements Step {
         while (maxRetries > tries && imageNotYetDownloaded){
             try {
                 tries++;
-                pp.setMessage("downloading image  : " + ii.getID());
+                pp.setMessage(processNameFileDownload, "downloading image  : " + ii.getID());
                 // specify original image filename as "" since it isn't known from web service response
                 this.wsClient.downloadImageForMediaId(targetDir, ii.getID(), "", ii.getImageWidth());
                 imageNotYetDownloaded = false;
             }
             catch(MorphobankWSException e){
                 if (e.getMessage().equals("timeout")){
-                    pp.setMessage("download timed out - retrying image : " + ii.getID() + " - attempt " + (tries+1));
+                    pp.setMessage(processNameFileDownload, "download timed out - retrying image : " + ii.getID() + " - attempt " + (tries+1));
                 }
                 mostRecentException = e;
             }
@@ -61,14 +61,14 @@ public class MBImagePullStep implements Step {
         imagesLoadedSuccessfully = true;
         return true;
     }
-    public boolean downloadImageIfNeeded(ProgressPresenter pp, ImageInfo image, String targetDir) throws AvatolCVException {
+    public boolean downloadImageIfNeeded(ProgressPresenter pp, ImageInfo image, String targetDir, String processNameFileDownload) throws AvatolCVException {
         String imagePath = image.getFilepath();
         File imageFile = new File(imagePath);
         if (imageFile.exists()){
-            pp.setMessage("already have image : " + image.getID());
+            pp.setMessage(processNameFileDownload, "already have image : " + image.getID());
         }
         else {
-            robustImageDownload(pp, image, targetDir);
+            robustImageDownload(pp, image, targetDir, processNameFileDownload);
         }
         File f = new File(imagePath);
         if (f.exists()){
@@ -76,19 +76,31 @@ public class MBImagePullStep implements Step {
         }
         return false;
     }
-    public void downloadImagesForChosenMatrix(ProgressPresenter pp) throws AvatolCVException {
+    public void downloadImagesForChosenMatrix(ProgressPresenter pp, String processNameInfoDownload, String processNameFileDownload) throws AvatolCVException {
         List<MBCharacter> chars = sessionData.getCharactersForCurrentMatrix();
         List<MBTaxon> taxa = sessionData.getTaxaForCurrentMatrix();
         MBMatrix matrix = sessionData.getChosenMatrix();
         List<String> imageSizes = MBMediaInfo.getMediaTypes();//thumbnail, small, large
         List<MBMediaInfo> allMedia = new ArrayList<MBMediaInfo>();
+        int cellCountTotal = 0;
+        for (MBTaxon taxon : taxa){
+            for (MBCharacter character : chars){
+                cellCountTotal += 1;
+            }
+        }
         try {
+            int cellCountCurrent = 0;
             for (MBTaxon taxon : taxa){
                 for (MBCharacter character : chars){
+                    cellCountCurrent += 1;
                     List<MBMediaInfo> mediaInfos = this.wsClient.getMediaForCell(matrix.getMatrixID(), character.getCharID(), taxon.getTaxonID());
+                    sessionData.setImagesForCell(matrix.getMatrixID(), character.getCharID(), taxon.getTaxonID(), mediaInfos);
                     for (MBMediaInfo mi : mediaInfos){
                         allMedia.add(mi);
                     }
+                    int percentDone = (int) (100 *(cellCountCurrent / cellCountTotal));
+                    pp.updateProgress(processNameInfoDownload, percentDone);
+                    pp.setMessage(processNameInfoDownload, "cell: taxon " + taxon.getTaxonName() + " character " + character.getCharName());
                 }
             }
         }
@@ -107,28 +119,28 @@ public class MBImagePullStep implements Step {
         int imageCount = imagesThumbnail.size() * 3;
         for (ImageInfo image : imagesLarge){
             curCount++;
-            if (downloadImageIfNeeded(pp,image,sessionData.getImagesLargeDir())){
+            if (downloadImageIfNeeded(pp,image,sessionData.getImagesLargeDir(),processNameFileDownload)){
                 successCount++;
             }
             int percentDone = (int) (100 *(curCount / imageCount));
-            pp.updateProgress(percentDone);
+            pp.updateProgress(processNameFileDownload, percentDone);
         }
         for (ImageInfo image : imagesSmall){
             curCount++;
-            if (downloadImageIfNeeded(pp,image, sessionData.getImagesSmallDir())){
+            if (downloadImageIfNeeded(pp,image, sessionData.getImagesSmallDir(),processNameFileDownload)){
                 successCount++;
             }
             int percentDone = (int) (100 *(curCount / imageCount));
-            pp.updateProgress(percentDone);
+            pp.updateProgress(processNameFileDownload, percentDone);
         }
         
         for (ImageInfo image : imagesThumbnail){
             curCount++;
-            if (downloadImageIfNeeded(pp,image, sessionData.getImagesThumbnailDir())){
+            if (downloadImageIfNeeded(pp,image, sessionData.getImagesThumbnailDir(),processNameFileDownload)){
                 successCount++;
             }
             int percentDone = (int) (100 *(curCount / imageCount));
-            pp.updateProgress(percentDone);
+            pp.updateProgress(processNameFileDownload, percentDone);
         }
         if (successCount < curCount){
             int badCount = (int)curCount - successCount;

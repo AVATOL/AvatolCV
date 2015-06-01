@@ -16,8 +16,12 @@ import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBImagePullStep;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MorphobankSessionJavaFX;
 
 public class MBImagePullStepController implements StepController, ProgressPresenter {
-    public ProgressBar imageDownloadProgress;
-    public Label imageDownloadMessage;
+    public static final String IMAGE_INFO_DOWNLOAD = "imageInfoDownload"; 
+    public static final String IMAGE_FILE_DOWNLOAD = "imageFileDownload"; 
+    public ProgressBar imageFileDownloadProgress;
+    public Label imageFileDownloadMessage;
+    public ProgressBar imageInfoDownloadProgress;
+    public Label imageInfoDownloadMessage;
     private MBImagePullStep step;
     private String fxmlDocName;
     private MorphobankSessionJavaFX fxSession;
@@ -34,8 +38,11 @@ public class MBImagePullStepController implements StepController, ProgressPresen
 
     @Override
     public void clearUIFields() {
-        imageDownloadProgress.setProgress(0.0);
-        imageDownloadMessage.setText("");
+        imageInfoDownloadProgress.setProgress(0.0);
+        imageInfoDownloadMessage.setText("");
+        
+        imageFileDownloadProgress.setProgress(0.0);
+        imageFileDownloadMessage.setText("");
     }
 
     @Override
@@ -45,9 +52,13 @@ public class MBImagePullStepController implements StepController, ProgressPresen
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
-            imageDownloadProgress.setProgress(0.0);
-            imageDownloadMessage.setText("");
-            step.downloadImagesForChosenMatrix(this);
+            
+            imageInfoDownloadProgress.setProgress(0.0);
+            imageInfoDownloadMessage.setText("");
+            
+            imageFileDownloadProgress.setProgress(0.0);
+            imageFileDownloadMessage.setText("");
+            
             return content;
         }
         catch(IOException ioe){
@@ -55,12 +66,31 @@ public class MBImagePullStepController implements StepController, ProgressPresen
         } 
     }
     @Override
-    public void updateProgress(int percent) {
-        imageDownloadProgress.setProgress((double)percent);
+    public void updateProgress(String processName, int percent) {
+        if (IMAGE_FILE_DOWNLOAD.equals(processName)){
+            imageFileDownloadProgress.setProgress((double)percent);
+        }
+        else if (IMAGE_INFO_DOWNLOAD.equals(processName)){
+            imageInfoDownloadProgress.setProgress((double)percent);
+        }
     }
     @Override
-    public void setMessage(String m) {
-        imageDownloadMessage.setText(m);
+    public void setMessage(String processName, String m) {
+        if (IMAGE_FILE_DOWNLOAD.equals(processName)){
+            imageFileDownloadMessage.setText(m);
+        }
+        else if (IMAGE_INFO_DOWNLOAD.equals(processName)){
+            imageInfoDownloadMessage.setText(m);
+        }
+    }
+    @Override
+    public boolean hasActionToAutoStart() {
+        return true;
+    }
+    @Override
+    public void startAction() throws AvatolCVException {
+        step.downloadImagesForChosenMatrix(this, IMAGE_INFO_DOWNLOAD, IMAGE_FILE_DOWNLOAD);
+        
     }
 
 }

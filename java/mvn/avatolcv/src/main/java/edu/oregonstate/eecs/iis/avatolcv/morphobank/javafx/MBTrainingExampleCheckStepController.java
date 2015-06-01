@@ -14,6 +14,8 @@ import javafx.scene.layout.HBox;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.charscore.MBTrainingExampleCheckStep;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 
 public class MBTrainingExampleCheckStepController implements StepController  {
     public GridPane trainingTestingGridPane;
@@ -42,12 +44,15 @@ public class MBTrainingExampleCheckStepController implements StepController  {
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
+            this.step.downloadTrainingInfo();
             String trainingTestingDescriminatorName = this.step.getTrainingTestingDescriminatorName();
-            LEFT OFF HERE
-            - get all the taxa
-            - for each taxon, geth the count of training images and test images
-            - add a row to the gridpane
-            - add a radio button for each, with counts
+            //List<MBTaxon> taxa = this.step.getTaxa();
+            
+            
+            //- get all the taxa
+            //- for each taxon, get the count of training images and test images
+            //- add a row to the gridpane
+           // - add a radio button for each, with counts
 
             return content;
         }
@@ -55,5 +60,11 @@ public class MBTrainingExampleCheckStepController implements StepController  {
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
         }
     }
+    @Override
+    public boolean hasActionToAutoStart() {
+        return false;
+    }
+    @Override
+    public void startAction() throws AvatolCVException {  }
 
 }

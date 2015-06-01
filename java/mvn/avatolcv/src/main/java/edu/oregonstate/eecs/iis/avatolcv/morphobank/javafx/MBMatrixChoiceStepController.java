@@ -61,5 +61,12 @@ public class MBMatrixChoiceStepController implements StepController {
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
         } 
 	}
+    @Override
+    public boolean hasActionToAutoStart() {
+        return false;
+    }
+    @Override
+    public void startAction() throws AvatolCVException {
+    }
 
 }
