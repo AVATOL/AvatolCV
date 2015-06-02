@@ -86,21 +86,23 @@ public class MBImagePullStep implements Step {
         List<MBTaxon> taxa = sessionData.getTaxaForCurrentMatrix();
         MBMatrix matrix = sessionData.getChosenMatrix();
         this.allMedia = new ArrayList<MBMediaInfo>();
-        double cellCountTotal = 0.0;
-        for (MBTaxon taxon : taxa){
-            cellCountTotal += 1;
-        }
+        double cellCountTotal = (double)taxa.size();
         try {
             double cellCountCurrent = 0.0;
             for (MBTaxon taxon : taxa){
                 cellCountCurrent += 1;
-                List<MBMediaInfo> mediaInfos = this.wsClient.getMediaForCell(matrix.getMatrixID(), charID, taxon.getTaxonID());
-                List<MBMediaInfo> relevantMediaInfos = new ArrayList<MBMediaInfo>();
-                for (MBMediaInfo mi : mediaInfos){
-                    if (viewID.equals(mi.getViewID())){
-                        relevantMediaInfos.add(mi);
+                List<MBMediaInfo> relevantMediaInfos = this.sessionData.loadMediaInfo(charID, taxon.getTaxonID(), viewID);
+                if (relevantMediaInfos.isEmpty()){
+                	// not downloaded loaded yet, so need to download
+                	List<MBMediaInfo> mediaInfos = this.wsClient.getMediaForCell(matrix.getMatrixID(), charID, taxon.getTaxonID());
+                    for (MBMediaInfo mi : mediaInfos){
+                        if (viewID.equals(mi.getViewID())){
+                            relevantMediaInfos.add(mi);
+                        }
                     }
+                    sessionData.persistRelevantMediaInfos(relevantMediaInfos,charID,taxon.getTaxonID(),viewID);
                 }
+                
                 sessionData.setImagesForCell(matrix.getMatrixID(), charID, taxon.getTaxonID(), relevantMediaInfos);
                 for (MBMediaInfo mi : relevantMediaInfos){
                         allMedia.add(mi);
@@ -132,7 +134,7 @@ public class MBImagePullStep implements Step {
         List<ImageInfo> imagesThumbnail = sessionData.getImagesThumbnail();
         //List<ImageInfo> imagesSmall    = sessionData.getImagesSmall();
         List<ImageInfo> imagesLarge     = sessionData.getImagesLarge();
-        int imageCount = imagesLarge.size();
+        int imageCount = imagesLarge.size() * 2;
         //int imageCount = imagesLarge.size() * 3;
         for (ImageInfo image : imagesLarge){
             curCount++;

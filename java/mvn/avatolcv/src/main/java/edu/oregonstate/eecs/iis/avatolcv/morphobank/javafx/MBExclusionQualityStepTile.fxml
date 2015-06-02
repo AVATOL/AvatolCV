@@ -8,15 +8,15 @@
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" style="-fx-background-color: ;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label text="Excluding poor quality images" />
-      <HBox fillHeight="false" VBox.vgrow="ALWAYS">
+      <HBox fillHeight="false" VBox.vgrow="NEVER">
          <children>
-            <TextArea editable="false" maxWidth="1.7976931348623157E308" prefRowCount="6" text="Images that have quality problems can degrade scoring accuracy.  Click the  button on the right to see examples of images with quality issues.  &#10;&#10;Select images below that you wish to exclude.&#10;" wrapText="true" HBox.hgrow="ALWAYS" />
+            <TextArea editable="false" maxWidth="1.7976931348623157E308" prefRowCount="6" text="Images that have quality problems can degrade scoring accuracy.  Click the  button on the right to see examples of images with quality issues.  &#10;&#10;Hover over a thumbnail to show a full size version.&#10;Click on a thumbnail to exclude it.&#10;" wrapText="true" HBox.hgrow="ALWAYS" />
             <Button minWidth="-Infinity" mnemonicParsing="false" text="Show examples" />
          </children>
       </HBox>
       <AnchorPane VBox.vgrow="ALWAYS">
          <children>
-            <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
                     <content>
@@ -34,7 +34,7 @@
                         </AnchorPane>
                     </content>
                   </ScrollPane>
-                  <ImageView fitHeight="150.0" fitWidth="280.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="largeImageView" pickOnBounds="true" preserveRatio="true" />
                </children>
             </VBox>
          </children>

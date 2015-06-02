@@ -1,7 +1,13 @@
 package edu.oregonstate.eecs.iis.avatolcv.morphobank;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -17,7 +23,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
 
 public class MBSessionData implements SessionData {
-    
+    private static final String NL = System.getProperty("line.separator");
     private static final String FILESEP = System.getProperty("file.separator");
     public static final String STANDARD_IMAGE_FILE_EXTENSION = "jpg";
     private MBMatrix    currentMatrix    = null;
@@ -60,6 +66,14 @@ public class MBSessionData implements SessionData {
     /*
      * Images
      */
+    public ImageInfo getLargeImageForImage(ImageInfo ii) throws AvatolCVException {
+    	String imageID = ii.getID();
+    	ImageInfo large = this.imageLargeForID.get(imageID);
+    	if (null == large){
+    		throw new AvatolCVException("no large image found with imageID " + imageID);
+    	}
+    	return large;
+    }
     public void acceptExclusions(){
         // for now the plan is to always check the exclusion property of ImageInfo when used, so no need to keep that data separate;
     }
@@ -67,7 +81,10 @@ public class MBSessionData implements SessionData {
         FileUtils.ensureDirExists(getImagesThumbnailDir());
         FileUtils.ensureDirExists(getImagesSmallDir());
         FileUtils.ensureDirExists(getImagesLargeDir());
-        
+        FileUtils.ensureDirExists(getImageInfoDir());
+    }
+    public void clearImageInfoDir(){
+    	FileUtils.clearDir(getImageInfoDir());
     }
     public void clearImageDirs(){
         FileUtils.clearDir(getImagesThumbnailDir());
@@ -86,6 +103,9 @@ public class MBSessionData implements SessionData {
     }
     public String getImagesDir(){
        return this.sessionMatrixDir + FILESEP + "media";
+    }
+    public String getImageInfoDir(){
+        return this.sessionMatrixDir + FILESEP + "mediaInfo";
     }
     public static void generateImageInfoForSize(List<ImageInfo> listToFill, List<MBMediaInfo> mbImages, String width, String dir){
         for (MBMediaInfo mi : mbImages){
@@ -127,6 +147,74 @@ public class MBSessionData implements SessionData {
             String id = ii.getID();
             imageLargeForID.put(id, ii);
         }
+    }
+    public static String getMediaInfoFilenameRoot(List<String> list){
+    	Collections.sort(list);
+    	String result = "";
+    	int i = 0;
+    	for (; i < list.size() - 1; i++){
+    		result = result + list.get(i) +  "_";
+    	}
+    	result = result + list.get(i);
+    	return result;
+    }
+    public void persistRelevantMediaInfos(List<MBMediaInfo> relevantMediaInfos, String charID, String taxonID, String viewID) throws AvatolCVException {
+    	List<String> idList = new ArrayList<String>();
+    	idList.add(charID);
+    	idList.add(taxonID);
+    	idList.add(viewID);
+    	String filenameRoot = MBSessionData.getMediaInfoFilenameRoot(idList);
+    	String imageInfoDir = getImageInfoDir();
+    	String path = imageInfoDir + filenameRoot + ".txt";
+    	try {
+        	BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+        	for (MBMediaInfo mi : relevantMediaInfos){
+        		String imageID = mi.getMediaID();
+        		String viewId = mi.getViewID();
+        		writer.write("imageID=" + imageID + ",viewID=" + viewId + NL);
+        	}
+        	writer.close();
+    	}
+    	catch(IOException ioe){
+    		throw new AvatolCVException("problem persisting imageInfo to filepath: " + path);
+    	}
+    }
+    public List<MBMediaInfo> loadMediaInfo(String charID, String taxonID, String viewID){
+    	List<MBMediaInfo> list = new ArrayList<MBMediaInfo>();
+    	List<String> idList = new ArrayList<String>();
+    	idList.add(charID);
+    	idList.add(taxonID);
+    	idList.add(viewID);
+    	String filenameRoot = MBSessionData.getMediaInfoFilenameRoot(idList);
+    	String imageInfoDir = getImageInfoDir();
+    	String path = imageInfoDir + filenameRoot + ".txt";
+    	File f = new File(path);
+    	if (!f.exists()){
+    		return list;// empty list
+    	}
+    	try {
+    		BufferedReader reader = new BufferedReader(new FileReader(path));
+    		String line = null;
+    		while (null != (line = reader.readLine())){
+    			String[] parts = line.split(",");
+    			String mediaIdInfo = parts[0];
+    			String viewIdInfo = parts[1];
+    			String[] mediaIdInfoParts = mediaIdInfo.split("=");
+    			String[] viewIdInfoParts = viewIdInfo.split("=");
+    			String mediaId = mediaIdInfoParts[1];
+    			String viewId = viewIdInfoParts[1];
+    			MBMediaInfo mi = new MBMediaInfo();
+    			mi.setMediaID(mediaId);
+    			mi.setViewID(viewId);
+    			list.add(mi);
+    		}
+    		reader.close();
+    		return list;
+    	}
+    	catch(IOException ioe){
+    		return list;
+    	}
+    	
     }
     /*
      * MATRICES

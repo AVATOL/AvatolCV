@@ -15,6 +15,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -23,6 +24,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBExclusionQualityStep;
 
 public class MBExclusionQualityStepController implements StepController {
+	public ImageView largeImageView;
     public GridPane excludeImageGrid;
     public HBox excludeImageSequence;
     public VBox imageVBox;
@@ -30,13 +32,14 @@ public class MBExclusionQualityStepController implements StepController {
     private String fxmlDocName;
     private List<String> viewNames = null;
     private Hashtable<String,CheckBox> checkboxForImageIdHash = null;
-    private List<ImageInfo> images = null;
+    private List<ImageInfo> thumbnailImages = null;
     public MBExclusionQualityStepController(MBExclusionQualityStep step, String fxmlDocName){
         this.step = step;
         this.fxmlDocName = fxmlDocName;
     }
     @Override
     public boolean consumeUIData() {
+    	/*
        for (ImageInfo ii : this.images){
            String id = ii.getID();
            CheckBox cb = checkboxForImageIdHash.get(id);
@@ -47,6 +50,7 @@ public class MBExclusionQualityStepController implements StepController {
            }
        }
        this.step.acceptExclusions();
+       */
        return true;
     }
 
@@ -64,18 +68,20 @@ public class MBExclusionQualityStepController implements StepController {
             Node content = loader.load();
             excludeImageGrid.getChildren().clear();
             //excludeImageGrid.set
-            this.images = this.step.getImagesThumbnail();
+            this.thumbnailImages = this.step.getImagesThumbnail();
             int curRow = 0;
             int curCol = 0;
-            for (ImageInfo ii : images){
+            for (ImageInfo ii : thumbnailImages){
                 if (!(ii.isExcluded())){
-                    
-                    
+                    if ((curRow == 0) && (curCol == 0)){
+                    	showLargeImageForImage(ii);
+                    }
                     ImageView iv = new ImageView();
                     iv.setPreserveRatio(true);
-                    //iv.setFitHeight(80);
-                    Image image = new Image("file:" + ii.getFilepath());
-                    iv.setImage(image);
+                    ImageWithInfo imageWithInfo = new ImageWithInfo("file:" + ii.getFilepath(), ii);
+                    iv.setImage(imageWithInfo);
+                    iv.setFitHeight(60);
+                    iv.setOnMouseEntered(this::showCurrentImageLarge);
                     excludeImageGrid.add(iv,curCol, curRow);
                     curRow += 1;
                     if (curRow > 2){
@@ -91,7 +97,24 @@ public class MBExclusionQualityStepController implements StepController {
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
         } 
     }
-    
+   
+    public void showCurrentImageLarge(MouseEvent e){
+    	ImageView source = (ImageView)e.getSource();
+    	ImageWithInfo sourceImage = (ImageWithInfo)source.getImage();
+    	ImageInfo ii = sourceImage.getImageInfo();
+    	try {
+    		showLargeImageForImage(ii);
+    	}
+    	catch(AvatolCVException ex){
+    		// just don'd distplay the image
+    	}
+    }
+    public void showLargeImageForImage(ImageInfo ii) throws AvatolCVException {
+    	ImageInfo large = this.step.getLargeImageForImage(ii);
+    	Image largeImage = new Image("file:" + large.getFilepath());
+    	largeImageView.setImage(largeImage);
+    	largeImageView.setFitHeight(300);
+    }
     public Node getContentNodeOld() throws AvatolCVException {
         try {
             checkboxForImageIdHash = new Hashtable<String,CheckBox>();
@@ -100,8 +123,8 @@ public class MBExclusionQualityStepController implements StepController {
             loader.setController(this);
             Node content = loader.load();
             excludeImageSequence.getChildren().clear();
-            this.images = this.step.getImagesThumbnail();
-            for (ImageInfo ii : images){
+            this.thumbnailImages = this.step.getImagesThumbnail();
+            for (ImageInfo ii : thumbnailImages){
                 if (!(ii.isExcluded())){
                     VBox vbox = new VBox();
                     vbox.setAlignment(Pos.CENTER);
@@ -134,5 +157,15 @@ public class MBExclusionQualityStepController implements StepController {
     public void startAction() {
         // NA
     }
+    public class ImageWithInfo extends Image{
+    	private ImageInfo ii = null;
 
+		public ImageWithInfo(String arg0, ImageInfo ii) {
+			super(arg0);
+			this.ii = ii;
+		}
+    	public ImageInfo getImageInfo(){
+    		return this.ii;
+    	}
+    }
 }

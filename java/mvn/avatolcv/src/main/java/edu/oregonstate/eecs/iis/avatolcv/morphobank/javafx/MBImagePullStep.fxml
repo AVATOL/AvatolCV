@@ -10,10 +10,10 @@
       <VBox HBox.hgrow="ALWAYS">
          <children>
             <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-            <Label text="Downloading Image metadata" />
+            <Label text="Loading Image metadata" />
             <ProgressBar fx:id="imageInfoDownloadProgress" prefWidth="400.0" progress="0.0" />
             <Label fx:id="imageInfoDownloadMessage" />
-            <Label text="Downloading Images " />
+            <Label text="Loading Images " />
             <ProgressBar fx:id="imageFileDownloadProgress" prefWidth="400.0" progress="0.0" />
             <Label fx:id="imageFileDownloadMessage" />
             <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
