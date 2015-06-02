@@ -81,7 +81,7 @@ public class MorphobankSessionJavaFX {
         
         MBExclusionQualityStep exclusionQualityStep = new MBExclusionQualityStep(null, client, sessionData);
         ss.appendStep(exclusionQualityStep);
-        MBExclusionQualityStepController qualityStepController = new MBExclusionQualityStepController(exclusionQualityStep, "MBExclusionQualityStep.fxml");
+        MBExclusionQualityStepController qualityStepController = new MBExclusionQualityStepController(exclusionQualityStep, "MBExclusionQualityStepTile.fxml");
         controllerForStep.put(exclusionQualityStep, qualityStepController);
         
         //Step exclusionStep = new MBExclusionPropertyStep(null, sessionData);

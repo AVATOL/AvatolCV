@@ -22,6 +22,9 @@ public class MBExclusionQualityStep implements Step {
     public List<ImageInfo> getImagesLarge(){
         return this.sessionData.getImagesLarge();
     }
+    public List<ImageInfo> getImagesThumbnail(){
+        return this.sessionData.getImagesThumbnail();
+    }
     public void acceptExclusions(){
         this.sessionData.acceptExclusions();
     }

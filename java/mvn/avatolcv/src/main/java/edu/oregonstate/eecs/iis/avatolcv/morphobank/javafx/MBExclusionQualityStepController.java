@@ -15,6 +15,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
@@ -22,6 +23,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBExclusionQualityStep;
 
 public class MBExclusionQualityStepController implements StepController {
+    public GridPane excludeImageGrid;
     public HBox excludeImageSequence;
     public VBox imageVBox;
     private MBExclusionQualityStep step;
@@ -52,9 +54,45 @@ public class MBExclusionQualityStepController implements StepController {
     public void clearUIFields() {
         //selectedView.setValue(viewNames.get(0));
     }
-
     @Override
     public Node getContentNode() throws AvatolCVException {
+        try {
+            //checkboxForImageIdHash = new Hashtable<String,CheckBox>();
+            System.out.println("trying to load " +  this.fxmlDocName);
+            FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
+            loader.setController(this);
+            Node content = loader.load();
+            excludeImageGrid.getChildren().clear();
+            //excludeImageGrid.set
+            this.images = this.step.getImagesThumbnail();
+            int curRow = 0;
+            int curCol = 0;
+            for (ImageInfo ii : images){
+                if (!(ii.isExcluded())){
+                    
+                    
+                    ImageView iv = new ImageView();
+                    iv.setPreserveRatio(true);
+                    //iv.setFitHeight(80);
+                    Image image = new Image("file:" + ii.getFilepath());
+                    iv.setImage(image);
+                    excludeImageGrid.add(iv,curCol, curRow);
+                    curRow += 1;
+                    if (curRow > 2){
+                        curRow = 0;
+                        curCol++;
+                    }
+                }
+            }
+            content.autosize();
+            return content;
+        }
+        catch(IOException ioe){
+            throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
+        } 
+    }
+    
+    public Node getContentNodeOld() throws AvatolCVException {
         try {
             checkboxForImageIdHash = new Hashtable<String,CheckBox>();
             System.out.println("trying to load " +  this.fxmlDocName);
@@ -62,7 +100,7 @@ public class MBExclusionQualityStepController implements StepController {
             loader.setController(this);
             Node content = loader.load();
             excludeImageSequence.getChildren().clear();
-            this.images = this.step.getImagesLarge();
+            this.images = this.step.getImagesThumbnail();
             for (ImageInfo ii : images){
                 if (!(ii.isExcluded())){
                     VBox vbox = new VBox();
@@ -73,7 +111,7 @@ public class MBExclusionQualityStepController implements StepController {
                     checkBox.setPadding(new Insets(4,4,4,4));
                     ImageView iv = new ImageView();
                     iv.setPreserveRatio(true);
-                    iv.setFitHeight(300);
+                    //iv.setFitHeight(80);
                     Image image = new Image("file:" + ii.getFilepath());
                     iv.setImage(image);
                     vbox.getChildren().addAll(checkBox, iv);

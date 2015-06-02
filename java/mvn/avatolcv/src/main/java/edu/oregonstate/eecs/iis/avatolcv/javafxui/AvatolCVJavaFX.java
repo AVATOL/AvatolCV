@@ -6,7 +6,9 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 
@@ -48,7 +50,11 @@ public class AvatolCVJavaFX extends Application {
 	            stage.show();
 		    }
 		    else {
-		        // TODO add dialog here
+		        Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error Dialog");
+                alert.setHeaderText("AvatolCV error on launch");
+                alert.setContentText(startError);
+                alert.showAndWait();
 		    }
 		    
 		}
