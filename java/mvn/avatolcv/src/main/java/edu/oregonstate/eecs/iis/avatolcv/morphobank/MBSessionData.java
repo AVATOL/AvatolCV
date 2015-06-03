@@ -82,8 +82,9 @@ public class MBSessionData implements SessionData {
         FileUtils.ensureDirExists(getImagesSmallDir());
         FileUtils.ensureDirExists(getImagesLargeDir());
         FileUtils.ensureDirExists(getImageMBMediaInfoDir());
+        FileUtils.ensureDirExists(getImageExclusionStatesDir());
     }
-    public void clearImageInfoDir(){
+    public void clearImageMBMediaInfoDir(){
     	FileUtils.clearDir(getImageMBMediaInfoDir());
     }
     public void clearImageDirs(){
@@ -108,7 +109,10 @@ public class MBSessionData implements SessionData {
        return this.sessionMatrixDir + FILESEP + "media";
     }
     public String getImageMBMediaInfoDir(){
-        return this.sessionMatrixDir + FILESEP + "mbMediaInfo";
+        return getImagesDir() + FILESEP + "mbMediaInfo";
+    }
+    public String getImageExclusionStatesDir(){
+    	return getImagesDir() + FILESEP + ImageInfo.EXCLUSION_STATES_DIRNAME;
     }
     public String getImageInfoDir(){
         return this.sessionMatrixDir + FILESEP + "imageInfo";
@@ -233,7 +237,8 @@ public class MBSessionData implements SessionData {
         if (!f.isDirectory()){
             f.mkdirs();
         }
-        
+        ensureImageDirsExists();
+
     }
     @Override
     public MBMatrix getChosenMatrix(){

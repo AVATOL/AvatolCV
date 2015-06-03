@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class ImageInfo {
+	public static final String EXCLUSION_STATES_DIRNAME = "exclusionStates";
 	private static final String FILESEP = System.getProperty("file.separator");	
 	private static final String NL = System.getProperty("line.separator");
 	public static final String EXCLUSION_REASON_IMAGE_QUALITY = "imageQuality";
@@ -29,7 +30,7 @@ public class ImageInfo {
 	public ImageInfo(String parentDir, String ID, String nameAsUploadedNormalized, String imageWidth, String outputType, String extension){
 		this.parentDir = parentDir;
 		File parentFile = new File(parentDir);
-		this.exclusionStateDir = parentFile.getParentFile().getAbsolutePath() + FILESEP + "exclusionStates";
+		this.exclusionStateDir = parentFile.getParentFile().getAbsolutePath() + FILESEP + EXCLUSION_STATES_DIRNAME;
 		this.ID = ID;
 		this.nameAsUploadedNormalized = nameAsUploadedNormalized;
 		this.imageWidth = imageWidth;

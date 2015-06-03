@@ -80,7 +80,8 @@ public class MBExclusionQualityStepController implements StepController {
             int curRow = 0;
             int curCol = 0;
             for (ImageInfo ii : thumbnailImages){
-                if (!(ii.isExcluded())){
+            	// show it if it's not excluded or it is, but due ot a previous image quality pass
+                if (!(ii.isExcluded()) || (ii.isExcluded() && ImageInfo.EXCLUSION_REASON_IMAGE_QUALITY.equals(ii.getExclusionReason()))){
                     if ((curRow == 0) && (curCol == 0)){
                     	showLargeImageForImage(ii);
                     }
@@ -89,6 +90,7 @@ public class MBExclusionQualityStepController implements StepController {
                     ImageWithInfo imageWithInfo = new ImageWithInfo("file:" + ii.getFilepath(), ii);
                     iv.setImage(imageWithInfo);
                     iv.setFitHeight(60);
+                    renderExclusionStateOfImageView(iv,ii);
                     iv.setOnMouseEntered(this::showCurrentImageLarge);
                     iv.setOnMouseClicked(this::excludeOrUnexcludeImage);
                     excludeImageGrid.add(iv,curCol, curRow);

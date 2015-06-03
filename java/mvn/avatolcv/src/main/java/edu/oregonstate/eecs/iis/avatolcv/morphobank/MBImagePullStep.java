@@ -126,7 +126,6 @@ public class MBImagePullStep implements Step {
         List<MBTaxon> taxa = sessionData.getTaxaForCurrentMatrix();
         MBMatrix matrix = sessionData.getChosenMatrix();
         List<String> imageSizes = MBMediaInfo.getMediaTypes();//thumbnail, small, large
-        sessionData.ensureImageDirsExists();
         //sessionData.clearImageDirs();
         sessionData.setCurrentImages(this.allMedia);
         double curCount = 0;

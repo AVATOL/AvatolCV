@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -20,6 +23,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Alert.AlertType;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
+import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBImagePullStep;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MorphobankSessionJavaFX;
 
@@ -33,10 +37,6 @@ public class MBImagePullStepController implements StepController, ProgressPresen
     private MBImagePullStep step;
     private String fxmlDocName;
     private MorphobankSessionJavaFX fxSession;
-    //public DoubleProperty fileDownloadPercentProperty = new SimpleDoubleProperty(0.0);
-    //public DoubleProperty infoDownloadPercentProperty = new SimpleDoubleProperty(0.0);
-    //public StringProperty fileMessageProperty = new SimpleStringProperty("");
-    //public StringProperty infoMessageProperty = new SimpleStringProperty("");
     
     public MBImagePullStepController(MorphobankSessionJavaFX fxSession, MBImagePullStep step, String fxmlDocName){
         this.step = step;
@@ -178,7 +178,8 @@ public class MBImagePullStepController implements StepController, ProgressPresen
         private String processName2;
         private MBImagePullStep step;
         private MBImagePullStepController controller;
-        
+        private final Logger logger = LogManager.getLogger(ImageDownloadTask.class);
+    	
         public ImageDownloadTask(MBImagePullStepController controller, MBImagePullStep step, String processName1, String processName2){
             this.controller = controller;
             this.step = step;
@@ -188,9 +189,16 @@ public class MBImagePullStepController implements StepController, ProgressPresen
         }
         @Override
         protected Boolean call() throws Exception {
-            this.step.downloadImageInfoForChosenCharacterAndView(this.controller, processName1);
-            this.step.downloadImagesForChosenCharacterAndView(this.controller, processName2);
-            return new Boolean(true);
+        	try {
+        		this.step.downloadImageInfoForChosenCharacterAndView(this.controller, processName1);
+        		this.step.downloadImagesForChosenCharacterAndView(this.controller, processName2);
+        		return new Boolean(true);
+        	}
+        	catch(AvatolCVException ace){
+        		logger.error("AvatolCV error downloading images");
+        		logger.error(ace.getMessage());
+        		return new Boolean(false);
+        	}
         }
        
     }
