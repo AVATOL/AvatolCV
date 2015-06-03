@@ -10,7 +10,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class AvatolCVJavaFX extends Application {
     public static final int MAIN_WINDOW_WIDTH = 800;
@@ -26,6 +27,7 @@ public class AvatolCVJavaFX extends Application {
     public RadioButton radioResumeSession;
     public RadioButton radioTutorialSession;
     Stage mainWindow = null;
+    private static final Logger logger = LogManager.getLogger(AvatolCVJavaFX.class);
 	public static void main(String[] args){
 	    String currentDir = System.getProperty("user.dir");
 	    try {
@@ -38,6 +40,8 @@ public class AvatolCVJavaFX extends Application {
 	}
 	@Override
 	public void start(Stage stage)  {
+		logger.info("Starting AvatolCV.");
+		
 		try {
 		    if (startError.equals("")){
 		        this.mainWindow = stage;

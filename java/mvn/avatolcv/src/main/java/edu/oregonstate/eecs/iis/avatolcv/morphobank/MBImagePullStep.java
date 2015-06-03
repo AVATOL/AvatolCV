@@ -100,7 +100,7 @@ public class MBImagePullStep implements Step {
                             relevantMediaInfos.add(mi);
                         }
                     }
-                    sessionData.persistRelevantMediaInfos(relevantMediaInfos,charID,taxon.getTaxonID(),viewID);
+                    sessionData.persistRelevantMBMediaInfos(relevantMediaInfos,charID,taxon.getTaxonID(),viewID);
                 }
                 
                 sessionData.setImagesForCell(matrix.getMatrixID(), charID, taxon.getTaxonID(), relevantMediaInfos);

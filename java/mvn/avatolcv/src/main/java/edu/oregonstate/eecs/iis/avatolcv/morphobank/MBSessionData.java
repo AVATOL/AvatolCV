@@ -81,10 +81,10 @@ public class MBSessionData implements SessionData {
         FileUtils.ensureDirExists(getImagesThumbnailDir());
         FileUtils.ensureDirExists(getImagesSmallDir());
         FileUtils.ensureDirExists(getImagesLargeDir());
-        FileUtils.ensureDirExists(getImageInfoDir());
+        FileUtils.ensureDirExists(getImageMBMediaInfoDir());
     }
     public void clearImageInfoDir(){
-    	FileUtils.clearDir(getImageInfoDir());
+    	FileUtils.clearDir(getImageMBMediaInfoDir());
     }
     public void clearImageDirs(){
         FileUtils.clearDir(getImagesThumbnailDir());
@@ -92,6 +92,9 @@ public class MBSessionData implements SessionData {
         FileUtils.clearDir(getImagesLargeDir());
     }
 
+    public String getImageExclusionStateDir(){
+    	return getImagesDir() + FILESEP + "exclusionState";
+    }
     public String getImagesThumbnailDir(){
         return getImagesDir() + FILESEP + MBMediaInfo.IMAGE_SIZE_THUMBNAIL;
     } 
@@ -104,8 +107,11 @@ public class MBSessionData implements SessionData {
     public String getImagesDir(){
        return this.sessionMatrixDir + FILESEP + "media";
     }
+    public String getImageMBMediaInfoDir(){
+        return this.sessionMatrixDir + FILESEP + "mbMediaInfo";
+    }
     public String getImageInfoDir(){
-        return this.sessionMatrixDir + FILESEP + "mediaInfo";
+        return this.sessionMatrixDir + FILESEP + "imageInfo";
     }
     public static void generateImageInfoForSize(List<ImageInfo> listToFill, List<MBMediaInfo> mbImages, String width, String dir){
         for (MBMediaInfo mi : mbImages){
@@ -158,14 +164,14 @@ public class MBSessionData implements SessionData {
     	result = result + list.get(i);
     	return result;
     }
-    public void persistRelevantMediaInfos(List<MBMediaInfo> relevantMediaInfos, String charID, String taxonID, String viewID) throws AvatolCVException {
+    public void persistRelevantMBMediaInfos(List<MBMediaInfo> relevantMediaInfos, String charID, String taxonID, String viewID) throws AvatolCVException {
     	List<String> idList = new ArrayList<String>();
     	idList.add(charID);
     	idList.add(taxonID);
     	idList.add(viewID);
     	String filenameRoot = MBSessionData.getMediaInfoFilenameRoot(idList);
-    	String imageInfoDir = getImageInfoDir();
-    	String path = imageInfoDir + filenameRoot + ".txt";
+    	String imageInfoDir = getImageMBMediaInfoDir();
+    	String path = imageInfoDir + FILESEP + filenameRoot + ".txt";
     	try {
         	BufferedWriter writer = new BufferedWriter(new FileWriter(path));
         	for (MBMediaInfo mi : relevantMediaInfos){
@@ -186,8 +192,8 @@ public class MBSessionData implements SessionData {
     	idList.add(taxonID);
     	idList.add(viewID);
     	String filenameRoot = MBSessionData.getMediaInfoFilenameRoot(idList);
-    	String imageInfoDir = getImageInfoDir();
-    	String path = imageInfoDir + filenameRoot + ".txt";
+    	String imageInfoDir = getImageMBMediaInfoDir();
+    	String path = imageInfoDir + FILESEP + filenameRoot + ".txt";
     	File f = new File(path);
     	if (!f.exists()){
     		return list;// empty list

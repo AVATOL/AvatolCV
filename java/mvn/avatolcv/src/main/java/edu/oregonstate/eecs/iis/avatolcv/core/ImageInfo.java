@@ -1,7 +1,15 @@
 package edu.oregonstate.eecs.iis.avatolcv.core;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class ImageInfo {
-	private static final String FILESEP = System.getProperty("file.separator");
+	private static final String FILESEP = System.getProperty("file.separator");	
+	private static final String NL = System.getProperty("line.separator");
 	public static final String EXCLUSION_REASON_IMAGE_QUALITY = "imageQuality";
 
 	private String nameAsUploadedNormalized = null;
@@ -17,9 +25,11 @@ public class ImageInfo {
 	private String outputType = null;
 	private String extension = null;
 	private ImageInfo ancestorImage = null;
-	private String exclusionReason = null;
+	private String exclusionStateDir = null;
 	public ImageInfo(String parentDir, String ID, String nameAsUploadedNormalized, String imageWidth, String outputType, String extension){
 		this.parentDir = parentDir;
+		File parentFile = new File(parentDir);
+		this.exclusionStateDir = parentFile.getParentFile().getAbsolutePath() + FILESEP + "exclusionStates";
 		this.ID = ID;
 		this.nameAsUploadedNormalized = nameAsUploadedNormalized;
 		this.imageWidth = imageWidth;
@@ -28,6 +38,7 @@ public class ImageInfo {
 		this.ID_name = ID + "_" + nameAsUploadedNormalized;
 		this.ID_name_imageWidth = this.ID_name +  "_" + imageWidth;
 		this.ID_name_imagewidth_type = this.ID_name_imageWidth + "_" + outputType;
+		this.exclusionStateDir = exclusionStateDir;
 		ingestOutputType();
 	}
 	private void ingestOutputType(){
@@ -119,16 +130,40 @@ public class ImageInfo {
         ImageInfo ii = new ImageInfo(parentDir, ID, nameAsUploaded, imageWidth, outputType, extension);
         return ii;
 	}
+	public String getExclusionInfoFilePath(){
+		return  exclusionStateDir + FILESEP + this.getID() + ".txt";
+	}
 	public boolean isExcluded(){
-	    if (this.exclusionReason != null){
-	        return true;
+		String path =getExclusionInfoFilePath();
+		File f = new File(path);
+		return f.exists();
+	}
+	public void undoExclude(){
+		String path = getExclusionInfoFilePath();
+		File f = new File(path);
+		f.delete();
+	}
+	public void excludeForReason(String s) throws AvatolCVException {
+		String path = getExclusionInfoFilePath();
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+			writer.write(s + NL);
+			writer.close();
+		}
+	    catch(IOException ioe){
+	    	throw new AvatolCVException("problem writing exclusion state to path " + path);
 	    }
-	    return false;
 	}
-	public void setExclusionReason(String s){
-	    this.exclusionReason = s;
-	}
-	public String getExclusionReason(){
-	    return this.exclusionReason;
+	public String getExclusionReason() throws AvatolCVException {
+		String path = getExclusionInfoFilePath();
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(path));
+			String line = reader.readLine();
+			reader.close();
+			return line;
+		}
+	    catch(IOException ioe){
+	    	throw new AvatolCVException("problem writing exclusion state to path " + path);
+	    }
 	}
 }
