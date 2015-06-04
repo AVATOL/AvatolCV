@@ -24,6 +24,7 @@ import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.charscore.MBTrainingExampleCheckStep;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBCharChoiceStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBCharQuestionsController;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBExclusionOrientationStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBExclusionQualityStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBImagePullStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBLoginStepController;
@@ -91,10 +92,10 @@ public class MorphobankSessionJavaFX {
         //Step charQuestionsStep = new CharQuestionsStep(null, sessionData);
         //ss.appendStep(charQuestionsStep);   
         
-        // Turns out that the Step and Step controller for orientation exclusion can reuse the quality step ones - same mechanisms and data flow
+        // Turns out that the Step  orientation exclusion can reuse the quality step  - same mechanisms and data flow
         MBExclusionQualityStep exclusionOrientationStep = new MBExclusionQualityStep(null, client, sessionData);
         ss.appendStep(exclusionOrientationStep);
-        MBExclusionQualityStepController orientationStepController = new MBExclusionQualityStepController(exclusionOrientationStep, "MBExclusionOrientationStep.fxml");
+        MBExclusionOrientationStepController orientationStepController = new MBExclusionOrientationStepController(exclusionOrientationStep, "MBExclusionOrientationStepTile.fxml");
         controllerForStep.put(exclusionOrientationStep, orientationStepController);
         
         ScoringAlgorithms scoringAlgorithms = new ScoringAlgorithms();
