@@ -32,7 +32,7 @@
       <Region minWidth="80.0" prefHeight="200.0" BorderPane.alignment="CENTER" />
    </right>
    <center>
-      <GridPane alignment="CENTER" hgap="10.0" vgap="20.0" BorderPane.alignment="CENTER">
+      <GridPane alignment="CENTER" hgap="10.0" vgap="10.0" BorderPane.alignment="CENTER">
         <columnConstraints>
           <ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="10.0" />
             <ColumnConstraints fillWidth="false" hgrow="ALWAYS" minWidth="10.0" prefWidth="80.0" />
@@ -42,33 +42,36 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label minWidth="-Infinity" styleClass="heading-text" text="Choose  session" GridPane.vgrow="NEVER" />
+            <Label minWidth="-Infinity" styleClass="heading-text" text="Start a new session" GridPane.vgrow="NEVER" />
             <RadioButton fx:id="radioPresenceAbsence" minWidth="-Infinity" mnemonicParsing="false" selected="true" styleClass="control-text" text="Score presence/absence of parts in specimen" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="1" GridPane.vgrow="NEVER">
                <toggleGroup>
                   <ToggleGroup fx:id="sessionChoice" />
                </toggleGroup>
             </RadioButton>
             <RadioButton fx:id="radioShape" disable="true" minWidth="-Infinity" mnemonicParsing="false" styleClass="control-text" text="Score shape aspects of specimen" toggleGroup="$sessionChoice" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2" GridPane.vgrow="NEVER" />
-            <HBox alignment="CENTER_LEFT" fillHeight="false" spacing="10.0" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="4" GridPane.vgrow="NEVER">
+            <HBox alignment="CENTER_LEFT" fillHeight="false" spacing="10.0" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="5" GridPane.vgrow="NEVER">
                <children>
                   <RadioButton fx:id="radioResume" disable="true" minWidth="-Infinity" mnemonicParsing="false" styleClass="control-text" text="Resume session in progress" toggleGroup="$sessionChoice" />
                </children>
             </HBox>
-            <RadioButton fx:id="radioTutorial" disable="true" minWidth="-Infinity" mnemonicParsing="false" styleClass="control-text" text="Tutorial" toggleGroup="$sessionChoice" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="6" GridPane.vgrow="NEVER" />
-            <Region minHeight="50.0" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="7" GridPane.vgrow="ALWAYS" />
+            <RadioButton fx:id="radioTutorial" disable="true" minWidth="-Infinity" mnemonicParsing="false" styleClass="control-text" text="Tutorial" toggleGroup="$sessionChoice" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="8" GridPane.vgrow="NEVER" />
+            <Region minHeight="50.0" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="9" GridPane.vgrow="ALWAYS" />
             <RadioButton fx:id="radioTexture" disable="true" mnemonicParsing="false" text="Score texture aspects of specimen" toggleGroup="$sessionChoice" GridPane.rowIndex="3" />
             <ComboBox fx:id="presenceAbsenceAlgChooser" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <ChoiceBox fx:id="sessionResumeChooser" disable="true" prefWidth="250.0" styleClass="control-text" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <ChoiceBox fx:id="sessionResumeChooser" disable="true" prefWidth="250.0" styleClass="control-text" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <ComboBox fx:id="shapeAlgChooser" disable="true" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <ComboBox fx:id="textureAlgChooser" disable="true" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <RadioButton disable="true" mnemonicParsing="false" text="Review results of prior session" toggleGroup="$sessionChoice" GridPane.rowIndex="5" />
-            <ComboBox disable="true" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <RadioButton disable="true" mnemonicParsing="false" text="Review results of prior session" toggleGroup="$sessionChoice" GridPane.rowIndex="6" />
+            <ComboBox disable="true" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Label styleClass="heading-text" text="Revisit prior session" GridPane.rowIndex="4" />
          </children>
          <opaqueInsets>
             <Insets />
