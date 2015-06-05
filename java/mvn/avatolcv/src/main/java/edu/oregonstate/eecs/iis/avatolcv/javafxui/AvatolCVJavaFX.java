@@ -1,15 +1,22 @@
 package edu.oregonstate.eecs.iis.avatolcv.javafxui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MorphobankSessionJavaFX;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -17,15 +24,18 @@ public class AvatolCVJavaFX extends Application {
     public static final int MAIN_WINDOW_WIDTH = 800;
     public static final int MAIN_WINDOW_HEIGHT = 600;
     public static final String FILESEP = System.getProperty("file.separator");
+    public ComboBox<String> presenceAbsenceAlgChooser = null;
     private static Scene scene;
     private static String rootDir = null;
     private static String startError = "";
     //public Button navigationNextButton;
     //public Button navigationBackButton;
-    public RadioButton radioMBSession;
-    public RadioButton radioBisqueSession;
-    public RadioButton radioResumeSession;
-    public RadioButton radioTutorialSession;
+    public RadioButton radioPresenceAbsence;
+    public RadioButton radioShape;
+    public RadioButton radioTexture;
+    public RadioButton radioResume;
+    public RadioButton radioTutorial;
+    
     Stage mainWindow = null;
     private static final Logger logger = LogManager.getLogger(AvatolCVJavaFX.class);
 	public static void main(String[] args){
@@ -51,6 +61,11 @@ public class AvatolCVJavaFX extends Application {
 	            stage.setTitle("AvatolCV");
 	            scene = new Scene(root, MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT);
 	            stage.setScene(scene);
+	            List<String> list = new ArrayList<String>();
+	            list.add("DPM Scoring Algorithm");
+	            ObservableList<String> opaChoices = FXCollections.observableList(list);
+	            presenceAbsenceAlgChooser.setItems(opaChoices);
+	            presenceAbsenceAlgChooser.setValue("DPM Scoring Algorithm");
 	            stage.show();
 		    }
 		    else {
@@ -73,14 +88,17 @@ public class AvatolCVJavaFX extends Application {
 	    System.out.println("called this");
 	    try {
 	       
-	        if (radioMBSession.isSelected()){
+	        if (radioPresenceAbsence.isSelected()){
 	            MorphobankSessionJavaFX mbsession = new MorphobankSessionJavaFX();
 	            mbsession.init(rootDir, mainWindow);
 	        }
-	        else if (radioBisqueSession.isSelected()){
+	        else if (radioShape.isSelected()){
 	            
 	        }
-	        else if (radioResumeSession.isSelected()){
+	        else if (radioTexture.isSelected()){
+	            
+	        }
+	        else if (radioResume.isSelected()){
 	            
 	        }
 	        else {
