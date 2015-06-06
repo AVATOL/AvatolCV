@@ -5,43 +5,82 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class ScoringAlgorithms {
-    public Hashtable<String, String> scoringFocusForName = new Hashtable<String,String>();
-    public Hashtable<String, String> nameForScoringFocus = new Hashtable<String,String>();
+    public enum ScoringSessionFocus { 
+        specimenPartPresenceAbsence, 
+        specimeShapeAspect, 
+        specimenTextureAspect };
+    // DPM needs to score all presenceAbsence chars at same time, other might just want one char    
+    public enum scoringScope {
+        singleCharacter,
+        multipleCharacter
+    }
+    private ScoringAlgorithms.ScoringSessionFocus sessionFocus = null;
+    private String chosenScoringAlgorithm = null;
+    private Hashtable<ScoringSessionFocus, String> radioButtonTextForFocusHash = new Hashtable<ScoringSessionFocus, String>();
+    public Hashtable<String, ScoringSessionFocus> scoringFocusForName = new Hashtable<String,ScoringSessionFocus>();
+    public Hashtable<ScoringSessionFocus, List<String>> namesForScoringFocus = new Hashtable<ScoringSessionFocus,List<String>>();
     public Hashtable<String, String> commandForName = new Hashtable<String,String>();
     public Hashtable<String, Boolean> enabledStateForName = new Hashtable<String,Boolean>();
-    public List<String> algNames = new ArrayList<String>();
     
-    public ScoringAlgorithms(){
-        addAlgorithm("DPM", "presence/absence of parts of specimen", "invoke_batskull_system", true);
-        addAlgorithm("LEAF", "shape aspects of specimen", "tbd", false);
-        addAlgorithm("CRF", "texture aspects of specimen", "tbd", false);
+    public ScoringAlgorithms() throws AvatolCVException {
+        radioButtonTextForFocusHash.put(ScoringSessionFocus.specimenPartPresenceAbsence, "Score presence/absence of parts in a specimen");
+        radioButtonTextForFocusHash.put(ScoringSessionFocus.specimeShapeAspect, "Score shape aspects of a specimen");
+        radioButtonTextForFocusHash.put(ScoringSessionFocus.specimenTextureAspect, "Score texture aspects a specimen");
+        addAlgorithm("DPM", ScoringSessionFocus.specimenPartPresenceAbsence, "invoke_batskull_system", true);
+        addAlgorithm("LEAF", ScoringSessionFocus.specimeShapeAspect, "tbd", false);
+        addAlgorithm("CRF", ScoringSessionFocus.specimenTextureAspect, "tbd", false);
     }
-    public void addAlgorithm(String name, String scoringFocus, String commandLineInvocationName, boolean isEnabled){
-        algNames.add(name);
+    
+    public String getRadioButtonTextForScoringFocus(ScoringSessionFocus focus){
+        return radioButtonTextForFocusHash.get(focus);
+    }
+    public void setSessionScoringFocus(ScoringAlgorithms.ScoringSessionFocus focus){
+        this.sessionFocus = focus;
+    }
+    public ScoringAlgorithms.ScoringSessionFocus getSessionScoringFocus(){
+        return this.sessionFocus;
+    }
+    public void setChosenAlgorithmName(String name){
+        this.chosenScoringAlgorithm = name;
+    }
+    public String getChosenAlgorithmName(){
+        return this.chosenScoringAlgorithm;
+    }
+    public void addAlgorithm(String name, ScoringSessionFocus scoringFocus, String commandLineInvocationName, boolean isEnabled) throws AvatolCVException {
+        ScoringSessionFocus focus = scoringFocusForName.get(name);
+        if (null != focus){
+            throw new AvatolCVException("Algorithms must have unique names - this occurs twice: " + name);
+        }
         scoringFocusForName.put(name, scoringFocus);
-        nameForScoringFocus.put(scoringFocus, name);
+        List<String> names = namesForScoringFocus.get(scoringFocus);
+        if (null == names){
+            names = new ArrayList<String>();
+            namesForScoringFocus.put(scoringFocus, names);
+        }
+        names.add(name);
         commandForName.put(name,  commandLineInvocationName);
         enabledStateForName.put(name, new Boolean(isEnabled));
     }
-    public List<String> getAlgNames(){
+    public List<String> getAlgNamesForScoringFocus(ScoringSessionFocus focus){
         List<String> result = new ArrayList<String>();
-        result.addAll(algNames);
+        List<String> names = namesForScoringFocus.get(focus);
+        result.addAll(names);
         return result;
     }
-    public String getScoringFocusForAlgName(String name) throws AvatolCVException {
-        if (!algNames.contains(name)){
+    public ScoringSessionFocus getScoringFocusForAlgName(String name) throws AvatolCVException {
+        ScoringSessionFocus focus = scoringFocusForName.get(name);
+        if (null == focus){
             throw new AvatolCVException("unknown algorithm specified " + name);
         }
-        String focus = scoringFocusForName.get(name);
+
         return focus;
     }
 
-    public String getNameForScoringFocus(String focus) throws AvatolCVException {
-        String name = nameForScoringFocus.get(focus);
-        if (null == name){
-            throw new AvatolCVException("unknown algorithm focus specified " + focus);
-        }
-        return name;
+    public List<String> getNamesForScoringFocus(ScoringSessionFocus focus)  {
+        List<String> result = new ArrayList<String>();
+        List<String> names = namesForScoringFocus.get(focus);
+        result.addAll(names);
+        return result;
     }
     public boolean isAlgorithmEnabled(String name){
         Boolean b = enabledStateForName.get(name);

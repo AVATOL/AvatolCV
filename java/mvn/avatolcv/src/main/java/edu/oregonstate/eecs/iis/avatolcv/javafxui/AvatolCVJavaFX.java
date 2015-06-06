@@ -30,10 +30,9 @@ public class AvatolCVJavaFX extends Application {
     private static String startError = "";
     //public Button navigationNextButton;
     //public Button navigationBackButton;
-    public RadioButton radioPresenceAbsence;
-    public RadioButton radioShape;
-    public RadioButton radioTexture;
-    public RadioButton radioResume;
+    public RadioButton radioNewSession;
+    public RadioButton radioResumeSession;
+    public RadioButton radioReviewResults;
     public RadioButton radioTutorial;
     
     Stage mainWindow = null;
@@ -61,11 +60,6 @@ public class AvatolCVJavaFX extends Application {
 	            stage.setTitle("AvatolCV");
 	            scene = new Scene(root, MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT);
 	            stage.setScene(scene);
-	            List<String> list = new ArrayList<String>();
-	            list.add("DPM Scoring Algorithm");
-	            ObservableList<String> opaChoices = FXCollections.observableList(list);
-	            presenceAbsenceAlgChooser.setItems(opaChoices);
-	            presenceAbsenceAlgChooser.setValue("DPM Scoring Algorithm");
 	            stage.show();
 		    }
 		    else {
@@ -88,17 +82,15 @@ public class AvatolCVJavaFX extends Application {
 	    System.out.println("called this");
 	    try {
 	       
-	        if (radioPresenceAbsence.isSelected()){
+	        if (radioNewSession.isSelected()){
 	            MorphobankSessionJavaFX mbsession = new MorphobankSessionJavaFX();
 	            mbsession.init(rootDir, mainWindow);
-	        }
-	        else if (radioShape.isSelected()){
 	            
 	        }
-	        else if (radioTexture.isSelected()){
+	        else if (radioResumeSession.isSelected()){
 	            
 	        }
-	        else if (radioResume.isSelected()){
+	        else if (radioReviewResults.isSelected()){
 	            
 	        }
 	        else {

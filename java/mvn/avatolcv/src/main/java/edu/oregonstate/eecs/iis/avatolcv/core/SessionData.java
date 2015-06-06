@@ -17,4 +17,5 @@ public interface SessionData {
     MBCharacter getChosenCharacter();
     void setImagesForCell(String matrixID, String charID, String taxonID, List<MBMediaInfo> mediaInfos);
     List<MBMediaInfo> getImagesForCell(String matrixID, String charID, String taxonID);
+    ScoringAlgorithms getScoringAlgorithms();
 }

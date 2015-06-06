@@ -24,6 +24,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.generic.CharQuestionsStep;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.charscore.MBTrainingExampleCheckStep;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.DataSourceStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBCharChoiceStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBCharQuestionsController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBExclusionOrientationStepController;
@@ -33,6 +34,7 @@ import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBLoginStepController
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBMatrixChoiceStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBTrainingExampleCheckStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBViewChoiceStepController;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.SessionFocusStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationStep;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
@@ -57,12 +59,28 @@ public class MorphobankSessionJavaFX {
         afs = new AvatolCVFileSystem(avatolCVRootDir);
         sessionData = new MBSessionData(avatolCVRootDir);
         ss = new StepSequence();
+        int stepNumber = 1;
+        
+        SessionFocusStep focusStep = new SessionFocusStep(sessionData);
+        ss.appendStep(focusStep);
+        SessionFocusStepController focusController = new SessionFocusStepController(focusStep,"SessionFocusStep.fxml");
+        controllerForStep.put(focusStep, focusController);
+        Label focusLabel = new Label(stepNumber++ + ". Scoring Focus");
+        stepList.getChildren().add(focusLabel);
+        
+        
+        DataSourceStep dataSourceStep = new DataSourceStep();
+        ss.appendStep(dataSourceStep);
+        DataSourceStepController dataSourceStepController = new DataSourceStepController(dataSourceStep,"DataSourceStep.fxml");
+        controllerForStep.put(dataSourceStep, dataSourceStepController);
+        Label dataSourceLabel = new Label(stepNumber++ + ". Select Data Source");
+        stepList.getChildren().add(dataSourceLabel);
         
         MBLoginStep loginStep = new MBLoginStep(null, client);
         ss.appendStep(loginStep);
         MBLoginStepController loginController = new MBLoginStepController(loginStep,"MBLoginStep.fxml");
         controllerForStep.put(loginStep, loginController);
-        Label loginLabel = new Label("1. Login");
+        Label loginLabel = new Label(stepNumber++ + ". Login");
         stepList.getChildren().add(loginLabel);
         
         
@@ -70,35 +88,35 @@ public class MorphobankSessionJavaFX {
         ss.appendStep(matrixStep);
         MBMatrixChoiceStepController matrixController = new MBMatrixChoiceStepController(matrixStep, "MBMatrixChoiceStep.fxml");
         controllerForStep.put(matrixStep, matrixController);
-        Label projectLabel = new Label("2. Select Matrix");
+        Label projectLabel = new Label(stepNumber++ + ". Select Matrix");
         stepList.getChildren().add(projectLabel);
         
         MBCharChoiceStep charChoiceStep = new MBCharChoiceStep(null, client, sessionData);
         ss.appendStep(charChoiceStep);
         MBCharChoiceStepController charChoiceController = new MBCharChoiceStepController(charChoiceStep, "MBCharChoiceStep.fxml");
         controllerForStep.put(charChoiceStep, charChoiceController);
-        Label charLabel = new Label("3. Select Character");
+        Label charLabel = new Label(stepNumber++ + ". Select Character");
         stepList.getChildren().add(charLabel);
         
         MBViewChoiceStep viewChoiceStep = new MBViewChoiceStep(client, sessionData);
         ss.appendStep(viewChoiceStep);
         MBViewChoiceStepController viewChoiceController = new MBViewChoiceStepController(viewChoiceStep, "MBViewChoiceStep.fxml");
         controllerForStep.put(viewChoiceStep, viewChoiceController);
-        Label viewLabel = new Label("4. Select View");
+        Label viewLabel = new Label(stepNumber++ + ". Select View");
         stepList.getChildren().add(viewLabel);
         
         MBImagePullStep imagePullStep = new MBImagePullStep(null, client, sessionData);
         ss.appendStep(imagePullStep);
         MBImagePullStepController imagePullController = new MBImagePullStepController(this, imagePullStep, "MBImagePullStep.fxml");
         controllerForStep.put(imagePullStep, imagePullController);
-        Label loadImagesLabel = new Label("5. Load Images");
+        Label loadImagesLabel = new Label(stepNumber++ + ". Load Images");
         stepList.getChildren().add(loadImagesLabel);
         
         MBExclusionQualityStep exclusionQualityStep = new MBExclusionQualityStep(null, client, sessionData);
         ss.appendStep(exclusionQualityStep);
         MBExclusionQualityStepController qualityStepController = new MBExclusionQualityStepController(exclusionQualityStep, "MBExclusionQualityStepTile.fxml");
         controllerForStep.put(exclusionQualityStep, qualityStepController);
-        Label excludeQualityLabel = new Label("6. Image Quality");
+        Label excludeQualityLabel = new Label(stepNumber++ + ". Image Quality");
         stepList.getChildren().add(excludeQualityLabel);
         
         //Step exclusionStep = new MBExclusionPropertyStep(null, sessionData);
@@ -113,7 +131,7 @@ public class MorphobankSessionJavaFX {
         ss.appendStep(exclusionOrientationStep);
         MBExclusionOrientationStepController orientationStepController = new MBExclusionOrientationStepController(exclusionOrientationStep, "MBExclusionOrientationStepTile.fxml");
         controllerForStep.put(exclusionOrientationStep, orientationStepController);
-        Label excludeOrientationLabel = new Label("7. Orientation");
+        Label excludeOrientationLabel = new Label(stepNumber++ + ". Orientation");
         stepList.getChildren().add(excludeOrientationLabel);
   /*      
         ScoringAlgorithms scoringAlgorithms = new ScoringAlgorithms();
@@ -128,7 +146,7 @@ public class MorphobankSessionJavaFX {
         ss.appendStep(scoringTrainingExampleCheckStep);
         MBTrainingExampleCheckStepController trainingExampleCheckStepController = new MBTrainingExampleCheckStepController(scoringTrainingExampleCheckStep, "MBTrainingExampleCheckStep.fxml");
         controllerForStep.put(scoringTrainingExampleCheckStep, trainingExampleCheckStepController);
-        Label trainingExampleLabel = new Label("8. Train vs Test");
+        Label trainingExampleLabel = new Label(stepNumber++ + ". Train vs Test");
         stepList.getChildren().add(trainingExampleLabel);
         
        
@@ -139,12 +157,16 @@ public class MorphobankSessionJavaFX {
         StepController controller = controllerForStep.get(step);
         Node contentNode = controller.getContentNode();
         AnchorPane anchorPane = (AnchorPane)scene.lookup("#navigationShellContentPane");
+        ObservableList<Node> children = anchorPane.getChildren();
+
         anchorPane.getChildren().clear();
+        children = anchorPane.getChildren();
         anchorPane.getChildren().add(contentNode);
         AnchorPane.setBottomAnchor(contentNode, 0.0);
         AnchorPane.setTopAnchor(contentNode, 0.0);
         AnchorPane.setLeftAnchor(contentNode, 0.0);
         AnchorPane.setRightAnchor(contentNode, 0.0);
+       
         if (controller.hasActionToAutoStart()){
             controller.startAction();
         }
@@ -155,7 +177,7 @@ public class MorphobankSessionJavaFX {
             loader.setController(this);
             Parent navShell = loader.load();
             
-            this.scene = new Scene(navShell, mainWindow.getWidth(), mainWindow.getHeight());
+            this.scene = new Scene(navShell, AvatolCVJavaFX.MAIN_WINDOW_WIDTH, AvatolCVJavaFX.MAIN_WINDOW_HEIGHT);
             this.mainWindow.setScene(scene);
         }
         catch(Exception e){

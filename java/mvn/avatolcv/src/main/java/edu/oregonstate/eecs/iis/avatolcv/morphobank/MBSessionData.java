@@ -14,6 +14,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.FileUtils;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionData;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
@@ -49,7 +50,7 @@ public class MBSessionData implements SessionData {
     private List<ImageInfo> imagesLarge = new ArrayList<ImageInfo>();
     
     private Hashtable<String, List<MBMediaInfo>> mediaForCell = new Hashtable<String,  List<MBMediaInfo>>();
-    
+    private ScoringAlgorithms scoringAlgorithms = null;
     private String chosenAlgorithm = null;
     public MBSessionData(String sessionDataRootParent) throws AvatolCVException {
         File f = new File(sessionDataRootParent);
@@ -62,6 +63,7 @@ public class MBSessionData implements SessionData {
         if (!f.isDirectory()){
             f.mkdirs();
         }
+        this.scoringAlgorithms = new ScoringAlgorithms();
     }
     /*
      * Images
@@ -313,5 +315,9 @@ public class MBSessionData implements SessionData {
             String taxonID){
         String key = matrixID + "_" + charID + "_" + taxonID;
         return this.mediaForCell.get(key);
+    }
+    @Override
+    public ScoringAlgorithms getScoringAlgorithms() {
+        return this.scoringAlgorithms;
     }
 }
