@@ -17,6 +17,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionData;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharState;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo;
@@ -28,7 +29,8 @@ public class MBSessionData implements SessionData {
     private static final String FILESEP = System.getProperty("file.separator");
     public static final String STANDARD_IMAGE_FILE_EXTENSION = "jpg";
     private MBMatrix    currentMatrix    = null;
-    private MBCharacter currentCharacter = null;
+    //private MBCharacter currentCharacter = null;
+    private List<MBCharacter> currentCharacters = null;
     private MBView      currentView      = null;
     
     private List<MBCharacter> charactersForCurrentMatrix = null;
@@ -128,6 +130,7 @@ public class MBSessionData implements SessionData {
         }
     }
 
+   
     public List<ImageInfo> getImagesThumbnail(){
         return this.imagesThumbnail;
     }
@@ -256,12 +259,26 @@ public class MBSessionData implements SessionData {
     public List<MBCharacter> getCharactersForCurrentMatrix(){
         return this.charactersForCurrentMatrix;
     }
+    public void setChosenCharacters(List<MBCharacter> chosenCharacters){
+        this.currentCharacters = chosenCharacters;
+    }
+
     public void setChosenCharacter(MBCharacter ch){
-        this.currentCharacter = ch;
+    	this.currentCharacters = new ArrayList<MBCharacter>();
+        this.currentCharacters.add(ch);
     }
     @Override
-    public MBCharacter getChosenCharacter(){
-        return this.currentCharacter;
+    public List<MBCharacter> getChosenCharacters(){
+        return this.currentCharacters;
+    }
+    public boolean isCharPresenceAbsence(String charName) throws AvatolCVException {
+    	for (MBCharacter mbc : this.charactersForCurrentMatrix){
+    		if (mbc.getCharName().equals(charName)){
+    			return mbc.isPresenceAbsence();
+    		}
+    		
+    	}
+    	throw new AvatolCVException("charName " + charName + " does not refer to a known character");
     }
     /*
      * Taxa

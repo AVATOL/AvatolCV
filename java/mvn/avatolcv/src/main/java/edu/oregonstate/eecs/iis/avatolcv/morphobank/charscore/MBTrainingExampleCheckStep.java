@@ -46,7 +46,7 @@ public class MBTrainingExampleCheckStep implements Step {
     }
     public void downloadTrainingInfo() throws AvatolCVException {
         String matrixID = sessionData.getChosenMatrix().getMatrixID();
-        String charID = sessionData.getChosenCharacter().getCharID();
+        String charID = sessionData.getChosenCharacters().getCharID();
         List<MBTaxon> taxa = getTaxa();
         for (MBTaxon taxon : taxa){
             String taxonID = taxon.getTaxonID();

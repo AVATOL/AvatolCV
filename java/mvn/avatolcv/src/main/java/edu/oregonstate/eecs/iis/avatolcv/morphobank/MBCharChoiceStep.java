@@ -6,6 +6,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.bisque.BisqueSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
@@ -23,6 +24,7 @@ public class MBCharChoiceStep implements Step {
     private MBSessionData sessionData = null;
     private String view = null;
     private MBCharacter chosenCharacter = null;
+    private List<MBCharacter> chosenCharacters = null;
     private List<MBCharacter> mbChars = null;
             
             
@@ -30,6 +32,12 @@ public class MBCharChoiceStep implements Step {
         this.wsClient = wsClient;
         this.view = view;
         this.sessionData = sessionData;
+    }
+    public List<MBCharacter> getCharInfo(){
+    	return this.sessionData.getCharactersForCurrentMatrix();
+    }
+    public ScoringAlgorithms getScoringAlgorithms(){
+    	return this.sessionData.getScoringAlgorithms();
     }
     public List<MBCharacter> getCharacters()  throws AvatolCVException {
         return sessionData.getCharactersForCurrentMatrix();
@@ -42,6 +50,12 @@ public class MBCharChoiceStep implements Step {
         }
         Collections.sort(charNames);
         return charNames;
+    }
+    public boolean isCharPresenceAbsence(String charName) throws AvatolCVException {
+    	return this.sessionData.isCharPresenceAbsence(charName);
+    }
+    public void setChosenCharacters(List<MBCharacter> characters){
+    	this.chosenCharacters = characters;
     }
     public void setChosenCharacter(String s) throws AvatolCVException{
         this.chosenCharacter = null;
@@ -64,7 +78,13 @@ public class MBCharChoiceStep implements Step {
 
     @Override
     public void consumeProvidedData() throws AvatolCVException {
-        sessionData.setChosenCharacter(chosenCharacter);
+    	if (getScoringAlgorithms().getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
+    		sessionData.setChosenCharacters(chosenCharacters);
+    	}
+    	else {
+    		sessionData.setChosenCharacter(chosenCharacter);
+    	}
+        
     }
 
     @Override

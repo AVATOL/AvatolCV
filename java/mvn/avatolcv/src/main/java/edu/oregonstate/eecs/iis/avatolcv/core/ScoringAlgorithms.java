@@ -5,14 +5,15 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class ScoringAlgorithms {
+	public static final String SHELL_BATSKULL = "DPM";
     public enum ScoringSessionFocus { 
-        specimenPartPresenceAbsence, 
-        specimeShapeAspect, 
-        specimenTextureAspect };
+        SPECIMEN_PART_PRESENCE_ABSENCE, 
+        SPECIMEN_SHAPE_ASPECT, 
+        SPECIMEN_TEXTURE_ASPECT };
     // DPM needs to score all presenceAbsence chars at same time, other might just want one char    
-    public enum scoringScope {
-        singleCharacter,
-        multipleCharacter
+    public enum ScoringScope {
+        SINGLE_ITEM,
+        MULTIPLE_ITEM
     }
     private ScoringAlgorithms.ScoringSessionFocus sessionFocus = null;
     private String chosenScoringAlgorithm = null;
@@ -23,12 +24,18 @@ public class ScoringAlgorithms {
     public Hashtable<String, Boolean> enabledStateForName = new Hashtable<String,Boolean>();
     
     public ScoringAlgorithms() throws AvatolCVException {
-        radioButtonTextForFocusHash.put(ScoringSessionFocus.specimenPartPresenceAbsence, "Score presence/absence of parts in a specimen");
-        radioButtonTextForFocusHash.put(ScoringSessionFocus.specimeShapeAspect, "Score shape aspects of a specimen");
-        radioButtonTextForFocusHash.put(ScoringSessionFocus.specimenTextureAspect, "Score texture aspects a specimen");
-        addAlgorithm("DPM", ScoringSessionFocus.specimenPartPresenceAbsence, "invoke_batskull_system", true);
-        addAlgorithm("LEAF", ScoringSessionFocus.specimeShapeAspect, "tbd", false);
-        addAlgorithm("CRF", ScoringSessionFocus.specimenTextureAspect, "tbd", false);
+        radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE, "Score presence/absence of parts in a specimen");
+        radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT, "Score shape aspects of a specimen");
+        radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT, "Score texture aspects a specimen");
+        addAlgorithm(SHELL_BATSKULL, ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE, "invoke_batskull_system", true);
+        addAlgorithm("LEAF", ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT, "tbd", false);
+        addAlgorithm("CRF", ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT, "tbd", false);
+    }
+    public ScoringScope getScoringScope(){
+    	if (sessionFocus == ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE && chosenScoringAlgorithm == SHELL_BATSKULL){
+    		return ScoringScope.MULTIPLE_ITEM;
+    	}
+    	return ScoringScope.SINGLE_ITEM;
     }
     
     public String getRadioButtonTextForScoringFocus(ScoringSessionFocus focus){

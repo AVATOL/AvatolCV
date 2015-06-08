@@ -14,7 +14,7 @@ public interface SessionData {
     String getTrainingTestingDescriminatorName();
     List<MBTaxon> getTaxa();
     MBMatrix getChosenMatrix();
-    MBCharacter getChosenCharacter();
+    List<MBCharacter> getChosenCharacters();
     void setImagesForCell(String matrixID, String charID, String taxonID, List<MBMediaInfo> mediaInfos);
     List<MBMediaInfo> getImagesForCell(String matrixID, String charID, String taxonID);
     ScoringAlgorithms getScoringAlgorithms();

@@ -31,17 +31,17 @@ public class SessionFocusStepController implements StepController {
     public boolean consumeUIData() {
         ScoringAlgorithms sa = this.focusStep.getScoringAlgorithms();
         if (radioPresenceAbsence.isSelected()){
-            sa.setSessionScoringFocus(ScoringAlgorithms.ScoringSessionFocus.specimenPartPresenceAbsence);
+            sa.setSessionScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE);
             sa.setChosenAlgorithmName(presenceAbsenceAlgChoice.getValue());
         }
         
         else if (radioShape.isSelected()){
-            sa.setSessionScoringFocus(ScoringAlgorithms.ScoringSessionFocus.specimeShapeAspect);
+            sa.setSessionScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT);
             sa.setChosenAlgorithmName(shapeAlgChoice.getValue());
         }
         else {
             // must be texture
-            sa.setSessionScoringFocus(ScoringAlgorithms.ScoringSessionFocus.specimenTextureAspect);
+            sa.setSessionScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT);
             sa.setChosenAlgorithmName(textureAlgChoice.getValue());
         }
         return true;
@@ -61,13 +61,13 @@ public class SessionFocusStepController implements StepController {
             Node content = loader.load();
             ScoringAlgorithms sa = this.focusStep.getScoringAlgorithms();
             
-            radioPresenceAbsence.setText(sa.getRadioButtonTextForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.specimenPartPresenceAbsence));
-            radioShape.setText(          sa.getRadioButtonTextForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.specimeShapeAspect));
-            radioTexture.setText(        sa.getRadioButtonTextForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.specimenTextureAspect));
+            radioPresenceAbsence.setText(sa.getRadioButtonTextForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE));
+            radioShape.setText(          sa.getRadioButtonTextForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT));
+            radioTexture.setText(        sa.getRadioButtonTextForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT));
 
-            List<String> presenceAbsenceAlgNames = sa.getNamesForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.specimenPartPresenceAbsence);
-            List<String> shapeAlgNames           = sa.getNamesForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.specimeShapeAspect);
-            List<String> textureAlgNames         = sa.getNamesForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.specimenTextureAspect);
+            List<String> presenceAbsenceAlgNames = sa.getNamesForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE);
+            List<String> shapeAlgNames           = sa.getNamesForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT);
+            List<String> textureAlgNames         = sa.getNamesForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT);
             ObservableList<String> paList        = FXCollections.observableList(presenceAbsenceAlgNames);
             ObservableList<String> shapeList     = FXCollections.observableList(shapeAlgNames);
             ObservableList<String> textureList   = FXCollections.observableList(textureAlgNames);

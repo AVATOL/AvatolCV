@@ -47,6 +47,22 @@ public class CharacterInfo {
     	public List<MBCharState> getCharStates(){
     		return this.charStates;
     	}
+    	public boolean isPresenceAbsence(){
+    		boolean absentFound = false;
+    		boolean presentFound = true;
+    		for (MBCharState mcs : charStates){
+    			if (mcs.representsAbsent() && !this.charName.contains("between") && !this.charName.contains("and")){
+    				absentFound = true;
+    			}
+    			else if (mcs.representsPresent() && !this.charName.contains("between") && !this.charName.contains("and")){
+    				presentFound = true;
+    			}
+    		}
+    		if (presentFound && absentFound){
+        		return true;
+        	}
+        	return false;
+    	}
     }
     
     public static class MBCharState {
@@ -75,5 +91,24 @@ public class CharacterInfo {
     	public String getCharStateNum(){
     		return this.charStateNum;
     	}
+    	public boolean representsPresent(){
+        	String checkableName = this.charStateName.trim().toLowerCase();
+        	if (("present".equals(checkableName) || 
+        		  checkableName.endsWith("present") || 
+        		  checkableName.contains(" present")) &&
+        		!(checkableName.contains("between")) && 
+        		!(checkableName.contains("and")))	{
+    			return true;
+    		}
+        	return false;
+        }
+        public boolean representsAbsent(){
+        	String checkableName = this.charStateName.trim().toLowerCase();
+        	if (("absent".equals(checkableName) || checkableName.endsWith("absent")  || checkableName.contains(" absent")) &&
+    		!(checkableName.contains("between")) && !(checkableName.contains("and")))	{
+    			return true;
+        	}
+        	return false;
+        }
     }
 }

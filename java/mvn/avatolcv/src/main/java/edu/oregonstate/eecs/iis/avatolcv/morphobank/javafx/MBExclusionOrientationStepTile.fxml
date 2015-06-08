@@ -34,7 +34,6 @@
                         </AnchorPane>
                     </content>
                   </ScrollPane>
-                  <ImageView fx:id="largeImageView" pickOnBounds="true" preserveRatio="true" />
                </children>
             </VBox>
          </children>

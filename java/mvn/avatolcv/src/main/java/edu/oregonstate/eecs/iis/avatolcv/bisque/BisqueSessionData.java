@@ -287,7 +287,7 @@ public class BisqueSessionData implements SessionData{
         return null;
     }
     @Override
-    public MBCharacter getChosenCharacter() {
+    public List<MBCharacter> getChosenCharacters() {
         // TODO Auto-generated method stub
         return null;
     }

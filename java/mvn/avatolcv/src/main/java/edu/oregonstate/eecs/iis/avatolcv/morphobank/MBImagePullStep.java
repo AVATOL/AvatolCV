@@ -79,7 +79,7 @@ public class MBImagePullStep implements Step {
     }
     public void downloadImageInfoForChosenCharacterAndView(ProgressPresenter pp, String processName) throws AvatolCVException {
         //List<MBCharacter> chars = sessionData.getCharactersForCurrentMatrix();
-        MBCharacter chosenCharacter = sessionData.getChosenCharacter();
+        MBCharacter chosenCharacter = sessionData.getChosenCharacters();
         String charID = chosenCharacter.getCharID();
         MBView view = sessionData.getChosenView();
         String viewID = view.getViewID();
