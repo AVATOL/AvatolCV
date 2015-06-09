@@ -91,17 +91,10 @@ public class SessionFocusStepController implements StepController {
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
         }
     }
+	@Override
+	public boolean delayEnableNavButtons() {
+		return false;
+	}
 
-    @Override
-    public boolean hasActionToAutoStart() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void startAction() throws AvatolCVException {
-        // TODO Auto-generated method stub
-
-    }
 
 }

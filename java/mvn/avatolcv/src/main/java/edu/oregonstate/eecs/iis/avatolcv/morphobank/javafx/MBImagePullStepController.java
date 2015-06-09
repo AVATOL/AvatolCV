@@ -150,16 +150,6 @@ public class MBImagePullStepController implements StepController, ProgressPresen
         }*/
         
     }
-    @Override
-    public boolean hasActionToAutoStart() {
-        return true;
-    }
-    @Override
-    public void startAction() throws AvatolCVException {
-      //  ImageDownloadLater runnable = new ImageDownloadLater(this,this.step,IMAGE_INFO_DOWNLOAD,IMAGE_FILE_DOWNLOAD );
-      //  Platform.runLater(runnable);
-        
-    }
     public class MessageUpdater implements Runnable {
         private String processName;
         private MBImagePullStepController controller;
@@ -225,6 +215,8 @@ public class MBImagePullStepController implements StepController, ProgressPresen
         	try {
         		this.step.downloadImageInfoForChosenCharactersAndView(this.controller, processName1);
         		this.step.downloadImagesForChosenCharactersAndView(this.controller, processName2);
+        		NavButtonEnablerRunner runner = new NavButtonEnablerRunner();
+        		Platform.runLater(runner);
         		return new Boolean(true);
         	}
         	catch(AvatolCVException ace){
@@ -237,5 +229,16 @@ public class MBImagePullStepController implements StepController, ProgressPresen
         }
        
     }
+    public class NavButtonEnablerRunner implements Runnable{
+		@Override
+		public void run() {
+			fxSession.enableNavButtons();
+		}
+    	
+    }
+	@Override
+	public boolean delayEnableNavButtons() {
+		return true;
+	}
    
 }

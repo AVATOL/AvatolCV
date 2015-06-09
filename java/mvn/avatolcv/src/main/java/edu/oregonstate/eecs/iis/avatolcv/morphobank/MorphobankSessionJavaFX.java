@@ -4,13 +4,19 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
@@ -37,11 +43,14 @@ import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBTrainingExampleChec
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBViewChoiceStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.SessionFocusStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.StepController;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBImagePullStepController.ImageDownloadTask;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationStep;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
 
 public class MorphobankSessionJavaFX {
+	public Button nextButton;
+	public Button backButton;
 	public VBox stepList;
     private String avatolCVRootDir = null;
     private MBSessionData sessionData = null;
@@ -186,9 +195,13 @@ public class MorphobankSessionJavaFX {
         AnchorPane.setLeftAnchor(contentNode, 0.0);
         AnchorPane.setRightAnchor(contentNode, 0.0);
        
-        if (controller.hasActionToAutoStart()){
-            controller.startAction();
+        if (!controller.delayEnableNavButtons()){
+        	enableNavButtons();
         }
+    }
+    public void enableNavButtons(){
+    	nextButton.setDisable(false);
+    	backButton.setDisable(false);
     }
     public void initUI() throws AvatolCVException {
         try {
@@ -203,14 +216,43 @@ public class MorphobankSessionJavaFX {
             throw new AvatolCVException(e.getMessage(),e);
         }
     }
+    public void previousStep(){
+    	
+    }
+    /*
+     * nextStep called from the button on the javaFX ui thread
+     */
     public void nextStep(){
+    	nextButton.setDisable(true);
+    	backButton.setDisable(true);
+    	// delegate data consumption to the javafx application thread
+    	NextStepTask task = new NextStepTask();
+    	new Thread(task).start();
+    }
+    /*
+     * this one runs on thejavafx application thread
+     */
+    public void requestNextStep(){
     	Step step = ss.getCurrentStep();
     	StepController controller = controllerForStep.get(step);
     	boolean success = controller.consumeUIData();
     	if (success){
     		ss.next();
-    		try {
+    		// task of loading UI for next step is put back on the javaFX UI thread
+    		CurrentStepRunner stepRunner = new CurrentStepRunner();
+    		Platform.runLater(stepRunner);
+    	}
+    	else {
+    		controller.clearUIFields();
+    	}
+    }
+    public class CurrentStepRunner implements Runnable{
+
+		@Override
+		public void run() {
+			try {
     			activateCurrentStep();
+    			
     		}
     		catch (AvatolCVException ace){
     			Alert alert = new Alert(AlertType.ERROR);
@@ -219,11 +261,23 @@ public class MorphobankSessionJavaFX {
     			alert.setContentText(ace.getMessage());
     			alert.showAndWait();
     		}
-    	}
-    	else {
-    		controller.clearUIFields();
-    	}
+			
+		}
     	
+    }
+    public class NextStepTask extends Task<Boolean> {
+        private final Logger logger = LogManager.getLogger(NextStepTask.class);
+    	
+        public NextStepTask(){
+            
+        }
+        @Override
+        protected Boolean call() throws Exception {
+        	requestNextStep();
+        	return new Boolean(true);
+        	
+        }
+       
     }
     
 }

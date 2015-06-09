@@ -162,14 +162,7 @@ public class MBExclusionQualityStepController implements StepController {
     	renderExclusionStateOfImageView(largeImageView, ii);
     }
     
-    @Override
-    public boolean hasActionToAutoStart() {
-        return false;
-    }
-    @Override
-    public void startAction() {
-        // NA
-    }
+   
     public class ImageWithInfo extends Image{
     	private ImageInfo ii = null;
 
@@ -181,4 +174,10 @@ public class MBExclusionQualityStepController implements StepController {
     		return this.ii;
     	}
     }
+
+
+	@Override
+	public boolean delayEnableNavButtons() {
+		return false;
+	}
 }

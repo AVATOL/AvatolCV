@@ -161,13 +161,9 @@ public class MBCharChoiceStepController implements StepController {
         	return getContentNodeForSingleCharChoice();
         }
     }
-    @Override
-    public boolean hasActionToAutoStart() {
-        return false;
-    }
-    @Override
-    public void startAction() throws AvatolCVException {
-        // NA
-    }
+	@Override
+	public boolean delayEnableNavButtons() {
+		return false;
+	}
 
 }

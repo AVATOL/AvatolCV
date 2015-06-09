@@ -7,6 +7,5 @@ public interface StepController {
     boolean consumeUIData();
     void clearUIFields();
     Node getContentNode() throws AvatolCVException ;
-    boolean hasActionToAutoStart();
-    void startAction() throws AvatolCVException ;
+    boolean delayEnableNavButtons();
 }
