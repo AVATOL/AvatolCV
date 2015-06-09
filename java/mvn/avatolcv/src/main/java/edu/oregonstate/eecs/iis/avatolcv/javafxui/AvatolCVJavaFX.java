@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 public class AvatolCVJavaFX extends Application {
-    public static final int MAIN_WINDOW_WIDTH = 800;
+    public static final int MAIN_WINDOW_WIDTH = 900;
     public static final int MAIN_WINDOW_HEIGHT = 600;
     public static final String FILESEP = System.getProperty("file.separator");
     public ComboBox<String> presenceAbsenceAlgChooser = null;

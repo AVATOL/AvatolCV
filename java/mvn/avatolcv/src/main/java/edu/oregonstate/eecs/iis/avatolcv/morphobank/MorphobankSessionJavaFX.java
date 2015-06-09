@@ -2,6 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.morphobank;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.List;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -48,6 +49,7 @@ public class MorphobankSessionJavaFX {
     private StepSequence ss = null;
     private Stage mainWindow = null;
     private Scene scene = null;
+    private Hashtable<Step,Label> labelForStepHash = new Hashtable<Step,Label>();
   
     private Hashtable<Step,StepController> controllerForStep = new Hashtable<Step,StepController>();
     public void init(String avatolCVRootDir, Stage mainWindow) throws AvatolCVException {
@@ -59,66 +61,54 @@ public class MorphobankSessionJavaFX {
         afs = new AvatolCVFileSystem(avatolCVRootDir);
         sessionData = new MBSessionData(avatolCVRootDir);
         ss = new StepSequence();
-        int stepNumber = 1;
         
         SessionFocusStep focusStep = new SessionFocusStep(sessionData);
         ss.appendStep(focusStep);
         SessionFocusStepController focusController = new SessionFocusStepController(focusStep,"SessionFocusStep.fxml");
         controllerForStep.put(focusStep, focusController);
-        Label focusLabel = new Label(stepNumber++ + ". Scoring Focus");
-        stepList.getChildren().add(focusLabel);
-        
+        addLabelForStep(focusStep,"Scoring Focus");
         
         DataSourceStep dataSourceStep = new DataSourceStep();
         ss.appendStep(dataSourceStep);
         DataSourceStepController dataSourceStepController = new DataSourceStepController(dataSourceStep,"DataSourceStep.fxml");
         controllerForStep.put(dataSourceStep, dataSourceStepController);
-        Label dataSourceLabel = new Label(stepNumber++ + ". Select Data Source");
-        stepList.getChildren().add(dataSourceLabel);
+        addLabelForStep(dataSourceStep,"Select Data Source");
         
         MBLoginStep loginStep = new MBLoginStep(null, client);
         ss.appendStep(loginStep);
         MBLoginStepController loginController = new MBLoginStepController(loginStep,"MBLoginStep.fxml");
         controllerForStep.put(loginStep, loginController);
-        Label loginLabel = new Label(stepNumber++ + ". Login");
-        stepList.getChildren().add(loginLabel);
-        
+        addLabelForStep(loginStep,"Login");
         
         MBMatrixChoiceStep matrixStep = new MBMatrixChoiceStep(null, client, sessionData);
         ss.appendStep(matrixStep);
         MBMatrixChoiceStepController matrixController = new MBMatrixChoiceStepController(matrixStep, "MBMatrixChoiceStep.fxml");
         controllerForStep.put(matrixStep, matrixController);
-        Label projectLabel = new Label(stepNumber++ + ". Select Matrix");
-        stepList.getChildren().add(projectLabel);
+        addLabelForStep(matrixStep,"Select Matrix");
         
         MBCharChoiceStep charChoiceStep = new MBCharChoiceStep(null, client, sessionData);
         ss.appendStep(charChoiceStep);
         MBCharChoiceStepController charChoiceController = new MBCharChoiceStepController(charChoiceStep, "MBCharChoiceStep.fxml");
         controllerForStep.put(charChoiceStep, charChoiceController);
-        Label charLabel = new Label(stepNumber++ + ". Select Character");
-        stepList.getChildren().add(charLabel);
+        addLabelForStep(charChoiceStep,"Select Character");
         
         MBViewChoiceStep viewChoiceStep = new MBViewChoiceStep(client, sessionData);
         ss.appendStep(viewChoiceStep);
         MBViewChoiceStepController viewChoiceController = new MBViewChoiceStepController(viewChoiceStep, "MBViewChoiceStep.fxml");
         controllerForStep.put(viewChoiceStep, viewChoiceController);
-        Label viewLabel = new Label(stepNumber++ + ". Select View");
-        stepList.getChildren().add(viewLabel);
+        addLabelForStep(viewChoiceStep,"Select View");
         
         MBImagePullStep imagePullStep = new MBImagePullStep(null, client, sessionData);
         ss.appendStep(imagePullStep);
         MBImagePullStepController imagePullController = new MBImagePullStepController(this, imagePullStep, "MBImagePullStep.fxml");
         controllerForStep.put(imagePullStep, imagePullController);
-        Label loadImagesLabel = new Label(stepNumber++ + ". Load Images");
-        stepList.getChildren().add(loadImagesLabel);
+        addLabelForStep(imagePullStep,"Load Images");
         
         MBExclusionQualityStep exclusionQualityStep = new MBExclusionQualityStep(null, client, sessionData);
         ss.appendStep(exclusionQualityStep);
         MBExclusionQualityStepController qualityStepController = new MBExclusionQualityStepController(exclusionQualityStep, "MBExclusionQualityStepTile.fxml");
         controllerForStep.put(exclusionQualityStep, qualityStepController);
-        Label excludeQualityLabel = new Label(stepNumber++ + ". Image Quality");
-        stepList.getChildren().add(excludeQualityLabel);
-        
+        addLabelForStep(exclusionQualityStep,"Image Quality");
         //Step exclusionStep = new MBExclusionPropertyStep(null, sessionData);
         //ss.appendStep(exclusionStep);
         
@@ -131,8 +121,7 @@ public class MorphobankSessionJavaFX {
         ss.appendStep(exclusionOrientationStep);
         MBExclusionOrientationStepController orientationStepController = new MBExclusionOrientationStepController(exclusionOrientationStep, "MBExclusionOrientationStepTile.fxml");
         controllerForStep.put(exclusionOrientationStep, orientationStepController);
-        Label excludeOrientationLabel = new Label(stepNumber++ + ". Orientation");
-        stepList.getChildren().add(excludeOrientationLabel);
+        addLabelForStep(exclusionOrientationStep,"Orientation");
   /*      
         ScoringAlgorithms scoringAlgorithms = new ScoringAlgorithms();
         MBCharQuestionsStep charQuestionsStep = new MBCharQuestionsStep(null, scoringAlgorithms, sessionData);
@@ -146,13 +135,43 @@ public class MorphobankSessionJavaFX {
         ss.appendStep(scoringTrainingExampleCheckStep);
         MBTrainingExampleCheckStepController trainingExampleCheckStepController = new MBTrainingExampleCheckStepController(scoringTrainingExampleCheckStep, "MBTrainingExampleCheckStep.fxml");
         controllerForStep.put(scoringTrainingExampleCheckStep, trainingExampleCheckStepController);
-        Label trainingExampleLabel = new Label(stepNumber++ + ". Train vs Test");
-        stepList.getChildren().add(trainingExampleLabel);
-        
+        addLabelForStep(scoringTrainingExampleCheckStep,"Train vs Test");
        
         activateCurrentStep();
     }
+    private void addLabelForStep(Step step, String text){
+    	Label label = new Label(text);
+    	label.getStyleClass().add("stepListLabel");
+        labelForStepHash.put(step, label);
+    	stepList.getChildren().add(label);
+    }
+    private void reRenderStepList(){
+    	List<Step> steps = ss.getAllSteps();
+    	boolean seekingActiveStep = true;
+    	for (Step step : steps){
+    		Label label = labelForStepHash.get(step);
+    		if (null != label){
+    			label.getStyleClass().clear();
+    			if (seekingActiveStep){
+    				if (step == ss.getCurrentStep()){
+    					// bold
+    					label.getStyleClass().add("stepListLabelBold");
+    					seekingActiveStep = false;
+    				}
+    				else {
+    					// regular
+    					label.getStyleClass().add("stepListLabel");
+    				}
+    			}
+    			else {
+    				label.getStyleClass().add("stepListLabelGrey");
+    			}
+    		}
+    	}
+    	
+    }
     private void activateCurrentStep() throws AvatolCVException {
+    	reRenderStepList();
         Step step = ss.getCurrentStep();
         StepController controller = controllerForStep.get(step);
         Node contentNode = controller.getContentNode();

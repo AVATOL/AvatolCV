@@ -22,4 +22,9 @@ public class StepSequence {
 	public Step getCurrentStep(){
 		return steps.get(currentStepIndex);
 	}
+	public List<Step> getAllSteps() {
+		List<Step> result = new ArrayList<Step>();
+		result.addAll(steps);
+		return result;
+	}
 }
