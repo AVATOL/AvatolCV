@@ -35,7 +35,7 @@ public class MBCharChoiceStepController implements StepController {
     private String fxmlDocName;
     private List<String> charNames = null;
     private Hashtable<MBCharacter, CheckBox> checkBoxForCharHash;
-    private List<MBCharacter> characters;
+    //private List<MBCharacter> characters;
     private ScoringAlgorithms.ScoringScope scoringScope = null; 
     public MBCharChoiceStepController(MBCharChoiceStep step, String fxmlDocName){
         this.step = step;
@@ -46,7 +46,7 @@ public class MBCharChoiceStepController implements StepController {
         try {
         	if (this.scoringScope == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
         		List<MBCharacter> chosenCharacters = new ArrayList<MBCharacter>();
-        		for (MBCharacter ch : this.characters){
+        		for (MBCharacter ch : this.step.getCharacters()){
         			if (checkBoxForCharHash.get(ch).isSelected()){
         				chosenCharacters.add(ch);
         			}

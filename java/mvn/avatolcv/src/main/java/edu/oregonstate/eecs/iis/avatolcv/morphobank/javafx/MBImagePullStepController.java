@@ -66,6 +66,8 @@ public class MBImagePullStepController implements StepController, ProgressPresen
             loader.setController(this);
             Node content = loader.load();
             
+            
+            
             imageInfoDownloadProgress.setProgress(0.0);
             imageInfoDownloadMessage.setText("");
             
@@ -91,6 +93,37 @@ public class MBImagePullStepController implements StepController, ProgressPresen
         } 
     }
     
+    public Node getContentNodeOld() throws AvatolCVException {
+        try {
+            System.out.println("trying to load" +  this.fxmlDocName);
+            FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
+            loader.setController(this);
+            Node content = loader.load();
+            
+            imageInfoDownloadProgress.setProgress(0.0);
+            imageInfoDownloadMessage.setText("");
+            
+            imageFileDownloadProgress.setProgress(0.0);
+            imageFileDownloadMessage.setText("");
+            
+            Task<Boolean> task = new ImageDownloadTask(this, this.step, IMAGE_INFO_DOWNLOAD, IMAGE_FILE_DOWNLOAD);
+            /*
+             * NOTE - wanted to use javafx properties and binding here but couldn't dovetail it in.  I could not put
+             * the loops that do work in the call method of the Task (which manages updating on the JavaFX APp Thread), 
+             * I had to manage this myself the old school way, to update the progress bar, by using Platform.runLater
+             * 
+             */
+            //imageFileDownloadProgress.progressProperty().bind(fileDownloadPercentProperty);
+            //imageInfoDownloadProgress.progressProperty().bind(infoDownloadPercentProperty);
+            //imageFileDownloadMessage.textProperty().bind(fileMessageProperty);
+            //imageInfoDownloadMessage.textProperty().bind(infoMessageProperty);
+            new Thread(task).start();
+            return content;
+        }
+        catch(IOException ioe){
+            throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
+        } 
+    }
     @Override
     public void updateProgress(String processName, double percent) {
         ProgressUpdater pu = new ProgressUpdater(this,processName, percent);
@@ -190,8 +223,8 @@ public class MBImagePullStepController implements StepController, ProgressPresen
         @Override
         protected Boolean call() throws Exception {
         	try {
-        		this.step.downloadImageInfoForChosenCharacterAndView(this.controller, processName1);
-        		this.step.downloadImagesForChosenCharacterAndView(this.controller, processName2);
+        		this.step.downloadImageInfoForChosenCharactersAndView(this.controller, processName1);
+        		this.step.downloadImagesForChosenCharactersAndView(this.controller, processName2);
         		return new Boolean(true);
         	}
         	catch(AvatolCVException ace){

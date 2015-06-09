@@ -42,6 +42,9 @@ public class MBSessionData implements SessionData {
     
     private List<MBMediaInfo> mbImages = null;
 
+    
+    
+    		
     private Hashtable<String,MBMediaInfo> mbImageForID = new Hashtable<String,MBMediaInfo>();
     private Hashtable<String,ImageInfo> thumbnailForID = new Hashtable<String,ImageInfo>();
     private Hashtable<String,ImageInfo> imageSmallForID = new Hashtable<String,ImageInfo>();

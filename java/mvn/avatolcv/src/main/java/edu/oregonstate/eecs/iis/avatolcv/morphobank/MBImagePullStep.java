@@ -2,6 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.morphobank;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.bisque.BisqueSessionData;
@@ -77,55 +78,59 @@ public class MBImagePullStep implements Step {
         }
         return false;
     }
-    public void downloadImageInfoForChosenCharacterAndView(ProgressPresenter pp, String processName) throws AvatolCVException {
+    public void downloadImageInfoForChosenCharactersAndView(ProgressPresenter pp, String processName) throws AvatolCVException {
         //List<MBCharacter> chars = sessionData.getCharactersForCurrentMatrix();
-        MBCharacter chosenCharacter = sessionData.getChosenCharacters();
-        String charID = chosenCharacter.getCharID();
+        List<MBCharacter> chosenCharacters = sessionData.getChosenCharacters();
+        
         MBView view = sessionData.getChosenView();
         String viewID = view.getViewID();
         List<MBTaxon> taxa = sessionData.getTaxaForCurrentMatrix();
         MBMatrix matrix = sessionData.getChosenMatrix();
         this.allMedia = new ArrayList<MBMediaInfo>();
-        double cellCountTotal = (double)taxa.size();
+        double cellCountTotal = (double)taxa.size() * chosenCharacters.size();
         try {
             double cellCountCurrent = 0.0;
-            for (MBTaxon taxon : taxa){
-                cellCountCurrent += 1;
-                List<MBMediaInfo> relevantMediaInfos = this.sessionData.loadMediaInfo(charID, taxon.getTaxonID(), viewID);
-                if (relevantMediaInfos.isEmpty()){
-                	// not downloaded loaded yet, so need to download
-                	List<MBMediaInfo> mediaInfos = this.wsClient.getMediaForCell(matrix.getMatrixID(), charID, taxon.getTaxonID());
-                    for (MBMediaInfo mi : mediaInfos){
-                        if (viewID.equals(mi.getViewID())){
-                            relevantMediaInfos.add(mi);
+            for (MBCharacter ch : chosenCharacters){
+            	String charID = ch.getCharID();
+            	for (MBTaxon taxon : taxa){
+                    cellCountCurrent += 1;
+                    List<MBMediaInfo> relevantMediaInfos = this.sessionData.loadMediaInfo(charID, taxon.getTaxonID(), viewID);
+                    if (relevantMediaInfos.isEmpty()){
+                    	// not downloaded loaded yet, so need to download
+                    	List<MBMediaInfo> mediaInfos = this.wsClient.getMediaForCell(matrix.getMatrixID(), charID, taxon.getTaxonID());
+                        for (MBMediaInfo mi : mediaInfos){
+                            if (viewID.equals(mi.getViewID())){
+                                relevantMediaInfos.add(mi);
+                            }
                         }
+                        sessionData.persistRelevantMBMediaInfos(relevantMediaInfos,charID,taxon.getTaxonID(),viewID);
                     }
-                    sessionData.persistRelevantMBMediaInfos(relevantMediaInfos,charID,taxon.getTaxonID(),viewID);
-                }
-                
-                sessionData.setImagesForCell(matrix.getMatrixID(), charID, taxon.getTaxonID(), relevantMediaInfos);
-                for (MBMediaInfo mi : relevantMediaInfos){
+                    
+                    sessionData.setImagesForCell(matrix.getMatrixID(), charID, taxon.getTaxonID(), relevantMediaInfos);
+                    for (MBMediaInfo mi : relevantMediaInfos){
                         allMedia.add(mi);
-                }
-                double percentDone = cellCountCurrent / cellCountTotal;
-                System.out.println("cellCountCurrent " + cellCountCurrent + " out of cellCountTotal " + cellCountTotal + " = " + percentDone);
-                pp.updateProgress(processName, percentDone);
-                if (percentDone == 1.0){
-                    pp.setMessage(processName, "Done downloading image metadata for " + (int)cellCountCurrent + " cells.");
-                }
-                else {
-                    pp.setMessage(processName, "cell " + (int)cellCountCurrent + " of " + (int)cellCountTotal + ": taxon " + taxon.getTaxonName() + " character " + chosenCharacter.getCharName());
+                    }
+                    double percentDone = cellCountCurrent / cellCountTotal;
+                    System.out.println("cellCountCurrent " + cellCountCurrent + " out of cellCountTotal " + cellCountTotal + " = " + percentDone);
+                    pp.updateProgress(processName, percentDone);
+                    if (percentDone == 1.0){
+                        pp.setMessage(processName, "Done downloading image metadata for " + (int)cellCountCurrent + " cells.");
+                    }
+                    else {
+                        pp.setMessage(processName, "cell " + (int)cellCountCurrent + " of " + (int)cellCountTotal + ": taxon " + taxon.getTaxonName() + " character " + ch.getCharName());
+                    }
                 }
             }
+            
         }
         catch(MorphobankWSException e){
             throw new AvatolCVException("problem loading image info for matrix " + matrix.getName());
         }
     }
-    public void downloadImagesForChosenCharacterAndView(ProgressPresenter pp, String processName) throws AvatolCVException {
-        List<MBTaxon> taxa = sessionData.getTaxaForCurrentMatrix();
-        MBMatrix matrix = sessionData.getChosenMatrix();
-        List<String> imageSizes = MBMediaInfo.getMediaTypes();//thumbnail, small, large
+    public void downloadImagesForChosenCharactersAndView(ProgressPresenter pp, String processName) throws AvatolCVException {
+        //List<MBTaxon> taxa = sessionData.getTaxaForCurrentMatrix();
+       // MBMatrix matrix = sessionData.getChosenMatrix();
+        //List<String> imageSizes = MBMediaInfo.getMediaTypes();//thumbnail, small, large
         //sessionData.clearImageDirs();
         sessionData.setCurrentImages(this.allMedia);
         double curCount = 0;
