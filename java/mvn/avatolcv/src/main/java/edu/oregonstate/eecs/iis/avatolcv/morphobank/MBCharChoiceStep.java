@@ -78,7 +78,8 @@ public class MBCharChoiceStep implements Step {
 
     @Override
     public void consumeProvidedData() throws AvatolCVException {
-    	if (getScoringAlgorithms().getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
+    	ScoringAlgorithms.ScoringScope scope = getScoringAlgorithms().getScoringScope();
+    	if (scope == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
     		sessionData.setChosenCharacters(chosenCharacters);
     	}
     	else {

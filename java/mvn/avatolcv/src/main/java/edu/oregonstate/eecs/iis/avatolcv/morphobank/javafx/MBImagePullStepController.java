@@ -230,6 +230,8 @@ public class MBImagePullStepController implements StepController, ProgressPresen
         	catch(AvatolCVException ace){
         		logger.error("AvatolCV error downloading images");
         		logger.error(ace.getMessage());
+        		System.out.println("AvatolCV error downloading images");
+        		ace.printStackTrace();
         		return new Boolean(false);
         	}
         }

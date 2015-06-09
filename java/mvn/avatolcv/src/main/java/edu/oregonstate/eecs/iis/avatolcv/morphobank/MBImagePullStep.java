@@ -1,6 +1,9 @@
 package edu.oregonstate.eecs.iis.avatolcv.morphobank;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -24,6 +27,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
 
 public class MBImagePullStep implements Step {
+	private static final String NL = System.getProperty("line.separator");
     private MorphobankWSClient wsClient = null;
     private String view = null;
     private MBSessionData sessionData = null;
@@ -88,7 +92,9 @@ public class MBImagePullStep implements Step {
         MBMatrix matrix = sessionData.getChosenMatrix();
         this.allMedia = new ArrayList<MBMediaInfo>();
         double cellCountTotal = (double)taxa.size() * chosenCharacters.size();
+        String path = this.sessionData.getImageLoadLogPath();
         try {
+        	BufferedWriter writer = new BufferedWriter(new FileWriter(path));
             double cellCountCurrent = 0.0;
             for (MBCharacter ch : chosenCharacters){
             	String charID = ch.getCharID();
@@ -96,6 +102,7 @@ public class MBImagePullStep implements Step {
                     cellCountCurrent += 1;
                     List<MBMediaInfo> relevantMediaInfos = this.sessionData.loadMediaInfo(charID, taxon.getTaxonID(), viewID);
                     if (relevantMediaInfos.isEmpty()){
+                    	writer.write("loading from SITE : char " + charID + " taxon " + taxon.getTaxonID() + NL);
                     	// not downloaded loaded yet, so need to download
                     	List<MBMediaInfo> mediaInfos = this.wsClient.getMediaForCell(matrix.getMatrixID(), charID, taxon.getTaxonID());
                         for (MBMediaInfo mi : mediaInfos){
@@ -105,23 +112,31 @@ public class MBImagePullStep implements Step {
                         }
                         sessionData.persistRelevantMBMediaInfos(relevantMediaInfos,charID,taxon.getTaxonID(),viewID);
                     }
+                    else {
+                    	writer.write("loading from file : char " + charID + " taxon " + taxon.getTaxonID() + NL);
+                    }
                     
                     sessionData.setImagesForCell(matrix.getMatrixID(), charID, taxon.getTaxonID(), relevantMediaInfos);
                     for (MBMediaInfo mi : relevantMediaInfos){
+                    	writer.write("added : mediaId " + mi.getMediaID() + NL);
                         allMedia.add(mi);
                     }
                     double percentDone = cellCountCurrent / cellCountTotal;
                     System.out.println("cellCountCurrent " + cellCountCurrent + " out of cellCountTotal " + cellCountTotal + " = " + percentDone);
                     pp.updateProgress(processName, percentDone);
                     if (percentDone == 1.0){
-                        pp.setMessage(processName, "Done downloading image metadata for " + (int)cellCountCurrent + " cells.");
+                        pp.setMessage(processName, "Image metadata download complete for " + (int)cellCountCurrent + " cells.");
                     }
                     else {
-                        pp.setMessage(processName, "cell " + (int)cellCountCurrent + " of " + (int)cellCountTotal + ": taxon " + taxon.getTaxonName() + " character " + ch.getCharName());
+                        pp.setMessage(processName, "cell " + (int)cellCountCurrent + " of " + (int)cellCountTotal + " (taxon " + taxon.getTaxonName() + " character " + ch.getCharName() + ")");
                     }
                 }
             }
+            writer.close();
             
+        }
+        catch(IOException ioe){
+        	throw new AvatolCVException("problem logging image load for matrix " + matrix.getName());
         }
         catch(MorphobankWSException e){
             throw new AvatolCVException("problem loading image info for matrix " + matrix.getName());
@@ -148,7 +163,7 @@ public class MBImagePullStep implements Step {
             double percentDone = curCount / imageCount;
             pp.updateProgress(processName, percentDone);
             if (percentDone == 1.0){
-                pp.setMessage(processName, "Done downlading " + (int)curCount + " images.");
+                pp.setMessage(processName, "Image download complete.");
             }
             else {
                 pp.setMessage(processName, "image " + (int)curCount + " of " + (int)imageCount + " id " + image.getID());
@@ -172,6 +187,12 @@ public class MBImagePullStep implements Step {
             }
             double percentDone = curCount / imageCount;
             pp.updateProgress(processName, percentDone);
+            if (percentDone == 1.0){
+                pp.setMessage(processName, "Image download complete.");
+            }
+            else {
+                pp.setMessage(processName, "image " + (int)curCount + " of " + (int)imageCount + " id " + image.getID());
+            }
         }
         
         if (successCount < curCount){

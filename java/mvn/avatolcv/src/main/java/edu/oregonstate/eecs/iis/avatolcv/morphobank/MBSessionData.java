@@ -73,6 +73,9 @@ public class MBSessionData implements SessionData {
     /*
      * Images
      */
+    public String getImageLoadLogPath(){
+    	return sessionMatrixDir + FILESEP + "imageLoadLog.txt";
+    }
     public ImageInfo getLargeImageForImage(ImageInfo ii) throws AvatolCVException {
     	String imageID = ii.getID();
     	ImageInfo large = this.imageLargeForID.get(imageID);

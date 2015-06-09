@@ -37,6 +37,7 @@ public class MBCharChoiceStepController implements StepController {
     private Hashtable<MBCharacter, CheckBox> checkBoxForCharHash;
     //private List<MBCharacter> characters;
     private ScoringAlgorithms.ScoringScope scoringScope = null; 
+    List<MBCharacter> allChars = null;
     public MBCharChoiceStepController(MBCharChoiceStep step, String fxmlDocName){
         this.step = step;
         this.fxmlDocName = fxmlDocName;
@@ -46,12 +47,13 @@ public class MBCharChoiceStepController implements StepController {
         try {
         	if (this.scoringScope == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
         		List<MBCharacter> chosenCharacters = new ArrayList<MBCharacter>();
-        		for (MBCharacter ch : this.step.getCharacters()){
+        		for (MBCharacter ch : this.allChars){
         			if (checkBoxForCharHash.get(ch).isSelected()){
         				chosenCharacters.add(ch);
         			}
         		}
         		this.step.setChosenCharacters(chosenCharacters);
+        		this.step.consumeProvidedData();
         		return true;
         	}
         	else {
@@ -110,13 +112,13 @@ public class MBCharChoiceStepController implements StepController {
             header.setWrapText(true);
             // add a grid layout
             vb.getChildren().add(header);
-            List<MBCharacter> chars = this.step.getCharInfo();
+            this.allChars = this.step.getCharInfo();
             
             ScrollPane scrollPane = new ScrollPane();
             GridPane grid = new GridPane();
             // for each char, create label for charname , radio for yes, no
             int curRow = 0;
-            for (MBCharacter ch : chars){
+            for (MBCharacter ch : allChars){
             	CheckBox cb = new CheckBox("");
             	grid.add(cb,0,curRow);
             	String charName = ch.getCharName();
