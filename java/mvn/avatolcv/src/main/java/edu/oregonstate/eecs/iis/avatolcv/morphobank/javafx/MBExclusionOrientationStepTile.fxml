@@ -5,13 +5,22 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" style="-fx-background-color: ;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" spacing="10.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label text="Excluding poor quality images" />
-      <HBox fillHeight="false" VBox.vgrow="NEVER">
+      <Label text="ImageOrientation" />
+      <Label text="Specimens must be oriented in the same direction. " wrapText="true" />
+      <HBox spacing="8.0" VBox.vgrow="NEVER">
          <children>
-            <TextArea editable="false" maxWidth="1.7976931348623157E308" prefRowCount="6" text="Images that have quality problems can degrade scoring accuracy.  Click the  button on the right to see examples of images with quality issues.  &#10;&#10;Hover over a thumbnail to show a full size version.&#10;Click on a thumbnail to exclude it.&#10;" wrapText="true" HBox.hgrow="ALWAYS" />
-            <Button minWidth="-Infinity" mnemonicParsing="false" text="Show examples" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label text="Click on an image to " />
+            <RadioButton mnemonicParsing="false" selected="true" text="flip horizontally" HBox.hgrow="NEVER">
+               <toggleGroup>
+                  <ToggleGroup fx:id="flipToggleGroup" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton mnemonicParsing="false" text="flip vertically" toggleGroup="$flipToggleGroup" HBox.hgrow="NEVER" />
+            <RadioButton mnemonicParsing="false" text="exclude" toggleGroup="$flipToggleGroup" />
+            <Region HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
       <AnchorPane VBox.vgrow="ALWAYS">

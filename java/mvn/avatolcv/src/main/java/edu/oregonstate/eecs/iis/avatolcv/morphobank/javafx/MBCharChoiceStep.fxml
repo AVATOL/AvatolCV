@@ -8,12 +8,12 @@
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Region prefWidth="100.0" HBox.hgrow="ALWAYS" />
-      <VBox id="characterQuestionVBox" maxWidth="500.0" HBox.hgrow="ALWAYS">
+      <VBox id="characterQuestionVBox" maxWidth="500.0" HBox.hgrow="NEVER">
          <children>
-            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+            <Region VBox.vgrow="ALWAYS" />
             <Label text="Select Character" />
-            <ComboBox fx:id="selectedCharacter" minWidth="200.0" />
-            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+            <ComboBox fx:id="selectedCharacter" minWidth="300.0" />
+            <Region VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
       <Region prefWidth="100.0" HBox.hgrow="ALWAYS" />

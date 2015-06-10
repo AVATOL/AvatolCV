@@ -52,6 +52,9 @@
 .combo-box {
 	-fx-font-size: 15px;
 }
+.check-box {
+	-fx-font-size: 13px;
+}
 .small-heading-text{
 	-fx-font-size: 12px;
 }

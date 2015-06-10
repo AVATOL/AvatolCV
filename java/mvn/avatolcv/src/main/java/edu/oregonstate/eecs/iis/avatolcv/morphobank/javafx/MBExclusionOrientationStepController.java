@@ -91,7 +91,7 @@ public class MBExclusionOrientationStepController extends MBExclusionQualityStep
                     iv.setOnMouseClicked(this::reverseImage);
                     excludeImageGrid.add(iv,curCol, curRow);
                     curRow += 1;
-                    if (curRow > 5){
+                    if (curRow > 4){
                         curRow = 0;
                         curCol++;
                     }
