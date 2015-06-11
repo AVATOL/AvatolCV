@@ -50,6 +50,7 @@ public class MBExclusionOrientationStepController extends MBExclusionQualityStep
     //private Hashtable<ImageView, ImageInfo> imageInfoForImageViewHash = new Hashtable<ImageView, ImageInfo>();
 	private Hashtable<ImageView, RotateTransition> rotaterHashYAxis = new Hashtable<ImageView, RotateTransition>();
     private Hashtable<ImageView, RotateTransition> rotaterHashXAxis = new Hashtable<ImageView, RotateTransition>();
+    private Hashtable<String, ImageView> imageViewForImageIDHash = new Hashtable<String, ImageView>();
     private static final Logger logger = LogManager.getLogger(MBExclusionOrientationStepController.class);
 
     public MBExclusionOrientationStepController(MBExclusionQualityStep step, String fxmlDocName){
@@ -99,11 +100,13 @@ public class MBExclusionOrientationStepController extends MBExclusionQualityStep
                     ImageWithInfo imageWithInfo = new ImageWithInfo("file:" + ii.getFilepath(), ii);
                     iv.setImage(imageWithInfo);
                     iv.setFitHeight(80);
+                    rotateImageToMatchPriorRotationState(iv,ii);
                     //iv.setScaleX(-1);
                     RotateTransition rotatorXAxis = createXAxisRotator(iv);
                     RotateTransition rotatorYAxis = createYAxisRotator(iv);
                     rotaterHashXAxis.put(iv,  rotatorXAxis);
                     rotaterHashYAxis.put(iv,  rotatorYAxis);
+                    imageViewForImageIDHash.put(ii.getID(),iv);
                     renderExclusionStateOfImageView(iv,ii);
                     ////iv.setOnMouseEntered(this::showCurrentImageLarge);
                     //iv.setOnMouseClicked(this::excludeOrUnexcludeImage);
@@ -123,6 +126,15 @@ public class MBExclusionOrientationStepController extends MBExclusionQualityStep
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
         } 
     }
+    public void rotateImageToMatchPriorRotationState(ImageView iv, ImageInfo ii){
+    	if (this.step.isRotatedHorizontally(ii)){
+			iv.setScaleX(-1);
+		}
+		if (this.step.isRotatedVertically(ii)){
+			iv.setScaleY(-1);
+		}
+    	
+    }
     public void handleImageRequest(MouseEvent e){
         ImageView iv = (ImageView)e.getSource();
         Image image = iv.getImage();
@@ -139,8 +151,10 @@ public class MBExclusionOrientationStepController extends MBExclusionQualityStep
         }
     }
     public void flipVertically(ImageInfo ii, ImageView iv){
-        RotateTransition rotater = rotaterHashXAxis.get(iv);
-        rotater.play();
+    	System.out.println("rotate vert");
+        //RotateTransition rotater = rotaterHashXAxis.get(iv);
+        //rotater.play();
+        iv.setScaleY(-iv.getScaleY());
         try {
             this.step.rotateVertically(ii);
         }
@@ -156,8 +170,10 @@ public class MBExclusionOrientationStepController extends MBExclusionQualityStep
     }
     
     public void flipHorizontally(ImageInfo ii, ImageView iv){
-        RotateTransition rotater = rotaterHashYAxis.get(iv);
-        rotater.play();
+    	System.out.println("rotate horiz");
+        //RotateTransition rotater = rotaterHashYAxis.get(iv);
+        //rotater.play();
+        iv.setScaleX(-iv.getScaleX());
         try {
             this.step.rotateHorizontally(ii);
         }
