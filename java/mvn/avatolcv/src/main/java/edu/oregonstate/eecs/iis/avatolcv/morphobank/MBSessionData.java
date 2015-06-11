@@ -23,8 +23,44 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
-
+/*
+ * Directory layout:
+ * 
+ * 
+ * avatol_cv/sourceData/<datasource>/<dataset>/media/thumbnail
+ *                                                  /large
+ *                                                  /exclusions/<imageID>_imageQuality.txt
+ *                                                  /rotations/<imageID>_rotateV.txt
+ *                                                  
+ *          /sessions/<sessionID>.txt    <- has the info for the session
+ *                        ScoringSessionFocus=SPECIMEN_PART_PRESENCE_ABSENCE
+ *                        ScoringScope=MULTIPLE_ITEM
+ *                        DataSource=Morphobank
+ *                        ScoringConcernKey=<characterX>,<characterY>,<characterZ>
+ *                        TraingTestConcernKey=taxon
+ *                        LoginName=Morphobank:jedirv@foo.com
+ *                        LoginPassword=Morphobank:<encryptedPassword>
+ *                        Dataset=BAT
+ *                        PresenceAbsenceChars=charId1:charName1, charId2:charName2,...
+ *                        FilterIncludeKeyValue=view:Ventral
+ *                        
+ *                        
+ *          /sessionData/<sessionID>/
+ *                        
+ *                    
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
 public class MBSessionData implements SessionData {
+
+    public static final String ROTATION_STATES_DIRNAME = "userRotations";
+
+    public static final String ROTATE_VERTICALLY = "rotateVerticaly";
+    public static final String ROTATE_HORIZONTALLY = "rotateHorizontally";
+    
     private static final String NL = System.getProperty("line.separator");
     private static final String FILESEP = System.getProperty("file.separator");
     public static final String STANDARD_IMAGE_FILE_EXTENSION = "jpg";
@@ -53,7 +89,6 @@ public class MBSessionData implements SessionData {
     private List<ImageInfo> imagesThumbnail = new ArrayList<ImageInfo>();
     private List<ImageInfo> imagesSmall = new ArrayList<ImageInfo>();
     private List<ImageInfo> imagesLarge = new ArrayList<ImageInfo>();
-    
     private Hashtable<String, List<MBMediaInfo>> mediaForCell = new Hashtable<String,  List<MBMediaInfo>>();
     private ScoringAlgorithms scoringAlgorithms = null;
     private String chosenAlgorithm = null;
@@ -93,6 +128,7 @@ public class MBSessionData implements SessionData {
         FileUtils.ensureDirExists(getImagesLargeDir());
         FileUtils.ensureDirExists(getImageMBMediaInfoDir());
         FileUtils.ensureDirExists(getImageExclusionStatesDir());
+        FileUtils.ensureDirExists(getImageRotationStateDir());
     }
     public void clearImageMBMediaInfoDir(){
     	FileUtils.clearDir(getImageMBMediaInfoDir());
@@ -115,6 +151,10 @@ public class MBSessionData implements SessionData {
     public String getImagesLargeDir(){
         return getImagesDir() + FILESEP + MBMediaInfo.IMAGE_SIZE_LARGE;
     }
+    public String getImageRotationStateDir(){
+       return getImagesDir() + FILESEP + ROTATION_STATES_DIRNAME;
+    }
+
     public String getImagesDir(){
        return this.sessionMatrixDir + FILESEP + "media";
     }
@@ -236,6 +276,71 @@ public class MBSessionData implements SessionData {
     		return list;
     	}
     	
+    }
+    
+    /*
+     * Rotation vertical
+     */
+    public boolean isRotatedVertically(ImageInfo ii){
+        String path = getRotateVerticallyPath(ii.getID());
+        File f = new File(path);
+        if (f.exists()){
+            return true;
+        } 
+        return false;
+    }
+    public String getRotateVerticallyPath(String imageID){
+        return  getImageRotationStateDir() + FILESEP + imageID + "_" + ROTATE_VERTICALLY + ".txt";
+    }
+    public void rotateVertically(ImageInfo ii) throws AvatolCVException {
+        String path = getRotateVerticallyPath(ii.getID());
+        File f = new File(path);
+        if (f.exists()){
+            f.delete();
+        }
+        else {
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+                writer.write(ROTATE_VERTICALLY + NL);
+                writer.close();
+            }
+            catch(IOException ioe){
+                throw new AvatolCVException("problem writing rotateVertically state to path " + path);
+            }
+        }
+    }
+    
+   
+    /*
+     * Rotation horizontal
+     */
+    public boolean isRotatedHorizontally(ImageInfo ii){
+        String path = getRotateHorizontallyPath(ii.getID());
+        File f = new File(path);
+        if (f.exists()){
+            return true;
+        } 
+        return false;
+    }
+    public String getRotateHorizontallyPath(String imageID){
+        return  getImageRotationStateDir() + FILESEP + imageID + "_" + ROTATE_HORIZONTALLY + ".txt";
+    }
+    public void rotateHorizontally(ImageInfo ii) throws AvatolCVException {
+        String path = getRotateHorizontallyPath(ii.getID());
+        File f = new File(path);
+        if (f.exists()){
+            f.delete();
+        }
+        else {
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+                writer.write(ROTATE_HORIZONTALLY + NL);
+                writer.close();
+            }
+            catch(IOException ioe){
+                throw new AvatolCVException("problem writing rotateHorizontally state to path " + path);
+            }
+        }
     }
     /*
      * MATRICES

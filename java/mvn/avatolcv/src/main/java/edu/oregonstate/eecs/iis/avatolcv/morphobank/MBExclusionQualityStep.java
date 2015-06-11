@@ -48,5 +48,12 @@ public class MBExclusionQualityStep implements Step {
         // TODO Auto-generated method stub
         return null;
     }
+    
+    public void rotateVertically(ImageInfo ii) throws AvatolCVException {
+        this.sessionData.rotateVertically(ii);
+    }
 
+    public void rotateHorizontally(ImageInfo ii) throws AvatolCVException {
+        this.sessionData.rotateHorizontally(ii);
+    }
 }

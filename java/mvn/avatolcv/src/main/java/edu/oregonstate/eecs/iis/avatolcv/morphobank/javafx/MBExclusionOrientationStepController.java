@@ -1,5 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx;
 
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +28,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.RadioButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -40,8 +43,13 @@ import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBExclusionQualityStep;
 
 public class MBExclusionOrientationStepController extends MBExclusionQualityStepController {
-
-	private Hashtable<ImageView, RotateTransition> rotaterHash = new Hashtable<ImageView, RotateTransition>();
+    public RadioButton radioFlipHorizontal;
+    public RadioButton radioFlipVertical;
+    public RadioButton radioExclude;
+    
+    //private Hashtable<ImageView, ImageInfo> imageInfoForImageViewHash = new Hashtable<ImageView, ImageInfo>();
+	private Hashtable<ImageView, RotateTransition> rotaterHashYAxis = new Hashtable<ImageView, RotateTransition>();
+    private Hashtable<ImageView, RotateTransition> rotaterHashXAxis = new Hashtable<ImageView, RotateTransition>();
     private static final Logger logger = LogManager.getLogger(MBExclusionOrientationStepController.class);
 
     public MBExclusionOrientationStepController(MBExclusionQualityStep step, String fxmlDocName){
@@ -49,9 +57,18 @@ public class MBExclusionOrientationStepController extends MBExclusionQualityStep
     	
     }
    
-    private RotateTransition createRotator(Node card) {
+    private RotateTransition createYAxisRotator(Node card) {
         RotateTransition rotator = new RotateTransition(Duration.millis(500), card);
         rotator.setAxis(Rotate.Y_AXIS);
+        rotator.setFromAngle(0);
+        rotator.setToAngle(180);
+        rotator.setInterpolator(Interpolator.LINEAR);
+        rotator.setCycleCount(1);
+        return rotator;
+    }
+    private RotateTransition createXAxisRotator(Node card) {
+        RotateTransition rotator = new RotateTransition(Duration.millis(500), card);
+        rotator.setAxis(Rotate.X_AXIS);
         rotator.setFromAngle(0);
         rotator.setToAngle(180);
         rotator.setInterpolator(Interpolator.LINEAR);
@@ -83,12 +100,14 @@ public class MBExclusionOrientationStepController extends MBExclusionQualityStep
                     iv.setImage(imageWithInfo);
                     iv.setFitHeight(80);
                     //iv.setScaleX(-1);
-                    RotateTransition rotator = createRotator(iv);
-                    rotaterHash.put(iv,  rotator);
+                    RotateTransition rotatorXAxis = createXAxisRotator(iv);
+                    RotateTransition rotatorYAxis = createYAxisRotator(iv);
+                    rotaterHashXAxis.put(iv,  rotatorXAxis);
+                    rotaterHashYAxis.put(iv,  rotatorYAxis);
                     renderExclusionStateOfImageView(iv,ii);
                     ////iv.setOnMouseEntered(this::showCurrentImageLarge);
                     //iv.setOnMouseClicked(this::excludeOrUnexcludeImage);
-                    iv.setOnMouseClicked(this::reverseImage);
+                    iv.setOnMouseClicked(this::handleImageRequest);
                     excludeImageGrid.add(iv,curCol, curRow);
                     curRow += 1;
                     if (curRow > 4){
@@ -104,35 +123,78 @@ public class MBExclusionOrientationStepController extends MBExclusionQualityStep
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
         } 
     }
-   
-    public void reverseImage(MouseEvent e){
-    	ImageView iv = (ImageView)e.getSource();
-    	RotateTransition rotater = rotaterHash.get(iv);
-    	rotater.play();
-    	File output = new File("c:\\avatol\\git\\avatol_cv\\reversedImage.jpg");
-
-    	
-    	try {
-        	ImageIO.write(SwingFXUtils.fromFXImage(iv.snapshot(null, null), null), "jpg", output);
-    	}
-    	catch(IOException ioe){
-    		
-    	}
-
-
+    public void handleImageRequest(MouseEvent e){
+        ImageView iv = (ImageView)e.getSource();
+        Image image = iv.getImage();
+        ImageWithInfo imageWithInfo = (ImageWithInfo)image;
+        ImageInfo ii = imageWithInfo.getImageInfo();
+        if (radioExclude.isSelected()){
+            excludeOrUnexcludeImage(ii,iv);
+        }
+        else if (radioFlipVertical.isSelected()){
+            flipVertically(ii, iv);
+        }
+        else {
+            flipHorizontally(ii, iv);
+        }
     }
-    public void excludeOrUnexcludeImage(MouseEvent e){
+    public void flipVertically(ImageInfo ii, ImageView iv){
+        RotateTransition rotater = rotaterHashXAxis.get(iv);
+        rotater.play();
+        try {
+            this.step.rotateVertically(ii);
+        }
+        catch(AvatolCVException ace){
+            logger.error("AvatolCV error while trying to save rotation state");
+            logger.error(ace.getMessage());
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("AvatolCV error while trying to save rotation state");
+            alert.setContentText(ace.getMessage());
+            alert.showAndWait();
+        }
+    }
+    
+    public void flipHorizontally(ImageInfo ii, ImageView iv){
+        RotateTransition rotater = rotaterHashYAxis.get(iv);
+        rotater.play();
+        try {
+            this.step.rotateHorizontally(ii);
+        }
+        catch(AvatolCVException ace){
+            logger.error("AvatolCV error while trying to save rotation state");
+            logger.error(ace.getMessage());
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("AvatolCV error while trying to save rotation state");
+            alert.setContentText(ace.getMessage());
+            alert.showAndWait();
+        }
+    }
+    
+    
+    public BufferedImage flipBufferedImageVertical(BufferedImage src){
+        AffineTransform tx=AffineTransform.getScaleInstance(-1.0,1.0);  //scaling
+        tx.translate(-src.getWidth(),0);  //translating
+        AffineTransformOp tr=new AffineTransformOp(tx,null);  //transforming
+        return tr.filter(src, null);  //filtering
+    }
+       
+    public BufferedImage flipBufferedImageHorizontal(BufferedImage src){
+        AffineTransform tx=AffineTransform.getScaleInstance(1.0,-1.0);  //scaling
+        tx.translate(0,-src.getHeight());  //translating
+        AffineTransformOp tr=new AffineTransformOp(tx,null);  //transforming
+        return tr.filter(src, null);  //filtering
+    }
+    public void excludeOrUnexcludeImage(ImageInfo ii, ImageView iv){
     	try {
-    		ImageView source = (ImageView)e.getSource();
-        	ImageWithInfo sourceImage = (ImageWithInfo)source.getImage();
-        	ImageInfo ii = sourceImage.getImageInfo();
         	if (ii.isExcluded()){
         		ii.undoExclude();
         	}
         	else {
         		ii.excludeForReason(ImageInfo.EXCLUSION_REASON_ORIENTATION);
         	}
-        	renderExclusionStateOfImageView(source, ii);
+        	renderExclusionStateOfImageView(iv, ii);
     	}
     	catch(AvatolCVException ace){
     		logger.error("AvatolCV error while trying to save exclusion state");

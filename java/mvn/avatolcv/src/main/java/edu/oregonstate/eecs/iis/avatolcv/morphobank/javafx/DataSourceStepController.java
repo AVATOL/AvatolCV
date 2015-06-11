@@ -1,16 +1,11 @@
 package edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx;
 
 import java.io.IOException;
-import java.util.List;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.DataSourceStep;
-import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBLoginStep;
 
 public class DataSourceStepController implements StepController {
 

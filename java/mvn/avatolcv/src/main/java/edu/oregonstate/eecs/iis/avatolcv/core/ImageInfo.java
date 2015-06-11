@@ -8,7 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class ImageInfo {
-	public static final String EXCLUSION_STATES_DIRNAME = "exclusionStates";
+    public static final String EXCLUSION_STATES_DIRNAME = "userExclusions";
+
 	private static final String FILESEP = System.getProperty("file.separator");	
 	private static final String NL = System.getProperty("line.separator");
 	public static final String EXCLUSION_REASON_IMAGE_QUALITY = "imageQuality";
@@ -28,10 +29,12 @@ public class ImageInfo {
 	private String extension = null;
 	private ImageInfo ancestorImage = null;
 	private String exclusionStateDir = null;
+    
 	public ImageInfo(String parentDir, String ID, String nameAsUploadedNormalized, String imageWidth, String outputType, String extension){
 		this.parentDir = parentDir;
 		File parentFile = new File(parentDir);
 		this.exclusionStateDir = parentFile.getParentFile().getAbsolutePath() + FILESEP + EXCLUSION_STATES_DIRNAME;
+        
 		this.ID = ID;
 		this.nameAsUploadedNormalized = nameAsUploadedNormalized;
 		this.imageWidth = imageWidth;
@@ -40,7 +43,6 @@ public class ImageInfo {
 		this.ID_name = ID + "_" + nameAsUploadedNormalized;
 		this.ID_name_imageWidth = this.ID_name +  "_" + imageWidth;
 		this.ID_name_imagewidth_type = this.ID_name_imageWidth + "_" + outputType;
-		this.exclusionStateDir = exclusionStateDir;
 		ingestOutputType();
 	}
 	private void ingestOutputType(){
@@ -132,6 +134,9 @@ public class ImageInfo {
         ImageInfo ii = new ImageInfo(parentDir, ID, nameAsUploaded, imageWidth, outputType, extension);
         return ii;
 	}
+	/*
+	 * Exclusion
+	 */
 	public String getExclusionInfoFilePath(){
 		return  exclusionStateDir + FILESEP + this.getID() + ".txt";
 	}
@@ -168,4 +173,5 @@ public class ImageInfo {
 	    	throw new AvatolCVException("problem writing exclusion state to path " + path);
 	    }
 	}
+	
 }

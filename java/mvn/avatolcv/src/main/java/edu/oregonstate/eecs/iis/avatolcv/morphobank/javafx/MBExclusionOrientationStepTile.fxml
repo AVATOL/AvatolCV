@@ -13,13 +13,13 @@
          <children>
             <Region HBox.hgrow="ALWAYS" />
             <Label text="Click on an image to " />
-            <RadioButton mnemonicParsing="false" selected="true" text="flip horizontally" HBox.hgrow="NEVER">
+            <RadioButton fx:id="radioFlipHorizontal" mnemonicParsing="false" selected="true" text="flip horizontally" HBox.hgrow="NEVER">
                <toggleGroup>
                   <ToggleGroup fx:id="flipToggleGroup" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton mnemonicParsing="false" text="flip vertically" toggleGroup="$flipToggleGroup" HBox.hgrow="NEVER" />
-            <RadioButton mnemonicParsing="false" text="exclude" toggleGroup="$flipToggleGroup" />
+            <RadioButton fx:id="radioFlipVertical" mnemonicParsing="false" text="flip vertically" toggleGroup="$flipToggleGroup" HBox.hgrow="NEVER" />
+            <RadioButton fx:id="radioExclude" mnemonicParsing="false" text="exclude" toggleGroup="$flipToggleGroup" />
             <Region HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
