@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -12,12 +17,19 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBImagePullStep;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.charscore.MBTrainingExampleCheckStep;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBImagePullStepController.ImageDownloadTask;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBImagePullStepController.MessageUpdater;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBImagePullStepController.NavButtonEnablerRunner;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBImagePullStepController.ProgressUpdater;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 
 public class MBTrainingExampleCheckStepController implements StepController  {
+
     public GridPane trainingTestingGridPane;
     private MBTrainingExampleCheckStep step = null;
     private String fxmlDocName;
@@ -60,8 +72,11 @@ public class MBTrainingExampleCheckStepController implements StepController  {
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
         }
     }
+    
+    
 	@Override
 	public boolean delayEnableNavButtons() {
 		return false;
 	}
+	
 }

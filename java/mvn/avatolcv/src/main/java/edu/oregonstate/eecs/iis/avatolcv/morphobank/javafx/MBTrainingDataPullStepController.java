@@ -26,19 +26,20 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBImagePullStep;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MorphobankSessionJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.charscore.MBTrainingDataPullStep;
 
-public class MBImagePullStepController implements StepController, ProgressPresenter  {
-    public static final String IMAGE_INFO_DOWNLOAD = "imageInfoDownload"; 
-    public static final String IMAGE_FILE_DOWNLOAD = "imageFileDownload"; 
-    public ProgressBar imageFileDownloadProgress;
-    public Label imageFileDownloadMessage;
-    public ProgressBar imageInfoDownloadProgress;
-    public Label imageInfoDownloadMessage;
-    private MBImagePullStep step;
+public class MBTrainingDataPullStepController implements StepController, ProgressPresenter  {
+    public static final String TRAINING_DATA_DOWNLOAD = "trainingDataDownload"; 
+    public static final String ANNOTATION_DATA_DOWNLOAD = "annotatoinDataDownload"; 
+    public ProgressBar trainingDataDownloadProgress;
+    public Label trainingDataDownloadMessage;
+    public ProgressBar annotationDataDownloadProgress;
+    public Label annotationDataDownloadMessage;
+    private MBTrainingDataPullStep step;
     private String fxmlDocName;
     private MorphobankSessionJavaFX fxSession;
     
-    public MBImagePullStepController(MorphobankSessionJavaFX fxSession, MBImagePullStep step, String fxmlDocName){
+    public MBTrainingDataPullStepController(MorphobankSessionJavaFX fxSession, MBTrainingDataPullStep step, String fxmlDocName){
         this.step = step;
         this.fxmlDocName = fxmlDocName;
         this.fxSession = fxSession;
@@ -51,11 +52,11 @@ public class MBImagePullStepController implements StepController, ProgressPresen
 
     @Override
     public void clearUIFields() {
-        imageInfoDownloadProgress.setProgress(0.0);
-        imageInfoDownloadMessage.setText("");
+        trainingDataDownloadProgress.setProgress(0.0);
+        trainingDataDownloadMessage.setText("");
         
-        imageFileDownloadProgress.setProgress(0.0);
-        imageFileDownloadMessage.setText("");
+        annotationDataDownloadProgress.setProgress(0.0);
+        annotationDataDownloadMessage.setText("");
     }
 
     @Override
@@ -68,23 +69,19 @@ public class MBImagePullStepController implements StepController, ProgressPresen
             
             
             
-            imageInfoDownloadProgress.setProgress(0.0);
-            imageInfoDownloadMessage.setText("");
+            trainingDataDownloadProgress.setProgress(0.0);
+            trainingDataDownloadMessage.setText("");
             
-            imageFileDownloadProgress.setProgress(0.0);
-            imageFileDownloadMessage.setText("");
+            annotationDataDownloadProgress.setProgress(0.0);
+            annotationDataDownloadMessage.setText("");
             
-            Task<Boolean> task = new ImageDownloadTask(this, this.step, IMAGE_INFO_DOWNLOAD, IMAGE_FILE_DOWNLOAD);
+            Task<Boolean> task = new TrainingDataDownloadTask(this, this.step, TRAINING_DATA_DOWNLOAD, ANNOTATION_DATA_DOWNLOAD);
             /*
              * NOTE - wanted to use javafx properties and binding here but couldn't dovetail it in.  I could not put
              * the loops that do work in the call method of the Task (which manages updating on the JavaFX APp Thread), 
              * I had to manage this myself the old school way, to update the progress bar, by using Platform.runLater
              * 
              */
-            //imageFileDownloadProgress.progressProperty().bind(fileDownloadPercentProperty);
-            //imageInfoDownloadProgress.progressProperty().bind(infoDownloadPercentProperty);
-            //imageFileDownloadMessage.textProperty().bind(fileMessageProperty);
-            //imageInfoDownloadMessage.textProperty().bind(infoMessageProperty);
             new Thread(task).start();
             return content;
         }
@@ -93,37 +90,7 @@ public class MBImagePullStepController implements StepController, ProgressPresen
         } 
     }
     
-    public Node getContentNodeOld() throws AvatolCVException {
-        try {
-            System.out.println("trying to load" +  this.fxmlDocName);
-            FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
-            loader.setController(this);
-            Node content = loader.load();
-            
-            imageInfoDownloadProgress.setProgress(0.0);
-            imageInfoDownloadMessage.setText("");
-            
-            imageFileDownloadProgress.setProgress(0.0);
-            imageFileDownloadMessage.setText("");
-            
-            Task<Boolean> task = new ImageDownloadTask(this, this.step, IMAGE_INFO_DOWNLOAD, IMAGE_FILE_DOWNLOAD);
-            /*
-             * NOTE - wanted to use javafx properties and binding here but couldn't dovetail it in.  I could not put
-             * the loops that do work in the call method of the Task (which manages updating on the JavaFX APp Thread), 
-             * I had to manage this myself the old school way, to update the progress bar, by using Platform.runLater
-             * 
-             */
-            //imageFileDownloadProgress.progressProperty().bind(fileDownloadPercentProperty);
-            //imageInfoDownloadProgress.progressProperty().bind(infoDownloadPercentProperty);
-            //imageFileDownloadMessage.textProperty().bind(fileMessageProperty);
-            //imageInfoDownloadMessage.textProperty().bind(infoMessageProperty);
-            new Thread(task).start();
-            return content;
-        }
-        catch(IOException ioe){
-            throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
-        } 
-    }
+    
     @Override
     public void updateProgress(String processName, double percent) {
         ProgressUpdater pu = new ProgressUpdater(processName, percent);
@@ -143,11 +110,11 @@ public class MBImagePullStepController implements StepController, ProgressPresen
         }
         @Override
         public void run() {
-            if (IMAGE_FILE_DOWNLOAD.equals(processName)){
-                imageFileDownloadMessage.setText(message);
+            if (ANNOTATION_DATA_DOWNLOAD.equals(processName)){
+                annotationDataDownloadMessage.setText(message);
             }
-            else if (IMAGE_INFO_DOWNLOAD.equals(processName)){
-                imageInfoDownloadMessage.setText(message);
+            else if (TRAINING_DATA_DOWNLOAD.equals(processName)){
+                trainingDataDownloadMessage.setText(message);
             }
         }
     }
@@ -160,25 +127,25 @@ public class MBImagePullStepController implements StepController, ProgressPresen
         }
         @Override
         public void run() {
-        	if (IMAGE_FILE_DOWNLOAD.equals(processName)){
-                System.out.println("should have setr progress to " + percent);
-                imageFileDownloadProgress.setProgress((double)percent);
+        	if (ANNOTATION_DATA_DOWNLOAD.equals(processName)){
+                //System.out.println("should have setr progress to " + percent);
+                annotationDataDownloadProgress.setProgress((double)percent);
             }
-            else if (IMAGE_INFO_DOWNLOAD.equals(processName)){
-                System.out.println("should have setr progress to " + percent);
-                imageInfoDownloadProgress.setProgress((double)percent);
+            else if (TRAINING_DATA_DOWNLOAD.equals(processName)){
+                //System.out.println("should have setr progress to " + percent);
+                trainingDataDownloadProgress.setProgress((double)percent);
             }
         }
     }
    
-    public class ImageDownloadTask extends Task<Boolean> {
+    public class TrainingDataDownloadTask extends Task<Boolean> {
         private String processName1;
         private String processName2;
-        private MBImagePullStep step;
-        private MBImagePullStepController controller;
-        private final Logger logger = LogManager.getLogger(ImageDownloadTask.class);
+        private MBTrainingDataPullStep step;
+        private MBTrainingDataPullStepController controller;
+        private final Logger logger = LogManager.getLogger(TrainingDataDownloadTask.class);
     	
-        public ImageDownloadTask(MBImagePullStepController controller, MBImagePullStep step, String processName1, String processName2){
+        public TrainingDataDownloadTask(MBTrainingDataPullStepController controller, MBTrainingDataPullStep step, String processName1, String processName2){
             this.controller = controller;
             this.step = step;
             this.processName1 = processName1;
@@ -188,8 +155,8 @@ public class MBImagePullStepController implements StepController, ProgressPresen
         @Override
         protected Boolean call() throws Exception {
         	try {
-        		this.step.downloadImageInfoForChosenCharactersAndView(this.controller, processName1);
-        		this.step.downloadImagesForChosenCharactersAndView(this.controller, processName2);
+        		this.step.downloadTrainingData(this.controller, processName1);
+        		this.step.downloadAnnotationData(this.controller, processName2);
         		NavButtonEnablerRunner runner = new NavButtonEnablerRunner();
         		Platform.runLater(runner);
         		return new Boolean(true);

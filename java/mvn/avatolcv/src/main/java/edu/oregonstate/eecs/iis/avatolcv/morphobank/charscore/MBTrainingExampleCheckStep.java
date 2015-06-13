@@ -10,6 +10,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharStateInfo.MBCharStateValue;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 
 public class MBTrainingExampleCheckStep implements Step {
@@ -41,31 +42,6 @@ public class MBTrainingExampleCheckStep implements Step {
         // TODO Auto-generated method stub
         return null;
     }
-    public List<MBTaxon> getTaxa() {
-        return sessionData.getTaxa();
-    }
-    public void downloadTrainingInfo() throws AvatolCVException {
-        String matrixID = sessionData.getChosenMatrix().getMatrixID();
-        String charID = sessionData.getChosenCharacters().getCharID();
-        List<MBTaxon> taxa = getTaxa();
-        for (MBTaxon taxon : taxa){
-            String taxonID = taxon.getTaxonID();
-            List<MBMediaInfo> mediaForCell = sessionData.getImagesForCell(matrixID, charID, taxonID);
-            for (MBMediaInfo mi : mediaForCell){
-                String mediaID = mi.getMediaID();
-                try {
-                    List<MBAnnotation> annotationsForCell = this.wsClient.getAnnotationsForCellMedia(matrixID, charID, taxonID, mediaID);
-                    List<MBCharStateValue> statesForCell = this.wsClient.getCharStatesForCell(matrixID, charID, taxonID);
-                    
-                }
-                catch(MorphobankWSException e){
-                    throw new AvatolCVException("problem downloading annotation info for cell media " + matrixID + "_" + charID + "_" + taxonID + "_" + mediaID + e.getMessage());
-                }
-            }
-        }
-        
-       
-        
-    }
+   
     
 }

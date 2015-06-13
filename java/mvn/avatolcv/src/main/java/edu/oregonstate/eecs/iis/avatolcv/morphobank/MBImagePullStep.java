@@ -32,7 +32,6 @@ public class MBImagePullStep implements Step {
     private String view = null;
     private MBSessionData sessionData = null;
     private List<MBMediaInfo> mbImages = null;
-    private boolean imagesLoadedSuccessfully = false;
     private List<MBMediaInfo> allMedia = null;
     public MBImagePullStep(String view, MorphobankWSClient wsClient, MBSessionData sessionData){
         this.wsClient = wsClient;
@@ -64,7 +63,6 @@ public class MBImagePullStep implements Step {
         if (imageNotYetDownloaded){
             throw new AvatolCVException("problem downloading image: " + mostRecentException);
         }
-        imagesLoadedSuccessfully = true;
         return true;
     }
     public boolean downloadImageIfNeeded(ProgressPresenter pp, ImageInfo image, String targetDir, String processNameFileDownload) throws AvatolCVException {
@@ -92,7 +90,7 @@ public class MBImagePullStep implements Step {
         MBMatrix matrix = sessionData.getChosenMatrix();
         this.allMedia = new ArrayList<MBMediaInfo>();
         double cellCountTotal = (double)taxa.size() * chosenCharacters.size();
-        String path = this.sessionData.getImageLoadLogPath();
+        String path = this.sessionData.getSessionLogPath("imageLoad");
         try {
         	BufferedWriter writer = new BufferedWriter(new FileWriter(path));
             double cellCountCurrent = 0.0;
@@ -128,7 +126,7 @@ public class MBImagePullStep implements Step {
                         pp.setMessage(processName, "Image metadata download complete for " + (int)cellCountCurrent + " cells.");
                     }
                     else {
-                        pp.setMessage(processName, "cell " + (int)cellCountCurrent + " of " + (int)cellCountTotal + " (taxon " + taxon.getTaxonName() + " character " + ch.getCharName() + ")");
+                        pp.setMessage(processName, "cell " + (int)cellCountCurrent + " of " + (int)cellCountTotal + " (character " + ch.getCharName() + " taxon " + taxon.getTaxonName() + ")");
                     }
                 }
             }

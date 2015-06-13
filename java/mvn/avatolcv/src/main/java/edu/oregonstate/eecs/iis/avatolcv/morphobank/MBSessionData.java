@@ -16,7 +16,10 @@ import edu.oregonstate.eecs.iis.avatolcv.core.FileUtils;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionData;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotationPoint;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharStateInfo.MBCharStateValue;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharState;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
@@ -31,6 +34,9 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
  *                                                  /large
  *                                                  /exclusions/<imageID>_imageQuality.txt
  *                                                  /rotations/<imageID>_rotateV.txt
+ * avatol_cv/sourceData/<datasource>/<dataset>/trainingData/<key>.txt
+ * avatol_cv/sourceData/<datasource>/<dataset>/annotations/<key>.txt
+
  *                                                  
  *          /sessions/<sessionID>.txt    <- has the info for the session
  *                        ScoringSessionFocus=SPECIMEN_PART_PRESENCE_ABSENCE
@@ -78,7 +84,7 @@ public class MBSessionData implements SessionData {
     
     private List<MBMediaInfo> mbImages = null;
 
-    
+    private String sessionID = null;
     
     		
     private Hashtable<String,MBMediaInfo> mbImageForID = new Hashtable<String,MBMediaInfo>();
@@ -104,13 +110,18 @@ public class MBSessionData implements SessionData {
             f.mkdirs();
         }
         this.scoringAlgorithms = new ScoringAlgorithms();
+        this.sessionID = "" + System.currentTimeMillis() / 1000L;
     }
+    
+    public String getSessionLogPath(String logName){
+    	return sessionMatrixDir + FILESEP + this.sessionID + FILESEP + logName + ".log";
+    }
+    
     /*
      * Images
      */
-    public String getImageLoadLogPath(){
-    	return sessionMatrixDir + FILESEP + "imageLoadLog.txt";
-    }
+    
+    
     public ImageInfo getLargeImageForImage(ImageInfo ii) throws AvatolCVException {
     	String imageID = ii.getID();
     	ImageInfo large = this.imageLargeForID.get(imageID);
@@ -129,6 +140,9 @@ public class MBSessionData implements SessionData {
         FileUtils.ensureDirExists(getImageMBMediaInfoDir());
         FileUtils.ensureDirExists(getImageExclusionStatesDir());
         FileUtils.ensureDirExists(getImageRotationStateDir());
+        FileUtils.ensureDirExists(getSessionDir());
+        FileUtils.ensureDirExists(getAnnotationDataDir());
+        FileUtils.ensureDirExists(getTrainingDataDir());
     }
     public void clearImageMBMediaInfoDir(){
     	FileUtils.clearDir(getImageMBMediaInfoDir());
@@ -155,9 +169,18 @@ public class MBSessionData implements SessionData {
        return getImagesDir() + FILESEP + ROTATION_STATES_DIRNAME;
     }
 
+    public String getSessionDir(){
+       return this.sessionMatrixDir + FILESEP + this.sessionID;
+    }
     public String getImagesDir(){
        return this.sessionMatrixDir + FILESEP + "media";
     }
+    public String getTrainingDataDir(){
+        return this.sessionMatrixDir + FILESEP + "trainingData";
+     }
+    public String getAnnotationDataDir(){
+        return this.sessionMatrixDir + FILESEP + "annotations";
+     }
     public String getImageMBMediaInfoDir(){
         return getImagesDir() + FILESEP + "mbMediaInfo";
     }
@@ -448,4 +471,126 @@ public class MBSessionData implements SessionData {
     public ScoringAlgorithms getScoringAlgorithms() {
         return this.scoringAlgorithms;
     }
+
+//make a getKey method that prepends identifiers, then alphabetizes, like c890984_m12345_t83477
+
+//changte the other methods so they use the same key
+
+//should I remove the matrixID as superfluous as the data is under a matrix-specific dir?
+    
+    public String getKeyForCell(String charID, String taxonID){
+    	return "c" + charID + "_t" + taxonID;
+    }
+    public String getKeyForCellMedia(String charID, String taxonID, String mediaID){
+    	return "c" + charID + "_m" + mediaID + "_t" + taxonID;
+    }
+	@Override
+	public void registerAnnotationsForCell(
+			List<MBAnnotation> annotationsForCell, String charID,
+			String taxonID, String mediaID) throws AvatolCVException {
+		String cellMediaKey = getKeyForCellMedia(charID, taxonID, mediaID);
+		String path = getAnnotationDataDir() + FILESEP + cellMediaKey + ".txt";
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+			for (MBAnnotation a : annotationsForCell){
+				
+				String type = a.getType();
+				writer.write(type + ":");
+				List<MBAnnotationPoint> points = a.getPoints();
+				int i = 0;
+				for (; i < points.size() - 1 ; i++){
+					MBAnnotationPoint p = points.get(i);
+					writer.write(p.getX() + "," + p.getY() + ";");
+				}
+				MBAnnotationPoint p = points.get(i);
+				writer.write(p.getX() + "," + p.getY() + NL);
+			}
+			writer.close();
+		}
+		catch(IOException ioe){
+			throw new AvatolCVException("problem writing annotation data for cell: char " + charID + " taxon " + taxonID + " mediaID " + mediaID);
+		}
+	}
+	public boolean isStatesForCellOnDisk(String charID, String taxonID){
+		String cellKey = getKeyForCell(charID, taxonID);
+		String path = getTrainingDataDir() + FILESEP + cellKey + ".txt";
+		File f = new File(path);
+		if (f.exists()){
+			return true;
+		}
+		return false;
+	}
+	public boolean isAnnotationOnDisk(String charID, String taxonID, String mediaID){
+		String cellMediaKey = getKeyForCellMedia(charID, taxonID, mediaID);
+		String path = getAnnotationDataDir() + FILESEP + cellMediaKey + ".txt";
+		File f = new File(path);
+		if (f.exists()){
+			return true;
+		}
+		return false;
+	}
+	@Override
+	public void registerStatesForCell(List<MBCharStateValue> statesForCell,
+			String charID, String taxonID) throws AvatolCVException {
+		String cellKey = getKeyForCell(charID, taxonID);
+		String path = getTrainingDataDir() + FILESEP + cellKey + ".txt";
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+			for (MBCharStateValue csv : statesForCell){
+				
+				String charState = csv.getCharStateID();
+				writer.write(charState + NL);
+			}
+			writer.close();
+		}
+		catch(IOException ioe){
+			throw new AvatolCVException("problem writing annotation data for cell: char " + charID + " taxon " + taxonID);
+		}
+	}
+	public MBAnnotationPoint getAnnotationPointForString(String s){
+		String[] coords = s.split(",");
+		String x = coords[0];
+		String y = coords[1];
+		MBAnnotationPoint p = new MBAnnotationPoint();
+		p.setX(new Double(x).doubleValue());
+		p.setY(new Double(y).doubleValue());
+		return p;
+	}
+	public List<MBAnnotation> loadAnnotationsForCellMedia(String charID, String taxonID, String mediaID) throws AvatolCVException {
+		List<MBAnnotation> annotations = new ArrayList<MBAnnotation>();
+		String cellMediaKey = getKeyForCellMedia(charID, taxonID, mediaID);
+		String path = getAnnotationDataDir() + FILESEP + cellMediaKey + ".txt";
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(path));
+			String line = null;
+			while (null != (line = reader.readLine())){
+				String[] parts = line.split(":");
+				String type = parts[0];
+				MBAnnotation annotation = new MBAnnotation();
+				annotation.setType(type);
+				String pointString = parts[1];
+				List<MBAnnotationPoint> points = new ArrayList<MBAnnotationPoint>();
+				if (type.equals(MBAnnotation.POINT)){
+					MBAnnotationPoint p = getAnnotationPointForString(pointString);
+					points.add(p);
+					annotation.setPoints(points);
+				}
+				else {
+					// rectangle or polygon - two or more points
+					String[] pointStrings = pointString.split(";");
+					for (String ps : pointStrings){
+						MBAnnotationPoint p = getAnnotationPointForString(ps);
+						points.add(p);
+						annotation.setPoints(points);
+					}
+				}
+				annotations.add(annotation);
+			}
+			reader.close();
+			return annotations;
+		}
+		catch(IOException ioe){
+			throw new AvatolCVException("problem writing annotation data for cell: char " + charID + " taxon " + taxonID + " mediaID " + mediaID);
+		}
+	}
 }

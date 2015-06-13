@@ -30,6 +30,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.generic.CharQuestionsStep;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.charscore.MBTrainingDataPullStep;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.charscore.MBTrainingExampleCheckStep;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.DataSourceStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBCharChoiceStepController;
@@ -39,6 +40,7 @@ import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBExclusionQualitySte
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBImagePullStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBLoginStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBMatrixChoiceStepController;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBTrainingDataPullStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBTrainingExampleCheckStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBViewChoiceStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.SessionFocusStepController;
@@ -140,12 +142,17 @@ public class MorphobankSessionJavaFX {
         Label loginLabel = new Label("Login");
         stepList.getChildren().add(loginLabel);
         */
+        MBTrainingDataPullStep trainingDataPullStep = new MBTrainingDataPullStep(null, client, sessionData);
+        ss.appendStep(trainingDataPullStep);
+        MBTrainingDataPullStepController trainingDataPullStepController = new MBTrainingDataPullStepController(this, trainingDataPullStep, "MBTrainingDataPullStep.fxml");
+        controllerForStep.put(trainingDataPullStep, trainingDataPullStepController);
+        addLabelForStep(trainingDataPullStep,"Pull Training Data");
+       
         MBTrainingExampleCheckStep scoringTrainingExampleCheckStep = new MBTrainingExampleCheckStep(null, sessionData, client);
         ss.appendStep(scoringTrainingExampleCheckStep);
         MBTrainingExampleCheckStepController trainingExampleCheckStepController = new MBTrainingExampleCheckStepController(scoringTrainingExampleCheckStep, "MBTrainingExampleCheckStep.fxml");
         controllerForStep.put(scoringTrainingExampleCheckStep, trainingExampleCheckStepController);
         addLabelForStep(scoringTrainingExampleCheckStep,"Train vs Test");
-       
         activateCurrentStep();
     }
     private void addLabelForStep(Step step, String text){

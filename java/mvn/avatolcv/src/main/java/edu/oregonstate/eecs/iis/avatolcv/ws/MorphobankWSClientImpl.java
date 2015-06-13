@@ -22,6 +22,9 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotationPoint;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfoForSinglePoint.MBAnnotationWithSinglePoint;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfoForSinglePoint;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.Authentication;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
@@ -346,7 +349,14 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
         /*
          * http://morphobank.org/service.php/AVATOLCv/getAnnotationsForCellMedia/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/1423/characterID/519541/taxonID/72002/mediaID/284045
 
+NOTE - when there are multiplepoints, they are in an array:  
+...so need to pull it into temporary obejct that can be mapped to.
+
 {"ok":true,"annotations":[{"type":"polygon","points":[{"x":"31.891597158772733","y":"19.44466304661473"},{"x":"32.143102753789776","y":"26.495894651242097"},{"x":"39.436765009284095","y":"29.182078119671573"},{"x":"47.48494404982955","y":"32.875580388762096"},{"x":"51.76053916511931","y":"27.167440518349466"},{"x":"54.52710071030682","y":"18.437344245953675"},{"x":"50.50301119003409","y":"10.37879384066525"},{"x":"44.21537131460796","y":"6.013745704467354"}]},{"type":"polygon","points":[{"x":"46.73042726477841","y":"58.73009627239579"},{"x":"48.742472024914775","y":"55.37236693685895"},{"x":"51.00602238006818","y":"54.36504813619789"},{"x":"54.275595115289775","y":"53.69350226909053"},{"x":"56.79065106546023","y":"53.69350226909053"},{"x":"59.557212610647724","y":"54.70082106975158"},{"x":"61.82076296580114","y":"56.715458671073684"},{"x":"63.329796535903405","y":"58.73009627239579"},{"x":"64.33581891597159","y":"62.759371475040005"},{"x":"64.33581891597159","y":"66.78864667768421"},{"x":"63.58130213092045","y":"72.49678654809685"},{"x":"61.56925737078409","y":"78.54069935206317"},{"x":"58.048179040545456","y":"84.58461215602948"},{"x":"52.51505595017045","y":"85.59193095669055"},{"x":"45.47289928969318","y":"73.83987828231159"}]}]}
+
+...When points is a single point, it is not in an array:
+{"ok":true,"annotations":[{"type":"point","points":{"x":"18.8283475783476","y":"47.4198717948718"}}]} 
+         *
          */
         List<MBAnnotation> annotations = null;
         Client client = ClientBuilder.newClient();
@@ -369,9 +379,35 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
         
         System.out.println(jsonString);
         ObjectMapper mapper = new ObjectMapper();
+        
+        
+        have another issue with RECTANGLE - it's of a different form completely:
+
+{"ok":true,"annotations":[{"type":"rectangle","points":{"x":"61.58982285141206","y":"54.05519039672426"},"w":"1.3974566456743513","h":"2.312840627811468"}]}
+        
+        so need another class for rectangle, and need to convert it into a list of points by adding width to x, height to y, etc.
         try {
-            AnnotationInfo ai = mapper.readValue(jsonString, AnnotationInfo.class);
-            annotations = ai.getAnnotations();
+        	if (AnnotationInfoForSinglePoint.isTypePoint(jsonString)){
+        	    AnnotationInfoForSinglePoint ai = mapper.readValue(jsonString, AnnotationInfoForSinglePoint.class);
+        	    List<MBAnnotationWithSinglePoint> singlePointAnnotations = ai.getAnnotations();
+        	    
+        	    annotations = new ArrayList<MBAnnotation>();
+        	    for (MBAnnotationWithSinglePoint asp : singlePointAnnotations){
+        	    	MBAnnotationPoint ap = asp.getPoints(); // it's a single point
+        	    	MBAnnotation annotationOfCorrectForm = new MBAnnotation();
+        	    	annotationOfCorrectForm.setType(asp.getType());
+        	    	List<MBAnnotationPoint> annotationPoints = new ArrayList<MBAnnotationPoint>();
+        	    	annotationPoints.add(ap);
+        	    	annotationOfCorrectForm.setPoints(annotationPoints);// we add it into the new object (of the correct list-bearing form) as a list
+        	    	annotations.add(annotationOfCorrectForm);
+        	    }
+        	}
+        	else {
+        		AnnotationInfo ai = mapper.readValue(jsonString, AnnotationInfo.class);
+            	annotations = ai.getAnnotations();
+        	}
+        
+            
         }
 
         catch(JsonParseException jpe){
