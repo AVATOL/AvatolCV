@@ -58,11 +58,11 @@ public class MBSessionTester extends TestCase {
         ss.appendStep(matrixStep);
         Step charChoiceStep = new MBCharChoiceStep(null, client, sessionData);
         ss.appendStep(charChoiceStep);
-        Step viewChoiceStep = new MBViewChoiceStep(null, client, sessionData);
+        Step viewChoiceStep = new MBViewChoiceStep(null, sessionData);
         ss.appendStep(viewChoiceStep);
         Step imagePullStep = new MBImagePullStep(null, client, sessionData);
         ss.appendStep(imagePullStep);
-        Step exclusionCoachingStep = new MBExclusionQualityStep(null, client);
+        Step exclusionCoachingStep = new MBExclusionQualityStep(null, client, sessionData);
         ss.appendStep(exclusionCoachingStep);
         Step exclusionStep = new MBExclusionPropertyStep(null, sessionData);
         ss.appendStep(exclusionStep);
@@ -124,7 +124,10 @@ public class MBSessionTester extends TestCase {
             //Assert.assertTrue(chars.size() == 2); had to comment this out - there are more than two on the live site
             Assert.assertTrue(charsContainName(chars,"charA"));
             Assert.assertTrue(charsContainName(chars,"charB"));
-            mccs.setChosenCharacter(chars.get(0));
+            List<MBCharacter> chosenCharacters = new ArrayList<MBCharacter>();
+            chosenCharacters.add(chars.get(0));
+            chosenCharacters.add(chars.get(1));
+            mccs.setChosenCharacters(chosenCharacters);
             
             
         }
@@ -148,7 +151,7 @@ public class MBSessionTester extends TestCase {
             //Assert.assertTrue(chars.size() == 2); had to comment this out - there are more than two on the live site
             Assert.assertTrue(viewsContainName(views,"side"));
             Assert.assertTrue(viewsContainName(views,"front"));
-            vcs.setChosenView(views.get(0));
+            vcs.setChosenView(views.get(0).getName());
         }
         catch(AvatolCVException e){
             Assert.fail("should not have thrown exception on getViews");
@@ -167,7 +170,7 @@ public class MBSessionTester extends TestCase {
         MBImagePullStep mips = (MBImagePullStep)ss.getCurrentStep();
         ProgressPresenter pp = new TestProgressPresenter();
         try {
-            mips.downloadImagesForChosenMatrix(pp);
+            mips.downloadImageInfoForChosenCharactersAndView(pp, "testing");
         }
         catch(AvatolCVException e){
             e.printStackTrace();

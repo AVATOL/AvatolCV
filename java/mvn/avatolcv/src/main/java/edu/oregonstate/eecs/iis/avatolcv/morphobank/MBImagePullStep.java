@@ -48,14 +48,14 @@ public class MBImagePullStep implements Step {
         while (maxRetries > tries && imageNotYetDownloaded){
             try {
                 tries++;
-                //pp.setMessage(processNameFileDownload, "downloading image  : " + ii.getID());
+                //progressMessage(pp, processNameFileDownload, "downloading image  : " + ii.getID());
                 // specify original image filename as "" since it isn't known from web service response
                 this.wsClient.downloadImageForMediaId(targetDir, ii.getID(), "", ii.getImageWidth());
                 imageNotYetDownloaded = false;
             }
             catch(MorphobankWSException e){
                 if (e.getMessage().equals("timeout")){
-                    pp.setMessage(processNameFileDownload, "download timed out - retrying image : " + ii.getID() + " - attempt " + (tries+1));
+                    progressMessage(pp, processNameFileDownload, "download timed out - retrying image : " + ii.getID() + " - attempt " + (tries+1));
                 }
                 mostRecentException = e;
             }
@@ -69,7 +69,7 @@ public class MBImagePullStep implements Step {
         String imagePath = image.getFilepath();
         File imageFile = new File(imagePath);
         if (imageFile.exists()){
-            //pp.setMessage(processNameFileDownload, "already have image : " + image.getID());
+            //progressMessage(pp, processNameFileDownload, "already have image : " + image.getID());
         }
         else {
             robustImageDownload(pp, image, targetDir, processNameFileDownload);
@@ -121,12 +121,12 @@ public class MBImagePullStep implements Step {
                     }
                     double percentDone = cellCountCurrent / cellCountTotal;
                     System.out.println("cellCountCurrent " + cellCountCurrent + " out of cellCountTotal " + cellCountTotal + " = " + percentDone);
-                    pp.updateProgress(processName, percentDone);
+                    progressUpdate(pp, processName, percentDone);
                     if (percentDone == 1.0){
-                        pp.setMessage(processName, "Image metadata download complete for " + (int)cellCountCurrent + " cells.");
+                        progressMessage(pp, processName, "Image metadata download complete for " + (int)cellCountCurrent + " cells.");
                     }
                     else {
-                        pp.setMessage(processName, "cell " + (int)cellCountCurrent + " of " + (int)cellCountTotal + " (character " + ch.getCharName() + " taxon " + taxon.getTaxonName() + ")");
+                        progressMessage(pp, processName, "cell " + (int)cellCountCurrent + " of " + (int)cellCountTotal + " (character " + ch.getCharName() + " taxon " + taxon.getTaxonName() + ")");
                     }
                 }
             }
@@ -138,6 +138,16 @@ public class MBImagePullStep implements Step {
         }
         catch(MorphobankWSException e){
             throw new AvatolCVException("problem loading image info for matrix " + matrix.getName());
+        }
+    }
+    public void progressUpdate(ProgressPresenter pp, String processName, double percentDone){
+        if (null!= pp){
+            pp.updateProgress(processName, percentDone);
+        }
+    }
+    public void progressMessage(ProgressPresenter pp, String processName, String message){
+        if (null != pp){
+            pp.setMessage(processName, message);
         }
     }
     public void downloadImagesForChosenCharactersAndView(ProgressPresenter pp, String processName) throws AvatolCVException {
@@ -159,12 +169,12 @@ public class MBImagePullStep implements Step {
                 successCount++;
             }
             double percentDone = curCount / imageCount;
-            pp.updateProgress(processName, percentDone);
+            progressUpdate(pp, processName, percentDone);
             if (percentDone == 1.0){
-                pp.setMessage(processName, "Image download complete.");
+                progressMessage(pp, processName, "Image download complete.");
             }
             else {
-                pp.setMessage(processName, "image " + (int)curCount + " of " + (int)imageCount + " id " + image.getID());
+                progressMessage(pp, processName, "image " + (int)curCount + " of " + (int)imageCount + " id " + image.getID());
             }
             
         }
@@ -175,7 +185,7 @@ public class MBImagePullStep implements Step {
                 successCount++;
             }
             double percentDone = curCount / imageCount;
-            pp.updateProgress(processName, percentDone);
+            progressUpdate(pp, processName, percentDone);
         }
         */
         for (ImageInfo image : imagesThumbnail){
@@ -184,12 +194,12 @@ public class MBImagePullStep implements Step {
                 successCount++;
             }
             double percentDone = curCount / imageCount;
-            pp.updateProgress(processName, percentDone);
+            progressUpdate(pp, processName, percentDone);
             if (percentDone == 1.0){
-                pp.setMessage(processName, "Image download complete.");
+                progressMessage(pp, processName, "Image download complete.");
             }
             else {
-                pp.setMessage(processName, "image " + (int)curCount + " of " + (int)imageCount + " id " + image.getID());
+                progressMessage(pp, processName, "image " + (int)curCount + " of " + (int)imageCount + " id " + image.getID());
             }
         }
         
