@@ -8,13 +8,10 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfoForRectangle;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfoForSinglePoint;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotationPoint;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfoForRectangle.MBAnnotationWithRectangle;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfoForRectangle.RectangleAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfoForSinglePoint.MBAnnotationWithSinglePoint;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MBRectangleAnnotation;
 
 public class MorphobankAnnotationHelper {
     public static List<String> splitTypes(String justTypes){
@@ -74,7 +71,7 @@ public class MorphobankAnnotationHelper {
         return withStartTrimmed;
     }
     
-    public static MBAnnotation getMBAnnotationForSinglePointAnnotation(String json) throws AvatolCVException {
+    public static MBAnnotation getMBAnnotationForSinglePointAnnotation(String json) throws MorphobankWSException {
         try {
             ObjectMapper mapper = new ObjectMapper();
             MBAnnotationWithSinglePoint asp = mapper.readValue(json, MBAnnotationWithSinglePoint.class);
@@ -87,57 +84,83 @@ public class MorphobankAnnotationHelper {
             return annotationOfCorrectForm;
         }
         catch(JsonMappingException jme){
-            throw new AvatolCVException("problem mapping json to MBAnnotationWithSinglePoint " + json);
+            throw new MorphobankWSException("problem mapping json to MBAnnotationWithSinglePoint " + json);
         }
         catch(JsonParseException jme){
-            throw new AvatolCVException("problem parsing json to MBAnnotationWithSinglePoint " + json);
+            throw new MorphobankWSException("problem parsing json to MBAnnotationWithSinglePoint " + json);
         }
         catch(IOException ioe){
-            throw new AvatolCVException("problem converting json to MBAnnotationWithSinglePoint " + json);
+            throw new MorphobankWSException("problem converting json to MBAnnotationWithSinglePoint " + json);
         }
     }
     
-    public static MBAnnotation getMBAnnotationForRectangleAnnotation(String json) throws AvatolCVException {
+   
+        
+    public static MBAnnotation getMBAnnotationForRectangleAnnotation(String json) throws MorphobankWSException {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            json = AnnotationInfoForRectangle.hackAwayCurlyBracesThatComplicateMapping(json);
-            MBAnnotationWithRectangle awr = mapper.readValue(json, MBAnnotationWithRectangle.class);
-            
-            RectangleAnnotation ra = awr.getPoints();
-            double x = ra.getX();
-            double y = ra.getY();
-            double width = ra.getW();
-            double height = ra.getH();
+            MBRectangleAnnotation rect = mapper.readValue(json, MBRectangleAnnotation.class);
+            MBAnnotationPoint p = rect.getPoints();
+            double x = p.getX();
+            double y = p.getY();
+            double width = rect.getW();
+            double height = rect.getH();
             double x2 = x + width;
             double y2 = y + height;
-            MBAnnotationPoint ap1 = new MBAnnotationPoint();
-            ap1.setX(x);
-            ap1.setY(y);
-            MBAnnotationPoint ap2 = new MBAnnotationPoint();
-            ap1.setX(x2);
-            ap1.setY(y2);
+            
+            MBAnnotationPoint ap = new MBAnnotationPoint();
+            ap.setX(x2);
+            ap.setY(y2);
            
             MBAnnotation annotationOfCorrectForm = new MBAnnotation();
-            annotationOfCorrectForm.setType(awr.getType());
+            annotationOfCorrectForm.setType(rect.getType());
             List<MBAnnotationPoint> annotationPoints = new ArrayList<MBAnnotationPoint>();
-            annotationPoints.add(ap1);
-            annotationPoints.add(ap2);
+            annotationPoints.add(p);
+            annotationPoints.add(ap);
             annotationOfCorrectForm.setPoints(annotationPoints);// we add it into the new object    
             return annotationOfCorrectForm;
         }
         catch(JsonMappingException jme){
-            throw new AvatolCVException("problem mapping json to MBAnnotationWithRectangle " + json);
+            throw new MorphobankWSException("problem mapping json to MBAnnotationWithRectangle " + json);
         }
         catch(JsonParseException jme){
-            throw new AvatolCVException("problem parsing json to MBAnnotationWithRectangle " + json);
+            throw new MorphobankWSException("problem parsing json to MBAnnotationWithRectangle " + json);
         }
         catch(IOException ioe){
-            throw new AvatolCVException("problem converting json to MBAnnotationWithRectangle " + json);
+            throw new MorphobankWSException("problem converting json to MBAnnotationWithRectangle " + json);
         }
     }    
-        
-    
-    public static String getMBAnnotationForPolygonAnnotation(String json){
-        
+    public static MBAnnotation getMBAnnotationForPolygonAnnotation(String json) throws MorphobankWSException {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            MBAnnotation a = mapper.readValue(json, MBAnnotation.class);
+            return a;
+        }
+        catch(JsonMappingException jme){
+            throw new MorphobankWSException("problem mapping json to MBAnnotationWithRectangle " + json);
+        }
+        catch(JsonParseException jme){
+            throw new MorphobankWSException("problem parsing json to MBAnnotationWithRectangle " + json);
+        }
+        catch(IOException ioe){
+            throw new MorphobankWSException("problem converting json to MBAnnotationWithRectangle " + json);
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

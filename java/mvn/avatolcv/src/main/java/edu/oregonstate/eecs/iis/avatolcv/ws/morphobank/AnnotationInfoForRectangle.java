@@ -86,15 +86,5 @@ public class AnnotationInfoForRectangle {
          }
          return false;
      }
-     public static String hackAwayCurlyBracesThatComplicateMapping(String s){
-         //convert this:   {"ok":true,"annotations":[{"type":"rectangle","points":{"x":"61.58982285141206","y":"54.05519039672426"},"w":"1.3974566456743513","h":"2.312840627811468"}]}   
-         // ...to this:  {"ok":true,"annotations":[{"type":"rectangle","points":"x":"61.58982285141206","y":"54.05519039672426","w":"1.3974566456743513","h":"2.312840627811468"}]}   
-         String firstMatch = "points\":{\"x\"";
-         String firstReplace = "points\":\"x\"";
-         String result1 = s.replace(firstMatch, firstReplace);
-         String secondMatch = "},\"w\":";
-         String secondReplace = ",\"w\":";
-         String result2 = s.replace(secondMatch, secondReplace);
-         return result2;
-     }
+     
 }   

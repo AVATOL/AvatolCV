@@ -1,6 +1,5 @@
 package edu.oregonstate.eecs.iis.avatolcv.morphobank;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankAnnotationHelper;
@@ -28,6 +27,8 @@ public class MBAnnotationParseTester extends TestCase {
         Assert.assertEquals(parts.get(0), type1);
         Assert.assertEquals(parts.get(1), type2);
         Assert.assertEquals(parts.get(2), type3);
+        
+        
     }
     
 }

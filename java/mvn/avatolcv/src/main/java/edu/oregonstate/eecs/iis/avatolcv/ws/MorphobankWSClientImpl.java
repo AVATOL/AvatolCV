@@ -20,12 +20,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotationPoint;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfoForRectangle;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfoForRectangle.MBAnnotationWithRectangle;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfoForSinglePoint.MBAnnotationWithSinglePoint;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfoForSinglePoint;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.Authentication;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo;
@@ -35,6 +30,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharStateInfo.MBCharState
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ErrorCheck;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MBRectangleAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBProject;
@@ -360,7 +356,7 @@ NOTE - when there are multiplepoints, they are in an array:
 {"ok":true,"annotations":[{"type":"point","points":{"x":"18.8283475783476","y":"47.4198717948718"}}]} 
          *
          */
-        List<MBAnnotation> annotations = null;
+        List<MBAnnotation> annotations = new ArrayList<MBAnnotation>();
         Client client = ClientBuilder.newClient();
         String url = "http://morphobank.org/service.php/AVATOLCv/getAnnotationsForCellMedia/username/" + username + "/password/" + password + "/matrixID/" + matrixID + "/characterID/" + charID + "/taxonID/" + taxonID + "/mediaID/" + mediaID;
         WebTarget webTarget = client.target(url);
@@ -389,44 +385,24 @@ NOTE - when there are multiplepoints, they are in an array:
         List<String> jsonAnnotationSections = MorphobankAnnotationHelper.splitTypes(justTypes);
         for (String jsonAnnotation : jsonAnnotationSections){
             if (AnnotationInfoForSinglePoint.isTypePoint(jsonAnnotation)){
+                System.out.println("...point annotation...");
                 MBAnnotation a = MorphobankAnnotationHelper.getMBAnnotationForSinglePointAnnotation(jsonAnnotation);
+                annotations.add(a);
             }
-            else if (AnnotationInfoForRectangle.isTypeRectangle(jsonAnnotation)) {
+            else if (MBRectangleAnnotation.isTypeRectangle(jsonAnnotation)) {
+                System.out.println("...rectangle annotation...");
                 MBAnnotation a = MorphobankAnnotationHelper.getMBAnnotationForRectangleAnnotation(jsonAnnotation);
+                annotations.add(a);
             }
             else {
+                System.out.println("...polygon annotation...");
                 MBAnnotation a = MorphobankAnnotationHelper.getMBAnnotationForPolygonAnnotation(jsonAnnotation);
+                annotations.add(a);
             }
         }
- //       have another issue with RECTANGLE - it's of a different form completely:
-
-//{"ok":true,"annotations":[{"type":"rectangle","points":{"x":"61.58982285141206","y":"54.05519039672426"},"w":"1.3974566456743513","h":"2.312840627811468"}]}
-        
- //       so need another class for rectangle, and need to convert it into a list of points by adding width to x, height to y, etc.
-        try {
-        	if (AnnotationInfoForSinglePoint.isTypePoint(jsonString)){
-        	    
-        	}
-        	else if (AnnotationInfoForRectangle.isTypeRectangle(jsonString)){
-        	    
-        	}
-        	else {
-        		AnnotationInfo ai = mapper.readValue(jsonString, AnnotationInfo.class);
-            	annotations = ai.getAnnotations();
-        	}
-        
+ 
             
-        }
-
-        catch(JsonParseException jpe){
-            throw new MorphobankWSException("problem parsing response to " + thisMethodName + ".", jpe);
-        }
-        catch(JsonMappingException jme){
-            throw new MorphobankWSException("problem mapping json response to " + thisMethodName + ".", jme);
-        }
-        catch(IOException ioe){
-            throw new MorphobankWSException("io problem in objectMapper.readValue for " + thisMethodName + ".", ioe);
-        }
+       
         return annotations;
     }
     
