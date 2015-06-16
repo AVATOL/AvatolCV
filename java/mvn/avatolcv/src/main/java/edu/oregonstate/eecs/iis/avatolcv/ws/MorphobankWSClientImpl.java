@@ -23,6 +23,8 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotationPoint;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfoForRectangle;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfoForRectangle.MBAnnotationWithRectangle;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfoForSinglePoint.MBAnnotationWithSinglePoint;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfoForSinglePoint;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.Authentication;
@@ -378,29 +380,35 @@ NOTE - when there are multiplepoints, they are in an array:
         }
         
         System.out.println(jsonString);
-        ObjectMapper mapper = new ObjectMapper();
         
-        
-        have another issue with RECTANGLE - it's of a different form completely:
+        /*
+         * PROBLEM - annotations of type point, polygon and rectangle all have different body forms that don't map so a consistent object structure to support jackson mapping.  
+         * So, I need to pre-process the json to tease out the each annotation string, then handle each separately
+         */
+        String justTypes = MorphobankAnnotationHelper.getJustTypes(jsonString);
+        List<String> jsonAnnotationSections = MorphobankAnnotationHelper.splitTypes(justTypes);
+        for (String jsonAnnotation : jsonAnnotationSections){
+            if (AnnotationInfoForSinglePoint.isTypePoint(jsonAnnotation)){
+                MBAnnotation a = MorphobankAnnotationHelper.getMBAnnotationForSinglePointAnnotation(jsonAnnotation);
+            }
+            else if (AnnotationInfoForRectangle.isTypeRectangle(jsonAnnotation)) {
+                MBAnnotation a = MorphobankAnnotationHelper.getMBAnnotationForRectangleAnnotation(jsonAnnotation);
+            }
+            else {
+                MBAnnotation a = MorphobankAnnotationHelper.getMBAnnotationForPolygonAnnotation(jsonAnnotation);
+            }
+        }
+ //       have another issue with RECTANGLE - it's of a different form completely:
 
-{"ok":true,"annotations":[{"type":"rectangle","points":{"x":"61.58982285141206","y":"54.05519039672426"},"w":"1.3974566456743513","h":"2.312840627811468"}]}
+//{"ok":true,"annotations":[{"type":"rectangle","points":{"x":"61.58982285141206","y":"54.05519039672426"},"w":"1.3974566456743513","h":"2.312840627811468"}]}
         
-        so need another class for rectangle, and need to convert it into a list of points by adding width to x, height to y, etc.
+ //       so need another class for rectangle, and need to convert it into a list of points by adding width to x, height to y, etc.
         try {
         	if (AnnotationInfoForSinglePoint.isTypePoint(jsonString)){
-        	    AnnotationInfoForSinglePoint ai = mapper.readValue(jsonString, AnnotationInfoForSinglePoint.class);
-        	    List<MBAnnotationWithSinglePoint> singlePointAnnotations = ai.getAnnotations();
         	    
-        	    annotations = new ArrayList<MBAnnotation>();
-        	    for (MBAnnotationWithSinglePoint asp : singlePointAnnotations){
-        	    	MBAnnotationPoint ap = asp.getPoints(); // it's a single point
-        	    	MBAnnotation annotationOfCorrectForm = new MBAnnotation();
-        	    	annotationOfCorrectForm.setType(asp.getType());
-        	    	List<MBAnnotationPoint> annotationPoints = new ArrayList<MBAnnotationPoint>();
-        	    	annotationPoints.add(ap);
-        	    	annotationOfCorrectForm.setPoints(annotationPoints);// we add it into the new object (of the correct list-bearing form) as a list
-        	    	annotations.add(annotationOfCorrectForm);
-        	    }
+        	}
+        	else if (AnnotationInfoForRectangle.isTypeRectangle(jsonString)){
+        	    
         	}
         	else {
         		AnnotationInfo ai = mapper.readValue(jsonString, AnnotationInfo.class);
@@ -421,6 +429,7 @@ NOTE - when there are multiplepoints, they are in an array:
         }
         return annotations;
     }
+    
     public List<MBView> getViewsForProject(String projectID)  throws MorphobankWSException {
         String thisMethodName = "getViewsForProject";
         /*
