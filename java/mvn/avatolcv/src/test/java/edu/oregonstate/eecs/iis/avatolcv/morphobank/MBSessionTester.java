@@ -54,7 +54,7 @@ public class MBSessionTester extends TestCase {
         StepSequence ss = new StepSequence();
         Step loginStep = new MBLoginStep(null, client);
         ss.appendStep(loginStep);
-        Step matrixStep = new MBMatrixChoiceStep(null, client, sessionData);
+        Step matrixStep = new MBMatrixChoiceStep(null, client, sessionData); 
         ss.appendStep(matrixStep);
         Step charChoiceStep = new MBCharChoiceStep(null, client, sessionData);
         ss.appendStep(charChoiceStep);

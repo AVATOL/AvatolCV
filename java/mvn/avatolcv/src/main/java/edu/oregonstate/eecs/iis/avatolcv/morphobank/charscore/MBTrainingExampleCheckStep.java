@@ -5,6 +5,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionData;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
+import edu.oregonstate.eecs.iis.avatolcv.core.TrainTestInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
@@ -25,6 +26,15 @@ public class MBTrainingExampleCheckStep implements Step {
     public String getTrainingTestingDescriminatorName(){
         return sessionData.getTrainingTestingDescriminatorName();
     }
+    public List<MBTaxon> getTaxa(){
+    	return sessionData.getTaxa();
+    }
+    public List<MBTaxon> getTrueTaxaForCurrentMatrix(){
+    	return sessionData.getTrueTaxaForCurrentMatrix();
+    }
+    public List<MBCharacter> getCharacters(){
+    	return sessionData.getChosenCharacters();
+    }
     @Override
     public void init() throws AvatolCVException {
         // TODO Auto-generated method stub
@@ -42,6 +52,9 @@ public class MBTrainingExampleCheckStep implements Step {
         // TODO Auto-generated method stub
         return null;
     }
+	public TrainTestInfo getTrainTestInfo(String taxonID, String charID) {
+		return this.sessionData.getTrainTestInfo(taxonID, charID);
+	}
    
     
 }

@@ -22,4 +22,6 @@ public interface SessionData {
     ScoringAlgorithms getScoringAlgorithms();
     void registerAnnotationsForCell(List<MBAnnotation> annotationsForCell, String charID, String taxonID, String mediaID) throws AvatolCVException ;
     void registerStatesForCell(List<MBCharStateValue> statesForCell, String charID, String taxonID) throws AvatolCVException;
+    List<MBTaxon> getTrueTaxaForCurrentMatrix();
+    TrainTestInfo getTrainTestInfo(String taxonID, String charID);
 }

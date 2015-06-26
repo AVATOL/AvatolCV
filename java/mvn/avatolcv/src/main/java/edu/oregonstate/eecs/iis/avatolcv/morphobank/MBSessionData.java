@@ -16,6 +16,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.FileUtils;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionData;
+import edu.oregonstate.eecs.iis.avatolcv.core.TrainTestInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotationPoint;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
@@ -85,8 +86,10 @@ public class MBSessionData implements SessionData {
     private List<MBMediaInfo> mbImages = null;
 
     private String sessionID = null;
-    
-    		
+    private SPRTaxonIdMapper mapper = null;
+	private Hashtable<String, List<MBCharStateValue>> charStatesForCellHash = new Hashtable<String, List<MBCharStateValue>>();
+		
+    private Hashtable<String,List<MBCharStateValue>> charStateForCellHash = new Hashtable<String,List<MBCharStateValue>>();
     private Hashtable<String,MBMediaInfo> mbImageForID = new Hashtable<String,MBMediaInfo>();
     private Hashtable<String,ImageInfo> thumbnailForID = new Hashtable<String,ImageInfo>();
     private Hashtable<String,ImageInfo> imageSmallForID = new Hashtable<String,ImageInfo>();
@@ -419,9 +422,40 @@ public class MBSessionData implements SessionData {
      */
     public void setTaxaForCurrentMatrix(List<MBTaxon> taxa){
         this.taxaForCurrentMatrix = taxa;
+        if (this.currentMatrix.getMatrixID().equals("1909")){
+        	this.mapper = new SPRTaxonIdMapper(taxa);
+    	}
+        
     }
     public List<MBTaxon> getTaxaForCurrentMatrix(){
         return this.taxaForCurrentMatrix;
+    }
+    public boolean isSpecimenPerRowMatrix(){
+    	if (this.currentMatrix.getMatrixID().equals("1909")){
+    		return true;
+    	}
+    	return false;
+    }
+    public List<MBTaxon> getTrueTaxaForCurrentMatrix(){
+    	if (isSpecimenPerRowMatrix()){
+    		Hashtable<String, MBTaxon> taxonForIdHash = new Hashtable<String, MBTaxon>();
+        	for (MBTaxon taxon : this.taxaForCurrentMatrix){
+        		taxonForIdHash.put(taxon.getTaxonID(), taxon);
+        	}
+        	List<MBTaxon> trueTaxa = new ArrayList<MBTaxon>();
+        	for (MBTaxon taxon : this.taxaForCurrentMatrix){
+        		String id = this.mapper.getNormalizedTaxonId(taxon.getTaxonID());
+        		MBTaxon trueTaxon = taxonForIdHash.get(id);
+        		if (!trueTaxa.contains(trueTaxon)){
+        			trueTaxa.add(trueTaxon);
+        		}
+        	}
+        	return trueTaxa;
+    	}
+    	else {
+    		return this.taxaForCurrentMatrix;
+    	}
+    	
     }
     /*
      * View
@@ -529,11 +563,17 @@ public class MBSessionData implements SessionData {
 		}
 		return false;
 	}
+	public String getTrainingDataPath(String cellKey){
+		return getTrainingDataDir() + FILESEP + cellKey + ".txt";
+	}
+	public String getAnnotationPath(String cellMediaKey){
+		return getAnnotationDataDir() + FILESEP + cellMediaKey + ".txt";
+	}
 	@Override
 	public void registerStatesForCell(List<MBCharStateValue> statesForCell,
 			String charID, String taxonID) throws AvatolCVException {
 		String cellKey = getKeyForCell(charID, taxonID);
-		String path = getTrainingDataDir() + FILESEP + cellKey + ".txt";
+		String path = getTrainingDataPath(cellKey);
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(path));
 			for (MBCharStateValue csv : statesForCell){
@@ -559,7 +599,7 @@ public class MBSessionData implements SessionData {
 	public List<MBAnnotation> loadAnnotationsForCellMedia(String charID, String taxonID, String mediaID) throws AvatolCVException {
 		List<MBAnnotation> annotations = new ArrayList<MBAnnotation>();
 		String cellMediaKey = getKeyForCellMedia(charID, taxonID, mediaID);
-		String path = getAnnotationDataDir() + FILESEP + cellMediaKey + ".txt";
+		String path = getAnnotationPath(cellMediaKey);
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(path));
 			String line = null;
@@ -593,4 +633,47 @@ public class MBSessionData implements SessionData {
 			throw new AvatolCVException("problem writing annotation data for cell: char " + charID + " taxon " + taxonID + " mediaID " + mediaID);
 		}
 	}
+	
+	public void loadTrainingInfo() throws AvatolCVException {
+		 for (MBCharacter character : charactersForCurrentMatrix){
+			 for (MBTaxon taxon : taxaForCurrentMatrix){
+				 String cellKey = this.getKeyForCell(character.getCharID(), taxon.getTaxonID());
+				 String path = getTrainingDataPath(cellKey);
+				 List<MBCharStateValue> stateIds = new ArrayList<MBCharStateValue>();
+				 File f = new File(path);
+				 if (f.exists()){
+					 try {
+						 BufferedReader reader = new BufferedReader(new FileReader(path));
+						 String line = null;
+						 while (null != (line = reader.readLine())){
+							 MBCharStateValue charStateValue = new MBCharStateValue();
+							 charStateValue.setCellID(cellKey);
+							 charStateValue.setCharStateID(line);
+							 stateIds.add(charStateValue);
+						 }
+						 charStatesForCellHash.put(cellKey, stateIds);
+					 }
+					 catch(IOException ioe){
+						 throw new AvatolCVException("problem reading training info for cellKey " + cellKey);
+					 }
+				 }
+			 }
+		 }
+
+	}
+	public TrainTestInfo getTrainTestInfo(String taxonID, String charID) {
+		loadTrainingInfo();
+		left off here...
+		TrainTestInfo iit = new TrainTestInfo(taxonID, charID);
+		iit.setExcludedCount(getExludedCount(taxonID, charID));
+		iit.setTrainingCount(getTrainingCount(taxonID, charID));
+		iit.setTestCount(getToTestCount(taxonID, charID));
+		return iit;
+	}
+	
+	public int getExcludedCount(String taxonID, String charId){
+		
+	}
+   
+    
 }
