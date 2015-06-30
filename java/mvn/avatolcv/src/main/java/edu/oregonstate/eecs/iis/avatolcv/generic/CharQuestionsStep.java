@@ -3,7 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv.generic;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionData;
+import edu.oregonstate.eecs.iis.avatolcv.core.SessionDataInterface;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
 import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QQuestion;
@@ -13,9 +13,9 @@ import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QuestionsXMLFile;
 
 public class CharQuestionsStep implements Step {
     private QuestionSequencer questionSequencer = null;
-    private SessionData sessionData = null;
+    private SessionDataInterface sessionData = null;
     private String view = null;
-    public CharQuestionsStep(String view, SessionData sessionData) {
+    public CharQuestionsStep(String view, SessionDataInterface sessionData) {
         this.sessionData = sessionData;
         this.view = view;
     }

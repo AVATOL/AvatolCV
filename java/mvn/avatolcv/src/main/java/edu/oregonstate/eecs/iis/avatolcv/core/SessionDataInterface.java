@@ -9,7 +9,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 
-public interface SessionData {
+public interface SessionDataInterface {
     String getCharQuestionsSourcePath() throws AvatolCVException ;
     String getCharQuestionsAnsweredQuestionsPath() throws AvatolCVException ;
     void setChosenAlgorithm(String s);

@@ -29,7 +29,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.generic.CharQuestionsStep;
-import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.charscore.MBTrainingDataPullStep;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.charscore.MBTrainingExampleCheckStep;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.DataSourceStepController;
@@ -216,7 +216,7 @@ public class MorphobankSessionJavaFX {
             loader.setController(this);
             Parent navShell = loader.load();
             
-            this.scene = new Scene(navShell, AvatolCVJavaFX.MAIN_WINDOW_WIDTH, AvatolCVJavaFX.MAIN_WINDOW_HEIGHT);
+            this.scene = new Scene(navShell, AvatolCVJavaFXMB.MAIN_WINDOW_WIDTH, AvatolCVJavaFXMB.MAIN_WINDOW_HEIGHT);
             this.mainWindow.setScene(scene);
         }
         catch(Exception e){

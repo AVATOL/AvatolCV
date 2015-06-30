@@ -8,7 +8,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.FileUtils;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionData;
+import edu.oregonstate.eecs.iis.avatolcv.core.SessionDataInterface;
 import edu.oregonstate.eecs.iis.avatolcv.orientation.OrientationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
@@ -21,7 +21,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 
-public class BisqueSessionData implements SessionData{
+public class BisqueSessionData implements SessionDataInterface{
 	private static final String FILESEP = System.getProperty("file.separator");
 	public static final String STANDARD_IMAGE_FILE_EXTENSION = "jpg";
 	public static final String IMAGE_THUMBNAIL_WIDTH = "80";

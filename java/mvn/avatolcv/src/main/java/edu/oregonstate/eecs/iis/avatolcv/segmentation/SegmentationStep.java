@@ -21,7 +21,7 @@ runConfig_segmentation.txt has lines of the following form:
     rawImagesDir,<path of dir where right sized images from bisque are put>
 
 lines with other prefixes that can be ignored by leaf code:
-    darwinOutputDir,<same as in xml file - points to where segmented files are put>
+    segmentationOutputDir,<same as in xml file - points to where segmented files are put>
     trainingImage,...
     testImage,...
 

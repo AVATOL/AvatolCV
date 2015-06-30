@@ -4,15 +4,15 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionData;
+import edu.oregonstate.eecs.iis.avatolcv.core.SessionDataInterface;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 
 public class MBCharQuestionsStep implements Step {
    
-    private SessionData sessionData = null;
+    private SessionDataInterface sessionData = null;
     private String view = null;
     private ScoringAlgorithms scoringAlgorithms = null;
-    public MBCharQuestionsStep(String view, ScoringAlgorithms scoringAlgorithms, SessionData sessionData) {
+    public MBCharQuestionsStep(String view, ScoringAlgorithms scoringAlgorithms, SessionDataInterface sessionData) {
         this.sessionData = sessionData;
         this.scoringAlgorithms = scoringAlgorithms;
         this.view = view;

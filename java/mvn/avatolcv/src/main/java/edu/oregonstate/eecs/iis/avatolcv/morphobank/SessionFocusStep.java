@@ -2,13 +2,13 @@ package edu.oregonstate.eecs.iis.avatolcv.morphobank;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionData;
+import edu.oregonstate.eecs.iis.avatolcv.core.SessionDataInterface;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 
 public class SessionFocusStep implements Step {
     private ScoringAlgorithms scoringAlgorithms = null;
-    private SessionData sessionData = null;
-    public SessionFocusStep(SessionData sessionData) throws AvatolCVException {
+    private SessionDataInterface sessionData = null;
+    public SessionFocusStep(SessionDataInterface sessionData) throws AvatolCVException {
         this.sessionData = sessionData;
     }
     public ScoringAlgorithms getScoringAlgorithms(){

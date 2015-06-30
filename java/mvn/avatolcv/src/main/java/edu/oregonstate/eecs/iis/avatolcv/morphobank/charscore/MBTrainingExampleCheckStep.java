@@ -3,7 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv.morphobank.charscore;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionData;
+import edu.oregonstate.eecs.iis.avatolcv.core.SessionDataInterface;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainTestInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
@@ -16,9 +16,9 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 
 public class MBTrainingExampleCheckStep implements Step {
     private String view = null;
-    private SessionData sessionData = null;
+    private SessionDataInterface sessionData = null;
     MorphobankWSClient wsClient = null;
-    public MBTrainingExampleCheckStep(String view, SessionData sessionData, MorphobankWSClient wsClient){
+    public MBTrainingExampleCheckStep(String view, SessionDataInterface sessionData, MorphobankWSClient wsClient){
         this.view = view;
         this.sessionData = sessionData;
         this.wsClient = wsClient;

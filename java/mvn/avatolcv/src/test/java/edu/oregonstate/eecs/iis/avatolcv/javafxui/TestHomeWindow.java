@@ -9,10 +9,10 @@ public class TestHomeWindow extends TestCase {
     public void testFindRoot(){
         
         try {
-            Assert.assertEquals(AvatolCVJavaFX.findRoot("C:" + FS + "jed" + FS + "avatol" + FS + "git" + FS + "avatol_cv" + FS + "java" + FS + "mvn"), "C:" + FS + "jed" + FS + "avatol" + FS + "git" + FS + "avatol_cv");
-            Assert.assertEquals(AvatolCVJavaFX.findRoot("C:" + FS + "jed" + FS + "avatol" + FS + "git" + FS + "avatol_cv" + FS + "java"), "C:" + FS + "jed" + FS + "avatol" + FS + "git" + FS + "avatol_cv");
-            Assert.assertEquals(AvatolCVJavaFX.findRoot("C:" + FS + "jed" + FS + "avatol" + FS + "git" + FS + "avatol_cv"), "C:" + FS + "jed" + FS + "avatol" + FS + "git" + FS + "avatol_cv");
-            Assert.assertEquals(AvatolCVJavaFX.findRoot("c:" + FS + "avatol_cv"), "c:" + FS + "avatol_cv");
+            Assert.assertEquals(AvatolCVJavaFXMB.findRoot("C:" + FS + "jed" + FS + "avatol" + FS + "git" + FS + "avatol_cv" + FS + "java" + FS + "mvn"), "C:" + FS + "jed" + FS + "avatol" + FS + "git" + FS + "avatol_cv");
+            Assert.assertEquals(AvatolCVJavaFXMB.findRoot("C:" + FS + "jed" + FS + "avatol" + FS + "git" + FS + "avatol_cv" + FS + "java"), "C:" + FS + "jed" + FS + "avatol" + FS + "git" + FS + "avatol_cv");
+            Assert.assertEquals(AvatolCVJavaFXMB.findRoot("C:" + FS + "jed" + FS + "avatol" + FS + "git" + FS + "avatol_cv"), "C:" + FS + "jed" + FS + "avatol" + FS + "git" + FS + "avatol_cv");
+            Assert.assertEquals(AvatolCVJavaFXMB.findRoot("c:" + FS + "avatol_cv"), "c:" + FS + "avatol_cv");
         }
         catch(AvatolCVException ace){
             Assert.fail(ace.getMessage());
@@ -20,13 +20,13 @@ public class TestHomeWindow extends TestCase {
         
         // these should fail
         try {
-            AvatolCVJavaFX.findRoot("c:");
+            AvatolCVJavaFXMB.findRoot("c:");
         }
         catch(AvatolCVException ace){
             Assert.assertTrue(true);
         }
         try {
-            AvatolCVJavaFX.findRoot("FS");
+            AvatolCVJavaFXMB.findRoot("FS");
         }
         catch(AvatolCVException ace){
             Assert.assertTrue(true);

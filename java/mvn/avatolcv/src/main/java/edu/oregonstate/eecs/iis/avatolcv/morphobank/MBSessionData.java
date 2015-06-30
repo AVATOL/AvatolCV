@@ -15,7 +15,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.FileUtils;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionData;
+import edu.oregonstate.eecs.iis.avatolcv.core.SessionDataInterface;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainTestInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotationPoint;
@@ -61,7 +61,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
  * 
  * 
  */
-public class MBSessionData implements SessionData {
+public class MBSessionData implements SessionDataInterface {
 
     public static final String ROTATION_STATES_DIRNAME = "userRotations";
 

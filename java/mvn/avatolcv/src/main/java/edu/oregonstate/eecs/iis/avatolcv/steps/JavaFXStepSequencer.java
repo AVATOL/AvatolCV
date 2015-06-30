@@ -23,9 +23,11 @@ import org.apache.logging.log4j.Logger;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms.ScoringSessionFocus;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
-import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.DataSourceStep;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBCharChoiceStep;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBExclusionQualityStep;
@@ -55,7 +57,8 @@ import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
 
-public class JavaFXSession {
+public class JavaFXStepSequencer  {
+   
 	public Button nextButton;
 	public Button backButton;
 	public VBox stepList;
@@ -225,7 +228,7 @@ public class JavaFXSession {
             loader.setController(this);
             Parent navShell = loader.load();
             
-            this.scene = new Scene(navShell, AvatolCVJavaFX.MAIN_WINDOW_WIDTH, AvatolCVJavaFX.MAIN_WINDOW_HEIGHT);
+            this.scene = new Scene(navShell, AvatolCVJavaFXMB.MAIN_WINDOW_WIDTH, AvatolCVJavaFXMB.MAIN_WINDOW_HEIGHT);
             this.mainWindow.setScene(scene);
         }
         catch(Exception e){
