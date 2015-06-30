@@ -1,24 +1,39 @@
-package edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx;
+package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.IOException;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.RadioButton;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
-import edu.oregonstate.eecs.iis.avatolcv.morphobank.DataSourceStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.DataSourceStep;
 
 public class DataSourceStepController implements StepController {
-
+    public RadioButton radioMorphobank;
+    public RadioButton radioBisque;
+    public RadioButton radioFileSystem;
+ 
     private DataSourceStep dataSourceStep;
+    private SessionInfo sessionInfo;
     private String fxmlDocName;
-    public DataSourceStepController(DataSourceStep dataSourceStep, String fxmlDocName){
+    public DataSourceStepController(DataSourceStep dataSourceStep, SessionInfo sessionInfo, String fxmlDocName){
         this.dataSourceStep = dataSourceStep;
         this.fxmlDocName = fxmlDocName;
+        this.sessionInfo = sessionInfo;
     }
     @Override
     public boolean consumeUIData() {
-        // for now, everything is hardcoded to Morphobank
+        if (radioMorphobank.isSelected()){
+        	DataSource dataSource
+        }
+        else if (radioBisque.isSelected()){
+        	
+        }
+        else {
+        	
+        }
         return true;
     }
 

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Region prefWidth="50.0" HBox.hgrow="ALWAYS" />
+      <VBox HBox.hgrow="NEVER">
+         <children>
+            <Region prefHeight="200.0" VBox.vgrow="ALWAYS" />
+            <Label text="Select scoring focus for this session" />
+            <GridPane hgap="10.0" stylesheets="@../../css/javafx.css" vgap="20.0" VBox.vgrow="NEVER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="0.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <RadioButton fx:id="radioPresenceAbsence" mnemonicParsing="false" selected="true" text="presenceAbsence" GridPane.hgrow="ALWAYS">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="focusGroup" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="radioShape" disable="true" mnemonicParsing="false" text="shape" toggleGroup="$focusGroup" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                  <RadioButton fx:id="radioTexture" disable="true" mnemonicParsing="false" text="texture" toggleGroup="$focusGroup" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                  <ComboBox fx:id="presenceAbsenceAlgChoice" minWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" />
+                  <ComboBox fx:id="shapeAlgChoice" disable="true" minWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                  <ComboBox fx:id="textureAlgChoice" disable="true" minWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+               </children>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </GridPane>
+            <Region prefHeight="200.0" VBox.vgrow="ALWAYS" />
+         </children>
+      </VBox>
+      <Region prefWidth="50.0" HBox.hgrow="ALWAYS" />
+   </children>
+</HBox>

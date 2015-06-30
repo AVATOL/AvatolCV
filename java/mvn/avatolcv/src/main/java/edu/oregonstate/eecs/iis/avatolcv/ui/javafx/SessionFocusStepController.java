@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx;
+package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,8 +12,7 @@ import javafx.scene.control.RadioButton;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
-import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBLoginStep;
-import edu.oregonstate.eecs.iis.avatolcv.morphobank.SessionFocusStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.SessionFocusStep;
 
 public class SessionFocusStepController implements StepController {
     public RadioButton radioPresenceAbsence;
