@@ -9,29 +9,26 @@ At the SEGMENTATION step, avatolCV will pass one argument, which is the path to 
 
 runConfig_segmentation.txt has lines of the following form:
 
-    darwinXMLFileDir,<path to dir containing darwin xml file>
-	
-	ex:
-	darwinXMLFileDir=c:\\somewhere
-	
-    trainingImagesFile,<path to training images file>  // file will be named trainingImages_segmentation.txt
-    testingImagesFile,<path to testing images file>    // file will be named testingImages_segmentation.txt
-    rawImagesDir,<path of dir where right sized images from bisque are put>
-    trainingImagesDir,<path of dir where _groundtruth trainnig eamples are put>
-	segmentationOutputDir,<path of dir where output goes>
-	modelXmlPath,<path to generated model that will be used during test>
+    //___delete this one --->>> darwinXMLFileDir,<path to dir containing darwin xml file>
+    trainingImagesFile=<path to training images file>  // file will be named trainingImages_segmentation.txt
+    testingImagesFile=<path to testing images file>    // file will be named testingImages_segmentation.txt
+    rawImagesDir=<path of dir where right sized images from bisque are put>
+    trainingImagesDir=<path of dir where _groundtruth training examples can be found>
+	segmentationOutputDir=<path of dir where output goes>
+	//___delete this one ---->>  modelXmlPath,<path to generated model that will be used during test>
 
-	seg training files ..._groundtruth.jpg 
-	output files       ..._mask.jpg
-	
+    trainingFileSuffix=_groundtruth.jpg // was seg training files ..._groundtruth.jpg
+	outputFileSuffix=_mask.jpg  // was output files       ..._mask.jpg
+	 
+
 lines with other prefixes that can be ignored by leaf code:
-    darwinOutputDir,<same as in xml file - points to where segmented files are put>
     trainingImage,...
     testImage,...
 
 
 trainingImages_segmentation.txt and testingImages_segmentation.txt have entries that are the root names of images
-    00-5xayvrdPC3o5foKMpLbZ5H_imgXyz
+    path=<some_dir>
+    00-5xayvrdPC3o5foKMpLbZ5H_imgXyz.jpg
     03-uietIOuerto5foKMhUHYUh_imgAbc
 
 
@@ -39,14 +36,14 @@ trainingImages_segmentation.txt and testingImages_segmentation.txt have entries 
 At ORIENTATION step, I will pass one argument, which is the path to the runConfig_orientation.txt file
 
 runConfig_orientation.txt has these lines:
-    darwinOutputDir,<same as in xml file - points to where segmented files are put>
-    rawImagesDir,<path of dir where right sized images from bisque are put>
+    imagesToOrientDir,<points to where segmented files were put>   ---->> was   darwinOutputDir,<same as in xml file - points to where segmented files are put>
+    ___do we ned this???  -->>> rawImagesDir,<path of dir where right sized images from bisque are put>
     relaventImagesFile,<path to file that lists filenames of images to orient>
     orientationResultsDir,<path to dir to put orientation normalized images>
-	modelFilePath,<path to pre-trained svm model for apex, base locating>
-	apexLocationConvention,left
+	___avatolCV shouldn't know about this -->>  modelFilePath,<path to pre-trained svm model for apex, base locating>
+	___??? avatolCV shouldn't know about notion of apex.  How handle this ?   --->>>  apexLocationConvention,left
 
-    output files    ..._rotated.jpg
+    outputFileSuffix=_oriented.jpg
 	
 relaventImagesFile will have entries that are the root names of images in the darwinOutputDir
     00-5xayvrdPC3o5foKMpLbZ5H_imgXyz
@@ -58,11 +55,11 @@ relaventImagesFile will have entries that are the root names of images in the da
 At SCORING step, I will pass one argument, which is the path to the runConfig_scoring.txt file
 
 runConfig_scoring.txt has these lines, and others that can be ignored:
-    orientationResultsDir,<path to dir where orientation normalized images are>
+    imagesToScoreDir, <path of images to score>  ---->>>  was   orientationResultsDir,<path to dir where orientation normalized images are>
     trainingImagesFile,<path to training images file>  // file will be named trainingImages_scoring_<charId>_<charName>.txt
     testingImagesFile,<path to testing images file>    // file will be named testingImages_scoring_<charId>_<charName>.txt
     scoring_resultsFile,<pathname of file into which scoring algorithm will put results> // file will be named results_scoring_<charId>_<charName>.txt
-	apexLocationConvention,left
+	___??? avatolCV shouldn't know about notion of apex.  How handle this ?   --->>>  apexLocationConvention,left
     
 trainingImages_scoring_<charId>_<charName>.txt have entries that are the root names of images, followed by character state name
     00-5xayvrdPC3o5foKMpLbZ5H_imgXyz,charStateName 
@@ -74,4 +71,5 @@ testingImages_scoring_<charId>_<charName>.txt
     
 results_scoring_<charId>_<charName>.txt , to be created by SCORING step, has form identical to trainingImages_scoring_<charId>_<charName>.txt
     04-5xayvrdPC3o5foKMpLbZ5H_imgXyz,charStateName 
-    10-uietIOuerto5foKMhUHYUh_imgAbc,charStateName
+    10-uietIOuerto5foKMhUHYUh_imgAbc,charStateName   ___what about training/test discriminator???
+    
