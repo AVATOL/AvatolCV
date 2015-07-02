@@ -140,9 +140,4 @@ public class BisqueImagePullStep implements Step {
 			throw new AvatolCVException("problem getting images for dataset " + dataset.getName());
 		}
 	}
-	@Override
-	public String getView() {
-		return this.view;
-	}
-
 }

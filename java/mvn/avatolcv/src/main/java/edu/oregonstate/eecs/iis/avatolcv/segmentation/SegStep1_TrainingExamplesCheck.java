@@ -35,12 +35,4 @@ public class SegStep1_TrainingExamplesCheck implements Step {
 		this.ssd.setImagesForStage(this.ifs);
 		segLabelFileAssessmentHasBeenRun = true;
 	}
-	
-	
-	@Override
-	public String getView() {
-		return null;
-	}
-
-
 }

@@ -1,11 +1,11 @@
 package edu.oregonstate.eecs.iis.avatolcv.orientation;
 
+import edu.oregonstate.eecs.iis.avatolcv.core.AlgorithmRunner;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForStage;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
-import edu.oregonstate.eecs.iis.avatolcv.generic.AlgorithmRunner;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 
 public class OrientStep3_Run implements Step {
@@ -29,11 +29,5 @@ public class OrientStep3_Run implements Step {
     public void consumeProvidedData() throws AvatolCVException {
         // pull the result files into the program's consciousness
         this.osd.getImagesForStage().reload();  
-    }
-
-
-    @Override
-    public String getView() {
-        return this.view;
     }
 }

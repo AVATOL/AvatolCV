@@ -1,26 +1,25 @@
-package edu.oregonstate.eecs.iis.avatolcv.morphobank;
+package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
 
-public class MBLoginStep implements Step {
+public class LoginStep implements Step {
     public String username = null;
     private String password = null;
-    private MorphobankWSClient wsClient = null;
-    private String view = null;
-    public MBLoginStep(String view, MorphobankWSClient wsClient){
-        this.wsClient = wsClient;
-        this.view = view;
+    private SessionInfo sessionInfo = null;
+    public LoginStep(SessionInfo sessionInfo){
+        this.sessionInfo = sessionInfo;
     }
     @Override
     public void init() {
         // nothing to do
     }
     public boolean isAuthenticated(){
-        if (wsClient.isAuthenticated()){
+        if (this.sessionInfo.getDataSource().isAuthenticated()){
             return true;
         }
         return false;
@@ -33,15 +32,11 @@ public class MBLoginStep implements Step {
         if (null == password || "".equals(password)){
             throw new AvatolCVException("password must be specified");
         }
-        try {
-            boolean authenticated = wsClient.authenticate(this.username, this.password);
-            if (!authenticated){
-                throw new AvatolCVException("username " + this.username + " and password " + this.password + " not valid combination.");
-            }
+        boolean authenticated = this.sessionInfo.getDataSource().authenticate(this.username, this.password);
+        if (!authenticated){
+            throw new AvatolCVException("username " + this.username + " and password " + this.password + " not valid combination.");
         }
-        catch(MorphobankWSException bwe){
-            throw new AvatolCVException("problem authenticating with username " + this.username + " and password " + password + ".\n\n" + bwe.getMessage());
-        }
+       
     }
     public void setUsername(String s){
         this.username = s;

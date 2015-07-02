@@ -49,12 +49,6 @@ public class SegmentationStep implements Step {
 	public void consumeProvidedData() throws AvatolCVException {
 		// TODO Auto-generated method stub
 	}
-
-	@Override
-	public String getView() {
-		// TODO Auto-generated method stub
-		return null;
-	}
     @Override
     public void init() throws AvatolCVException {
         // TODO Auto-generated method stub

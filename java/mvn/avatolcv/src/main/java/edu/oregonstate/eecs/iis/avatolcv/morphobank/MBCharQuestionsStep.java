@@ -35,10 +35,4 @@ public class MBCharQuestionsStep implements Step {
 
     }
 
-    @Override
-    public String getView() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

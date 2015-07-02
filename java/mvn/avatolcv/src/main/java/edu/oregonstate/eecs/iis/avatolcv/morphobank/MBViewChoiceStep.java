@@ -66,11 +66,4 @@ public class MBViewChoiceStep implements Step {
         sessionData.setChosenView(this.chosenView);
 
     }
-
-    @Override
-    public String getView() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

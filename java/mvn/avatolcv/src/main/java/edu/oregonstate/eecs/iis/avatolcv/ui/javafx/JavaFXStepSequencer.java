@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.steps;
+package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -30,8 +30,10 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms.ScoringSessionFo
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
-import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.DataSourceStepController;
-import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.SessionFocusStepController;
+import edu.oregonstate.eecs.iis.avatolcv.steps.DataSourceStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.DatasetChoiceStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.LoginStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.SessionFocusStep;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
 
@@ -65,24 +67,24 @@ public class JavaFXStepSequencer  {
         controllerForStep.put(focusStep, focusController);
         addLabelForStep(focusStep,"Scoring Focus");
         
-        DataSourceStep dataSourceStep = new DataSourceStep();
+        DataSourceStep dataSourceStep = new DataSourceStep(sessionInfo);
         ss.appendStep(dataSourceStep);
-        DataSourceStepController dataSourceStepController = new DataSourceStepController(dataSourceStep,"DataSourceStep.fxml");
+        DataSourceStepController dataSourceStepController = new DataSourceStepController(dataSourceStep, sessionInfo, "DataSourceStep.fxml");
         controllerForStep.put(dataSourceStep, dataSourceStepController);
         addLabelForStep(dataSourceStep,"Select Data Source");
-/*        
-        MBLoginStep loginStep = new MBLoginStep(null, client);
+        
+        LoginStep loginStep = new LoginStep(sessionInfo);
         ss.appendStep(loginStep);
-        MBLoginStepController loginController = new MBLoginStepController(loginStep,"MBLoginStep.fxml");
+        LoginStepController loginController = new LoginStepController(loginStep,sessionInfo,"LoginStep.fxml");
         controllerForStep.put(loginStep, loginController);
         addLabelForStep(loginStep,"Login");
         
-        MBMatrixChoiceStep matrixStep = new MBMatrixChoiceStep(null, client, sessionData);
+        DatasetChoiceStep matrixStep = new DatasetChoiceStep(sessionInfo);
         ss.appendStep(matrixStep);
-        MBMatrixChoiceStepController matrixController = new MBMatrixChoiceStepController(matrixStep, "MBMatrixChoiceStep.fxml");
+        DatasetChoiceStepController matrixController = new DatasetChoiceStepController(matrixStep, "DatasetChoiceStep.fxml");
         controllerForStep.put(matrixStep, matrixController);
         addLabelForStep(matrixStep,"Select Matrix");
-        
+/*        
         MBCharChoiceStep charChoiceStep = new MBCharChoiceStep(null, client, sessionData);
         ss.appendStep(charChoiceStep);
         MBCharChoiceStepController charChoiceController = new MBCharChoiceStepController(charChoiceStep, "MBCharChoiceStep.fxml");
@@ -202,7 +204,7 @@ public class JavaFXStepSequencer  {
     }
     public void initUI() throws AvatolCVException {
         try {
-            FXMLLoader loader = new FXMLLoader(MorphobankSessionJavaFX.class.getResource("navigationShellNoSplit.fxml"));
+            FXMLLoader loader = new FXMLLoader(JavaFXStepSequencer.class.getResource("navigationShellNoSplit.fxml"));
             loader.setController(this);
             Parent navShell = loader.load();
             

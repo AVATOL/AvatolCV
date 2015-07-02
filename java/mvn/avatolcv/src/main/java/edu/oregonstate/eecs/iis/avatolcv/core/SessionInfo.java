@@ -1,6 +1,12 @@
 package edu.oregonstate.eecs.iis.avatolcv.core;
 
 import java.io.File;
+import java.util.List;
+
+import edu.oregonstate.eecs.iis.avatolcv.generic.DatasetInfo;
+import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 
 /*
  * Directory layout:
@@ -41,7 +47,8 @@ public class SessionInfo{
     private static final String FILESEP = System.getProperty("file.separator");
     private ScoringAlgorithms scoringAlgorithms = null;
     private String sessionID = null;
-
+    private DataSource dataSource = null;
+    private DatasetInfo chosenDataset = null;
 	public SessionInfo(String sessionDataRootParent) throws AvatolCVException {
 		File f = new File(sessionDataRootParent);
         if (!f.isDirectory()){
@@ -56,7 +63,17 @@ public class SessionInfo{
         this.scoringAlgorithms = new ScoringAlgorithms();
         this.sessionID = "" + System.currentTimeMillis() / 1000L;
 	}
+	public void setDataSource(DataSource dataSource){
+	    this.dataSource = dataSource;
+	}
+	public DataSource getDataSource(){
+	    return this.dataSource;
+	}
 	public ScoringAlgorithms getScoringAlgorithms() {
         return this.scoringAlgorithms;
     }
+	public void setChosenDataset(DatasetInfo di) throws AvatolCVException {
+	    this.chosenDataset = di;
+	    this.dataSource.loadBasicDataForDataset(di);
+	}
 }

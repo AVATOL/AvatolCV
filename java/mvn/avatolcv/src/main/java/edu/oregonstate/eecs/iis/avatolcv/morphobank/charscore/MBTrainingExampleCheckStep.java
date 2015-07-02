@@ -47,11 +47,6 @@ public class MBTrainingExampleCheckStep implements Step {
 
     }
 
-    @Override
-    public String getView() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 	public TrainTestInfo getTrainTestInfo(String taxonID, String charID) {
 		return this.sessionData.getTrainTestInfo(taxonID, charID);
 	}

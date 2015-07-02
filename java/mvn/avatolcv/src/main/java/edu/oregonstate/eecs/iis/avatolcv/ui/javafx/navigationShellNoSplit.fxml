@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox styleClass="navRoot" stylesheets="@../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+         <children>
+            <VBox>
+               <children>
+                  <Label text="Session Steps">
+                     <VBox.margin>
+                        <Insets bottom="8.0" left="8.0" top="8.0" />
+                     </VBox.margin>
+                  </Label>
+                  <ScrollPane hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                    <content>
+                      <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
+                           <children>
+                              <VBox fx:id="stepList" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </AnchorPane>
+                    </content>
+                  </ScrollPane>
+               </children>
+               <padding>
+                  <Insets left="10.0" top="20.0" />
+               </padding>
+            </VBox>
+            <AnchorPane id="navigationShellContentPane" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+      <HBox spacing="10.0" VBox.vgrow="NEVER">
+         <children>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#previousStep" text="Back" />
+            <Button fx:id="nextButton" mnemonicParsing="false" onAction="#nextStep" text="Next" />
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </HBox>
+   </children>
+</VBox>

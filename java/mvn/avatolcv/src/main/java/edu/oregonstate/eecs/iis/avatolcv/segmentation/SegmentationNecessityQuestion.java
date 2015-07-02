@@ -17,10 +17,4 @@ public class SegmentationNecessityQuestion implements Step {
 
     }
 
-    @Override
-    public String getView() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

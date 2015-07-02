@@ -29,7 +29,6 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
-import edu.oregonstate.eecs.iis.avatolcv.generic.CharQuestionsStep;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.charscore.MBTrainingDataPullStep;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.charscore.MBTrainingExampleCheckStep;
@@ -47,6 +46,7 @@ import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBViewChoiceStepContr
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.SessionFocusStepController;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBImagePullStepController.ImageDownloadTask;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.CharQuestionsStep;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
 

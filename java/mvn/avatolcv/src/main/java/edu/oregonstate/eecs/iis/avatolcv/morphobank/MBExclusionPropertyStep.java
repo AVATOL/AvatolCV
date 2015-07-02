@@ -29,10 +29,4 @@ public class MBExclusionPropertyStep implements Step {
 
     }
 
-    @Override
-    public String getView() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

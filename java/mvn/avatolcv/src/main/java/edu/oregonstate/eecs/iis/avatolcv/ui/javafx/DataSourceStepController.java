@@ -8,6 +8,7 @@ import javafx.scene.control.RadioButton;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
+import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DataSourceStep;
 
 public class DataSourceStepController implements StepController {
@@ -26,15 +27,22 @@ public class DataSourceStepController implements StepController {
     @Override
     public boolean consumeUIData() {
         if (radioMorphobank.isSelected()){
-        	DataSource dataSource
+        	this.dataSourceStep.setDataSourceToMorphobank();
         }
         else if (radioBisque.isSelected()){
-        	
+        	this.dataSourceStep.activateBisqueDataSource();
         }
         else {
-        	
+        	this.dataSourceStep.activateFileSystemDataSource();
         }
-        return true;
+        try {
+            this.dataSourceStep.consumeProvidedData();
+            return true;
+        }
+        catch(AvatolCVException e){
+            AvatolCVJavaFX.exceptionExpresser.showException(e, "Problem activating data source");
+            return false;
+        }
     }
 
     @Override
