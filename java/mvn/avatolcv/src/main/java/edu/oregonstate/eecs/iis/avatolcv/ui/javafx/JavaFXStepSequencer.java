@@ -84,13 +84,13 @@ public class JavaFXStepSequencer  {
         DatasetChoiceStepController matrixController = new DatasetChoiceStepController(matrixStep, "DatasetChoiceStep.fxml");
         controllerForStep.put(matrixStep, matrixController);
         addLabelForStep(matrixStep,"Select Matrix");
-/*        
+        
         MBCharChoiceStep charChoiceStep = new MBCharChoiceStep(null, client, sessionData);
         ss.appendStep(charChoiceStep);
         MBCharChoiceStepController charChoiceController = new MBCharChoiceStepController(charChoiceStep, "MBCharChoiceStep.fxml");
         controllerForStep.put(charChoiceStep, charChoiceController);
         addLabelForStep(charChoiceStep,"Select Character");
-        
+/*        
         MBViewChoiceStep viewChoiceStep = new MBViewChoiceStep(client, sessionData);
         ss.appendStep(viewChoiceStep);
         MBViewChoiceStepController viewChoiceController = new MBViewChoiceStepController(viewChoiceStep, "MBViewChoiceStep.fxml");

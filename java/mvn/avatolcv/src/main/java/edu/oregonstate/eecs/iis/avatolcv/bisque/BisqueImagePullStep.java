@@ -44,7 +44,7 @@ public class BisqueImagePullStep implements Step {
 		while (maxRetries > tries && imageNotYetDownloaded){
 			try {
 				tries++;
-				pp.setMessage("downloading image  : " + ii.getNameAsUploadedNormalized());
+				pp.setMessage("...","downloading image  : " + ii.getNameAsUploadedNormalized());
 				int imageWidthAsInt = -1;
 				try {
 					imageWidthAsInt = new Integer(ii.getImageWidth()).intValue();
@@ -57,7 +57,7 @@ public class BisqueImagePullStep implements Step {
 			}
 			catch(BisqueWSException e){
 				if (e.getMessage().equals("timeout")){
-					pp.setMessage("download timed out - retrying image : " + ii.getNameAsUploadedNormalized() + " - attempt " + (tries+1));
+					pp.setMessage("...","download timed out - retrying image : " + ii.getNameAsUploadedNormalized() + " - attempt " + (tries+1));
 				}
 				mostRecentException = e;
 			}
@@ -72,7 +72,7 @@ public class BisqueImagePullStep implements Step {
 		String imagePath = image.getFilepath();
 		File imageFile = new File(imagePath);
 		if (imageFile.exists()){
-			pp.setMessage("already have image : " + image.getNameAsUploadedNormalized());
+			pp.setMessage("...","already have image : " + image.getNameAsUploadedNormalized());
 		}
 		else {
 			robustImageDownload(pp, image, targetDir);
@@ -104,7 +104,7 @@ public class BisqueImagePullStep implements Step {
 					successCount++;
 				}
 				int percentDone = (int) (100 *(curCount / imageCount));
-				pp.updateProgress(percentDone);
+				pp.updateProgress("...",percentDone);
 			}
 			for (ImageInfo image : imagesMedium){
 				curCount++;
@@ -112,7 +112,7 @@ public class BisqueImagePullStep implements Step {
 					successCount++;
 				}
 				int percentDone = (int) (100 *(curCount / imageCount));
-				pp.updateProgress(percentDone);
+				pp.updateProgress("...",percentDone);
 			}
 			for (ImageInfo image : imagesSmall){
 				curCount++;
@@ -120,7 +120,7 @@ public class BisqueImagePullStep implements Step {
 					successCount++;
 				}
 				int percentDone = (int) (100 *(curCount / imageCount));
-				pp.updateProgress(percentDone);
+				pp.updateProgress("...",percentDone);
 			}
 			for (ImageInfo image : imagesThumbnail){
 				curCount++;
@@ -128,7 +128,7 @@ public class BisqueImagePullStep implements Step {
 					successCount++;
 				}
 				int percentDone = (int) (100 *(curCount / imageCount));
-				pp.updateProgress(percentDone);
+				pp.updateProgress("...",percentDone);
 			}
 			if (successCount < curCount){
 				int badCount = (int)curCount - successCount;
