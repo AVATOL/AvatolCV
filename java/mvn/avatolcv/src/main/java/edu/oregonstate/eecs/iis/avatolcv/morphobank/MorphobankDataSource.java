@@ -70,7 +70,8 @@ public class MorphobankDataSource implements DataSource {
     }
     @Override
     public String getDefaultUsername() {
-        return "jedirv@gmail.com";
+        return "irvine@eecs.oregonstate.edu";
+        //return "jedirv@gmail.com";
     }
     @Override
     public String getDefaultPassword() {

@@ -61,11 +61,6 @@ public class JavaFXStepSequencer  {
         sessionInfo = new SessionInfo(avatolCVRootDir);
         ss = new StepSequence();
         
-        SessionFocusStep focusStep = new SessionFocusStep(sessionInfo);
-        ss.appendStep(focusStep);
-        SessionFocusStepController focusController = new SessionFocusStepController(focusStep,"SessionFocusStep.fxml");
-        controllerForStep.put(focusStep, focusController);
-        addLabelForStep(focusStep,"Scoring Focus");
         
         DataSourceStep dataSourceStep = new DataSourceStep(sessionInfo);
         ss.appendStep(dataSourceStep);
@@ -84,13 +79,24 @@ public class JavaFXStepSequencer  {
         DatasetChoiceStepController matrixController = new DatasetChoiceStepController(matrixStep, "DatasetChoiceStep.fxml");
         controllerForStep.put(matrixStep, matrixController);
         addLabelForStep(matrixStep,"Select Matrix");
+
+        SessionFocusStep focusStep = new SessionFocusStep(sessionInfo);
+        ss.appendStep(focusStep);
+        SessionFocusStepController focusController = new SessionFocusStepController(focusStep,"SessionFocusStep.fxml");
+        controllerForStep.put(focusStep, focusController);
+        addLabelForStep(focusStep,"Scoring Focus");
         
+        plan for Tues 7/7:
+            ___make scoring concern screen, with datasource.loadDataNeededForScoringConcern(ProgressPresenter)
+            
+            ___make summary/filter screen, with datasource.loadRemainingMetadata(progressPresenter)
+        /*         
         MBCharChoiceStep charChoiceStep = new MBCharChoiceStep(null, client, sessionData);
         ss.appendStep(charChoiceStep);
         MBCharChoiceStepController charChoiceController = new MBCharChoiceStepController(charChoiceStep, "MBCharChoiceStep.fxml");
         controllerForStep.put(charChoiceStep, charChoiceController);
         addLabelForStep(charChoiceStep,"Select Character");
-/*        
+       
         MBViewChoiceStep viewChoiceStep = new MBViewChoiceStep(client, sessionData);
         ss.appendStep(viewChoiceStep);
         MBViewChoiceStepController viewChoiceController = new MBViewChoiceStepController(viewChoiceStep, "MBViewChoiceStep.fxml");
