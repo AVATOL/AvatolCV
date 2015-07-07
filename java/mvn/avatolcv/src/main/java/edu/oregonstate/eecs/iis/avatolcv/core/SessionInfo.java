@@ -49,6 +49,8 @@ public class SessionInfo{
     private String sessionID = null;
     private DataSource dataSource = null;
     private DatasetInfo chosenDataset = null;
+    private List<ChoiceItem> chosenScoringConcerns = null;
+    private ChoiceItem chosenScoringConcern = null;
 	public SessionInfo(String sessionDataRootParent) throws AvatolCVException {
 		File f = new File(sessionDataRootParent);
         if (!f.isDirectory()){
@@ -74,6 +76,13 @@ public class SessionInfo{
     }
 	public void setChosenDataset(DatasetInfo di) throws AvatolCVException {
 	    this.chosenDataset = di;
-	    this.dataSource.loadBasicDataForDataset(di);
+	}
+	public void setScoringConcerns(List<ChoiceItem> chosenItems){
+	    chosenScoringConcerns = chosenItems;
+	    this.dataSource.setChosenScoringConcerns(chosenItems);
+	}
+	public void setScoringConcern(ChoiceItem chosenItem){
+	    chosenScoringConcern = chosenItem;
+	    this.dataSource.setChosenScoringConcern(chosenItem);
 	}
 }

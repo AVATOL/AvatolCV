@@ -33,6 +33,8 @@ import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DataSourceStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DatasetChoiceStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.LoginStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernDataPullStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SessionFocusStep;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
@@ -80,23 +82,29 @@ public class JavaFXStepSequencer  {
         controllerForStep.put(matrixStep, matrixController);
         addLabelForStep(matrixStep,"Select Matrix");
 
+        ScoringConcernDataPullStep scoringConcernDataPullStep = new ScoringConcernDataPullStep(sessionInfo);
+        ss.appendStep(scoringConcernDataPullStep);
+        ScoringConcernDataPullStepController scoringConcernDataPullStepController = new ScoringConcernDataPullStepController(this,scoringConcernDataPullStep,"ScoringConcernDataPullStep.fxml");
+        controllerForStep.put(scoringConcernDataPullStep, scoringConcernDataPullStepController);
+        addLabelForStep(scoringConcernDataPullStep,"Load primary metadata");
+        
         SessionFocusStep focusStep = new SessionFocusStep(sessionInfo);
         ss.appendStep(focusStep);
         SessionFocusStepController focusController = new SessionFocusStepController(focusStep,"SessionFocusStep.fxml");
         controllerForStep.put(focusStep, focusController);
         addLabelForStep(focusStep,"Scoring Focus");
         
-        plan for Tues 7/7:
-            ___make scoring concern screen, with datasource.loadDataNeededForScoringConcern(ProgressPresenter)
+        //    ___make scoring concern screen, with datasource.loadDataNeededForScoringConcern(ProgressPresenter)
             
-            ___make summary/filter screen, with datasource.loadRemainingMetadata(progressPresenter)
-        /*         
-        MBCharChoiceStep charChoiceStep = new MBCharChoiceStep(null, client, sessionData);
-        ss.appendStep(charChoiceStep);
-        MBCharChoiceStepController charChoiceController = new MBCharChoiceStepController(charChoiceStep, "MBCharChoiceStep.fxml");
-        controllerForStep.put(charChoiceStep, charChoiceController);
-        addLabelForStep(charChoiceStep,"Select Character");
-       
+        //    ___make summary/filter screen, with datasource.loadRemainingMetadata(progressPresenter)
+                 
+        ScoringConcernStep scoringConcernStep = new ScoringConcernStep(sessionInfo);
+        ss.appendStep(scoringConcernStep);
+        ScoringConcernStepController scoringConcernStepController = new ScoringConcernStepController(scoringConcernStep, "ScoringConcernStep.fxml");
+        controllerForStep.put(scoringConcernStep, scoringConcernStepController);
+        addLabelForStep(scoringConcernStep,"Select Scoring Focus");
+
+        /*
         MBViewChoiceStep viewChoiceStep = new MBViewChoiceStep(client, sessionData);
         ss.appendStep(viewChoiceStep);
         MBViewChoiceStepController viewChoiceController = new MBViewChoiceStepController(viewChoiceStep, "MBViewChoiceStep.fxml");

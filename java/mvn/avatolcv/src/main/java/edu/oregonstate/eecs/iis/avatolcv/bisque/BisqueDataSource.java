@@ -6,14 +6,18 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataSource;
+import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.generic.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
 
 public class BisqueDataSource implements DataSource {
-    BisqueWSClient wsClient = null;
+    private BisqueWSClient wsClient = null;
+    private DatasetInfo chosenDataset = null;
+    private List<BisqueImage> bisqueImagesForCurrentDataset = null;
     public BisqueDataSource(){
         wsClient = new BisqueWSClientImpl();
     }
@@ -54,11 +58,7 @@ public class BisqueDataSource implements DataSource {
             throw new AvatolCVException("problem loading datasets from Bisque ", e);
         }
     }
-    @Override
-    public void loadBasicDataForDataset(DatasetInfo di)
-            throws AvatolCVException {
-        // nothing to do here yet
-    }
+   
     @Override
     public String getDefaultUsername() {
         return "jedirv";
@@ -66,6 +66,40 @@ public class BisqueDataSource implements DataSource {
     @Override
     public String getDefaultPassword() {
         return "Neton3plants**";
+    }
+    @Override
+    public void loadPrimaryMetadataForChosenDataset(ProgressPresenter pp,
+            String processName) throws AvatolCVException {
+        String datasetResource_uniq = this.chosenDataset.getID();
+        try {
+            pp.setMessage(processName, "loading info about images...");
+            pp.updateProgress(processName, 0.0);
+            this.bisqueImagesForCurrentDataset = this.wsClient.getImagesForDataset(datasetResource_uniq);
+            
+            pp.setMessage(processName, "loading metadata for each image...");
+            pp.updateProgress(processName, 0.1);
+            double count = this.bisqueImagesForCurrentDataset.size();
+            double percentProgressPerImage = 0.9 / count;
+            int curCount = 0;
+            for (BisqueImage bi : this.bisqueImagesForCurrentDataset){
+                curCount++;
+                pp.setMessage(processName, "loading metadata for image: " + bi.getName());
+                String imageResource_uniq = bi.getResourceUniq();
+                this.wsClient.getAnnotationsForImage(imageResource_uniq);
+                
+                pp.updateProgress(processName, 0.1 + (percentProgressPerImage * curCount));
+                
+            }
+            pp.setMessage(processName, "finished.  Click Next to continue.");
+        }
+        catch(BisqueWSException e){
+            e.printStackTrace();
+            throw new AvatolCVException("problem loading primary metadata from Bisque: " + e.getMessage(), e);
+        }
+    }
+    @Override
+    public void setChosenDataset(DatasetInfo di) {
+        this.chosenDataset = di;
     }
 
 }
