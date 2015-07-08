@@ -92,18 +92,16 @@ public class JavaFXStepSequencer  {
         ss.appendStep(focusStep);
         SessionFocusStepController focusController = new SessionFocusStepController(focusStep,"SessionFocusStep.fxml");
         controllerForStep.put(focusStep, focusController);
-        addLabelForStep(focusStep,"Scoring Focus");
-        
-        //    ___make scoring concern screen, with datasource.loadDataNeededForScoringConcern(ProgressPresenter)
-            
-        //    ___make summary/filter screen, with datasource.loadRemainingMetadata(progressPresenter)
-                 
+        addLabelForStep(focusStep,"Select Scoring Approach");
+             
         ScoringConcernStep scoringConcernStep = new ScoringConcernStep(sessionInfo);
         ss.appendStep(scoringConcernStep);
         ScoringConcernStepController scoringConcernStepController = new ScoringConcernStepController(scoringConcernStep, "ScoringConcernStep.fxml");
         controllerForStep.put(scoringConcernStep, scoringConcernStepController);
-        addLabelForStep(scoringConcernStep,"Select Scoring Focus");
-
+        addLabelForStep(scoringConcernStep,"Select Item To Score");
+        
+      //    ___make summary/filter screen, with datasource.loadRemainingMetadata(progressPresenter)
+           
         /*
         MBViewChoiceStep viewChoiceStep = new MBViewChoiceStep(client, sessionData);
         ss.appendStep(viewChoiceStep);

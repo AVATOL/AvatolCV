@@ -571,9 +571,10 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 		    
 		    
 		    for (BisqueAnnotation ba : annotations){
-		        if (ba.hasTypeValueConsistentWithComboBox()){
+		        //if (ba.hasTypeValueConsistentWithComboBox()){
+		        //TODO should we unrestrict this once we have real data in play?  Will it always be enumerable items in a combobox?
 		            wellFormedAnnotations.add(ba);
-		        }
+		        //}
 		    }
 		}
 		catch(JAXBException je){

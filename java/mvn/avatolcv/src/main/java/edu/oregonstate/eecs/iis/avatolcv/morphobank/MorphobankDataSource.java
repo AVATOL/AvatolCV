@@ -175,7 +175,7 @@ public class MorphobankDataSource implements DataSource {
         }
         else if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
                 sa.getScoringScope() == ScoringAlgorithms.ScoringScope.SINGLE_ITEM){
-            return "Select the desired presence/absence part.";
+            return "Select the desired presence/absence character.";
         }
         else if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
                 sa.getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM) {
@@ -184,7 +184,7 @@ public class MorphobankDataSource implements DataSource {
 
         else if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
                 sa.getScoringScope() == ScoringAlgorithms.ScoringScope.SINGLE_ITEM) {
-            return "Select the desired shape aspect of the specimen.";
+            return "Select the desired shape aspect character.";
         }
 
         else if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT &&
@@ -194,7 +194,7 @@ public class MorphobankDataSource implements DataSource {
 
         else {// (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT &&
               //  sa.getScoringScope() == ScoringAlgorithms.ScoringScope.SINGLE_ITEM) {
-            return "Select the desired texture aspect of the specimen.";
+            return "Select the desired texture aspect character.";
         }
     }
     @Override

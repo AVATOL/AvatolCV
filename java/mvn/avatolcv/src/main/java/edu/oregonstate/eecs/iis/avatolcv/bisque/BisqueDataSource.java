@@ -2,15 +2,19 @@ package edu.oregonstate.eecs.iis.avatolcv.bisque;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.generic.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSException;
+import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
 
@@ -18,6 +22,8 @@ public class BisqueDataSource implements DataSource {
     private BisqueWSClient wsClient = null;
     private DatasetInfo chosenDataset = null;
     private List<BisqueImage> bisqueImagesForCurrentDataset = null;
+    private Hashtable<String, List<BisqueAnnotation>> annotationsForImageIdHash = null;
+    private List<String> scoringConcernAnnotations = null;
     public BisqueDataSource(){
         wsClient = new BisqueWSClientImpl();
     }
@@ -34,7 +40,6 @@ public class BisqueDataSource implements DataSource {
     }
     @Override
     public boolean isAuthenticated() {
-        // TODO Auto-generated method stub
         return this.wsClient.isAuthenticated();
     }
     
@@ -71,6 +76,7 @@ public class BisqueDataSource implements DataSource {
     public void loadPrimaryMetadataForChosenDataset(ProgressPresenter pp,
             String processName) throws AvatolCVException {
         String datasetResource_uniq = this.chosenDataset.getID();
+        annotationsForImageIdHash = new Hashtable<String,List<BisqueAnnotation>>();
         try {
             pp.setMessage(processName, "loading info about images...");
             pp.updateProgress(processName, 0.0);
@@ -85,8 +91,8 @@ public class BisqueDataSource implements DataSource {
                 curCount++;
                 pp.setMessage(processName, "loading metadata for image: " + bi.getName());
                 String imageResource_uniq = bi.getResourceUniq();
-                this.wsClient.getAnnotationsForImage(imageResource_uniq);
-                
+                List<BisqueAnnotation> annotations = this.wsClient.getAnnotationsForImage(imageResource_uniq);
+                annotationsForImageIdHash.put(imageResource_uniq, annotations);
                 pp.updateProgress(processName, 0.1 + (percentProgressPerImage * curCount));
                 
             }
@@ -100,6 +106,70 @@ public class BisqueDataSource implements DataSource {
     @Override
     public void setChosenDataset(DatasetInfo di) {
         this.chosenDataset = di;
+    }
+    @Override
+    public List<ChoiceItem> getScoringConcernItems(ScoringAlgorithms sa)
+            throws AvatolCVException {
+        List<ChoiceItem> items = new ArrayList<ChoiceItem>();
+        List<String> annotationNames = new ArrayList<String>();
+        for (BisqueImage bi : this.bisqueImagesForCurrentDataset){
+            String imageID = bi.getResourceUniq();
+            List<BisqueAnnotation> annotations = annotationsForImageIdHash.get(imageID);
+            for (BisqueAnnotation a : annotations){
+                String annotationName = a.getName();
+                if (!annotationNames.contains(annotationName)){
+                    annotationNames.add(annotationName);
+                }
+            }
+        }
+        for (String annotationName : annotationNames){
+            ChoiceItem ci = new ChoiceItem(annotationName, false, annotationName);
+            items.add(ci);
+        }
+        return items;
+    }
+    @Override
+    public String getInstructionsForScoringConcernScreen(ScoringAlgorithms sa) {
+        if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
+                sa.getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
+                return "Place a check mark next to annotations that refer to presence/absence of a part." +
+                        "(AvatolCV has tried to deduce this from metadata.)";
+            }
+            else if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
+                    sa.getScoringScope() == ScoringAlgorithms.ScoringScope.SINGLE_ITEM){
+                return "Select the desired presence/absence part.";
+            }
+            else if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
+                    sa.getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM) {
+                return "Place a check mark next to annotations that refer to shape aspect of a specimen.";
+            }
+
+            else if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
+                    sa.getScoringScope() == ScoringAlgorithms.ScoringScope.SINGLE_ITEM) {
+                return "Select the desired shape aspect of the specimen.";
+            }
+
+            else if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT &&
+                    sa.getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM) {
+                return "Place a check mark next to annotations that refer to texture aspects of a specimen.";
+            }
+
+            else {// (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT &&
+                  //  sa.getScoringScope() == ScoringAlgorithms.ScoringScope.SINGLE_ITEM) {
+                return "Select the desired texture aspect of the specimen.";
+            }
+    }
+    @Override
+    public void setChosenScoringConcerns(List<ChoiceItem> items) {
+        this.scoringConcernAnnotations = new ArrayList<String>();
+        for (ChoiceItem item : items){
+            this.scoringConcernAnnotations.add(item.getName());
+        }
+    }
+    @Override
+    public void setChosenScoringConcern(ChoiceItem item) {
+        this.scoringConcernAnnotations = new ArrayList<String>();
+        this.scoringConcernAnnotations.add(item.getName());
     }
 
 }
