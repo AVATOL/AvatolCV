@@ -44,5 +44,9 @@ public class LoginStep implements Step {
     public void setPassword(String s){
         this.password = s;
     }
-
+    @Override
+    public boolean hasDataLoadPhase() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

@@ -46,4 +46,10 @@ public class DataSourceStep implements Step {
             this.sessionInfo.setDataSource(new FileSystemDataSource());
         }
     }
+    @Override
+    public boolean hasDataLoadPhase() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+   
 }

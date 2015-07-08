@@ -61,4 +61,9 @@ public class ImageTransformReviewStep implements Step {
 	    
 		userReviewComplete = true;
 	}
+    @Override
+    public boolean hasDataLoadPhase() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

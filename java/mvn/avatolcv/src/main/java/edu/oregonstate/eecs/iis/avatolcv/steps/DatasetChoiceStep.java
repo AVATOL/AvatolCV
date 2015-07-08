@@ -56,4 +56,10 @@ public class DatasetChoiceStep implements Step {
     public void consumeProvidedData() throws AvatolCVException {
         this.sessionInfo.setChosenDataset(this.chosenDataset);
     }
+    @Override
+    public boolean hasDataLoadPhase() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    
 }

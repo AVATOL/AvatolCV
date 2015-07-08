@@ -9,6 +9,7 @@ public interface DataSource {
     boolean isAuthenticated();
     List<DatasetInfo> getDatasets() throws AvatolCVException ;
     void loadPrimaryMetadataForChosenDataset(ProgressPresenter pp, String processName) throws AvatolCVException;
+    void loadRemainingMetadataForChosenDataset(ProgressPresenter pp, String processName) throws AvatolCVException;
     String getDefaultUsername();
     String getDefaultPassword();
     

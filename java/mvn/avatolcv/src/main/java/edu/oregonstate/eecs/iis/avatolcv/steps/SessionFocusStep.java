@@ -25,4 +25,9 @@ public class SessionFocusStep implements Step {
         // TODO Auto-generated method stub
 
     }
+    @Override
+    public boolean hasDataLoadPhase() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

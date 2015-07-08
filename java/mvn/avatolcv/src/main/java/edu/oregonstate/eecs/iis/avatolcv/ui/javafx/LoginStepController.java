@@ -85,4 +85,18 @@ public class LoginStepController implements StepController {
 	        showBadCredentialMessage();
 	    }
 	}
+
+    @Override
+    public void executeDataLoadPhase() throws AvatolCVException {
+     // nothing to be done
+    }
+    @Override
+    public void configureUIForDataLoadPhase() {
+     // nothing to be done
+    }
+    @Override
+    public boolean isDataLoadPhaseComplete() {
+        // not relevant
+        return true;
+    }
 }

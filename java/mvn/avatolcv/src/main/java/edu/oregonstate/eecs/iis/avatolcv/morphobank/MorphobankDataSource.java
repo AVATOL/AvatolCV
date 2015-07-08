@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
@@ -17,6 +18,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharStateInfo.MBCharStateValue;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
@@ -28,6 +30,10 @@ public class MorphobankDataSource implements DataSource {
     private List<MBCharacter> chosenCharacters = null;
     private List<MBTaxon> taxaForMatrix = null;
     private DatasetInfo chosenDataset = null;
+    private List<MBView> viewsForProject = null;
+    private Hashtable<String,List<MBCharStateValue>> charStateValuesForCellHash = new Hashtable<String, List<MBCharStateValue>>();
+    private Hashtable<String,List<MBMediaInfo>> mediaInfoForCellHash = new Hashtable<String, List<MBMediaInfo>>();
+
     public MorphobankDataSource(){
         wsClient = new MorphobankWSClientImpl();
     }
@@ -208,5 +214,41 @@ public class MorphobankDataSource implements DataSource {
     public void setChosenScoringConcern(ChoiceItem item) {
         this.chosenCharacters = new ArrayList<MBCharacter>();
         this.chosenCharacters.add((MBCharacter)item.getBackingObject());
+    }
+    @Override
+    public void loadRemainingMetadataForChosenDataset(ProgressPresenter pp,
+            String processName) throws AvatolCVException {
+        try {
+            int rowCount = this.taxaForMatrix.size();
+            int colCount = this.charactersForMatrix.size();
+            String matrixID = this.chosenDataset.getID();
+            int totalItemCount = colCount * rowCount;
+            double increment = 1.0 / totalItemCount;
+            int curCount = 0;
+            for (MBCharacter character : this.charactersForMatrix){
+                for (MBTaxon taxon : this.taxaForMatrix){
+                    String charID = character.getCharID();
+                    String taxonID = taxon.getTaxonID();
+                    pp.setMessage(processName, "loading info for cell: character " + character.getCharName() + " taxon " + taxon.getTaxonName());
+                    String key = getKeyForCell( charID,taxonID);
+                    
+                    List<MBCharStateValue> charStatesForCell = this.wsClient.getCharStatesForCell(matrixID, charID, taxonID);
+                    charStateValuesForCellHash.put(key, charStatesForCell);
+                    
+                    List<MBMediaInfo> mediaForCell = this.wsClient.getMediaForCell(matrixID, charID, taxonID);
+                    mediaInfoForCellHash.put(key, mediaForCell);
+                    curCount++;
+                    pp.updateProgress(processName, curCount * increment);
+                }
+            }
+        }
+        catch(MorphobankWSException e){
+            throw new AvatolCVException("problem loading data for matrix. " + e.getMessage(), e);
+        }
+        
+    }
+    
+    public String getKeyForCell(String charID, String taxonID){
+        return "c" + charID + "_t" + taxonID;
     }
 }

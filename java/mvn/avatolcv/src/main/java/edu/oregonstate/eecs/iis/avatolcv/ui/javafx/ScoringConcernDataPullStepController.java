@@ -29,7 +29,7 @@ import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBImagePullStep;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MorphobankSessionJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernDataPullStep;
 
-public class ScoringConcernDataPullStepController implements StepController, ProgressPresenter  {
+public class ScoringConcernDataPullStepController implements StepController  {
     public static final String SCORING_INFO_DOWNLOAD = "scoringInfoDownload"; 
    // public ProgressBar imageFileDownloadProgress;
     //public Label imageFileDownloadMessage;
@@ -66,7 +66,10 @@ public class ScoringConcernDataPullStepController implements StepController, Pro
             Node content = loader.load();
             scoringInfoDownloadProgress.setProgress(0.0);
             scoringInfoDownloadMessage.setText("");
-            Task<Boolean> task = new ScoringInfoDownloadTask(this, this.step, SCORING_INFO_DOWNLOAD);
+            ProgressPresenterImpl pp = new ProgressPresenterImpl();
+            pp.connectProcessNameToLabel(SCORING_INFO_DOWNLOAD, scoringInfoDownloadMessage);
+            pp.connectProcessNameToProgressBar(SCORING_INFO_DOWNLOAD,scoringInfoDownloadProgress);
+            Task<Boolean> task = new ScoringInfoDownloadTask(pp, this.step, SCORING_INFO_DOWNLOAD);
             
             new Thread(task).start();
             return content;
@@ -75,67 +78,23 @@ public class ScoringConcernDataPullStepController implements StepController, Pro
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
         } 
     }
-    
-   
-    @Override
-    public void updateProgress(String processName, double percent) {
-        ProgressUpdater pu = new ProgressUpdater(processName, percent);
-        Platform.runLater(pu);
-    }
-    @Override
-    public void setMessage(String processName, String m) {
-        MessageUpdater mu = new MessageUpdater(processName,m);
-        Platform.runLater(mu);
-    }
-    public class MessageUpdater implements Runnable {
-        private String processName;
-        private String message;
-        public MessageUpdater(String processName, String message){
-            this.processName = processName;
-            this.message = message;
-        }
-        @Override
-        public void run() {
-            if (SCORING_INFO_DOWNLOAD.equals(processName)){
-                scoringInfoDownloadMessage.setText(message);
-            }
-        }
-    }
-    public class ProgressUpdater implements Runnable {
-        private String processName;
-        private double percent;
-        public ProgressUpdater(String processName, double percent){
-            this.processName = processName;
-            this.percent = percent;
-        }
-        @Override
-        public void run() {
-        	if (SCORING_INFO_DOWNLOAD.equals(processName)){
-                System.out.println("should have setr progress to " + percent);
-                scoringInfoDownloadProgress.setProgress((double)percent);
-            }
-        }
-    }
    
     public class ScoringInfoDownloadTask extends Task<Boolean> {
         private String processName1;
-        //private String processName2;
         private ScoringConcernDataPullStep step;
-        private ScoringConcernDataPullStepController controller;
+        private ProgressPresenter pp;
         private final Logger logger = LogManager.getLogger(ScoringInfoDownloadTask.class);
     	
-        public ScoringInfoDownloadTask(ScoringConcernDataPullStepController controller, ScoringConcernDataPullStep step, String processName1){
-            this.controller = controller;
+        public ScoringInfoDownloadTask(ProgressPresenter pp, ScoringConcernDataPullStep step, String processName1){
+            this.pp = pp;
             this.step = step;
             this.processName1 = processName1;
-            //this.processName2 = processName2;
             
         }
         @Override
         protected Boolean call() throws Exception {
         	try {
-        		this.step.loadPrimaryMetadataForChosenDataset(this.controller, processName1);
-        		//this.step.downloadImagesForChosenCharactersAndView(this.controller, processName2);
+        		this.step.loadPrimaryMetadataForChosenDataset(this.pp, processName1);
         		NavButtonEnablerRunner runner = new NavButtonEnablerRunner();
         		Platform.runLater(runner);
         		return new Boolean(true);
@@ -148,7 +107,6 @@ public class ScoringConcernDataPullStepController implements StepController, Pro
         		return new Boolean(false);
         	}
         }
-       
     }
     public class NavButtonEnablerRunner implements Runnable{
 		@Override
@@ -161,5 +119,18 @@ public class ScoringConcernDataPullStepController implements StepController, Pro
 	public boolean delayEnableNavButtons() {
 		return true;
 	}
+    @Override
+    public void executeDataLoadPhase() throws AvatolCVException {
+     // nothing to be done
+    }
+    @Override
+    public void configureUIForDataLoadPhase() {
+        //nothing to be done
+    }
+    @Override
+    public boolean isDataLoadPhaseComplete() {
+        // not relevant
+        return true;
+    }
    
 }

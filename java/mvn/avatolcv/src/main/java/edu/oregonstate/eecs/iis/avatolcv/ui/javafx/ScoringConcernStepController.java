@@ -5,13 +5,18 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -19,11 +24,16 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ChoiceItem;
+import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernStep;
 
 public class ScoringConcernStepController implements StepController {
+    public static final String METADATA_DOWNLOAD = "metadataDownload"; 
+    public VBox scoringConcernVBox;
+    public Label remainingMetadataDownloadLabel;
+    public ProgressBar remainingMetadataDownloadProgressBar;
     public Label comboBoxInstructionlabel;
     public ComboBox<String> itemChoiceComboBox;
     private ScoringConcernStep step;
@@ -31,6 +41,7 @@ public class ScoringConcernStepController implements StepController {
     //private List<String> charNames = null;
     private Hashtable<ChoiceItem, CheckBox> checkBoxForChoiceItemHash;
     private Hashtable<String, ChoiceItem> choiceItemForNameHash;
+    private boolean dataDownloadPhaseComplete = false;
     //private List<MBCharacter> characters;
     List<ChoiceItem> allChoiceItems = null;
     public ScoringConcernStepController(ScoringConcernStep step, String fxmlDocName){
@@ -160,5 +171,70 @@ public class ScoringConcernStepController implements StepController {
 	public boolean delayEnableNavButtons() {
 		return false;
 	}
-
+	@Override
+	public void executeDataLoadPhase(){
+	    ProgressPresenterImpl pp = new ProgressPresenterImpl();
+        pp.connectProcessNameToLabel(METADATA_DOWNLOAD, remainingMetadataDownloadLabel);
+        pp.connectProcessNameToProgressBar(METADATA_DOWNLOAD,remainingMetadataDownloadProgressBar);
+        Task<Boolean> task = new RemainingMetadataDownloadTask(pp, this.step, METADATA_DOWNLOAD);
+        new Thread(task).start();
+	}
+    public class RemainingMetadataDownloadTask extends Task<Boolean> {
+        private String processName1;
+        private ScoringConcernStep step;
+        private ProgressPresenter pp;
+        private final Logger logger = LogManager.getLogger(RemainingMetadataDownloadTask.class);
+        
+        public RemainingMetadataDownloadTask(ProgressPresenter pp, ScoringConcernStep step, String processName1){
+            this.pp = pp;
+            this.step = step;
+            this.processName1 = processName1;
+        }
+        @Override
+        protected Boolean call() throws Exception {
+            try {
+                this.step.loadRemainingMetadataForChosenDataset(this.pp, processName1);
+                dataDownloadPhaseComplete = true;
+                return new Boolean(true);
+            }
+            catch(AvatolCVException ace){
+                logger.error("AvatolCV error downloading scoring data info");
+                logger.error(ace.getMessage());
+                System.out.println("AvatolCV error downloading scoring data info");
+                ace.printStackTrace();
+                return new Boolean(false);
+            }
+        }
+    }
+    
+    @Override
+    public void configureUIForDataLoadPhase() {
+        scoringConcernVBox.getChildren().clear();
+        Region regionTop = new Region();
+        VBox.setVgrow(regionTop, Priority.ALWAYS);
+        scoringConcernVBox.getChildren().add(regionTop);
+        // add text about doing best to detect presence/absence
+        String instructions = this.step.getInstructionsForScoringConcernScreen();
+        Label header = new Label("downloading additional metadata");
+        //header.setPrefWidth(100);
+        header.setWrapText(true);
+        // add a grid layout
+        scoringConcernVBox.getChildren().add(header);
+        
+        remainingMetadataDownloadProgressBar = new ProgressBar(0.0);
+        remainingMetadataDownloadProgressBar.setMinWidth(300);
+        scoringConcernVBox.getChildren().add(remainingMetadataDownloadProgressBar);
+        
+        remainingMetadataDownloadLabel = new Label("");
+        scoringConcernVBox.getChildren().add(remainingMetadataDownloadLabel);
+        
+        Region regionBottom = new Region();
+        VBox.setVgrow(regionBottom, Priority.ALWAYS);
+        scoringConcernVBox.getChildren().add(regionBottom);
+        
+    }
+    @Override
+    public boolean isDataLoadPhaseComplete() {
+        return dataDownloadPhaseComplete;
+    }
 }

@@ -9,6 +9,7 @@ import edu.oregonstate.eecs.iis.avatolcv.bisque.BisqueSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataSource;
+import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
@@ -67,5 +68,13 @@ public class ScoringConcernStep implements Step {
             sessionInfo.setScoringConcern(chosenItem);
         }
         
+    }
+    @Override
+    public boolean hasDataLoadPhase() {
+        return true;
+    }
+    
+    public void loadRemainingMetadataForChosenDataset(ProgressPresenter pp, String processName) throws AvatolCVException {
+        this.sessionInfo.getDataSource().loadRemainingMetadataForChosenDataset(pp, processName);
     }
 }

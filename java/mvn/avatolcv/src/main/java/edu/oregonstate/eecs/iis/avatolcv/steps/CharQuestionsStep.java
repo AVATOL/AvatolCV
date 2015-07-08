@@ -34,4 +34,10 @@ public class CharQuestionsStep implements Step {
     public void consumeProvidedData() throws AvatolCVException {
         this.questionSequencer.persist(this.sessionData.getCharQuestionsAnsweredQuestionsPath());
     }
+    @Override
+    public boolean hasDataLoadPhase() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    
 }

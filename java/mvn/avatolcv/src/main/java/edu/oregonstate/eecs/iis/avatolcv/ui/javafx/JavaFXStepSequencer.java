@@ -231,23 +231,50 @@ public class JavaFXStepSequencer  {
     	
     }
     /*
-     * nextStep called from the button on the javaFX ui thread
+     * nextStep called from the button on the javaFX ui thread (application thread)
      */
     public void nextStep(){
     	nextButton.setDisable(true);
     	backButton.setDisable(true);
-    	// delegate data consumption to the javafx application thread
+    	
+    	Step step = ss.getCurrentStep();
+        StepController controller = controllerForStep.get(step);
+        if (step.hasDataLoadPhase()){
+            controller.configureUIForDataLoadPhase();
+        }
+    	// delegate data consumption to background thread
     	NextStepTask task = new NextStepTask();
     	new Thread(task).start();
     }
+
+    public class NextStepTask extends Task<Boolean> {
+        private final Logger logger = LogManager.getLogger(NextStepTask.class);
+        @Override
+        protected Boolean call() throws Exception {
+            requestNextStep();
+            return new Boolean(true);
+            
+        }
+       
+    }
     /*
-     * this one runs on thejavafx application thread
+     * (runs in background thread)
      */
-    public void requestNextStep(){
+    public void requestNextStep() throws AvatolCVException {
     	Step step = ss.getCurrentStep();
     	StepController controller = controllerForStep.get(step);
+    	
     	boolean success = controller.consumeUIData();
     	if (success){
+    	    if (step.hasDataLoadPhase()){
+                controller.executeDataLoadPhase();
+                while (!controller.isDataLoadPhaseComplete()){
+                    try {
+                        Thread.sleep(500);
+                    }
+                    catch(InterruptedException e){ }
+                }
+            }
     		ss.next();
     		// task of loading UI for next step is put back on the javaFX UI thread
     		CurrentStepRunner stepRunner = new CurrentStepRunner();
@@ -263,7 +290,6 @@ public class JavaFXStepSequencer  {
 		public void run() {
 			try {
     			activateCurrentStep();
-    			
     		}
     		catch (AvatolCVException ace){
     			Alert alert = new Alert(AlertType.ERROR);
@@ -275,19 +301,5 @@ public class JavaFXStepSequencer  {
 			
 		}
     	
-    }
-    public class NextStepTask extends Task<Boolean> {
-        private final Logger logger = LogManager.getLogger(NextStepTask.class);
-    	
-        public NextStepTask(){
-            
-        }
-        @Override
-        protected Boolean call() throws Exception {
-        	requestNextStep();
-        	return new Boolean(true);
-        	
-        }
-       
     }
 }

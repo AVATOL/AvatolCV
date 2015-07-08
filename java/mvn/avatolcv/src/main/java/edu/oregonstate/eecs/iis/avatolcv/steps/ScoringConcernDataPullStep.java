@@ -40,4 +40,10 @@ public class ScoringConcernDataPullStep implements Step {
 
     }
 
+    @Override
+    public boolean hasDataLoadPhase() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }

@@ -24,6 +24,7 @@ public class BisqueDataSource implements DataSource {
     private List<BisqueImage> bisqueImagesForCurrentDataset = null;
     private Hashtable<String, List<BisqueAnnotation>> annotationsForImageIdHash = null;
     private List<String> scoringConcernAnnotations = null;
+    private Hashtable<String, List<String>> valuesForEnumAnnotation = null;
     public BisqueDataSource(){
         wsClient = new BisqueWSClientImpl();
     }
@@ -170,6 +171,50 @@ public class BisqueDataSource implements DataSource {
     public void setChosenScoringConcern(ChoiceItem item) {
         this.scoringConcernAnnotations = new ArrayList<String>();
         this.scoringConcernAnnotations.add(item.getName());
+    }
+    @Override
+    public void loadRemainingMetadataForChosenDataset(ProgressPresenter pp,
+            String processName) throws AvatolCVException {
+        try {
+            pp.setMessage(processName, "loading info about images...");
+            pp.updateProgress(processName, 0.0);
+            int totalCount = 0;
+            for (BisqueImage image : this.bisqueImagesForCurrentDataset){
+                String id = image.getResourceUniq();
+                List<BisqueAnnotation> annotations = annotationsForImageIdHash.get(id);
+                for (BisqueAnnotation annotation : annotations){
+                    totalCount++;
+                }
+            }
+            double increment = 1.0 / totalCount;
+            List<String> typesSeen = new ArrayList<String>();
+            this.valuesForEnumAnnotation = new Hashtable<String, List<String>>();
+            int count = 0;
+            for (BisqueImage image : this.bisqueImagesForCurrentDataset){
+                String id = image.getResourceUniq();
+                List<BisqueAnnotation> annotations = annotationsForImageIdHash.get(id);
+                for (BisqueAnnotation annotation : annotations){
+                    pp.setMessage(processName, "loading info about annotation " + annotation.getName());
+                    if (annotation.hasTypeValueConsistentWithComboBox()){
+                        String annotationTypeValue = annotation.getType();
+                        if (typesSeen.contains(annotationTypeValue)){
+                            // don't look it up again
+                        }
+                        else {
+                            List<String> values = this.wsClient.getAnnotationValueOptions(annotationTypeValue);
+                            this.valuesForEnumAnnotation.put(annotation.getName(), values);
+                        }
+                    }
+                    pp.updateProgress(processName, ++count * increment);
+
+                }
+            }
+        }
+        catch(BisqueWSException e){
+            e.printStackTrace();
+            throw new AvatolCVException("problem loading primary metadata from Bisque: " + e.getMessage(), e);
+        }
+        
     }
 
 }
