@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
@@ -58,8 +59,10 @@ public class DatasetChoiceStep implements Step {
     }
     @Override
     public boolean hasDataLoadPhase() {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
-    
+    public void loadPrimaryMetadataForChosenDataset(ProgressPresenter pp, String processName) throws AvatolCVException {
+        this.sessionInfo.getDataSource().loadPrimaryMetadataForChosenDataset(pp, processName);
+        
+    }
 }

@@ -4,19 +4,36 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DatasetChoiceStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernStep;
+import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ScoringConcernStepController.RemainingMetadataDownloadTask;
 
 public class DatasetChoiceStepController implements StepController {
+    public static final String SCORING_INFO_DOWNLOAD = "scoringInfoDownload"; 
+    public VBox datasetChoiceVBox;
+    public ProgressBar scoringInfoDownloadProgressBar;
+    public Label scoringInfoDownloadMessageLabel;
     public ComboBox<String> selectedDataset;
     private DatasetChoiceStep step;
     private String fxmlDocName;
     private List<String> datasetNames = null;
+    private boolean dataDownloadPhaseComplete = false;
 	public DatasetChoiceStepController(DatasetChoiceStep step, String fxmlDocName){
 		this.step = step;
 		this.fxmlDocName = fxmlDocName;
@@ -67,15 +84,65 @@ public class DatasetChoiceStepController implements StepController {
 	}
     @Override
     public void executeDataLoadPhase() throws AvatolCVException {
-        // nothing to be done
+        ProgressPresenterImpl pp = new ProgressPresenterImpl();
+        pp.connectProcessNameToLabel(SCORING_INFO_DOWNLOAD, scoringInfoDownloadMessageLabel);
+        pp.connectProcessNameToProgressBar(SCORING_INFO_DOWNLOAD,scoringInfoDownloadProgressBar);
+        Task<Boolean> task = new ScoringMetadataDownloadTask(pp, this.step, SCORING_INFO_DOWNLOAD);
+        new Thread(task).start();
+    }
+    public class ScoringMetadataDownloadTask extends Task<Boolean> {
+        private String processName1;
+        private DatasetChoiceStep step;
+        private ProgressPresenter pp;
+        private final Logger logger = LogManager.getLogger(RemainingMetadataDownloadTask.class);
+        
+        public ScoringMetadataDownloadTask(ProgressPresenter pp, DatasetChoiceStep step, String processName1){
+            this.pp = pp;
+            this.step = step;
+            this.processName1 = processName1;
+        }
+        @Override
+        protected Boolean call() throws Exception {
+            try {
+                this.step.loadPrimaryMetadataForChosenDataset(this.pp, processName1);
+                dataDownloadPhaseComplete = true;
+                return new Boolean(true);
+            }
+            catch(AvatolCVException ace){
+                logger.error("AvatolCV error downloading scoring data info");
+                logger.error(ace.getMessage());
+                System.out.println("AvatolCV error downloading scoring data info");
+                ace.printStackTrace();
+                return new Boolean(false);
+            }
+        }
     }
     @Override
     public void configureUIForDataLoadPhase() {
-     // nothing to be done
+        datasetChoiceVBox.getChildren().clear();
+        Region regionTop = new Region();
+        VBox.setVgrow(regionTop, Priority.ALWAYS);
+        datasetChoiceVBox.getChildren().add(regionTop);
+        // add text about doing best to detect presence/absence
+        Label header = new Label("downloading scoring info metadata");
+        //header.setPrefWidth(100);
+        header.setWrapText(true);
+        // add a grid layout
+        datasetChoiceVBox.getChildren().add(header);
+        
+        scoringInfoDownloadProgressBar = new ProgressBar(0.0);
+        scoringInfoDownloadProgressBar.setMinWidth(300);
+        datasetChoiceVBox.getChildren().add(scoringInfoDownloadProgressBar);
+        
+        scoringInfoDownloadMessageLabel = new Label("");
+        datasetChoiceVBox.getChildren().add(scoringInfoDownloadMessageLabel);
+        
+        Region regionBottom = new Region();
+        VBox.setVgrow(regionBottom, Priority.ALWAYS);
+        datasetChoiceVBox.getChildren().add(regionBottom);
     }
     @Override
     public boolean isDataLoadPhaseComplete() {
-        // not relavent
-        return true;
+        return dataDownloadPhaseComplete;
     }
 }

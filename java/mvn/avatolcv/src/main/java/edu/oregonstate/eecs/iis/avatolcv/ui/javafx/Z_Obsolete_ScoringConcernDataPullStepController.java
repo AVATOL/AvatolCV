@@ -27,19 +27,19 @@ import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBImagePullStep;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MorphobankSessionJavaFX;
-import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernDataPullStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.Z_Obsolete_ScoringConcernDataPullStep;
 
-public class ScoringConcernDataPullStepController implements StepController  {
+public class Z_Obsolete_ScoringConcernDataPullStepController implements StepController  {
     public static final String SCORING_INFO_DOWNLOAD = "scoringInfoDownload"; 
    // public ProgressBar imageFileDownloadProgress;
     //public Label imageFileDownloadMessage;
     public ProgressBar scoringInfoDownloadProgress;
     public Label scoringInfoDownloadMessage;
-    private ScoringConcernDataPullStep step;
+    private Z_Obsolete_ScoringConcernDataPullStep step;
     private String fxmlDocName;
     private JavaFXStepSequencer fxStepSequencer;
     
-    public ScoringConcernDataPullStepController(JavaFXStepSequencer fxStepSequencer, ScoringConcernDataPullStep step, String fxmlDocName){
+    public Z_Obsolete_ScoringConcernDataPullStepController(JavaFXStepSequencer fxStepSequencer, Z_Obsolete_ScoringConcernDataPullStep step, String fxmlDocName){
         this.step = step;
         this.fxmlDocName = fxmlDocName;
         this.fxStepSequencer = fxStepSequencer;
@@ -81,11 +81,11 @@ public class ScoringConcernDataPullStepController implements StepController  {
    
     public class ScoringInfoDownloadTask extends Task<Boolean> {
         private String processName1;
-        private ScoringConcernDataPullStep step;
+        private Z_Obsolete_ScoringConcernDataPullStep step;
         private ProgressPresenter pp;
         private final Logger logger = LogManager.getLogger(ScoringInfoDownloadTask.class);
     	
-        public ScoringInfoDownloadTask(ProgressPresenter pp, ScoringConcernDataPullStep step, String processName1){
+        public ScoringInfoDownloadTask(ProgressPresenter pp, Z_Obsolete_ScoringConcernDataPullStep step, String processName1){
             this.pp = pp;
             this.step = step;
             this.processName1 = processName1;

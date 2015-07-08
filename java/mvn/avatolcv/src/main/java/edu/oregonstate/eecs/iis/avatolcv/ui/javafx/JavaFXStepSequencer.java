@@ -33,7 +33,7 @@ import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DataSourceStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DatasetChoiceStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.LoginStep;
-import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernDataPullStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.Z_Obsolete_ScoringConcernDataPullStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SessionFocusStep;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
@@ -82,12 +82,6 @@ public class JavaFXStepSequencer  {
         controllerForStep.put(matrixStep, matrixController);
         addLabelForStep(matrixStep,"Select Matrix");
 
-        ScoringConcernDataPullStep scoringConcernDataPullStep = new ScoringConcernDataPullStep(sessionInfo);
-        ss.appendStep(scoringConcernDataPullStep);
-        ScoringConcernDataPullStepController scoringConcernDataPullStepController = new ScoringConcernDataPullStepController(this,scoringConcernDataPullStep,"ScoringConcernDataPullStep.fxml");
-        controllerForStep.put(scoringConcernDataPullStep, scoringConcernDataPullStepController);
-        addLabelForStep(scoringConcernDataPullStep,"Load primary metadata");
-        
         SessionFocusStep focusStep = new SessionFocusStep(sessionInfo);
         ss.appendStep(focusStep);
         SessionFocusStepController focusController = new SessionFocusStepController(focusStep,"SessionFocusStep.fxml");
@@ -100,6 +94,7 @@ public class JavaFXStepSequencer  {
         controllerForStep.put(scoringConcernStep, scoringConcernStepController);
         addLabelForStep(scoringConcernStep,"Select Item To Score");
         
+       // SummaryFilterStep summaryFilterStep = new SummaryFilterStep(SessionInfo);
       //    ___make summary/filter screen, with datasource.loadRemainingMetadata(progressPresenter)
            
         /*

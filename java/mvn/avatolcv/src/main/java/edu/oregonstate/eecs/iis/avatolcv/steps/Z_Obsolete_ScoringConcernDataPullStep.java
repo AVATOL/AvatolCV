@@ -6,10 +6,10 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 
-public class ScoringConcernDataPullStep implements Step {
+public class Z_Obsolete_ScoringConcernDataPullStep implements Step {
 	private static final String NL = System.getProperty("line.separator");
     private SessionInfo sessionInfo = null;
-    public ScoringConcernDataPullStep(SessionInfo sessionInfo){
+    public Z_Obsolete_ScoringConcernDataPullStep(SessionInfo sessionInfo){
         this.sessionInfo = sessionInfo;
     }
    
