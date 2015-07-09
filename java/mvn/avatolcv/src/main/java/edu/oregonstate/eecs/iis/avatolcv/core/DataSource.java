@@ -20,4 +20,5 @@ public interface DataSource {
     void setChosenScoringConcerns(List<ChoiceItem> items);
     void setChosenScoringConcern(ChoiceItem item);
     
+    String getDatasetSummaryText();
 }

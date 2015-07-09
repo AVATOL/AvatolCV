@@ -98,7 +98,7 @@ public class MorphobankDataSource implements DataSource {
             
             pp.setMessage(processName, "loading info on views...");
             pp.updateProgress(processName, 0.8);
-            this.wsClient.getViewsForProject(projectID);
+            this.viewsForProject = this.wsClient.getViewsForProject(projectID);
             
             pp.setMessage(processName, "finished.  Click Next to continue.");
             pp.updateProgress(processName, 1.0);
@@ -250,5 +250,27 @@ public class MorphobankDataSource implements DataSource {
     
     public String getKeyForCell(String charID, String taxonID){
         return "c" + charID + "_t" + taxonID;
+    }
+    private static final String NL = System.getProperty("line.separator");
+    @Override
+    public String getDatasetSummaryText() {        
+        StringBuilder sb = new StringBuilder();
+        sb.append("Matrix: " + this.chosenDataset.getName() + NL);
+        sb.append(NL);
+        sb.append("Taxa:" + NL);
+        for (MBTaxon taxon : taxaForMatrix){
+            sb.append("    " + taxon.getTaxonName() + NL);
+        }
+        sb.append(NL);
+        sb.append("Selected Characters: " + NL);
+        for (MBCharacter character : chosenCharacters){
+            sb.append("    " + character.getCharName() + NL);
+        }
+        sb.append("Views in project: " + NL);
+        for (MBView view : this.viewsForProject){
+            sb.append("    " + view.getName() + NL);
+        }
+        sb.append(NL);
+        return "" + sb;
     }
 }

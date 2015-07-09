@@ -33,6 +33,7 @@ import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DataSourceStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DatasetChoiceStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.LoginStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.SummaryFilterStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Z_Obsolete_ScoringConcernDataPullStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SessionFocusStep;
@@ -94,7 +95,11 @@ public class JavaFXStepSequencer  {
         controllerForStep.put(scoringConcernStep, scoringConcernStepController);
         addLabelForStep(scoringConcernStep,"Select Item To Score");
         
-       // SummaryFilterStep summaryFilterStep = new SummaryFilterStep(SessionInfo);
+        SummaryFilterStep summaryFilterStep = new SummaryFilterStep(sessionInfo);
+        ss.appendStep(summaryFilterStep);
+        SummaryFilterStepController summaryFilterStepController = new SummaryFilterStepController(summaryFilterStep, "SummaryFilterStep.fxml");
+        controllerForStep.put(summaryFilterStep, summaryFilterStepController);
+        addLabelForStep(summaryFilterStep,"Summary/Filter");
       //    ___make summary/filter screen, with datasource.loadRemainingMetadata(progressPresenter)
            
         /*
