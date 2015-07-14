@@ -42,18 +42,22 @@ public class SessionInfo{
     private ScoringAlgorithms scoringAlgorithms = null;
     private String sessionID = null;
 
-	public SessionInfo(String sessionDataRootParent) throws AvatolCVException {
-		File f = new File(sessionDataRootParent);
+	public SessionInfo(String avatolCVRootDir) throws AvatolCVException {
+		File f = new File(avatolCVRootDir);
         if (!f.isDirectory()){
-            throw new AvatolCVException("directory does not exist for being sessionDataRootParent " + sessionDataRootParent);
+            throw new AvatolCVException("directory does not exist for being avatolCVRootDir " + avatolCVRootDir);
         }
-        
-        this.sessionDataRootDir = sessionDataRootParent + FILESEP + "sessionData";
+    
+        this.sessionDataRootDir = avatolCVRootDir + FILESEP + "sessionData";
         f = new File(this.sessionDataRootDir);
         if (!f.isDirectory()){
             f.mkdirs();
         }
-        this.scoringAlgorithms = new ScoringAlgorithms();
+        
+        
+        String moduleRootDir = f.getParentFile().getAbsolutePath() + FILESEP + "modules";
+        AlgorithmModules algorithmModules = new AlgorithmModules(moduleRootDir);
+        this.scoringAlgorithms = algorithmModules.getScoringAlgorithms();
         this.sessionID = "" + System.currentTimeMillis() / 1000L;
 	}
 	public ScoringAlgorithms getScoringAlgorithms() {

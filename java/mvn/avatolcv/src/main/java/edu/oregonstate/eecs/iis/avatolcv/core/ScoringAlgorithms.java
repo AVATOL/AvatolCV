@@ -15,6 +15,11 @@ public class ScoringAlgorithms {
         SINGLE_ITEM,
         MULTIPLE_ITEM
     }
+    // 
+    public enum LaunchThrough {
+    	MATLAB,
+    	OTHER
+    }
     private ScoringAlgorithms.ScoringSessionFocus sessionFocus = null;
     private String chosenScoringAlgorithm = null;
     private Hashtable<ScoringSessionFocus, String> radioButtonTextForFocusHash = new Hashtable<ScoringSessionFocus, String>();
@@ -27,10 +32,12 @@ public class ScoringAlgorithms {
         radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE, "Score presence/absence of parts in a specimen");
         radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT, "Score shape aspects of a specimen");
         radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT, "Score texture aspects a specimen");
+        
         addAlgorithm(SHELL_BATSKULL, ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE, "invoke_batskull_system", true);
         addAlgorithm("LEAF", ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT, "tbd", false);
         addAlgorithm("CRF", ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT, "tbd", false);
     }
+    
     public ScoringScope getScoringScope(){
     	if (sessionFocus == ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE && chosenScoringAlgorithm == SHELL_BATSKULL){
     		return ScoringScope.MULTIPLE_ITEM;
