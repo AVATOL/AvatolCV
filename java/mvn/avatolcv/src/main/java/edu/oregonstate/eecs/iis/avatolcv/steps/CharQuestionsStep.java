@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.generic;
+package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import java.util.List;
 
@@ -34,14 +34,10 @@ public class CharQuestionsStep implements Step {
     public void consumeProvidedData() throws AvatolCVException {
         this.questionSequencer.persist(this.sessionData.getCharQuestionsAnsweredQuestionsPath());
     }
-
-
     @Override
-    public String getView() {
-        /*
-         * For charQuestions, the view will be a container that fills itself out with subPanel appropriate for current QQuestion
-         */
-        return this.view;
+    public boolean hasDataLoadPhase() {
+        // TODO Auto-generated method stub
+        return false;
     }
-
+    
 }

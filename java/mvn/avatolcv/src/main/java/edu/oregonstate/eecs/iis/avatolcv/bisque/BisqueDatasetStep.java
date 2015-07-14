@@ -64,10 +64,4 @@ public class BisqueDatasetStep implements Step {
 		this.sessionData.setChosenDataset(this.chosenDataset);
 
 	}
-
-	@Override
-	public String getView() {
-		return this.view;
-	}
-
 }

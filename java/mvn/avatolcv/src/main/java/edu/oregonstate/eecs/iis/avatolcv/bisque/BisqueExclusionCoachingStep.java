@@ -21,11 +21,6 @@ public class BisqueExclusionCoachingStep implements Step {
 	public void consumeProvidedData() throws AvatolCVException {
 		// nothing to consume, just showing guidance
 	}
-
-	@Override
-	public String getView() {
-		return this.view;
-	}
 	public void userHasViewed(){
 		this.userHasViewed = true;
 	}

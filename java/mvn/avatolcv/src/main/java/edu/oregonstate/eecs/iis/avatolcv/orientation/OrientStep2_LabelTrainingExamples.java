@@ -45,12 +45,6 @@ public class OrientStep2_LabelTrainingExamples implements Step {
         this.osd.createOrientationConfigFile();
        
     }
-
-
-    @Override
-    public String getView() {
-        return null;
-    }
    
 
 }

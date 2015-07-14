@@ -192,9 +192,4 @@ public class MBTrainingDataPullStep implements Step {
 
     }
 
-    @Override
-    public String getView() {
-        return this.view;
-    }
-
 }

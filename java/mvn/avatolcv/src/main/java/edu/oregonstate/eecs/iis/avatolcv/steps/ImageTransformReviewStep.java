@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.generic;
+package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -61,11 +61,9 @@ public class ImageTransformReviewStep implements Step {
 	    
 		userReviewComplete = true;
 	}
-
-
-	@Override
-	public String getView() {
-		return this.view;
-	}
-
+    @Override
+    public boolean hasDataLoadPhase() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

@@ -95,6 +95,19 @@ public class SessionFocusStepController implements StepController {
 	public boolean delayEnableNavButtons() {
 		return false;
 	}
+    @Override
+    public void executeDataLoadPhase() throws AvatolCVException {
+        // nothing to be done
+    }
+    @Override
+    public void configureUIForDataLoadPhase() {
+        // nothing to be done
+    }
+    @Override
+    public boolean isDataLoadPhaseComplete() {
+        // not relevant
+        return true;
+    }
 
 
 }

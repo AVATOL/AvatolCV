@@ -12,13 +12,6 @@ public class BisqueReviewStep implements Step {
 
     }
 
-
-    @Override
-    public String getView() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     @Override
     public void init() {
         // TODO Auto-generated method stub

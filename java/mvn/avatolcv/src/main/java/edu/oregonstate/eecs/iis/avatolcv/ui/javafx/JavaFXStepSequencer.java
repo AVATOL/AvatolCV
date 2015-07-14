@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.steps;
+package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -30,8 +30,13 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms.ScoringSessionFo
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
-import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.DataSourceStepController;
-import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.SessionFocusStepController;
+import edu.oregonstate.eecs.iis.avatolcv.steps.DataSourceStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.DatasetChoiceStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.LoginStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.SummaryFilterStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.Z_Obsolete_ScoringConcernDataPullStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.SessionFocusStep;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
 
@@ -59,36 +64,45 @@ public class JavaFXStepSequencer  {
         sessionInfo = new SessionInfo(avatolCVRootDir);
         ss = new StepSequence();
         
+        
+        DataSourceStep dataSourceStep = new DataSourceStep(sessionInfo);
+        ss.appendStep(dataSourceStep);
+        DataSourceStepController dataSourceStepController = new DataSourceStepController(dataSourceStep, sessionInfo, "DataSourceStep.fxml");
+        controllerForStep.put(dataSourceStep, dataSourceStepController);
+        addLabelForStep(dataSourceStep,"Select Data Source");
+        
+        LoginStep loginStep = new LoginStep(sessionInfo);
+        ss.appendStep(loginStep);
+        LoginStepController loginController = new LoginStepController(loginStep,sessionInfo,"LoginStep.fxml");
+        controllerForStep.put(loginStep, loginController);
+        addLabelForStep(loginStep,"Login");
+        
+        DatasetChoiceStep matrixStep = new DatasetChoiceStep(sessionInfo);
+        ss.appendStep(matrixStep);
+        DatasetChoiceStepController matrixController = new DatasetChoiceStepController(matrixStep, "DatasetChoiceStep.fxml");
+        controllerForStep.put(matrixStep, matrixController);
+        addLabelForStep(matrixStep,"Select Matrix");
+
         SessionFocusStep focusStep = new SessionFocusStep(sessionInfo);
         ss.appendStep(focusStep);
         SessionFocusStepController focusController = new SessionFocusStepController(focusStep,"SessionFocusStep.fxml");
         controllerForStep.put(focusStep, focusController);
-        addLabelForStep(focusStep,"Scoring Focus");
+        addLabelForStep(focusStep,"Select Scoring Approach");
+             
+        ScoringConcernStep scoringConcernStep = new ScoringConcernStep(sessionInfo);
+        ss.appendStep(scoringConcernStep);
+        ScoringConcernStepController scoringConcernStepController = new ScoringConcernStepController(scoringConcernStep, "ScoringConcernStep.fxml");
+        controllerForStep.put(scoringConcernStep, scoringConcernStepController);
+        addLabelForStep(scoringConcernStep,"Select Item To Score");
         
-        DataSourceStep dataSourceStep = new DataSourceStep();
-        ss.appendStep(dataSourceStep);
-        DataSourceStepController dataSourceStepController = new DataSourceStepController(dataSourceStep,"DataSourceStep.fxml");
-        controllerForStep.put(dataSourceStep, dataSourceStepController);
-        addLabelForStep(dataSourceStep,"Select Data Source");
-/*        
-        MBLoginStep loginStep = new MBLoginStep(null, client);
-        ss.appendStep(loginStep);
-        MBLoginStepController loginController = new MBLoginStepController(loginStep,"MBLoginStep.fxml");
-        controllerForStep.put(loginStep, loginController);
-        addLabelForStep(loginStep,"Login");
-        
-        MBMatrixChoiceStep matrixStep = new MBMatrixChoiceStep(null, client, sessionData);
-        ss.appendStep(matrixStep);
-        MBMatrixChoiceStepController matrixController = new MBMatrixChoiceStepController(matrixStep, "MBMatrixChoiceStep.fxml");
-        controllerForStep.put(matrixStep, matrixController);
-        addLabelForStep(matrixStep,"Select Matrix");
-        
-        MBCharChoiceStep charChoiceStep = new MBCharChoiceStep(null, client, sessionData);
-        ss.appendStep(charChoiceStep);
-        MBCharChoiceStepController charChoiceController = new MBCharChoiceStepController(charChoiceStep, "MBCharChoiceStep.fxml");
-        controllerForStep.put(charChoiceStep, charChoiceController);
-        addLabelForStep(charChoiceStep,"Select Character");
-        
+        SummaryFilterStep summaryFilterStep = new SummaryFilterStep(sessionInfo);
+        ss.appendStep(summaryFilterStep);
+        SummaryFilterStepController summaryFilterStepController = new SummaryFilterStepController(summaryFilterStep, "SummaryFilterStep.fxml");
+        controllerForStep.put(summaryFilterStep, summaryFilterStepController);
+        addLabelForStep(summaryFilterStep,"Summary/Filter");
+      //    ___make summary/filter screen, with datasource.loadRemainingMetadata(progressPresenter)
+           
+        /*
         MBViewChoiceStep viewChoiceStep = new MBViewChoiceStep(client, sessionData);
         ss.appendStep(viewChoiceStep);
         MBViewChoiceStepController viewChoiceController = new MBViewChoiceStepController(viewChoiceStep, "MBViewChoiceStep.fxml");
@@ -202,7 +216,7 @@ public class JavaFXStepSequencer  {
     }
     public void initUI() throws AvatolCVException {
         try {
-            FXMLLoader loader = new FXMLLoader(MorphobankSessionJavaFX.class.getResource("navigationShellNoSplit.fxml"));
+            FXMLLoader loader = new FXMLLoader(JavaFXStepSequencer.class.getResource("navigationShellNoSplit.fxml"));
             loader.setController(this);
             Parent navShell = loader.load();
             
@@ -217,23 +231,50 @@ public class JavaFXStepSequencer  {
     	
     }
     /*
-     * nextStep called from the button on the javaFX ui thread
+     * nextStep called from the button on the javaFX ui thread (application thread)
      */
     public void nextStep(){
     	nextButton.setDisable(true);
     	backButton.setDisable(true);
-    	// delegate data consumption to the javafx application thread
+    	
+    	Step step = ss.getCurrentStep();
+        StepController controller = controllerForStep.get(step);
+        if (step.hasDataLoadPhase()){
+            controller.configureUIForDataLoadPhase();
+        }
+    	// delegate data consumption to background thread
     	NextStepTask task = new NextStepTask();
     	new Thread(task).start();
     }
+
+    public class NextStepTask extends Task<Boolean> {
+        private final Logger logger = LogManager.getLogger(NextStepTask.class);
+        @Override
+        protected Boolean call() throws Exception {
+            requestNextStep();
+            return new Boolean(true);
+            
+        }
+       
+    }
     /*
-     * this one runs on thejavafx application thread
+     * (runs in background thread)
      */
-    public void requestNextStep(){
+    public void requestNextStep() throws AvatolCVException {
     	Step step = ss.getCurrentStep();
     	StepController controller = controllerForStep.get(step);
+    	
     	boolean success = controller.consumeUIData();
     	if (success){
+    	    if (step.hasDataLoadPhase()){
+                controller.executeDataLoadPhase();
+                while (!controller.isDataLoadPhaseComplete()){
+                    try {
+                        Thread.sleep(500);
+                    }
+                    catch(InterruptedException e){ }
+                }
+            }
     		ss.next();
     		// task of loading UI for next step is put back on the javaFX UI thread
     		CurrentStepRunner stepRunner = new CurrentStepRunner();
@@ -249,7 +290,6 @@ public class JavaFXStepSequencer  {
 		public void run() {
 			try {
     			activateCurrentStep();
-    			
     		}
     		catch (AvatolCVException ace){
     			Alert alert = new Alert(AlertType.ERROR);
@@ -261,19 +301,5 @@ public class JavaFXStepSequencer  {
 			
 		}
     	
-    }
-    public class NextStepTask extends Task<Boolean> {
-        private final Logger logger = LogManager.getLogger(NextStepTask.class);
-    	
-        public NextStepTask(){
-            
-        }
-        @Override
-        protected Boolean call() throws Exception {
-        	requestNextStep();
-        	return new Boolean(true);
-        	
-        }
-       
     }
 }

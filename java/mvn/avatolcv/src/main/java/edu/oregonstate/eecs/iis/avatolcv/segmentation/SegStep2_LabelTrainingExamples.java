@@ -44,11 +44,6 @@ public class SegStep2_LabelTrainingExamples implements Step {
 		this.needsAnswering = false;
 	}
 
-
-	@Override
-	public String getView() {
-		return this.view;
-	}
     @Override
     public void init() throws AvatolCVException {
         // nothing to do

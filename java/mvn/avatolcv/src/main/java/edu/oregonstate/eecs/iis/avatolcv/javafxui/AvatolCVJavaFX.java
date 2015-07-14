@@ -2,7 +2,8 @@ package edu.oregonstate.eecs.iis.avatolcv.javafxui;
 
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.steps.JavaFXStepSequencer;
+import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVExceptionExpresser;
+import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.JavaFXStepSequencer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -24,12 +25,11 @@ public class AvatolCVJavaFX extends Application {
     private static Scene scene;
     private static String rootDir = null;
     private static String startError = "";
-    //public Button navigationNextButton;
-    //public Button navigationBackButton;
     public RadioButton radioNewSession;
     public RadioButton radioResumeSession;
     public RadioButton radioReviewResults;
     public RadioButton radioTutorial;
+    public static AvatolCVExceptionExpresser exceptionExpresser = new AvatolCVExceptionExpresserJavaFX();
     
     Stage mainWindow = null;
     private static final Logger logger = LogManager.getLogger(AvatolCVJavaFXMB.class);
@@ -70,6 +70,7 @@ public class AvatolCVJavaFX extends Application {
         catch(Exception e){
             System.out.println(e.getMessage());
             e.printStackTrace();
+            exceptionExpresser.showException(e, "Problem during launch");
         }
     }
     
@@ -94,10 +95,10 @@ public class AvatolCVJavaFX extends Application {
                 
             }
         } 
-        catch(Exception e){
-            //TODO - dialog box to show this error
+        catch(AvatolCVException e){
             System.out.println(e.getMessage());
             e.printStackTrace();
+            exceptionExpresser.showException(e, "Problem initializing session");
         }
     }
     public static String findRoot(String currentDir) throws AvatolCVException {

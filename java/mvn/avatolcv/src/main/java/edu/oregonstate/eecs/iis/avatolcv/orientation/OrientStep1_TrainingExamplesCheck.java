@@ -36,11 +36,5 @@ public class OrientStep1_TrainingExamplesCheck implements Step {
         this.osd.setImagesForStage(this.ifs);
         orientLabelFileAssessmentHasBeenRun = true;
     }
-    
-    
-    @Override
-    public String getView() {
-        return null;
-    }
 
 }

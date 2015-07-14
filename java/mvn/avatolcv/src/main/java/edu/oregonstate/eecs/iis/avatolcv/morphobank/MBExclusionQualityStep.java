@@ -42,12 +42,6 @@ public class MBExclusionQualityStep implements Step {
         // TODO Auto-generated method stub
 
     }
-
-    @Override
-    public String getView() {
-        // TODO Auto-generated method stub
-        return null;
-    }
     public boolean isRotatedHorizontally(ImageInfo ii){
     	return this.sessionData.isRotatedHorizontally(ii);
     }

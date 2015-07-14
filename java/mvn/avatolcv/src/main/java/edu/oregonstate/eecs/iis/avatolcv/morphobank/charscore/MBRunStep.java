@@ -1,10 +1,10 @@
 package edu.oregonstate.eecs.iis.avatolcv.morphobank.charscore;
 
+import edu.oregonstate.eecs.iis.avatolcv.core.AlgorithmRunner;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
-import edu.oregonstate.eecs.iis.avatolcv.generic.AlgorithmRunner;
 
 public class MBRunStep implements Step, AlgorithmRunner {
 
@@ -18,12 +18,6 @@ public class MBRunStep implements Step, AlgorithmRunner {
     public void consumeProvidedData() throws AvatolCVException {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public String getView() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override

@@ -54,11 +54,4 @@ public class BisqueCharChoiceStep implements Step {
         this.sessionData.setCurrentCharacter(this.chosenCharacter);
     }
 
-    
-    @Override
-    public String getView() {
-        return this.view;
-    }
-   
-
 }

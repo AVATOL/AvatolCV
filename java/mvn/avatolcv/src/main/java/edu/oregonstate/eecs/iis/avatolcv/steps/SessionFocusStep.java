@@ -8,7 +8,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 public class SessionFocusStep implements Step {
     private ScoringAlgorithms scoringAlgorithms = null;
     private SessionInfo sessionInfo = null;
-    public SessionFocusStep(SessionInfo sessionIndo) throws AvatolCVException {
+    public SessionFocusStep(SessionInfo sessionInfo) throws AvatolCVException {
         this.sessionInfo = sessionInfo;
     }
     public ScoringAlgorithms getScoringAlgorithms(){
@@ -25,11 +25,9 @@ public class SessionFocusStep implements Step {
         // TODO Auto-generated method stub
 
     }
-
     @Override
-    public String getView() {
+    public boolean hasDataLoadPhase() {
         // TODO Auto-generated method stub
-        return null;
+        return false;
     }
-
 }

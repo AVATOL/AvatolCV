@@ -1,10 +1,10 @@
 package edu.oregonstate.eecs.iis.avatolcv.segmentation;
 
+import edu.oregonstate.eecs.iis.avatolcv.core.AlgorithmRunner;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
-import edu.oregonstate.eecs.iis.avatolcv.generic.AlgorithmRunner;
 
 public class SegStep3_Run implements Step {
 	private String view = null;	
@@ -29,11 +29,4 @@ public class SegStep3_Run implements Step {
 		// pull the result files into the program's consciousness
 		this.ssd.getImagesForStage().reload();	
 	}
-
-
-	@Override
-	public String getView() {
-		return this.view;
-	}
-
 }

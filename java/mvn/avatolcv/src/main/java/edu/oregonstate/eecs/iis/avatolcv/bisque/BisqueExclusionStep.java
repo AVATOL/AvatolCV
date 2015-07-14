@@ -34,10 +34,4 @@ public class BisqueExclusionStep implements Step {
 		sessionData.setImagesToInclude(this.imagesToInclude);
 		sessionData.setImagesToExclude(this.imagesToExclude);
 	}
-
-	@Override
-	public String getView() {
-		return this.view;
-	}
-	
 }

@@ -74,11 +74,4 @@ public class MBMatrixChoiceStep implements Step {
             throw new AvatolCVException("problem loading data for matrix. " + e.getMessage(), e);
         }
     }
-
-    @Override
-    public String getView() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

@@ -47,6 +47,14 @@ public class CharacterInfo {
     	public List<MBCharState> getCharStates(){
     		return this.charStates;
     	}
+    	public boolean isShapeAspect(){
+    	    return false;
+    	    //TODO would there be a way to deduce that character has a shape aspect?
+    	}
+        public boolean isTextureAspect(){
+            return false;
+            //TODO would there be a way to deduce that character has a texture aspect?
+        }
     	public boolean isPresenceAbsence(){
     		boolean absentFound = false;
     		boolean presentFound = true;

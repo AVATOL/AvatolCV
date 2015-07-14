@@ -1,6 +1,5 @@
-package edu.oregonstate.eecs.iis.avatolcv.generic;
+package edu.oregonstate.eecs.iis.avatolcv.core;
 
-import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 
 public interface AlgorithmRunner {
 	public boolean isRunComplete();

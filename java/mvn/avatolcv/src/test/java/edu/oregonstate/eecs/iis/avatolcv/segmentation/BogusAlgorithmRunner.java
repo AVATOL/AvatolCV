@@ -1,7 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.segmentation;
 
+import edu.oregonstate.eecs.iis.avatolcv.core.AlgorithmRunner;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
-import edu.oregonstate.eecs.iis.avatolcv.generic.AlgorithmRunner;
 
 public class BogusAlgorithmRunner implements AlgorithmRunner {
 	private boolean runComplete = false;

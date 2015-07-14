@@ -19,10 +19,6 @@ public class BisqueLoginStep implements Step {
     public void init() {
         // nothing to do
     }
-	@Override
-	public String getView(){
-		return this.view;
-	}
 	public boolean isAuthenticated(){
 		if (wsClient.isAuthenticated()){
 			return true;
