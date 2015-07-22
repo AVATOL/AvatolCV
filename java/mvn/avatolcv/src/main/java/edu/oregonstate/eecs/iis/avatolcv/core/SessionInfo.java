@@ -54,20 +54,20 @@ public class SessionInfo{
     
 	public SessionInfo(String avatolCVRootDir) throws AvatolCVException {
 		File f = new File(avatolCVRootDir);
-
         if (!f.isDirectory()){
             throw new AvatolCVException("directory does not exist for being avatolCVRootDir " + avatolCVRootDir);
         }
-    
+        File avatolCVRootParentFile = f.getParentFile();
+        String moduleRootDir = avatolCVRootParentFile.getAbsolutePath() + FILESEP + "modules";
+        AlgorithmModules algorithmModules = new AlgorithmModules(moduleRootDir);
+        this.scoringAlgorithms = algorithmModules.getScoringAlgorithms();
+        
         this.sessionDataRootDir = avatolCVRootDir + FILESEP + "sessionData";
         f = new File(this.sessionDataRootDir);
         if (!f.isDirectory()){
             f.mkdirs();
         }
         
-        String moduleRootDir = f.getParentFile().getAbsolutePath() + FILESEP + "modules";
-        AlgorithmModules algorithmModules = new AlgorithmModules(moduleRootDir);
-        this.scoringAlgorithms = algorithmModules.getScoringAlgorithms();
         this.sessionID = "" + System.currentTimeMillis() / 1000L;
 	}
 	public void setDataSource(DataSource dataSource){

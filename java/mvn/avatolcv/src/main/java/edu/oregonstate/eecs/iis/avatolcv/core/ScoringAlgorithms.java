@@ -33,9 +33,9 @@ public class ScoringAlgorithms {
         radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT, "Score shape aspects of a specimen");
         radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT, "Score texture aspects a specimen");
         
-        addAlgorithm(SHELL_BATSKULL, ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE, "invoke_batskull_system", true);
-        addAlgorithm("LEAF", ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT, "tbd", false);
-        addAlgorithm("CRF", ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT, "tbd", false);
+        //addAlgorithm(SHELL_BATSKULL, ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE, ScoringScope.MULTIPLE_ITEM, LaunchThrough.OTHER, "invoke_batskull_system", true, "bogusDir");
+        //addAlgorithm("LEAF", ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT,ScoringScope.SINGLE_ITEM, LaunchThrough.OTHER,  "tbd", false, "bogusDir");
+        //addAlgorithm("CRF", ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT,ScoringScope.SINGLE_ITEM, LaunchThrough.OTHER,  "tbd", false, "bogusDir");
     }
     
     public ScoringScope getScoringScope(){
@@ -60,9 +60,9 @@ public class ScoringAlgorithms {
     public String getChosenAlgorithmName(){
         return this.chosenScoringAlgorithm;
     }
-    public void addAlgorithm(String name, ScoringSessionFocus scoringFocus, String commandLineInvocationName, boolean isEnabled) throws AvatolCVException {
-        ScoringSessionFocus focus = scoringFocusForName.get(name);
-        if (null != focus){
+    public void addAlgorithm(String name, ScoringSessionFocus scoringFocus, ScoringScope scoringScope, LaunchThrough launchThrough, String commandLineInvocationName, boolean isEnabled, String parentDir) throws AvatolCVException {
+        ScoringSessionFocus priorSetFocus = scoringFocusForName.get(name);
+        if (null != priorSetFocus){
             throw new AvatolCVException("Algorithms must have unique names - this occurs twice: " + name);
         }
         scoringFocusForName.put(name, scoringFocus);
@@ -78,7 +78,9 @@ public class ScoringAlgorithms {
     public List<String> getAlgNamesForScoringFocus(ScoringSessionFocus focus){
         List<String> result = new ArrayList<String>();
         List<String> names = namesForScoringFocus.get(focus);
-        result.addAll(names);
+        if (null != names){
+            result.addAll(names);
+        }
         return result;
     }
     public ScoringSessionFocus getScoringFocusForAlgName(String name) throws AvatolCVException {
@@ -93,7 +95,9 @@ public class ScoringAlgorithms {
     public List<String> getNamesForScoringFocus(ScoringSessionFocus focus)  {
         List<String> result = new ArrayList<String>();
         List<String> names = namesForScoringFocus.get(focus);
-        result.addAll(names);
+        if (null != names){
+            result.addAll(names);
+        }
         return result;
     }
     public boolean isAlgorithmEnabled(String name){
