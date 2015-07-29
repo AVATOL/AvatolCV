@@ -1,0 +1,13 @@
+trainingImagesFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/trainlistFullPath.txt
+groundTruthImagesFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/groundTruthListFullPath.txt
+testingImagesFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/testlistFullPath.txt
+rawImagesDir=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/data/avcv_training_images
+trainingImagesDir=/somewhere
+segmentationOutputDir=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/segOutput
+trainingFileSuffix="_GT.png" 
+avatolCVMatlabLauncherPath=/Users/jedirvine/av/avatol_cv/matlab_av/distrib/run_matlab_av.sh
+croppedOrigImageSuffix=_croppedOrig
+croppedMaskImageSuffix=_croppedMask
+avatolCVStatusFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/avatolCVStatus.txt
+# TODO change trainingFileSuffix to labelFileSuffix
+# TODO should labelFIleSuffix just be "_GT"? but can't change it since shipped files need to have same _GT and png

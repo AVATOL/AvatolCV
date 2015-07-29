@@ -1,0 +1,4 @@
+total 0
+drwxr-xr-x  3 jedirvine  staff  102 Jul 28 13:57 .
+drwxr-xr-x  8 jedirvine  staff  272 Jul 28 13:57 ..
+-rw-r--r--  1 jedirvine  staff    0 Jul 28 13:57 text.txt
