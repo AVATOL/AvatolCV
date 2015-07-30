@@ -1,2 +1,4 @@
 launchWith=batSkullScore.bat
 launchFileLanguage=other
+scoringFocus=SPECIMEN_PART_PRESENCE_ABSENCE
+scoringScope=MULTIPLE_ITEM

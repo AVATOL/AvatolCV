@@ -1,2 +1,4 @@
 launchWith=leafScore.bat
 launchFileLanguage=other
+scoringFocus=SPECIMEN_SHAPE_ASPECT
+scoringScope=SINGLE_ITEM
