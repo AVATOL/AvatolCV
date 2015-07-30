@@ -1,0 +1,2 @@
+launchWith=batSkullScore.bat
+launchFileLanguage=other

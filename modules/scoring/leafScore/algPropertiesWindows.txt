@@ -1,0 +1,2 @@
+launchWith=leafScore.bat
+launchFileLanguage=other
