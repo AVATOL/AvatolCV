@@ -1,0 +1,1 @@
+/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/data/avcv_label_images/foo_GT.png
