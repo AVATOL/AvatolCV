@@ -57,8 +57,8 @@ public class SessionInfo{
         if (!f.isDirectory()){
             throw new AvatolCVException("directory does not exist for being avatolCVRootDir " + avatolCVRootDir);
         }
-        File avatolCVRootParentFile = f.getParentFile();
-        String moduleRootDir = avatolCVRootParentFile.getAbsolutePath() + FILESEP + "modules";
+        //File avatolCVRootParentFile = f.getParentFile();
+        String moduleRootDir = avatolCVRootDir + FILESEP + "modules";
         AlgorithmModules algorithmModules = new AlgorithmModules(moduleRootDir);
         this.scoringAlgorithms = algorithmModules.getScoringAlgorithms();
         
