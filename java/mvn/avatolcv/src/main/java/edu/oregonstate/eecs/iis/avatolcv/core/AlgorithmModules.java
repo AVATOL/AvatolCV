@@ -9,7 +9,7 @@ import edu.oregonstate.eecs.iis.avatolcv.Platform;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms.ScoringSessionFocus;
 
 public class AlgorithmModules {
-	private enum AlgType {
+	public enum AlgType {
 		SEGMENTATION,
 		ORIENTATION,
 		SCORING
@@ -53,7 +53,20 @@ public class AlgorithmModules {
 		this.scoringAlgorithms = new ScoringAlgorithms();
 		configureScoringAlgorithms();
 	}
-	
+	public AlgorithmProperties getAlgPropertiesForAlgName(String algName, AlgType algType){
+		AlgorithmProperties props = null;
+		if (algType == AlgType.SEGMENTATION){
+			props = propsForNameHashSegmentation.get(algName);
+		}
+		else if (algType == AlgType.ORIENTATION){
+			props = propsForNameHashOrientation.get(algName);
+		}
+		else {
+			// algType == AlgType.SCORING
+			props = propsForNameHashScoring.get(algName);
+		}
+		return props;
+	}
 	private void loadAlgSets(File parentDir) throws AvatolCVException {
 		File[] algSetDirs = parentDir.listFiles();
 		for (File f : algSetDirs){
@@ -187,20 +200,26 @@ public class AlgorithmModules {
 		
 		
 		File propsFile = new File(configFilePath);
-		if (!propsFile.exists()){
-			throw new AvatolCVException("no properties file exists for algorithm " + algName + " of type " + algType);
+		if (propsFile.exists()){
+			AlgorithmProperties algProps = new AlgorithmProperties(propsFile.getAbsolutePath());
+			propsForNameHash.put(algName, algProps);
+			algProps.setAlgName(algName);
+			return algName;
 		}
-		AlgorithmProperties algProps = new AlgorithmProperties(propsFile.getAbsolutePath());
-		propsForNameHash.put(algName, algProps);
-		algProps.setAlgName(algName);
-		return algName;
+		else {
+			System.out.println("no properties file exists for algorithm " + algName + " of type " + algType);
+			return null;
+		}
+		
 	}
 	private void loadAlgs(File parentDir, AlgType algType, String propsFilename, Hashtable<String, AlgorithmProperties> propsForNameHash, List<String> algNames) throws AvatolCVException {
 		File[] algDirs = parentDir.listFiles();
 		for (File f : algDirs){
 			if (!(f.getName().equals(".") || f.getName().equals(".."))){
 				String algName = loadAlg(f, algType, propsFilename, propsForNameHash);
-				algNames.add(algName);
+				if (null != algName){
+					algNames.add(algName);
+				}
 			}
 		}
 	}

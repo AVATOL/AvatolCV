@@ -12,7 +12,9 @@ import java.util.Set;
  * copy of OsuCommandLineRunner, but without logging
  */
 public class CommandLineInvoker {
-    public CommandLineInvoker(){
+	private String dirToRunIn = null;
+    public CommandLineInvoker(String dirToRunIn){
+    	this.dirToRunIn = dirToRunIn;
     }
     public void printEnvironment(Map<String, String> env){
         System.out.println("...ENVIRONMENT...");
@@ -27,10 +29,11 @@ public class CommandLineInvoker {
     
     public boolean runCommandLine(String commandLine, String stdoutPath){
        // ddh preOperation();
-    boolean result = false;
+     boolean result = false;
      System.out.println("Execute Command: " + commandLine);
-
-     ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", commandLine);
+     String fullCommandLine = "cd " + this.dirToRunIn + ";" + commandLine;
+     ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", fullCommandLine);
+     
      Map<String, String> env = builder.environment();
      printEnvironment(env);
      // redirect the stderr to stdout

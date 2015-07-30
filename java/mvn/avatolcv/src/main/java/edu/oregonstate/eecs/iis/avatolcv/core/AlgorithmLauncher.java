@@ -1,11 +1,13 @@
 package edu.oregonstate.eecs.iis.avatolcv.core;
 
 public class AlgorithmLauncher {
+	private static final String FILESEP = System.getProperty("file.separator");
 	public static void main(String[] args){
 		try {
-			AlgorithmModules modules = new AlgorithmModules("C:\\avatol\\git\\modules");
+			//AlgorithmModules modules = new AlgorithmModules("C:\\avatol\\git\\modules");
+			AlgorithmModules modules = new AlgorithmModules("/Users/jedirvine/av/avatol_cv/modules");
 			AlgorithmLauncher launcher = new AlgorithmLauncher();
-			launcher.launch("segBogus1", modules);
+			launcher.launch("yaoSeg", AlgorithmModules.AlgType.SEGMENTATION,modules);
 		}
 		catch(AvatolCVException e){
 			e.printStackTrace();
@@ -15,7 +17,13 @@ public class AlgorithmLauncher {
 	public AlgorithmLauncher(){
 		
 	}
-	public void launch(String algName, AlgorithmModules modules){
-		modules
+	public void launch(String algName, AlgorithmModules.AlgType algType, AlgorithmModules modules) throws AvatolCVException {
+		AlgorithmProperties props = modules.getAlgPropertiesForAlgName(algName, algType);
+		String launchFile = props.getLaunchFile();
+		String parentDir = props.getParentDir();
+		String commandLine = "./" + launchFile + " segRunConfigWorks1.txt";
+		CommandLineInvoker invoker = new CommandLineInvoker(parentDir);
+		String stdoutPath = parentDir + FILESEP + "stdoutLog.txt";
+		invoker.runCommandLine(commandLine, stdoutPath);
 	}
 }
