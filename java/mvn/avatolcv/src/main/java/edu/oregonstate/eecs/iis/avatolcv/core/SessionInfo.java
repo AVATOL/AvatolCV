@@ -51,15 +51,21 @@ public class SessionInfo{
     private DatasetInfo chosenDataset = null;
     private List<ChoiceItem> chosenScoringConcerns = null;
     private ChoiceItem chosenScoringConcern = null;
+    private AlgorithmModules algorithmModules = null;
+    private AlgorithmProperties scoringAlgorithmProperties = null;
+    private ScoringAlgorithms.ScoringScope scoringScope = null;
+    private ScoringAlgorithms.ScoringSessionFocus scoringFocus = null;
+    public static AvatolCVExceptionExpresser exceptionExpresser = null;
     
-	public SessionInfo(String avatolCVRootDir) throws AvatolCVException {
+	public SessionInfo(String avatolCVRootDir, AvatolCVExceptionExpresser exceptionExpresser) throws AvatolCVException {
+        SessionInfo.exceptionExpresser = exceptionExpresser;
 		File f = new File(avatolCVRootDir);
         if (!f.isDirectory()){
             throw new AvatolCVException("directory does not exist for being avatolCVRootDir " + avatolCVRootDir);
         }
         //File avatolCVRootParentFile = f.getParentFile();
         String moduleRootDir = avatolCVRootDir + FILESEP + "modules";
-        AlgorithmModules algorithmModules = new AlgorithmModules(moduleRootDir);
+        this.algorithmModules = new AlgorithmModules(moduleRootDir);
         this.scoringAlgorithms = algorithmModules.getScoringAlgorithms();
         
         this.sessionDataRootDir = avatolCVRootDir + FILESEP + "sessionData";
@@ -90,4 +96,15 @@ public class SessionInfo{
 	    chosenScoringConcern = chosenItem;
 	    this.dataSource.setChosenScoringConcern(chosenItem);
 	}
+	public void setScoringAlgInfo(ScoringAlgorithms.ScoringSessionFocus focus, String algName) throws AvatolCVException {
+	    this.scoringAlgorithmProperties = this.algorithmModules.getAlgPropertiesForAlgName(algName, AlgorithmModules.AlgType.SCORING);
+	    this.scoringScope = ScoringAlgorithms.getScopeForScopePropertiesValue(this.scoringAlgorithmProperties.getProperty(AlgorithmProperties.PROPERTY_SCORING_SCOPE));
+	    this.scoringFocus = focus;
+	}
+	public ScoringAlgorithms.ScoringScope getScoringScope(){
+	    return this.scoringScope;
+	}
+    public ScoringAlgorithms.ScoringSessionFocus getScoringFocus(){
+        return this.scoringFocus;
+    }
 }

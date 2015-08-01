@@ -80,7 +80,7 @@ public class AvatolCVJavaFX extends Application {
         try {
            
             if (radioNewSession.isSelected()){
-                JavaFXStepSequencer session = new JavaFXStepSequencer();
+                JavaFXStepSequencer session = new JavaFXStepSequencer(exceptionExpresser);
                 session.init(rootDir, mainWindow);
                 
             }

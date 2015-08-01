@@ -17,6 +17,9 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
 
 public class BisqueDataSource implements DataSource {
     private BisqueWSClient wsClient = null;
@@ -109,7 +112,7 @@ public class BisqueDataSource implements DataSource {
         this.chosenDataset = di;
     }
     @Override
-    public List<ChoiceItem> getScoringConcernItems(ScoringAlgorithms sa)
+    public List<ChoiceItem> getScoringConcernItems(ScoringAlgorithms.ScoringScope scoringScope, ScoringAlgorithms.ScoringSessionFocus scoringFocus)
             throws AvatolCVException {
         List<ChoiceItem> items = new ArrayList<ChoiceItem>();
         List<String> annotationNames = new ArrayList<String>();
@@ -130,28 +133,28 @@ public class BisqueDataSource implements DataSource {
         return items;
     }
     @Override
-    public String getInstructionsForScoringConcernScreen(ScoringAlgorithms sa) {
-        if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
-                sa.getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
+    public String getInstructionsForScoringConcernScreen(ScoringAlgorithms.ScoringScope scoringScope, ScoringAlgorithms.ScoringSessionFocus scoringFocus) {
+        if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
+                scoringScope == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
                 return "Place a check mark next to annotations that refer to presence/absence of a part." +
                         "(AvatolCV has tried to deduce this from metadata.)";
             }
-            else if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
-                    sa.getScoringScope() == ScoringAlgorithms.ScoringScope.SINGLE_ITEM){
+            else if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
+                    scoringScope == ScoringAlgorithms.ScoringScope.SINGLE_ITEM){
                 return "Select the desired presence/absence part.";
             }
-            else if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
-                    sa.getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM) {
+            else if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
+                    scoringScope == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM) {
                 return "Place a check mark next to annotations that refer to shape aspect of a specimen.";
             }
 
-            else if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
-                    sa.getScoringScope() == ScoringAlgorithms.ScoringScope.SINGLE_ITEM) {
+            else if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
+                    scoringScope == ScoringAlgorithms.ScoringScope.SINGLE_ITEM) {
                 return "Select the desired shape aspect of the specimen.";
             }
 
-            else if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT &&
-                    sa.getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM) {
+            else if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT &&
+                    scoringScope == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM) {
                 return "Place a check mark next to annotations that refer to texture aspects of a specimen.";
             }
 
@@ -216,5 +219,15 @@ public class BisqueDataSource implements DataSource {
         }
         
     }
+    private static final String NL = System.getProperty("line.separator");
 
+    @Override
+    public String getDatasetSummaryText() {        
+        StringBuilder sb = new StringBuilder();
+        sb.append("Dataset: " + this.chosenDataset.getName() + NL);
+        sb.append(" add some more text" + NL);
+        
+        sb.append(NL);
+        return "" + sb;
+    }
 }
