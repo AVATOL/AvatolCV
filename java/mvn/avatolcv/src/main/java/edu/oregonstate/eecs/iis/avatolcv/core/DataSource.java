@@ -21,4 +21,5 @@ public interface DataSource {
     void setChosenScoringConcern(ChoiceItem item);
     
     String getDatasetSummaryText();
+    AvatolCVDataFiles getAvatolCVDataFiles();
 }

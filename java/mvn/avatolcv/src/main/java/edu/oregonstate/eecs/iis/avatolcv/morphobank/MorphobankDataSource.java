@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataSource;
@@ -34,9 +35,11 @@ public class MorphobankDataSource implements DataSource {
     private Hashtable<String,List<MBCharStateValue>> charStateValuesForCellHash = new Hashtable<String, List<MBCharStateValue>>();
     private Hashtable<String,List<MBMediaInfo>> mediaInfoForCellHash = new Hashtable<String, List<MBMediaInfo>>();
     private MorphobankDataFiles mbDataFiles = null;
-    public MorphobankDataSource(){
+    
+    public MorphobankDataSource(String sessionDataRoot){
         wsClient = new MorphobankWSClientImpl();
         mbDataFiles = new MorphobankDataFiles();
+        mbDataFiles.setSessionDataRoot(sessionDataRoot);
     }
     @Override
     public boolean authenticate(String username, String password) throws AvatolCVException {
@@ -111,7 +114,7 @@ public class MorphobankDataSource implements DataSource {
     @Override
     public void setChosenDataset(DatasetInfo di) {
         this.chosenDataset = di;
-        
+        this.mbDataFiles.setDatasetDirname(di.getName());
     }
     public List<ChoiceItem> getScoringConcernItemsNoneSelected(){
         List<ChoiceItem> result = new ArrayList<ChoiceItem>();
@@ -232,15 +235,15 @@ public class MorphobankDataSource implements DataSource {
                     String taxonID = taxon.getTaxonID();
                     pp.setMessage(processName, "loading info for cell: character " + character.getCharName() + " taxon " + taxon.getTaxonName());
                     String key = getKeyForCell( charID,taxonID);
-                    List<MBCharStateValue> charStatesForCell = loadMBCharStatesFromDisk(key);
-                    if (null == charStatesForCell){
+                    List<MBCharStateValue> charStatesForCell = this.mbDataFiles.loadMBCharStatesFromDisk(charID, taxonID);
+                    if (charStatesForCell.isEmpty()){
                         charStatesForCell = this.wsClient.getCharStatesForCell(matrixID, charID, taxonID);
-                        persistMBCharStatesForCell(key);
+                        this.mbDataFiles.persistMBCharStatesForCell(charStatesForCell, charID, taxonID);
                     }
                     charStateValuesForCellHash.put(key, charStatesForCell);
                     
-                    List<MBMediaInfo> mediaInfosForCell = loadMBMediaInfosForCell(key);
-                    if (null == mediaInfosForCell){
+                    List<MBMediaInfo> mediaInfosForCell = this.mbDataFiles.loadMBMediaInfosForCell(charID, taxonID);
+                    if (mediaInfosForCell.isEmpty()){
                         mediaInfosForCell = this.wsClient.getMediaForCell(matrixID, charID, taxonID);
                         this.mbDataFiles.persistMBMediaInfosForCell(mediaInfosForCell, charID, taxonID);
                     }
@@ -280,5 +283,9 @@ public class MorphobankDataSource implements DataSource {
         }
         sb.append(NL);
         return "" + sb;
+    }
+    @Override
+    public AvatolCVDataFiles getAvatolCVDataFiles() {
+        return this.mbDataFiles;
     }
 }

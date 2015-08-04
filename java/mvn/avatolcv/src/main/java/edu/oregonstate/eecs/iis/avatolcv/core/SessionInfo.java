@@ -56,6 +56,7 @@ public class SessionInfo{
     private ScoringAlgorithms.ScoringScope scoringScope = null;
     private ScoringAlgorithms.ScoringSessionFocus scoringFocus = null;
     public static AvatolCVExceptionExpresser exceptionExpresser = null;
+    private String datasetDir = null;
     
 	public SessionInfo(String avatolCVRootDir, AvatolCVExceptionExpresser exceptionExpresser) throws AvatolCVException {
         SessionInfo.exceptionExpresser = exceptionExpresser;
@@ -85,8 +86,16 @@ public class SessionInfo{
 	public ScoringAlgorithms getScoringAlgorithms() {
         return this.scoringAlgorithms;
     }
+	public String getSessionDataRootDir(){
+	    return this.sessionDataRootDir;
+	}
 	public void setChosenDataset(DatasetInfo di) throws AvatolCVException {
 	    this.chosenDataset = di;
+	    this.datasetDir = this.sessionDataRootDir + FILESEP + di.getName();
+	    this.dataSource.setChosenDataset(di);
+	}
+	public String getDatasetDir(){
+	    return this.datasetDir;
 	}
 	public void setScoringConcerns(List<ChoiceItem> chosenItems){
 	    chosenScoringConcerns = chosenItems;
