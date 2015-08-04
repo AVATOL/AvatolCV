@@ -14,8 +14,8 @@ public interface DataSource {
     String getDefaultPassword();
     
     void setChosenDataset(DatasetInfo di);
-    List<ChoiceItem> getScoringConcernItems(ScoringAlgorithms sa) throws AvatolCVException;
-    String getInstructionsForScoringConcernScreen(ScoringAlgorithms sa);
+    List<ChoiceItem> getScoringConcernItems(ScoringAlgorithms.ScoringScope scope, ScoringAlgorithms.ScoringSessionFocus focus) throws AvatolCVException;
+    String getInstructionsForScoringConcernScreen(ScoringAlgorithms.ScoringScope scope, ScoringAlgorithms.ScoringSessionFocus focus);
     
     void setChosenScoringConcerns(List<ChoiceItem> items);
     void setChosenScoringConcern(ChoiceItem item);

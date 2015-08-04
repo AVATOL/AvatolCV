@@ -33,9 +33,10 @@ public class MorphobankDataSource implements DataSource {
     private List<MBView> viewsForProject = null;
     private Hashtable<String,List<MBCharStateValue>> charStateValuesForCellHash = new Hashtable<String, List<MBCharStateValue>>();
     private Hashtable<String,List<MBMediaInfo>> mediaInfoForCellHash = new Hashtable<String, List<MBMediaInfo>>();
-
+    private MorphobankDataFiles mbDataFiles = null;
     public MorphobankDataSource(){
         wsClient = new MorphobankWSClientImpl();
+        mbDataFiles = new MorphobankDataFiles();
     }
     @Override
     public boolean authenticate(String username, String password) throws AvatolCVException {
@@ -152,13 +153,13 @@ public class MorphobankDataSource implements DataSource {
         return result;
     }
     @Override
-    public List<ChoiceItem> getScoringConcernItems(ScoringAlgorithms sa) throws AvatolCVException{
-        if (sa.getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
+    public List<ChoiceItem> getScoringConcernItems(ScoringAlgorithms.ScoringScope scoringScope, ScoringAlgorithms.ScoringSessionFocus scoringFocus) throws AvatolCVException{
+        if (scoringScope == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
             // select all appropriate for case
-            if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE){
+            if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE){
                 return getPresenceAbsenceScoringConcernItems();
             }
-            else if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT){
+            else if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT){
                 return getShapeScoringConcernItems();
             }
             else {
@@ -173,28 +174,28 @@ public class MorphobankDataSource implements DataSource {
         }
     }
     @Override
-    public String getInstructionsForScoringConcernScreen(ScoringAlgorithms sa) {
-        if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
-            sa.getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
+    public String getInstructionsForScoringConcernScreen(ScoringAlgorithms.ScoringScope scoringScope, ScoringAlgorithms.ScoringSessionFocus scoringFocus) {
+        if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
+            scoringScope == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
             return "Place a check mark next to characters that refer to presence/absence of a part." +
                     "(AvatolCV has tried to deduce this from metadata.)";
         }
-        else if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
-                sa.getScoringScope() == ScoringAlgorithms.ScoringScope.SINGLE_ITEM){
+        else if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
+                scoringScope == ScoringAlgorithms.ScoringScope.SINGLE_ITEM){
             return "Select the desired presence/absence character.";
         }
-        else if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
-                sa.getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM) {
+        else if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
+                scoringScope == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM) {
             return "Place a check mark next to characters that refer to shape aspect of a specimen.";
         }
 
-        else if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
-                sa.getScoringScope() == ScoringAlgorithms.ScoringScope.SINGLE_ITEM) {
+        else if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
+                scoringScope == ScoringAlgorithms.ScoringScope.SINGLE_ITEM) {
             return "Select the desired shape aspect character.";
         }
 
-        else if (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT &&
-                sa.getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM) {
+        else if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT &&
+                scoringScope == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM) {
             return "Place a check mark next to characters that refer to texture aspects of a specimen.";
         }
 
@@ -231,12 +232,19 @@ public class MorphobankDataSource implements DataSource {
                     String taxonID = taxon.getTaxonID();
                     pp.setMessage(processName, "loading info for cell: character " + character.getCharName() + " taxon " + taxon.getTaxonName());
                     String key = getKeyForCell( charID,taxonID);
-                    
-                    List<MBCharStateValue> charStatesForCell = this.wsClient.getCharStatesForCell(matrixID, charID, taxonID);
+                    List<MBCharStateValue> charStatesForCell = loadMBCharStatesFromDisk(key);
+                    if (null == charStatesForCell){
+                        charStatesForCell = this.wsClient.getCharStatesForCell(matrixID, charID, taxonID);
+                        persistMBCharStatesForCell(key);
+                    }
                     charStateValuesForCellHash.put(key, charStatesForCell);
                     
-                    List<MBMediaInfo> mediaForCell = this.wsClient.getMediaForCell(matrixID, charID, taxonID);
-                    mediaInfoForCellHash.put(key, mediaForCell);
+                    List<MBMediaInfo> mediaInfosForCell = loadMBMediaInfosForCell(key);
+                    if (null == mediaInfosForCell){
+                        mediaInfosForCell = this.wsClient.getMediaForCell(matrixID, charID, taxonID);
+                        this.mbDataFiles.persistMBMediaInfosForCell(mediaInfosForCell, charID, taxonID);
+                    }
+                    mediaInfoForCellHash.put(key, mediaInfosForCell);
                     curCount++;
                     pp.updateProgress(processName, curCount * increment);
                 }
@@ -248,7 +256,7 @@ public class MorphobankDataSource implements DataSource {
         
     }
     
-    public String getKeyForCell(String charID, String taxonID){
+    public static String getKeyForCell(String charID, String taxonID){
         return "c" + charID + "_t" + taxonID;
     }
     private static final String NL = System.getProperty("line.separator");

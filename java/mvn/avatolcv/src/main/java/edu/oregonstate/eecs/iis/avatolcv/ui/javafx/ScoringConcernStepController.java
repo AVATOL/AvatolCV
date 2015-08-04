@@ -51,7 +51,7 @@ public class ScoringConcernStepController implements StepController {
     @Override
     public boolean consumeUIData() {
         try {
-        	if (this.step.getScoringAlgorithms().getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
+        	if (this.step.getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
         		List<ChoiceItem> chosenItems = new ArrayList<ChoiceItem>();
         		for (ChoiceItem ci : this.allChoiceItems){
         			if (checkBoxForChoiceItemHash.get(ci).isSelected()){
@@ -160,7 +160,7 @@ public class ScoringConcernStepController implements StepController {
         if (this.allChoiceItems.size() == 0){
             throw new AvatolCVException("no valid ChoiceItems detected for scoring concern screen.");
         }
-        if (sa.getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
+        if (this.step.getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
         	return getContentNodeForMultipleItem();
         }
         else {
@@ -214,7 +214,6 @@ public class ScoringConcernStepController implements StepController {
         VBox.setVgrow(regionTop, Priority.ALWAYS);
         scoringConcernVBox.getChildren().add(regionTop);
         // add text about doing best to detect presence/absence
-        String instructions = this.step.getInstructionsForScoringConcernScreen();
         Label header = new Label("downloading additional metadata");
         //header.setPrefWidth(100);
         header.setWrapText(true);

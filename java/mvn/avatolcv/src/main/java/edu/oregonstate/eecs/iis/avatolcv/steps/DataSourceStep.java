@@ -37,7 +37,7 @@ public class DataSourceStep implements Step {
     @Override
     public void consumeProvidedData() throws AvatolCVException {
         if (choice == DataSourceChoice.MORPHOBANK){
-            this.sessionInfo.setDataSource(new MorphobankDataSource());
+            this.sessionInfo.setDataSource(new MorphobankDataSource(sessionInfo.get));
         }
         else if (choice == DataSourceChoice.BISQUE){
             this.sessionInfo.setDataSource(new BisqueDataSource());

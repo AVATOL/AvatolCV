@@ -37,12 +37,13 @@ public class ScoringAlgorithms {
         addAlgorithm("LEAF", ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT,ScoringScope.SINGLE_ITEM, LaunchThrough.OTHER,  "tbd", false, "bogusDir");
         addAlgorithm("CRF", ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT,ScoringScope.SINGLE_ITEM, LaunchThrough.OTHER,  "tbd", false, "bogusDir");
     }
-    
-    public ScoringScope getScoringScope(){
-    	if (sessionFocus == ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE && chosenScoringAlgorithm == SHELL_BATSKULL){
-    		return ScoringScope.MULTIPLE_ITEM;
-    	}
-    	return ScoringScope.SINGLE_ITEM;
+    public static ScoringScope getScopeForScopePropertiesValue(String val){
+        if (ScoringScope.SINGLE_ITEM.name().equals(val)){
+            return ScoringScope.SINGLE_ITEM;
+        }
+        else {
+            return ScoringScope.MULTIPLE_ITEM;
+        }
     }
     
     public String getRadioButtonTextForScoringFocus(ScoringSessionFocus focus){

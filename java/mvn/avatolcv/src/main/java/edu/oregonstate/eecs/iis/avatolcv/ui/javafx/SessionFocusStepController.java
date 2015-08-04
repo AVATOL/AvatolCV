@@ -11,6 +11,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
+import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SessionFocusStep;
 
@@ -29,22 +30,25 @@ public class SessionFocusStepController implements StepController {
     }
     @Override
     public boolean consumeUIData() {
-        ScoringAlgorithms sa = this.focusStep.getScoringAlgorithms();
-        if (radioPresenceAbsence.isSelected()){
-            sa.setSessionScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE);
-            sa.setChosenAlgorithmName(presenceAbsenceAlgChoice.getValue());
+        try {
+            if (radioPresenceAbsence.isSelected()){
+                this.focusStep.setScoringAlgInfo(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE, presenceAbsenceAlgChoice.getValue());
+            }
+            else if (radioShape.isSelected()){
+                this.focusStep.setScoringAlgInfo(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT, shapeAlgChoice.getValue());
+            }
+            else {
+                // must be texture
+                this.focusStep.setScoringAlgInfo(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT, textureAlgChoice.getValue());
+            }
+            this.focusStep.consumeProvidedData();
+            return true;
+        }
+        catch(AvatolCVException e){
+            SessionInfo.exceptionExpresser.showException(e, "Problem consuming info from Session Focus screen");
+            return false;
         }
         
-        else if (radioShape.isSelected()){
-            sa.setSessionScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT);
-            sa.setChosenAlgorithmName(shapeAlgChoice.getValue());
-        }
-        else {
-            // must be texture
-            sa.setSessionScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT);
-            sa.setChosenAlgorithmName(textureAlgChoice.getValue());
-        }
-        return true;
     }
 
     @Override

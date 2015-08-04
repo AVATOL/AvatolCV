@@ -23,10 +23,9 @@ import org.apache.logging.log4j.Logger;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
+import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
-import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms.ScoringSessionFocus;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
@@ -34,11 +33,8 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.DataSourceStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DatasetChoiceStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.LoginStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SummaryFilterStep;
-import edu.oregonstate.eecs.iis.avatolcv.steps.Z_Obsolete_ScoringConcernDataPullStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SessionFocusStep;
-import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
-import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
 
 public class JavaFXStepSequencer  {
    
@@ -51,9 +47,13 @@ public class JavaFXStepSequencer  {
     private StepSequence ss = null;
     private Stage mainWindow = null;
     private Scene scene = null;
+    private AvatolCVExceptionExpresser exceptionExpresser = null;
     private Hashtable<Step,Label> labelForStepHash = new Hashtable<Step,Label>();
   
     private Hashtable<Step,StepController> controllerForStep = new Hashtable<Step,StepController>();
+    public JavaFXStepSequencer(AvatolCVExceptionExpresser exceptionExpresser){
+        this.exceptionExpresser = exceptionExpresser;
+    }
     public void init(String avatolCVRootDir, Stage mainWindow) throws AvatolCVException {
         this.avatolCVRootDir = avatolCVRootDir;
         this.mainWindow = mainWindow;
@@ -61,7 +61,7 @@ public class JavaFXStepSequencer  {
 
         //MorphobankWSClient client = new MorphobankWSClientImpl();
         afs = new AvatolCVFileSystem(avatolCVRootDir);
-        sessionInfo = new SessionInfo(avatolCVRootDir);
+        sessionInfo = new SessionInfo(avatolCVRootDir, exceptionExpresser);
         ss = new StepSequence();
         
         
@@ -85,7 +85,7 @@ public class JavaFXStepSequencer  {
 
         SessionFocusStep focusStep = new SessionFocusStep(sessionInfo);
         ss.appendStep(focusStep);
-        SessionFocusStepController focusController = new SessionFocusStepController(focusStep,"SessionFocusStep.fxml");
+        SessionFocusStepController focusController = new SessionFocusStepController(focusStep, "SessionFocusStep.fxml");
         controllerForStep.put(focusStep, focusController);
         addLabelForStep(focusStep,"Select Scoring Approach");
              
@@ -292,11 +292,7 @@ public class JavaFXStepSequencer  {
     			activateCurrentStep();
     		}
     		catch (AvatolCVException ace){
-    			Alert alert = new Alert(AlertType.ERROR);
-    			alert.setTitle("Error Dialog");
-    			alert.setHeaderText("An error was encountered while trying to move to next screen.");
-    			alert.setContentText(ace.getMessage());
-    			alert.showAndWait();
+    		    SessionInfo.exceptionExpresser.showException(ace, "An error was encountered while trying to move to next screen.");
     		}
 			
 		}
