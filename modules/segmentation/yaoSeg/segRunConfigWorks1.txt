@@ -5,7 +5,6 @@ rawImagesDir=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/data/avcv
 trainingImagesDir=/somewhere
 segmentationOutputDir=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/segOutput
 trainingFileSuffix="_GT.png" 
-avatolCVMatlabLauncherPath=/Users/jedirvine/av/avatol_cv/matlab_av/distrib/run_matlab_av.sh
 croppedOrigImageSuffix=_croppedOrig
 croppedMaskImageSuffix=_croppedMask
 avatolCVStatusFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/avatolCVStatus.txt

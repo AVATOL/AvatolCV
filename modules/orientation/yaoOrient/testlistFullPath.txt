@@ -1,0 +1,1 @@
+/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/data/avcv_testing_images/bar.jpg

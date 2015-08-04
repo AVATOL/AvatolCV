@@ -1,0 +1,2 @@
+launchWith=segmentationRunner.sh
+launchFileLanguage=other

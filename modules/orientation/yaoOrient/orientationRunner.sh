@@ -263,11 +263,7 @@ echo cropping images > ${avatolCVStatusFile}
 #
 #  call matlab to crop the leaf on both raw and mask images
 #
-#echo matlab -r -nodisplay "run Yao_postprocessing\('${segmentationOutputDir}','${testingImagesFile}', '${croppedOrigImageSuffix}', '${croppedMaskImageSuffix}'\)"
-#matlab -r -nodisplay -nosplash "run Yao_postprocessing\('${segmentationOutputDir}','${testingImagesFile}', '${croppedOrigImageSuffix}', '${croppedMaskImageSuffix}'\)"
-
-#echo ${MATLAB_RUNTIME_LAUNCHER} ${THIS_DIR} Yao_postprocessing ${segmentationOutputDir} ${testingImagesFile} ${croppedOrigImageSuffix} ${croppedMaskImageSuffix}
 echo ./${THIS_DIR}/yaoSegPP_via_runtime.sh ${segmentationOutputDir} ${testingImagesFile} ${croppedOrigImageSuffix} ${croppedMaskImageSuffix}
 ${THIS_DIR}/yaoSegPP_via_runtime.sh ${segmentationOutputDir} ${testingImagesFile} ${croppedOrigImageSuffix} ${croppedMaskImageSuffix}
-echo done with segmentation
-echo done with segmentation > ${avatolCVStatusFile}
+echo done with orientation
+echo done with orientation > ${avatolCVStatusFile}
