@@ -236,14 +236,14 @@ public class MorphobankDataSource implements DataSource {
                     pp.setMessage(processName, "loading info for cell: character " + character.getCharName() + " taxon " + taxon.getTaxonName());
                     String key = getKeyForCell( charID,taxonID);
                     List<MBCharStateValue> charStatesForCell = this.mbDataFiles.loadMBCharStatesFromDisk(charID, taxonID);
-                    if (charStatesForCell.isEmpty()){
+                    if (null == charStatesForCell){
                         charStatesForCell = this.wsClient.getCharStatesForCell(matrixID, charID, taxonID);
                         this.mbDataFiles.persistMBCharStatesForCell(charStatesForCell, charID, taxonID);
                     }
                     charStateValuesForCellHash.put(key, charStatesForCell);
                     
                     List<MBMediaInfo> mediaInfosForCell = this.mbDataFiles.loadMBMediaInfosForCell(charID, taxonID);
-                    if (mediaInfosForCell.isEmpty()){
+                    if (null == mediaInfosForCell){
                         mediaInfosForCell = this.wsClient.getMediaForCell(matrixID, charID, taxonID);
                         this.mbDataFiles.persistMBMediaInfosForCell(mediaInfosForCell, charID, taxonID);
                     }
