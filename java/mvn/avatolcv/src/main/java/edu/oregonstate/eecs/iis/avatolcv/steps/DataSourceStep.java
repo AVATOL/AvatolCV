@@ -40,7 +40,7 @@ public class DataSourceStep implements Step {
             this.sessionInfo.setDataSource(new MorphobankDataSource(this.sessionInfo.getSessionDataRootDir()));
         }
         else if (choice == DataSourceChoice.BISQUE){
-            this.sessionInfo.setDataSource(new BisqueDataSource());
+            this.sessionInfo.setDataSource(new BisqueDataSource(this.sessionInfo.getSessionDataRootDir()));
         }
         else {
             this.sessionInfo.setDataSource(new FileSystemDataSource());

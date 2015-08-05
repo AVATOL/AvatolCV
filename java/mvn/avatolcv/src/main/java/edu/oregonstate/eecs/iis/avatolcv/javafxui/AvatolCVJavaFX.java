@@ -96,8 +96,6 @@ public class AvatolCVJavaFX extends Application {
             }
         } 
         catch(AvatolCVException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
             exceptionExpresser.showException(e, "Problem initializing session");
         }
     }

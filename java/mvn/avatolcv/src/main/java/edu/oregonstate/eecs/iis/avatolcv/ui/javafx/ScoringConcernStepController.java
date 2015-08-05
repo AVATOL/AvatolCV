@@ -26,6 +26,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
+import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernStep;
 
@@ -198,10 +199,7 @@ public class ScoringConcernStepController implements StepController {
                 return new Boolean(true);
             }
             catch(AvatolCVException ace){
-                logger.error("AvatolCV error downloading scoring data info");
-                logger.error(ace.getMessage());
-                System.out.println("AvatolCV error downloading scoring data info");
-                ace.printStackTrace();
+                SessionInfo.exceptionExpresser.showException(ace, "AvatolCV error downloading scoring data info");
                 return new Boolean(false);
             }
         }

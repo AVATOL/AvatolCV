@@ -20,6 +20,8 @@ public class AvatolCVExceptionExpresserJavaFX implements
 
     @Override
     public void showException(Exception e, String header) {
+        System.out.println(e.getMessage());
+        e.printStackTrace();
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Error Dialog");
         alert.setHeaderText(header);

@@ -5,12 +5,14 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.generic.DatasetInfo;
+import edu.oregonstate.eecs.iis.avatolcv.morphobank.MorphobankDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSException;
@@ -28,8 +30,12 @@ public class BisqueDataSource implements DataSource {
     private Hashtable<String, List<BisqueAnnotation>> annotationsForImageIdHash = null;
     private List<String> scoringConcernAnnotations = null;
     private Hashtable<String, List<String>> valuesForEnumAnnotation = null;
-    public BisqueDataSource(){
+    private BisqueDataFiles bisqueDataFiles = null;
+
+    public BisqueDataSource(String sessionDataRoot){
         wsClient = new BisqueWSClientImpl();
+        bisqueDataFiles = new BisqueDataFiles();
+        bisqueDataFiles.setSessionDataRoot(sessionDataRoot);
     }
     @Override
     public boolean authenticate(String username, String password) throws AvatolCVException {
@@ -95,7 +101,11 @@ public class BisqueDataSource implements DataSource {
                 curCount++;
                 pp.setMessage(processName, "loading metadata for image: " + bi.getName());
                 String imageResource_uniq = bi.getResourceUniq();
-                List<BisqueAnnotation> annotations = this.wsClient.getAnnotationsForImage(imageResource_uniq);
+                List<BisqueAnnotation> annotations = this.bisqueDataFiles.loadAnnotationsForImage(imageResource_uniq);
+                if (null == annotations){
+                    annotations = this.wsClient.getAnnotationsForImage(imageResource_uniq);
+                    this.bisqueDataFiles.persistAnnotationsForImage(annotations, imageResource_uniq);
+                }
                 annotationsForImageIdHash.put(imageResource_uniq, annotations);
                 pp.updateProgress(processName, 0.1 + (percentProgressPerImage * curCount));
                 
@@ -110,6 +120,7 @@ public class BisqueDataSource implements DataSource {
     @Override
     public void setChosenDataset(DatasetInfo di) {
         this.chosenDataset = di;
+        this.bisqueDataFiles.setDatasetDirname(di.getName());
     }
     @Override
     public List<ChoiceItem> getScoringConcernItems(ScoringAlgorithms.ScoringScope scoringScope, ScoringAlgorithms.ScoringSessionFocus scoringFocus)
@@ -204,7 +215,11 @@ public class BisqueDataSource implements DataSource {
                             // don't look it up again
                         }
                         else {
-                            List<String> values = this.wsClient.getAnnotationValueOptions(annotationTypeValue);
+                            List<String> values = this.bisqueDataFiles.loadAnnotationValueOptions(annotation.getName(), annotationTypeValue);
+                            if (null == values){
+                                values = this.wsClient.getAnnotationValueOptions(annotationTypeValue);
+                                this.bisqueDataFiles.persistAnnotationValueOptions(annotation.getName(), annotationTypeValue, values);
+                            }
                             this.valuesForEnumAnnotation.put(annotation.getName(), values);
                         }
                     }
@@ -229,5 +244,10 @@ public class BisqueDataSource implements DataSource {
         
         sb.append(NL);
         return "" + sb;
+    }
+    @Override
+    public AvatolCVDataFiles getAvatolCVDataFiles() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
