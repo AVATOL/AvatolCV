@@ -6,6 +6,9 @@ import java.util.Hashtable;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ChoiceItem;
@@ -15,6 +18,9 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.SummaryFilterStep;
 
 public class SummaryFilterStepController implements StepController {
     public TextArea summaryTextArea;
+    public Tab summaryTab;
+    public ScrollPane summaryScrollPane;
+    public TabPane summaryFilterTabPane;
     private SummaryFilterStep step;
     private String fxmlDocName;
 
@@ -41,7 +47,7 @@ public class SummaryFilterStepController implements StepController {
             loader.setController(this);
             Node content = loader.load();
             summaryTextArea.setText(this.step.getSummaryText());
-
+           
             return content;
         }
         catch(IOException ioe){

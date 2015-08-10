@@ -5,23 +5,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<TabPane fx:id="summaryFilterTabPane" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
   <tabs>
-    <Tab text="Dataset Summary">
-      <content>
-        <AnchorPane>
-               <children>
-                  <ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <content>
-                      <AnchorPane>
-                           <children>
-                              <TextArea fx:id="summaryTextArea" AnchorPane.bottomAnchor="-172.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-134.0" AnchorPane.topAnchor="1.0" />
-                           </children>
-                        </AnchorPane>
-                    </content>
-                  </ScrollPane>
-               </children></AnchorPane>
-      </content>
+    <Tab fx:id="SummaryTab" text="Dataset Summary">
+         <content>
+            <TextArea fx:id="summaryTextArea" prefHeight="200.0" prefWidth="200.0" />
+         </content>
     </Tab>
     <Tab text="Filter the dataset">
       <content>

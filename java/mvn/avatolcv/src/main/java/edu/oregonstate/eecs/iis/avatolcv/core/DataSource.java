@@ -22,4 +22,5 @@ public interface DataSource {
     
     String getDatasetSummaryText();
     AvatolCVDataFiles getAvatolCVDataFiles();
+    DataFilter getDataFilter(String specificSessionDir);
 }
