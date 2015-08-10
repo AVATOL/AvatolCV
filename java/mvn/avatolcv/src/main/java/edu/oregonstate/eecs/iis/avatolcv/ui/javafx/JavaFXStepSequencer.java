@@ -41,7 +41,6 @@ public class JavaFXStepSequencer  {
 	public Button nextButton;
 	public Button backButton;
 	public VBox stepList;
-    private String avatolCVRootDir = null;
     private SessionInfo sessionInfo = null;
     private AvatolCVFileSystem afs = null;
     private StepSequence ss = null;
@@ -55,13 +54,12 @@ public class JavaFXStepSequencer  {
         this.exceptionExpresser = exceptionExpresser;
     }
     public void init(String avatolCVRootDir, Stage mainWindow) throws AvatolCVException {
-        this.avatolCVRootDir = avatolCVRootDir;
         this.mainWindow = mainWindow;
     	initUI();
 
         //MorphobankWSClient client = new MorphobankWSClientImpl();
         afs = new AvatolCVFileSystem(avatolCVRootDir);
-        sessionInfo = new SessionInfo(avatolCVRootDir, exceptionExpresser);
+        sessionInfo = new SessionInfo(exceptionExpresser);
         ss = new StepSequence();
         
         

@@ -8,9 +8,11 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ChoiceItem;
+import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
@@ -32,14 +34,15 @@ public class MorphobankDataSource implements DataSource {
     private List<MBTaxon> taxaForMatrix = null;
     private DatasetInfo chosenDataset = null;
     private List<MBView> viewsForProject = null;
+    private List<String> viewIDsInPlay = null;
     private Hashtable<String,List<MBCharStateValue>> charStateValuesForCellHash = new Hashtable<String, List<MBCharStateValue>>();
     private Hashtable<String,List<MBMediaInfo>> mediaInfoForCellHash = new Hashtable<String, List<MBMediaInfo>>();
     private MorphobankDataFiles mbDataFiles = null;
-    
-    public MorphobankDataSource(String sessionDataRoot){
+    private DataFilter dataFilter = null;
+    public MorphobankDataSource(String sessionsRoot){
         wsClient = new MorphobankWSClientImpl();
         mbDataFiles = new MorphobankDataFiles();
-        mbDataFiles.setSessionDataRoot(sessionDataRoot);
+        mbDataFiles.setSessionsRoot(sessionsRoot);
     }
     @Override
     public boolean authenticate(String username, String password) throws AvatolCVException {
@@ -229,6 +232,7 @@ public class MorphobankDataSource implements DataSource {
             int totalItemCount = colCount * rowCount;
             double increment = 1.0 / totalItemCount;
             int curCount = 0;
+            this.viewIDsInPlay = new ArrayList<String>();
             for (MBCharacter character : this.charactersForMatrix){
                 for (MBTaxon taxon : this.taxaForMatrix){
                     String charID = character.getCharID();
@@ -246,6 +250,12 @@ public class MorphobankDataSource implements DataSource {
                     if (null == mediaInfosForCell){
                         mediaInfosForCell = this.wsClient.getMediaForCell(matrixID, charID, taxonID);
                         this.mbDataFiles.persistMBMediaInfosForCell(mediaInfosForCell, charID, taxonID);
+                    }
+                    for (MBMediaInfo mi : mediaInfosForCell){
+                        String viewID = mi.getViewID();
+                        if (!viewIDsInPlay.contains(viewID)){
+                            viewIDsInPlay.add(viewID);
+                        }
                     }
                     mediaInfoForCellHash.put(key, mediaInfosForCell);
                     curCount++;
@@ -287,5 +297,35 @@ public class MorphobankDataSource implements DataSource {
     @Override
     public AvatolCVDataFiles getAvatolCVDataFiles() {
         return this.mbDataFiles;
+    }
+    private String getViewNameForViewID(String viewID){
+        for (MBView v : this.viewsForProject){
+            if (v.getViewID().equals(viewID)){
+                return v.getName();
+            }
+        }
+        return null;
+    }
+    @Override
+    public DataFilter getDataFilter(String specificSessionDir) throws AvatolCVException {
+        this.dataFilter = new DataFilter(AvatolCVFileSystem.getSessionDir());
+        for (MBCharacter character : this.charactersForMatrix){
+            this.dataFilter.addPropertyValue("character", character.getCharName(), false);
+        }
+        for (MBTaxon taxon : this.taxaForMatrix){
+            this.dataFilter.addPropertyValue("taxon", taxon.getTaxonName(), false);
+        }
+        List<String> viewNamesInPlay = new ArrayList<String>();
+        for (String viewID : this.viewIDsInPlay){
+            String viewName = getViewNameForViewID(viewID);
+            if (null == viewName){
+                throw new AvatolCVException("no known view name for viewID " + viewID);
+            }
+            viewNamesInPlay.add(viewName);
+        }
+        for (String activeViewName : viewNamesInPlay){
+            this.dataFilter.addPropertyValue("view", activeViewName, true);
+        }
+        return this.dataFilter;
     }
 }

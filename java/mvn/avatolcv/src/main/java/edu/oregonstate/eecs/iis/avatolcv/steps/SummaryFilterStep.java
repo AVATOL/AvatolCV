@@ -1,6 +1,8 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 
@@ -15,6 +17,9 @@ public class SummaryFilterStep implements Step {
 
     }
 
+    public DataFilter getDataFilter() throws AvatolCVException {
+        return this.sessionInfo.getDataSource().getDataFilter(AvatolCVFileSystem.getSessionDir());
+    }
     @Override
     public void consumeProvidedData() throws AvatolCVException {
         // TODO Auto-generated method stub

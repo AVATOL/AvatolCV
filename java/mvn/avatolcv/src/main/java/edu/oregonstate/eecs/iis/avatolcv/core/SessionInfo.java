@@ -3,6 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv.core;
 import java.io.File;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.generic.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
@@ -42,7 +43,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
  * 
  */
 public class SessionInfo{
-    private String sessionDataRootDir = null;
+    private String sessionsRootDir = null;
     private static final String NL = System.getProperty("line.separator");
     private static final String FILESEP = System.getProperty("file.separator");
     private ScoringAlgorithms scoringAlgorithms = null;
@@ -56,27 +57,21 @@ public class SessionInfo{
     private ScoringAlgorithms.ScoringScope scoringScope = null;
     private ScoringAlgorithms.ScoringSessionFocus scoringFocus = null;
     public static AvatolCVExceptionExpresser exceptionExpresser = null;
-    private String datasetDir = null;
     
-	public SessionInfo(String avatolCVRootDir, AvatolCVExceptionExpresser exceptionExpresser) throws AvatolCVException {
+	public SessionInfo(AvatolCVExceptionExpresser exceptionExpresser) throws AvatolCVException {
         SessionInfo.exceptionExpresser = exceptionExpresser;
-		File f = new File(avatolCVRootDir);
+		File f = new File(AvatolCVFileSystem.getAvatolCVRootDir());
         if (!f.isDirectory()){
-            throw new AvatolCVException("directory does not exist for being avatolCVRootDir " + avatolCVRootDir);
+            throw new AvatolCVException("directory does not exist for being avatolCVRootDir " + AvatolCVFileSystem.getAvatolCVRootDir());
         }
         //File avatolCVRootParentFile = f.getParentFile();
-        String moduleRootDir = avatolCVRootDir + FILESEP + "modules";
-        this.algorithmModules = new AlgorithmModules(moduleRootDir);
+        this.algorithmModules = new AlgorithmModules(AvatolCVFileSystem.getModulesDir());
         this.scoringAlgorithms = algorithmModules.getScoringAlgorithms();
-        
-        this.sessionDataRootDir = avatolCVRootDir + FILESEP + "sessionData";
-        f = new File(this.sessionDataRootDir);
-        if (!f.isDirectory()){
-            f.mkdirs();
-        }
-        
+       
         this.sessionID = "" + System.currentTimeMillis() / 1000L;
+        AvatolCVFileSystem.setSessionID(this.sessionID);
 	}
+	
 	public void setDataSource(DataSource dataSource){
 	    this.dataSource = dataSource;
 	}
@@ -86,17 +81,16 @@ public class SessionInfo{
 	public ScoringAlgorithms getScoringAlgorithms() {
         return this.scoringAlgorithms;
     }
-	public String getSessionDataRootDir(){
-	    return this.sessionDataRootDir;
+	public String getSessionsRootDir(){
+	    return this.sessionsRootDir;
 	}
 	public void setChosenDataset(DatasetInfo di) throws AvatolCVException {
 	    this.chosenDataset = di;
-	    this.datasetDir = this.sessionDataRootDir + FILESEP + di.getName();
+	    AvatolCVFileSystem.setChosenDataset(di);
+	    //this.datasetDir = this.sessionsRootDir + FILESEP + di.getName();
 	    this.dataSource.setChosenDataset(di);
 	}
-	public String getDatasetDir(){
-	    return this.datasetDir;
-	}
+	
 	public void setScoringConcerns(List<ChoiceItem> chosenItems){
 	    chosenScoringConcerns = chosenItems;
 	    this.dataSource.setChosenScoringConcerns(chosenItems);

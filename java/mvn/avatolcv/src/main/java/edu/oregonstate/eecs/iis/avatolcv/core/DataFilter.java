@@ -30,8 +30,8 @@ public class DataFilter {
 		Collections.sort(result);
 		return result;
 	}
-	public Pair addPropertyValue(String name, String value) throws AvatolCVException {
-		Pair p = new Pair(name, value);
+	public Pair addPropertyValue(String name, String value, boolean isEditable) throws AvatolCVException {
+		Pair p = new Pair(name, value, isEditable);
 		String id = p.getID();
 		if (knownProperties.contains(id)){
 			throw new AvatolCVException("Filter already has name value combination: name " + name + " value: " + value);
@@ -45,9 +45,11 @@ public class DataFilter {
 		private String name;
 		private String value;
 		private boolean isEnabled = true;
-		public Pair(String name, String value){
+		private boolean isEditable = true;
+		public Pair(String name, String value, boolean isEditable){
 			this.name = name;
 			this.value = value;
+			this.isEditable = isEditable;
 		}
 		public void setEnabled(boolean value){
 			this.isEnabled = value;
@@ -55,7 +57,9 @@ public class DataFilter {
 		public String getID(){
 			return name + "_" + value;
 		}
-		
+		public boolean isEditable(){
+		    return this.isEditable;
+		}
 		public String getName(){
 			return this.name;
 		}
@@ -102,7 +106,8 @@ public class DataFilter {
 				String name = item.getName();
 				String value = item.getValue();
 				String isEnabled = "" + item.isEnabled();
-				writer.write(name + "," + value + "," + isEnabled + NL);
+				String isEditable = "" + item.isEditable();
+				writer.write(name + "," + value + "," + isEnabled + "," + isEditable + NL);
 			}
 			writer.close();
 		}
@@ -124,7 +129,10 @@ public class DataFilter {
 				String name = parts[0];
 				String value = parts[1];
 				String isSelectedString = parts[2];
-				Pair p = addPropertyValue(name, value);
+                String isEditableString = parts[3];
+                Boolean isEditableBoolean = new Boolean (isEditableString);
+                boolean isEditable = isEditableBoolean.booleanValue();
+				Pair p = addPropertyValue(name, value, isEditable);
 				Boolean b = new Boolean(isSelectedString);
 				boolean isSelected = b.booleanValue();
 				p.setEnabled(isSelected);

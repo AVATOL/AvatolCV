@@ -32,10 +32,10 @@ public class BisqueDataSource implements DataSource {
     private Hashtable<String, List<String>> valuesForEnumAnnotation = null;
     private BisqueDataFiles bisqueDataFiles = null;
 
-    public BisqueDataSource(String sessionDataRoot){
+    public BisqueDataSource(String sessionsRoot){
         wsClient = new BisqueWSClientImpl();
         bisqueDataFiles = new BisqueDataFiles();
-        bisqueDataFiles.setSessionDataRoot(sessionDataRoot);
+        bisqueDataFiles.setSessionsRoot(sessionsRoot);
     }
     @Override
     public boolean authenticate(String username, String password) throws AvatolCVException {

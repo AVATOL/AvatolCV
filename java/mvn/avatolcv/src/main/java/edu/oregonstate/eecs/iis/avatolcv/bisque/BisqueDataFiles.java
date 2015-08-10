@@ -17,14 +17,14 @@ public class BisqueDataFiles implements AvatolCVDataFiles {
     private static final String FILESEP = System.getProperty("file.separator");
     private static final String NL = System.getProperty("line.separator");
     private String datasetDir = null;
-    private String sessionDataRoot = null;
+    private String sessionsRoot = null;
     @Override
-    public void setSessionDataRoot(String sessionDataRoot) {
-        this.sessionDataRoot = sessionDataRoot;
+    public void setSessionsRoot(String sessionsRoot) {
+        this.sessionsRoot = sessionsRoot;
     }
     @Override
     public void setDatasetDirname(String datasetDirName) {
-        this.datasetDir = this.sessionDataRoot + FILESEP + datasetDirName;
+        this.datasetDir = this.sessionsRoot + FILESEP + datasetDirName;
     }
 
     public String getImageInfoDir(){

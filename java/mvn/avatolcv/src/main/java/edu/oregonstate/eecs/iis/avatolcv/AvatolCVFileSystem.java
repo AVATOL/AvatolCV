@@ -3,33 +3,78 @@ package edu.oregonstate.eecs.iis.avatolcv;
 import java.io.File;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.generic.DatasetInfo;
 
 public class AvatolCVFileSystem {
 	public static final String FILESEP = System.getProperty("file.separator");
 	private static String avatolCVRootDir = null;
-	private static String sessionDataDir = null;
+	private static String sessionsDir = null;
 	private static String currentProjectDir = null;
     private static String currentProjectUserAnswersDir = null;
-    private static String uiContentXmlDir = null;
-    private static String charQuestionsDir = null;
-	public AvatolCVFileSystem(String launchDir) throws AvatolCVException {
-		avatolCVRootDir = launchDir;
-		sessionDataDir = avatolCVRootDir + FILESEP + "sessionData";
-		System.out.println("sessionDataDir: " + sessionDataDir);
-		ensureDir(sessionDataDir);
-		uiContentXmlDir = avatolCVRootDir + FILESEP + "uiContentXml";
-		System.out.println("uiContentXmlDir: " + uiContentXmlDir);
-		ensureDirIsPresent(uiContentXmlDir);
-		charQuestionsDir = uiContentXmlDir + FILESEP + "characterQuestions";
-		System.out.println("charQuestionsDir: " + charQuestionsDir);
-		ensureDirHasContents(charQuestionsDir, "xml");
+    private static String sessionID = null;
+    private static String modulesDir = null;
+    private static String datasetName = null;
+    //private static String uiContentXmlDir = null;
+    //private static String charQuestionsDir = null;
+	public AvatolCVFileSystem(String rootDir) throws AvatolCVException {
+		avatolCVRootDir = rootDir;
+		sessionsDir = avatolCVRootDir + FILESEP + "sessions";
+		//System.out.println("sessionDataDir: " + sessionsDir);
+		ensureDir(sessionsDir);
+		modulesDir = avatolCVRootDir + FILESEP + "modules";
+		ensureDir(modulesDir);
+		//uiContentXmlDir = avatolCVRootDir + FILESEP + "uiContentXml";
+		//System.out.println("uiContentXmlDir: " + uiContentXmlDir);
+		//ensureDirIsPresent(uiContentXmlDir);
+		//charQuestionsDir = uiContentXmlDir + FILESEP + "characterQuestions";
+		//System.out.println("charQuestionsDir: " + charQuestionsDir);
+		//ensureDirHasContents(charQuestionsDir, "xml");
 	}
+	//
+	//  These are defined at construction time
+	//
 	public static String getAvatolCVRootDir(){
 		return avatolCVRootDir;
 	}
-	public static String getSessionDataRoot(){
-	    return sessionDataDir;
+	public static String getModulesDir(){
+	    return modulesDir;
 	}
+    public static String getSessionsRoot(){
+        return sessionsDir;
+    }
+	//
+	// session
+	//
+	public static void setSessionID(String id) throws AvatolCVException {
+        sessionID = id; 
+        
+    }
+	public static String getSessionDir() throws AvatolCVException {
+	    if (null == sessionID){
+	        throw new AvatolCVException("SessionDir not valid until sessionID has been set");
+	    }
+	    if (null == datasetName){
+            throw new AvatolCVException("SessionDir not valid until dataSet has been chosen");
+        }
+	    return avatolCVRootDir + FILESEP + datasetName + FILESEP + sessionID;
+	}
+	
+	//
+	// dataset
+	//
+	public static void setChosenDataset(DatasetInfo di) throws AvatolCVException {
+	    datasetName = di.getName();
+	    ensureDir(getSessionDir());
+	    ensureDir(getDatasetDir());
+	}
+	public static String getDatasetDir() throws AvatolCVException {
+	    if (null == datasetName){
+            throw new AvatolCVException("DatasetDir not valid until dataSet has been chosen");
+        }
+	    return avatolCVRootDir + FILESEP + datasetName;
+	}
+	
+	
 	public static void ensureDir(String path){
 	    File f = new File(path);
 	    f.mkdirs();
@@ -54,17 +99,19 @@ public class AvatolCVFileSystem {
         }
     }
 	public static void setCurrentProject(String name){
-	    currentProjectDir = sessionDataDir + FILESEP + name;
+	    currentProjectDir = sessionsDir + FILESEP + name;
 	    ensureDir(currentProjectDir);
 	    currentProjectUserAnswersDir = currentProjectDir + FILESEP + "userAnswers";
 	}
-	public static String getUserAnswerDir() throws AvatolCVException {
+	/*public static String getUserAnswerDir() throws AvatolCVException {
 	    if (null == currentProjectUserAnswersDir){
 	        throw new AvatolCVException("getUserAnswerDir() called prior to setCurrentProject()");
 	    }
 	    return currentProjectUserAnswersDir;
-	}
+	}*/
+	/*
 	public static String getCharacterQuestionsDir(){
 	    return charQuestionsDir;
 	}
+	*/
 }
