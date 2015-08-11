@@ -37,8 +37,7 @@ public class SummaryFilterStepController implements StepController {
     }
     @Override
     public boolean consumeUIData() {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
@@ -84,25 +83,22 @@ public class SummaryFilterStepController implements StepController {
     }
     @Override
     public boolean delayEnableNavButtons() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public void executeDataLoadPhase() throws AvatolCVException {
-        // TODO Auto-generated method stub
-
+        // NA
     }
 
     @Override
     public void configureUIForDataLoadPhase() {
-        // TODO Auto-generated method stub
-
+        // NA
     }
 
     @Override
     public boolean isDataLoadPhaseComplete() {
-        // TODO Auto-generated method stub
+        // NA
         return false;
     }
 

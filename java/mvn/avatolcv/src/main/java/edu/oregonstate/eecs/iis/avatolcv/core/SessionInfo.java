@@ -74,6 +74,7 @@ public class SessionInfo{
 	
 	public void setDataSource(DataSource dataSource){
 	    this.dataSource = dataSource;
+	    AvatolCVFileSystem.setDatasourceName(dataSource.getName());
 	}
 	public DataSource getDataSource(){
 	    return this.dataSource;

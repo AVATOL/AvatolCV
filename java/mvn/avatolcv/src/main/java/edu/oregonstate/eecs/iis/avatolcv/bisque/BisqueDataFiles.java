@@ -9,34 +9,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
 
-public class BisqueDataFiles implements AvatolCVDataFiles {
-    private static final String FILESEP = System.getProperty("file.separator");
-    private static final String NL = System.getProperty("line.separator");
-    private String datasetDir = null;
-    private String sessionsRoot = null;
-    @Override
-    public void setSessionsRoot(String sessionsRoot) {
-        this.sessionsRoot = sessionsRoot;
-    }
-    @Override
-    public void setDatasetDirname(String datasetDirName) {
-        this.datasetDir = this.sessionsRoot + FILESEP + datasetDirName;
-    }
-
-    public String getImageInfoDir(){
-        return datasetDir + FILESEP + "bisqueData" + FILESEP + "imageInfo";
-    }
-
-    public String getAnnotationInfoDir(){
-        return datasetDir + FILESEP + "bisqueData" + FILESEP + "annotationInfo";
+public class BisqueDataFiles extends AvatolCVDataFiles {
+    
+    public String getAnnotationInfoDir() throws AvatolCVException {
+        return AvatolCVFileSystem.getSpecializedDataDir() + FILESEP + "annotationInfo";
     }
     
     public void persistAnnotationsForImage(List<BisqueAnnotation> annotations, String imageResource_uniq) throws AvatolCVException {
-        String imageInfoRootDir = getImageInfoDir();
+        String imageInfoRootDir = AvatolCVFileSystem.getSpecializedImageInfoDir();
         File f = new File(imageInfoRootDir);
         f.mkdirs();
        
@@ -62,7 +47,7 @@ public class BisqueDataFiles implements AvatolCVDataFiles {
     }
     List<BisqueAnnotation> loadAnnotationsForImage(String imageResource_uniq) throws AvatolCVException {
         List<BisqueAnnotation> annotations = new ArrayList<BisqueAnnotation>();
-        String imageInfoRootDir = getImageInfoDir();
+        String imageInfoRootDir = AvatolCVFileSystem.getSpecializedImageInfoDir();
         String path = imageInfoRootDir + FILESEP + imageResource_uniq + ".txt";
         boolean foundFile = false;
         File f = new File(path);
@@ -149,7 +134,7 @@ public class BisqueDataFiles implements AvatolCVDataFiles {
             throw new AvatolCVException("problem persisting annotationInfo to filepath: " + path);
         }
     }
-    public String getPathForAnnotationInfo(String name, String annotationType){
+    public String getPathForAnnotationInfo(String name, String annotationType) throws AvatolCVException {
         String annotationInfoRootDir = getAnnotationInfoDir();
         String path = annotationInfoRootDir + FILESEP + name + "_" + annotationType + ".txt";
         return path;

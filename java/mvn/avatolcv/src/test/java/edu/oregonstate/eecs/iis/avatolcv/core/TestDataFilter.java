@@ -15,9 +15,9 @@ public class TestDataFilter extends TestCase {
         String curDir = System.getProperty("user.dir");
         DataFilter df = new DataFilter(curDir);
         try {
-            df.addPropertyValue("propC", "c", true);
-            df.addPropertyValue("propA", "a", true);
-            df.addPropertyValue("propB", "b", true);
+            df.addPropertyValue("propC", "c", "someID", true);
+            df.addPropertyValue("propA", "a", "someID",true);
+            df.addPropertyValue("propB", "b", "someID",true);
             List<Pair> pairs = df.getItems();
             
             assertEquals("a", pairs.get(0).getValue());
@@ -33,9 +33,9 @@ public class TestDataFilter extends TestCase {
         String curDir = System.getProperty("user.dir");
         DataFilter df = new DataFilter(curDir);
         try {
-            df.addPropertyValue("propC", "c", true);
-            df.addPropertyValue("propA", "a", true);
-            df.addPropertyValue("propA", "a", true);
+            df.addPropertyValue("propC", "c", "someID",true);
+            df.addPropertyValue("propA", "a", "someID",true);
+            df.addPropertyValue("propA", "a", "someID",true);
             List<Pair> pairs = df.getItems();
             Assert.fail("should not thrown exception on redundant value");
         }
@@ -47,15 +47,15 @@ public class TestDataFilter extends TestCase {
         String curDir = System.getProperty("user.dir");
         DataFilter df = new DataFilter(curDir);
         try {
-            df.addPropertyValue("propC", "c", false);
-            df.addPropertyValue("propA", "a", true);
-            df.addPropertyValue("propB", "b", true);
+            df.addPropertyValue("propC", "c", "someID",false);
+            df.addPropertyValue("propA", "a", "someID",true);
+            df.addPropertyValue("propB", "b", "someID",true);
             List<Pair> pairs = df.getItems();
             
             assertEquals("a", pairs.get(0).getValue());
             assertEquals("b", pairs.get(1).getValue());
             assertEquals("c", pairs.get(2).getValue());
-            pairs.get(1).setEnabled(false);
+            pairs.get(1).setSelected(false);
             df.persist();
             DataFilter df2 = new DataFilter(curDir);
             boolean loaded = df2.load();
@@ -71,9 +71,9 @@ public class TestDataFilter extends TestCase {
             assertEquals(true,pairs2.get(1).isEditable());
             assertEquals(false,pairs2.get(2).isEditable());
             assertEquals("propC_c", pairs2.get(2).getID());
-            assertEquals(true, pairs2.get(0).isEnabled());
-            assertEquals(false, pairs2.get(1).isEnabled());
-            assertEquals(true, pairs2.get(2).isEnabled());
+            assertEquals(true, pairs2.get(0).isSelected());
+            assertEquals(false, pairs2.get(1).isSelected());
+            assertEquals(true, pairs2.get(2).isSelected());
         }
         catch(AvatolCVException e){
             Assert.fail(e.getMessage());

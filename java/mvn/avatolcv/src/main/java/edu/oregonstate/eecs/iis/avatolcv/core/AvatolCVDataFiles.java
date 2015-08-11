@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.core;
 
-public interface AvatolCVDataFiles {
-    void setSessionsRoot(String sessionsRoot);
-    void setDatasetDirname(String datasetDirName);
+public class AvatolCVDataFiles {
+    protected static final String FILESEP = System.getProperty("file.separator");
+    protected static final String NL = System.getProperty("line.separator");
+    
 }

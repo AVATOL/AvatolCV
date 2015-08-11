@@ -8,6 +8,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ChoiceItem;
+import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
@@ -35,7 +36,7 @@ public class BisqueDataSource implements DataSource {
     public BisqueDataSource(String sessionsRoot){
         wsClient = new BisqueWSClientImpl();
         bisqueDataFiles = new BisqueDataFiles();
-        bisqueDataFiles.setSessionsRoot(sessionsRoot);
+        //bisqueDataFiles.setSessionsRoot(sessionsRoot);
     }
     @Override
     public boolean authenticate(String username, String password) throws AvatolCVException {
@@ -120,7 +121,7 @@ public class BisqueDataSource implements DataSource {
     @Override
     public void setChosenDataset(DatasetInfo di) {
         this.chosenDataset = di;
-        this.bisqueDataFiles.setDatasetDirname(di.getName());
+        //this.bisqueDataFiles.setDatasetDirname(di.getName());
     }
     @Override
     public List<ChoiceItem> getScoringConcernItems(ScoringAlgorithms.ScoringScope scoringScope, ScoringAlgorithms.ScoringSessionFocus scoringFocus)
@@ -249,5 +250,20 @@ public class BisqueDataSource implements DataSource {
     public AvatolCVDataFiles getAvatolCVDataFiles() {
         // TODO Auto-generated method stub
         return null;
+    }
+    @Override
+    public DataFilter getDataFilter(String specificSessionDir)
+            throws AvatolCVException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public void acceptFilter() {
+        // TODO Auto-generated method stub
+        
+    }
+    @Override
+    public String getName() {
+        return "bisque";
     }
 }

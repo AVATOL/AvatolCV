@@ -14,6 +14,7 @@ public class AvatolCVFileSystem {
     private static String sessionID = null;
     private static String modulesDir = null;
     private static String datasetName = null;
+    private static String datasourceName = null;
     //private static String uiContentXmlDir = null;
     //private static String charQuestionsDir = null;
 	public AvatolCVFileSystem(String rootDir) throws AvatolCVException {
@@ -58,6 +59,12 @@ public class AvatolCVFileSystem {
         }
 	    return avatolCVRootDir + FILESEP + datasetName + FILESEP + sessionID;
 	}
+	//
+	// datasource
+	//
+	public static void setDatasourceName(String name){
+	    datasourceName = name;
+	}
 	
 	//
 	// dataset
@@ -66,6 +73,9 @@ public class AvatolCVFileSystem {
 	    datasetName = di.getName();
 	    ensureDir(getSessionDir());
 	    ensureDir(getDatasetDir());
+	    ensureDir(getNormalizedDataDir());
+	    ensureDir(getNormalizedImageInfoDir());
+	    setSpecializedDataDir();
 	}
 	public static String getDatasetDir() throws AvatolCVException {
 	    if (null == datasetName){
@@ -74,7 +84,27 @@ public class AvatolCVFileSystem {
 	    return avatolCVRootDir + FILESEP + datasetName;
 	}
 	
-	
+	public static void setSpecializedDataDir() throws AvatolCVException {
+	    if (null == datasourceName){
+	        throw new AvatolCVException("SpecializedDir cannot be set until datasource has been chosen");
+	    }
+	    ensureDir(getSpecializedDataDir());
+	    ensureDir(getSpecializedImageInfoDir());
+	}
+	public static String getSpecializedDataDir() throws AvatolCVException {
+	    return getDatasetDir() + FILESEP + datasourceName;
+	}
+    public static String getSpecializedImageInfoDir() throws AvatolCVException {
+        return getSpecializedDataDir() + FILESEP + "imageInfo";
+    }
+    
+	public static String getNormalizedDataDir() throws AvatolCVException {
+	    return getDatasetDir() + FILESEP + "normalized";
+	}
+	public static String getNormalizedImageInfoDir() throws AvatolCVException {
+	    return getNormalizedDataDir() + FILESEP + "imageInfo";
+	}
+
 	public static void ensureDir(String path){
 	    File f = new File(path);
 	    f.mkdirs();

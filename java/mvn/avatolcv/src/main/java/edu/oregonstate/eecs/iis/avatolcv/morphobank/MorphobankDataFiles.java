@@ -15,7 +15,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharStateInfo.MBCharStateValue;
 
-public class MorphobankDataFiles  implements AvatolCVDataFiles{
+public class MorphobankDataFiles  extends AvatolCVDataFiles{
     private static final String FILESEP = System.getProperty("file.separator");
     private static final String NL = System.getProperty("line.separator");
     private String datasetDir = null;
@@ -182,6 +182,7 @@ public class MorphobankDataFiles  implements AvatolCVDataFiles{
         }
         return null;
     }
+    /*
     @Override
     public void setSessionsRoot(String sessionsRoot) {
         this.sessionsRoot = sessionsRoot;
@@ -190,4 +191,5 @@ public class MorphobankDataFiles  implements AvatolCVDataFiles{
     public void setDatasetDirname(String datasetDirName) {
         this.datasetDir = this.sessionsRoot + FILESEP + datasetDirName;
     }
+    */
 }

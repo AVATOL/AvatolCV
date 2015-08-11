@@ -13,6 +13,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
+import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter.Pair;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
@@ -34,7 +35,10 @@ public class MorphobankDataSource implements DataSource {
     private List<MBTaxon> taxaForMatrix = null;
     private DatasetInfo chosenDataset = null;
     private List<MBView> viewsForProject = null;
-    private List<String> viewIDsInPlay = null;
+    private List<MBView> viewsPresent = null;
+    private Hashtable<String, MBCharacter> charForIDHash = new Hashtable<String, MBCharacter>();
+    private Hashtable<String, MBTaxon> taxonForIDHash = new Hashtable<String, MBTaxon>();
+    private Hashtable<String, MBView> viewForIDHash = new Hashtable<String, MBView>();
     private Hashtable<String,List<MBCharStateValue>> charStateValuesForCellHash = new Hashtable<String, List<MBCharStateValue>>();
     private Hashtable<String,List<MBMediaInfo>> mediaInfoForCellHash = new Hashtable<String, List<MBMediaInfo>>();
     private MorphobankDataFiles mbDataFiles = null;
@@ -42,7 +46,6 @@ public class MorphobankDataSource implements DataSource {
     public MorphobankDataSource(String sessionsRoot){
         wsClient = new MorphobankWSClientImpl();
         mbDataFiles = new MorphobankDataFiles();
-        mbDataFiles.setSessionsRoot(sessionsRoot);
     }
     @Override
     public boolean authenticate(String username, String password) throws AvatolCVException {
@@ -99,14 +102,21 @@ public class MorphobankDataSource implements DataSource {
             pp.updateProgress(processName, 0.0);
             
             this.charactersForMatrix = this.wsClient.getCharactersForMatrix(matrixID);
+            for (MBCharacter ch : this.charactersForMatrix){
+                this.charForIDHash.put(ch.getCharID(), ch);
+            }
             pp.setMessage(processName, "loading info on taxa...");
             pp.updateProgress(processName, 0.4);
             this.taxaForMatrix = this.wsClient.getTaxaForMatrix(matrixID);
-            
+            for (MBTaxon taxon : this.taxaForMatrix){
+                this.taxonForIDHash.put(taxon.getTaxonID(), taxon);
+            }
             pp.setMessage(processName, "loading info on views...");
             pp.updateProgress(processName, 0.8);
             this.viewsForProject = this.wsClient.getViewsForProject(projectID);
-            
+            for (MBView v : this.viewsForProject){
+                this.viewForIDHash.put(v.getViewID(), v);
+            }
             pp.setMessage(processName, "finished.  Click Next to continue.");
             pp.updateProgress(processName, 1.0);
         }
@@ -117,7 +127,6 @@ public class MorphobankDataSource implements DataSource {
     @Override
     public void setChosenDataset(DatasetInfo di) {
         this.chosenDataset = di;
-        this.mbDataFiles.setDatasetDirname(di.getName());
     }
     public List<ChoiceItem> getScoringConcernItemsNoneSelected(){
         List<ChoiceItem> result = new ArrayList<ChoiceItem>();
@@ -232,7 +241,8 @@ public class MorphobankDataSource implements DataSource {
             int totalItemCount = colCount * rowCount;
             double increment = 1.0 / totalItemCount;
             int curCount = 0;
-            this.viewIDsInPlay = new ArrayList<String>();
+            this.viewsPresent = new ArrayList<MBView>();
+            List<String> viewIDsSeen = new ArrayList<String>();
             for (MBCharacter character : this.charactersForMatrix){
                 for (MBTaxon taxon : this.taxaForMatrix){
                     String charID = character.getCharID();
@@ -253,13 +263,18 @@ public class MorphobankDataSource implements DataSource {
                     }
                     for (MBMediaInfo mi : mediaInfosForCell){
                         String viewID = mi.getViewID();
-                        if (!viewIDsInPlay.contains(viewID)){
-                            viewIDsInPlay.add(viewID);
+                        if (!viewIDsSeen.contains(viewID)){
+                            viewIDsSeen.add(viewID);
                         }
                     }
                     mediaInfoForCellHash.put(key, mediaInfosForCell);
                     curCount++;
                     pp.updateProgress(processName, curCount * increment);
+                }
+            }
+            for (MBView v : this.viewsForProject){
+                if (viewIDsSeen.contains(v.getViewID())){
+                    this.viewsPresent.add(v);
                 }
             }
         }
@@ -298,34 +313,52 @@ public class MorphobankDataSource implements DataSource {
     public AvatolCVDataFiles getAvatolCVDataFiles() {
         return this.mbDataFiles;
     }
-    private String getViewNameForViewID(String viewID){
-        for (MBView v : this.viewsForProject){
-            if (v.getViewID().equals(viewID)){
-                return v.getName();
-            }
-        }
-        return null;
-    }
+    
     @Override
     public DataFilter getDataFilter(String specificSessionDir) throws AvatolCVException {
         this.dataFilter = new DataFilter(AvatolCVFileSystem.getSessionDir());
-        for (MBCharacter character : this.charactersForMatrix){
-            this.dataFilter.addPropertyValue("character", character.getCharName(), false);
+        for (MBCharacter character : this.chosenCharacters){
+            this.dataFilter.addPropertyValue("character", character.getCharName(), character.getCharID(), false);
         }
         for (MBTaxon taxon : this.taxaForMatrix){
-            this.dataFilter.addPropertyValue("taxon", taxon.getTaxonName(), false);
+            this.dataFilter.addPropertyValue("taxon", taxon.getTaxonName(), taxon.getTaxonID(), false);
         }
-        List<String> viewNamesInPlay = new ArrayList<String>();
-        for (String viewID : this.viewIDsInPlay){
-            String viewName = getViewNameForViewID(viewID);
-            if (null == viewName){
-                throw new AvatolCVException("no known view name for viewID " + viewID);
-            }
-            viewNamesInPlay.add(viewName);
-        }
-        for (String activeViewName : viewNamesInPlay){
-            this.dataFilter.addPropertyValue("view", activeViewName, true);
+        
+        for (MBView v : this.viewsPresent){
+            this.dataFilter.addPropertyValue("view", v.getName(), v.getViewID(), true);
         }
         return this.dataFilter;
+    }
+    @Override
+    public void acceptFilter() {
+        /*
+        List<Pair> pairs = this.dataFilter.getItems();
+        for (Pair p : pairs){
+            if (p.isSelected()){
+                if (p.getName().equals("character")){
+                    acceptCharacterForSession(p);
+                }
+                else if (p.getName().equals("taxon")){
+                    acceptTaxonForSession(p);
+                }
+                else {
+                    accept(p);
+                }
+            }
+            
+        }
+    */
+    }
+    private void filterCharacter(Pair p){
+        if (p.isSelected()){
+            
+        }
+        else {
+            
+        }
+    }
+    @Override
+    public String getName() {
+        return "morphobank";
     }
 }

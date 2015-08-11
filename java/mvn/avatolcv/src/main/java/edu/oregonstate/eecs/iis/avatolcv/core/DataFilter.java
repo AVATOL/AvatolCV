@@ -30,8 +30,8 @@ public class DataFilter {
 		Collections.sort(result);
 		return result;
 	}
-	public Pair addPropertyValue(String name, String value, boolean isEditable) throws AvatolCVException {
-		Pair p = new Pair(name, value, isEditable);
+	public Pair addPropertyValue(String name, String value, String valueId, boolean isEditable) throws AvatolCVException {
+		Pair p = new Pair(name, value, valueId, isEditable);
 		String id = p.getID();
 		if (knownProperties.contains(id)){
 			throw new AvatolCVException("Filter already has name value combination: name " + name + " value: " + value);
@@ -44,15 +44,20 @@ public class DataFilter {
 	public class Pair implements Comparable<Pair> {
 		private String name;
 		private String value;
-		private boolean isEnabled = true;
+		private boolean isSelected = true;
 		private boolean isEditable = true;
-		public Pair(String name, String value, boolean isEditable){
+		private String valueId = null;
+		public Pair(String name, String value, String valueId, boolean isEditable){
 			this.name = name;
 			this.value = value;
+			this.valueId = valueId;
 			this.isEditable = isEditable;
 		}
-		public void setEnabled(boolean value){
-			this.isEnabled = value;
+		public String getValueID(){
+		    return this.valueId;
+		}
+		public void setSelected(boolean value){
+			this.isSelected = value;
 		}
 		public String getID(){
 			return name + "_" + value;
@@ -66,8 +71,8 @@ public class DataFilter {
 		public String getValue(){
 			return this.value;
 		}
-		public boolean isEnabled(){
-			return this.isEnabled;
+		public boolean isSelected(){
+			return this.isSelected;
 		}
 		@Override
 		public int compareTo(Pair other) {
@@ -82,7 +87,7 @@ public class DataFilter {
 			throw new AvatolCVException("Filter cannot enable unknown property and value : " + name + " , " + value);
 		}
 		Pair p = pairForKeyHash.get(id);
-		p.setEnabled(true);
+		p.setSelected(true);
 		persist();
 	}
 	public void disablePropertyValue(String name, String value) throws AvatolCVException {
@@ -91,7 +96,7 @@ public class DataFilter {
 			throw new AvatolCVException("Filter cannot disable unknown property and value : " + name + " , " + value);
 		}
 		Pair p = pairForKeyHash.get(id);
-		p.setEnabled(false);
+		p.setSelected(false);
 		persist();
 	}
 	public String getFilterFilePath(){
@@ -105,9 +110,10 @@ public class DataFilter {
 			for (Pair item : items){
 				String name = item.getName();
 				String value = item.getValue();
-				String isEnabled = "" + item.isEnabled();
+				String isEnabled = "" + item.isSelected();
 				String isEditable = "" + item.isEditable();
-				writer.write(name + "," + value + "," + isEnabled + "," + isEditable + NL);
+				String valueId = item.getValueID();
+				writer.write(name + "," + value + "," + valueId + "," + isEnabled + "," + isEditable + NL);
 			}
 			writer.close();
 		}
@@ -128,14 +134,15 @@ public class DataFilter {
 				String[] parts = line.split(",");
 				String name = parts[0];
 				String value = parts[1];
-				String isSelectedString = parts[2];
-                String isEditableString = parts[3];
+                String valueId = parts[2];
+				String isSelectedString = parts[3];
+                String isEditableString = parts[4];
                 Boolean isEditableBoolean = new Boolean (isEditableString);
                 boolean isEditable = isEditableBoolean.booleanValue();
-				Pair p = addPropertyValue(name, value, isEditable);
+				Pair p = addPropertyValue(name, value, valueId, isEditable);
 				Boolean b = new Boolean(isSelectedString);
 				boolean isSelected = b.booleanValue();
-				p.setEnabled(isSelected);
+				p.setSelected(isSelected);
 			}
 			reader.close();
 			return true;
