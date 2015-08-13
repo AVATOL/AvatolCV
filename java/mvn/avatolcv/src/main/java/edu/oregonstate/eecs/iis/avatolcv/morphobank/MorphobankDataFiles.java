@@ -10,10 +10,13 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharStateInfo.MBCharStateValue;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 
 public class MorphobankDataFiles  extends AvatolCVDataFiles{
     private static final String FILESEP = System.getProperty("file.separator");
@@ -22,11 +25,11 @@ public class MorphobankDataFiles  extends AvatolCVDataFiles{
     private String sessionsRoot = null;
     public MorphobankDataFiles(){
     }
-    public String getImageInfoDir(){
-        return datasetDir + FILESEP + "mbData" + FILESEP + "mediaInfo";
+    public String getImageInfoDir() throws AvatolCVException {
+        return AvatolCVFileSystem.getSpecializedDataDir() + FILESEP + "mediaInfo";
     }
-    public String getCharStateInfoDir(){
-        return datasetDir + FILESEP + "mbData" + FILESEP + "charStates";
+    public String getCharStateInfoDir() throws AvatolCVException {
+        return AvatolCVFileSystem.getSpecializedDataDir() + FILESEP + "charStates";
     }
     public void persistMBCharStatesForCell(List<MBCharStateValue> charStatesForCell, String charID, String taxonID) throws AvatolCVException {
         String charStateInfoRootDir = getCharStateInfoDir();
@@ -90,11 +93,14 @@ public class MorphobankDataFiles  extends AvatolCVDataFiles{
         }
         return null;
     }
-    public void persistMBMediaInfosForCell(List<MBMediaInfo> mediaInfos, String charID, String taxonID) throws AvatolCVException {
+    public String getHeaderForMediaInfoFile(MBCharacter character, MBTaxon taxon){
+    	return "#  character: " + character.getCharID() + "," + character.getCharName() + ", taxon: " + taxon.getTaxonID()+ "," + taxon.getTaxonName() + NL;
+    }
+    public void persistMBMediaInfosForCell(List<MBMediaInfo> mediaInfos, MBCharacter character, MBTaxon taxon) throws AvatolCVException {
         String imageInfoRootDir = getImageInfoDir();
         File f = new File(imageInfoRootDir);
         f.mkdirs();
-        String keyForCell = MorphobankDataSource.getKeyForCell(charID, taxonID);
+        String keyForCell = MorphobankDataSource.getKeyForCell(character.getCharID(), taxon.getTaxonID());
         String path = "???";
         try {
             List<String> viewIDs = new ArrayList<String>();
@@ -117,7 +123,7 @@ public class MorphobankDataFiles  extends AvatolCVDataFiles{
             if (viewIDs.isEmpty()){
                 path = imageInfoRootDir + FILESEP + keyForCell + "_vNone.txt";
                 BufferedWriter writer = new BufferedWriter(new FileWriter(path));
-                writer.write("#  charID: " + charID + ", taxonID: " + taxonID + NL);
+                writer.write(getHeaderForMediaInfoFile(character, taxon));
                 writer.close();
             }
             else {
@@ -125,7 +131,7 @@ public class MorphobankDataFiles  extends AvatolCVDataFiles{
                     List<MBMediaInfo> mediaInfosForView = mediaInfosForViewHash.get(viewID);
                     path = imageInfoRootDir + FILESEP + keyForCell + "_v" + viewID + ".txt";
                     BufferedWriter writer = new BufferedWriter(new FileWriter(path));
-                    writer.write("#  charID: " + charID + ", taxonID: " + taxonID + NL);
+                    writer.write(getHeaderForMediaInfoFile(character, taxon));
                     for (MBMediaInfo mi : mediaInfosForView){
                         String imageID = mi.getMediaID();
                         String viewId = mi.getViewID();

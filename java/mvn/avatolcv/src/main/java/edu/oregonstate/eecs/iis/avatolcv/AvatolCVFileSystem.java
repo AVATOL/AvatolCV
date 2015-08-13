@@ -57,7 +57,7 @@ public class AvatolCVFileSystem {
 	    if (null == datasetName){
             throw new AvatolCVException("SessionDir not valid until dataSet has been chosen");
         }
-	    return avatolCVRootDir + FILESEP + datasetName + FILESEP + sessionID;
+	    return sessionsDir + FILESEP + datasetName + FILESEP + sessionID;
 	}
 	//
 	// datasource
@@ -81,7 +81,7 @@ public class AvatolCVFileSystem {
 	    if (null == datasetName){
             throw new AvatolCVException("DatasetDir not valid until dataSet has been chosen");
         }
-	    return avatolCVRootDir + FILESEP + datasetName;
+	    return sessionsDir + FILESEP + datasetName;
 	}
 	
 	public static void setSpecializedDataDir() throws AvatolCVException {
@@ -91,6 +91,7 @@ public class AvatolCVFileSystem {
 	    ensureDir(getSpecializedDataDir());
 	    ensureDir(getSpecializedImageInfoDir());
 	}
+	
 	public static String getSpecializedDataDir() throws AvatolCVException {
 	    return getDatasetDir() + FILESEP + datasourceName;
 	}

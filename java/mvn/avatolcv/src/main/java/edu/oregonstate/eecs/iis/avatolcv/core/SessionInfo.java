@@ -1,23 +1,26 @@
 package edu.oregonstate.eecs.iis.avatolcv.core;
 
 import java.io.File;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.generic.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
 
 /*
  * Directory layout:
  * 
  * 
- * avatol_cv/sessionData/<dataset>/images/thumbnail
+ * avatol_cv/sessions/<dataset>/images/thumbnail
  *                                       /large
  *                                       /exclusions/<imageID>_imageQuality.txt
  *                                       /rotations/<imageID>_rotateV.txt
- * avatol_cv/sessionData/<dataset>/imageMetadata/<imageID>.txt
+ * avatol_cv/sessions/<dataset>/imageMetadata/<imageID>.txt
 
  *                                                  
  *          /sessions/<sessionID>.txt    <- has the info for the session
@@ -33,7 +36,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
  *                        FilterIncludeKeyValue=view:Ventral
  *                        
  *                        
- *          /sessionData/<sessionID>/
+ *          /sessions/<sessionID>/
  *                        
  *                    
  * 
@@ -57,6 +60,7 @@ public class SessionInfo{
     private ScoringAlgorithms.ScoringScope scoringScope = null;
     private ScoringAlgorithms.ScoringSessionFocus scoringFocus = null;
     public static AvatolCVExceptionExpresser exceptionExpresser = null;
+    private DataFilter dataFilter = null;
     
 	public SessionInfo(AvatolCVExceptionExpresser exceptionExpresser) throws AvatolCVException {
         SessionInfo.exceptionExpresser = exceptionExpresser;
@@ -110,5 +114,46 @@ public class SessionInfo{
 	}
     public ScoringAlgorithms.ScoringSessionFocus getScoringFocus(){
         return this.scoringFocus;
+    }
+    public DataFilter getDataFilter() throws AvatolCVException {
+        this.dataFilter = new DataFilter(AvatolCVFileSystem.getSessionDir());
+        String dir = AvatolCVFileSystem.getNormalizedImageInfoDir();
+        File dirFile = new File(dir);
+        File[] files = dirFile.listFiles();
+        for (File file: files){
+        	if (file.getName().endsWith(".txt")){
+        		String path = file.getAbsolutePath();
+        		Properties p = dataSource.getAvatolCVDataFiles().loadNormalizedImageFile(path);
+        		Enumeration<Object> keysEnum = p.keys();
+        		while (keysEnum.hasMoreElements()){
+        			String key = (String)keysEnum.nextElement();
+        			String val = p.getProperty(key);
+        			addKeyValToFilter(this.dataFilter, key, val);
+        		}
+        	}
+        }
+        return this.dataFilter;
+    }
+    public void addKeyValToFilter(DataFilter dataFilter, String key, String val) throws AvatolCVException {
+    	//character:1824356|Diastema between M1 and M2=characterState:4884340|Diastema absent
+    	//taxon=773126|Artibeus jamaicensis
+    	//view=8905|Skull - ventral annotated teeth
+    	// if there is a type prefix (something:), then type and string value of type are what's added to the filter (ex : character, Diastema between M1 and M2)
+    	// otherwise, the key and the string value portion of the value (ex: taxon, Artibeus jamaicensis)
+    	if (key.contains(":")){
+    		String[] parts = key.split(":");
+    		String type = parts[0];
+    		String propertyInfo = parts[1];
+    		String[] propertyInfoParts = propertyInfo.split("|");
+    		String valueID = propertyInfoParts[0];
+    		String propertyValueWeWillUse = propertyInfoParts[1];
+    		dataFilter.addPropertyValue(type, propertyValueWeWillUse, valueID, true);
+    	}
+    	else {
+    		String[] valParts = val.split("|");
+    		String valID = valParts[0];
+    		String valName = valParts[1];
+    		dataFilter.addPropertyValue(key, valName, valID, true);
+    	}
     }
 }

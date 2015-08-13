@@ -1,12 +1,14 @@
 package edu.oregonstate.eecs.iis.avatolcv.morphobank;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Properties;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVDataFiles;
@@ -21,14 +23,18 @@ import edu.oregonstate.eecs.iis.avatolcv.generic.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotationPoint;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharStateInfo.MBCharStateValue;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharState;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
 
 public class MorphobankDataSource implements DataSource {
+	private static final String FILESEP = System.getProperty("file.separator");
     private MorphobankWSClient wsClient = null;
     private List<MBCharacter> charactersForMatrix = null;
     private List<MBCharacter> chosenCharacters = null;
@@ -231,10 +237,13 @@ public class MorphobankDataSource implements DataSource {
         this.chosenCharacters = new ArrayList<MBCharacter>();
         this.chosenCharacters.add((MBCharacter)item.getBackingObject());
     }
+    //List<MBAnnotation> annotationsForCell = robustAnnotationDataDownload(pp, matrixID, charID, taxonID , mediaID, processName);
     @Override
     public void loadRemainingMetadataForChosenDataset(ProgressPresenter pp,
             String processName) throws AvatolCVException {
         try {
+        	mbDataFiles.clearNormalizedImageFiles();
+        	AvatolCVFileSystem.ensureDir(getAnnotationDataDir());
             int rowCount = this.taxaForMatrix.size();
             int colCount = this.charactersForMatrix.size();
             String matrixID = this.chosenDataset.getID();
@@ -259,13 +268,22 @@ public class MorphobankDataSource implements DataSource {
                     List<MBMediaInfo> mediaInfosForCell = this.mbDataFiles.loadMBMediaInfosForCell(charID, taxonID);
                     if (null == mediaInfosForCell){
                         mediaInfosForCell = this.wsClient.getMediaForCell(matrixID, charID, taxonID);
-                        this.mbDataFiles.persistMBMediaInfosForCell(mediaInfosForCell, charID, taxonID);
+                        this.mbDataFiles.persistMBMediaInfosForCell(mediaInfosForCell, character, taxon);
                     }
                     for (MBMediaInfo mi : mediaInfosForCell){
                         String viewID = mi.getViewID();
                         if (!viewIDsSeen.contains(viewID)){
                             viewIDsSeen.add(viewID);
                         }
+                    }
+                   
+                    for (MBMediaInfo mi : mediaInfosForCell){
+                    	String mediaID = mi.getMediaID();
+                    	if (!isAnnotationOnDisk(charID, taxonID, mediaID)){
+                    		List<MBAnnotation> annotationsForCell = robustAnnotationDataDownload(pp, matrixID, charID, taxonID , mediaID, processName);
+                    		persistAnnotationsForCell(annotationsForCell, charID, taxonID, mediaID);
+                    	}
+                    	createNormalizedImageFile(mi,character, taxon, charStatesForCell);
                     }
                     mediaInfoForCellHash.put(key, mediaInfosForCell);
                     curCount++;
@@ -283,9 +301,138 @@ public class MorphobankDataSource implements DataSource {
         }
         
     }
+    public String getAnnotationFilePath(String charID, String taxonID, String mediaID) throws AvatolCVException {
+    	String cellMediaKey = getKeyForCellMedia(charID, taxonID, mediaID);
+		return getAnnotationDataDir() + FILESEP + cellMediaKey + ".txt";
+    }
+    public boolean isAnnotationOnDisk(String charID, String taxonID, String mediaID) throws AvatolCVException {
+		String path = getAnnotationFilePath(charID, taxonID, mediaID);
+		File f = new File(path);
+		if (f.exists()){
+			return true;
+		}
+		return false;
+	}
+    private String getAnnotationDataDir() throws AvatolCVException {
+    	return AvatolCVFileSystem.getSpecializedDataDir() + FILESEP + "annotations";
+    }
+    public void persistAnnotationsForCell(
+			List<MBAnnotation> annotationsForCell, String charID,
+			String taxonID, String mediaID) throws AvatolCVException {
+    	String path = getAnnotationFilePath(charID, taxonID, mediaID);
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+			for (MBAnnotation a : annotationsForCell){
+				
+				String type = a.getType();
+				writer.write(type + ":");
+				List<MBAnnotationPoint> points = a.getPoints();
+				int i = 0;
+				for (; i < points.size() - 1 ; i++){
+					MBAnnotationPoint p = points.get(i);
+					writer.write(p.getX() + "," + p.getY() + ";");
+				}
+				MBAnnotationPoint p = points.get(i);
+				writer.write(p.getX() + "," + p.getY() + NL);
+			}
+			writer.close();
+		}
+		catch(IOException ioe){
+			throw new AvatolCVException("problem writing annotation data for cell: char " + charID + " taxon " + taxonID + " mediaID " + mediaID);
+		}
+	}
+    public List<MBAnnotation> robustAnnotationDataDownload(ProgressPresenter pp, String matrixID, String charID, String taxonID ,String mediaID, String processName) throws AvatolCVException {
+        int maxRetries = 4;
+        int tries = 0;
+        boolean dataNotYetDownloaded = true;
+        Exception mostRecentException = null;
+        while (maxRetries > tries && dataNotYetDownloaded){
+            try {
+                tries++;
+        		List<MBAnnotation> annotationsForCell = this.wsClient.getAnnotationsForCellMedia(matrixID, charID, taxonID, mediaID);
+
+                dataNotYetDownloaded = false;
+                return annotationsForCell;
+            }
+            catch(MorphobankWSException e){
+                if (e.getMessage().equals("timeout")){
+                    pp.setMessage(processName, "download timed out - retrying trainingData : charID " + charID + " taxonID " + taxonID + " - attempt " + (tries+1));
+                }
+                mostRecentException = e;
+            }
+        }
+        if (dataNotYetDownloaded){
+            throw new AvatolCVException("problem downloading data: " + mostRecentException);
+        }
+        return null;
+    }
+    public String getViewNameForID(String viewID) throws AvatolCVException {
+    	for (MBView v : this.viewsForProject){
+    		if (v.getViewID().equals(viewID)){
+    			return v.getName();
+    		}
+    	}
+    	throw new AvatolCVException("no view name for given viewID " + viewID);
+    }
+    public String getCharStateNameForID(MBCharacter character, String charStateID) throws AvatolCVException {
+    	List<MBCharState> charStates = character.getCharStates();
+    	for (MBCharState cs : charStates){
+    		if (cs.getCharStateID().equals(charStateID)){
+    			return cs.getCharStateName();
+    		}
+    	}
+    	throw new AvatolCVException("no charState name for given charStateID");
+    }
+    
+    public String getMediaMetadataFilename(String parentDir, String mediaID)  throws AvatolCVException {
+    	File f = new File(parentDir);
+    	if (!f.isDirectory()){
+    		throw new AvatolCVException("normailzed media dir does not exist : " + parentDir);
+    	}
+    	File[] files = f.listFiles();
+    	int count = 0;
+    	for (File existingMediaFile : files){
+    		String filename = existingMediaFile.getName();
+    		String[] parts = filename.split("\\.");
+    		String root = parts[1];
+    		String[] rootParts = root.split("_");
+    		String curMediaID = rootParts[0];
+    		if (mediaID.equals(curMediaID)){
+    			count++;
+    		}
+    	}
+    	return mediaID + "_" + (count + 1) + ".txt";
+    }
+    public void createNormalizedImageFile(MBMediaInfo mi,MBCharacter character, MBTaxon taxon, List<MBCharStateValue> charStatesForCell) throws AvatolCVException {
+    	String mediaID = mi.getMediaID();
+    	String mediaMetadataFilename = getMediaMetadataFilename(AvatolCVFileSystem.getNormalizedImageInfoDir(), mediaID);
+    	Properties p = new Properties();
+    	String characterKey = "character:" + character.getCharID() + "|" + character.getCharName();
+    	String characterValue = "characterState:";
+    	for (int i = 0; i < charStatesForCell.size(); i++){
+    		MBCharStateValue csv = charStatesForCell.get(i);
+    		String charStateID = csv.getCharStateID();
+    		String charStateName = getCharStateNameForID(character, charStateID);
+    		if (i == charStatesForCell.size() - 1){
+    			characterValue = characterValue + charStateID + "|" + charStateName;
+    		}
+    		else {
+    			characterValue = characterValue + charStateID + "|" + charStateName + ",";
+    		}
+    	}
+    	p.setProperty(characterKey, characterValue);
+    	p.setProperty("taxon", taxon.getTaxonID() + "|" + taxon.getTaxonName());
+    	String viewValue = mi.getViewID() + "|" + getViewNameForID(mi.getViewID());
+    	p.setProperty("view", viewValue);
+    	String path = AvatolCVFileSystem.getNormalizedImageInfoDir() + FILESEP + mediaMetadataFilename;
+    	mbDataFiles.persistNormalizedImageFile(path, p);
+    }
     
     public static String getKeyForCell(String charID, String taxonID){
         return "c" + charID + "_t" + taxonID;
+    }
+    public String getKeyForCellMedia(String charID, String taxonID, String mediaID){
+    	return "c" + charID + "_m" + mediaID + "_t" + taxonID;
     }
     private static final String NL = System.getProperty("line.separator");
     @Override
@@ -361,4 +508,8 @@ public class MorphobankDataSource implements DataSource {
     public String getName() {
         return "morphobank";
     }
+	@Override
+	public AvatolCVDataFiles getDataFiles() {
+		return (AvatolCVDataFiles)this.mbDataFiles;
+	}
 }

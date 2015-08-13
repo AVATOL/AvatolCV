@@ -34,7 +34,9 @@ public class DataFilter {
 		Pair p = new Pair(name, value, valueId, isEditable);
 		String id = p.getID();
 		if (knownProperties.contains(id)){
-			throw new AvatolCVException("Filter already has name value combination: name " + name + " value: " + value);
+			Pair existingPair = pairForKeyHash.get(id);
+			return existingPair;
+			//throw new AvatolCVException("Filter already has name value combination: name " + name + " value: " + value);
 		}
 		knownProperties.add(id);
 		pairForKeyHash.put(id, p);

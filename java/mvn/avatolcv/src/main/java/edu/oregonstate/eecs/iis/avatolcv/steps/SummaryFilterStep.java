@@ -18,7 +18,8 @@ public class SummaryFilterStep implements Step {
     }
 
     public DataFilter getDataFilter() throws AvatolCVException {
-        return this.sessionInfo.getDataSource().getDataFilter(AvatolCVFileSystem.getSessionDir());
+    	return this.sessionInfo.getDataFilter();
+        //return this.sessionInfo.getDataSource().getDataFilter(AvatolCVFileSystem.getSessionDir());
     }
     @Override
     public void consumeProvidedData() throws AvatolCVException {
