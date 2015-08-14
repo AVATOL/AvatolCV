@@ -102,6 +102,7 @@ public class MorphobankDataSource implements DataSource {
     public void loadPrimaryMetadataForChosenDataset(ProgressPresenter pp,
             String processName) throws AvatolCVException {
         try {
+        	mbDataFiles.prepareForMetadataDownload();
             String matrixID = this.chosenDataset.getID();
             String projectID = this.chosenDataset.getProjectID();
             pp.setMessage(processName, "loading info on characters...");
@@ -243,7 +244,6 @@ public class MorphobankDataSource implements DataSource {
             String processName) throws AvatolCVException {
         try {
         	mbDataFiles.clearNormalizedImageFiles();
-        	AvatolCVFileSystem.ensureDir(getAnnotationDataDir());
             int rowCount = this.taxaForMatrix.size();
             int colCount = this.charactersForMatrix.size();
             String matrixID = this.chosenDataset.getID();
@@ -279,11 +279,12 @@ public class MorphobankDataSource implements DataSource {
                    
                     for (MBMediaInfo mi : mediaInfosForCell){
                     	String mediaID = mi.getMediaID();
-                    	if (!isAnnotationOnDisk(charID, taxonID, mediaID)){
-                    		List<MBAnnotation> annotationsForCell = robustAnnotationDataDownload(pp, matrixID, charID, taxonID , mediaID, processName);
-                    		persistAnnotationsForCell(annotationsForCell, charID, taxonID, mediaID);
+                    	List<MBAnnotation> annotationsForCell = this.mbDataFiles.loadMBAnnotationsFromDisk(charID, taxonID, mediaID);
+                    	if (null == annotationsForCell){
+                    		annotationsForCell = robustAnnotationDataDownload(pp, matrixID, charID, taxonID , mediaID, processName);
+                    		this.mbDataFiles.persistAnnotationsForCell(annotationsForCell, charID, taxonID, mediaID);
                     	}
-                    	createNormalizedImageFile(mi,character, taxon, charStatesForCell);
+                    	createNormalizedImageFile(mi,character, taxon, charStatesForCell, annotationsForCell);
                     }
                     mediaInfoForCellHash.put(key, mediaInfosForCell);
                     curCount++;
@@ -301,46 +302,7 @@ public class MorphobankDataSource implements DataSource {
         }
         
     }
-    public String getAnnotationFilePath(String charID, String taxonID, String mediaID) throws AvatolCVException {
-    	String cellMediaKey = getKeyForCellMedia(charID, taxonID, mediaID);
-		return getAnnotationDataDir() + FILESEP + cellMediaKey + ".txt";
-    }
-    public boolean isAnnotationOnDisk(String charID, String taxonID, String mediaID) throws AvatolCVException {
-		String path = getAnnotationFilePath(charID, taxonID, mediaID);
-		File f = new File(path);
-		if (f.exists()){
-			return true;
-		}
-		return false;
-	}
-    private String getAnnotationDataDir() throws AvatolCVException {
-    	return AvatolCVFileSystem.getSpecializedDataDir() + FILESEP + "annotations";
-    }
-    public void persistAnnotationsForCell(
-			List<MBAnnotation> annotationsForCell, String charID,
-			String taxonID, String mediaID) throws AvatolCVException {
-    	String path = getAnnotationFilePath(charID, taxonID, mediaID);
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(path));
-			for (MBAnnotation a : annotationsForCell){
-				
-				String type = a.getType();
-				writer.write(type + ":");
-				List<MBAnnotationPoint> points = a.getPoints();
-				int i = 0;
-				for (; i < points.size() - 1 ; i++){
-					MBAnnotationPoint p = points.get(i);
-					writer.write(p.getX() + "," + p.getY() + ";");
-				}
-				MBAnnotationPoint p = points.get(i);
-				writer.write(p.getX() + "," + p.getY() + NL);
-			}
-			writer.close();
-		}
-		catch(IOException ioe){
-			throw new AvatolCVException("problem writing annotation data for cell: char " + charID + " taxon " + taxonID + " mediaID " + mediaID);
-		}
-	}
+    
     public List<MBAnnotation> robustAnnotationDataDownload(ProgressPresenter pp, String matrixID, String charID, String taxonID ,String mediaID, String processName) throws AvatolCVException {
         int maxRetries = 4;
         int tries = 0;
@@ -403,7 +365,7 @@ public class MorphobankDataSource implements DataSource {
     	}
     	return mediaID + "_" + (count + 1) + ".txt";
     }
-    public void createNormalizedImageFile(MBMediaInfo mi,MBCharacter character, MBTaxon taxon, List<MBCharStateValue> charStatesForCell) throws AvatolCVException {
+    public void createNormalizedImageFile(MBMediaInfo mi,MBCharacter character, MBTaxon taxon, List<MBCharStateValue> charStatesForCell, List<MBAnnotation> annotationsForCell) throws AvatolCVException {
     	String mediaID = mi.getMediaID();
     	String mediaMetadataFilename = getMediaMetadataFilename(AvatolCVFileSystem.getNormalizedImageInfoDir(), mediaID);
     	Properties p = new Properties();
@@ -424,16 +386,40 @@ public class MorphobankDataSource implements DataSource {
     	p.setProperty("taxon", taxon.getTaxonID() + "|" + taxon.getTaxonName());
     	String viewValue = mi.getViewID() + "|" + getViewNameForID(mi.getViewID());
     	p.setProperty("view", viewValue);
+    	String annotationsValueString = getAnnotationsValueString(annotationsForCell);
+    	p.setProperty("annotation", annotationsValueString);
     	String path = AvatolCVFileSystem.getNormalizedImageInfoDir() + FILESEP + mediaMetadataFilename;
     	mbDataFiles.persistNormalizedImageFile(path, p);
     }
-    
+    public String getAnnotationsValueString(List<MBAnnotation> annotations){
+    	StringBuilder sb = new StringBuilder();
+    	for (int i = 0; i < annotations.size() - 1; i++){
+    		String annotationValueString = getAnnotationValueStringForAnnotation(annotations.get(i));
+    		sb.append(annotationValueString + "+");
+    	}
+    	String finalAnnotationValueString = getAnnotationValueStringForAnnotation(annotations.get(annotations.size() -1));
+		sb.append(finalAnnotationValueString + NL);
+    	return "" + sb;
+    }
+    public String getAnnotationValueStringForAnnotation(MBAnnotation a){
+    	StringBuilder sb = new StringBuilder();
+    	String annotationType = a.getType();
+    	sb.append(annotationType + ":");
+		List<MBAnnotationPoint> points = a.getPoints();
+		for (int i = 0; i < points.size() - 1; i++){
+			MBAnnotationPoint p = points.get(i);
+			String value = p.getX() + "," + p.getY();
+			sb.append(value + ";");
+		}
+		MBAnnotationPoint finalp = points.get(points.size() -1);
+		String finalValue = finalp.getX() + "," + finalp.getY();
+		sb.append(finalValue);
+		return "" + sb;
+    }
     public static String getKeyForCell(String charID, String taxonID){
         return "c" + charID + "_t" + taxonID;
     }
-    public String getKeyForCellMedia(String charID, String taxonID, String mediaID){
-    	return "c" + charID + "_m" + mediaID + "_t" + taxonID;
-    }
+    
     private static final String NL = System.getProperty("line.separator");
     @Override
     public String getDatasetSummaryText() {        

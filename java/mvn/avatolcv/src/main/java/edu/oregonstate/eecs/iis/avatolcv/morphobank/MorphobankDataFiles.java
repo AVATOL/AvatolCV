@@ -13,6 +13,8 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotationPoint;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharStateInfo.MBCharStateValue;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
@@ -24,6 +26,9 @@ public class MorphobankDataFiles  extends AvatolCVDataFiles{
     private String datasetDir = null;
     private String sessionsRoot = null;
     public MorphobankDataFiles(){
+    }
+    public void prepareForMetadataDownload() throws AvatolCVException {
+    	AvatolCVFileSystem.ensureDir(getAnnotationDataDir());
     }
     public String getImageInfoDir() throws AvatolCVException {
         return AvatolCVFileSystem.getSpecializedDataDir() + FILESEP + "mediaInfo";
@@ -188,6 +193,80 @@ public class MorphobankDataFiles  extends AvatolCVDataFiles{
         }
         return null;
     }
+    private String getAnnotationDataDir() throws AvatolCVException {
+    	return AvatolCVFileSystem.getSpecializedDataDir() + FILESEP + "annotations";
+    }
+    
+    public String getKeyForCellMedia(String charID, String taxonID, String mediaID){
+    	return "c" + charID + "_m" + mediaID + "_t" + taxonID;
+    }
+    public String getAnnotationFilePath(String charID, String taxonID, String mediaID) throws AvatolCVException {
+    	String cellMediaKey = getKeyForCellMedia(charID, taxonID, mediaID);
+		return getAnnotationDataDir() + FILESEP + cellMediaKey + ".txt";
+    }
+    public List<MBAnnotation> loadMBAnnotationsFromDisk(String charID, String taxonID, String mediaID) throws AvatolCVException{
+    	List<MBAnnotation> annotations = new ArrayList<MBAnnotation>();
+    	String path = getAnnotationFilePath(charID, taxonID, mediaID);
+    	File f = new File(path);
+    	if (!f.exists()){
+    		return null;
+    	}
+    	try {
+    		BufferedReader reader = new BufferedReader(new FileReader(path));
+    		String line = null;
+    		while (null != (line = reader.readLine())){
+    			MBAnnotation a = new MBAnnotation();
+    			//point:73.33903133903134,45.8670465337132
+    			String[] parts = line.split(":");
+    			String type = parts[0];
+    			String pointsInfo = parts[1];
+    			String[] points = pointsInfo.split(";");
+    			List<MBAnnotationPoint> pointList = new ArrayList<MBAnnotationPoint>();
+    			for (String point : points){
+    				String[] pointParts = point.split(",");
+    				String x = pointParts[0];
+    				String y = pointParts[1];
+    				MBAnnotationPoint p = new MBAnnotationPoint();
+    				p.setX(new Double(x).doubleValue());
+    				p.setY(new Double(y).doubleValue());
+    				pointList.add(p);
+    			}
+    			a.setType(type);
+    			a.setPoints(pointList);
+    			annotations.add(a);
+    		}
+    		reader.close();
+    		return annotations;
+    	}
+    	catch(IOException ioe){
+    		throw new AvatolCVException("problem loading MBAnnotations for " + charID + " " + taxonID + " " + mediaID);
+    	}
+    }
+    public void persistAnnotationsForCell(
+			List<MBAnnotation> annotationsForCell, String charID,
+			String taxonID, String mediaID) throws AvatolCVException {
+    	String path = getAnnotationFilePath(charID, taxonID, mediaID);
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+			for (MBAnnotation a : annotationsForCell){
+				
+				String type = a.getType();
+				writer.write(type + ":");
+				List<MBAnnotationPoint> points = a.getPoints();
+				int i = 0;
+				for (; i < points.size() - 1 ; i++){
+					MBAnnotationPoint p = points.get(i);
+					writer.write(p.getX() + "," + p.getY() + ";");
+				}
+				MBAnnotationPoint p = points.get(i);
+				writer.write(p.getX() + "," + p.getY() + NL);
+			}
+			writer.close();
+		}
+		catch(IOException ioe){
+			throw new AvatolCVException("problem writing annotation data for cell: char " + charID + " taxon " + taxonID + " mediaID " + mediaID);
+		}
+	}
     /*
     @Override
     public void setSessionsRoot(String sessionsRoot) {
