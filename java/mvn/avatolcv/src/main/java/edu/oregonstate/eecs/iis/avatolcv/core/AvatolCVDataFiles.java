@@ -60,7 +60,10 @@ public class AvatolCVDataFiles {
     		while (null != (line = reader.readLine())){
     			String[] parts = line.split("=");
     			String key = parts[0];
-    			String val = parts[1];
+    			String val = "";
+    			if (parts.length > 1){
+    				val = parts[1];
+    			}
     			p.setProperty(key,  val);
     		}
     		reader.close();

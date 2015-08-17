@@ -19,6 +19,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter.Pair;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
+import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.generic.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
@@ -387,18 +388,23 @@ public class MorphobankDataSource implements DataSource {
     	String viewValue = mi.getViewID() + "|" + getViewNameForID(mi.getViewID());
     	p.setProperty("view", viewValue);
     	String annotationsValueString = getAnnotationsValueString(annotationsForCell);
-    	p.setProperty("annotation", annotationsValueString);
+    	p.setProperty(SessionInfo.ANNOTATION_KEY_FOR_NORMALIZED_FILE, annotationsValueString);
     	String path = AvatolCVFileSystem.getNormalizedImageInfoDir() + FILESEP + mediaMetadataFilename;
     	mbDataFiles.persistNormalizedImageFile(path, p);
     }
     public String getAnnotationsValueString(List<MBAnnotation> annotations){
+    	// avcv_annotation=rectangle:25,45;35,87+point:98,92
+    	// + delimits the annotations in the series
+    	// ; delimits the points in the annotation
+    	// , delimits x and y coordinates
+    	// : delimits type from points
     	StringBuilder sb = new StringBuilder();
     	for (int i = 0; i < annotations.size() - 1; i++){
     		String annotationValueString = getAnnotationValueStringForAnnotation(annotations.get(i));
     		sb.append(annotationValueString + "+");
     	}
     	String finalAnnotationValueString = getAnnotationValueStringForAnnotation(annotations.get(annotations.size() -1));
-		sb.append(finalAnnotationValueString + NL);
+		sb.append(finalAnnotationValueString);
     	return "" + sb;
     }
     public String getAnnotationValueStringForAnnotation(MBAnnotation a){
