@@ -113,6 +113,10 @@ public class MorphobankDataFiles  extends AvatolCVDataFiles{
             // sort the media infos by view
             for (MBMediaInfo mi : mediaInfos){
                 String viewID = mi.getViewID();
+                if (null == viewID){
+                    viewID = MBMediaInfo.VIEW_ID_NOT_SPECIFIED;
+                    mi.setViewID(MBMediaInfo.VIEW_ID_NOT_SPECIFIED);
+                }
                 List<MBMediaInfo> mediaInfosForView = null;
                 if (viewIDs.contains(viewID)){
                     mediaInfosForView = mediaInfosForViewHash.get(viewID);

@@ -1,9 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.morphobank;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -257,7 +254,7 @@ public class MorphobankDataSource implements DataSource {
                 for (MBTaxon taxon : this.taxaForMatrix){
                     String charID = character.getCharID();
                     String taxonID = taxon.getTaxonID();
-                    pp.setMessage(processName, "loading info for cell: character " + character.getCharName() + " taxon " + taxon.getTaxonName());
+                    pp.setMessage(processName, "character " + character.getCharName() + " taxon " + taxon.getTaxonName());
                     String key = getKeyForCell( charID,taxonID);
                     List<MBCharStateValue> charStatesForCell = this.mbDataFiles.loadMBCharStatesFromDisk(charID, taxonID);
                     if (null == charStatesForCell){
@@ -273,6 +270,10 @@ public class MorphobankDataSource implements DataSource {
                     }
                     for (MBMediaInfo mi : mediaInfosForCell){
                         String viewID = mi.getViewID();
+                        if (null == viewID){
+                            viewID = MBMediaInfo.VIEW_ID_NOT_SPECIFIED;
+                            mi.setViewID(MBMediaInfo.VIEW_ID_NOT_SPECIFIED);
+                        }
                         if (!viewIDsSeen.contains(viewID)){
                             viewIDsSeen.add(viewID);
                         }
@@ -330,6 +331,9 @@ public class MorphobankDataSource implements DataSource {
         return null;
     }
     public String getViewNameForID(String viewID) throws AvatolCVException {
+        if (viewID.equals(MBMediaInfo.VIEW_ID_NOT_SPECIFIED)){
+            return MBMediaInfo.VIEW_ID_NOT_SPECIFIED;
+        }
     	for (MBView v : this.viewsForProject){
     		if (v.getViewID().equals(viewID)){
     			return v.getName();
@@ -357,7 +361,7 @@ public class MorphobankDataSource implements DataSource {
     	for (File existingMediaFile : files){
     		String filename = existingMediaFile.getName();
     		String[] parts = filename.split("\\.");
-    		String root = parts[1];
+    		String root = parts[0];
     		String[] rootParts = root.split("_");
     		String curMediaID = rootParts[0];
     		if (mediaID.equals(curMediaID)){
@@ -392,12 +396,15 @@ public class MorphobankDataSource implements DataSource {
     	String path = AvatolCVFileSystem.getNormalizedImageInfoDir() + FILESEP + mediaMetadataFilename;
     	mbDataFiles.persistNormalizedImageFile(path, p);
     }
-    public String getAnnotationsValueString(List<MBAnnotation> annotations){
+    public static String getAnnotationsValueString(List<MBAnnotation> annotations){
     	// avcv_annotation=rectangle:25,45;35,87+point:98,92
     	// + delimits the annotations in the series
     	// ; delimits the points in the annotation
     	// , delimits x and y coordinates
     	// : delimits type from points
+        if (annotations.isEmpty()){
+            return "";
+        }
     	StringBuilder sb = new StringBuilder();
     	for (int i = 0; i < annotations.size() - 1; i++){
     		String annotationValueString = getAnnotationValueStringForAnnotation(annotations.get(i));
@@ -407,11 +414,14 @@ public class MorphobankDataSource implements DataSource {
 		sb.append(finalAnnotationValueString);
     	return "" + sb;
     }
-    public String getAnnotationValueStringForAnnotation(MBAnnotation a){
+    public static String getAnnotationValueStringForAnnotation(MBAnnotation a){
     	StringBuilder sb = new StringBuilder();
     	String annotationType = a.getType();
     	sb.append(annotationType + ":");
 		List<MBAnnotationPoint> points = a.getPoints();
+		if (points.isEmpty()){
+		    return "";
+		}
 		for (int i = 0; i < points.size() - 1; i++){
 			MBAnnotationPoint p = points.get(i);
 			String value = p.getX() + "," + p.getY();

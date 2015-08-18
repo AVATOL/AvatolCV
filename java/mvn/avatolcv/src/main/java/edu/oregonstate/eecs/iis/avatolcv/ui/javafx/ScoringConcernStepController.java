@@ -192,14 +192,19 @@ public class ScoringConcernStepController implements StepController {
             this.processName1 = processName1;
         }
         @Override
-        protected Boolean call() throws Exception {
+        protected Boolean call() {
             try {
                 this.step.loadRemainingMetadataForChosenDataset(this.pp, processName1);
                 dataDownloadPhaseComplete = true;
                 return new Boolean(true);
             }
+            
             catch(AvatolCVException ace){
                 SessionInfo.exceptionExpresser.showException(ace, "AvatolCV error downloading scoring data info");
+                return new Boolean(false);
+            }
+            catch(Exception e){
+                SessionInfo.exceptionExpresser.showException(e, "AvatolCV error downloading scoring data info");
                 return new Boolean(false);
             }
         }

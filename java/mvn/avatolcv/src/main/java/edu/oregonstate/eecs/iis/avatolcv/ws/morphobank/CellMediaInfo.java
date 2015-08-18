@@ -22,11 +22,12 @@ public class CellMediaInfo {
 	}
 	
 	public static class MBMediaInfo {
+	    public static final String VIEW_ID_NOT_SPECIFIED = "viewIdNotSpecified";
 	    public static String IMAGE_SIZE_THUMBNAIL = "thumbnail";
 	    public static String IMAGE_SIZE_SMALL    = "small";
 	    public static String IMAGE_SIZE_LARGE     = "large";
-		private String mediaID;
-		private String viewID;
+		private String mediaID = null;
+		private String viewID = null;
 		
 		public void setMediaID(String s){
 			this.mediaID = s;
@@ -39,6 +40,24 @@ public class CellMediaInfo {
 		}
 		public String getViewID(){
 			return this.viewID;
+		}
+		public boolean isValid(){
+		    if (null == this.viewID){
+		        return false;
+		    }
+		    if (null == this.mediaID){
+		        return false;
+		    }
+		    return true;
+		}
+		public String getReasonForBeingInvalid(){
+		    if (null == this.viewID){
+                return "view not set";
+            }
+            if (null == this.mediaID){
+                return "media not set";
+            }
+            return "";
 		}
 		public static List<String> getMediaTypes(){
 		    List<String> list = new ArrayList<String>();
