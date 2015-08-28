@@ -1,2 +1,5 @@
 # 20150827_01.txt
 scoring concern=pemble
+dataset=Emperor Penguins
+data source=bisque
+scoring algorithm=blizzard

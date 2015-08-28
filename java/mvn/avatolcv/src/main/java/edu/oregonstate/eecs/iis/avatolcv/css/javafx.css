@@ -14,6 +14,19 @@
 	-fx-background-color: green;
 	
 }
+
+.accordion .titled-pane .title > *.content {
+    -fx-background-color: transparent ;
+}
+.vbox {
+	-fx-background-color: transparent ;
+}
+.hbox {
+	-fx-background-color: transparent ;
+}
+.anchor-pane {
+    -fx-background-color: transparent;
+}
 .region {
 	-fx-background-color: red;
 }
@@ -30,7 +43,6 @@
 .label {
 	-fx-font-size: 17px;
 	-fx-text-fill: black;
-	/*-fx-effect: dropshadow( gaussian, rgba(255,255,255,0.5), 0,0,0,1);*/
 }
 .button {
 	-fx-font-size: 15px;
@@ -61,7 +73,6 @@
 
 .title-text {
 	-fx-font-size: 20px;
-	/*-fx-effect: innershadow( three-pass-box, rgba(0,0,0,0.7), 6, 0.0, 0,2);*/
 }
 
 .heading-text {
@@ -78,5 +89,14 @@
 }
 .stepListLabel {
 	-fx-font-size: 13px;
+	-fx-text-fill: black;
+}
+.resultSummaryHeading {
+	-fx-font-size: 14px;
+	-fx-text-fill: black;
+}
+
+.resultSummaryValue {
+	-fx-font-size: 11px;
 	-fx-text-fill: black;
 }
