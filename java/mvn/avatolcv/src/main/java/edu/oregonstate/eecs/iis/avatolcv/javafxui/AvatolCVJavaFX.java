@@ -9,6 +9,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.JavaFXStepSequencer;
+import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ResultsReview;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -119,12 +120,12 @@ public class AvatolCVJavaFX extends Application {
                 
             }
             else if (radioReviewResults.isSelected()){
-                
+                ResultsReview rr = new ResultsReview(exceptionExpresser);
+                rr.init(rootDir, mainWindow);
             }
             else {
                 // must have selected tutorial
-                
-            }
+            }    
         } 
         catch(AvatolCVException e){
             exceptionExpresser.showException(e, "Problem initializing session");
