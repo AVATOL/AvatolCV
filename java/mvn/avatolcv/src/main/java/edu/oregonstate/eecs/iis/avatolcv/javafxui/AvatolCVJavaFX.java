@@ -1,6 +1,11 @@
 package edu.oregonstate.eecs.iis.avatolcv.javafxui;
 
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.JavaFXStepSequencer;
@@ -9,9 +14,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import org.apache.logging.log4j.Logger;
@@ -55,6 +62,7 @@ public class AvatolCVJavaFX extends Application {
                 Parent root = loader.load();
                 stage.setTitle("AvatolCV");
                 scene = new Scene(root, MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT);
+                initializePriorRunChoices(scene);
                 stage.setScene(scene);
                 stage.show();
             }
@@ -74,7 +82,30 @@ public class AvatolCVJavaFX extends Application {
         }
     }
     
-
+    private void initializePriorRunChoices(Scene scene){
+        ChoiceBox<String> priorRunChoices = (ChoiceBox<String>)scene.lookup("#priorSessionSelector");
+        String sessionSummariesDirPath = rootDir + FILESEP + "sessionSummaries";
+        File sessionSummariesFile = new File(sessionSummariesDirPath);
+        File[] files = sessionSummariesFile.listFiles();
+        List<String> names = new ArrayList<String>();
+        for (File f : files){
+            String name = f.getName();
+            if (name.equals(".") || name.equals("..")){
+                // skip these
+            }
+            else {
+                String nameRoot = name.replace(".txt","");
+                names.add(nameRoot);
+            }
+        }
+        Collections.sort(names);
+        Collections.reverse(names);
+        for (String name : names){
+            priorRunChoices.getItems().add(name);
+        }
+        priorRunChoices.setValue(names.get(0));
+        priorRunChoices.requestLayout();
+    }
     public void launchSession(){
         System.out.println("called this");
         try {

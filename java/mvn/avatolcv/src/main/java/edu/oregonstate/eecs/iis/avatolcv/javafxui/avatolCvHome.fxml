@@ -23,7 +23,7 @@
             <GridPane alignment="CENTER" hgap="10.0" vgap="25.0">
               <columnConstraints>
                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" />
-                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="80.0" />
+                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" />
               </columnConstraints>
               <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -48,10 +48,10 @@
                   </HBox>
                   <RadioButton fx:id="radioTutorial" disable="true" minWidth="-Infinity" mnemonicParsing="false" styleClass="control-text" text="Show Tutorial" toggleGroup="$sessionChoice" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="5" GridPane.vgrow="NEVER" />
                   <Region minHeight="50.0" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="5" GridPane.vgrow="ALWAYS" />
-                  <ChoiceBox fx:id="sessionResumeChooser" disable="true" prefWidth="250.0" styleClass="control-text" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <RadioButton fx:id="radioReviewResults" disable="true" mnemonicParsing="false" text="Review results of prior session" toggleGroup="$sessionChoice" GridPane.rowIndex="3" />
+                  <ChoiceBox fx:id="sessionResumeChooser" disable="true" prefWidth="200.0" styleClass="control-text" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <RadioButton fx:id="radioReviewResults" mnemonicParsing="false" text="Review results of prior session" toggleGroup="$sessionChoice" GridPane.rowIndex="3" />
                   <RadioButton fx:id="radioNewSession" mnemonicParsing="false" selected="true" text="Start a new scoring session" toggleGroup="$sessionChoice" GridPane.rowIndex="1" />
-                  <ChoiceBox disable="true" prefWidth="150.0" styleClass="control-text" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <ChoiceBox fx:id="priorSessionSelector" prefWidth="200.0" styleClass="control-text" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                </children>
                <opaqueInsets>
                   <Insets />
