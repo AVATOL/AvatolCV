@@ -11,11 +11,11 @@
 	/*-fx-background-color: blue;*/
 }
 .node {
-	-fx-background-color: green;
+	-fx-background-color: transparent;
 	
 }
 
-.accordion .titled-pane .title > *.content {
+.accordion .titled-pane .title  {
     -fx-background-color: transparent ;
 }
 .vbox {
@@ -27,22 +27,18 @@
 .anchor-pane {
     -fx-background-color: transparent;
 }
-.region {
-	-fx-background-color: red;
-}
-.red {
-	-fx-background-color: red;
-}
-.scroll-pane > .viewport {  /* NEEDED THIS TO GET THE SCROLLPANE TRANSPARENT TO TAKE EFFECT */
+
+.scroll-pane > .viewport {  
    -fx-background-color: transparent;
 }
 
-.scroll-pane {
-	-fx-background-color:transparent;
+.scroll-pane {  
+   -fx-background-color: transparent;
 }
 .label {
 	-fx-font-size: 17px;
 	-fx-text-fill: black;
+	-fx-background-color: transparent;
 }
 .button {
 	-fx-font-size: 15px;
