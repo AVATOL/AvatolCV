@@ -74,7 +74,8 @@ public class SessionInfo{
         this.algorithmModules = new AlgorithmModules(AvatolCVFileSystem.getModulesDir());
         this.scoringAlgorithms = algorithmModules.getScoringAlgorithms();
        
-        this.sessionID = "" + System.currentTimeMillis() / 1000L;
+        //this.sessionID = "" + System.currentTimeMillis() / 1000L;
+        this.sessionID = AvatolCVFileSystem.createSessionID();
         AvatolCVFileSystem.setSessionID(this.sessionID);
 	}
 	

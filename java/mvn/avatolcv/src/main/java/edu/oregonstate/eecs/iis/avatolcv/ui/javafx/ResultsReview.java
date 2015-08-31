@@ -11,6 +11,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.stage.Stage;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
@@ -26,14 +27,14 @@ public class ResultsReview {
     private AvatolCVExceptionExpresser exceptionExpresser = null;
     private Stage mainWindow = null;
     private Scene scene = null;
-    private AvatolCVFileSystem afs = null;
+    private String runID = null;
     
     public ResultsReview(AvatolCVExceptionExpresser exceptionExpresser){
         this.exceptionExpresser = exceptionExpresser;
     }
-    public void init(String avatolCVRootDir, Stage mainWindow) throws AvatolCVException {
+    public void init(String avatolCVRootDir, Stage mainWindow, String runID) throws AvatolCVException {
         this.mainWindow = mainWindow;
-        afs = new AvatolCVFileSystem(avatolCVRootDir);
+        this.runID = runID;
         initUI();
     }
     public void initUI() throws AvatolCVException {
@@ -50,18 +51,19 @@ public class ResultsReview {
             for (Node n : runDetailsScrollPane.getChildrenUnmodifiable()) {
                 n.setCache(false);
             }
-            setRunDetails();
+            setRunDetails(this.runID);
             //runDetailsAccordion.requestLayout();
         }
         catch(Exception e){
             throw new AvatolCVException(e.getMessage(),e);
         }
     }
-    private void setRunDetails(){
-    	runIDValue.setText("run1");
-        datasetValue.setText("run1");
-        scoringConcernValue.setText("run1");
-        dataSourceValue.setText("run1");
-        scoringAlgorithmValue.setText("run1");
+    private void setRunDetails(String runID) throws AvatolCVException {
+        RunSummary rs = new RunSummary(runID);
+    	runIDValue.setText(rs.getRunID());
+        datasetValue.setText(rs.getDataset());
+        scoringConcernValue.setText(rs.getScoringConcern());
+        dataSourceValue.setText(rs.getDataSource());
+        scoringAlgorithmValue.setText(rs.getScoringAlgorithm());
     }
 }

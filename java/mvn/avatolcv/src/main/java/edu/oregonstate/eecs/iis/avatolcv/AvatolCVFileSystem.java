@@ -1,6 +1,11 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.generic.DatasetInfo;
@@ -11,19 +16,24 @@ public class AvatolCVFileSystem {
 	private static String sessionsDir = null;
 	private static String currentProjectDir = null;
     private static String currentProjectUserAnswersDir = null;
+    private static String sessionSummariesDir = null;
+
     private static String sessionID = null;
     private static String modulesDir = null;
     private static String datasetName = null;
     private static String datasourceName = null;
+    
     //private static String uiContentXmlDir = null;
     //private static String charQuestionsDir = null;
-	public AvatolCVFileSystem(String rootDir) throws AvatolCVException {
+	public static void setRootDir(String rootDir) throws AvatolCVException {
 		avatolCVRootDir = rootDir;
 		sessionsDir = avatolCVRootDir + FILESEP + "sessions";
 		//System.out.println("sessionDataDir: " + sessionsDir);
 		ensureDir(sessionsDir);
 		modulesDir = avatolCVRootDir + FILESEP + "modules";
 		ensureDir(modulesDir);
+		sessionSummariesDir = avatolCVRootDir + FILESEP + "sessionSummaries";
+		ensureDir(sessionSummariesDir);
 		//uiContentXmlDir = avatolCVRootDir + FILESEP + "uiContentXml";
 		//System.out.println("uiContentXmlDir: " + uiContentXmlDir);
 		//ensureDirIsPresent(uiContentXmlDir);
@@ -43,9 +53,51 @@ public class AvatolCVFileSystem {
     public static String getSessionsRoot(){
         return sessionsDir;
     }
+    public static String getSessionSummariesDir(){
+        return sessionSummariesDir; 
+    }
+    
 	//
 	// session
 	//
+    public static String getSessionFormatDate(){
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy_MM_dd");
+        String dateString = format.format(date);
+        System.out.println(dateString);
+        return dateString;
+    }
+    public static String createSessionID() throws AvatolCVException {
+        List<String> sessionFilenames = getSessionFilenames();
+        String date = getSessionFormatDate();
+        List<String> idsFromToday = new ArrayList<String>();
+        for (String filename : sessionFilenames){
+            String[] parts = filename.split("\\.");
+            String root = parts[0];
+            if (root.startsWith(date)){
+                idsFromToday.add(root);
+            }
+        }
+        String nextIDForToday = getNextIDForDate(date, idsFromToday);
+        return nextIDForToday;
+    }
+    public static String getNextIDForDate(String dateString, List<String> ids){
+        if (ids.isEmpty()){
+            return dateString + "_01";
+        }
+        List<String> numbersForToday = new ArrayList<String>();
+        for (String s : ids){
+            String[] parts = s.split("_");
+            String number = parts[1];
+            numbersForToday.add(number);
+        }
+        Collections.sort(numbersForToday);
+        String finalNumberString = numbersForToday.get(numbersForToday.size() - 1);
+        Integer numberAsInteger = new Integer(finalNumberString);
+        int newValue = numberAsInteger.intValue() + 1;
+        String newValueString = String.format("%02d", newValue);
+        return dateString + "_" + newValueString;
+    }
 	public static void setSessionID(String id) throws AvatolCVException {
         sessionID = id; 
         
@@ -58,6 +110,22 @@ public class AvatolCVFileSystem {
             throw new AvatolCVException("SessionDir not valid until dataSet has been chosen");
         }
 	    return sessionsDir + FILESEP + datasetName + FILESEP + sessionID;
+	}
+	public static List<String> getSessionFilenames() throws AvatolCVException {
+        File sessionSummariesDirFile = new File(sessionSummariesDir);
+        File[] files = sessionSummariesDirFile.listFiles();
+        List<String> names = new ArrayList<String>();
+        for (File f : files){
+            String name = f.getName();
+            if (name.equals(".") || name.equals("..")){
+                // skip these
+            }
+            else {
+                String nameRoot = name.replace(".txt","");
+                names.add(nameRoot);
+            }
+        }
+        return names;
 	}
 	//
 	// datasource

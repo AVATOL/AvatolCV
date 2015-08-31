@@ -42,7 +42,6 @@ public class JavaFXStepSequencer  {
 	public Button backButton;
 	public VBox stepList;
     private SessionInfo sessionInfo = null;
-    private AvatolCVFileSystem afs = null;
     private StepSequence ss = null;
     private Stage mainWindow = null;
     private Scene scene = null;
@@ -58,7 +57,6 @@ public class JavaFXStepSequencer  {
     	initUI();
 
         //MorphobankWSClient client = new MorphobankWSClientImpl();
-        afs = new AvatolCVFileSystem(avatolCVRootDir);
         sessionInfo = new SessionInfo(exceptionExpresser);
         ss = new StepSequence();
         
