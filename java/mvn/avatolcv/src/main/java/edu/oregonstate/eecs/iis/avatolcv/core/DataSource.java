@@ -5,6 +5,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.generic.DatasetInfo;
 
 public interface DataSource {
+    String getName();
     boolean authenticate(String username, String password) throws AvatolCVException ;
     boolean isAuthenticated();
     List<DatasetInfo> getDatasets() throws AvatolCVException ;
@@ -21,4 +22,9 @@ public interface DataSource {
     void setChosenScoringConcern(ChoiceItem item);
     
     String getDatasetSummaryText();
+    AvatolCVDataFiles getAvatolCVDataFiles();
+    DataFilter getDataFilter(String specificSessionDir)  throws AvatolCVException;
+    void acceptFilter();
+    AvatolCVDataFiles getDataFiles();
+    //void setStandard
 }

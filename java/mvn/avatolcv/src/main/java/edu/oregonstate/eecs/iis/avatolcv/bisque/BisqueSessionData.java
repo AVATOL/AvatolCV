@@ -43,7 +43,7 @@ public class BisqueSessionData implements SessionDataInterface{
 	private List<ImageInfo> imagesMedium = new ArrayList<ImageInfo>();
 	private List<ImageInfo> imagesLarge = new ArrayList<ImageInfo>();
 	
-	private String sessionDataRootDir = null;
+	private String sessionsRootDir = null;
 	private String sessionDatasetDir = null;
 	// TODO? imagesToInclude and imagesToExclude are now ImageInfo - may need to translate that to BisqueImage at some point.
 	private List<ImageInfo> imagesToInclude = null;
@@ -52,14 +52,14 @@ public class BisqueSessionData implements SessionDataInterface{
 	private OrientationSessionData osd = null;
 	
 	private BisqueAnnotation currentCharacter = null;
-	public BisqueSessionData(String sessionDataRootParent) throws AvatolCVException {
-		File f = new File(sessionDataRootParent);
+	public BisqueSessionData(String sessionsRootParent) throws AvatolCVException {
+		File f = new File(sessionsRootParent);
 		if (!f.isDirectory()){
-			throw new AvatolCVException("directory does not exist for being sessionDataRootParent " + sessionDataRootParent);
+			throw new AvatolCVException("directory does not exist for being sessionsRootParent " + sessionsRootParent);
 		}
 		
-		this.sessionDataRootDir = sessionDataRootParent + FILESEP + "sessionData";
-		f = new File(this.sessionDataRootDir);
+		this.sessionsRootDir = sessionsRootParent + FILESEP + "sessions";
+		f = new File(this.sessionsRootDir);
 		if (!f.isDirectory()){
 			f.mkdirs();
 		}
@@ -70,7 +70,7 @@ public class BisqueSessionData implements SessionDataInterface{
 	public void setChosenDataset(BisqueDataset s){
 		this.dataset = s;
 		// ensure dir exists for this 
-	    this.sessionDatasetDir = this.sessionDataRootDir + FILESEP + this.dataset.getName();
+	    this.sessionDatasetDir = this.sessionsRootDir + FILESEP + this.dataset.getName();
 	    File f = new File (this.sessionDatasetDir);
 	    if (!f.isDirectory()){
 	    	f.mkdirs();

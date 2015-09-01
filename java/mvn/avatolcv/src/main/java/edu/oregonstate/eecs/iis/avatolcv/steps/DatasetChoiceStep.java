@@ -46,7 +46,7 @@ public class DatasetChoiceStep implements Step {
             String name = di.getName();
             if (name.equals(s)){
                 this.chosenDataset = di;
-                this.sessionInfo.getDataSource().setChosenDataset(di);
+                //this.sessionInfo.getDataSource().setChosenDataset(di);
             }
         }
         if (this.chosenDataset == null){

@@ -37,12 +37,9 @@ At ORIENTATION step, I will pass one argument, which is the path to the runConfi
 
 runConfig_orientation.txt has these lines:
     imagesToOrientDir,<points to where segmented files were put>   ---->> was   darwinOutputDir,<same as in xml file - points to where segmented files are put>
-    ___do we need this???  -->>> rawImagesDir,<path of dir where right sized images from bisque are put>
-    relaventImagesFile,<path to file that lists filenames of images to orient>
+    relaventImagesFile,<path to file that lists pathnames of images to orient>
     orientationResultsDir,<path to dir to put orientation normalized images>
-	___avatolCV shouldn't know about this -->>  modelFilePath,<path to pre-trained svm model for apex, base locating>
-	___??? avatolCV shouldn't know about notion of apex.  How handle this ?   --->>>  apexLocationConvention,left
-
+    ___create document that specifies apexLocationConvention = left, so that if someone wants to 
     outputFileSuffix=_oriented.jpg
 	
 relaventImagesFile will have entries that are the root names of images in the darwinOutputDir

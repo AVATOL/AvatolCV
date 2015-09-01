@@ -1,17 +1,26 @@
 package edu.oregonstate.eecs.iis.avatolcv.javafxui;
 
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.JavaFXStepSequencer;
+import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ResultsReview;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import org.apache.logging.log4j.Logger;
@@ -29,6 +38,7 @@ public class AvatolCVJavaFX extends Application {
     public RadioButton radioResumeSession;
     public RadioButton radioReviewResults;
     public RadioButton radioTutorial;
+    public ChoiceBox<String> priorSessionSelector;
     public static AvatolCVExceptionExpresser exceptionExpresser = new AvatolCVExceptionExpresserJavaFX();
     
     Stage mainWindow = null;
@@ -37,6 +47,7 @@ public class AvatolCVJavaFX extends Application {
         String currentDir = System.getProperty("user.dir");
         try {
             rootDir = findRoot(currentDir);
+            AvatolCVFileSystem.setRootDir(rootDir);
         }
         catch(AvatolCVException e){
             startError = "Error running avatolCV - could not locate avatol_cv directory under installation area.";
@@ -55,6 +66,7 @@ public class AvatolCVJavaFX extends Application {
                 Parent root = loader.load();
                 stage.setTitle("AvatolCV");
                 scene = new Scene(root, MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT);
+                initializePriorRunChoices(scene);
                 stage.setScene(scene);
                 stage.show();
             }
@@ -74,7 +86,16 @@ public class AvatolCVJavaFX extends Application {
         }
     }
     
-
+    private void initializePriorRunChoices(Scene scene) throws AvatolCVException {
+        List<String> names = AvatolCVFileSystem.getSessionFilenames();
+        Collections.sort(names);
+        Collections.reverse(names);
+        for (String name : names){
+            priorSessionSelector.getItems().add(name);
+        }
+        priorSessionSelector.setValue(names.get(0));
+        priorSessionSelector.requestLayout();
+    }
     public void launchSession(){
         System.out.println("called this");
         try {
@@ -88,16 +109,15 @@ public class AvatolCVJavaFX extends Application {
                 
             }
             else if (radioReviewResults.isSelected()){
-                
+                ResultsReview rr = new ResultsReview(exceptionExpresser);
+                String runChoice = (String)priorSessionSelector.getValue();
+                rr.init(rootDir, mainWindow, runChoice);
             }
             else {
                 // must have selected tutorial
-                
-            }
+            }    
         } 
         catch(AvatolCVException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
             exceptionExpresser.showException(e, "Problem initializing session");
         }
     }

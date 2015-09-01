@@ -81,7 +81,7 @@ public class MBSessionData implements SessionDataInterface {
 
     private String sessionMatrixDir   = null;
     private String sessionViewDir     = null;
-    private String sessionDataRootDir = null;
+    private String sessionsRootDir = null;
     
     private List<MBMediaInfo> mbImages = null;
 
@@ -101,14 +101,14 @@ public class MBSessionData implements SessionDataInterface {
     private Hashtable<String, List<MBMediaInfo>> mediaForCell = new Hashtable<String,  List<MBMediaInfo>>();
     private ScoringAlgorithms scoringAlgorithms = null;
     private String chosenAlgorithm = null;
-    public MBSessionData(String sessionDataRootParent) throws AvatolCVException {
-        File f = new File(sessionDataRootParent);
+    public MBSessionData(String sessionsRootParent) throws AvatolCVException {
+        File f = new File(sessionsRootParent);
         if (!f.isDirectory()){
-            throw new AvatolCVException("directory does not exist for being sessionDataRootParent " + sessionDataRootParent);
+            throw new AvatolCVException("directory does not exist for being sessionsRootParent " + sessionsRootParent);
         }
         
-        this.sessionDataRootDir = sessionDataRootParent + FILESEP + "sessionData";
-        f = new File(this.sessionDataRootDir);
+        this.sessionsRootDir = sessionsRootParent + FILESEP + "sessionData";
+        f = new File(this.sessionsRootDir);
         if (!f.isDirectory()){
             f.mkdirs();
         }
@@ -374,7 +374,7 @@ public class MBSessionData implements SessionDataInterface {
     public void setChosenMatrix(MBMatrix mm){
         this.currentMatrix = mm;
         // ensure dir exists for this 
-        this.sessionMatrixDir = this.sessionDataRootDir + FILESEP + this.currentMatrix.getName();
+        this.sessionMatrixDir = this.sessionsRootDir + FILESEP + this.currentMatrix.getName();
         File f = new File (this.sessionMatrixDir);
         if (!f.isDirectory()){
             f.mkdirs();
@@ -662,17 +662,17 @@ public class MBSessionData implements SessionDataInterface {
 
 	}
 	public TrainTestInfo getTrainTestInfo(String taxonID, String charID) {
-		loadTrainingInfo();
-		left off here...
+		//loadTrainingInfo();
+		//left off here...
 		TrainTestInfo iit = new TrainTestInfo(taxonID, charID);
-		iit.setExcludedCount(getExludedCount(taxonID, charID));
-		iit.setTrainingCount(getTrainingCount(taxonID, charID));
-		iit.setTestCount(getToTestCount(taxonID, charID));
+		//iit.setExcludedCount(getExludedCount(taxonID, charID));
+		//iit.setTrainingCount(getTrainingCount(taxonID, charID));
+		//iit.setTestCount(getToTestCount(taxonID, charID));
 		return iit;
 	}
 	
 	public int getExcludedCount(String taxonID, String charId){
-		
+		return 0;
 	}
    
     

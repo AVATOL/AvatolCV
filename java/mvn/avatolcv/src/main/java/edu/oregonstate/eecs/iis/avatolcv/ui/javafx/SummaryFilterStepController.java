@@ -2,19 +2,32 @@ package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.List;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.GridPane;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ChoiceItem;
+import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
+import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter.Pair;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SummaryFilterStep;
 
 public class SummaryFilterStepController implements StepController {
     public TextArea summaryTextArea;
+    public Tab summaryTab;
+    public ScrollPane summaryScrollPane;
+    public TabPane summaryFilterTabPane;
+    public GridPane filterGridPane;
     private SummaryFilterStep step;
     private String fxmlDocName;
 
@@ -24,8 +37,7 @@ public class SummaryFilterStepController implements StepController {
     }
     @Override
     public boolean consumeUIData() {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
@@ -41,7 +53,7 @@ public class SummaryFilterStepController implements StepController {
             loader.setController(this);
             Node content = loader.load();
             summaryTextArea.setText(this.step.getSummaryText());
-
+            populateFilterGridPane();
             return content;
         }
         catch(IOException ioe){
@@ -49,27 +61,44 @@ public class SummaryFilterStepController implements StepController {
         }
     }
 
+    private void populateFilterGridPane() throws AvatolCVException {
+        DataFilter filter = this.step.getDataFilter();
+        List<Pair> pairs = filter.getItems();
+        int row = 1;
+        for (Pair p : pairs){
+            CheckBox cb = new CheckBox();
+            cb.setSelected(true);
+            filterGridPane.add(cb, 0, row);
+            Label nameLabel = new Label(p.getName());
+            filterGridPane.add(nameLabel, 1, row);
+            Label valueLabel = new Label(p.getValue());
+            filterGridPane.add(valueLabel, 2, row);
+            if (!p.isEditable()){
+                cb.setDisable(true);
+                nameLabel.setDisable(true);
+                valueLabel.setDisable(true);
+            }
+            row++;
+        }
+    }
     @Override
     public boolean delayEnableNavButtons() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public void executeDataLoadPhase() throws AvatolCVException {
-        // TODO Auto-generated method stub
-
+        // NA
     }
 
     @Override
     public void configureUIForDataLoadPhase() {
-        // TODO Auto-generated method stub
-
+        // NA
     }
 
     @Override
     public boolean isDataLoadPhaseComplete() {
-        // TODO Auto-generated method stub
+        // NA
         return false;
     }
 

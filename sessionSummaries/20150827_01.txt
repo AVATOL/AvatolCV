@@ -1,0 +1,6 @@
+# 20150827_01.txt
+runID=20150827_01
+scoring concern=pemble
+dataset=Emperor Penguins
+data source=bisque
+scoring algorithm=blizzard
