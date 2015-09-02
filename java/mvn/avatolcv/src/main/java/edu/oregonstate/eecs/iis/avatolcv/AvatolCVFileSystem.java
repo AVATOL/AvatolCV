@@ -170,6 +170,20 @@ public class AvatolCVFileSystem {
 	public static String getNormalizedDataDir() throws AvatolCVException {
 	    return getDatasetDir() + FILESEP + "normalized";
 	}
+	public static String getNormalizedDataDirForDataset(String runID) throws AvatolCVException {
+	    //C:\jed\avatol\git\avatol_cv\sessions\AVAToL Computer Vision Matrix\normalized\imageInfo
+	    RunSummary rs = new RunSummary(runID);
+	    String dataset = rs.getDataset();
+	    String path = sessionsDir + FILESEP + dataset + FILESEP + "normalized" + FILESEP + "imageInfo";
+	    return path;
+	}
+	public static String getNormalizedDataDirForSession(String runID) throws AvatolCVException {
+        //C:\jed\avatol\git\avatol_cv\sessions\AVAToL Computer Vision Matrix\20151023_02\imageInfo
+        RunSummary rs = new RunSummary(runID);
+        String dataset = rs.getDataset();
+        String path = sessionsDir + FILESEP + dataset + FILESEP + runID + FILESEP + "imageInfo";
+        return path;
+    }
 	public static String getNormalizedImageInfoDir() throws AvatolCVException {
 	    return getNormalizedDataDir() + FILESEP + "imageInfo";
 	}

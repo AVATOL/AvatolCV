@@ -1,5 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
+import java.util.List;
+
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -9,11 +11,15 @@ import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVExceptionExpresser;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
 
 public class ResultsReview {
@@ -24,6 +30,8 @@ public class ResultsReview {
     public Label scoringConcernValue = null;
     public Label dataSourceValue = null;
     public Label scoringAlgorithmValue = null;
+    public VBox scoredImagesVBox = null;
+    public VBox trainingImagesVBox = null;
     private AvatolCVExceptionExpresser exceptionExpresser = null;
     private Stage mainWindow = null;
     private Scene scene = null;
@@ -52,11 +60,23 @@ public class ResultsReview {
                 n.setCache(false);
             }
             setRunDetails(this.runID);
+            setScoredImagesInfo(this.runID);
             //runDetailsAccordion.requestLayout();
         }
         catch(Exception e){
             throw new AvatolCVException(e.getMessage(),e);
         }
+    }
+    private void setScoredImagesInfo(String runID) throws AvatolCVException {
+        NormalizedImageInfos normalizedImageInfos = new NormalizedImageInfos(runID);
+        List<NormalizedImageInfo> scoredImages = normalizedImageInfos.getScoredImages();
+        for (NormalizedImageInfo si : scoredImages){
+            HBox scoredImageHBox = getScoredImageHBox(si);
+            scoredImagesVBox.getChildren().add(scoredImageHBox);
+        }
+    }
+    private HBox getScoredImageHBox(NormalizedImageInfo si){
+        return null;
     }
     private void setRunDetails(String runID) throws AvatolCVException {
         RunSummary rs = new RunSummary(runID);
