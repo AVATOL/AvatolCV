@@ -14,6 +14,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter.Pair;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataSource;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
@@ -374,7 +375,7 @@ public class MorphobankDataSource implements DataSource {
     	String viewValue = mi.getViewID() + "|" + getViewNameForID(mi.getViewID());
     	p.setProperty("view", viewValue);
     	String annotationsValueString = getAnnotationsValueString(annotationsForCell);
-    	p.setProperty(SessionInfo.ANNOTATION_KEY_FOR_NORMALIZED_FILE, annotationsValueString);
+    	p.setProperty(NormalizedImageInfo.KEY_ANNOTATION, annotationsValueString);
     	String path = AvatolCVFileSystem.getNormalizedImageInfoDir() + FILESEP + mediaMetadataFilename;
     	mbDataFiles.persistNormalizedImageFile(path, p);
     }

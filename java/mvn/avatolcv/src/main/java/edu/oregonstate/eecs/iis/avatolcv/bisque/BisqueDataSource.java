@@ -12,6 +12,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataSource;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
@@ -142,7 +143,10 @@ public class BisqueDataSource implements DataSource {
             List<BisqueAnnotation> annotations = annotationsForImageIdHash.get(imageID);
             for (BisqueAnnotation a : annotations){
                 String annotationName = a.getName();
-                if (!annotationNames.contains(annotationName)){
+                if (annotationName.equals("filename") || annotationName.equals("upload_datetime")){
+                    // don't present these as potential scoring concerns
+                }
+                else if (!annotationNames.contains(annotationName)){
                     annotationNames.add(annotationName);
                 }
             }
@@ -262,7 +266,7 @@ public class BisqueDataSource implements DataSource {
     public DataFilter getDataFilter(String specificSessionDir)
             throws AvatolCVException {
         this.dataFilter = new DataFilter(AvatolCVFileSystem.getSessionDir());
-        
+        //this.dataFilter.
         return this.dataFilter;
     }
     @Override
@@ -281,6 +285,12 @@ public class BisqueDataSource implements DataSource {
         Properties p = new Properties();
         for (BisqueAnnotation ba : annotations){
             String name = ba.getName();
+            if (name.equals("filename")){
+                name = NormalizedImageInfo.KEY_IMAGE_NAME;
+            } 
+            else if (name.equals("upload_datetime")){
+                name = NormalizedImageInfo.KEY_TIMESTAMP;
+            }
             String value = ba.getValue();
             p.setProperty(name,  value);
         }

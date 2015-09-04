@@ -42,26 +42,26 @@ public class BisqueAnnotation {
 		
 	}
 	public void setCreated(String s){
-		this.created = s;
+		this.created = s.trim();
 	}
 
 	public void setName(String s){
-		this.name = s;
+		this.name = s.trim();
 	}
 	public void setOwner(String s){
-		this.owner = s;
+		this.owner = s.trim();
 	}
 	public void setPermission(String s){
-		this.permission = s;
+		this.permission = s.trim();
 	}
 	public void setValue(String s){
-		this.value = s;
+		this.value = s.trim();
 	}
 	public void setType(String s){
-		this.type = s;
+		this.type = s.trim();
 	}
 	public void setUri(String s){
-		this.uri = s;
+		this.uri = s.trim();
 	}
 	
 	

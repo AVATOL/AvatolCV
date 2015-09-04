@@ -46,8 +46,6 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
  * 
  */
 public class SessionInfo{
-	public static final String RESERVED_KEY_PREFIX_FOR_NORMALIZED_FILE = "avcv";
-	public static final String ANNOTATION_KEY_FOR_NORMALIZED_FILE = RESERVED_KEY_PREFIX_FOR_NORMALIZED_FILE + "_annotation";
     private String sessionsRootDir = null;
     private static final String NL = System.getProperty("line.separator");
     private static final String FILESEP = System.getProperty("file.separator");
@@ -146,7 +144,7 @@ public class SessionInfo{
     	//view=8905|Skull - ventral annotated teeth
     	// if there is a type prefix (something:), then type and string value of type are what's added to the filter (ex : character, Diastema between M1 and M2)
     	// otherwise, the key and the string value portion of the value (ex: taxon, Artibeus jamaicensis)
-    	if (key.startsWith(RESERVED_KEY_PREFIX_FOR_NORMALIZED_FILE)){
+    	if (key.startsWith(NormalizedImageInfo.RESERVED_PREFIX)){
     		//skip it
     	}
     	else if (key.contains(":")){
@@ -159,13 +157,18 @@ public class SessionInfo{
     		dataFilter.addPropertyValue(type, propertyValueWeWillUse, valueID, true);
     	}
     	else {
-    		String[] valParts = val.split("|");
-    		String valID = valParts[0];
-    		String valName = "";
-    		if (valParts.length > 1){
-    			valName = valParts[1];
-    		}
-    		dataFilter.addPropertyValue(key, valName, valID, true);
+    	    if (val.contains("|")){
+    	        String[] valParts = val.split("|");
+                String valID = valParts[0];
+                String valName = "";
+                if (valParts.length > 1){
+                    valName = valParts[1];
+                }
+                dataFilter.addPropertyValue(key, valName, valID, true);
+    	    }
+    	    else{
+    	        dataFilter.addPropertyValue(key, val, val, true);
+    	    }
     	}
     }
 }

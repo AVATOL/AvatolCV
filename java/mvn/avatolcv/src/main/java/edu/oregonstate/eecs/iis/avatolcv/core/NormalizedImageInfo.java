@@ -12,12 +12,14 @@ public class NormalizedImageInfo {
     //taxon=773126|Artibeus jamaicensis
     //view=8905|Skull - ventral annotated teeth
     Hashtable<String, Object> keyValueHash = new Hashtable<String, Object>();
-    private static final String KEY_ANNOTATION         = "avcv_annotation";
-    private static final String KEY_SCORING_CONFIDENCE = "avcv_scoringConfidence";
-    private static final String KEY_SCORE              = "avcv_score";
-    private static final String KEY_TRUTH              = "avcv_truth";
-    private static final String KEY_IMAGE_NAME         = "avcv_imageName";
-    private static final String KEY_TRAINING_VS_TEST_CONCERN_VALUE  = "avcv_trainingVsTestConcernValue";
+    public static final String RESERVED_PREFIX = "avcv_";
+    public static final String KEY_ANNOTATION         = RESERVED_PREFIX + "annotation";
+    private static final String KEY_SCORING_CONFIDENCE = RESERVED_PREFIX + "scoringConfidence";
+    private static final String KEY_SCORE              = RESERVED_PREFIX + "score";
+    private static final String KEY_TRUTH              = RESERVED_PREFIX + "truth";
+    public static final String KEY_IMAGE_NAME         = RESERVED_PREFIX + "imageName";
+    public static final String KEY_TIMESTAMP          = RESERVED_PREFIX + "timestamp";
+    private static final String KEY_TRAINING_VS_TEST_CONCERN_VALUE  = RESERVED_PREFIX + "trainingVsTestConcernValue";
     public NormalizedImageInfo(String path) throws AvatolCVException {
         loadNormalizedInfoFromPath(path, "Problem loading Normalized Image Info file: ");
     }
@@ -45,7 +47,7 @@ public class NormalizedImageInfo {
                     // ignore
                 }
                 else {
-                    if (line.startsWith("avcv")){
+                    if (line.startsWith(RESERVED_PREFIX)){
                         loadAvatolCVKeyedLine(line);
                     }
                     else {
@@ -127,7 +129,7 @@ public class NormalizedImageInfo {
             }
         }
         else {
-            throw new AvatolCVException("unrecognized avcv key");
+            //ignore;
         }
     }
 }
