@@ -32,7 +32,7 @@ public class TestBisqueWS extends TestCase {
 		}
 	}
 	*/
-	
+	/*
 	public void testAuthenticateBad(){
 		BisqueWSClientImpl bc = new BisqueWSClientImpl();
 		try {
@@ -44,7 +44,7 @@ public class TestBisqueWS extends TestCase {
 			System.out.println(ex.getMessage());
 		}
 	}
-	
+	*/
 	/*
 	public void testGetDatasets() {
 		BisqueWSClient bc = new BisqueWSClient();
@@ -119,7 +119,7 @@ public class TestBisqueWS extends TestCase {
 	*/
 	/*
 	public void testAnnotations() {
-		BisqueWSClient bc = new BisqueWSClient();
+		BisqueWSClientImpl bc = new BisqueWSClientImpl();
 		try {
 			boolean authResult = bc.authenticate("avatol-nybg","Monocots123");
 			
@@ -131,6 +131,7 @@ public class TestBisqueWS extends TestCase {
 				System.out.println("owner         " + ds.getOwner());
 				System.out.println("permission    " + ds.getPermission());
 				System.out.println("uri           " + ds.getUri());
+                System.out.println("type           " + ds.getType());
 			}
 			
 		}
@@ -139,7 +140,29 @@ public class TestBisqueWS extends TestCase {
 			System.out.println(ex.getMessage());
 		}
 	}
-	*/
+*/
+    public void testAnnotationsLeafDev() {
+        BisqueWSClientImpl bc = new BisqueWSClientImpl();
+        try {
+            boolean authResult = bc.authenticate("jedirv","Neton3plants**");
+            
+            List<BisqueAnnotation> annotations = bc.getAnnotationsForImage("00-Wa5gtBDFLiukNmwoeWFMf4");
+            for (BisqueAnnotation ds : annotations){
+                System.out.println("");
+                System.out.println("name          " + ds.getName());
+                System.out.println("created       " + ds.getCreated());
+                System.out.println("owner         " + ds.getOwner());
+                System.out.println("permission    " + ds.getPermission());
+                System.out.println("uri           " + ds.getUri());
+                System.out.println("type           " + ds.getType());
+            }
+            
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+            System.out.println(ex.getMessage());
+        }
+    }
 	/*
 	
 	public void testAnnotationValues() {

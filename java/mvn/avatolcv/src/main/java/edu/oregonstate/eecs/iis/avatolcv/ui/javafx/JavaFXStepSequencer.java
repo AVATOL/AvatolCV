@@ -96,15 +96,7 @@ public class JavaFXStepSequencer  {
         SummaryFilterStepController summaryFilterStepController = new SummaryFilterStepController(summaryFilterStep, "SummaryFilterStep.fxml");
         controllerForStep.put(summaryFilterStep, summaryFilterStepController);
         addLabelForStep(summaryFilterStep,"Summary/Filter");
-      //    ___make summary/filter screen, with datasource.loadRemainingMetadata(progressPresenter)
-           
         /*
-        MBViewChoiceStep viewChoiceStep = new MBViewChoiceStep(client, sessionData);
-        ss.appendStep(viewChoiceStep);
-        MBViewChoiceStepController viewChoiceController = new MBViewChoiceStepController(viewChoiceStep, "MBViewChoiceStep.fxml");
-        controllerForStep.put(viewChoiceStep, viewChoiceController);
-        addLabelForStep(viewChoiceStep,"Select View");
-        
         MBImagePullStep imagePullStep = new MBImagePullStep(null, client, sessionData);
         ss.appendStep(imagePullStep);
         MBImagePullStepController imagePullController = new MBImagePullStepController(this, imagePullStep, "MBImagePullStep.fxml");

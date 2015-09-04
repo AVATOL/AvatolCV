@@ -62,7 +62,7 @@ public class AvatolCVFileSystem {
 	//
     public static String getSessionFormatDate(){
         Date date = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy_MM_dd");
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         String dateString = format.format(date);
         System.out.println(dateString);
         return dateString;
@@ -216,6 +216,25 @@ public class AvatolCVFileSystem {
 	    ensureDir(currentProjectDir);
 	    currentProjectUserAnswersDir = currentProjectDir + FILESEP + "userAnswers";
 	}
+	public static String getMediaMetadataFilename(String parentDir, String mediaID)  throws AvatolCVException {
+        File f = new File(parentDir);
+        if (!f.isDirectory()){
+            throw new AvatolCVException("normailzed media dir does not exist : " + parentDir);
+        }
+        File[] files = f.listFiles();
+        int count = 0;
+        for (File existingMediaFile : files){
+            String filename = existingMediaFile.getName();
+            String[] parts = filename.split("\\.");
+            String root = parts[0];
+            String[] rootParts = root.split("_");
+            String curMediaID = rootParts[0];
+            if (mediaID.equals(curMediaID)){
+                count++;
+            }
+        }
+        return mediaID + "_" + (count + 1) + ".txt";
+    }
 	/*public static String getUserAnswerDir() throws AvatolCVException {
 	    if (null == currentProjectUserAnswersDir){
 	        throw new AvatolCVException("getUserAnswerDir() called prior to setCurrentProject()");

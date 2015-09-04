@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Properties;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ChoiceItem;
@@ -12,6 +14,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
+import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.generic.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MorphobankDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
@@ -20,11 +23,15 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
+import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharStateInfo.MBCharStateValue;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
 
 public class BisqueDataSource implements DataSource {
+    private static final String FILESEP = System.getProperty("file.separator");
     private BisqueWSClient wsClient = null;
     private DatasetInfo chosenDataset = null;
     private List<BisqueImage> bisqueImagesForCurrentDataset = null;
@@ -32,6 +39,7 @@ public class BisqueDataSource implements DataSource {
     private List<String> scoringConcernAnnotations = null;
     private Hashtable<String, List<String>> valuesForEnumAnnotation = null;
     private BisqueDataFiles bisqueDataFiles = null;
+    private DataFilter dataFilter = null;
 
     public BisqueDataSource(String sessionsRoot){
         wsClient = new BisqueWSClientImpl();
@@ -106,6 +114,7 @@ public class BisqueDataSource implements DataSource {
                 if (null == annotations){
                     annotations = this.wsClient.getAnnotationsForImage(imageResource_uniq);
                     this.bisqueDataFiles.persistAnnotationsForImage(annotations, imageResource_uniq);
+                    createNormalizedImageFile(bi, annotations);
                 }
                 annotationsForImageIdHash.put(imageResource_uniq, annotations);
                 pp.updateProgress(processName, 0.1 + (percentProgressPerImage * curCount));
@@ -197,9 +206,7 @@ public class BisqueDataSource implements DataSource {
             for (BisqueImage image : this.bisqueImagesForCurrentDataset){
                 String id = image.getResourceUniq();
                 List<BisqueAnnotation> annotations = annotationsForImageIdHash.get(id);
-                for (BisqueAnnotation annotation : annotations){
-                    totalCount++;
-                }
+                totalCount += annotations.size();
             }
             double increment = 1.0 / totalCount;
             List<String> typesSeen = new ArrayList<String>();
@@ -218,7 +225,7 @@ public class BisqueDataSource implements DataSource {
                         else {
                             List<String> values = this.bisqueDataFiles.loadAnnotationValueOptions(annotation.getName(), annotationTypeValue);
                             if (null == values){
-                                values = this.wsClient.getAnnotationValueOptions(annotationTypeValue);
+                                values = this.wsClient.getAnnotationValueOptions(annotation.getName(),annotationTypeValue);
                                 this.bisqueDataFiles.persistAnnotationValueOptions(annotation.getName(), annotationTypeValue, values);
                             }
                             this.valuesForEnumAnnotation.put(annotation.getName(), values);
@@ -241,6 +248,7 @@ public class BisqueDataSource implements DataSource {
     public String getDatasetSummaryText() {        
         StringBuilder sb = new StringBuilder();
         sb.append("Dataset: " + this.chosenDataset.getName() + NL);
+        //this.bisqueDataFiles.
         sb.append(" add some more text" + NL);
         
         sb.append(NL);
@@ -248,14 +256,14 @@ public class BisqueDataSource implements DataSource {
     }
     @Override
     public AvatolCVDataFiles getAvatolCVDataFiles() {
-        // TODO Auto-generated method stub
-        return null;
+        return (AvatolCVDataFiles)this.bisqueDataFiles;
     }
     @Override
     public DataFilter getDataFilter(String specificSessionDir)
             throws AvatolCVException {
-        // TODO Auto-generated method stub
-        return null;
+        this.dataFilter = new DataFilter(AvatolCVFileSystem.getSessionDir());
+        
+        return this.dataFilter;
     }
     @Override
     public void acceptFilter() {
@@ -265,5 +273,18 @@ public class BisqueDataSource implements DataSource {
     @Override
     public String getName() {
         return "bisque";
+    }
+   
+    public void createNormalizedImageFile(BisqueImage bi,List<BisqueAnnotation> annotations) throws AvatolCVException {
+        String imageId = bi.getResourceUniq();
+        String mediaMetadataFilename = AvatolCVFileSystem.getMediaMetadataFilename(AvatolCVFileSystem.getNormalizedImageInfoDir(), imageId);
+        Properties p = new Properties();
+        for (BisqueAnnotation ba : annotations){
+            String name = ba.getName();
+            String value = ba.getValue();
+            p.setProperty(name,  value);
+        }
+        String path = AvatolCVFileSystem.getNormalizedImageInfoDir() + FILESEP + mediaMetadataFilename;
+        bisqueDataFiles.persistNormalizedImageFile(path, p);
     }
 }

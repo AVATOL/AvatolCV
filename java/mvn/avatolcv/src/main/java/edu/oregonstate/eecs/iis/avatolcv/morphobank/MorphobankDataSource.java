@@ -285,8 +285,8 @@ public class MorphobankDataSource implements DataSource {
                     	if (null == annotationsForCell){
                     		annotationsForCell = robustAnnotationDataDownload(pp, matrixID, charID, taxonID , mediaID, processName);
                     		this.mbDataFiles.persistAnnotationsForCell(annotationsForCell, charID, taxonID, mediaID);
+                            createNormalizedImageFile(mi,character, taxon, charStatesForCell, annotationsForCell);
                     	}
-                    	createNormalizedImageFile(mi,character, taxon, charStatesForCell, annotationsForCell);
                     }
                     mediaInfoForCellHash.put(key, mediaInfosForCell);
                     curCount++;
@@ -351,28 +351,10 @@ public class MorphobankDataSource implements DataSource {
     	throw new AvatolCVException("no charState name for given charStateID");
     }
     
-    public String getMediaMetadataFilename(String parentDir, String mediaID)  throws AvatolCVException {
-    	File f = new File(parentDir);
-    	if (!f.isDirectory()){
-    		throw new AvatolCVException("normailzed media dir does not exist : " + parentDir);
-    	}
-    	File[] files = f.listFiles();
-    	int count = 0;
-    	for (File existingMediaFile : files){
-    		String filename = existingMediaFile.getName();
-    		String[] parts = filename.split("\\.");
-    		String root = parts[0];
-    		String[] rootParts = root.split("_");
-    		String curMediaID = rootParts[0];
-    		if (mediaID.equals(curMediaID)){
-    			count++;
-    		}
-    	}
-    	return mediaID + "_" + (count + 1) + ".txt";
-    }
+    
     public void createNormalizedImageFile(MBMediaInfo mi,MBCharacter character, MBTaxon taxon, List<MBCharStateValue> charStatesForCell, List<MBAnnotation> annotationsForCell) throws AvatolCVException {
     	String mediaID = mi.getMediaID();
-    	String mediaMetadataFilename = getMediaMetadataFilename(AvatolCVFileSystem.getNormalizedImageInfoDir(), mediaID);
+    	String mediaMetadataFilename = AvatolCVFileSystem.getMediaMetadataFilename(AvatolCVFileSystem.getNormalizedImageInfoDir(), mediaID);
     	Properties p = new Properties();
     	String characterKey = "character:" + character.getCharID() + "|" + character.getCharName();
     	String characterValue = "characterState:";
@@ -510,8 +492,5 @@ public class MorphobankDataSource implements DataSource {
     public String getName() {
         return "morphobank";
     }
-	@Override
-	public AvatolCVDataFiles getDataFiles() {
-		return (AvatolCVDataFiles)this.mbDataFiles;
-	}
+	
 }

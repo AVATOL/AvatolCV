@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.core;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Hashtable;
@@ -11,8 +12,31 @@ public class NormalizedImageInfo {
     //taxon=773126|Artibeus jamaicensis
     //view=8905|Skull - ventral annotated teeth
     Hashtable<String, Object> keyValueHash = new Hashtable<String, Object>();
-    private static final String KEY_ANNOTATION = "avcv_annotation";
+    private static final String KEY_ANNOTATION         = "avcv_annotation";
+    private static final String KEY_SCORING_CONFIDENCE = "avcv_scoringConfidence";
+    private static final String KEY_SCORE              = "avcv_score";
+    private static final String KEY_TRUTH              = "avcv_truth";
+    private static final String KEY_IMAGE_NAME         = "avcv_imageName";
+    private static final String KEY_TRAINING_VS_TEST_CONCERN_VALUE  = "avcv_trainingVsTestConcernValue";
     public NormalizedImageInfo(String path) throws AvatolCVException {
+        loadNormalizedInfoFromPath(path, "Problem loading Normalized Image Info file: ");
+    }
+    
+    public class IdAndNameValue{
+        private String id = null;
+        private String name = null;
+        public IdAndNameValue(String id, String name){
+            this.id = id;
+            this.name = name;
+        }
+        public String getID(){
+            return this.id;
+        }
+        public String getName(){
+            return this.name;
+        }
+    }
+    private void loadNormalizedInfoFromPath(String path, String errorMessage)throws AvatolCVException {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path));
             String line = null;
@@ -49,32 +73,32 @@ public class NormalizedImageInfo {
             reader.close();
         }
         catch(IOException ioe){
-            throw new AvatolCVException("Problem loading Normalized Image Info file " + path);
-        }
-    }
-    
-    public class IdAndNameValue{
-        private String id = null;
-        private String name = null;
-        public IdAndNameValue(String id, String name){
-            this.id = id;
-            this.name = name;
-        }
-        public String getID(){
-            return this.id;
-        }
-        public String getName(){
-            return this.name;
+            throw new AvatolCVException(errorMessage + path);
         }
     }
     public void overlayInfoFromFile(String path) throws AvatolCVException {
-        LEFT OFF HERE
+        loadNormalizedInfoFromPath(path, "Problem loading overlay Info file: ");
     }
     public boolean isScored(){
         return false;
     }
     public boolean isTraining(){
         return false;
+    }
+    public String getScoringConfidence(){
+        return (String)keyValueHash.get(KEY_SCORING_CONFIDENCE);
+    }
+    public String getScore(){
+        return (String)keyValueHash.get(KEY_SCORE);
+    }
+    public String getTruth(){
+        return (String)keyValueHash.get(KEY_TRUTH);
+    }
+    public String getImageName(){
+        return (String)keyValueHash.get(KEY_IMAGE_NAME);
+    }
+    public String getTrainingVsTestName(){
+        return (String)keyValueHash.get(KEY_TRAINING_VS_TEST_CONCERN_VALUE);
     }
     private void loadAvatolCVKeyedLine(String line) throws AvatolCVException {
         String[] parts = line.split("=");

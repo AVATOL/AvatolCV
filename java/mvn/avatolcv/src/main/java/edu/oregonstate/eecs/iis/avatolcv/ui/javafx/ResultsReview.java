@@ -11,6 +11,7 @@ import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -74,8 +75,54 @@ public class ResultsReview {
             HBox scoredImageHBox = getScoredImageHBox(si);
             scoredImagesVBox.getChildren().add(scoredImageHBox);
         }
+        scoredImagesVBox.requestLayout();
     }
     private HBox getScoredImageHBox(NormalizedImageInfo si){
+        HBox hb = new HBox();
+        // get the image
+        ImageView iv = new ImageView();
+        hb.getChildren().add(iv);
+        
+        // get trainingVsTestConcern
+        String trainingVsTestName = si.getTrainingVsTestName();
+        Label trainingVsTestLabel = new Label(" ");
+        if (null != trainingVsTestName){
+            trainingVsTestLabel.setText(trainingVsTestName);
+            hb.getChildren().add(trainingVsTestLabel);
+        }
+        
+        
+        // get image name
+        String imageName = si.getImageName();
+        Label imageNameLabel = new Label(" name? ");
+        if (null != imageName){
+            imageNameLabel.setText(imageName);
+        }
+        hb.getChildren().add(imageNameLabel);
+        
+        // get truth
+        String truth = si.getTruth();
+        Label truthLabel = new Label(" truth? ");
+        if (null != truth){
+            truthLabel.setText(truth);
+        }
+        hb.getChildren().add(truthLabel);
+        
+        // get score
+        String score = si.getScore();
+        Label scoreLabel = new Label(" score? ");
+        if (null != score){
+            scoreLabel.setText(score);
+        }
+        hb.getChildren().add(scoreLabel);
+        
+        // get confidence
+        String confidence = si.getScoringConfidence();
+        Label confidenceLabel = new Label(" conf? ");
+        if (null != confidence){
+            confidenceLabel.setText(confidence);
+        }
+        hb.getChildren().add(confidenceLabel);
         return null;
     }
     private void setRunDetails(String runID) throws AvatolCVException {

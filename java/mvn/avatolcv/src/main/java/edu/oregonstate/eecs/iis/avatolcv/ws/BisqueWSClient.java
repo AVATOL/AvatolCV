@@ -13,7 +13,7 @@ public interface BisqueWSClient {
 	
 	public List<BisqueImage> getImagesForDataset(String datasetResource_uniq) throws BisqueWSException;
 	public List<BisqueAnnotation> getAnnotationsForImage(String imageResource_uniq) throws BisqueWSException;
-    public List<String> getAnnotationValueOptions(String annotationTypeValue) throws BisqueWSException;
+    public List<String> getAnnotationValueOptions(String annotationName, String annotationTypeValue) throws BisqueWSException;
 
 	public boolean downloadImageOfWidth(String imageResource_uniq, int width, String dirToSaveTo, String imageNameRoot) throws BisqueWSException ;
 	

@@ -594,7 +594,7 @@ public class BisqueWSClientImpl implements BisqueWSClient {
         String xmlString = response.readEntity(String.class);
         return xmlString;
 	}
-	public List<String> getAnnotationValueOptions(String annotationTypeValue) throws BisqueWSException {
+	public List<String> getAnnotationValueOptions(String annotationName, String annotationTypeValue) throws BisqueWSException {
 		List<String> annotationValues = new ArrayList<String>();
 		try {
 			/*
@@ -641,12 +641,12 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 					selectChoices = property.getValue();
 					String[] parts = selectChoices.split(",");
 					for (String part: parts){
-						annotationValues.add(part);
+						annotationValues.add(part.trim());
 					}
 				}
 			}
 			if (selectChoices == null){
-				throw new BisqueWSException("couldn't find values for character " + annotationTypeValue);
+				// no values means that its not an enumerated set of values.  For now , let's not complain.
 			}
 		}
 		catch(@SuppressWarnings("restriction") JAXBException je){

@@ -25,6 +25,5 @@ public interface DataSource {
     AvatolCVDataFiles getAvatolCVDataFiles();
     DataFilter getDataFilter(String specificSessionDir)  throws AvatolCVException;
     void acceptFilter();
-    AvatolCVDataFiles getDataFiles();
     //void setStandard
 }

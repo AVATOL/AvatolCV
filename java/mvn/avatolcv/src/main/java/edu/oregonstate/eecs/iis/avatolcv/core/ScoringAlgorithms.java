@@ -34,8 +34,8 @@ public class ScoringAlgorithms {
         radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT, "Score texture aspects a specimen");
         
         //addAlgorithm(SHELL_BATSKULL, ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE, ScoringScope.MULTIPLE_ITEM, LaunchThrough.OTHER, "invoke_batskull_system", true, "bogusDir");
-        addAlgorithm("LEAF", ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT,ScoringScope.SINGLE_ITEM, LaunchThrough.OTHER,  "tbd", false, "bogusDir");
-        addAlgorithm("CRF", ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT,ScoringScope.SINGLE_ITEM, LaunchThrough.OTHER,  "tbd", false, "bogusDir");
+        //addAlgorithm("LEAF", ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT,ScoringScope.SINGLE_ITEM, LaunchThrough.OTHER,  "tbd", false, "bogusDir");
+        //addAlgorithm("CRF", ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT,ScoringScope.SINGLE_ITEM, LaunchThrough.OTHER,  "tbd", false, "bogusDir");
     }
     public static ScoringScope getScopeForScopePropertiesValue(String val){
         if (ScoringScope.SINGLE_ITEM.name().equals(val)){

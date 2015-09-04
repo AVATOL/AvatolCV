@@ -109,6 +109,9 @@ public class SessionInfo{
 	}
 	public void setScoringAlgInfo(ScoringAlgorithms.ScoringSessionFocus focus, String algName) throws AvatolCVException {
 	    this.scoringAlgorithmProperties = this.algorithmModules.getAlgPropertiesForAlgName(algName, AlgorithmModules.AlgType.SCORING);
+	    if (null == this.scoringAlgorithmProperties){
+	        throw new AvatolCVException("problem loading algorithm properties for scoring algorithm : " + algName);
+	    }
 	    this.scoringScope = ScoringAlgorithms.getScopeForScopePropertiesValue(this.scoringAlgorithmProperties.getProperty(AlgorithmProperties.PROPERTY_SCORING_SCOPE));
 	    this.scoringFocus = focus;
 	}

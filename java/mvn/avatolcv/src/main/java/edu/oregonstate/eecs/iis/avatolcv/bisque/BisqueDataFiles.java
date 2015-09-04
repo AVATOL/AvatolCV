@@ -30,13 +30,18 @@ public class BisqueDataFiles extends AvatolCVDataFiles {
             BufferedWriter writer = new BufferedWriter(new FileWriter(path));
             writer.write("#  imageResource_uniq: " + imageResource_uniq + NL);
             for (BisqueAnnotation ba : annotations){
-                String value = ba.getValue();
                 String name = ba.getName();
+                String value = ba.getValue();
+                String type = ba.getType();
+                String created = ba.getCreated();
+                String owner = ba.getOwner();
+                String permission = ba.getPermission();
+                String uri = ba.getUri();
                 if (name.equals("filename") || name.equalsIgnoreCase("upload_datetime")){
                     // skip these
                 }
                 else {
-                    writer.write("name=" + name + ",value=" + value  + NL);
+                    writer.write("name=" + name + ",value=" + value  + ",type=" + type + ",created=" + created + ",owner=" + owner + ",permission=" + permission + ",uri=" + uri + NL);
                 }
             }
             writer.close();
@@ -61,19 +66,28 @@ public class BisqueDataFiles extends AvatolCVDataFiles {
                         String[] parts = line.split(",");
                         String nameInfo = parts[0];
                         String valueInfo = parts[1];
-                        String[] nameInfoParts = nameInfo.split("=");
-                        String[] valueInfoParts = valueInfo.split("=");
-                        String name = "";
-                        if (nameInfoParts.length > 1){
-                            name = nameInfoParts[1];
-                        }
-                        String value = "";
-                        if (valueInfoParts.length > 1){
-                            value = valueInfoParts[1];
-                        }
+                        String typeInfo = parts[2];
+                        String createdInfo = parts[3];
+                        String ownerInfo = parts[4];
+                        String permissionInfo = parts[5];
+                        String uriInfo = parts[6];
+                        
+                        String name = getValueFromKeyValueString(nameInfo);
+                        String value = getValueFromKeyValueString(valueInfo);
+                        String type = getValueFromKeyValueString(typeInfo);
+                        String created = getValueFromKeyValueString(createdInfo);
+                        String owner = getValueFromKeyValueString(ownerInfo);
+                        String permission = getValueFromKeyValueString(permissionInfo);
+                        String uri = getValueFromKeyValueString(uriInfo);
+
                         BisqueAnnotation ba = new BisqueAnnotation();
                         ba.setName(name);
                         ba.setValue(value);
+                        ba.setType(type);
+                        ba.setCreated(created);
+                        ba.setOwner(owner);
+                        ba.setPermission(permission);
+                        ba.setUri(uri);
                         annotations.add(ba);
                     }
                 }
@@ -87,6 +101,14 @@ public class BisqueDataFiles extends AvatolCVDataFiles {
             return annotations;
         }
         return null;
+    }
+    public String getValueFromKeyValueString(String s){
+        String value = "";
+        String[] parts = s.split("=");
+        if (parts.length > 1){
+            value = parts[1];
+        }
+        return value;
     }
     public List<String> loadAnnotationValueOptions(String name, String annotationTypeValue)throws AvatolCVException {
         List<String> values = new ArrayList<String>();
@@ -136,7 +158,8 @@ public class BisqueDataFiles extends AvatolCVDataFiles {
     }
     public String getPathForAnnotationInfo(String name, String annotationType) throws AvatolCVException {
         String annotationInfoRootDir = getAnnotationInfoDir();
-        String path = annotationInfoRootDir + FILESEP + name + "_" + annotationType + ".txt";
+        //String path = annotationInfoRootDir + FILESEP + name + "_" + annotationType + ".txt";
+        String path = annotationInfoRootDir + FILESEP + name + ".txt";
         return path;
     }
 }
