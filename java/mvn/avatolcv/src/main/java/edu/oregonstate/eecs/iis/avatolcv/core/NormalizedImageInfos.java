@@ -27,11 +27,9 @@ public class NormalizedImageInfos {
                 String path = f.getAbsolutePath();
                 String filename = f.getName();
                 NormalizedImageInfo nii = new NormalizedImageInfo(path);
-                String pathOfSessionOverlay = sessionNormPath + FILESEP + filename;
-                File overlayFile = new File(pathOfSessionOverlay);
-                if (overlayFile.exists()){
-                    nii.overlayInfoFromFile(overlayFile.getAbsolutePath());
-                }
+                String pathOfScoreFile = sessionNormPath + FILESEP + filename;
+                nii.setScoreFile(pathOfScoreFile);
+                
                 normIIs.add(nii);
             }
         }
@@ -44,16 +42,18 @@ public class NormalizedImageInfos {
             if (nii.isScored()){
                 scoredImages.add(nii);
             }
-            else if (nii.isTraining()){
-                trainingImages.add(nii);
-            }
             else {
-                throw new AvatolCVException("NormalizedImageInfo is neither scored or training " + nii);
+                trainingImages.add(nii);
             }
         }
     }
-    public List<NormalizedImageInfo> getScoredImages(){
+    public List<NormalizedImageInfo> getScoredImages(String scoringConcern){
         List<NormalizedImageInfo> result = new ArrayList<NormalizedImageInfo>();
+        for (NormalizedImageInfo nii: scoredImages){
+            if (nii.hasScoringConcern(scoringConcern)){
+                result.add(nii);
+            }
+        }
         return result;
     }
 }

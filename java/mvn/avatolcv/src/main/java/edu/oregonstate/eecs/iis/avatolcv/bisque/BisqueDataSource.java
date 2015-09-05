@@ -115,7 +115,7 @@ public class BisqueDataSource implements DataSource {
                 if (null == annotations){
                     annotations = this.wsClient.getAnnotationsForImage(imageResource_uniq);
                     this.bisqueDataFiles.persistAnnotationsForImage(annotations, imageResource_uniq);
-                    createNormalizedImageFile(bi, annotations);
+                    createNormalizedImageFile(bi, annotations, scoringConcernAnnotations);
                 }
                 annotationsForImageIdHash.put(imageResource_uniq, annotations);
                 pp.updateProgress(processName, 0.1 + (percentProgressPerImage * curCount));
@@ -134,7 +134,7 @@ public class BisqueDataSource implements DataSource {
         //this.bisqueDataFiles.setDatasetDirname(di.getName());
     }
     @Override
-    public List<ChoiceItem> getScoringConcernItems(ScoringAlgorithms.ScoringScope scoringScope, ScoringAlgorithms.ScoringSessionFocus scoringFocus)
+    public List<ChoiceItem> getScoringConcernOptions(ScoringAlgorithms.ScoringScope scoringScope, ScoringAlgorithms.ScoringSessionFocus scoringFocus)
             throws AvatolCVException {
         List<ChoiceItem> items = new ArrayList<ChoiceItem>();
         List<String> annotationNames = new ArrayList<String>();
@@ -279,7 +279,7 @@ public class BisqueDataSource implements DataSource {
         return "bisque";
     }
    
-    public void createNormalizedImageFile(BisqueImage bi,List<BisqueAnnotation> annotations) throws AvatolCVException {
+    public void createNormalizedImageFile(BisqueImage bi,List<BisqueAnnotation> annotations, List<String> chosenScoringConcerns) throws AvatolCVException {
         String imageId = bi.getResourceUniq();
         String mediaMetadataFilename = AvatolCVFileSystem.getMediaMetadataFilename(AvatolCVFileSystem.getNormalizedImageInfoDir(), imageId);
         Properties p = new Properties();
@@ -291,6 +291,13 @@ public class BisqueDataSource implements DataSource {
             else if (name.equals("upload_datetime")){
                 name = NormalizedImageInfo.KEY_TIMESTAMP;
             }
+            for (String s : chosenScoringConcerns){
+                if (name.equals(s)){
+                    p.setProperty(NormalizedImageInfo.KEY_SCORING_CONCERN_LOCATION, name+":key");
+                    p.setProperty(NormalizedImageInfo.KEY_SCORING_VALUE_LOCATION, name+":value");
+                }
+            }
+            
             String value = ba.getValue();
             p.setProperty(name,  value);
         }

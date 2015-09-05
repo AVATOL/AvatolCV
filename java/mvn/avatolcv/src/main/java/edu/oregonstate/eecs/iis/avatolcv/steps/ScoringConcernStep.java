@@ -21,7 +21,7 @@ public class ScoringConcernStep implements Step {
         this.sessionInfo = sessionInfo;
     }
     public List<ChoiceItem> getScoringConcernItems() throws AvatolCVException {
-        return this.sessionInfo.getDataSource().getScoringConcernItems(this.sessionInfo.getScoringScope(), this.sessionInfo.getScoringFocus());
+        return this.sessionInfo.getDataSource().getScoringConcernOptions(this.sessionInfo.getScoringScope(), this.sessionInfo.getScoringFocus());
     }
  
     public ScoringAlgorithms getScoringAlgorithms(){

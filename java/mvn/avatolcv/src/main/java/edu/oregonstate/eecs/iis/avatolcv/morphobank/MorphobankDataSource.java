@@ -174,7 +174,7 @@ public class MorphobankDataSource implements DataSource {
         return result;
     }
     @Override
-    public List<ChoiceItem> getScoringConcernItems(ScoringAlgorithms.ScoringScope scoringScope, ScoringAlgorithms.ScoringSessionFocus scoringFocus) throws AvatolCVException{
+    public List<ChoiceItem> getScoringConcernOptions(ScoringAlgorithms.ScoringScope scoringScope, ScoringAlgorithms.ScoringSessionFocus scoringFocus) throws AvatolCVException{
         if (scoringScope == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
             // select all appropriate for case
             if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE){
@@ -286,7 +286,7 @@ public class MorphobankDataSource implements DataSource {
                     	if (null == annotationsForCell){
                     		annotationsForCell = robustAnnotationDataDownload(pp, matrixID, charID, taxonID , mediaID, processName);
                     		this.mbDataFiles.persistAnnotationsForCell(annotationsForCell, charID, taxonID, mediaID);
-                            createNormalizedImageFile(mi,character, taxon, charStatesForCell, annotationsForCell);
+                            createNormalizedImageFile(mi,character, taxon, charStatesForCell, annotationsForCell, this.chosenCharacters);
                     	}
                     }
                     mediaInfoForCellHash.put(key, mediaInfosForCell);
@@ -353,8 +353,11 @@ public class MorphobankDataSource implements DataSource {
     }
     
     
-    public void createNormalizedImageFile(MBMediaInfo mi,MBCharacter character, MBTaxon taxon, List<MBCharStateValue> charStatesForCell, List<MBAnnotation> annotationsForCell) throws AvatolCVException {
-    	String mediaID = mi.getMediaID();
+    public void createNormalizedImageFile(MBMediaInfo mi,MBCharacter character, MBTaxon taxon, List<MBCharStateValue> charStatesForCell, List<MBAnnotation> annotationsForCell, List<MBCharacter> chosenScoringConcerns) throws AvatolCVException {
+    	
+        // FIXME - need to rework/simplify the format of these files as per 9/4/2015 decisions, and also add in the new avcv_scoringConcernLocation, avcv_scoreValueLocation keys using chosenScoringConcerns.
+        
+        String mediaID = mi.getMediaID();
     	String mediaMetadataFilename = AvatolCVFileSystem.getMediaMetadataFilename(AvatolCVFileSystem.getNormalizedImageInfoDir(), mediaID);
     	Properties p = new Properties();
     	String characterKey = "character:" + character.getCharID() + "|" + character.getCharName();

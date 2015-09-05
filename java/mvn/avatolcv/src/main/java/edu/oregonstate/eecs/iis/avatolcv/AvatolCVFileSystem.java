@@ -181,7 +181,7 @@ public class AvatolCVFileSystem {
         //C:\jed\avatol\git\avatol_cv\sessions\AVAToL Computer Vision Matrix\20151023_02\imageInfo
         RunSummary rs = new RunSummary(runID);
         String dataset = rs.getDataset();
-        String path = sessionsDir + FILESEP + dataset + FILESEP + runID + FILESEP + "imageInfo";
+        String path = sessionsDir + FILESEP + dataset + FILESEP + runID + FILESEP + "scoreInfo";
         return path;
     }
 	public static String getNormalizedImageInfoDir() throws AvatolCVException {

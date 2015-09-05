@@ -61,23 +61,24 @@ public class ResultsReview {
                 n.setCache(false);
             }
             setRunDetails(this.runID);
-            setScoredImagesInfo(this.runID);
+            setScoredImagesInfo(this.runID, scoringConcernValue.getText());
             //runDetailsAccordion.requestLayout();
         }
         catch(Exception e){
             throw new AvatolCVException(e.getMessage(),e);
         }
     }
-    private void setScoredImagesInfo(String runID) throws AvatolCVException {
+    private void setScoredImagesInfo(String runID, String scoringConcernValue) throws AvatolCVException {
+        scoredImagesVBox.getChildren().clear();
         NormalizedImageInfos normalizedImageInfos = new NormalizedImageInfos(runID);
-        List<NormalizedImageInfo> scoredImages = normalizedImageInfos.getScoredImages();
+        List<NormalizedImageInfo> scoredImages = normalizedImageInfos.getScoredImages(scoringConcernValue);
         for (NormalizedImageInfo si : scoredImages){
             HBox scoredImageHBox = getScoredImageHBox(si);
             scoredImagesVBox.getChildren().add(scoredImageHBox);
         }
         scoredImagesVBox.requestLayout();
     }
-    private HBox getScoredImageHBox(NormalizedImageInfo si){
+    private HBox getScoredImageHBox(NormalizedImageInfo si) throws AvatolCVException {
         HBox hb = new HBox();
         // get the image
         ImageView iv = new ImageView();
@@ -101,16 +102,16 @@ public class ResultsReview {
         hb.getChildren().add(imageNameLabel);
         
         // get truth
-        String truth = si.getTruth();
-        Label truthLabel = new Label(" truth? ");
+        String truth = si.getTruthValue();
+        Label truthLabel = new Label();
         if (null != truth){
             truthLabel.setText(truth);
         }
         hb.getChildren().add(truthLabel);
         
         // get score
-        String score = si.getScore();
-        Label scoreLabel = new Label(" score? ");
+        String score = si.getScoreValue();
+        Label scoreLabel = new Label();
         if (null != score){
             scoreLabel.setText(score);
         }
