@@ -28,6 +28,7 @@ public class NormalizedImageInfo {
     public static final String KEY_SCORING_VALUE_LOCATION = RESERVED_PREFIX + "scoreValueLocation";
     private ScoreIndex scoreIndexForBaseFile = new ScoreIndex();
     private ScoreIndex scoreIndexForScoreFile = new ScoreIndex();
+    private String imageName = "?";
     public NormalizedImageInfo(String path) throws AvatolCVException {
         loadNormalizedInfoFromPath(path, "Problem loading Normalized Image Info file: ", keyValueHash, scoreIndexForBaseFile);
     }
@@ -84,15 +85,48 @@ public class NormalizedImageInfo {
     }
     
     public boolean hasScoringConcern(String scoringConcern){
-        return false;//FIXME
+    	// as reminder, this is what feeds the scoring index object
+    	//avcv_scoringConcernLocation=leaf apex angle:key
+    	//avcv_scoreValueLocation=leaf apex angle:value
+    	String scoringConcernKey = this.scoreIndexForScoreFile.getkeyForScoringConcernName();
+    	String keyOrValue = this.scoreIndexForScoreFile.isScoringConcernNameTheKeyOrValue();
+    	if (keyOrValue.equals("key")){
+    		// compare the key
+    		if (scoringConcernKey.equals(scoringConcern)){
+    			return true;
+    		}
+    		else{
+    			return false;
+    		}
+    	}
+    	else {
+    		// compare value to given scoringConcern string
+    		Object valueObject = scoreHash.get(scoringConcernKey);
+    		String value = "?";
+    		if (valueObject instanceof ValueIDandName){
+        		ValueIDandName vin = (ValueIDandName)valueObject;
+        		value = vin.getName();
+        	}
+    		else {
+    			value = (String)valueObject;
+    		}
+    		if (value.equals(scoringConcern)){
+    			return true;
+    		}
+    		else {
+    			return false;
+    		}
+    	}
+    	
+    	
     }
     public void setScoreFile(String path) throws AvatolCVException {
         File scoreFile = new File(path);
         if (scoreFile.exists()){
             loadNormalizedInfoFromPath(scoreFile.getAbsolutePath(), "Problem loading score info file: ", scoreHash, scoreIndexForScoreFile);
-            if (!scoreIndexForScoreFile.equals(scoreIndexForBaseFile)){
-                throw new AvatolCVException("The base file and the score file should have the same scoreIndex values: " + path);
-            }
+            //if (!scoreIndexForScoreFile.equals(scoreIndexForBaseFile)){
+            //    throw new AvatolCVException("The base file and the score file should have the same scoreIndex values: " + path);
+            //}
         }
     }
     public boolean isScored(){
@@ -141,10 +175,10 @@ public class NormalizedImageInfo {
         return result;
     }
     public String getTruthValue() throws AvatolCVException {
-        return getValue(keyValueHash, scoreIndexForBaseFile);
+        return getValue(keyValueHash, scoreIndexForScoreFile);
     }
     public String getImageName(){
-        return (String)keyValueHash.get(KEY_IMAGE_NAME);
+        return this.imageName;
     }
     public String getTrainingVsTestName(){
         return (String)keyValueHash.get(KEY_TRAINING_VS_TEST_CONCERN_VALUE);
@@ -155,6 +189,9 @@ public class NormalizedImageInfo {
         String value = parts[1];
         if (key.equals(KEY_ANNOTATION)){
             loadAnnotationLine(key, value);
+        }
+        else if (key.equals(KEY_IMAGE_NAME)){
+        	imageName = value;
         }
         else {
             //ignore;

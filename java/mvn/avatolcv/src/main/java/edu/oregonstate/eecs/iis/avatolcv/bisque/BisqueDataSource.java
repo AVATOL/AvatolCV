@@ -291,12 +291,13 @@ public class BisqueDataSource implements DataSource {
             else if (name.equals("upload_datetime")){
                 name = NormalizedImageInfo.KEY_TIMESTAMP;
             }
-            for (String s : chosenScoringConcerns){
-                if (name.equals(s)){
-                    p.setProperty(NormalizedImageInfo.KEY_SCORING_CONCERN_LOCATION, name+":key");
-                    p.setProperty(NormalizedImageInfo.KEY_SCORING_VALUE_LOCATION, name+":value");
-                }
-            }
+            // don't know scoring concern yet, so just use the ScoreIndex from the score file
+            //for (String s : chosenScoringConcerns){
+            //    if (name.equals(s)){
+            //        p.setProperty(NormalizedImageInfo.KEY_SCORING_CONCERN_LOCATION, name+":key");
+            //        p.setProperty(NormalizedImageInfo.KEY_SCORING_VALUE_LOCATION, name+":value");
+            //    }
+            //}
             
             String value = ba.getValue();
             p.setProperty(name,  value);

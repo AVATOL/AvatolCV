@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -31,7 +32,7 @@ public class ResultsReview {
     public Label scoringConcernValue = null;
     public Label dataSourceValue = null;
     public Label scoringAlgorithmValue = null;
-    public VBox scoredImagesVBox = null;
+    public GridPane scoredImagesGridPane = null;
     public VBox trainingImagesVBox = null;
     private AvatolCVExceptionExpresser exceptionExpresser = null;
     private Stage mainWindow = null;
@@ -69,29 +70,48 @@ public class ResultsReview {
         }
     }
     private void setScoredImagesInfo(String runID, String scoringConcernValue) throws AvatolCVException {
-        scoredImagesVBox.getChildren().clear();
+    	scoredImagesGridPane.getChildren().clear();
+        addScoredImagesHeader(scoredImagesGridPane);
         NormalizedImageInfos normalizedImageInfos = new NormalizedImageInfos(runID);
         List<NormalizedImageInfo> scoredImages = normalizedImageInfos.getScoredImages(scoringConcernValue);
-        for (NormalizedImageInfo si : scoredImages){
-            HBox scoredImageHBox = getScoredImageHBox(si);
-            scoredImagesVBox.getChildren().add(scoredImageHBox);
+        for (int i=0; i < scoredImages.size(); i++){
+        	addScoredImageToGridPaneRow(scoredImages.get(i), scoredImagesGridPane, i+1);
         }
-        scoredImagesVBox.requestLayout();
+        scoredImagesGridPane.requestLayout();
     }
-    private HBox getScoredImageHBox(NormalizedImageInfo si) throws AvatolCVException {
-        HBox hb = new HBox();
+    private void addScoredImagesHeader(GridPane gp){
+    	Label imageLabel = new Label("    ");
+    	gp.add(imageLabel, 0, 0);
+    	
+    	Label trainTestLabel = new Label("trainVsTest");
+    	gp.add(trainTestLabel, 1, 0);
+    	
+    	Label imageNameLabel = new Label("name");
+    	gp.add(imageNameLabel, 2, 0);
+    	
+    	Label truthLabel = new Label("truth");
+    	gp.add(truthLabel, 3, 0);
+    	
+    	Label scoreLabel = new Label("score");
+    	gp.add(scoreLabel, 4, 0);
+    	
+    	Label confidence = new Label("confidence");
+    	gp.add(confidence, 5, 0);
+    }
+    private void addScoredImageToGridPaneRow(NormalizedImageInfo si, GridPane gp, int row) throws AvatolCVException {
         // get the image
         ImageView iv = new ImageView();
-        hb.getChildren().add(iv);
-        
+        int column = 0;
+        gp.add(iv,column,row);
+        column++;
         // get trainingVsTestConcern
         String trainingVsTestName = si.getTrainingVsTestName();
         Label trainingVsTestLabel = new Label(" ");
         if (null != trainingVsTestName){
             trainingVsTestLabel.setText(trainingVsTestName);
-            hb.getChildren().add(trainingVsTestLabel);
+            gp.add(trainingVsTestLabel,column,row);
         }
-        
+        column++;
         
         // get image name
         String imageName = si.getImageName();
@@ -99,32 +119,31 @@ public class ResultsReview {
         if (null != imageName){
             imageNameLabel.setText(imageName);
         }
-        hb.getChildren().add(imageNameLabel);
-        
+        gp.add(imageNameLabel,column,row);
+        column++;
         // get truth
         String truth = si.getTruthValue();
         Label truthLabel = new Label();
         if (null != truth){
             truthLabel.setText(truth);
         }
-        hb.getChildren().add(truthLabel);
-        
+        gp.add(truthLabel,column,row);
+        column++;
         // get score
         String score = si.getScoreValue();
         Label scoreLabel = new Label();
         if (null != score){
             scoreLabel.setText(score);
         }
-        hb.getChildren().add(scoreLabel);
-        
+        gp.add(scoreLabel, column, row);
+        column++;
         // get confidence
         String confidence = si.getScoringConfidence();
         Label confidenceLabel = new Label(" conf? ");
         if (null != confidence){
             confidenceLabel.setText(confidence);
         }
-        hb.getChildren().add(confidenceLabel);
-        return null;
+        gp.add(confidenceLabel,column, row);
     }
     private void setRunDetails(String runID) throws AvatolCVException {
         RunSummary rs = new RunSummary(runID);
