@@ -96,13 +96,13 @@ public class JavaFXStepSequencer  {
         SummaryFilterStepController summaryFilterStepController = new SummaryFilterStepController(summaryFilterStep, "SummaryFilterStep.fxml");
         controllerForStep.put(summaryFilterStep, summaryFilterStepController);
         addLabelForStep(summaryFilterStep,"Summary/Filter");
-        /*
-        MBImagePullStep imagePullStep = new MBImagePullStep(null, client, sessionData);
+        
+        ImagePullStep imagePullStep = new ImagePullStep(sessionInfo);
         ss.appendStep(imagePullStep);
-        MBImagePullStepController imagePullController = new MBImagePullStepController(this, imagePullStep, "MBImagePullStep.fxml");
+        ImagePullStepController imagePullController = new ImagePullStepController(imagePullStep, "ImagePullStep.fxml");
         controllerForStep.put(imagePullStep, imagePullController);
         addLabelForStep(imagePullStep,"Load Images");
-        
+        /*
         MBExclusionQualityStep exclusionQualityStep = new MBExclusionQualityStep(null, client, sessionData);
         ss.appendStep(exclusionQualityStep);
         MBExclusionQualityStepController qualityStepController = new MBExclusionQualityStepController(exclusionQualityStep, "MBExclusionQualityStepTile.fxml");
