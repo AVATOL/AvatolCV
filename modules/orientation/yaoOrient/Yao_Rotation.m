@@ -16,6 +16,7 @@ testlist = textscan(fileID, '%s');
 fclose(fileID);
 testlist = testlist{1};
 
+
 %% read the 'test' images MASK list into variable 'testlistMask'
 fileID = fopen(testImagesMaskFile);
 testlistMask = textscan(fileID, '%s');
@@ -26,7 +27,8 @@ testlistMask = testlistMask{1};
 % firstpath = testlist{1,1};
 % [folderpath,~,~] = fileparts(firstpath);
 addpath(inputImagesDir);
-
+mkdir(rotationOutputDir);
+addpath(rotationOutputDir);
 %% heuristically choose the Llenth-to-width threshold to choose rotation algorithms
 cutRatio = 1.6;
 
@@ -85,10 +87,12 @@ for i = 1:1:length(testlist)
     I_rotate_leave = I_rotate(corner_y:min(width,corner_y+corner_height),corner_x:min(height,corner_x+corner_width),:);
     Mask_rotate_leave = Mask_rotate(corner_y:min(width,corner_y+corner_height),corner_x:min(height,corner_x+corner_width));
     % imwrite(I_rotate, [train_path '/resizedIMAGE/' testlist{i,1} '_rotate.jpg']);
-    imwrite(I_rotate_leave, [rotationOutputDir '/Rotated/' name rotatedOrigImageSuffix ext]);
-    imwrite(Mask_rotate_leave, [rotationOutputDir '/Rotated/' nameMask rotatedMaskImageSuffix extMask]);     
-end
 
+    imwrite(I_rotate_leave, [rotationOutputDir '\' name rotatedOrigImageSuffix ext]);
+    imwrite(Mask_rotate_leave, [rotationOutputDir '\' nameMask rotatedMaskImageSuffix extMask]);     
+    
+end
+rmpath(rotationOutputDir);
 rmpath(folderpath);
 end
 

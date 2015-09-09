@@ -54,7 +54,7 @@ for i = 1:1:length(testlist)
     x = floor(x); y = floor(y);
     Mask_crop = Mask(y:y+h,x:x+l);
     Image = imread(fullpath);
-    Image_crop = Image(y:y+h,x:x+l);
+    Image_crop = Image(y:y+h,x:x+l,:);
     
     % write the Mask_crop and Image_crop to folder 'segmentationOutputDir'
 %     mkdir(segmentationOutputDir, 'test'); % talk with Jed ?!!!!
