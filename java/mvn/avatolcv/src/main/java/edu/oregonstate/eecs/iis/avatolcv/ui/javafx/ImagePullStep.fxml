@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox HBox.hgrow="ALWAYS">
+         <children>
+            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+            <Label text="Loading Image metadata" />
+            <ProgressBar fx:id="imageInfoDownloadProgress" prefWidth="400.0" progress="0.0" />
+            <Label fx:id="imageInfoDownloadMessage" />
+            <Label text=" " />
+            <Label text="Loading Images " />
+            <ProgressBar fx:id="imageFileDownloadProgress" prefWidth="400.0" progress="0.0" />
+            <Label fx:id="imageFileDownloadMessage" />
+            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+         </children>
+      </VBox>
+   </children>
+</HBox>
