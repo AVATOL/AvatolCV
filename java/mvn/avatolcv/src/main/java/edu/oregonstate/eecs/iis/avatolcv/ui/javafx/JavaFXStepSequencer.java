@@ -31,6 +31,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DataSourceStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DatasetChoiceStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.ImagePullStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.LoginStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SummaryFilterStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernStep;
