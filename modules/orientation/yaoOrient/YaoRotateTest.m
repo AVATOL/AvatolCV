@@ -10,7 +10,7 @@ function YaoRotateTest
     rotatedOrigImageSuffix = '_rotatedOrig';
     rotatedMaskImageSuffix = '_rotatedMask';
 %    rotationOutputDir = '/Users/jedirvine/av/avatol_cv/modules/orientation/yaoOrient/orientationOutput';
-    rotationOutputDir = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\orientationOutput';
+    rotationOutputDir = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\rotationOutput';
     
     Yao_Rotation(inputImagesDir, testImagesFile, testImagesMaskFile,rotatedOrigImageSuffix, rotatedMaskImageSuffix, rotationOutputDir);
     
@@ -23,6 +23,7 @@ function YaoRotateTest
     pathAlignmentShipped = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\alignmentShipped';
     alignOrigImageSuffix = '_alignOrig';
     aligndMaskImageSuffix = '_alignMask';
+    orientationOutputDir = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\orientationOutput';
     
     [test_predict, model] = Yao_alignment(pathAlignmentShipped, rotationOutputDir, rotatedOrigImageSuffix );
     
