@@ -8,6 +8,7 @@ function [] = Yao_Rotation(inputImagesDir, testImagesFile, testImagesMaskFile,ro
 %               rotatedMaskImageSuffix  : L1.png ->  L1rotatedMask.png 
 %               rotationOutputDir       : images directory to store rotated images (original and mask)
 %           output:
+%               testlist                : list of images that need to be aligned
 %               rotated images saved in 'rotationOutputDir'   
 
 %% read the 'test' images list into variable 'testlist'
@@ -93,6 +94,6 @@ for i = 1:1:length(testlist)
     
 end
 rmpath(rotationOutputDir);
-rmpath(folderpath);
+rmpath(inputImagesDir);
 end
 
