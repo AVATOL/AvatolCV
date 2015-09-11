@@ -144,6 +144,8 @@ public class AvatolCVFileSystem {
 	    ensureDir(getNormalizedDataDir());
 	    ensureDir(getNormalizedImageInfoDir());
         ensureDir(getNormalizedImageDir());
+        ensureDir(getNormalizedImagesLargeDir());
+        ensureDir(getNormalizedImagesThumbnailDir());
 	    setSpecializedDataDir();
 	}
 	public static String getDatasetDir() throws AvatolCVException {

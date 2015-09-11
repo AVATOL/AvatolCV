@@ -124,7 +124,7 @@ public class BisqueDataSource implements DataSource {
                 pp.updateProgress(processName, 0.1 + (percentProgressPerImage * curCount));
                 
             }
-            pp.setMessage(processName, "finished.  Click Next to continue.");
+            pp.setMessage(processName, "finished!");
         }
         catch(BisqueWSException e){
             e.printStackTrace();
@@ -309,8 +309,8 @@ public class BisqueDataSource implements DataSource {
         bisqueDataFiles.persistNormalizedImageFile(path, p);
     }
     @Override
-    public void downloadImages(ProgressPresenter pp) throws AvatolCVException {
-       this.bisqueImages = new BisqueImages(pp, wsClient, chosenDataset);
+    public void downloadImages(ProgressPresenter pp, String processName) throws AvatolCVException {
+       this.bisqueImages = new BisqueImages(pp, wsClient, chosenDataset, processName);
     }
 
 

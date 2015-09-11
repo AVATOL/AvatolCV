@@ -13,24 +13,23 @@ public class ImagePullStep implements Step {
     }
     @Override
     public void init() throws AvatolCVException {
-        // TODO Auto-generated method stub
+        // Tnothing to do
 
     }
 
     @Override
     public void consumeProvidedData() throws AvatolCVException {
-        // TODO Auto-generated method stub
+        // no input provided, just loading images
 
     }
 
     @Override
-    public boolean hasDataLoadPhase() {
-        // TODO Auto-generated method stub
+    public boolean hasFollowUpDataLoadPhase() {
         return false;
     }
 
     public void downloadImages(ImagePullStepController controller, String processName) throws AvatolCVException {
         DataSource dataSource = sessionInfo.getDataSource();
-        dataSource.downloadImages(controller);
+        dataSource.downloadImages(controller, processName);
     }
 }

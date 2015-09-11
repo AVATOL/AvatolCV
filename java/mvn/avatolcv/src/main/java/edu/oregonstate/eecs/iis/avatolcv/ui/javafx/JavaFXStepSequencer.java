@@ -228,8 +228,8 @@ public class JavaFXStepSequencer  {
     	
     	Step step = ss.getCurrentStep();
         StepController controller = controllerForStep.get(step);
-        if (step.hasDataLoadPhase()){
-            controller.configureUIForDataLoadPhase();
+        if (step.hasFollowUpDataLoadPhase()){
+            controller.configureUIForFollowUpDataLoadPhase();
         }
     	// delegate data consumption to background thread
     	NextStepTask task = new NextStepTask();
@@ -255,9 +255,9 @@ public class JavaFXStepSequencer  {
     	
     	boolean success = controller.consumeUIData();
     	if (success){
-    	    if (step.hasDataLoadPhase()){
-                controller.executeDataLoadPhase();
-                while (!controller.isDataLoadPhaseComplete()){
+    	    if (step.hasFollowUpDataLoadPhase()){
+                controller.executeFollowUpDataLoadPhase();
+                while (!controller.isFollowUpDataLoadPhaseComplete()){
                     try {
                         Thread.sleep(500);
                     }

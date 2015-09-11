@@ -29,7 +29,7 @@ public class BisqueImages {
     private List<ImageInfo> imagesLarge = new ArrayList<ImageInfo>();
     private boolean imagesLoadedSuccessfully = false;
 
-    public  BisqueImages(ProgressPresenter pp, BisqueWSClient wsClient, DatasetInfo dataset) throws AvatolCVException {
+    public  BisqueImages(ProgressPresenter pp, BisqueWSClient wsClient, DatasetInfo dataset, String processName) throws AvatolCVException {
         //sessionData.clearImageDirs();
         this.wsClient = wsClient;
         try {
@@ -40,22 +40,21 @@ public class BisqueImages {
             int successCount = 0;
             
             int imageCount = imagesThumbnail.size() * 2;
+            double increment = 1.0 / imageCount;
             for (ImageInfo image : imagesLarge){
-                curCount++;
-                if (downloadImageIfNeeded(pp,image,AvatolCVFileSystem.getNormalizedImagesLargeDir())){
+                if (downloadImageIfNeeded(pp,image,AvatolCVFileSystem.getNormalizedImagesLargeDir(), processName, "image")){
                     successCount++;
                 }
-                int percentDone = (int) (100 *(curCount / imageCount));
-                pp.updateProgress("...",percentDone);
+                curCount++;
+                pp.updateProgress(processName,curCount * increment);
             }
            
             for (ImageInfo image : imagesThumbnail){
-                curCount++;
-                if (downloadImageIfNeeded(pp,image, AvatolCVFileSystem.getNormalizedImagesThumbnailDir())){
+                if (downloadImageIfNeeded(pp,image, AvatolCVFileSystem.getNormalizedImagesThumbnailDir(), processName, "thumbnail")){
                     successCount++;
                 }
-                int percentDone = (int) (100 *(curCount / imageCount));
-                pp.updateProgress("...",percentDone);
+                curCount++;
+                pp.updateProgress(processName,curCount * increment);
             }
             if (successCount < curCount){
                 int badCount = (int)curCount - successCount;
@@ -70,7 +69,7 @@ public class BisqueImages {
         
     }
 
-    public boolean robustImageDownload(ProgressPresenter pp, ImageInfo ii, String targetDir ) throws AvatolCVException {
+    public boolean robustImageDownload(ProgressPresenter pp, ImageInfo ii, String targetDir, String processName, String context) throws AvatolCVException {
         int maxRetries = 4;
         int tries = 0;
         boolean imageNotYetDownloaded = true;
@@ -78,7 +77,7 @@ public class BisqueImages {
         while (maxRetries > tries && imageNotYetDownloaded){
             try {
                 tries++;
-                pp.setMessage("...","downloading image  : " + ii.getNameAsUploadedNormalized());
+                pp.setMessage(processName,"downloading " + context + ": " + ii.getNameAsUploadedNormalized());
                 int imageWidthAsInt = -1;
                 try {
                     imageWidthAsInt = new Integer(ii.getImageWidth()).intValue();
@@ -91,25 +90,25 @@ public class BisqueImages {
             }
             catch(BisqueWSException e){
                 if (e.getMessage().equals("timeout")){
-                    pp.setMessage("...","download timed out - retrying image : " + ii.getNameAsUploadedNormalized() + " - attempt " + (tries+1));
+                    pp.setMessage(processName,"download timed out - retrying image : " + ii.getNameAsUploadedNormalized() + " - attempt " + (tries+1));
                 }
                 mostRecentException = e;
             }
         }
         if (imageNotYetDownloaded){
-            throw new AvatolCVException("problem downloading image: " + mostRecentException);
+            throw new AvatolCVException("problem downloading " + context + ": " + mostRecentException);
         }
         imagesLoadedSuccessfully = true;
         return true;
     }
-    public boolean downloadImageIfNeeded(ProgressPresenter pp, ImageInfo image, String targetDir) throws AvatolCVException {
+    public boolean downloadImageIfNeeded(ProgressPresenter pp, ImageInfo image, String targetDir, String processName, String context) throws AvatolCVException {
         String imagePath = image.getFilepath();
         File imageFile = new File(imagePath);
         if (imageFile.exists()){
-            pp.setMessage("...","already have image : " + image.getNameAsUploadedNormalized());
+            pp.setMessage(processName,"already have " + context +": " + image.getNameAsUploadedNormalized());
         }
         else {
-            robustImageDownload(pp, image, targetDir);
+            robustImageDownload(pp, image, targetDir, processName, context);
         }
         File f = new File(imagePath);
         if (f.exists()){

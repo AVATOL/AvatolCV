@@ -45,7 +45,7 @@ public class LoginStep implements Step {
         this.password = s;
     }
     @Override
-    public boolean hasDataLoadPhase() {
+    public boolean hasFollowUpDataLoadPhase() {
         // TODO Auto-generated method stub
         return false;
     }

@@ -31,7 +31,7 @@ public class SessionFocusStep implements Step {
         this.sessionInfo.setScoringAlgInfo(scoringFocus, scoringAlgName);
     }
     @Override
-    public boolean hasDataLoadPhase() {
+    public boolean hasFollowUpDataLoadPhase() {
         // TODO Auto-generated method stub
         return false;
     }

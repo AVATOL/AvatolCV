@@ -87,15 +87,15 @@ public class LoginStepController implements StepController {
 	}
 
     @Override
-    public void executeDataLoadPhase() throws AvatolCVException {
+    public void executeFollowUpDataLoadPhase() throws AvatolCVException {
      // nothing to be done
     }
     @Override
-    public void configureUIForDataLoadPhase() {
+    public void configureUIForFollowUpDataLoadPhase() {
      // nothing to be done
     }
     @Override
-    public boolean isDataLoadPhaseComplete() {
+    public boolean isFollowUpDataLoadPhaseComplete() {
         // not relevant
         return true;
     }

@@ -34,7 +34,7 @@ public class DatasetChoiceStepController implements StepController {
     private DatasetChoiceStep step;
     private String fxmlDocName;
     private List<String> datasetNames = null;
-    private boolean dataDownloadPhaseComplete = false;
+    private boolean followUpDataDownloadPhaseComplete = false;
 	public DatasetChoiceStepController(DatasetChoiceStep step, String fxmlDocName){
 		this.step = step;
 		this.fxmlDocName = fxmlDocName;
@@ -84,7 +84,7 @@ public class DatasetChoiceStepController implements StepController {
 		return false;
 	}
     @Override
-    public void executeDataLoadPhase() throws AvatolCVException {
+    public void executeFollowUpDataLoadPhase() throws AvatolCVException {
         ProgressPresenterImpl pp = new ProgressPresenterImpl();
         pp.connectProcessNameToLabel(SCORING_INFO_DOWNLOAD, scoringInfoDownloadMessageLabel);
         pp.connectProcessNameToProgressBar(SCORING_INFO_DOWNLOAD,scoringInfoDownloadProgressBar);
@@ -107,7 +107,7 @@ public class DatasetChoiceStepController implements StepController {
             try {
 
                 this.step.loadPrimaryMetadataForChosenDataset(this.pp, processName1);
-                dataDownloadPhaseComplete = true;
+                followUpDataDownloadPhaseComplete = true;
                 return new Boolean(true);
             }
             catch(AvatolCVException ace){
@@ -117,7 +117,7 @@ public class DatasetChoiceStepController implements StepController {
         }
     }
     @Override
-    public void configureUIForDataLoadPhase() {
+    public void configureUIForFollowUpDataLoadPhase() {
         datasetChoiceVBox.getChildren().clear();
         Region regionTop = new Region();
         VBox.setVgrow(regionTop, Priority.ALWAYS);
@@ -141,7 +141,7 @@ public class DatasetChoiceStepController implements StepController {
         datasetChoiceVBox.getChildren().add(regionBottom);
     }
     @Override
-    public boolean isDataLoadPhaseComplete() {
-        return dataDownloadPhaseComplete;
+    public boolean isFollowUpDataLoadPhaseComplete() {
+        return followUpDataDownloadPhaseComplete;
     }
 }

@@ -60,7 +60,7 @@ public class ScoringConcernStep implements Step {
         
     }
     @Override
-    public boolean hasDataLoadPhase() {
+    public boolean hasFollowUpDataLoadPhase() {
         return true;
     }
     

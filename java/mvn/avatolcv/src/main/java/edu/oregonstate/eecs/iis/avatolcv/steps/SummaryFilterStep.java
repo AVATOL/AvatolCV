@@ -28,7 +28,7 @@ public class SummaryFilterStep implements Step {
     }
 
     @Override
-    public boolean hasDataLoadPhase() {
+    public boolean hasFollowUpDataLoadPhase() {
         return false;
     }
 
