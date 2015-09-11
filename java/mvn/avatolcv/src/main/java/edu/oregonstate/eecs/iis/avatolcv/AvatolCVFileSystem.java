@@ -143,6 +143,7 @@ public class AvatolCVFileSystem {
 	    ensureDir(getDatasetDir());
 	    ensureDir(getNormalizedDataDir());
 	    ensureDir(getNormalizedImageInfoDir());
+        ensureDir(getNormalizedImageDir());
 	    setSpecializedDataDir();
 	}
 	public static String getDatasetDir() throws AvatolCVException {
@@ -166,6 +167,7 @@ public class AvatolCVFileSystem {
     public static String getSpecializedImageInfoDir() throws AvatolCVException {
         return getSpecializedDataDir() + FILESEP + "imageInfo";
     }
+
     
 	public static String getNormalizedDataDir() throws AvatolCVException {
 	    return getDatasetDir() + FILESEP + "normalized";
@@ -188,6 +190,15 @@ public class AvatolCVFileSystem {
 	    return getNormalizedDataDir() + FILESEP + "imageInfo";
 	}
 
+    public static String getNormalizedImageDir() throws AvatolCVException {
+        return getNormalizedDataDir() + FILESEP + "images";
+    }
+    public static String getNormalizedImagesLargeDir() throws AvatolCVException{
+        return getNormalizedImageDir() + FILESEP + "large";
+    }
+    public static String getNormalizedImagesThumbnailDir() throws AvatolCVException{
+        return getNormalizedImageDir() + FILESEP + "thumbnail";
+    }
 	public static void ensureDir(String path){
 	    File f = new File(path);
 	    f.mkdirs();

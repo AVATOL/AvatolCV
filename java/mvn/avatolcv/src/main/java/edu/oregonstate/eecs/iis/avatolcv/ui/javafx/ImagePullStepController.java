@@ -22,11 +22,11 @@ public class ImagePullStepController implements StepController, ProgressPresente
 
     private ImagePullStep step;
     private String fxmlDocName;
-    private MorphobankSessionJavaFX fxSession;
+    private JavaFXStepSequencer fxSession;
     public ProgressBar imageFileDownloadProgress;
     public Label imageFileDownloadMessage;
     
-    public ImagePullStepController(MorphobankSessionJavaFX fxSession, ImagePullStep step, String fxmlDocName){
+    public ImagePullStepController(JavaFXStepSequencer fxSession, ImagePullStep step, String fxmlDocName){
         this.step = step;
         this.fxmlDocName = fxmlDocName;
         this.fxSession = fxSession;

@@ -1,5 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.bisque;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -12,6 +13,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataSource;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
@@ -41,6 +43,7 @@ public class BisqueDataSource implements DataSource {
     private Hashtable<String, List<String>> valuesForEnumAnnotation = null;
     private BisqueDataFiles bisqueDataFiles = null;
     private DataFilter dataFilter = null;
+    private BisqueImages bisqueImages = null;
 
     public BisqueDataSource(String sessionsRoot){
         wsClient = new BisqueWSClientImpl();
@@ -115,7 +118,7 @@ public class BisqueDataSource implements DataSource {
                 if (null == annotations){
                     annotations = this.wsClient.getAnnotationsForImage(imageResource_uniq);
                     this.bisqueDataFiles.persistAnnotationsForImage(annotations, imageResource_uniq);
-                    createNormalizedImageFile(bi, annotations, scoringConcernAnnotations);
+                    createNormalizedImageInfoFile(bi, annotations, scoringConcernAnnotations);
                 }
                 annotationsForImageIdHash.put(imageResource_uniq, annotations);
                 pp.updateProgress(processName, 0.1 + (percentProgressPerImage * curCount));
@@ -279,7 +282,7 @@ public class BisqueDataSource implements DataSource {
         return "bisque";
     }
    
-    public void createNormalizedImageFile(BisqueImage bi,List<BisqueAnnotation> annotations, List<String> chosenScoringConcerns) throws AvatolCVException {
+    public void createNormalizedImageInfoFile(BisqueImage bi,List<BisqueAnnotation> annotations, List<String> chosenScoringConcerns) throws AvatolCVException {
         String imageId = bi.getResourceUniq();
         String mediaMetadataFilename = AvatolCVFileSystem.getMediaMetadataFilename(AvatolCVFileSystem.getNormalizedImageInfoDir(), imageId);
         Properties p = new Properties();
@@ -305,4 +308,11 @@ public class BisqueDataSource implements DataSource {
         String path = AvatolCVFileSystem.getNormalizedImageInfoDir() + FILESEP + mediaMetadataFilename;
         bisqueDataFiles.persistNormalizedImageFile(path, p);
     }
+    @Override
+    public void downloadImages(ProgressPresenter pp) throws AvatolCVException {
+       this.bisqueImages = new BisqueImages(pp, wsClient, chosenDataset);
+    }
+
+
+    
 }

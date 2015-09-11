@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ImagePullStepController;
@@ -29,6 +30,7 @@ public class ImagePullStep implements Step {
     }
 
     public void downloadImages(ImagePullStepController controller, String processName) throws AvatolCVException {
-        
+        DataSource dataSource = sessionInfo.getDataSource();
+        dataSource.downloadImages(controller);
     }
 }

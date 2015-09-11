@@ -100,7 +100,7 @@ public class JavaFXStepSequencer  {
         
         ImagePullStep imagePullStep = new ImagePullStep(sessionInfo);
         ss.appendStep(imagePullStep);
-        ImagePullStepController imagePullController = new ImagePullStepController(imagePullStep, "ImagePullStep.fxml");
+        ImagePullStepController imagePullController = new ImagePullStepController(this, imagePullStep, "ImagePullStep.fxml");
         controllerForStep.put(imagePullStep, imagePullController);
         addLabelForStep(imagePullStep,"Load Images");
         /*
