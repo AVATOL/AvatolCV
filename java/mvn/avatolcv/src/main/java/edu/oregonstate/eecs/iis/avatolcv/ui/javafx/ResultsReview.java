@@ -1,5 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
+import java.io.File;
 import java.util.List;
 
 import javafx.collections.ObservableList;
@@ -11,6 +12,7 @@ import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -22,6 +24,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.generic.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
 
 public class ResultsReview {
@@ -98,9 +101,23 @@ public class ResultsReview {
     	Label confidence = new Label("confidence");
     	gp.add(confidence, 5, 0);
     }
+    private String getThumbailPath(NormalizedImageInfo si) throws AvatolCVException {
+        String id = si.getImageID();
+        String thumbnailDir = AvatolCVFileSystem.getNormalizedImagesThumbnailDir();
+        File thumbnailDirFile = new File(thumbnailDir);
+        File[] files = thumbnailDirFile.listFiles();
+        for (File f : files){
+            if (f.getName().startsWith(id)){
+                return f.getAbsolutePath();
+            }
+        }
+        throw new AvatolCVException("Could not find thumbnail for normalizedImage with ID " + id);
+    }
     private void addScoredImageToGridPaneRow(NormalizedImageInfo si, GridPane gp, int row) throws AvatolCVException {
         // get the image
-        ImageView iv = new ImageView();
+        String thumbnailPath = getThumbailPath(si);
+        Image image = new Image("file:"+thumbnailPath);
+        ImageView iv = new ImageView(image);
         int column = 0;
         gp.add(iv,column,row);
         column++;
@@ -147,6 +164,13 @@ public class ResultsReview {
     }
     private void setRunDetails(String runID) throws AvatolCVException {
         RunSummary rs = new RunSummary(runID);
+        AvatolCVFileSystem.setDatasourceName(rs.getDataSource());
+        AvatolCVFileSystem.setSessionID(rs.getRunID());
+     // tell the fileSystem which dataset is in play
+        DatasetInfo di = new DatasetInfo();
+        di.setName(rs.getDataset());
+        AvatolCVFileSystem.setChosenDataset(di);
+        
     	runIDValue.setText(rs.getRunID());
         datasetValue.setText(rs.getDataset());
         scoringConcernValue.setText(rs.getScoringConcern());

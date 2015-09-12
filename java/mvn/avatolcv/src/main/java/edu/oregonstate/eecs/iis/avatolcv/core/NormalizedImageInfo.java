@@ -29,11 +29,24 @@ public class NormalizedImageInfo {
     private ScoreIndex scoreIndexForBaseFile = new ScoreIndex();
     private ScoreIndex scoreIndexForScoreFile = new ScoreIndex();
     private String imageName = "?";
+    private String imageID = null;
     public NormalizedImageInfo(String path) throws AvatolCVException {
+        this.imageID = getImageIDFromPath(path);
         loadNormalizedInfoFromPath(path, "Problem loading Normalized Image Info file: ", keyValueHash, scoreIndexForBaseFile);
     }
     
-    
+    public static String getImageIDFromPath(String path){
+        File f = new File(path);
+        String filename = f.getName();
+        String[] parts = filename.split("\\.");
+        String root = parts[0];
+        String[] rootParts = root.split("_");
+        String id = rootParts[0];
+        return id;
+    }
+    public String getImageID(){
+        return this.imageID;
+    }
     private void loadNormalizedInfoFromPath(String path, String errorMessage, Hashtable<String, Object> hash, ScoreIndex scoreIndex)throws AvatolCVException {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path));

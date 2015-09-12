@@ -47,7 +47,7 @@ public class DataSourceStep implements Step {
         }
     }
     @Override
-    public boolean hasDataLoadPhase() {
+    public boolean hasFollowUpDataLoadPhase() {
         // TODO Auto-generated method stub
         return false;
     }
