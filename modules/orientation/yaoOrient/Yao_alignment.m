@@ -9,13 +9,20 @@ close all;
 %--------------------------------------------------------------------------
 
 %% Read the csv annotation file into a cell array
-fileID = fopen([pathAlignmentShipped '\annotation.csv']);
+if ispc
+    annotationCSV = '\annotation.csv';
+    preshippedTrainingSubPath = '\train\*leaf.jpg';
+else
+    annotationCSV = '/annotation.csv';
+    preshippedTrainingSubPath = '/train/*leaf.jpg';
+end
+fileID = fopen([pathAlignmentShipped annotationCSV]);
 C = textscan(fileID, '%s %f', 'Delimiter',',');
 fclose(fileID);
 annotation = horzcat(C{1,1},num2cell(C{1,2}));
 
 %% Training the alignment SVM based on preshipped training sets
-s = dir([pathAlignmentShipped '\train\*leaf.jpg']);
+s = dir([pathAlignmentShipped preshippedTrainingSubPath]);
 list_img = {s.name}';  % store the image names 
 train_counts = round(length(list_img)*4/5); % using 80% of preshipped to train
 
