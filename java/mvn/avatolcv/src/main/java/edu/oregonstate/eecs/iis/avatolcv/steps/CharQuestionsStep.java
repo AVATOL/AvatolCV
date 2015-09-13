@@ -35,7 +35,7 @@ public class CharQuestionsStep implements Step {
         this.questionSequencer.persist(this.sessionData.getCharQuestionsAnsweredQuestionsPath());
     }
     @Override
-    public boolean hasDataLoadPhase() {
+    public boolean hasFollowUpDataLoadPhase() {
         // TODO Auto-generated method stub
         return false;
     }

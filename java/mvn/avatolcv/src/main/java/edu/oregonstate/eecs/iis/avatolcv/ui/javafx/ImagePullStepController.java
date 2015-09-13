@@ -14,7 +14,6 @@ import javafx.scene.control.ProgressBar;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
-import edu.oregonstate.eecs.iis.avatolcv.morphobank.MorphobankSessionJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ImagePullStep;
 
 public class ImagePullStepController implements StepController, ProgressPresenter{
@@ -22,36 +21,37 @@ public class ImagePullStepController implements StepController, ProgressPresente
 
     private ImagePullStep step;
     private String fxmlDocName;
-    private MorphobankSessionJavaFX fxSession;
+    private JavaFXStepSequencer fxSession;
     public ProgressBar imageFileDownloadProgress;
     public Label imageFileDownloadMessage;
     
-    public ImagePullStepController(MorphobankSessionJavaFX fxSession, ImagePullStep step, String fxmlDocName){
+    public ImagePullStepController(JavaFXStepSequencer fxSession, ImagePullStep step, String fxmlDocName){
         this.step = step;
         this.fxmlDocName = fxmlDocName;
         this.fxSession = fxSession;
     }
     @Override
     public void updateProgress(String processName, double percentDone) {
-        // TODO Auto-generated method stub
-        
+        ProgressUpdater pu = new ProgressUpdater(processName, percentDone);
+        Platform.runLater(pu);
     }
 
     @Override
     public void setMessage(String processName, String m) {
-        // TODO Auto-generated method stub
-        
+        MessageUpdater mu = new MessageUpdater(processName,m);
+        Platform.runLater(mu);
     }
 
     @Override
     public boolean consumeUIData() {
-        // TODO Auto-generated method stub
-        return false;
+        // nothing to consume - just reporting progress
+        return true;
     }
 
     @Override
     public void clearUIFields() {
-        // TODO Auto-generated method stub
+        imageFileDownloadProgress.setProgress(0.0);
+        imageFileDownloadMessage.setText("");
         
     }
 
@@ -103,21 +103,48 @@ public class ImagePullStepController implements StepController, ProgressPresente
     }
 
     @Override
-    public void executeDataLoadPhase() throws AvatolCVException {
-        // TODO Auto-generated method stub
-        
+    public void executeFollowUpDataLoadPhase() throws AvatolCVException {
+        // NA
     }
 
     @Override
-    public void configureUIForDataLoadPhase() {
-        // TODO Auto-generated method stub
-        
+    public void configureUIForFollowUpDataLoadPhase() {
+        // NA
     }
 
     @Override
-    public boolean isDataLoadPhaseComplete() {
-        // TODO Auto-generated method stub
+    public boolean isFollowUpDataLoadPhaseComplete() {
+        // NA
         return false;
+    }
+    public class ProgressUpdater implements Runnable {
+        private String processName;
+        private double percent;
+        public ProgressUpdater(String processName, double percent){
+            this.processName = processName;
+            this.percent = percent;
+        }
+        @Override
+        public void run() {
+            if (IMAGE_FILE_DOWNLOAD.equals(processName)){
+                System.out.println("should have setr progress to " + percent);
+                imageFileDownloadProgress.setProgress((double)percent);
+            }
+        }
+    }
+    public class MessageUpdater implements Runnable {
+        private String processName;
+        private String message;
+        public MessageUpdater(String processName, String message){
+            this.processName = processName;
+            this.message = message;
+        }
+        @Override
+        public void run() {
+            if (IMAGE_FILE_DOWNLOAD.equals(processName)){
+                imageFileDownloadMessage.setText(message);
+            }
+        }
     }
     public class ImageDownloadTask extends Task<Boolean> {
         private String processName;

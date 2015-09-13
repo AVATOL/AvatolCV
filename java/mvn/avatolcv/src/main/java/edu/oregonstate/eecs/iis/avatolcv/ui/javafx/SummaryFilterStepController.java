@@ -87,17 +87,17 @@ public class SummaryFilterStepController implements StepController {
     }
 
     @Override
-    public void executeDataLoadPhase() throws AvatolCVException {
+    public void executeFollowUpDataLoadPhase() throws AvatolCVException {
         // NA
     }
 
     @Override
-    public void configureUIForDataLoadPhase() {
+    public void configureUIForFollowUpDataLoadPhase() {
         // NA
     }
 
     @Override
-    public boolean isDataLoadPhaseComplete() {
+    public boolean isFollowUpDataLoadPhaseComplete() {
         // NA
         return false;
     }

@@ -173,7 +173,7 @@ public class ScoringConcernStepController implements StepController {
 		return false;
 	}
 	@Override
-	public void executeDataLoadPhase(){
+	public void executeFollowUpDataLoadPhase(){
 	    ProgressPresenterImpl pp = new ProgressPresenterImpl();
         pp.connectProcessNameToLabel(METADATA_DOWNLOAD, remainingMetadataDownloadLabel);
         pp.connectProcessNameToProgressBar(METADATA_DOWNLOAD,remainingMetadataDownloadProgressBar);
@@ -211,7 +211,7 @@ public class ScoringConcernStepController implements StepController {
     }
     
     @Override
-    public void configureUIForDataLoadPhase() {
+    public void configureUIForFollowUpDataLoadPhase() {
         scoringConcernVBox.getChildren().clear();
         Region regionTop = new Region();
         VBox.setVgrow(regionTop, Priority.ALWAYS);
@@ -236,7 +236,7 @@ public class ScoringConcernStepController implements StepController {
         
     }
     @Override
-    public boolean isDataLoadPhaseComplete() {
+    public boolean isFollowUpDataLoadPhaseComplete() {
         return dataDownloadPhaseComplete;
     }
 }

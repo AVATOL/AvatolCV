@@ -58,7 +58,7 @@ public class DatasetChoiceStep implements Step {
         this.sessionInfo.setChosenDataset(this.chosenDataset);
     }
     @Override
-    public boolean hasDataLoadPhase() {
+    public boolean hasFollowUpDataLoadPhase() {
         return true;
     }
     public void loadPrimaryMetadataForChosenDataset(ProgressPresenter pp, String processName) throws AvatolCVException {

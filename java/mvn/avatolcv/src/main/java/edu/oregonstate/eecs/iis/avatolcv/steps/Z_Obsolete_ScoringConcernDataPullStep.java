@@ -41,7 +41,7 @@ public class Z_Obsolete_ScoringConcernDataPullStep implements Step {
     }
 
     @Override
-    public boolean hasDataLoadPhase() {
+    public boolean hasFollowUpDataLoadPhase() {
         // TODO Auto-generated method stub
         return false;
     }
