@@ -12,9 +12,13 @@ close all;
 if ispc
     annotationCSV = '\annotation.csv';
     preshippedTrainingSubPath = '\train\*leaf.jpg';
+    slashStar = '\*';
+    slash = '\';
 else
     annotationCSV = '/annotation.csv';
     preshippedTrainingSubPath = '/train/*leaf.jpg';
+    slashStar = '/*';
+    slash = '/';
 end
 fileID = fopen([pathAlignmentShipped annotationCSV]);
 C = textscan(fileID, '%s %f', 'Delimiter',',');
@@ -48,16 +52,16 @@ train_counts = round(length(list_img)*4/5); % using 80% of preshipped to train
 
 %% afterh the alignment prediction, rotate the leaf 180 degree if necessary
 addpath(rotationOutputDir);
-s = dir([rotationOutputDir '/*' rotatedMaskImageSuffix '.jpg']);
+s = dir([rotationOutputDir slashStar rotatedMaskImageSuffix '.jpg']);
 testlistMask = {s.name}'; % here I assume Original and Mask images are listed in the same order.
 
 mkdir(orientationOutputDir);
 for i = 1:1:size(test_predict,1)
     [name,orientation]= test_predict{i,1:2};
-    fullName = [rotationOutputDir '\' name];
+    fullName = [rotationOutputDir slash name];
     I = imread(fullName);
     nameMask = testlistMask{i};
-    fullNameMask = [rotationOutputDir '\' nameMask];
+    fullNameMask = [rotationOutputDir slash nameMask];
     Mask = imread(fullNameMask);
     if orientation == 1
         % do nothing, it is already cannonical orientation.
@@ -65,17 +69,17 @@ for i = 1:1:size(test_predict,1)
         Mask_rot = Mask;
     elseif orientation == -1
         % leaf is in the opposite orientation, rotate is 180 degrees
-        fullName = [rotationOutputDir '\' name];
+        fullName = [rotationOutputDir slash name];
         I = imread(fullName);
         I_rot = imrotate(I,180);
-        fullNameMask = [rotationOutputDir '\' testlistMask{i}];
+        fullNameMask = [rotationOutputDir slash testlistMask{i}];
         Mask = imread(fullNameMask);
         Mask_rot = imrotate(Mask,180);
     else 
         fprintf('%dth test image has wrong alignment label, please check!\n',i); 
     end   
-    imwrite(I_rot, [orientationOutputDir '\' name(1:end-4) alignOrigImageSuffix fullName(end-3:end)]);
-    imwrite(Mask_rot, [orientationOutputDir '\' nameMask(1:end-4) aligndMaskImageSuffix fullNameMask(end-3:end)] );
+    imwrite(I_rot, [orientationOutputDir slash name(1:end-4) alignOrigImageSuffix fullName(end-3:end)]);
+    imwrite(Mask_rot, [orientationOutputDir slash nameMask(1:end-4) aligndMaskImageSuffix fullNameMask(end-3:end)] );
 end
 
 
