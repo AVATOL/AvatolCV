@@ -78,12 +78,20 @@ end
 % -------------------------------------------------------------------------
 disp('Generating testing features...')
 
+% read the 'test' original images list into variable 'testlist'
+
+% fileID = fopen(testImagesFile);
+% testlist = textscan(fileID, '%s');
+% fclose(fileID);
+% testlist = testlist{1};
 addpath(rotationOutputDir);
 s = dir([rotationOutputDir '/*' rotatedOrigImageSuffix '.jpg']);
 testlist = {s.name}';
 
 test_instances = [];
 for i = 1:1:length(testlist)
+%     imgfullpath = testlist{i,1};
+%     [~,name,ext] = fileparts(imgfullpath); 
     name = testlist{i};
     I = imread(name);
     [height,width,~] = size(I);
@@ -114,7 +122,7 @@ training_instance_matrix = vertcat(train_pos,train_neg);
 pca_instance_mat = vertcat(training_instance_matrix,test_instances);
 % [pc,score,latent,tsquare] = princomp(pca_instance_mat,'econ');
 tic;coeff = pca(pca_instance_mat);toc; % 713*253952 mat takes 5 mins
-pca_data = pca_instance_mat * pc;
+pca_data = pca_instance_mat * coeff;
 
 training_data = pca_data(1:size(training_instance_matrix,1),:);
 test_data = pca_data(size(training_instance_matrix,1)+1:end,:);

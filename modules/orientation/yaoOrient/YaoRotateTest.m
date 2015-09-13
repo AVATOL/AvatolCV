@@ -25,6 +25,8 @@ function YaoRotateTest
     aligndMaskImageSuffix = '_alignMask';
     orientationOutputDir = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\orientationOutput';
     
-    [test_predict, model] = Yao_alignment(pathAlignmentShipped, rotationOutputDir, rotatedOrigImageSuffix );
+    [test_predict, model] = Yao_alignment(pathAlignmentShipped, rotationOutputDir, rotatedOrigImageSuffix,rotatedMaskImageSuffix,alignOrigImageSuffix,aligndMaskImageSuffix,orientationOutputDir  );
+
+    
     
 end
