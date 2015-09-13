@@ -9,7 +9,12 @@ train_neg = [];
 cellSize = 8;
 for i = 1:1:length(trainlist)
     name = trainlist{i};
-    I = imread([pathAlignmentShipped '\train\' name]);
+    if ispc
+        slashTrainSlash = '\train\';
+    else
+        slashTrainSlash = '/train/';
+    end
+    I = imread([pathAlignmentShipped slashTrainSlash name]);
     [height,width,~] = size(I);
     ratio = width/height;
 %     figure;imshow(I);  
@@ -85,7 +90,12 @@ disp('Generating testing features...')
 % fclose(fileID);
 % testlist = testlist{1};
 addpath(rotationOutputDir);
-s = dir([rotationOutputDir '/*' rotatedOrigImageSuffix '.jpg']);
+if ispc
+    slashStar = '\*';
+else
+    slashStar = '/*';
+end
+s = dir([rotationOutputDir slashStar rotatedOrigImageSuffix '.jpg']);
 testlist = {s.name}';
 
 test_instances = [];
