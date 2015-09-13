@@ -27,9 +27,9 @@ for i = 1:1:length(trainlist)
     
     % 4 patches
     patch_ori      = [patch_left_rs patch_right_rs];
-    patch_flip     = flip(patch_ori);
+    patch_flip     = Yao_flip(patch_ori);
     patch_rot      = imrotate(patch_ori,180);
-    patch_rot_flip = flip(patch_rot);
+    patch_rot_flip = Yao_flip(patch_rot);
 %     figure
 %     subplot(2,2,1)
 %     imshow(patch_ori)
