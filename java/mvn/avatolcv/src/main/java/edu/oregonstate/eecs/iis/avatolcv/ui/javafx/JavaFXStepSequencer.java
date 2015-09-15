@@ -28,6 +28,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
+import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DataSourceStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DatasetChoiceStep;
@@ -41,6 +42,7 @@ public class JavaFXStepSequencer  {
    
 	public Button nextButton;
 	public Button backButton;
+	public Button cancelSessionButton;
 	public VBox stepList;
     private SessionInfo sessionInfo = null;
     private StepSequence ss = null;
@@ -48,10 +50,12 @@ public class JavaFXStepSequencer  {
     private Scene scene = null;
     private AvatolCVExceptionExpresser exceptionExpresser = null;
     private Hashtable<Step,Label> labelForStepHash = new Hashtable<Step,Label>();
-  
+    private AvatolCVJavaFX mainScreen = null;
     private Hashtable<Step,StepController> controllerForStep = new Hashtable<Step,StepController>();
-    public JavaFXStepSequencer(AvatolCVExceptionExpresser exceptionExpresser){
+    public JavaFXStepSequencer(AvatolCVExceptionExpresser exceptionExpresser, AvatolCVJavaFX mainScreen){
         this.exceptionExpresser = exceptionExpresser;
+        this.mainScreen = mainScreen;
+        AvatolCVFileSystem.flushPriorSettings();
     }
     public void init(String avatolCVRootDir, Stage mainWindow) throws AvatolCVException {
         this.mainWindow = mainWindow;
@@ -179,6 +183,9 @@ public class JavaFXStepSequencer  {
     	}
     	
     }
+    /*
+     * runs in the application thread so UI adjustments can fly
+     */
     private void activateCurrentStep() throws AvatolCVException {
     	reRenderStepList();
         Step step = ss.getCurrentStep();
@@ -198,6 +205,14 @@ public class JavaFXStepSequencer  {
         if (!controller.delayEnableNavButtons()){
         	enableNavButtons();
         }
+        if (!ss.canBackUp()){
+        	backButton.setVisible(false);
+        	backButton.setDisable(true);
+        }
+        else {
+        	backButton.setVisible(true);
+        	backButton.setDisable(false);
+        }
     }
     public void enableNavButtons(){
     	nextButton.setDisable(false);
@@ -216,8 +231,15 @@ public class JavaFXStepSequencer  {
             throw new AvatolCVException(e.getMessage(),e);
         }
     }
+    /*
+     * prevStep called from the button on the javaFX ui thread (application thread)
+     */
     public void previousStep(){
-    	
+    	nextButton.setDisable(true);
+    	backButton.setDisable(true);
+    	// delegate data consumption to background thread
+    	PrevStepTask task = new PrevStepTask();
+    	new Thread(task).start();
     }
     /*
      * nextStep called from the button on the javaFX ui thread (application thread)
@@ -246,6 +268,29 @@ public class JavaFXStepSequencer  {
         }
        
     }
+
+    /*
+     * runs as a worker thread
+     */
+    public class PrevStepTask extends Task<Boolean> {
+        private final Logger logger = LogManager.getLogger(PrevStepTask.class);
+        @Override
+        protected Boolean call() throws Exception {
+            requestPreviousStep();
+            return new Boolean(true);
+            
+        }
+       
+    }
+    
+    /*
+     * runs on the worker thread but passes the currentStepRunner back to Application Thread as UI adjustments needed
+     */
+    public void requestPreviousStep() throws AvatolCVException {
+		ss.prev();
+    	CurrentStepRunner stepRunner = new CurrentStepRunner();
+		Platform.runLater(stepRunner);
+    }
     /*
      * (runs in background thread)
      */
@@ -273,8 +318,8 @@ public class JavaFXStepSequencer  {
     		controller.clearUIFields();
     	}
     }
+   
     public class CurrentStepRunner implements Runnable{
-
 		@Override
 		public void run() {
 			try {
@@ -283,8 +328,9 @@ public class JavaFXStepSequencer  {
     		catch (AvatolCVException ace){
     		    SessionInfo.exceptionExpresser.showException(ace, "An error was encountered while trying to move to next screen.");
     		}
-			
 		}
-    	
+    }
+    public void cancelSession(){
+    	this.mainScreen.start(this.mainWindow);
     }
 }

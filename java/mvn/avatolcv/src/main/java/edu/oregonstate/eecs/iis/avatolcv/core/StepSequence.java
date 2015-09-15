@@ -16,7 +16,19 @@ public class StepSequence {
 			return false;
 		}
 		currentStepIndex += 1;
-		Step nextStep = steps.get(currentStepIndex);
+		return true;
+	}
+	public boolean canBackUp(){
+		if (currentStepIndex == 0){
+			return false;
+		}
+		return true;
+	}
+	public boolean prev(){
+		if (currentStepIndex == 0){
+			return false;
+		}
+		currentStepIndex -= 1;
 		return true;
 	}
 	public Step getCurrentStep(){

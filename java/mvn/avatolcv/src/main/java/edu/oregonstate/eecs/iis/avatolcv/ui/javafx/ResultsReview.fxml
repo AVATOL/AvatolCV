@@ -154,7 +154,7 @@
       <HBox>
          <children>
             <Region HBox.hgrow="ALWAYS" />
-            <Button mnemonicParsing="false" text="Done" />
+            <Button mnemonicParsing="false" onAction="#doneWithResultsReview" text="Done" />
          </children>
          <VBox.margin>
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />

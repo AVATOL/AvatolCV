@@ -42,8 +42,11 @@
 }
 .button {
 	-fx-font-size: 15px;
-	-fx-padding: 6px;
-	-fx-pref-width: 100px;
+	-fx-padding-top: 6px;
+	-fx-padding-bottom: 6px;
+	-fx-padding-left: 20px;
+	-fx-padding-right: 20px;
+	-fx-min-width: 100px;
 }
 .radio-button {
 	-fx-font-size: 15px;

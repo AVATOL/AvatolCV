@@ -101,7 +101,7 @@ public class AvatolCVJavaFX extends Application {
         try {
            
             if (radioNewSession.isSelected()){
-                JavaFXStepSequencer session = new JavaFXStepSequencer(exceptionExpresser);
+                JavaFXStepSequencer session = new JavaFXStepSequencer(exceptionExpresser, this);
                 session.init(rootDir, mainWindow);
                 
             }
@@ -111,7 +111,7 @@ public class AvatolCVJavaFX extends Application {
             else if (radioReviewResults.isSelected()){
                 ResultsReview rr = new ResultsReview(exceptionExpresser);
                 String runChoice = (String)priorSessionSelector.getValue();
-                rr.init(rootDir, mainWindow, runChoice);
+                rr.init(rootDir, this, mainWindow, runChoice);
             }
             else {
                 // must have selected tutorial

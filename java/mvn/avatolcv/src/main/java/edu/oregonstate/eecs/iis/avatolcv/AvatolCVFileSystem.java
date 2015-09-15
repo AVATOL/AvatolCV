@@ -17,7 +17,7 @@ public class AvatolCVFileSystem {
 	private static String avatolCVRootDir = null;
 	private static String sessionsDir = null;
 	private static String currentProjectDir = null;
-    private static String currentProjectUserAnswersDir = null;
+    //private static String currentProjectUserAnswersDir = null;
     private static String sessionSummariesDir = null;
 
     private static String sessionID = null;
@@ -25,6 +25,13 @@ public class AvatolCVFileSystem {
     private static String datasetName = null;
     private static String datasourceName = null;
     
+    public static void flushPriorSettings(){
+    	currentProjectDir = null;
+        //currentProjectUserAnswersDir = null;
+        sessionID = null;
+        datasetName = null;
+        datasourceName = null;
+    }
     //private static String uiContentXmlDir = null;
     //private static String charQuestionsDir = null;
 	public static void setRootDir(String rootDir) throws AvatolCVException {
@@ -232,7 +239,7 @@ public class AvatolCVFileSystem {
 	public static void setCurrentProject(String name){
 	    currentProjectDir = sessionsDir + FILESEP + name;
 	    ensureDir(currentProjectDir);
-	    currentProjectUserAnswersDir = currentProjectDir + FILESEP + "userAnswers";
+	    //currentProjectUserAnswersDir = currentProjectDir + FILESEP + "userAnswers";
 	}
 	public static String getMediaMetadataFilename(String parentDir, String mediaID)  throws AvatolCVException {
         File f = new File(parentDir);

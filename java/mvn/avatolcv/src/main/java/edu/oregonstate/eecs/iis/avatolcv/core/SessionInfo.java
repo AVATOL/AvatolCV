@@ -144,7 +144,7 @@ public class SessionInfo{
     	//view=8905|Skull - ventral annotated teeth
     	// if there is a type prefix (something:), then type and string value of type are what's added to the filter (ex : character, Diastema between M1 and M2)
     	// otherwise, the key and the string value portion of the value (ex: taxon, Artibeus jamaicensis)
-    	if (key.startsWith(NormalizedImageInfo.RESERVED_PREFIX)){
+    	if (key.startsWith(AvatolCVFileSystem.RESERVED_PREFIX)){
     		//skip it
     	}
     	else if (key.contains(":")){

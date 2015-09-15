@@ -38,6 +38,11 @@
       </HBox>
       <HBox spacing="10.0" VBox.vgrow="NEVER">
          <children>
+            <Button fx:id="cancelSessionButton" mnemonicParsing="false" onAction="#cancelSession" text="Cancel Session">
+               <padding>
+                  <Insets bottom="6.0" left="16.0" right="16.0" top="6.0" />
+               </padding>
+            </Button>
             <Region HBox.hgrow="ALWAYS" />
             <Button fx:id="backButton" mnemonicParsing="false" onAction="#previousStep" text="Back" />
             <Button fx:id="nextButton" mnemonicParsing="false" onAction="#nextStep" text="Next" />
