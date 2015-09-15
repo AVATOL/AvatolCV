@@ -11,6 +11,8 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.generic.DatasetInfo;
 
 public class AvatolCVFileSystem {
+    public static final String RESERVED_PREFIX = "avcv_";
+
 	public static final String FILESEP = System.getProperty("file.separator");
 	private static String avatolCVRootDir = null;
 	private static String sessionsDir = null;
@@ -204,6 +206,9 @@ public class AvatolCVFileSystem {
 	public static void ensureDir(String path){
 	    File f = new File(path);
 	    f.mkdirs();
+	}
+	public static String getScoreIndexPath(String runID) throws AvatolCVException {
+		return getSessionDir() + FILESEP + "scoreIndex.txt";
 	}
 	public static void ensureDirHasContents(String path, String fileSuffix) throws AvatolCVException {
 	    File dir = new File(path);

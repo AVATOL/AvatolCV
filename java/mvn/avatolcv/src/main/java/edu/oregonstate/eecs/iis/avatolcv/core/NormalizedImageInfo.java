@@ -9,6 +9,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+
 public class NormalizedImageInfo {
     //avcv_annotation=point:21.2571225071225,55.3632478632479+point:21.84729344729345,40.810256410256414
     //character:1824350|Diastema between I2 and C=characterState:4884329|Diastema present
@@ -16,23 +18,19 @@ public class NormalizedImageInfo {
     //view=8905|Skull - ventral annotated teeth
     Hashtable<String, Object> keyValueHash = new Hashtable<String, Object>();
     Hashtable<String, Object> scoreHash = new Hashtable<String, Object>();
-    public static final String RESERVED_PREFIX = "avcv_";
-    public static final String KEY_ANNOTATION         = RESERVED_PREFIX + "annotation";
-    private static final String KEY_SCORING_CONFIDENCE = RESERVED_PREFIX + "scoringConfidence";
-    //private static final String KEY_SCORE              = RESERVED_PREFIX + "score";
-    //private static final String KEY_TRUTH              = RESERVED_PREFIX + "truth";
-    public static final String KEY_IMAGE_NAME         = RESERVED_PREFIX + "imageName";
-    public static final String KEY_TIMESTAMP          = RESERVED_PREFIX + "timestamp";
-    private static final String KEY_TRAINING_VS_TEST_CONCERN_VALUE  = RESERVED_PREFIX + "trainingVsTestConcernValue";
-    public static final String KEY_SCORING_CONCERN_LOCATION = RESERVED_PREFIX + "scoringConcernLocation";
-    public static final String KEY_SCORING_VALUE_LOCATION = RESERVED_PREFIX + "scoreValueLocation";
-    private ScoreIndex scoreIndexForBaseFile = new ScoreIndex();
-    private ScoreIndex scoreIndexForScoreFile = new ScoreIndex();
+    private static final String PREFIX = AvatolCVFileSystem.RESERVED_PREFIX;
+    public static final String KEY_ANNOTATION         = PREFIX + "annotation";
+    private static final String KEY_SCORING_CONFIDENCE = PREFIX + "scoringConfidence";
+    public static final String KEY_IMAGE_NAME         = PREFIX + "imageName";
+    public static final String KEY_TIMESTAMP          = PREFIX + "timestamp";
+    private static final String KEY_TRAINING_VS_TEST_CONCERN_VALUE  = PREFIX + "trainingVsTestConcernValue";
+      //private ScoreIndex scoreIndexForBaseFile = new ScoreIndex();
+    //private ScoreIndex scoreIndexForScoreFile = new ScoreIndex();
     private String imageName = "?";
     private String imageID = null;
-    public NormalizedImageInfo(String path) throws AvatolCVException {
+    public NormalizedImageInfo(String path, ScoreIndex scoreIndex) throws AvatolCVException {
         this.imageID = getImageIDFromPath(path);
-        loadNormalizedInfoFromPath(path, "Problem loading Normalized Image Info file: ", keyValueHash, scoreIndexForBaseFile);
+        loadNormalizedInfoFromPath(path, "Problem loading Normalized Image Info file: ", keyValueHash, scoreIndex);
     }
     
     public static String getImageIDFromPath(String path){
@@ -56,13 +54,7 @@ public class NormalizedImageInfo {
                     // ignore
                 }
                 else {
-                    if (line.startsWith(KEY_SCORING_CONCERN_LOCATION)){
-                        scoreIndex.setScoringConcernLocationInfo(line);
-                    }
-                    else if (line.startsWith(KEY_SCORING_VALUE_LOCATION)){
-                        scoreIndex.setScoringConcernValueInfo(line);
-                    }
-                    else if (line.startsWith(RESERVED_PREFIX)){
+                    if (line.startsWith(AvatolCVFileSystem.RESERVED_PREFIX)){
                         loadAvatolCVKeyedLine(line);
                     }
                     else {
@@ -97,12 +89,15 @@ public class NormalizedImageInfo {
         }
     }
     
-    public boolean hasScoringConcern(String scoringConcern){
+    public boolean hasScoringConcern(String scoringConcern, ScoreIndex scoreIndex){
     	// as reminder, this is what feeds the scoring index object
     	//avcv_scoringConcernLocation=leaf apex angle:key
     	//avcv_scoreValueLocation=leaf apex angle:value
-    	String scoringConcernKey = this.scoreIndexForScoreFile.getkeyForScoringConcernName();
-    	String keyOrValue = this.scoreIndexForScoreFile.isScoringConcernNameTheKeyOrValue();
+    	String scoringConcernKey = scoreIndex.getkeyForScoringConcernName();
+    	String keyOrValue = scoreIndex.isScoringConcernNameTheKeyOrValue();
+    	if (null == keyOrValue){
+    		return false;
+    	}
     	if (keyOrValue.equals("key")){
     		// compare the key
     		if (scoringConcernKey.equals(scoringConcern)){
@@ -133,10 +128,10 @@ public class NormalizedImageInfo {
     	
     	
     }
-    public void setScoreFile(String path) throws AvatolCVException {
+    public void setScoreFile(String path, ScoreIndex scoreIndex) throws AvatolCVException {
         File scoreFile = new File(path);
         if (scoreFile.exists()){
-            loadNormalizedInfoFromPath(scoreFile.getAbsolutePath(), "Problem loading score info file: ", scoreHash, scoreIndexForScoreFile);
+            loadNormalizedInfoFromPath(scoreFile.getAbsolutePath(), "Problem loading score info file: ", scoreHash, scoreIndex);
             //if (!scoreIndexForScoreFile.equals(scoreIndexForBaseFile)){
             //    throw new AvatolCVException("The base file and the score file should have the same scoreIndex values: " + path);
             //}
@@ -149,13 +144,13 @@ public class NormalizedImageInfo {
     public String getScoringConfidence(){
         return (String)keyValueHash.get(KEY_SCORING_CONFIDENCE);
     }
-    public String getScoredItemName() throws AvatolCVException {
+    public String getScoredItemName(ScoreIndex scoreIndex) throws AvatolCVException {
         if (scoreHash.isEmpty()){
             throw new AvatolCVException("Tried to get score information from a non-scored item");
         }
-        String key = scoreIndexForScoreFile.getkeyForScoringConcernName();
+        String key = scoreIndex.getkeyForScoringConcernName();
         Object valueObject = scoreHash.get(key);
-        String keyOrValue = scoreIndexForScoreFile.isScoringConcernNameTheKeyOrValue();
+        String keyOrValue = scoreIndex.isScoringConcernNameTheKeyOrValue();
         if (keyOrValue.equals("key")){
             return key;
         }
@@ -167,12 +162,12 @@ public class NormalizedImageInfo {
         return result;
     }
    
-    public String getScoreValue() throws AvatolCVException {
-        return getValue(scoreHash, scoreIndexForScoreFile);
+    public String getScoreValue(ScoreIndex scoreIndex) throws AvatolCVException {
+        return getValue(scoreHash, scoreIndex);
     }
-    public String getValue(Hashtable<String, Object> hash, ScoreIndex scoreIndex) throws AvatolCVException {
+    public String getValue(Hashtable<String, Object> hash, ScoreIndex scoreIndex)  {
         if (hash.isEmpty()){
-            throw new AvatolCVException("Tried to get score information from a non-scored item");
+            return null;
         }
         String key = scoreIndex.getKeyForScoringConcernValue();
         Object valueObject = hash.get(key);
@@ -187,8 +182,8 @@ public class NormalizedImageInfo {
         String result = (String) valueObject;
         return result;
     }
-    public String getTruthValue() throws AvatolCVException {
-        return getValue(keyValueHash, scoreIndexForScoreFile);
+    public String getTruthValue(ScoreIndex scoreIndex) throws AvatolCVException {
+        return getValue(keyValueHash, scoreIndex);
     }
     public String getImageName(){
         return this.imageName;
@@ -244,67 +239,6 @@ public class NormalizedImageInfo {
         }
         public String getName(){
             return this.name;
-        }
-    }
-    public class ScoreIndex{
-        private String lineWithScoringConcernHasKey = null;
-        private String scoringConcernNameIsKeyOrValue = null;
-        private String lineWithScoringConcernValueHasKey = null;
-        private String scoringConcernValueIsKeyOrValue = null;
-        
-        public void setScoringConcernLocationInfo(String line) throws AvatolCVException {
-            String[] parts = line.split("=");
-            if (parts.length != 2){
-                throw new AvatolCVException("malformed scoringConcernLocation line " + line);
-            }
-            String value = parts[1];
-            String[] scoringConcernLocationParts = value.split(":");
-            if (scoringConcernLocationParts.length != 2){
-                throw new AvatolCVException("malformed scoringConcernLocation info " + value + " should be <name>:<key|value>");
-            }
-            lineWithScoringConcernHasKey = scoringConcernLocationParts[0];
-            scoringConcernNameIsKeyOrValue = scoringConcernLocationParts[1];
-        }
-        public void setScoringConcernValueInfo(String line)  throws AvatolCVException {
-            String[] parts = line.split("=");
-            if (parts.length != 2){
-                throw new AvatolCVException("malformed scoringConcernValue line " + line);
-            }
-            String value = parts[1];
-            String[] scoringConcernValueParts = value.split(":");
-            if (scoringConcernValueParts.length != 2){
-                throw new AvatolCVException("malformed scoringConcernValue info " + value + " should be <name>:<key|value>");
-            }
-            lineWithScoringConcernValueHasKey = scoringConcernValueParts[0];
-            scoringConcernValueIsKeyOrValue = scoringConcernValueParts[1]; 
-        }
-        
-        public String getkeyForScoringConcernName(){
-            return this.lineWithScoringConcernHasKey;
-        }
-        public String isScoringConcernNameTheKeyOrValue(){
-            return this.scoringConcernNameIsKeyOrValue;
-        }
-        public String getKeyForScoringConcernValue(){
-            return this.lineWithScoringConcernValueHasKey;
-        }
-        public String isScoringConcernValueTheKeyOrValue(){
-            return this.scoringConcernValueIsKeyOrValue;
-        }
-        public boolean equals(ScoreIndex other){
-            if (!other.getkeyForScoringConcernName().equals(this.lineWithScoringConcernHasKey)){
-                return false;
-            }
-            if (!other.isScoringConcernNameTheKeyOrValue().equals(this.scoringConcernNameIsKeyOrValue)){
-                return false;
-            }
-            if (!other.getKeyForScoringConcernValue().equals(this.lineWithScoringConcernValueHasKey)){
-                return false;
-            }
-            if (!other.isScoringConcernValueTheKeyOrValue().equals(this.scoringConcernValueIsKeyOrValue)){
-                return false;
-            }
-            return true;
         }
     }
 }

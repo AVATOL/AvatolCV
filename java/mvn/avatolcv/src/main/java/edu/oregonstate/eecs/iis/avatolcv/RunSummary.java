@@ -9,6 +9,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 
 public class RunSummary {
     private static final String KEY_SCORING_CONCERN = "scoring concern";
+    private static final String KEY_TRAIN_TEST_CONCERN = "train test concern";
     private static final String KEY_DATASET = "dataset";
     private static final String KEY_DATA_SOURCE = "data source";
     private static final String KEY_SCORING_ALGORITHM = "scoring algorithm";
@@ -21,6 +22,7 @@ public class RunSummary {
     private String dataSource = null;
     private String scoringAlgorithm = null;
     private String runID = null;
+    private String trainTestConcern = null;
     public RunSummary(String ID) throws AvatolCVException {
         
         
@@ -34,7 +36,7 @@ public class RunSummary {
             BufferedReader reader = new BufferedReader(new FileReader(path));
             String line = null;
             while (null != (line = reader.readLine())){
-                if (line.startsWith("#")){
+                if (line.startsWith("#") || line.trim().equals("")){
                     // ignore
                 }
                 else {
@@ -55,6 +57,9 @@ public class RunSummary {
                     }
                     else if (key.equals(KEY_RUNID)){
                         this.runID = value;
+                    }
+                    else if (key.equals(KEY_TRAIN_TEST_CONCERN)){
+                        this.trainTestConcern = value;
                     }
                 }
             }
@@ -78,5 +83,14 @@ public class RunSummary {
     }
     public String getDataSource(){
         return this.dataSource;
+    }
+    public boolean hasTrainTestConcern(){
+    	if (this.trainTestConcern == null){
+    		return false;
+    	}
+    	return true;
+    }
+    public String getTrainTestConcern(){
+    	return this.trainTestConcern;
     }
 }

@@ -24,10 +24,12 @@ import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoreIndex;
 import edu.oregonstate.eecs.iis.avatolcv.generic.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
 
 public class ResultsReview {
+	private ScoreIndex scoreIndex = null;
     public Accordion runDetailsAccordion = null;
     public ScrollPane runDetailsScrollPane = null;
     public Label runIDValue = null;
@@ -36,12 +38,13 @@ public class ResultsReview {
     public Label dataSourceValue = null;
     public Label scoringAlgorithmValue = null;
     public GridPane scoredImagesGridPane = null;
+    public GridPane trainingImagesGridPane = null;
     public VBox trainingImagesVBox = null;
     private AvatolCVExceptionExpresser exceptionExpresser = null;
     private Stage mainWindow = null;
     private Scene scene = null;
     private String runID = null;
-    
+    private RunSummary runSummary = null;
     public ResultsReview(AvatolCVExceptionExpresser exceptionExpresser){
         this.exceptionExpresser = exceptionExpresser;
     }
@@ -80,26 +83,52 @@ public class ResultsReview {
         for (int i=0; i < scoredImages.size(); i++){
         	addScoredImageToGridPaneRow(scoredImages.get(i), scoredImagesGridPane, i+1);
         }
+        //
+        addTrainingImagesHeader(trainingImagesGridPane);
+        List<NormalizedImageInfo> trainingImages = normalizedImageInfos.getTrainingImages(scoringConcernValue);
+        for (int i=0; i < trainingImages.size(); i++){
+        	addTrainingImageToGridPaneRow(trainingImages.get(i), trainingImagesGridPane, i+1);
+        }
         scoredImagesGridPane.requestLayout();
     }
     private void addScoredImagesHeader(GridPane gp){
     	Label imageLabel = new Label("    ");
-    	gp.add(imageLabel, 0, 0);
-    	
-    	Label trainTestLabel = new Label("trainVsTest");
-    	gp.add(trainTestLabel, 1, 0);
-    	
-    	Label imageNameLabel = new Label("name");
-    	gp.add(imageNameLabel, 2, 0);
-    	
+    	int column = 0;
+    	gp.add(imageLabel, column++, 0);
+    	Label itemLabel = null;
+    	if (this.runSummary.hasTrainTestConcern()){
+    		itemLabel = new Label(this.runSummary.getTrainTestConcern());
+        	gp.add(itemLabel, column++, 0);
+    	}
+    	else {
+    		itemLabel = new Label("name");
+    		gp.add(itemLabel, column++, 0);
+    	}
     	Label truthLabel = new Label("truth");
-    	gp.add(truthLabel, 3, 0);
+    	gp.add(truthLabel, column++, 0);
     	
     	Label scoreLabel = new Label("score");
-    	gp.add(scoreLabel, 4, 0);
+    	gp.add(scoreLabel, column++, 0);
     	
     	Label confidence = new Label("confidence");
-    	gp.add(confidence, 5, 0);
+    	gp.add(confidence, column++, 0);
+    }
+
+    private void addTrainingImagesHeader(GridPane gp){
+    	Label imageLabel = new Label("    ");
+    	int column = 0;
+    	gp.add(imageLabel, column++, 0);
+    	Label itemLabel = null;
+    	if (this.runSummary.hasTrainTestConcern()){
+    		itemLabel = new Label(this.runSummary.getTrainTestConcern());
+        	gp.add(itemLabel, column++, 0);
+    	}
+    	else {
+    		itemLabel = new Label("name");
+    		gp.add(itemLabel, column++, 0);
+    	}
+    	Label truthLabel = new Label("truth");
+    	gp.add(truthLabel, column++, 0);
     }
     private String getThumbailPath(NormalizedImageInfo si) throws AvatolCVException {
         String id = si.getImageID();
@@ -121,36 +150,41 @@ public class ResultsReview {
         int column = 0;
         gp.add(iv,column,row);
         column++;
-        // get trainingVsTestConcern
-        String trainingVsTestName = si.getTrainingVsTestName();
-        Label trainingVsTestLabel = new Label(" ");
-        if (null != trainingVsTestName){
-            trainingVsTestLabel.setText(trainingVsTestName);
-            gp.add(trainingVsTestLabel,column,row);
-        }
-        column++;
         
-        // get image name
-        String imageName = si.getImageName();
-        Label imageNameLabel = new Label(" name? ");
-        if (null != imageName){
-            imageNameLabel.setText(imageName);
+        // get trainingVsTestConcern if relevant, OR image name
+        Label itemLabel = new Label("?");
+        if (this.runSummary.hasTrainTestConcern()){
+        	String trainingVsTestName = si.getTrainingVsTestName();
+        	if (null != trainingVsTestName){
+        		itemLabel.setText(trainingVsTestName);
+        	}
         }
-        gp.add(imageNameLabel,column,row);
+        else {
+        	String imageName = si.getImageName();
+        	itemLabel.setText(imageName);
+        }
+        gp.add(itemLabel,column,row);
         column++;
+     
         // get truth
-        String truth = si.getTruthValue();
+        String truth = si.getTruthValue(this.scoreIndex);
         Label truthLabel = new Label();
         if (null != truth){
             truthLabel.setText(truth);
         }
+        else {
+        	truthLabel.setText("?");
+        }
         gp.add(truthLabel,column,row);
         column++;
         // get score
-        String score = si.getScoreValue();
+        String score = si.getScoreValue(this.scoreIndex);
         Label scoreLabel = new Label();
         if (null != score){
             scoreLabel.setText(score);
+        }
+        else {
+        	scoreLabel.setText("?");
         }
         gp.add(scoreLabel, column, row);
         column++;
@@ -162,10 +196,49 @@ public class ResultsReview {
         }
         gp.add(confidenceLabel,column, row);
     }
+
+    private void addTrainingImageToGridPaneRow(NormalizedImageInfo si, GridPane gp, int row) throws AvatolCVException {
+        // get the image
+        String thumbnailPath = getThumbailPath(si);
+        Image image = new Image("file:"+thumbnailPath);
+        ImageView iv = new ImageView(image);
+        int column = 0;
+        gp.add(iv,column,row);
+        column++;
+        
+        // get trainingVsTestConcern if relevant, OR image name
+        Label itemLabel = new Label("?");
+        if (this.runSummary.hasTrainTestConcern()){
+        	String trainingVsTestName = si.getTrainingVsTestName();
+        	if (null != trainingVsTestName){
+        		itemLabel.setText(trainingVsTestName);
+        	}
+        }
+        else {
+        	String imageName = si.getImageName();
+        	itemLabel.setText(imageName);
+        }
+        gp.add(itemLabel,column,row);
+        column++;
+     
+        // get truth
+        String truth = si.getTruthValue(this.scoreIndex);
+        Label truthLabel = new Label();
+        if (null != truth){
+            truthLabel.setText(truth);
+        }
+        else {
+        	truthLabel.setText("?");
+        }
+        gp.add(truthLabel,column,row);
+        column++;
+    }
     private void setRunDetails(String runID) throws AvatolCVException {
         RunSummary rs = new RunSummary(runID);
+        this.runSummary = rs;
         AvatolCVFileSystem.setDatasourceName(rs.getDataSource());
         AvatolCVFileSystem.setSessionID(rs.getRunID());
+
      // tell the fileSystem which dataset is in play
         DatasetInfo di = new DatasetInfo();
         di.setName(rs.getDataset());
@@ -176,5 +249,7 @@ public class ResultsReview {
         scoringConcernValue.setText(rs.getScoringConcern());
         dataSourceValue.setText(rs.getDataSource());
         scoringAlgorithmValue.setText(rs.getScoringAlgorithm());
+        
+        this.scoreIndex = new ScoreIndex(AvatolCVFileSystem.getScoreIndexPath(rs.getRunID()));
     }
 }
