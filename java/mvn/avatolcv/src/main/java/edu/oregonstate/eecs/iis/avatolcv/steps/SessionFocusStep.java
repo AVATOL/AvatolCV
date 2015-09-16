@@ -1,12 +1,13 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
+import edu.oregonstate.eecs.iis.avatolcv.core.Answerable;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms.ScoringSessionFocus;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 
-public class SessionFocusStep implements Step {
+public class SessionFocusStep  extends Answerable implements Step {
     private ScoringAlgorithms scoringAlgorithms = null;
     private SessionInfo sessionInfo = null;
     private ScoringSessionFocus scoringFocus = null;

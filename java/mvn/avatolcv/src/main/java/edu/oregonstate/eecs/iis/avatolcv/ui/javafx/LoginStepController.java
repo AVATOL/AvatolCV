@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.IOException;
+import java.util.Hashtable;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
@@ -29,8 +30,14 @@ public class LoginStepController implements StepController {
         passwordTextField.setText(sessionInfo.getDataSource().getDefaultPassword());
 	}
 	public void tryCredentials(){
-		this.loginStep.setUsername(usernameTextField.getText());
-		this.loginStep.setPassword(passwordTextField.getText());
+		String username = usernameTextField.getText();
+		String password = passwordTextField.getText();
+		this.loginStep.setUsername(username);
+		this.loginStep.setPassword(password);
+		Hashtable<String, String> answerHash = new Hashtable<String, String>();
+		answerHash.put("username", username);
+		answerHash.put("password", password);
+		this.loginStep.saveAnswers(answerHash);
 		try {
 			this.loginStep.consumeProvidedData();
 		}
@@ -68,6 +75,13 @@ public class LoginStepController implements StepController {
             loader.setController(this);
             Node content = loader.load();
             setDefaultCredentials();
+            if (this.loginStep.hasPriorAnswers()){
+            	Hashtable<String, String> priorAnswers = this.loginStep.getPriorAnswers();
+            	String password = priorAnswers.get("password");
+            	String username = priorAnswers.get("username");
+            	this.usernameTextField.setText(username);
+            	this.passwordTextField.setText(password);
+            }
             return content;
         }
         catch(IOException ioe){

@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.IOException;
+import java.util.Hashtable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,7 +45,8 @@ public class ImagePullStepController implements StepController, ProgressPresente
 
     @Override
     public boolean consumeUIData() {
-        // nothing to consume - just reporting progress
+    	Hashtable<String, String> answerHash = new Hashtable<String, String>();
+		this.step.saveAnswers(answerHash);
         return true;
     }
 

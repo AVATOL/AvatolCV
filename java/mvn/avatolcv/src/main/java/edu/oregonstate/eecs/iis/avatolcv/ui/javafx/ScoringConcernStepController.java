@@ -52,13 +52,19 @@ public class ScoringConcernStepController implements StepController {
     @Override
     public boolean consumeUIData() {
         try {
+        	Hashtable<String, String> answerHash = new Hashtable<String, String>();
         	if (this.step.getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
         		List<ChoiceItem> chosenItems = new ArrayList<ChoiceItem>();
         		for (ChoiceItem ci : this.allChoiceItems){
         			if (checkBoxForChoiceItemHash.get(ci).isSelected()){
         				chosenItems.add(ci);
+        				answerHash.put(ci.getName(), "selected");
+        			}
+        			else {
+        				answerHash.put(ci.getName(), "unselected");
         			}
         		}
+    			this.step.saveAnswers(answerHash);
         		this.step.setChosenItems(chosenItems);
         		this.step.consumeProvidedData();
         		return true;
@@ -66,6 +72,8 @@ public class ScoringConcernStepController implements StepController {
         	else {
         	    String chosenAnswer = (String)this.itemChoiceComboBox.getValue();
         	    ChoiceItem chosenChoiceItem = choiceItemForNameHash.get(chosenAnswer);
+        	    answerHash.put("scoringConcern", chosenChoiceItem.getName());
+    			this.step.saveAnswers(answerHash);
         		this.step.setChosenChoiceItem(chosenChoiceItem);
                 this.step.consumeProvidedData();
                 return true;

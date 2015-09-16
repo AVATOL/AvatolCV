@@ -3,13 +3,14 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.core.Answerable;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageTranformReviewData;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
 
-public class ImageTransformReviewStep implements Step {
+public class ImageTransformReviewStep  extends Answerable implements Step {
 	private String view = null;	
 	private ImageTranformReviewData itrd = null;
 	private boolean userReviewComplete = false;

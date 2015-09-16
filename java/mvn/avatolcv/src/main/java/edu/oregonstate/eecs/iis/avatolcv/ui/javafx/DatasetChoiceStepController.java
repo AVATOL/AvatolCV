@@ -2,6 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +43,11 @@ public class DatasetChoiceStepController implements StepController {
 	@Override
 	public boolean consumeUIData() {
 		try {
-			this.step.setChosenDataset((String)this.selectedDataset.getValue());
+			String chosenDataset = (String)this.selectedDataset.getValue();
+			this.step.setChosenDataset(chosenDataset);
+			Hashtable<String, String> answerHash = new Hashtable<String, String>();
+			answerHash.put("chosenDataset", chosenDataset);
+			this.step.saveAnswers(answerHash);
 			this.step.consumeProvidedData();
 			return true;
 		}
@@ -63,16 +68,24 @@ public class DatasetChoiceStepController implements StepController {
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
+            
             this.datasetNames = this.step.getAvailableDatasets();
             if (datasetNames.size() < 1){
             	throw new AvatolCVException("no valid matrices detected.");
             }
             Collections.sort(datasetNames);
+            ObservableList<String> list = selectedDataset.getItems();
     		for (String m : datasetNames){
-    			ObservableList<String> list = selectedDataset.getItems();
     			list.add(m);
     		}
-    		selectedDataset.setValue(datasetNames.get(0));
+            if (this.step.hasPriorAnswers()){
+            	Hashtable<String, String> hash = this.step.getPriorAnswers();
+            	String choice = hash.get("chosenDataset");
+            	selectedDataset.setValue(choice);
+            }
+            else {
+        		selectedDataset.setValue(datasetNames.get(0));
+            }
             return content;
         }
         catch(IOException ioe){

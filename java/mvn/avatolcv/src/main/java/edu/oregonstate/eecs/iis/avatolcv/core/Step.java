@@ -1,7 +1,9 @@
 package edu.oregonstate.eecs.iis.avatolcv.core;
 
+import java.util.Hashtable;
+
 public interface Step {
-    public void init() throws AvatolCVException ;
-    public void consumeProvidedData() throws AvatolCVException;
+    void init() throws AvatolCVException ;
+    void consumeProvidedData() throws AvatolCVException;
     boolean hasFollowUpDataLoadPhase();
 }

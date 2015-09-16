@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.IOException;
+import java.util.Hashtable;
 import java.util.List;
 
 import javafx.collections.FXCollections;
@@ -16,6 +17,9 @@ import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SessionFocusStep;
 
 public class SessionFocusStepController implements StepController {
+	private static final String KEY_PRESENCE_ABSENCE = "presenceAbsence";
+	private static final String KEY_SHAPE_ASPECT = "shapeAspect";
+	private static final String KEY_TEXTURE_ASPECT = "textureAspect";
     public RadioButton radioPresenceAbsence;
     public RadioButton radioShape;
     public RadioButton radioTexture;
@@ -31,16 +35,24 @@ public class SessionFocusStepController implements StepController {
     @Override
     public boolean consumeUIData() {
         try {
+        	Hashtable<String, String> answerHash = new Hashtable<String, String>();
             if (radioPresenceAbsence.isSelected()){
-                this.focusStep.setScoringAlgInfo(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE, presenceAbsenceAlgChoice.getValue());
+            	String scoringAlg = presenceAbsenceAlgChoice.getValue();
+    			answerHash.put(KEY_PRESENCE_ABSENCE, scoringAlg);
+                this.focusStep.setScoringAlgInfo(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE, scoringAlg);
             }
             else if (radioShape.isSelected()){
-                this.focusStep.setScoringAlgInfo(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT, shapeAlgChoice.getValue());
+            	String scoringAlg = shapeAlgChoice.getValue();
+    			answerHash.put(KEY_SHAPE_ASPECT, scoringAlg);
+                this.focusStep.setScoringAlgInfo(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT, scoringAlg);
             }
             else {
                 // must be texture
-                this.focusStep.setScoringAlgInfo(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT, textureAlgChoice.getValue());
+            	String scoringAlg = textureAlgChoice.getValue();
+    			answerHash.put(KEY_TEXTURE_ASPECT, scoringAlg);
+                this.focusStep.setScoringAlgInfo(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT, scoringAlg);
             }
+			this.focusStep.saveAnswers(answerHash);
             this.focusStep.consumeProvidedData();
             return true;
         }
@@ -75,26 +87,39 @@ public class SessionFocusStepController implements StepController {
             ObservableList<String> paList        = FXCollections.observableList(presenceAbsenceAlgNames);
             ObservableList<String> shapeList     = FXCollections.observableList(shapeAlgNames);
             ObservableList<String> textureList   = FXCollections.observableList(textureAlgNames);
-            presenceAbsenceAlgChoice.setItems(paList);
-            if (paList.size() > 0){
-                presenceAbsenceAlgChoice.setValue(paList.get(0));
-                presenceAbsenceAlgChoice.requestLayout();
-            }
-            shapeAlgChoice.setItems(shapeList);
-            if (shapeList.size() > 0){
-                shapeAlgChoice.setValue(shapeList.get(0));
-            }
-            textureAlgChoice.setItems(textureList);
-            if (textureList.size() > 0){
-                textureAlgChoice.setValue(textureList.get(0));
-            }
             
+            setAlgSelector(presenceAbsenceAlgChoice, radioPresenceAbsence, paList,      KEY_PRESENCE_ABSENCE);
+            setAlgSelector(shapeAlgChoice,           radioShape,           shapeList,   KEY_SHAPE_ASPECT);
+            setAlgSelector(textureAlgChoice,         radioTexture, 		   textureList, KEY_TEXTURE_ASPECT);
             return content;
         }
         catch(IOException ioe){
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
         }
     }
+    private void setAlgSelector(ComboBox<String> choiceBox, RadioButton radioButton, ObservableList<String> oList, String key){
+    	choiceBox.setItems(oList);
+        if (oList.size() > 0){
+        	if (this.focusStep.hasPriorAnswers()){
+        		String paAlg = this.focusStep.getPriorAnswers().get(key);
+        		if(null == paAlg){
+        			// alg was not selected prior
+        			choiceBox.setValue(oList.get(0));
+        		}
+        		else {
+        			// alg was selected prior, use that value
+        			choiceBox.setValue(paAlg);
+        			radioButton.setSelected(true);
+            	}
+        	}
+        	else {
+        		choiceBox.setValue(oList.get(0));
+        	}
+        	choiceBox.requestLayout();
+        }
+    }
+    
+   
 	@Override
 	public boolean delayEnableNavButtons() {
 		return false;

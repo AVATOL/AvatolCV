@@ -1,12 +1,12 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
-import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.core.Answerable;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 
-public class SummaryFilterStep implements Step {
+public class SummaryFilterStep  extends Answerable implements Step {
     private SessionInfo sessionInfo;
     public SummaryFilterStep(SessionInfo sessionInfo){
         this.sessionInfo = sessionInfo;

@@ -2,8 +2,10 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.core.Answerable;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
@@ -17,22 +19,24 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 
-public class DatasetChoiceStep implements Step {
+public class DatasetChoiceStep extends Answerable implements Step {
     private DatasetInfo chosenDataset = null;
     private List<DatasetInfo> datasets = null;
     private SessionInfo sessionInfo = null;
+    private Hashtable<String,String> priorAnswers = null;
     public DatasetChoiceStep(SessionInfo sessionInfo){
         this.sessionInfo = sessionInfo;
     }
     @Override
     public void init() throws AvatolCVException {
-        // TODO Auto-generated method stub
-
+        // nothing to do
     }
     public List<String> getAvailableDatasets() throws AvatolCVException {
         List<String> result = new ArrayList<String>();
-        this.datasets = this.sessionInfo.getDataSource().getDatasets();
-        Collections.sort(this.datasets);
+        if (null == this.datasets){
+            this.datasets = this.sessionInfo.getDataSource().getDatasets();
+        }
+        //Collections.sort(this.datasets);
         for (DatasetInfo di : this.datasets){
             String name = di.getName();
             result.add(name);

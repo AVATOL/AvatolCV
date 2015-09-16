@@ -37,6 +37,9 @@ public class SummaryFilterStepController implements StepController {
     }
     @Override
     public boolean consumeUIData() {
+    	Hashtable<String, String> answerHash = new Hashtable<String, String>();
+    	// TODO - figure out how to remember filter answers
+		this.step.saveAnswers(answerHash);
         return true;
     }
 

@@ -1,13 +1,14 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import edu.oregonstate.eecs.iis.avatolcv.bisque.BisqueDataSource;
+import edu.oregonstate.eecs.iis.avatolcv.core.Answerable;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.FileSystemDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MorphobankDataSource;
 
-public class DataSourceStep implements Step {
+public class DataSourceStep  extends Answerable implements Step {
     private enum DataSourceChoice {
         MORPHOBANK,
         BISQUE,

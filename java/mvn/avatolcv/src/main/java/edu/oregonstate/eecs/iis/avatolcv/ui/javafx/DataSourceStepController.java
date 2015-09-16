@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.IOException;
+import java.util.Hashtable;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -26,15 +27,20 @@ public class DataSourceStepController implements StepController {
     }
     @Override
     public boolean consumeUIData() {
+    	Hashtable<String, String> answerHash = new Hashtable<String, String>();
         if (radioMorphobank.isSelected()){
+			answerHash.put("chosenDataSource", "Morphobank");
         	this.dataSourceStep.setDataSourceToMorphobank();
         }
         else if (radioBisque.isSelected()){
+			answerHash.put("chosenDataSource", "Bisque");
         	this.dataSourceStep.activateBisqueDataSource();
         }
         else {
+			answerHash.put("chosenDataSource", "FileSystem");
         	this.dataSourceStep.activateFileSystemDataSource();
         }
+        this.dataSourceStep.saveAnswers(answerHash);
         try {
             this.dataSourceStep.consumeProvidedData();
             return true;
@@ -58,6 +64,19 @@ public class DataSourceStepController implements StepController {
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
+            if (this.dataSourceStep.hasPriorAnswers()){
+            	Hashtable<String, String> priorAnswers = this.dataSourceStep.getPriorAnswers();
+            	String chosenDataSource = priorAnswers.get("chosenDataSource");
+            	if (chosenDataSource.equals("FileSystem")){
+            		radioFileSystem.setSelected(true);
+            	}
+            	else if (chosenDataSource.equals("Bisque")){
+            		radioBisque.setSelected(true);
+            	}
+            	else {
+            		radioMorphobank.setSelected(true);
+            	}
+            }
             return content;
         }
         catch(IOException ioe){

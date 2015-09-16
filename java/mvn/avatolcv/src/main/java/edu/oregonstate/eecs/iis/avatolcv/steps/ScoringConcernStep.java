@@ -3,6 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.core.Answerable;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
@@ -11,7 +12,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms.ScoringScope;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 
-public class ScoringConcernStep implements Step {
+public class ScoringConcernStep  extends Answerable implements Step {
     private SessionInfo sessionInfo = null;
     private ChoiceItem chosenItem = null;
     private List<ChoiceItem> chosenItems = null;

@@ -1,5 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
+import edu.oregonstate.eecs.iis.avatolcv.core.Answerable;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
@@ -7,7 +8,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.View;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
 
-public class LoginStep implements Step {
+public class LoginStep  extends Answerable implements Step {
     public String username = null;
     private String password = null;
     private SessionInfo sessionInfo = null;
