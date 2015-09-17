@@ -7,7 +7,7 @@
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Region prefWidth="100.0" HBox.hgrow="ALWAYS" />
+      <Region prefWidth="100.0" HBox.hgrow="NEVER" />
       <VBox id="scoringConcernVBox" fx:id="scoringConcernVBox" maxWidth="500.0" HBox.hgrow="NEVER">
          <children>
             <Region VBox.vgrow="ALWAYS" />

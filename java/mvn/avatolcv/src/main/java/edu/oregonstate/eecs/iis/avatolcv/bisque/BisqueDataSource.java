@@ -312,6 +312,10 @@ public class BisqueDataSource implements DataSource {
     public void downloadImages(ProgressPresenter pp, String processName) throws AvatolCVException {
        this.bisqueImages = new BisqueImages(pp, wsClient, chosenDataset, processName);
     }
+    @Override
+    public String getDatasetTitleText() {
+        return "Dataset";
+    }
 
 
     

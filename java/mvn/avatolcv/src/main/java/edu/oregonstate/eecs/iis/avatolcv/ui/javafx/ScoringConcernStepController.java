@@ -243,6 +243,7 @@ public class ScoringConcernStepController implements StepController {
     public void configureUIForFollowUpDataLoadPhase() {
         scoringConcernVBox.getChildren().clear();
         Region regionTop = new Region();
+//        regionTop.setStyle(value);
         VBox.setVgrow(regionTop, Priority.ALWAYS);
         scoringConcernVBox.getChildren().add(regionTop);
         // add text about doing best to detect presence/absence
@@ -262,7 +263,6 @@ public class ScoringConcernStepController implements StepController {
         Region regionBottom = new Region();
         VBox.setVgrow(regionBottom, Priority.ALWAYS);
         scoringConcernVBox.getChildren().add(regionBottom);
-        
     }
     @Override
     public boolean isFollowUpDataLoadPhaseComplete() {

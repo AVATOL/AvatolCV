@@ -496,5 +496,15 @@ public class MorphobankDataSource implements DataSource {
     public String getName() {
         return "morphobank";
     }
+    @Override
+    public void downloadImages(ProgressPresenter pp, String processName)
+            throws AvatolCVException {
+        // TODO Auto-generated method stub
+        
+    }
+    @Override
+    public String getDatasetTitleText() {
+        return "Matrix";
+    }
 	
 }

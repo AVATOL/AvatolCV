@@ -28,4 +28,5 @@ public interface DataSource {
     
     void downloadImages(ProgressPresenter pp, String processName)  throws AvatolCVException;
     //void setStandard
+    public String getDatasetTitleText();
 }

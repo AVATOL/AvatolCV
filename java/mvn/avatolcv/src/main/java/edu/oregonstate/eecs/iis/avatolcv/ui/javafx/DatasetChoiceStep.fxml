@@ -11,7 +11,7 @@
       <VBox fx:id="datasetChoiceVBox" maxWidth="500.0" spacing="10.0" HBox.hgrow="NEVER">
          <children>
             <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-            <Label text="Select Matrix" />
+            <Label fx:id="datasetTitleName" text="Select Dataset/Matrix" />
             <ComboBox fx:id="selectedDataset" minWidth="200.0" />
             <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
          </children>

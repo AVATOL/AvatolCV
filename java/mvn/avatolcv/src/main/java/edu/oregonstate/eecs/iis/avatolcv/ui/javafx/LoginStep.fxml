@@ -5,12 +5,12 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Region HBox.hgrow="ALWAYS" />
+      <Region prefWidth="100.0" HBox.hgrow="NEVER" />
       <VBox HBox.hgrow="NEVER">
          <children>
-            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+            <Region VBox.vgrow="ALWAYS" />
             <GridPane hgap="6.0" minWidth="-Infinity" vgap="20.0" VBox.vgrow="NEVER">
               <columnConstraints>
                 <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
@@ -37,9 +37,9 @@
                   <Insets bottom="6.0" left="6.0" right="6.0" top="20.0" />
                </VBox.margin>
             </Label>
-            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+            <Region VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
-      <Region HBox.hgrow="ALWAYS" />
+      <Region prefWidth="100.0" HBox.hgrow="ALWAYS" />
    </children>
 </HBox>

@@ -28,6 +28,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ScoringConcernStepController.
 
 public class DatasetChoiceStepController implements StepController {
     public static final String SCORING_INFO_DOWNLOAD = "scoringInfoDownload"; 
+    public Label datasetTitleName;
     public VBox datasetChoiceVBox;
     public ProgressBar scoringInfoDownloadProgressBar;
     public Label scoringInfoDownloadMessageLabel;
@@ -86,6 +87,7 @@ public class DatasetChoiceStepController implements StepController {
             else {
         		selectedDataset.setValue(datasetNames.get(0));
             }
+            datasetTitleName.setText(this.step.getDatasetTitleText());
             return content;
         }
         catch(IOException ioe){
