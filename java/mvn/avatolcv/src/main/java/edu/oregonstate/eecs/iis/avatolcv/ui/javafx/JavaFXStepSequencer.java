@@ -72,41 +72,48 @@ public class JavaFXStepSequencer  {
         controllerForStep.put(dataSourceStep, dataSourceStepController);
         addLabelForStep(dataSourceStep,"Select Data Source");
         
+        
         LoginStep loginStep = new LoginStep(sessionInfo);
         ss.appendStep(loginStep);
         LoginStepController loginController = new LoginStepController(loginStep,sessionInfo,"LoginStep.fxml");
         controllerForStep.put(loginStep, loginController);
         addLabelForStep(loginStep,"Login");
+        dataSourceStep.setNextAnswerableInSeries(loginStep);
         
-        DatasetChoiceStep matrixStep = new DatasetChoiceStep(sessionInfo);
-        ss.appendStep(matrixStep);
-        DatasetChoiceStepController matrixController = new DatasetChoiceStepController(matrixStep, "DatasetChoiceStep.fxml");
-        controllerForStep.put(matrixStep, matrixController);
-        addLabelForStep(matrixStep,"Select Matrix");
+        DatasetChoiceStep datasetStep = new DatasetChoiceStep(sessionInfo);
+        ss.appendStep(datasetStep);
+        DatasetChoiceStepController matrixController = new DatasetChoiceStepController(datasetStep, "DatasetChoiceStep.fxml");
+        controllerForStep.put(datasetStep, matrixController);
+        addLabelForStep(datasetStep,"Select Matrix");
+        loginStep.setNextAnswerableInSeries(datasetStep);
 
         SessionFocusStep focusStep = new SessionFocusStep(sessionInfo);
         ss.appendStep(focusStep);
         SessionFocusStepController focusController = new SessionFocusStepController(focusStep, "SessionFocusStep.fxml");
         controllerForStep.put(focusStep, focusController);
         addLabelForStep(focusStep,"Select Scoring Approach");
+        datasetStep.setNextAnswerableInSeries(focusStep);
              
         ScoringConcernStep scoringConcernStep = new ScoringConcernStep(sessionInfo);
         ss.appendStep(scoringConcernStep);
         ScoringConcernStepController scoringConcernStepController = new ScoringConcernStepController(scoringConcernStep, "ScoringConcernStep.fxml");
         controllerForStep.put(scoringConcernStep, scoringConcernStepController);
         addLabelForStep(scoringConcernStep,"Select Item To Score");
+        focusStep.setNextAnswerableInSeries(scoringConcernStep);
         
         SummaryFilterStep summaryFilterStep = new SummaryFilterStep(sessionInfo);
         ss.appendStep(summaryFilterStep);
         SummaryFilterStepController summaryFilterStepController = new SummaryFilterStepController(summaryFilterStep, "SummaryFilterStep.fxml");
         controllerForStep.put(summaryFilterStep, summaryFilterStepController);
         addLabelForStep(summaryFilterStep,"Summary/Filter");
+        scoringConcernStep.setNextAnswerableInSeries(summaryFilterStep);
         
         ImagePullStep imagePullStep = new ImagePullStep(sessionInfo);
         ss.appendStep(imagePullStep);
         ImagePullStepController imagePullController = new ImagePullStepController(this, imagePullStep, "ImagePullStep.fxml");
         controllerForStep.put(imagePullStep, imagePullController);
         addLabelForStep(imagePullStep,"Load Images");
+        summaryFilterStep.setNextAnswerableInSeries(imagePullStep);
         /*
         MBExclusionQualityStep exclusionQualityStep = new MBExclusionQualityStep(null, client, sessionData);
         ss.appendStep(exclusionQualityStep);

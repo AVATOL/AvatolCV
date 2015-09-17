@@ -11,8 +11,16 @@ public class Answerable {
 	public Answerable getNextAnswerable(){
 		return this.nextAnswerable;
 	}
-	public void saveAnswers(Hashtable<String,String> hash){
-		 answers = hash;
+	public void saveAnswers(Hashtable<String,String> newAnswers){
+	    if (null != this.answers){
+	        if (!newAnswers.equals(answers)){
+	            // answers are changing - need to flush!
+	            if (null != this.nextAnswerable){
+	                this.nextAnswerable.flushDownstreamAnswers();
+	            }
+	        }
+	    }
+		answers = newAnswers;
 	}
 	public boolean hasPriorAnswers(){
 		 if (null == answers){
@@ -23,10 +31,11 @@ public class Answerable {
 	public Hashtable<String,String> getPriorAnswers(){
 		return answers; 
 	}
-	public void flushAnswers(){
-		answers = null;
+	public void flushDownstreamAnswers(){
+	    this.answers = null;
+	    System.out.println("....flush...!!");
 		if (null != this.nextAnswerable){
-			this.nextAnswerable.flushAnswers();
+			this.nextAnswerable.flushDownstreamAnswers();
 		}
 	}
 }
