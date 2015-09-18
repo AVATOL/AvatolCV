@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.bisque;
+package edu.oregonstate.eecs.iis.avatolcv.obsolete.bisque;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;

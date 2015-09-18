@@ -1,15 +1,15 @@
-package edu.oregonstate.eecs.iis.avatolcv.bisque.charscore;
+package edu.oregonstate.eecs.iis.avatolcv.obsolete.bisque;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
 
-public class BisqueLabelTrainingExamplesStep implements Step{
+public class BisqueReviewStep implements Step {
 
     @Override
     public void consumeProvidedData() throws AvatolCVException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -17,5 +17,4 @@ public class BisqueLabelTrainingExamplesStep implements Step{
         // TODO Auto-generated method stub
         
     }
-
 }

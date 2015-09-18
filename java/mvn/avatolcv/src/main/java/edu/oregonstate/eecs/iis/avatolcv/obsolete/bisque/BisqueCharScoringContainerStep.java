@@ -1,6 +1,5 @@
-package edu.oregonstate.eecs.iis.avatolcv.bisque.charscore;
+package edu.oregonstate.eecs.iis.avatolcv.obsolete.bisque;
 
-import edu.oregonstate.eecs.iis.avatolcv.bisque.BisqueSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
