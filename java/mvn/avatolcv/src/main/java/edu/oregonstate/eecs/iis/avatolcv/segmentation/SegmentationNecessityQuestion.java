@@ -1,6 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.segmentation;
 
-import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 
 public class SegmentationNecessityQuestion implements Step {

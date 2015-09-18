@@ -1,6 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.morphobank;
 
-import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionDataInterface;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;

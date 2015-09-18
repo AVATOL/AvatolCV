@@ -2,7 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import java.util.List;
 
-import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionDataInterface;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;

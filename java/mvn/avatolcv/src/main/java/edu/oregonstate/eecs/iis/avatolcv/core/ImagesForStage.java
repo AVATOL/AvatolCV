@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 /*
  * ImagesForStage is a generic image file handler that each tool can use.  
  * - it starts out with candidate images

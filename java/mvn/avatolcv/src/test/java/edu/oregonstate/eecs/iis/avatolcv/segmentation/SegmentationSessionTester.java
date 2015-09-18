@@ -9,10 +9,10 @@ import javax.imageio.ImageIO;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.SystemDependent;
 import edu.oregonstate.eecs.iis.avatolcv.TestProgressPresenter;
-import edu.oregonstate.eecs.iis.avatolcv.core.AlgorithmRunner;
-import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmRunner;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ImageTransformReviewStep;

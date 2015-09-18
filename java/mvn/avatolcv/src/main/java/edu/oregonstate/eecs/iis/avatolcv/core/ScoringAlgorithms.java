@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+
 public class ScoringAlgorithms {
 	public static final String SHELL_BATSKULL = "DPM";
     public enum ScoringSessionFocus { 

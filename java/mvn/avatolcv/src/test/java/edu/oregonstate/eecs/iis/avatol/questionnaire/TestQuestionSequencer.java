@@ -2,9 +2,9 @@ package edu.oregonstate.eecs.iis.avatol.questionnaire;
 
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.SystemDependent;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
-import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.questionnaire.AnsweredQuestion;
 import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QQuestion;
 import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QQuestions;

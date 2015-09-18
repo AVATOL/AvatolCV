@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+
 public class DataFilter {
 	private static final String FILTER_FILE_NAME = "filter.txt";
 	private static final String FILESEP = System.getProperty("file.separator");

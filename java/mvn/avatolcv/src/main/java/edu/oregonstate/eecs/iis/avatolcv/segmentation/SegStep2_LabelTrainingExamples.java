@@ -2,11 +2,11 @@ package edu.oregonstate.eecs.iis.avatolcv.segmentation;
 
 import java.awt.image.BufferedImage;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForStage;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
-import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 
 /*
 * This step supports the UI that allows for segmentation labeling or reviewing of segmentation labels

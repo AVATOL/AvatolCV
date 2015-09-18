@@ -2,10 +2,10 @@ package edu.oregonstate.eecs.iis.avatolcv.segmentation;
 
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
-import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.obsolete.bisque.BisqueSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;

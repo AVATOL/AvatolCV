@@ -3,7 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv.javafxui;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.morphobank.MorphobankSessionJavaFX;
 import javafx.application.Application;
 import javafx.collections.FXCollections;

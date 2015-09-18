@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
-
 public class RunSummary {
     private static final String KEY_SCORING_CONCERN = "scoring concern";
     private static final String KEY_TRAIN_TEST_CONCERN = "train test concern";

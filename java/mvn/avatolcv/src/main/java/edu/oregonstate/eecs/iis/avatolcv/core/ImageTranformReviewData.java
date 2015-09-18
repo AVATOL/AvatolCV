@@ -3,6 +3,8 @@ package edu.oregonstate.eecs.iis.avatolcv.core;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+
 public interface ImageTranformReviewData {
     public ImagesForStage getImagesForStage();
     public List<ImageInfo> getCandidateImages();

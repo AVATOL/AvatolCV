@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+
 public class ImageInfo {
     public static final String EXCLUSION_STATES_DIRNAME = "userExclusions";
 

@@ -1,7 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.Answerable;
-import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms.ScoringSessionFocus;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;

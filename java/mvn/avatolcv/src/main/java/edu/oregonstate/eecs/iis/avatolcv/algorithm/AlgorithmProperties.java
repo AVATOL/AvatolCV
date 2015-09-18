@@ -1,10 +1,12 @@
-package edu.oregonstate.eecs.iis.avatolcv.core;
+package edu.oregonstate.eecs.iis.avatolcv.algorithm;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Hashtable;
+
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
 public class AlgorithmProperties {
 	public static final String PROPERTY_LAUNCH_FILE = "launchWith";  // can be a matlab function name, a script or executable.

@@ -1,5 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.core;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import javafx.scene.Node;
 
 public interface StepController {

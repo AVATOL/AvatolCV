@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.ws;
+package edu.oregonstate.eecs.iis.avatolcv;
 
 public class AvatolCVException extends Exception {
 	/**

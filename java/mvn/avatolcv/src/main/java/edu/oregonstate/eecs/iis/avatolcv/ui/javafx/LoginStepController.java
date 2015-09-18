@@ -3,7 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 import java.io.IOException;
 import java.util.Hashtable;
 
-import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.LoginStep;

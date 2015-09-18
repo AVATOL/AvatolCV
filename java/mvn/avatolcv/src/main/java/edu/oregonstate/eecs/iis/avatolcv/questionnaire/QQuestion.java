@@ -3,7 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv.questionnaire;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
 public class QQuestion {
     public static final String INPUT_TYPE_INTEGER = "input_integer";

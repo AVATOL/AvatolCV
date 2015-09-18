@@ -2,11 +2,11 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import java.util.Hashtable;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.Answerable;
-import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ImagePullStepController;
 
 public class ImagePullStep  extends Answerable implements Step {

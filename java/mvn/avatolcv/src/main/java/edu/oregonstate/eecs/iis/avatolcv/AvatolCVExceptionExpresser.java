@@ -1,4 +1,5 @@
-package edu.oregonstate.eecs.iis.avatolcv.core;
+package edu.oregonstate.eecs.iis.avatolcv;
+
 
 public interface AvatolCVExceptionExpresser {
     void showException(AvatolCVException e, String header);

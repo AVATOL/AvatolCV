@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.bisque;
+package edu.oregonstate.eecs.iis.avatolcv.datasource;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,12 +6,11 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVDataFiles;
-import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
-import edu.oregonstate.eecs.iis.avatolcv.core.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;

@@ -1,4 +1,8 @@
-package edu.oregonstate.eecs.iis.avatolcv.core;
+package edu.oregonstate.eecs.iis.avatolcv.algorithm;
+
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules.AlgType;
+import edu.oregonstate.eecs.iis.avatolcv.core.CommandLineInvoker;
 
 public class AlgorithmLauncher {
 	private static final String FILESEP = System.getProperty("file.separator");

@@ -1,6 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.javafxui;
 
-import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

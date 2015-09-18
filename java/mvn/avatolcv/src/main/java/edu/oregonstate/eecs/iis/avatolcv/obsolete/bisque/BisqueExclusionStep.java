@@ -2,10 +2,10 @@ package edu.oregonstate.eecs.iis.avatolcv.obsolete.bisque;
 
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.View;
-import edu.oregonstate.eecs.iis.avatolcv.core.AvatolCVException;
 
 public class BisqueExclusionStep implements Step {
 	private String view = null;
