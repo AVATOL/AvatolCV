@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.questionnaire;
+package edu.oregonstate.eecs.iis.obsolete.avatolcv.questionnaire;
 
 import java.util.ArrayList;
 import java.util.List;

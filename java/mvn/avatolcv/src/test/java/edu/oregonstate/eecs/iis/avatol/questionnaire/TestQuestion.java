@@ -1,7 +1,7 @@
 package edu.oregonstate.eecs.iis.avatol.questionnaire;
 
-import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QAnswer;
-import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QQuestion;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.questionnaire.QAnswer;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.questionnaire.QQuestion;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

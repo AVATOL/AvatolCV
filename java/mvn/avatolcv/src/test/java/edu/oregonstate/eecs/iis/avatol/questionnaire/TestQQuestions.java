@@ -2,9 +2,9 @@ package edu.oregonstate.eecs.iis.avatol.questionnaire;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.SystemDependent;
-import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QQuestion;
-import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QQuestions;
-import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QuestionsXMLFile;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.questionnaire.QQuestion;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.questionnaire.QQuestions;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.questionnaire.QuestionsXMLFile;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

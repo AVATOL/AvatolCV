@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.questionnaire;
+package edu.oregonstate.eecs.iis.obsolete.avatolcv.questionnaire;
 
 public class AnsweredQuestion {
     private String questionID = null;
