@@ -1,3 +1,4 @@
+package edu.oregonstate.eecs.iis.obsolete.avatolcv.scissors;
 // import java.util.PriorityQueue;
 
 public class IntelligentScissor {

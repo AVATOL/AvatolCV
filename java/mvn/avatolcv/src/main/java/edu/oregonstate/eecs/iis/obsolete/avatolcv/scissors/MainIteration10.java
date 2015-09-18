@@ -1,3 +1,4 @@
+package edu.oregonstate.eecs.iis.obsolete.avatolcv.scissors;
 import java.util.PriorityQueue;
 // @pjs preload must be used to preload the image so that it will be available when used in the sketch  
 /* @pjs preload="img/carotid3.jpg,img/bacteria-s.jpg,img/hepatic_artery.jpg,img/lmca-stenosis2.jpg,img/carotid-side2.jpg,img/ct-brain-s.jpg,img/left-artery.jpg"; */

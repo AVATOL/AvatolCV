@@ -1,3 +1,4 @@
+package edu.oregonstate.eecs.iis.obsolete.avatolcv.scissors;
 // ref: http://processingjs.org/learning/topic/convolution/
 
 double convolution_grayscale_pimage_1dkernel(int row, int col, PImage input, double[] kernel)

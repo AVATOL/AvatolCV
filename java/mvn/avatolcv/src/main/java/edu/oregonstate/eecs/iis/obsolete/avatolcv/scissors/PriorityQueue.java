@@ -1,3 +1,4 @@
+package edu.oregonstate.eecs.iis.obsolete.avatolcv.scissors;
 // https://github.com/janogonzalez/priorityqueuejs/blob/master/index.js
 // Modified by Jae Shin, April 25, 2014.
 
