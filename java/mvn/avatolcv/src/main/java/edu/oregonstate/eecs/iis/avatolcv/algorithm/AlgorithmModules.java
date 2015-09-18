@@ -11,6 +11,12 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms.LaunchThrou
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms.ScoringScope;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms.ScoringSessionFocus;
 
+/**
+ * 
+ * @author admin-jed
+ *
+ * Encapsulates awareness of and "loading"(pulling into a runnable state) all the algorithms present in the modules dir.
+ */
 public class AlgorithmModules {
 	public enum AlgType {
 		SEGMENTATION,

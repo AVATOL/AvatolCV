@@ -6,6 +6,12 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
+/**
+ * 
+ * @author admin-jed
+ *
+ * Special encapsulation for scoring type algorithms, Used by AlgorithmModules.  
+ */
 public class ScoringAlgorithms {
 	public static final String SHELL_BATSKULL = "DPM";
     public enum ScoringSessionFocus { 

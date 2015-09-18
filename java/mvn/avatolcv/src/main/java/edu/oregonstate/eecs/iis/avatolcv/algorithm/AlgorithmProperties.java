@@ -8,6 +8,14 @@ import java.util.Hashtable;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
+/**
+ * 
+ * @author admin-jed
+ *
+ *  Each algortihm in the modules are contains a file for each platform it is supported under, which tells 
+ *  avatolCV about itself.  This way, avatolCV knows which dropdown menu to include it in 
+ *  (the one for present/absence, shape or exture), and how to invoke it.
+ */
 public class AlgorithmProperties {
 	public static final String PROPERTY_LAUNCH_FILE = "launchWith";  // can be a matlab function name, a script or executable.
 	public static final String PROPERTY_SCORING_FOCUS = "scoringFocus";

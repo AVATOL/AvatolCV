@@ -5,6 +5,15 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+/**
+ * 
+ * @author admin-jed
+ * 
+ * File that holds all the information about a prior run.  As of 9/18/2015, not sure if I will generate this file incrementally 
+ * so I can use it during an active session or not.  So far just supporting results review screen.  I think I have to support 
+ * incremental generation in order to support session resume.
+ *
+ */
 public class RunSummary {
     private static final String KEY_SCORING_CONCERN = "scoring concern";
     private static final String KEY_TRAIN_TEST_CONCERN = "train test concern";

@@ -3,6 +3,12 @@ package edu.oregonstate.eecs.iis.avatolcv.algorithm;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules.AlgType;
 
+/**
+ * 
+ * @author admin-jed
+ *
+ *Class for launching all segmentation, orientation, and scoring algs present in the module system
+ */
 public class AlgorithmLauncher {
 	private static final String FILESEP = System.getProperty("file.separator");
 	public static void main(String[] args){

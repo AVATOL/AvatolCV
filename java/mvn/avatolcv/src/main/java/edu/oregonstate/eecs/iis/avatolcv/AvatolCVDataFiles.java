@@ -12,6 +12,12 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * 
+ * @author admin-jed
+ *
+ * encapsulates generation and loading of {@link SystemDesignDocumentation#whatIsANormalizedFile() normalizedFiles} .
+ */
 public class AvatolCVDataFiles {
     protected static final String FILESEP = System.getProperty("file.separator");
     protected static final String NL = System.getProperty("line.separator");

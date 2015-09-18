@@ -9,6 +9,14 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
 
+/**
+ * 
+ * @author admin-jed
+ *
+ * Encapsulates the directory layout for everything under avatolCV: modules, datasets, sessions, etc.
+ * Also handles sessionID generation as that hinges on existing files.  The idea was that if I wanted to change the layout, 
+ * it would all be handled here.
+ */
 public class AvatolCVFileSystem {
     public static final String RESERVED_PREFIX = "avcv_";
 

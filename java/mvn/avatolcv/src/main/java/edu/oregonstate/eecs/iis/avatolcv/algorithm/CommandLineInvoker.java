@@ -8,8 +8,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-/*
- * copy of OsuCommandLineRunner, but without logging
+/**
+ * This will launch a process to run a shell command.  This is a 
+ * copy of OsuCommandLineRunner from the ADAMS project, but without logging
  */
 public class CommandLineInvoker {
 	private String dirToRunIn = null;
