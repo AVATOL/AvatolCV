@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
+package edu.oregonstate.eecs.iis.obsolete.avatolcv;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -25,7 +25,8 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
-import edu.oregonstate.eecs.iis.avatolcv.steps.Z_Obsolete_ScoringConcernDataPullStep;
+import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.JavaFXStepSequencer;
+import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ProgressPresenterImpl;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.morphobank.MBImagePullStep;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.morphobank.MorphobankSessionJavaFX;
 
