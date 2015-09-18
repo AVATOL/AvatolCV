@@ -6,8 +6,8 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForStage;
-import edu.oregonstate.eecs.iis.avatolcv.core.Step;
-import edu.oregonstate.eecs.iis.avatolcv.core.View;
+import edu.oregonstate.eecs.iis.avatolcv.obsolete.View;
+import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 
 public class SegStep1_TrainingExamplesCheck implements Step {
 

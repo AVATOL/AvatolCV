@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import edu.oregonstate.eecs.iis.avatolcv.generic.DatasetInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
 
 public class AvatolCVFileSystem {
     public static final String RESERVED_PREFIX = "avcv_";

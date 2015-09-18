@@ -4,9 +4,9 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmRunner;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForStage;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
-import edu.oregonstate.eecs.iis.avatolcv.core.Step;
-import edu.oregonstate.eecs.iis.avatolcv.core.View;
+import edu.oregonstate.eecs.iis.avatolcv.obsolete.View;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
+import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 
 public class OrientStep3_Run implements Step {
     private String view = null;   

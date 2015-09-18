@@ -12,11 +12,11 @@ import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.FileUtils;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionDataInterface;
-import edu.oregonstate.eecs.iis.avatolcv.core.TrainTestInfo;
+import edu.oregonstate.eecs.iis.avatolcv.obsolete.FileUtils;
+import edu.oregonstate.eecs.iis.avatolcv.obsolete.SessionDataInterface;
+import edu.oregonstate.eecs.iis.avatolcv.obsolete.TrainTestInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotationPoint;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;

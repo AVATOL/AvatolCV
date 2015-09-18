@@ -7,10 +7,9 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.Platform;
-import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
-import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms.LaunchThrough;
-import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms.ScoringScope;
-import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms.ScoringSessionFocus;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms.LaunchThrough;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms.ScoringScope;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms.ScoringSessionFocus;
 
 public class AlgorithmModules {
 	public enum AlgType {

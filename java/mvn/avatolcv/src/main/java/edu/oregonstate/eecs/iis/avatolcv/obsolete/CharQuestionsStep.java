@@ -1,15 +1,13 @@
-package edu.oregonstate.eecs.iis.avatolcv.steps;
+package edu.oregonstate.eecs.iis.avatolcv.obsolete;
 
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionDataInterface;
-import edu.oregonstate.eecs.iis.avatolcv.core.Step;
-import edu.oregonstate.eecs.iis.avatolcv.core.View;
 import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QQuestion;
 import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QQuestions;
 import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QuestionSequencer;
 import edu.oregonstate.eecs.iis.avatolcv.questionnaire.QuestionsXMLFile;
+import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 
 public class CharQuestionsStep implements Step {
     private QuestionSequencer questionSequencer = null;

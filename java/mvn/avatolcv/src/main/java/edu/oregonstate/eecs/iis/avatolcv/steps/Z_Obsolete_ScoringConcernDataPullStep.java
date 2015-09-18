@@ -4,7 +4,6 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 
 public class Z_Obsolete_ScoringConcernDataPullStep implements Step {
 	private static final String NL = System.getProperty("line.separator");

@@ -7,8 +7,8 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
-import edu.oregonstate.eecs.iis.avatolcv.core.FileUtils;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionDataInterface;
+import edu.oregonstate.eecs.iis.avatolcv.obsolete.FileUtils;
+import edu.oregonstate.eecs.iis.avatolcv.obsolete.SessionDataInterface;
 import edu.oregonstate.eecs.iis.avatolcv.orientation.OrientationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;

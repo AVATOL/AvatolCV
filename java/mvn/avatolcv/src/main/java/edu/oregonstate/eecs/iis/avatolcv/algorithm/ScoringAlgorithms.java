@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.core;
+package edu.oregonstate.eecs.iis.avatolcv.algorithm;
 
 import java.util.ArrayList;
 import java.util.Hashtable;

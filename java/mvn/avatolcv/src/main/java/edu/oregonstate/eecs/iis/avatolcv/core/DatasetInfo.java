@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.generic;
+package edu.oregonstate.eecs.iis.avatolcv.core;
 
 
 public class DatasetInfo implements Comparable {

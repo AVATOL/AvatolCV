@@ -1,8 +1,8 @@
 package edu.oregonstate.eecs.iis.avatolcv.morphobank.charscore;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.Step;
-import edu.oregonstate.eecs.iis.avatolcv.core.View;
+import edu.oregonstate.eecs.iis.avatolcv.obsolete.View;
+import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 
 public class MBReviewStep implements Step {
 

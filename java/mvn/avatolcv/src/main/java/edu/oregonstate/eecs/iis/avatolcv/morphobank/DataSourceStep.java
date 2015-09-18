@@ -1,7 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.morphobank;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.Step;
+import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 
 public class DataSourceStep implements Step {
 

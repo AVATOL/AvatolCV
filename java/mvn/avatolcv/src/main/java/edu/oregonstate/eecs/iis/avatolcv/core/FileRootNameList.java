@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.generic;
+package edu.oregonstate.eecs.iis.avatolcv.core;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 /*
 trainingImages_segmentation.txt and testingImages_segmentation.txt, etc have entries that are the root names of images
     00-5xayvrdPC3o5foKMpLbZ5H_imgXyz

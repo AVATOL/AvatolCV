@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.core;
+package edu.oregonstate.eecs.iis.avatolcv;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,9 +11,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
-
-import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 
 public class AvatolCVDataFiles {
     protected static final String FILESEP = System.getProperty("file.separator");

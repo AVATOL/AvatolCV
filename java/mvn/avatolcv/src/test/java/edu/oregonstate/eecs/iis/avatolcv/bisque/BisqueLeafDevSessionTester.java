@@ -17,7 +17,6 @@ import edu.oregonstate.eecs.iis.avatolcv.TestProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmRunner;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
-import edu.oregonstate.eecs.iis.avatolcv.core.Step;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.obsolete.bisque.BisqueDatasetStep;
 import edu.oregonstate.eecs.iis.avatolcv.obsolete.bisque.BisqueExclusionCoachingStep;
@@ -35,6 +34,7 @@ import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegStep2_LabelTrainingExam
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegStep3_Run;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ImageTransformReviewStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
 

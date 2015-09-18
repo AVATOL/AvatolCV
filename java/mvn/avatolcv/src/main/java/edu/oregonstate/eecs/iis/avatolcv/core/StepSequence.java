@@ -3,6 +3,8 @@ package edu.oregonstate.eecs.iis.avatolcv.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
+
 public class StepSequence {
 	private List<Step> steps = new ArrayList<Step>();
 	private int currentStepIndex = 0;
