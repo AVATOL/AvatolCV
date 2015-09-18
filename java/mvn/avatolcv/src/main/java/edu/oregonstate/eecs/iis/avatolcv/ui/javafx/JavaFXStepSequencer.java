@@ -84,7 +84,7 @@ public class JavaFXStepSequencer  {
         ss.appendStep(datasetStep);
         DatasetChoiceStepController matrixController = new DatasetChoiceStepController(datasetStep, "DatasetChoiceStep.fxml");
         controllerForStep.put(datasetStep, matrixController);
-        addLabelForStep(datasetStep,"Select Matrix");
+        addLabelForStep(datasetStep,"Select Dataset");
         loginStep.setNextAnswerableInSeries(datasetStep);
 
         SessionFocusStep focusStep = new SessionFocusStep(sessionInfo);
