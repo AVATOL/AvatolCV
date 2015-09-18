@@ -5,7 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
-
+/**
+ * 
+ * @author admin-jed
+ * 
+ * This is some notes.
+ *
+ */
 public class NormalizedImageInfos {
     private static final String FILESEP = System.getProperty("file.separator");
     private List<NormalizedImageInfo> scoredImages = null;
@@ -30,7 +36,7 @@ public class NormalizedImageInfos {
                 String filename = f.getName();
                 NormalizedImageInfo nii = new NormalizedImageInfo(path, scoreIndex);
                 String pathOfScoreFile = sessionNormPath + FILESEP + filename;
-                nii.setScoreFile(pathOfScoreFile, scoreIndex);
+                nii.loadAVCVScoreFile(pathOfScoreFile, scoreIndex);
                 
                 normIIs.add(nii);
             }
@@ -38,6 +44,8 @@ public class NormalizedImageInfos {
         sortImageInfos(normIIs);
     }
     public void sortImageInfos(List<NormalizedImageInfo> imageInfos) throws AvatolCVException {
+        // FIXME - this is not so simple.  I need to look at each NII and ignore any that do not have the relevant key (character)
+        // and also ignore any that were excluded on quality grounds
         scoredImages = new ArrayList<NormalizedImageInfo>();
         trainingImages = new ArrayList<NormalizedImageInfo>();
         for (NormalizedImageInfo nii : imageInfos){

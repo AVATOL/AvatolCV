@@ -1,6 +1,5 @@
 package edu.oregonstate.eecs.iis.avatolcv.bisque;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -15,23 +14,16 @@ import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringAlgorithms;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.generic.DatasetInfo;
-import edu.oregonstate.eecs.iis.avatolcv.morphobank.MorphobankDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharStateInfo.MBCharStateValue;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
 
 public class BisqueDataSource implements DataSource {
     private static final String FILESEP = System.getProperty("file.separator");
@@ -255,7 +247,13 @@ public class BisqueDataSource implements DataSource {
     public String getDatasetSummaryText() {        
         StringBuilder sb = new StringBuilder();
         sb.append("Dataset: " + this.chosenDataset.getName() + NL);
-        //this.bisqueDataFiles.
+        // how many images in play
+        NormalizedImageInfos normalizedImageInfos = new NormalizedImageInfos(runID);
+        // list each character, it's possible values, and how many images have that associated
+        
+        // for each of those, how many are scored vs not
+        
+        
         sb.append(" add some more text" + NL);
         
         sb.append(NL);

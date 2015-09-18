@@ -24,12 +24,14 @@ public class NormalizedImageInfo {
     public static final String KEY_IMAGE_NAME         = PREFIX + "imageName";
     public static final String KEY_TIMESTAMP          = PREFIX + "timestamp";
     private static final String KEY_TRAINING_VS_TEST_CONCERN_VALUE  = PREFIX + "trainingVsTestConcernValue";
+    private ScoreIndex scoreIndex = null;
       //private ScoreIndex scoreIndexForBaseFile = new ScoreIndex();
     //private ScoreIndex scoreIndexForScoreFile = new ScoreIndex();
     private String imageName = "?";
     private String imageID = null;
     public NormalizedImageInfo(String path, ScoreIndex scoreIndex) throws AvatolCVException {
         this.imageID = getImageIDFromPath(path);
+        this.scoreIndex = scoreIndex;
         loadNormalizedInfoFromPath(path, "Problem loading Normalized Image Info file: ", keyValueHash, scoreIndex);
     }
     
@@ -128,7 +130,10 @@ public class NormalizedImageInfo {
     	
     	
     }
-    public void setScoreFile(String path, ScoreIndex scoreIndex) throws AvatolCVException {
+    /*
+     * 
+     */
+    public void loadAVCVScoreFile(String path, ScoreIndex scoreIndex) throws AvatolCVException {
         File scoreFile = new File(path);
         if (scoreFile.exists()){
             loadNormalizedInfoFromPath(scoreFile.getAbsolutePath(), "Problem loading score info file: ", scoreHash, scoreIndex);

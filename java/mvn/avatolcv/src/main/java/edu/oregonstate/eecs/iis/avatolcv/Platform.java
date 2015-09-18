@@ -1,5 +1,11 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
+/**
+ * 
+ * @author admin-jed
+ *
+ * Utilities for dealing with Windows vs Unix vs Mac
+ */
 public class Platform {
     private static String OS = System.getProperty("os.name").toLowerCase();
 

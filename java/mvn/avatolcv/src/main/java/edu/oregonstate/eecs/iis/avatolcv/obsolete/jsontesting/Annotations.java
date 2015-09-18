@@ -1,4 +1,6 @@
-package edu.oregonstate.eecs.iis.avatolcv;
+package edu.oregonstate.eecs.iis.avatolcv.obsolete.jsontesting;
+
+
 
 public class Annotations {
     Annotation[] annotations;
