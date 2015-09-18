@@ -5,9 +5,9 @@ import java.awt.image.BufferedImage;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForStage;
-import edu.oregonstate.eecs.iis.avatolcv.obsolete.View;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.View;
 
 public class OrientStep2_LabelTrainingExamples implements Step {
     

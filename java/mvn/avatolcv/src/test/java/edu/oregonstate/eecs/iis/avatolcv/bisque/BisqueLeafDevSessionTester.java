@@ -18,12 +18,6 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmRunner;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
-import edu.oregonstate.eecs.iis.avatolcv.obsolete.bisque.BisqueDatasetStep;
-import edu.oregonstate.eecs.iis.avatolcv.obsolete.bisque.BisqueExclusionCoachingStep;
-import edu.oregonstate.eecs.iis.avatolcv.obsolete.bisque.BisqueExclusionStep;
-import edu.oregonstate.eecs.iis.avatolcv.obsolete.bisque.BisqueImagePullStep;
-import edu.oregonstate.eecs.iis.avatolcv.obsolete.bisque.BisqueLoginStep;
-import edu.oregonstate.eecs.iis.avatolcv.obsolete.bisque.BisqueSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.orientation.OrientStep1_TrainingExamplesCheck;
 import edu.oregonstate.eecs.iis.avatolcv.orientation.OrientStep2_LabelTrainingExamples;
 import edu.oregonstate.eecs.iis.avatolcv.orientation.OrientStep3_Run;
@@ -37,6 +31,12 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.ImageTransformReviewStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.bisque.BisqueDatasetStep;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.bisque.BisqueExclusionCoachingStep;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.bisque.BisqueExclusionStep;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.bisque.BisqueImagePullStep;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.bisque.BisqueLoginStep;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.bisque.BisqueSessionData;
 
 public class BisqueLeafDevSessionTester extends TestCase {
 	private static final String FILESEP = System.getProperty("file.separator");

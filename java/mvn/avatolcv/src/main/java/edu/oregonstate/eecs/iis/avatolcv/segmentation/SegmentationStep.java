@@ -4,11 +4,11 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
-import edu.oregonstate.eecs.iis.avatolcv.morphobank.MBSessionData;
-import edu.oregonstate.eecs.iis.avatolcv.obsolete.View;
-import edu.oregonstate.eecs.iis.avatolcv.obsolete.bisque.BisqueSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.View;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.bisque.BisqueSessionData;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.morphobank.MBSessionData;
 
 /*
  * At the SEGMENTATION step, avatolCV will pass one argument, which is the path to the runConfig_segmentation.txt file

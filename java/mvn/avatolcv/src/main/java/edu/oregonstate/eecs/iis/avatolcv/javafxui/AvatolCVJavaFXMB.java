@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.morphobank.MorphobankSessionJavaFX;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.morphobank.MorphobankSessionJavaFX;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

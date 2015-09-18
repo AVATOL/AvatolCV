@@ -5,7 +5,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
-import edu.oregonstate.eecs.iis.avatolcv.morphobank.javafx.MBImagePullStepController.ProgressUpdater;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.morphobank.javafx.MBImagePullStepController.ProgressUpdater;
 
 public class AvatolCVExceptionExpresserJavaFX implements
         AvatolCVExceptionExpresser {

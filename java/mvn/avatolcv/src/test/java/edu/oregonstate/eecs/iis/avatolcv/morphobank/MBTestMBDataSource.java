@@ -5,6 +5,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.MorphobankDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotationPoint;
 public class MBTestMBDataSource extends TestCase {
