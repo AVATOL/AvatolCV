@@ -80,4 +80,21 @@ public class SystemDesignDocumentation {
      * scoreConcern value.
      */
     public void whatIsANormalizedFile(){} 
+    
+    /**
+     * <ul>
+     *    <li>Axis 1: SIMPLE scoring concern vs DEPENDENT scoring concern:  for MB case, in addition to a scoring concern (character) we also 
+     * have a training/test concern (taxon) where, depending on the value of the taxon, we will be either training or testing.  I'll 
+     * refer to this as the dependent case, where  training and testing decisions are made depending on the value of a property.  
+     * For leaf case, we have a simple scoring concern, which is the property chosen from the common properties associated with the 
+     * image.   We aren't paying attention to any other properties to decide about training and test, we just train on the images 
+     * where the property in question has a value specified.</li>
+     *    </li>Axis 2: Algorithm EVALUATION vs ACTUAL_USE use case:  The data that needs to be shown is somewhat different for the two modes on this axis.  
+     *    For algorithm evaluation mode, the user has scored everything already and we are going to use that info to help evaluate how an 
+     *    algorithm performs.  We divide the data up into "to train" and to score" and then we generate scores and then we can compare the 
+     *    scores with the true labels.  There is no "data acceptance" process associated with EVALUATION mode, whereas there is with ACTUAL_USE.</li>
+     * </ul>
+     */
+    public void whatAreTheDifferentModesOfScoring(){}
+    
 }

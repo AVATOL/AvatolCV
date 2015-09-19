@@ -14,7 +14,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfosToReview;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
@@ -246,7 +246,7 @@ public class BisqueDataSource implements DataSource {
         StringBuilder sb = new StringBuilder();
         sb.append("Dataset: " + this.chosenDataset.getName() + NL);
         // how many images in play
-        NormalizedImageInfos normalizedImageInfos = new NormalizedImageInfos(runID);
+        NormalizedImageInfosToReview normalizedImageInfos = new NormalizedImageInfosToReview(runID);
         // list each character, it's possible values, and how many images have that associated
         
         // for each of those, how many are scored vs not

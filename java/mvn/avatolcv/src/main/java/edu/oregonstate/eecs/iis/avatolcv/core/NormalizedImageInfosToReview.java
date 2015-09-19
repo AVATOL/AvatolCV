@@ -13,12 +13,12 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
  * This is some notes.
  *
  */
-public class NormalizedImageInfos {
+public class NormalizedImageInfosToReview {
     private static final String FILESEP = System.getProperty("file.separator");
     private List<NormalizedImageInfo> scoredImages = null;
     private List<NormalizedImageInfo> trainingImages = null;
     private ScoreIndex scoreIndex = null;
-    public NormalizedImageInfos(String runID) throws AvatolCVException {
+    public NormalizedImageInfosToReview(String runID) throws AvatolCVException {
         String datasetNormPath = AvatolCVFileSystem.getNormalizedDataDirForDataset(runID);
         String sessionNormPath = AvatolCVFileSystem.getNormalizedDataDirForSession(runID);
         File dir = new File(datasetNormPath);

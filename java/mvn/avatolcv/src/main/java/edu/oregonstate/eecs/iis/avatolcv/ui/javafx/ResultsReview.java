@@ -23,7 +23,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfosToReview;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoreIndex;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
@@ -81,7 +81,7 @@ public class ResultsReview {
     private void setScoredImagesInfo(String runID, String scoringConcernValue) throws AvatolCVException {
     	scoredImagesGridPane.getChildren().clear();
         addScoredImagesHeader(scoredImagesGridPane);
-        NormalizedImageInfos normalizedImageInfos = new NormalizedImageInfos(runID);
+        NormalizedImageInfosToReview normalizedImageInfos = new NormalizedImageInfosToReview(runID);
         List<NormalizedImageInfo> scoredImages = normalizedImageInfos.getScoredImages(scoringConcernValue);
         for (int i=0; i < scoredImages.size(); i++){
         	addScoredImageToGridPaneRow(scoredImages.get(i), scoredImagesGridPane, i+1);
