@@ -246,7 +246,7 @@ public class BisqueDataSource implements DataSource {
         StringBuilder sb = new StringBuilder();
         sb.append("Dataset: " + this.chosenDataset.getName() + NL);
         // how many images in play
-        NormalizedImageInfosToReview normalizedImageInfos = new NormalizedImageInfosToReview(runID);
+        //LEFT OFF HERE  NormalizedImageInfosToReview normalizedImageInfos = new NormalizedImageInfosToReview(runID);
         // list each character, it's possible values, and how many images have that associated
         
         // for each of those, how many are scored vs not
