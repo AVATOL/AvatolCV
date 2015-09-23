@@ -10,12 +10,13 @@ import java.io.IOException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
 public class ImageInfo {
-    public static final String EXCLUSION_STATES_DIRNAME = "userExclusions";
+    public static final String EXCLUSION_STATES_DIRNAME = "exclusions";
 
 	private static final String FILESEP = System.getProperty("file.separator");	
 	private static final String NL = System.getProperty("line.separator");
 	public static final String EXCLUSION_REASON_IMAGE_QUALITY = "imageQuality";
 	public static final String EXCLUSION_REASON_ORIENTATION = "imageOrientation";
+    public static final String EXCLUSION_REASON_UNAVAILABLE = "imageUnavailable";
 
 	private String nameAsUploadedNormalized = null;
 	private String nameAsUploadedOriginal = null;

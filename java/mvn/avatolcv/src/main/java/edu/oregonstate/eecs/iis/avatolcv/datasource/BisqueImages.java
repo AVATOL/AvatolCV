@@ -96,7 +96,8 @@ public class BisqueImages {
             }
         }
         if (imageNotYetDownloaded){
-            throw new AvatolCVException("problem downloading " + context + ": " + mostRecentException);
+            imagesLoadedSuccessfully = false;
+            return false;
         }
         imagesLoadedSuccessfully = true;
         return true;
@@ -114,7 +115,10 @@ public class BisqueImages {
         if (f.exists()){
             return true;
         }
-        return false;
+        else {
+            image.excludeForReason(ImageInfo.EXCLUSION_REASON_UNAVAILABLE);
+            return false;
+        }
     }
     public void setCurrentImages(List<BisqueImage> bisqueImages) throws AvatolCVException {
         this.bisqueImages = bisqueImages;
