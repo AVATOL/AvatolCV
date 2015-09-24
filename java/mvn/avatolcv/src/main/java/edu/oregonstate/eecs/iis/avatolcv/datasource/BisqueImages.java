@@ -42,16 +42,28 @@ public class BisqueImages {
             int imageCount = imagesThumbnail.size() * 2;
             double increment = 1.0 / imageCount;
             for (ImageInfo image : imagesLarge){
-                if (downloadImageIfNeeded(pp,image,AvatolCVFileSystem.getNormalizedImagesLargeDir(), processName, "image")){
+                if (image.isExcluded()){
+                    // we don't want the fact that we are abstaining from loading to affect the success count
                     successCount++;
+                }
+                else {
+                    if (downloadImageIfNeeded(pp,image,AvatolCVFileSystem.getNormalizedImagesLargeDir(), processName, "image")){
+                        successCount++;
+                    } 
                 }
                 curCount++;
                 pp.updateProgress(processName,curCount * increment);
             }
            
             for (ImageInfo image : imagesThumbnail){
-                if (downloadImageIfNeeded(pp,image, AvatolCVFileSystem.getNormalizedImagesThumbnailDir(), processName, "thumbnail")){
+                if (image.isExcluded()){
+                    // we don't want the fact that we are abstaining from loading to affect the success count
                     successCount++;
+                }
+                else {
+                    if (downloadImageIfNeeded(pp,image, AvatolCVFileSystem.getNormalizedImagesThumbnailDir(), processName, "thumbnail")){
+                        successCount++;
+                    }
                 }
                 curCount++;
                 pp.updateProgress(processName,curCount * increment);
