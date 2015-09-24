@@ -3,6 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 import java.util.Hashtable;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ImagePullStepController;
@@ -28,8 +29,13 @@ public class ImagePullStep  extends Answerable implements Step {
         return false;
     }
 
-    public void downloadImages(ImagePullStepController controller, String processName) throws AvatolCVException {
-        DataSource dataSource = sessionInfo.getDataSource();
-        dataSource.downloadImages(controller, processName);
+    public void downloadImages(ImagePullStepController controller, String processName, AvatolCVExceptionExpresser exceptionExpresser) throws AvatolCVException {
+        try {
+            DataSource dataSource = sessionInfo.getDataSource();
+            dataSource.downloadImages(controller, processName);
+        }
+        catch(AvatolCVException ace){
+            exceptionExpresser.showException(ace, "Problem encountered loading images...");
+        }
     }
 }

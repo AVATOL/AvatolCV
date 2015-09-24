@@ -159,6 +159,9 @@ public class JavaFXStepSequencer  {
    */
         activateCurrentStep();
     }
+    public AvatolCVExceptionExpresser getExceptionExpresser(){
+        return this.exceptionExpresser;
+    }
     private void addLabelForStep(Step step, String text){
     	Label label = new Label(text);
     	label.getStyleClass().add("stepListLabel");

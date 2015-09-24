@@ -162,7 +162,7 @@ public class ImagePullStepController implements StepController, ProgressPresente
         @Override
         protected Boolean call() throws Exception {
             try {
-                this.step.downloadImages(this.controller, processName);
+                this.step.downloadImages(this.controller, processName, fxSession.getExceptionExpresser());
                 NavButtonEnablerRunner runner = new NavButtonEnablerRunner();
                 Platform.runLater(runner);
                 return new Boolean(true);
