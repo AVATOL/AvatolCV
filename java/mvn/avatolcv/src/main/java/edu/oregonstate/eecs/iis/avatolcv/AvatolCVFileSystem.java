@@ -21,6 +21,8 @@ public class AvatolCVFileSystem {
     public static final String RESERVED_PREFIX = "avcv_";
 
 	public static final String FILESEP = System.getProperty("file.separator");
+    public static final String EXCLUSION_STATES_DIRNAME = "exclusions";
+
 	private static String avatolCVRootDir = null;
 	private static String sessionsDir = null;
 	private static String currentProjectDir = null;
@@ -163,6 +165,7 @@ public class AvatolCVFileSystem {
         ensureDir(getNormalizedImagesLargeDir());
         ensureDir(getNormalizedImagesThumbnailDir());
 	    setSpecializedDataDir();
+
 	}
 	public static String getDatasetDir() throws AvatolCVException {
 	    if (null == datasetName){
@@ -177,6 +180,7 @@ public class AvatolCVFileSystem {
 	    }
 	    ensureDir(getSpecializedDataDir());
 	    ensureDir(getSpecializedImageInfoDir());
+        ensureDir(getSpecializedExclusionDir());
 	}
 	
 	public static String getSpecializedDataDir() throws AvatolCVException {
@@ -186,6 +190,9 @@ public class AvatolCVFileSystem {
         return getSpecializedDataDir() + FILESEP + "imageInfo";
     }
 
+    public static String getSpecializedExclusionDir() throws AvatolCVException {
+        return getSpecializedDataDir() + FILESEP + EXCLUSION_STATES_DIRNAME;
+    }
     
 	public static String getNormalizedDataDir() throws AvatolCVException {
 	    return getDatasetDir() + FILESEP + "normalized";

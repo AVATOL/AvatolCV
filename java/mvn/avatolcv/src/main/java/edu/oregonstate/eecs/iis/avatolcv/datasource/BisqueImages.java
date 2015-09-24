@@ -151,7 +151,7 @@ public class BisqueImages {
         }
     }
     
-    public static void generateImageInfoForSize(List<ImageInfo> listToFill, List<BisqueImage> bisqueImages, String width, String dir){
+    public static void generateImageInfoForSize(List<ImageInfo> listToFill, List<BisqueImage> bisqueImages, String width, String dir) throws AvatolCVException {
         for (BisqueImage bi : bisqueImages){
             String[] nameParts = bi.getName().split("\\.");
             String name = nameParts[0];

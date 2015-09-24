@@ -8,9 +8,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 
 public class ImageInfo {
-    public static final String EXCLUSION_STATES_DIRNAME = "exclusions";
 
 	private static final String FILESEP = System.getProperty("file.separator");	
 	private static final String NL = System.getProperty("line.separator");
@@ -31,13 +31,10 @@ public class ImageInfo {
 	private String outputType = null;
 	private String extension = null;
 	private ImageInfo ancestorImage = null;
-	private String exclusionStateDir = null;
     
-	public ImageInfo(String parentDir, String ID, String nameAsUploadedNormalized, String imageWidth, String outputType, String extension){
+	public ImageInfo(String parentDir, String ID, String nameAsUploadedNormalized, String imageWidth, String outputType, String extension)  {
 		this.parentDir = parentDir;
-		File parentFile = new File(parentDir);
-		this.exclusionStateDir = parentFile.getParentFile().getAbsolutePath() + FILESEP + EXCLUSION_STATES_DIRNAME;
-        
+		File parentFile = new File(parentDir);        
 		this.ID = ID;
 		this.nameAsUploadedNormalized = nameAsUploadedNormalized;
 		this.imageWidth = imageWidth;
@@ -98,11 +95,11 @@ public class ImageInfo {
 	public String getNameAsUploadedOriginalForm(){
 		return this.nameAsUploadedOriginal;
 	}
-	public ImageInfo clone(){
-	    ImageInfo clone = new ImageInfo(this.parentDir, this.ID, this.nameAsUploadedNormalized, this.imageWidth, this.outputType, this.extension);
-	    clone.setNameAsUploadedOriginalForm(this.nameAsUploadedOriginal);
-	    return clone;
-	}
+	//public ImageInfo clone() {
+	//    ImageInfo clone = new ImageInfo(this.parentDir, this.ID, this.nameAsUploadedNormalized, this.imageWidth, this.outputType, this.extension);
+	//    clone.setNameAsUploadedOriginalForm(this.nameAsUploadedOriginal);
+	//    return clone;
+	//}
 	public void setOutputType(String outputType){
 	    this.outputType = outputType;
 	    ingestOutputType();
@@ -140,15 +137,15 @@ public class ImageInfo {
 	/*
 	 * Exclusion
 	 */
-	public String getExclusionInfoFilePath(){
-		return  exclusionStateDir + FILESEP + this.getID() + ".txt";
+	public String getExclusionInfoFilePath() throws AvatolCVException {
+		return  AvatolCVFileSystem.getSpecializedExclusionDir() + FILESEP + this.getID() + ".txt";
 	}
-	public boolean isExcluded(){
+	public boolean isExcluded() throws AvatolCVException {
 		String path =getExclusionInfoFilePath();
 		File f = new File(path);
 		return f.exists();
 	}
-	public void undoExclude(){
+	public void undoExclude() throws AvatolCVException {
 		String path = getExclusionInfoFilePath();
 		File f = new File(path);
 		f.delete();
