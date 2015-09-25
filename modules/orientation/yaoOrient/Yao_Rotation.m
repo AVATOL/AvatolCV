@@ -17,7 +17,11 @@ testlist = textscan(fileID, '%s');
 fclose(fileID);
 testlist = testlist{1};
 
-
+if ispc
+    slash = '\';
+else
+    slash = '/';
+end
 %% read the 'test' images MASK list into variable 'testlistMask'
 fileID = fopen(testImagesMaskFile);
 testlistMask = textscan(fileID, '%s');
@@ -89,8 +93,8 @@ for i = 1:1:length(testlist)
     Mask_rotate_leave = Mask_rotate(corner_y:min(width,corner_y+corner_height),corner_x:min(height,corner_x+corner_width));
     % imwrite(I_rotate, [train_path '/resizedIMAGE/' testlist{i,1} '_rotate.jpg']);
 
-    imwrite(I_rotate_leave, [rotationOutputDir '\' name rotatedOrigImageSuffix ext]);
-    imwrite(Mask_rotate_leave, [rotationOutputDir '\' nameMask rotatedMaskImageSuffix extMask]);     
+    imwrite(I_rotate_leave, [rotationOutputDir slash name rotatedOrigImageSuffix ext]);
+    imwrite(Mask_rotate_leave, [rotationOutputDir slash nameMask rotatedMaskImageSuffix extMask]);     
     
 end
 rmpath(rotationOutputDir);

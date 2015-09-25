@@ -8,7 +8,7 @@ close all;
 %         training alignment SVM using preshipped training leaves
 %--------------------------------------------------------------------------
 
-%% Read the csv annotation file into a cell array
+% Read the csv annotation file into a cell array
 if ispc
     annotationCSV = '\annotation.csv';
     preshippedTrainingSubPath = '\train\*leaf.jpg';
@@ -25,7 +25,7 @@ C = textscan(fileID, '%s %f', 'Delimiter',',');
 fclose(fileID);
 annotation = horzcat(C{1,1},num2cell(C{1,2}));
 
-%% Training the alignment SVM based on preshipped training sets
+% Training the alignment SVM based on preshipped training sets
 s = dir([pathAlignmentShipped preshippedTrainingSubPath]);
 list_img = {s.name}';  % store the image names 
 train_counts = round(length(list_img)*4/5); % using 80% of preshipped to train
@@ -43,14 +43,14 @@ train_counts = round(length(list_img)*4/5); % using 80% of preshipped to train
     [test_predict, model] = Yao_alignment_train(trainlist,pathAlignmentShipped,rotationOutputDir, annotation, rotatedOrigImageSuffix);
     
     
-    %% do results evaluation (if Ground Truth is known)
+    % do results evaluation (if Ground Truth is known)
 %     [C_cm, accuracy_all, accuracy_base] = Yao_evaluate_results(test_predict_final,trainlist);
 %     eval_results{n,1} = C_cm;
 %     eval_results{n,2} = accuracy_all;
 %     eval_results{n,3} = accuracy_base;
 % end
 
-%% afterh the alignment prediction, rotate the leaf 180 degree if necessary
+% afterh the alignment prediction, rotate the leaf 180 degree if necessary
 addpath(rotationOutputDir);
 s = dir([rotationOutputDir slashStar rotatedMaskImageSuffix '.jpg']);
 testlistMask = {s.name}'; % here I assume Original and Mask images are listed in the same order.

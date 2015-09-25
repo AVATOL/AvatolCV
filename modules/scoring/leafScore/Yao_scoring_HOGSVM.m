@@ -5,8 +5,14 @@ train_path = pathScoringShipped;
 addpath(genpath(train_path));
 
 annotation = [];
-load([train_path '\annotation_shape_234567']);
-s = dir([train_path '\train\*leaf.jpg']);
+if ispc
+    load([train_path '\annotation_shape_234567']);
+    s = dir([train_path '\train\*leaf.jpg']);
+else
+    load([train_path '/annotation_shape_234567']);
+    s = dir([train_path '/train/*leaf.jpg']);
+end
+
 list_img = {s.name}';
 
 fraction = 2/5;
