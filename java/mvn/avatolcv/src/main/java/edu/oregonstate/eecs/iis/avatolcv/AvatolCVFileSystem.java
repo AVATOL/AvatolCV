@@ -250,11 +250,11 @@ public class AvatolCVFileSystem {
             throw new AvatolCVException("expected directory to exist: " + path);
         }
     }
-	public static void setCurrentProject(String name){
-	    currentProjectDir = sessionsDir + FILESEP + name;
-	    ensureDir(currentProjectDir);
+	//public static void setCurrentProject(String name){
+	//    currentProjectDir = sessionsDir + FILESEP + name;
+	//    ensureDir(currentProjectDir);
 	    //currentProjectUserAnswersDir = currentProjectDir + FILESEP + "userAnswers";
-	}
+	//}
 	public static String getMediaMetadataFilename(String parentDir, String mediaID)  throws AvatolCVException {
         File f = new File(parentDir);
         if (!f.isDirectory()){
