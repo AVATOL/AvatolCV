@@ -1,0 +1,51 @@
+
+#
+# overwrite trainlist.txt with trainlistShipped.txt, and add any files referenced in trainingImagesFile, which will most likely be empty (no segmentation training files locally produced at this time)
+#
+
+# by this time we have our combined trainlist.txt file for the alg to use
+
+
+#
+#
+# reformat contents of testingImagesFile to correct form, by converting the pathname to a filename and extracting the root 
+# and putting into testlist.txt for use by algorithm
+#
+
+# by this time we have our testlist.txt file
+
+
+
+#  Make it so that all the testing and training images are in one dir...
+#
+# copy the session-provided testing images (specified in testingImagesFile) to the just-cleaned allImages dir
+# (we will not be testing the shipped test images so don't copy those)
+#
+# then copy the shipped training images from data/training_imgs to allImages
+#
+# then copy the session-provided training images (trainingImagesFile) to ALL_IMAGES_DIR
+#
+#
+
+
+#
+#
+# pool the shipped ground truth images from data/allLabels and the session-provided ground truth label images (groundTruthImagesFile which will be empty) to allLables
+#
+
+#
+# create darwin's config.xml file
+#
+
+#
+#
+# RUN THE STEPS OF DARWIN
+#
+#
+# converting pixel labels
+# train boosted classifiers
+# train unary potentials
+# evaluate with unary terms only
+# train pairwise potentials
+# evaluate with unary and pariwise terms
+#  call matlab to crop the leaf on both raw and mask images

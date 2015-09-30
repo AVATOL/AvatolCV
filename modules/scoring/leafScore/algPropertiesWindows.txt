@@ -2,3 +2,7 @@ launchWith=leafScore.bat
 launchFileLanguage=other
 scoringFocus=SPECIMEN_SHAPE_ASPECT
 scoringScope=SINGLE_ITEM
+# this next line will cause avatolCV to create an entry in the runConfigScoring file that will have the key of testImagesFile, and the value will be a pathname to a file that contains pathnames of image files that contain the string "alignOrig"
+inputRequired=alignOrig:testImagesFile
+# this next line will cause avatolCV to create an entry in the runConfigScoring file that will have the key of testImagesMaskFile, and the value will be a pathname to a file that contains pathnames of image files that contain the string "alignMask"
+inputRequired=alignMask:testImagesMaskFile
