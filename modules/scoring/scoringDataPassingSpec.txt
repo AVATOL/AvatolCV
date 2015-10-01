@@ -35,6 +35,9 @@ inputRequired=alignMask:testImagesMaskFile
     training_<scoringConcernType>_<scoringConcernID>_<scoringConcernName>.txt   // scoring concern info is in the filename
     
         imageDir=<someDir>
+		scoringConcernType=<someType>
+		scoringConcernID=<someID>
+		scoringConcernName=<someName>
         #imageName,scoringConcernValue,pointCoordinates
         <image1Name>,<scoringConcernValue>,<pointCoords>
         <image2Name>,<scoringConcernValue>,<pointCoords>
@@ -43,6 +46,9 @@ inputRequired=alignMask:testImagesMaskFile
 if there are no pointCoordinates in play, the file will look like
     
         imageDir=<someDir>
+		scoringConcernType=<someType>
+		scoringConcernID=<someID>
+		scoringConcernName=<someName>
         #imageName,scoringConcernValue,pointCoordinates
         <image1Name>,<scoringConcernValue>,
         <image2Name>,<scoringConcernValue>,
@@ -58,6 +64,9 @@ DATA RETURNED FROM ALGORITHM (placed into scoringOutputDir)
     scores_<scoringConcernType>_<scoringConcernID>_<scoringConcernName>.txt contains 
     
         imageDir=<someDir>
+		scoringConcernType=<someType>
+		scoringConcernID=<someID>
+		scoringConcernName=<someName>
         scoringConcernValues=<val1>,<val2>,<val3>...
         #imageName,scoringConcernValue,pointCoordinates,confVal1,confVal2,confVal3...
         <image1Name>,<scoringConcernValue>,<pointCoords>,<confVal1>,<confVal2>,<confVal3>...
@@ -66,6 +75,9 @@ DATA RETURNED FROM ALGORITHM (placed into scoringOutputDir)
     if there are no point coordinates returned, it would be 
     
         imageDir=<someDir>
+		scoringConcernType=<someType>
+		scoringConcernID=<someID>
+		scoringConcernName=<someName>
         scoringConcernValues=<val1>,<val2>,<val3>...
         #imageName,scoringConcernValue,pointCoordinates,confVal1,confVal2,confVal3...
         <image1Name>,<scoringConcernValue>,,<confVal1>,<confVal2>,<confVal3>...
