@@ -26,16 +26,23 @@ public class NormalizedImageInfo {
     public static final String KEY_TIMESTAMP          = PREFIX + "timestamp";
     private static final String KEY_TRAINING_VS_TEST_CONCERN_VALUE  = PREFIX + "trainingVsTestConcernValue";
     private ScoreIndex scoreIndex = null;
+    private String filename = null;
       //private ScoreIndex scoreIndexForBaseFile = new ScoreIndex();
     //private ScoreIndex scoreIndexForScoreFile = new ScoreIndex();
     private String imageName = "?";
     private String imageID = null;
     public NormalizedImageInfo(String path, ScoreIndex scoreIndex) throws AvatolCVException {
+    	this.filename = new File(path).getName();
         this.imageID = getImageIDFromPath(path);
         this.scoreIndex = scoreIndex;
         loadNormalizedInfoFromPath(path, "Problem loading Normalized Image Info file: ", keyValueHash, scoreIndex);
     }
-    
+    public String getImageFilename(){
+    	return this.filename;
+    }
+    public String getValueForKey(String key){
+    	return (String)keyValueHash.get(key);
+    }
     public static String getImageIDFromPath(String path){
         File f = new File(path);
         String filename = f.getName();

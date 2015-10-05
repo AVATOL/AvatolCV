@@ -15,6 +15,7 @@ import java.io.IOException;
  *
  */
 public class RunSummary {
+    private static final String KEY_COOKING_SHOW = "prebaked";
     private static final String KEY_SCORING_CONCERN = "scoring concern";
     private static final String KEY_TRAIN_TEST_CONCERN = "train test concern";
     private static final String KEY_DATASET = "dataset";
@@ -30,6 +31,7 @@ public class RunSummary {
     private String scoringAlgorithm = null;
     private String runID = null;
     private String trainTestConcern = null;
+    private boolean cookingShow = false;
     public RunSummary(String ID) throws AvatolCVException {
         
         
@@ -68,6 +70,9 @@ public class RunSummary {
                     else if (key.equals(KEY_TRAIN_TEST_CONCERN)){
                         this.trainTestConcern = value;
                     }
+                    else if (key.equals(KEY_COOKING_SHOW)){
+                        this.cookingShow = true;
+                    }
                 }
             }
             reader.close();
@@ -75,6 +80,9 @@ public class RunSummary {
         catch(IOException ioe){
             throw new AvatolCVException("problem reading session file " + path);
         }
+    }
+    public boolean isCookingShow(){
+    	return this.cookingShow;
     }
     public String getRunID(){
         return this.runID;

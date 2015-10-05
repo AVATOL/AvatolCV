@@ -274,6 +274,19 @@ public class AvatolCVFileSystem {
         }
         return mediaID + "_" + (count + 1) + ".txt";
     }
+	
+	public static String getTrainingFile(String runID, String scoringConcernName) throws AvatolCVException {
+		String dirToSearch = getDatasetDir() + FILESEP + runID;
+		
+		File dir = new File(dirToSearch);
+		File[] files = dir.listFiles();
+		for (File f : files){
+			if (f.getName().contains(scoringConcernName)){
+				return f.getAbsolutePath();
+			}
+		}
+		return null;
+	}
 	/*public static String getUserAnswerDir() throws AvatolCVException {
 	    if (null == currentProjectUserAnswersDir){
 	        throw new AvatolCVException("getUserAnswerDir() called prior to setCurrentProject()");
