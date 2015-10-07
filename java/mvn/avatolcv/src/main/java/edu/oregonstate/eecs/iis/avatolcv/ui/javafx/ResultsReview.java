@@ -254,10 +254,17 @@ public class ResultsReview {
         gp.add(scoreLabel, column, row);
         column++;
         // get confidence
-        Label confidenceLabel = new Label(scoreConf);
+        String trimmedScoreConf = limitToTwoDecimalPlaces(scoreConf);
+        Label confidenceLabel = new Label(trimmedScoreConf);
     	confidenceLabel.getStyleClass().add("columnValue");
         gp.add(confidenceLabel,column, row);
         return image.getHeight();
+    }
+    
+    public static String limitToTwoDecimalPlaces(String conf){
+    	//assume it's always going to be 0.xyz, so just take the first four chars
+    	String result = conf.substring(0, 4);
+    	return result;
     }
     private void addScoredImageToGridPaneRow(NormalizedImageInfo si, GridPane gp, int row) throws AvatolCVException {
         // get the image
