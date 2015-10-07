@@ -10,6 +10,9 @@
 	/*-fx-background-color: linear-gradient(#C34500,#FFFFFF);*/
 	/*-fx-background-color: blue;*/
 }
+.resultsReviewRoot {
+	-fx-background-color:#EEEEEE;
+}
 .node {
 	-fx-background-color: transparent;
 	

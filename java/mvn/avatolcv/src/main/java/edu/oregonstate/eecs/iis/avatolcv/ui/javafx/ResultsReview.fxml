@@ -5,7 +5,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" styleClass="resultsReviewRoot" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox VBox.vgrow="ALWAYS">
          <children>
@@ -62,7 +62,7 @@
             </Accordion>
             <VBox HBox.hgrow="ALWAYS">
                <children>
-                  <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                  <TabPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                     <tabs>
                       <Tab fx:id="scoredImagesTab" text="Scored Images">
                         <content>
@@ -120,6 +120,9 @@
                         </content>
                       </Tab>
                     </tabs>
+                     <VBox.margin>
+                        <Insets left="6.0" />
+                     </VBox.margin>
                   </TabPane>
                   <HBox spacing="10.0" VBox.vgrow="NEVER">
                      <children>
