@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoresInfoFile;
+import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
 
 /**
  * 
@@ -274,14 +276,27 @@ public class AvatolCVFileSystem {
         }
         return mediaID + "_" + (count + 1) + ".txt";
     }
-	
-	public static String getTrainingFile(String runID, String scoringConcernName) throws AvatolCVException {
+
+	public static String getScoreFilePath(String runID, String scoringConcernName) throws AvatolCVException {
 		String dirToSearch = getDatasetDir() + FILESEP + runID;
 		
 		File dir = new File(dirToSearch);
 		File[] files = dir.listFiles();
 		for (File f : files){
-			if (f.getName().contains(scoringConcernName)){
+			String fname = f.getName();
+			if (fname.contains(scoringConcernName) && fname.startsWith(ScoresInfoFile.FILE_PREFIX)){
+				return f.getAbsolutePath();
+			}
+		}
+		return null;
+	}
+	public static String getTrainingFilePath(String runID, String scoringConcernName) throws AvatolCVException {
+		String dirToSearch = getDatasetDir() + FILESEP + runID;
+		
+		File dir = new File(dirToSearch);
+		File[] files = dir.listFiles();
+		for (File f : files){
+			if (f.getName().contains(scoringConcernName) && f.getName().startsWith(TrainingInfoFile.FILE_PREFIX)){
 				return f.getAbsolutePath();
 			}
 		}

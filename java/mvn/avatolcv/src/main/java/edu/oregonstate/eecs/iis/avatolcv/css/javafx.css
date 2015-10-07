@@ -99,3 +99,14 @@
 	-fx-font-size: 11px;
 	-fx-text-fill: black;
 }
+.label.columnHeader {
+	/*-fx-background-color:green;*/
+	-fx-font-size:14px;
+	-fx-font-style:bold;
+	-fx-font:arial;
+}
+.label.columnValue {
+	-fx-font-size:13px;
+	-fx-font-style:plain;
+	-fx-font:arial;
+}

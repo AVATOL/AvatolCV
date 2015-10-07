@@ -25,6 +25,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
         ...
  */
 public class TrainingInfoFile {
+	public static final String FILE_PREFIX = "training_";
 	public static final String SCORING_CONCERN_TYPE = "scoringConcernType";
 	public static final String SCORING_CONCERN_ID = "scoringConcernID";
 	public static final String SCORING_CONCERN_NAME = "scoringConcernName";
@@ -111,7 +112,7 @@ public class TrainingInfoFile {
 		this.imageDir = imageDir;
 	}
 	public String getFilename(){
-		return "training_" + scoringConcernType + "_" + scoringConcernID + "_" + scoringConcernName + ".txt";
+		return FILE_PREFIX + scoringConcernType + "_" + scoringConcernID + "_" + scoringConcernName + ".txt";
 	}
 	public void addImageInfo(String imageName, String scoringConcernValue, String pointCoordinates){
 		String trainingLine = imageName+","+scoringConcernValue+","+pointCoordinates+NL;
