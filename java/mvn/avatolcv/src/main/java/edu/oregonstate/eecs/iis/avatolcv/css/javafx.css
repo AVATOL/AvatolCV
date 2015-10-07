@@ -110,3 +110,13 @@
 	-fx-font-style:plain;
 	-fx-font:arial;
 }
+.label.summaryHeader {
+	-fx-font-size:14px;
+	-fx-font-style:italic;
+	-fx-font:arial;
+}
+.label.summaryValue {
+	-fx-font-size:15px;
+	-fx-font-style:plain;
+	-fx-font:arial;
+}

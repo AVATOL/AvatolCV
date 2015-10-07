@@ -67,7 +67,7 @@ public class ResultsReview {
             loader.setController(this);
             Parent resultsReview = loader.load();
             
-            this.scene = new Scene(resultsReview, AvatolCVJavaFXMB.MAIN_WINDOW_WIDTH, AvatolCVJavaFXMB.MAIN_WINDOW_HEIGHT);
+            this.scene = new Scene(resultsReview, AvatolCVJavaFX.MAIN_WINDOW_WIDTH, AvatolCVJavaFX.MAIN_WINDOW_HEIGHT);
             this.mainWindow.setScene(scene);
             runDetailsAccordion.getPanes().remove(2);
             runDetailsAccordion.setExpandedPane(runDetailsAccordion.getPanes().get(0));
