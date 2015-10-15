@@ -3,6 +3,8 @@ package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 import java.io.File;
 import java.util.List;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -11,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
@@ -80,10 +83,19 @@ public class ResultsReview {
             setRunDetails(this.runID);
             setScoredImagesInfo(this.runID, scoringConcernValue.getText());
             //runDetailsAccordion.requestLayout();
+            setupSlider();
         }
         catch(Exception e){
             throw new AvatolCVException(e.getMessage(),e);
         }
+    }
+    private void setupSlider(){
+    	thresholdSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov,
+                Number old_val, Number new_val) {
+                    System.out.println("was " + old_val + " now " + new_val);
+            }
+        });
     }
     private void setScoredImagesInfoCookingShow(String runID, String scoringConcernName) throws AvatolCVException {
     	scoredImagesTab.setText(scoringConcernName + " - SCORED images");
