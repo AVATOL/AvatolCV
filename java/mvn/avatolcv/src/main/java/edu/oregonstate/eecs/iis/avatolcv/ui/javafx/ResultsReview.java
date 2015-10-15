@@ -93,9 +93,13 @@ public class ResultsReview {
     	thresholdSlider.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov,
                 Number old_val, Number new_val) {
-                    System.out.println("was " + old_val + " now " + new_val);
+                    //System.out.println("was " + old_val + " now " + new_val);
+            	    disableAllUnderThreshold(new_val.doubleValue());
             }
         });
+    }
+    private void disableAllUnderThreshold(double value){
+    	
     }
     private void setScoredImagesInfoCookingShow(String runID, String scoringConcernName) throws AvatolCVException {
     	scoredImagesTab.setText(scoringConcernName + " - SCORED images");
