@@ -130,7 +130,7 @@
                         <Slider showTickLabels="true" showTickMarks="true" value="90.0" HBox.hgrow="ALWAYS" />
                      </children>
                      <padding>
-                        <Insets bottom="3.0" left="8.0" right="8.0" top="3.0" />
+                        <Insets bottom="6.0" left="6.0" right="6.0" top="10.0" />
                      </padding>
                   </HBox>
                </children>

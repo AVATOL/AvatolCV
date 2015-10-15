@@ -52,6 +52,7 @@ public class ResultsReview {
     private String runID = null;
     private RunSummary runSummary = null;
     private AvatolCVJavaFX mainScreen = null;
+    
     public ResultsReview(AvatolCVExceptionExpresser exceptionExpresser){
         this.exceptionExpresser = exceptionExpresser;
     }
