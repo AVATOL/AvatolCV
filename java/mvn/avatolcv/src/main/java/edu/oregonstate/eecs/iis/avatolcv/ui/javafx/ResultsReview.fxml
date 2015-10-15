@@ -127,7 +127,7 @@
                   <HBox spacing="10.0" VBox.vgrow="NEVER">
                      <children>
                         <Label text="Adjust confidence threshold to control which scores are kept" HBox.hgrow="NEVER" />
-                        <Slider showTickLabels="true" showTickMarks="true" value="90.0" HBox.hgrow="ALWAYS" />
+                        <Slider fx:id="thresholdSlider" showTickLabels="true" showTickMarks="true" value="90.0" HBox.hgrow="ALWAYS" />
                      </children>
                      <padding>
                         <Insets bottom="6.0" left="6.0" right="6.0" top="10.0" />

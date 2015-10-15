@@ -33,6 +33,7 @@ import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
 
 public class ResultsReview {
+	public Slider thresholdSlider = null;
 	private ScoreIndex scoreIndex = null;
     public Accordion runDetailsAccordion = null;
     public ScrollPane runDetailsScrollPane = null;
