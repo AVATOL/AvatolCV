@@ -1,0 +1,2 @@
+avcv_scoringConcernLocation=leaf apex angle:key
+avcv_scoreValueLocation=leaf apex angle:value

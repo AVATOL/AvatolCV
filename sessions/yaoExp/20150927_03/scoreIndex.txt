@@ -1,0 +1,2 @@
+avcv_scoringConcernLocation=leaf base angle:key
+avcv_scoreValueLocation=leaf base angle:value

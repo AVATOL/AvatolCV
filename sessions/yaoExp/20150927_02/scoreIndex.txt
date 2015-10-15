@@ -1,0 +1,2 @@
+avcv_scoringConcernLocation=leaf apex curvature:key
+avcv_scoreValueLocation=leaf apex curvature:value
