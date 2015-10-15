@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javafx.beans.value.ChangeListener;
@@ -33,7 +34,8 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ScoreIndex;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
-import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
+import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTable;
+import edu.oregonstate.eecs.iis.avatolcv.results.SortableRow;
 
 public class ResultsReview {
 	public Slider thresholdSlider = null;
@@ -101,6 +103,74 @@ public class ResultsReview {
     private void disableAllUnderThreshold(double value){
     	
     }
+    private void generateScoreWidgets(SortableRow sr){
+        String thumbnailPathname = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_IMAGE));
+        Image image = new Image("file:"+thumbnailPathname);
+        ImageView iv = new ImageView(image);
+        if (isImageTallerThanWide(image)){
+            iv.setRotate(90);
+        }
+        sr.setWidget(ResultsTable.COLNAME_IMAGE, iv);
+        
+        // get trainingVsTestConcern if relevant, OR image name
+        String name = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_NAME));
+        Label nameLabel = new Label(name);
+        nameLabel.getStyleClass().add("columnValue");
+        sr.setWidget(ResultsTable.COLNAME_NAME, nameLabel);
+     
+        // get truth
+        String truth = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_TRUTH));
+        Label truthLabel = new Label(truth);
+        truthLabel.getStyleClass().add("columnValue");
+        sr.setWidget(ResultsTable.COLNAME_TRUTH, truthLabel);
+
+        // get score
+        String score = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_SCORE));
+        Label scoreLabel = new Label(score);
+        scoreLabel.getStyleClass().add("columnValue");
+        sr.setWidget(ResultsTable.COLNAME_SCORE, scoreLabel);
+        
+        // get confidence
+        String scoreConf = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_CONFIDENCE));
+        String trimmedScoreConf = limitToTwoDecimalPlaces(scoreConf);
+        Label confidenceLabel = new Label(trimmedScoreConf);
+        confidenceLabel.getStyleClass().add("columnValue");
+        sr.setWidget(ResultsTable.COLNAME_CONFIDENCE, confidenceLabel);
+    }
+    private void renderResultsTable(ResultsTable rt){
+        List<SortableRow> rows = rt.getRows();
+        for(int i = 0; i < rows.size(); i++){
+            // get the image
+            SortableRow row = rows.get(i);
+            ImageView iv = (ImageView)row.getWidget(ResultsTable.COLNAME_IMAGE);
+           
+            int column = 0;
+            System.out.println("col " + column + " row " + i+1);
+            scoredImagesGridPane.add(iv,column,i+1);
+            column++;
+            // get truth
+            Label truthLabel = (Label)row.getWidget(ResultsTable.COLNAME_TRUTH);
+            System.out.println("col " + column + " row " + i+1);
+            scoredImagesGridPane.add(truthLabel,column,i+1);
+            column++;
+            // get score
+            
+            Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
+            System.out.println("col " + column + " row " + i+1);
+            scoredImagesGridPane.add(scoreLabel, column, i+1);
+            column++;
+            // get confidence
+            Label confidenceLabel = (Label)row.getWidget(ResultsTable.COLNAME_CONFIDENCE);
+            System.out.println("col " + column + " row " + i+1);
+            scoredImagesGridPane.add(confidenceLabel,column, i+1);
+            column++;
+
+            // get trainingVsTestConcern if relevant, OR image name
+            Label nameLabel = (Label)row.getWidget(ResultsTable.COLNAME_NAME);
+            System.out.println("col " + column + " row " + i+1);
+            scoredImagesGridPane.add(nameLabel,column,i+1);
+        }
+    }
     private void setScoredImagesInfoCookingShow(String runID, String scoringConcernName) throws AvatolCVException {
     	scoredImagesTab.setText(scoringConcernName + " - SCORED images");
     	trainingImagesTab.setText(scoringConcernName + " - TRAINING images");
@@ -114,6 +184,7 @@ public class ResultsReview {
     	String trainingFilePath = AvatolCVFileSystem.getTrainingFilePath(runID, scoringConcernName);
     	TrainingInfoFile tif = new TrainingInfoFile(trainingFilePath);
     	
+    	ResultsTable resultsTable = new ResultsTable();
     	List<String> scoringImageNames = sif.getImageNames();
     	int row = 1;
     	for (String name : scoringImageNames){
@@ -121,13 +192,14 @@ public class ResultsReview {
     		String value = sif.getScoringConcernValueForImageName(name);
     		String conf = sif.getConfidenceForImageValue(name, value);
     		String truth = tif.getScoringConcernValueForImageName(name);
-        	String trueName = getTrueImageNameFromImageNameForCookingShow(name);
-        	
-        	double imageHeight = addScoredImageToGridPaneRowForCookingShow(name, trueName, value, conf, truth, scoredImagesGridPane, row++);
+        	String origImageName = getTrueImageNameFromImageNameForCookingShow(name);
+        	String thumbnailPathname = getThumbnailPathWithImageNameForCookingShow(name);
+        	SortableRow sortableRow = resultsTable.createRow(thumbnailPathname, origImageName, value, conf, truth);
+        	generateScoreWidgets(sortableRow);
         	//scoredImagesGridPane.getRowConstraints().get(row).setPrefHeight(imageHeight);
-        	System.out.println("rc count : " + scoredImagesGridPane.getRowConstraints().size());
-        	
+        	//System.out.println("rc count : " + scoredImagesGridPane.getRowConstraints().size());
     	}
+    	renderResultsTable(resultsTable);
        // NormalizedImageInfosToReview normalizedImageInfos = new NormalizedImageInfosToReview(runID);
        // List<NormalizedImageInfo> scoredImages = normalizedImageInfos.getScoredImages(scoringConcernValue);
        // for (int i=0; i < scoredImages.size(); i++){

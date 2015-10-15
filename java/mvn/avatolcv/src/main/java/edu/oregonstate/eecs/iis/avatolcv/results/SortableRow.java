@@ -1,11 +1,14 @@
 package edu.oregonstate.eecs.iis.avatolcv.results;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 public class SortableRow implements Comparable {
 	private List<String> values = null;
     private static List<Integer> sortColumns = new ArrayList<Integer>();
+    // widgetHash will store the JavaFX (or whatever) widgets for each item
+    private Hashtable<String, Object> widgetHash = new Hashtable<String, Object>();
     public static void addSortColumn(int columnIndex){
     	if (sortColumns.size() == 0){
     		sortColumns.add(new Integer(columnIndex));
@@ -24,6 +27,13 @@ public class SortableRow implements Comparable {
     public SortableRow(List<String> values){
     	this.values = values;
     }
+    public void setWidget(String colName, Object widget){
+        widgetHash.put(colName, widget);
+    }
+    public Object getWidget(String colName){
+        return widgetHash.get(colName);
+    }
+    
 	@Override
 	public int compareTo(Object o) {
 		SortableRow otherRow = (SortableRow)o;
