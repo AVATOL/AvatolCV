@@ -1,0 +1,8 @@
+# 20150927_03.txt
+runID=20150927_03
+scoring concern=leaf base angle
+dataset=yaoExp
+data source=bisque
+scoring algorithm=leaf
+prebaked=true
+

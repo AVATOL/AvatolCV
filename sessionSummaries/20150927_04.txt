@@ -1,0 +1,7 @@
+# 20150927_04.txt
+runID=20150927_04
+scoring concern=leaf base curvature
+dataset=yaoExp
+data source=bisque
+scoring algorithm=leaf
+prebaked=true
