@@ -112,6 +112,7 @@
 	-fx-font-size:13px;
 	-fx-font-style:plain;
 	-fx-font:arial;
+	-fx-padding:2px 8px 2px 8px;
 }
 .label.summaryHeader {
 	-fx-font-size:14px;

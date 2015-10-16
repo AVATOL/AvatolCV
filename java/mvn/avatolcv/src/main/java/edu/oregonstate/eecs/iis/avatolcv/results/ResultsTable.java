@@ -31,6 +31,7 @@ public class ResultsTable {
         return answer;
     }
     public SortableRow createRow(String thumbnailPathname, String origImageName, String score, String conf, String truth){
+    	System.out.println("creating row for " + score + " , " + conf + " , " + truth + " , " + origImageName );
         List<String> values = new ArrayList<String>();
         values.add(thumbnailPathname);
         values.add(truth);
@@ -44,13 +45,5 @@ public class ResultsTable {
     public List<SortableRow> getRows(){
         return this.rows;
     }
-    public void disableAllUnderThreshold(String threshold){
-        for (SortableRow row : rows){
-            int index = getIndexOfColumn(COLNAME_CONFIDENCE);
-            if (row.hasDoubleValueLessThanThisAtIndex(threshold, index)){
-                System.out.println("disable value " + row.getValue(getIndexOfColumn(COLNAME_CONFIDENCE)));
-            }
-        }
-        
-    }
+    
 }

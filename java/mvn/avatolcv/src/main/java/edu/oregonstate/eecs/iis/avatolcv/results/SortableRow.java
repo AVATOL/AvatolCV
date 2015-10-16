@@ -41,7 +41,7 @@ public class SortableRow implements Comparable {
 	}
 	public boolean hasDoubleValueLessThanThisAtIndex(String s, int index){
 	    String myValue = getValue(index);
-	    System.out.println("myValue at index " + index + " is " + myValue);
+	    //System.out.println("myValue at index " + index + " is " + myValue);
 	    Double myDouble = new Double(myValue);
 	    Double otherDouble = new Double(s);
 	    if (myDouble.doubleValue() < otherDouble.doubleValue()){

@@ -92,17 +92,46 @@ public class ResultsReview {
         }
     }
     private void setupSlider(){
+    	double initValue = thresholdSlider.getValue();
+    	adjustConfidencesToThreshold(initValue);
     	thresholdSlider.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov,
                 Number old_val, Number new_val) {
-                    System.out.println("was " + old_val + " now " + new_val);
-                    String doubleString = "" + new_val.doubleValue();
-                    String twoDecimalString = limitToTwoDecimalPlaces(doubleString);
-            	    resultsTable.disableAllUnderThreshold(twoDecimalString);
+            	    adjustConfidencesToThreshold(new_val.doubleValue());
             }
         });
     }
-    
+    public void adjustConfidencesToThreshold(double value){
+	    double newValPercent = value/100;
+        String newValString = "" + newValPercent;
+        String twoDecimalString = limitToTwoDecimalPlaces(newValString);
+	    disableAllUnderThreshold(twoDecimalString);
+    }
+    private void disableAllUnderThreshold(String threshold){
+    	List<SortableRow> rows = resultsTable.getRows();
+        for (SortableRow row : rows){
+            int index = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_CONFIDENCE);
+            Label confLabel = (Label)row.getWidget(ResultsTable.COLNAME_CONFIDENCE);
+            Label nameLabel = (Label)row.getWidget(ResultsTable.COLNAME_NAME);
+            Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
+            Label truthLabel = (Label)row.getWidget(ResultsTable.COLNAME_TRUTH);
+            if (row.hasDoubleValueLessThanThisAtIndex(threshold, index)){
+            	//confLabel.setStyle("-fx-background-color:#CC0000;");
+            	confLabel.setDisable(true);
+            	nameLabel.setDisable(true);
+            	scoreLabel.setDisable(true);
+            	truthLabel.setDisable(true);
+            }
+            else {
+            	//confLabel.setStyle("-fx-background-color:#00CC00;");
+            	confLabel.setDisable(false);
+            	nameLabel.setDisable(false);
+            	scoreLabel.setDisable(false);
+            	truthLabel.setDisable(false);
+            }
+        }
+        
+    }
     private void generateScoreWidgets(SortableRow sr){
         String thumbnailPathname = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_IMAGE));
         Image image = new Image("file:"+thumbnailPathname);
@@ -188,7 +217,7 @@ public class ResultsReview {
     	List<String> scoringImageNames = sif.getImageNames();
     	int row = 1;
     	for (String name : scoringImageNames){
-    		System.out.println("got image " + name);
+    		//System.out.println("got image " + name);
     		String value = sif.getScoringConcernValueForImageName(name);
     		String conf = sif.getConfidenceForImageValue(name, value);
     		String truth = tif.getScoringConcernValueForImageName(name);
@@ -210,7 +239,7 @@ public class ResultsReview {
     	List<String> imageNames = tif.getImageNames();
     	row = 1;
     	for (String name : imageNames){
-    		System.out.println("got image " + name);
+    		//System.out.println("got image " + name);
     		if (!sif.hasImage(name)){
     			String value = tif.getScoringConcernValueForImageName(name);
         		String trueName = getTrueImageNameFromImageNameForCookingShow(name);
@@ -353,8 +382,10 @@ public class ResultsReview {
     
     public static String limitToTwoDecimalPlaces(String conf){
     	//assume it's always going to be 0.xyz, so just take the first four chars
-    	String result = conf.substring(0, 4);
-    	return result;
+    	if (conf.length() > 4){
+    		return conf.substring(0, 4);
+    	}
+    	return conf;
     }
     private void addScoredImageToGridPaneRow(NormalizedImageInfo si, GridPane gp, int row) throws AvatolCVException {
         // get the image
