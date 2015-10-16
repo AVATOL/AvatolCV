@@ -39,6 +39,16 @@ public class SortableRow implements Comparable {
 		SortableRow otherRow = (SortableRow)o;
 		return compareColumn(0, 0, otherRow);
 	}
+	public boolean hasDoubleValueLessThanThisAtIndex(String s, int index){
+	    String myValue = getValue(index);
+	    System.out.println("myValue at index " + index + " is " + myValue);
+	    Double myDouble = new Double(myValue);
+	    Double otherDouble = new Double(s);
+	    if (myDouble.doubleValue() < otherDouble.doubleValue()){
+	        return true;
+	    }
+	    return false;
+	}
 	public int compareColumn(int colIndex, int columnsChecked, SortableRow otherRow){
 		if (colIndex > SortableRow.sortColumns.size() - 1 ){
 			return 0;

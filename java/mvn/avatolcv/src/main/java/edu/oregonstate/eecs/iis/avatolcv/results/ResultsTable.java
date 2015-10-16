@@ -44,4 +44,13 @@ public class ResultsTable {
     public List<SortableRow> getRows(){
         return this.rows;
     }
+    public void disableAllUnderThreshold(String threshold){
+        for (SortableRow row : rows){
+            int index = getIndexOfColumn(COLNAME_CONFIDENCE);
+            if (row.hasDoubleValueLessThanThisAtIndex(threshold, index)){
+                System.out.println("disable value " + row.getValue(getIndexOfColumn(COLNAME_CONFIDENCE)));
+            }
+        }
+        
+    }
 }

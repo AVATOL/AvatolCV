@@ -58,7 +58,7 @@ public class ResultsReview {
     private String runID = null;
     private RunSummary runSummary = null;
     private AvatolCVJavaFX mainScreen = null;
-    
+    private ResultsTable resultsTable = null;
     public ResultsReview(AvatolCVExceptionExpresser exceptionExpresser){
         this.exceptionExpresser = exceptionExpresser;
     }
@@ -95,14 +95,14 @@ public class ResultsReview {
     	thresholdSlider.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov,
                 Number old_val, Number new_val) {
-                    //System.out.println("was " + old_val + " now " + new_val);
-            	    disableAllUnderThreshold(new_val.doubleValue());
+                    System.out.println("was " + old_val + " now " + new_val);
+                    String doubleString = "" + new_val.doubleValue();
+                    String twoDecimalString = limitToTwoDecimalPlaces(doubleString);
+            	    resultsTable.disableAllUnderThreshold(twoDecimalString);
             }
         });
     }
-    private void disableAllUnderThreshold(double value){
-    	
-    }
+    
     private void generateScoreWidgets(SortableRow sr){
         String thumbnailPathname = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_IMAGE));
         Image image = new Image("file:"+thumbnailPathname);
@@ -184,7 +184,7 @@ public class ResultsReview {
     	String trainingFilePath = AvatolCVFileSystem.getTrainingFilePath(runID, scoringConcernName);
     	TrainingInfoFile tif = new TrainingInfoFile(trainingFilePath);
     	
-    	ResultsTable resultsTable = new ResultsTable();
+    	resultsTable = new ResultsTable();
     	List<String> scoringImageNames = sif.getImageNames();
     	int row = 1;
     	for (String name : scoringImageNames){
