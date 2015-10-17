@@ -19,8 +19,11 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
@@ -86,6 +89,8 @@ public class ResultsReview {
             setScoredImagesInfo(this.runID, scoringConcernValue.getText());
             //runDetailsAccordion.requestLayout();
             setupSlider();
+            scoredImagesGridPane.setStyle("-fx-background-color:yellow;");
+            
         }
         catch(Exception e){
             throw new AvatolCVException(e.getMessage(),e);
@@ -136,9 +141,9 @@ public class ResultsReview {
         String thumbnailPathname = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_IMAGE));
         Image image = new Image("file:"+thumbnailPathname);
         ImageView iv = new ImageView(image);
-        if (isImageTallerThanWide(image)){
-            iv.setRotate(90);
-        }
+        //if (isImageTallerThanWide(image)){
+        //    iv.setRotate(90);
+        //}
         sr.setWidget(ResultsTable.COLNAME_IMAGE, iv);
         
         // get trainingVsTestConcern if relevant, OR image name
@@ -168,6 +173,7 @@ public class ResultsReview {
     }
     private void renderResultsTable(ResultsTable rt){
         List<SortableRow> rows = rt.getRows();
+        //scoredImagesGridPane.setGridLinesVisible(true);
         for(int i = 0; i < rows.size(); i++){
             // get the image
             SortableRow row = rows.get(i);
@@ -198,6 +204,18 @@ public class ResultsReview {
             Label nameLabel = (Label)row.getWidget(ResultsTable.COLNAME_NAME);
             System.out.println("col " + column + " row " + i+1);
             scoredImagesGridPane.add(nameLabel,column,i+1);
+        }
+        //scoredImagesGridPane.setGridLinesVisible(true);
+        ensureConstraintsForGridPane(scoredImagesGridPane);
+    }
+    private void ensureConstraintsForGridPane(GridPane gp){
+        ObservableList<ColumnConstraints> colConstraints = gp.getColumnConstraints();
+        for (ColumnConstraints cc : colConstraints){
+            cc.setHgrow(Priority.NEVER);
+        }
+        ObservableList<RowConstraints> rowConstraints = gp.getRowConstraints();
+        for (RowConstraints rc : rowConstraints){
+            rc.setVgrow(Priority.NEVER);
         }
     }
     private void setScoredImagesInfoCookingShow(String runID, String scoringConcernName) throws AvatolCVException {
