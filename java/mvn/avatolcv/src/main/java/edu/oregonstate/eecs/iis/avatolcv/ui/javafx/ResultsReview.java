@@ -143,7 +143,15 @@ public class ResultsReview {
         iv.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                System.out.println("clicked on image at index " + sr.getIndex());
+                if (sr.isLargeImageShown()){
+                    hideLargeImage(sr);
+                }
+                else {
+                    showLargeImage(sr);
+                }
+                event.consume();
+            }
+            private void showLargeImage(SortableRow sr){
                 int targetRowIndex = (sr.getIndex()*2) + 2;
                 String thumbnailPath = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_IMAGE));
                 try {
@@ -151,13 +159,17 @@ public class ResultsReview {
                     //System.out.println("put big image " + largeImagePath + " at index " + targetIndex);
                     Image image = new Image("file:"+largeImagePath);
                     ImageView iv = new ImageView(image);
+                    sr.rememberReferenceToLargeImage(iv);
                     scoredImagesGridPane.add(iv, 0, targetRowIndex, 5, 1);
                 }
                 catch(AvatolCVException e){
                     // just print error for now
                     System.out.println(e.getMessage());
                 }
-                event.consume();
+            }
+            private void hideLargeImage(SortableRow sr){
+                ImageView iv = (ImageView)sr.forgetLargeImageObject();
+                scoredImagesGridPane.getChildren().remove(iv);
             }
        });
     }

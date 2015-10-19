@@ -8,6 +8,7 @@ public class SortableRow implements Comparable {
 	private List<String> values = null;
 	private int index = -1;
     private static List<Integer> sortColumns = new ArrayList<Integer>();
+    private Object largeImageObject = null;
     // widgetHash will store the JavaFX (or whatever) widgets for each item
     private Hashtable<String, Object> widgetHash = new Hashtable<String, Object>();
     public static void addSortColumn(int columnIndex){
@@ -89,5 +90,19 @@ public class SortableRow implements Comparable {
 		}
 		return values.get(index);
 	}
-	
+	public boolean isLargeImageShown() {
+        if (this.largeImageObject == null){
+            return false;
+        }
+        return true;
+    }
+    
+    public void rememberReferenceToLargeImage(Object o){
+        this.largeImageObject = o;
+    }
+    public Object forgetLargeImageObject(){
+        Object temp = this.largeImageObject;
+        this.largeImageObject = null;
+        return temp;
+    }
 }
