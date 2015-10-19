@@ -159,6 +159,8 @@ public class ResultsReview {
                     //System.out.println("put big image " + largeImagePath + " at index " + targetIndex);
                     Image image = new Image("file:"+largeImagePath);
                     ImageView iv = new ImageView(image);
+                    iv.setPreserveRatio(true);
+                    iv.setFitWidth(600);
                     sr.rememberReferenceToLargeImage(iv);
                     scoredImagesGridPane.add(iv, 0, targetRowIndex, 5, 1);
                 }
