@@ -30,7 +30,7 @@ public class ResultsTable {
         int answer = colNames.indexOf(colName);
         return answer;
     }
-    public SortableRow createRow(String thumbnailPathname, String origImageName, String score, String conf, String truth){
+    public SortableRow createRow(String thumbnailPathname, String origImageName, String score, String conf, String truth, int index){
     	System.out.println("creating row for " + score + " , " + conf + " , " + truth + " , " + origImageName );
         List<String> values = new ArrayList<String>();
         values.add(thumbnailPathname);
@@ -38,7 +38,7 @@ public class ResultsTable {
         values.add(score);
         values.add(conf);
         values.add(origImageName);
-        SortableRow row = new SortableRow(values);
+        SortableRow row = new SortableRow(values, index);
         rows.add(row);
         return row;
     }

@@ -76,7 +76,7 @@
                                               <ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="100.0" />
                                             </columnConstraints>
                                             <rowConstraints>
-                                              <RowConstraints fillHeight="false" minHeight="10.0" vgrow="NEVER" />
+                                              <RowConstraints fillHeight="false" minHeight="0.0" vgrow="NEVER" />
                                               <RowConstraints fillHeight="false" minHeight="10.0" vgrow="NEVER" />
                                               <RowConstraints fillHeight="false" minHeight="10.0" vgrow="NEVER" />
                                                 <RowConstraints fillHeight="false" minHeight="10.0" vgrow="NEVER" />

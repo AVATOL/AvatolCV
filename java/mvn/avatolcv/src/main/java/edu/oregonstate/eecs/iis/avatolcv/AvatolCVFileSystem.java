@@ -24,6 +24,9 @@ public class AvatolCVFileSystem {
 
 	public static final String FILESEP = System.getProperty("file.separator");
     public static final String EXCLUSION_STATES_DIRNAME = "exclusions";
+    
+    private static final String DIR_NAME_THUMBNAIL = "thumbnail";
+    private static final String DIR_NAME_LARGE = "large";
 
 	private static String avatolCVRootDir = null;
 	private static String sessionsDir = null;
@@ -221,10 +224,10 @@ public class AvatolCVFileSystem {
         return getNormalizedDataDir() + FILESEP + "images";
     }
     public static String getNormalizedImagesLargeDir() throws AvatolCVException{
-        return getNormalizedImageDir() + FILESEP + "large";
+        return getNormalizedImageDir() + FILESEP + DIR_NAME_LARGE;
     }
     public static String getNormalizedImagesThumbnailDir() throws AvatolCVException{
-        return getNormalizedImageDir() + FILESEP + "thumbnail";
+        return getNormalizedImageDir() + FILESEP + DIR_NAME_THUMBNAIL;
     }
 	public static void ensureDir(String path){
 	    File f = new File(path);
@@ -301,6 +304,32 @@ public class AvatolCVFileSystem {
 			}
 		}
 		return null;
+	}
+	
+	public static String getLargeImagePathForThumbnailPath(String thumbnailPath) throws AvatolCVException {
+	    /*
+	     * thumbnail and large paths end with:
+	     * images/large/00-2cNgRYKCyKB6MWSBa4Y5EA_MonocostusUniflorus-mcl30-mod_1000.jpg  
+	     * images/thumbnail/00-2cNgRYKCyKB6MWSBa4Y5EA_MonocostusUniflorus-mcl30-mod_80.jpg
+	     */
+	    // get the fileRootName (sans _80)
+	    File thumbnailFile = new File(thumbnailPath);
+	    String filename = thumbnailFile.getName();
+	    String[] parts = filename.split("_");
+	    String fileRoot = parts[0];
+	    // get the large image dir
+	    File thumbnailDirFile = thumbnailFile.getParentFile();
+	    File imagesDirFile = thumbnailDirFile.getParentFile();
+	    String largeDirFilePath = imagesDirFile + FILESEP + DIR_NAME_LARGE;
+	    File largeDirFile = new File(largeDirFilePath);
+	    // find a file with matching fileRoot
+	    File[] files = largeDirFile.listFiles();
+	    for (File f : files){
+	        if (f.getName().startsWith(fileRoot)){
+	            return f.getAbsolutePath();
+	        }
+	    }
+	    throw new AvatolCVException("Could not find large image corresponding to thumbnail " + thumbnailPath);
 	}
 	/*public static String getUserAnswerDir() throws AvatolCVException {
 	    if (null == currentProjectUserAnswersDir){

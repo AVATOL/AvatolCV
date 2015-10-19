@@ -6,6 +6,7 @@ import java.util.List;
 
 public class SortableRow implements Comparable {
 	private List<String> values = null;
+	private int index = -1;
     private static List<Integer> sortColumns = new ArrayList<Integer>();
     // widgetHash will store the JavaFX (or whatever) widgets for each item
     private Hashtable<String, Object> widgetHash = new Hashtable<String, Object>();
@@ -24,8 +25,12 @@ public class SortableRow implements Comparable {
     	}
     	sortColumns.add(new Integer(columnIndex));
     }
-    public SortableRow(List<String> values){
+    public SortableRow(List<String> values, int index){
     	this.values = values;
+    	this.index = index;
+    }
+    public int getIndex(){
+        return this.index;
     }
     public void setWidget(String colName, Object widget){
         widgetHash.put(colName, widget);

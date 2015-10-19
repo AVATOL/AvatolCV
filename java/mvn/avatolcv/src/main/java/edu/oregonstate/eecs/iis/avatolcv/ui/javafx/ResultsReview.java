@@ -7,6 +7,7 @@ import java.util.List;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -19,6 +20,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -89,7 +91,7 @@ public class ResultsReview {
             setScoredImagesInfo(this.runID, scoringConcernValue.getText());
             //runDetailsAccordion.requestLayout();
             setupSlider();
-            scoredImagesGridPane.setStyle("-fx-background-color:yellow;");
+            //scoredImagesGridPane.setStyle("-fx-background-color:yellow;");
             
         }
         catch(Exception e){
@@ -137,13 +139,37 @@ public class ResultsReview {
         }
         
     }
+    private void addEventhandlerForImageClick(ImageView iv, SortableRow sr){
+        iv.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println("clicked on image at index " + sr.getIndex());
+                int targetRowIndex = (sr.getIndex()*2) + 2;
+                String thumbnailPath = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_IMAGE));
+                try {
+                    String largeImagePath = AvatolCVFileSystem.getLargeImagePathForThumbnailPath(thumbnailPath);
+                    //System.out.println("put big image " + largeImagePath + " at index " + targetIndex);
+                    Image image = new Image("file:"+largeImagePath);
+                    ImageView iv = new ImageView(image);
+                    scoredImagesGridPane.add(iv, 0, targetRowIndex, 5, 1);
+                }
+                catch(AvatolCVException e){
+                    // just print error for now
+                    System.out.println(e.getMessage());
+                }
+                event.consume();
+            }
+       });
+    }
     private void generateScoreWidgets(SortableRow sr){
         String thumbnailPathname = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_IMAGE));
         Image image = new Image("file:"+thumbnailPathname);
         ImageView iv = new ImageView(image);
+        addEventhandlerForImageClick(iv, sr);
         //if (isImageTallerThanWide(image)){
         //    iv.setRotate(90);
         //}
+        
         sr.setWidget(ResultsTable.COLNAME_IMAGE, iv);
         
         // get trainingVsTestConcern if relevant, OR image name
@@ -175,35 +201,36 @@ public class ResultsReview {
         List<SortableRow> rows = rt.getRows();
         //scoredImagesGridPane.setGridLinesVisible(true);
         for(int i = 0; i < rows.size(); i++){
+            int offset = (2*i)+1;
             // get the image
             SortableRow row = rows.get(i);
             ImageView iv = (ImageView)row.getWidget(ResultsTable.COLNAME_IMAGE);
            
             int column = 0;
-            System.out.println("col " + column + " row " + i+1);
-            scoredImagesGridPane.add(iv,column,i+1);
+            System.out.println("col " + column + " row " + offset);
+            scoredImagesGridPane.add(iv,column,offset);
             column++;
             // get truth
             Label truthLabel = (Label)row.getWidget(ResultsTable.COLNAME_TRUTH);
-            System.out.println("col " + column + " row " + i+1);
-            scoredImagesGridPane.add(truthLabel,column,i+1);
+            System.out.println("col " + column + " row " + offset);
+            scoredImagesGridPane.add(truthLabel,column,offset);
             column++;
             // get score
             
             Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
-            System.out.println("col " + column + " row " + i+1);
-            scoredImagesGridPane.add(scoreLabel, column, i+1);
+            System.out.println("col " + column + " row " + offset);
+            scoredImagesGridPane.add(scoreLabel, column, offset);
             column++;
             // get confidence
             Label confidenceLabel = (Label)row.getWidget(ResultsTable.COLNAME_CONFIDENCE);
-            System.out.println("col " + column + " row " + i+1);
-            scoredImagesGridPane.add(confidenceLabel,column, i+1);
+            System.out.println("col " + column + " row " + offset);
+            scoredImagesGridPane.add(confidenceLabel,column, offset);
             column++;
 
             // get trainingVsTestConcern if relevant, OR image name
             Label nameLabel = (Label)row.getWidget(ResultsTable.COLNAME_NAME);
-            System.out.println("col " + column + " row " + i+1);
-            scoredImagesGridPane.add(nameLabel,column,i+1);
+            System.out.println("col " + column + " row " + offset);
+            scoredImagesGridPane.add(nameLabel,column,offset);
         }
         //scoredImagesGridPane.setGridLinesVisible(true);
         ensureConstraintsForGridPane(scoredImagesGridPane);
@@ -241,8 +268,9 @@ public class ResultsReview {
     		String truth = tif.getScoringConcernValueForImageName(name);
         	String origImageName = getTrueImageNameFromImageNameForCookingShow(name);
         	String thumbnailPathname = getThumbnailPathWithImageNameForCookingShow(name);
-        	SortableRow sortableRow = resultsTable.createRow(thumbnailPathname, origImageName, value, conf, truth);
+        	SortableRow sortableRow = resultsTable.createRow(thumbnailPathname, origImageName, value, conf, truth, row - 1);
         	generateScoreWidgets(sortableRow);
+        	row++;
         	//scoredImagesGridPane.getRowConstraints().get(row).setPrefHeight(imageHeight);
         	//System.out.println("rc count : " + scoredImagesGridPane.getRowConstraints().size());
     	}
