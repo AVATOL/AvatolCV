@@ -9,6 +9,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.HPos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -17,13 +18,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
@@ -337,32 +336,43 @@ public class ResultsReview {
     	}
     }
     private void addScoredImagesHeader(GridPane gp){
-    	Label imageLabel = new Label("    ");
-    	int column = 0;
-    	gp.add(imageLabel, column++, 0);
-    	Label itemLabel = null;
-    	if (this.runSummary.hasTrainTestConcern()){
-    		itemLabel = new Label(this.runSummary.getTrainTestConcern());
-        	gp.add(itemLabel, column++, 0);
-    	}
-    	else {
-    		itemLabel = new Label("Name");
-    		gp.add(itemLabel, column++, 0);
-    	}
-    	//itemLabel.setStyle("-fx-background-color:green;");
-    	itemLabel.getStyleClass().add("columnHeader");
+        int column = 0;
+
+        Label imageLabel = new Label("Image");
+        
+        imageLabel.getStyleClass().add("columnHeader");
+        GridPane.setHalignment(imageLabel, HPos.CENTER);
+        gp.add(imageLabel, column++, 0);
     	
     	Label truthLabel = new Label("Truth");
     	truthLabel.getStyleClass().add("columnHeader");
+        GridPane.setHalignment(truthLabel, HPos.CENTER);
     	gp.add(truthLabel, column++, 0);
     	
     	Label scoreLabel = new Label("Score");
     	scoreLabel.getStyleClass().add("columnHeader");
+        GridPane.setHalignment(scoreLabel, HPos.CENTER);
     	gp.add(scoreLabel, column++, 0);
     	
     	Label confidence = new Label("Confidence");
     	confidence.getStyleClass().add("columnHeader");
+        GridPane.setHalignment(confidence, HPos.CENTER);
     	gp.add(confidence, column++, 0);
+    	
+    	Label itemLabel = null;
+        if (this.runSummary.hasTrainTestConcern()){
+            itemLabel = new Label(this.runSummary.getTrainTestConcern());
+            GridPane.setHalignment(itemLabel, HPos.CENTER);
+            gp.add(itemLabel, column++, 0);
+        }
+        else {
+            itemLabel = new Label("Name");
+            GridPane.setHalignment(itemLabel, HPos.CENTER);
+            gp.add(itemLabel, column++, 0);
+        }
+        
+        //itemLabel.setStyle("-fx-background-color:green;");
+        itemLabel.getStyleClass().add("columnHeader");
     }
 
     private void addTrainingImagesHeader(GridPane gp){
@@ -402,6 +412,7 @@ public class ResultsReview {
     	}
     	return false;
     }
+    /*
     private double addScoredImageToGridPaneRowForCookingShow(String name, String trueName, String scoreValue, String scoreConf, String trueValue, GridPane gp, int row) throws AvatolCVException {
         // get the image
     	String thumbnailPathname = getThumbnailPathWithImageNameForCookingShow(name);
@@ -439,7 +450,7 @@ public class ResultsReview {
         gp.add(confidenceLabel,column, row);
         return image.getHeight();
     }
-    
+    */
     public static String limitToTwoDecimalPlaces(String conf){
     	//assume it's always going to be 0.xyz, so just take the first four chars
     	if (conf.length() > 4){
@@ -505,6 +516,7 @@ public class ResultsReview {
         }
         gp.add(confidenceLabel,column, row);
     }
+    /*
     private String getTrueImageNameFromImageName(String imageName) throws AvatolCVException {
     	String thumbnailDirPath = AvatolCVFileSystem.getNormalizedImagesThumbnailDir();
     	String[] imageNameParts = imageName.split("\\.");
@@ -523,12 +535,13 @@ public class ResultsReview {
     	}
     	return "?";
     }
-
+*/
     private String getTrueImageNameFromImageNameForCookingShow(String imageName) throws AvatolCVException {
     	String[] imageNameParts = imageName.split("\\.");
     	String fileRoot = imageNameParts[0];
     	return fileRoot;
     }
+    /*
     private String getThumbnailPathWithImageName(String imageName) throws AvatolCVException {
     	String thumbnailDirPath = AvatolCVFileSystem.getNormalizedImagesThumbnailDir();
     	String[] imageNameParts = imageName.split("\\.");
@@ -544,6 +557,7 @@ public class ResultsReview {
     	}
     	return null;
     }
+    */
     private String getThumbnailPathWithImageNameForCookingShow(String imageName) throws AvatolCVException {
     	String thumbnailDirPath = AvatolCVFileSystem.getNormalizedImagesThumbnailDir();
     	String[] imageNameParts = imageName.split("\\.");

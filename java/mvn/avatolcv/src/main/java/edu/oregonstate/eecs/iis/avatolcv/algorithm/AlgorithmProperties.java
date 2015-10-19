@@ -50,8 +50,10 @@ public class AlgorithmProperties {
 				if (line.startsWith("#")){
 					// ignore comments
 				}
-				String[] propPair = line.split("=");
-				propsHash.put(propPair[0], propPair[1]);
+				else {
+				    String[] propPair = line.split("=");
+				    propsHash.put(propPair[0], propPair[1]);
+				}
 			}
 			reader.close();
 			// try to access the key properties to make sure they are present.
