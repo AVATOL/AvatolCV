@@ -666,3 +666,4 @@ public class ResultsReview {
     	this.mainScreen.start(this.mainWindow);
     }
 }
+
