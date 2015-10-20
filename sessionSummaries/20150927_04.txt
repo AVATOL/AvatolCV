@@ -5,3 +5,6 @@ dataset=yaoExp
 data source=bisque
 scoring algorithm=leaf
 prebaked=true
+scoring concern value=straight
+scoring concern value=convex
+scoring concern value=acuminate

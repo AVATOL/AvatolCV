@@ -17,7 +17,7 @@
                            <children>
                               <ScrollPane fx:id="runDetailsScrollPane" layoutX="9.600000381469727" layoutY="9.600000381469727" prefViewportHeight="287.0" prefViewportWidth="240.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <content>
-                                    <GridPane hgap="6.0">
+                                    <GridPane fx:id="overviewGridPane" hgap="6.0">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="NEVER" />
                                         <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
@@ -25,21 +25,25 @@
                                       <rowConstraints>
                                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
                                           <Label styleClass="summaryHeader" text="Run ID" />
                                           <Label fx:id="runIDValue" styleClass="summaryValue" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
-                                          <Label styleClass="summaryHeader" text="Scored" GridPane.rowIndex="1" />
-                                          <Label styleClass="summaryHeader" text="Dataset" GridPane.rowIndex="2" />
-                                          <Label styleClass="summaryHeader" text="Data Source" GridPane.rowIndex="3" />
-                                          <Label styleClass="summaryHeader" text="Algorithm" GridPane.rowIndex="4" />
-                                          <Label fx:id="scoringConcernValue" styleClass="summaryValue" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
-                                          <Label fx:id="datasetValue" styleClass="summaryValue" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
-                                          <Label fx:id="dataSourceValue" styleClass="summaryValue" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
-                                          <Label fx:id="scoringAlgorithmValue" styleClass="summaryValue" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" />
+                                          <Label styleClass="summaryHeader" text="Scoring Target" GridPane.rowIndex="5" />
+                                          <Label styleClass="summaryHeader" text="Dataset" GridPane.rowIndex="1" />
+                                          <Label styleClass="summaryHeader" text="Data Source" GridPane.rowIndex="2" />
+                                          <Label styleClass="summaryHeader" text="Algorithm" GridPane.rowIndex="3" />
+                                          <Label fx:id="scoringConcernValue" styleClass="summaryValue" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" />
+                                          <Label fx:id="datasetValue" styleClass="summaryValue" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                                          <Label fx:id="dataSourceValue" styleClass="summaryValue" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                                          <Label fx:id="scoringAlgorithmValue" styleClass="summaryValue" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
+                                          <Label styleClass="summaryHeader" text="Values" GridPane.rowIndex="7" />
                                        </children>
                                     </GridPane>
                                  </content>

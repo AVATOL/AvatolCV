@@ -5,3 +5,7 @@ dataset=yaoExp
 data source=bisque
 scoring algorithm=leaf
 prebaked=true
+scoring concern value=acute
+scoring concern value=obtuse
+scoring concern value=straight
+scoring concern value=reflex

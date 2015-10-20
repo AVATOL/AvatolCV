@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -22,6 +24,7 @@ public class RunSummary {
     private static final String KEY_DATA_SOURCE = "data source";
     private static final String KEY_SCORING_ALGORITHM = "scoring algorithm";
     private static final String KEY_RUNID = "runID";
+    private static final String KEY_SCORING_CONCERN_VALUE = "scoring concern value";
     
     
     private static final String FILESEP = System.getProperty("file.separator");
@@ -31,6 +34,7 @@ public class RunSummary {
     private String scoringAlgorithm = null;
     private String runID = null;
     private String trainTestConcern = null;
+    private List<String> scoringConcernValues = new ArrayList<String>();
     private boolean cookingShow = false;
     public RunSummary(String ID) throws AvatolCVException {
         
@@ -73,6 +77,9 @@ public class RunSummary {
                     else if (key.equals(KEY_COOKING_SHOW)){
                         this.cookingShow = true;
                     }
+                    else if (key.equals(KEY_SCORING_CONCERN_VALUE)){
+                        this.scoringConcernValues.add(value);
+                    }
                 }
             }
             reader.close();
@@ -107,5 +114,8 @@ public class RunSummary {
     }
     public String getTrainTestConcern(){
     	return this.trainTestConcern;
+    }
+    public List<String> getScoringConcernValues(){
+        return this.scoringConcernValues;
     }
 }

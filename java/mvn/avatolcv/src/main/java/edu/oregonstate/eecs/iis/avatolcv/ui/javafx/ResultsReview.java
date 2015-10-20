@@ -53,6 +53,7 @@ public class ResultsReview {
     public Label scoringConcernValue = null;
     public Label dataSourceValue = null;
     public Label scoringAlgorithmValue = null;
+    public GridPane overviewGridPane = null;
     public GridPane scoredImagesGridPane = null;
     public GridPane trainingImagesGridPane = null;
     public VBox trainingImagesVBox = null;
@@ -676,6 +677,14 @@ public class ResultsReview {
         dataSourceValue.setText(rs.getDataSource());
         scoringAlgorithmValue.setText(rs.getScoringAlgorithm());
         
+        List<String> values = rs.getScoringConcernValues();
+        int row = 7;
+        for (String v : values){
+            Label label = new Label(v);
+            label.getStyleClass().add("summaryValue");
+            overviewGridPane.add(label, 1, row++);
+        }
+        //
         this.scoreIndex = new ScoreIndex(AvatolCVFileSystem.getScoreIndexPath(rs.getRunID()));
     }
     public void doneWithResultsReview(){
