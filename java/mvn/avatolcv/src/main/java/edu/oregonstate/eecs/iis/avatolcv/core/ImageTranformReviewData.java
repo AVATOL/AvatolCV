@@ -6,7 +6,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
 public interface ImageTranformReviewData {
-    public ImagesForStage getImagesForStage();
+    public ImagesForAlgorithmStep getImagesForStage();
     public List<ImageInfo> getCandidateImages();
     public void deleteTrainingImage(ImageInfo ii) throws AvatolCVException;
     public void saveTrainingImage(BufferedImage bi, ImageInfo ii) throws AvatolCVException;

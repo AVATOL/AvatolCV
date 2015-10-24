@@ -33,7 +33,7 @@
                   <Insets left="10.0" top="20.0" />
                </padding>
             </VBox>
-            <AnchorPane id="navigationShellContentPane" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <AnchorPane id="navigationShellContentPane" fx:id="primaryContentPane"  prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
       <HBox spacing="10.0" VBox.vgrow="NEVER">

@@ -20,6 +20,9 @@ import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
  * it would all be handled here.
  */
 public class AvatolCVFileSystem {
+    public static final String ROTATE_VERTICALLY = "rotateVerticaly";
+    public static final String ROTATE_HORIZONTALLY = "rotateHorizontally";
+    public static final String ROTATION_STATES_DIRNAME = "userRotations";
     public static final String RESERVED_PREFIX = "avcv_";
 
 	public static final String FILESEP = System.getProperty("file.separator");
@@ -134,6 +137,9 @@ public class AvatolCVFileSystem {
         }
 	    return sessionsDir + FILESEP + datasetName + FILESEP + sessionID;
 	}
+	public static String getSessionExclusionDir() throws AvatolCVException {
+		return getSessionDir() + FILESEP + EXCLUSION_STATES_DIRNAME;
+	}
 	public static List<String> getSessionFilenames() throws AvatolCVException {
         File sessionSummariesDirFile = new File(sessionSummariesDir);
         File[] files = sessionSummariesDirFile.listFiles();
@@ -163,6 +169,7 @@ public class AvatolCVFileSystem {
 	public static void setChosenDataset(DatasetInfo di) throws AvatolCVException {
 	    datasetName = di.getName();
 	    ensureDir(getSessionDir());
+	    ensureDir(getSessionExclusionDir());
 	    ensureDir(getDatasetDir());
 	    ensureDir(getNormalizedDataDir());
 	    ensureDir(getNormalizedImageInfoDir());
@@ -185,7 +192,7 @@ public class AvatolCVFileSystem {
 	    }
 	    ensureDir(getSpecializedDataDir());
 	    ensureDir(getSpecializedImageInfoDir());
-        ensureDir(getSpecializedExclusionDir());
+        ensureDir(getNormalizedExclusionDir());
 	}
 	
 	public static String getSpecializedDataDir() throws AvatolCVException {
@@ -195,8 +202,8 @@ public class AvatolCVFileSystem {
         return getSpecializedDataDir() + FILESEP + "imageInfo";
     }
 
-    public static String getSpecializedExclusionDir() throws AvatolCVException {
-        return getSpecializedDataDir() + FILESEP + EXCLUSION_STATES_DIRNAME;
+    public static String getNormalizedExclusionDir() throws AvatolCVException {
+        return getNormalizedDataDir() + FILESEP + EXCLUSION_STATES_DIRNAME;
     }
     
 	public static String getNormalizedDataDir() throws AvatolCVException {
@@ -306,6 +313,19 @@ public class AvatolCVFileSystem {
 		return null;
 	}
 	
+	// IMAGES
+	public static String getDatasetExclusionInfoFilePath(String imageID) throws AvatolCVException {
+		return  AvatolCVFileSystem.getNormalizedExclusionDir() + FILESEP + imageID + ".txt";
+	}
+	public static String getSessionExclusionInfoFilePath(String imageID) throws AvatolCVException {
+		return  AvatolCVFileSystem.getSessionExclusionDir() + FILESEP + imageID + ".txt";
+	}
+	public static String getImageRotationStateDir() throws AvatolCVException {
+	    return getNormalizedImageDir() + FILESEP + ROTATION_STATES_DIRNAME;
+	}
+	public static String getRotateHorizontallyPath(String imageID) throws AvatolCVException {
+	    return  getImageRotationStateDir() + FILESEP + imageID + "_" + ROTATE_HORIZONTALLY + ".txt";
+	}
 	public static String getLargeImagePathForThumbnailPath(String thumbnailPath) throws AvatolCVException {
 	    /*
 	     * thumbnail and large paths end with:
@@ -331,6 +351,9 @@ public class AvatolCVFileSystem {
 	    }
 	    throw new AvatolCVException("Could not find large image corresponding to thumbnail " + thumbnailPath);
 	}
+	public static String getRotateVerticallyPath(String imageID) throws AvatolCVException {
+        return  getImageRotationStateDir() + FILESEP + imageID + "_" + ROTATE_VERTICALLY + ".txt";
+    }
 	/*public static String getUserAnswerDir() throws AvatolCVException {
 	    if (null == currentProjectUserAnswersDir){
 	        throw new AvatolCVException("getUserAnswerDir() called prior to setCurrentProject()");

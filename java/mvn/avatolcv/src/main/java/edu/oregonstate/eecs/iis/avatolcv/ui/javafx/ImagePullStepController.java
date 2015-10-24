@@ -168,10 +168,12 @@ public class ImagePullStepController implements StepController, ProgressPresente
                 return new Boolean(true);
             }
             catch(AvatolCVException ace){
+            	
                 logger.error("AvatolCV error downloading images");
                 logger.error(ace.getMessage());
                 System.out.println("AvatolCV error downloading images");
                 ace.printStackTrace();
+                fxSession.getExceptionExpresser().showException(ace, "problem downloading image");
                 return new Boolean(false);
             }
         }

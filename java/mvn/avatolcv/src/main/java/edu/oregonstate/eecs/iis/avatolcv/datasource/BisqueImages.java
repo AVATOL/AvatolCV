@@ -128,7 +128,7 @@ public class BisqueImages {
             return true;
         }
         else {
-            image.excludeForReason(ImageInfo.EXCLUSION_REASON_UNAVAILABLE);
+            image.excludeForReason(ImageInfo.EXCLUSION_REASON_UNAVAILABLE, false);
             return false;
         }
     }
