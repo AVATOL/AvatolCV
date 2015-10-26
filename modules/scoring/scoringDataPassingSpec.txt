@@ -38,6 +38,8 @@ inputRequired=alignMask:testImagesMaskFile
 		scoringConcernType=<someType>
 		scoringConcernID=<someID>
 		scoringConcernName=<someName>
+        
+        (optional) trainingTestConcernName=<someName>  ___add trainingTestValue (optional) somehow
         #imageName,scoringConcernValue,pointCoordinates
         <image1Name>,<scoringConcernValue>,<pointCoords>
         <image2Name>,<scoringConcernValue>,<pointCoords>
