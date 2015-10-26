@@ -2,7 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.orientation;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmRunner;
-import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForStage;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForAlgorithmStep;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;

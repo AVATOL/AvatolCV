@@ -137,21 +137,43 @@ public class ImageInfo {
 	/*
 	 * Exclusion
 	 */
-	public String getExclusionInfoFilePath() throws AvatolCVException {
-		return  AvatolCVFileSystem.getSpecializedExclusionDir() + FILESEP + this.getID() + ".txt";
-	}
+	
 	public boolean isExcluded() throws AvatolCVException {
-		String path =getExclusionInfoFilePath();
+		return (isExcludedForDataset() || isExcludedForSession());
+	}
+	
+	public boolean isExcludedForDataset() throws AvatolCVException {
+		String path = AvatolCVFileSystem.getDatasetExclusionInfoFilePath(this.ID);
+		File f = new File(path);
+		return f.exists();
+	}
+	public boolean isExcludedForSession() throws AvatolCVException {
+		String path = AvatolCVFileSystem.getSessionExclusionInfoFilePath(this.ID);
 		File f = new File(path);
 		return f.exists();
 	}
 	public void undoExclude() throws AvatolCVException {
-		String path = getExclusionInfoFilePath();
-		File f = new File(path);
-		f.delete();
+		if (isExcludedForSession()){
+			String path = AvatolCVFileSystem.getSessionExclusionInfoFilePath(this.ID);
+			File f = new File(path);
+			f.delete();
+		}
+		else if (isExcludedForDataset()){
+			String path = AvatolCVFileSystem.getDatasetExclusionInfoFilePath(this.ID);
+			File f = new File(path);
+			f.delete();
+		}
+		
 	}
-	public void excludeForReason(String s) throws AvatolCVException {
-		String path = getExclusionInfoFilePath();
+	public void excludeForReason(String s, boolean excludeJustForSession) throws AvatolCVException {
+		String path = null;
+	    if (excludeJustForSession){
+	    	path = AvatolCVFileSystem.getSessionExclusionInfoFilePath(this.ID);
+	    }
+	    else {
+	    	path = AvatolCVFileSystem.getDatasetExclusionInfoFilePath(this.ID);
+	    }
+		
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(path));
 			writer.write(s + NL);
@@ -162,16 +184,31 @@ public class ImageInfo {
 	    }
 	}
 	public String getExclusionReason() throws AvatolCVException {
-		String path = getExclusionInfoFilePath();
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(path));
-			String line = reader.readLine();
-			reader.close();
-			return line;
+		String path = null;
+		if (isExcludedForSession()){
+			path = AvatolCVFileSystem.getSessionExclusionInfoFilePath(this.ID);
 		}
-	    catch(IOException ioe){
-	    	throw new AvatolCVException("problem writing exclusion state to path " + path);
-	    }
+		else if (isExcludedForDataset()){
+			path = AvatolCVFileSystem.getDatasetExclusionInfoFilePath(this.ID);
+		}
+		else {
+			path = null;
+		}
+		if (null == path){
+			return "-no exclusion reason found-";
+		}
+		else {
+			try {
+				BufferedReader reader = new BufferedReader(new FileReader(path));
+				String line = reader.readLine();
+				reader.close();
+				return line;
+			}
+		    catch(IOException ioe){
+		    	throw new AvatolCVException("problem readin exclusion state from path " + path);
+		    }
+		}
+		
 	}
 	
 }

@@ -133,8 +133,11 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 			/*
 			 * INITIAL REQUEST
 			 */
-	        System.out.println("initial request to http://bovary.iplantcollaborative.org/auth_service/login");
-	        WebTarget webTargetInitLogin = client.target("http://bovary.iplantcollaborative.org/auth_service/");
+			 
+	        //System.out.println("initial request to http://bovary.iplantcollaborative.org/auth_service/login");
+	        //WebTarget webTargetInitLogin = client.target("http://bovary.iplantcollaborative.org/auth_service/");
+	        System.out.println("initial request to http://bisque.iplantcollaborative.org/auth_service/login");
+	        WebTarget webTargetInitLogin = client.target("http://bisque.iplantcollaborative.org/auth_service/");
 	        
 	        WebTarget resourceWebTarget = webTargetInitLogin.path("login");
 	        Invocation.Builder invocationBuilder =
@@ -292,8 +295,10 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 		/*
 		 * INITIAL REQUEST
 		 */
-        System.out.println("initial request to http://bovary.iplantcollaborative.org/auth_service/logout_handler");
-        WebTarget webTargetInitLogin = client.target("http://bovary.iplantcollaborative.org/auth_service/");
+        //System.out.println("initial request to http://bovary.iplantcollaborative.org/auth_service/logout_handler");
+        //WebTarget webTargetInitLogin = client.target("http://bovary.iplantcollaborative.org/auth_service/");
+        System.out.println("initial request to http://bisque.iplantcollaborative.org/auth_service/logout_handler");
+        WebTarget webTargetInitLogin = client.target("http://bisque.iplantcollaborative.org/auth_service/");
         
         WebTarget resourceWebTarget = webTargetInitLogin.path("logout_handler");
         Invocation.Builder invocationBuilder =
@@ -461,7 +466,8 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 		List<BisqueDataset> datasetList = null;
 		try {
 			Client client = ClientBuilder.newClient();
-	        String url = "http://bovary.iplantcollaborative.org/data_service/dataset";
+	        //String url = "http://bovary.iplantcollaborative.org/data_service/dataset";
+	        String url = "http://bisque.iplantcollaborative.org/data_service/dataset";
 	        String xmlString = getXmlResponseFromUrl(client,url);
 	        //http://www.javatechtipssharedbygaurav.com/2013/05/how-to-convert-pojo-to-xml-and-xml-to.html
 	        @SuppressWarnings("restriction")
@@ -483,7 +489,8 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 		try {
 			Client client = ClientBuilder.newClient();
 	        //http://bovary.iplantcollaborative.org/data_service/dataset/00-kutq3fez25ntEkp5pdXhMM/value
-			String url = "http://bovary.iplantcollaborative.org/data_service/dataset/" + datasetResource_uniq + "/value";
+			//String url = "http://bovary.iplantcollaborative.org/data_service/dataset/" + datasetResource_uniq + "/value";
+			String url = "http://bisque.iplantcollaborative.org/data_service/dataset/" + datasetResource_uniq + "/value";
 			String xmlString = getXmlResponseFromUrl(client,url);
 	        //http://www.javatechtipssharedbygaurav.com/2013/05/how-to-convert-pojo-to-xml-and-xml-to.html
 	        @SuppressWarnings("restriction")
@@ -510,7 +517,8 @@ public class BisqueWSClientImpl implements BisqueWSClient {
             client.property(ClientProperties.CONNECT_TIMEOUT, 5000);
             client.property(ClientProperties.READ_TIMEOUT,    5000);
             // asking for a square with AR (preserve aspect ratio) fits image into square bounding box, so maxDimension is obeyed
-            String mediaUrl = "http://bovary.iplantcollaborative.org/image_service/" + imageResource_uniq + "?resize=" + maxDimension + "," + maxDimension + ",NN,AR&format=jpeg";
+            //String mediaUrl = "http://bovary.iplantcollaborative.org/image_service/" + imageResource_uniq + "?resize=" + maxDimension + "," + maxDimension + ",NN,AR&format=jpeg";
+            String mediaUrl = "http://bisque.iplantcollaborative.org/image_service/" + imageResource_uniq + "?resize=" + maxDimension + "," + maxDimension + ",NN,AR&format=jpeg";
             System.out.println(mediaUrl);
             WebTarget webTarget = client.target(mediaUrl);
             Invocation.Builder invocationBuilder = webTarget.request();
@@ -557,7 +565,8 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 		try {
 			Client client = ClientBuilder.newClient();
 	        //http://bovary.iplantcollaborative.org/data_service/00-sYCwqbfmiErqLsHzpds6G4/?view=deep
-			String url = "http://bovary.iplantcollaborative.org/data_service/" + imageResource_uniq + "/?view=deep";
+			//String url = "http://bovary.iplantcollaborative.org/data_service/" + imageResource_uniq + "/?view=deep";
+			String url = "http://bisque.iplantcollaborative.org/data_service/" + imageResource_uniq + "/?view=deep";
 			String xmlString = getXmlResponseFromUrl(client,url);
 	        //http://www.javatechtipssharedbygaurav.com/2013/05/how-to-convert-pojo-to-xml-and-xml-to.html
 	        @SuppressWarnings("restriction")
@@ -606,7 +615,8 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 			
 			Client client = ClientBuilder.newClient();
 	        //http://bovary.iplantcollaborative.org/data_service/00-sYCwqbfmiErqLsHzpds6G4/?view=deep
-			String url = "http://bovary.iplantcollaborative.org/" + annotationTypeValue;
+			//String url = "http://bovary.iplantcollaborative.org/" + annotationTypeValue;
+			String url = "http://bisque.iplantcollaborative.org/" + annotationTypeValue;
 			String xmlString = getXmlResponseFromUrl(client,url);
 	        //http://www.javatechtipssharedbygaurav.com/2013/05/how-to-convert-pojo-to-xml-and-xml-to.html
 	        @SuppressWarnings("restriction")

@@ -7,15 +7,15 @@ import java.io.IOException;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForStage;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForAlgorithmStep;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 
 public class SegmentationRunConfig {
     private static final String FILESEP = System.getProperty("file.separator");
     private static final String NL = System.getProperty("line.separator");
     private SegmentationSessionData ssd = null;
-    private ImagesForStage ifs = null;
-    public SegmentationRunConfig(SegmentationSessionData ssd, ImagesForStage ifs)throws AvatolCVException {
+    private ImagesForAlgorithmStep ifs = null;
+    public SegmentationRunConfig(SegmentationSessionData ssd, ImagesForAlgorithmStep ifs)throws AvatolCVException {
         this.ifs = ifs;
         this.ssd = ssd;
     }

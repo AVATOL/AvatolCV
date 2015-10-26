@@ -31,6 +31,7 @@ import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DataSourceStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DatasetChoiceStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.ExclusionQualityStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ImagePullStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.LoginStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
@@ -114,19 +115,21 @@ public class JavaFXStepSequencer  {
         controllerForStep.put(imagePullStep, imagePullController);
         addLabelForStep(imagePullStep,"Load Images");
         summaryFilterStep.setNextAnswerableInSeries(imagePullStep);
-        /*
-        MBExclusionQualityStep exclusionQualityStep = new MBExclusionQualityStep(null, client, sessionData);
+        
+        ExclusionQualityStep exclusionQualityStep = new ExclusionQualityStep(sessionInfo);
         ss.appendStep(exclusionQualityStep);
-        MBExclusionQualityStepController qualityStepController = new MBExclusionQualityStepController(exclusionQualityStep, "MBExclusionQualityStepTile.fxml");
+        AnchorPane navigationShellContentPane = (AnchorPane)scene.lookup("#navigationShellContentPane");
+        ExclusionQualityStepController qualityStepController = new ExclusionQualityStepController(exclusionQualityStep, "ExclusionQualityStepTile.fxml", navigationShellContentPane);
         controllerForStep.put(exclusionQualityStep, qualityStepController);
         addLabelForStep(exclusionQualityStep,"Image Quality");
+        imagePullStep.setNextAnswerableInSeries(exclusionQualityStep);
         //Step exclusionStep = new MBExclusionPropertyStep(null, sessionData);
         //ss.appendStep(exclusionStep);
         
-        
+        /*
         //Step charQuestionsStep = new CharQuestionsStep(null, sessionData);
         //ss.appendStep(charQuestionsStep);   
-        
+       
         // Turns out that the Step  orientation exclusion can reuse the quality step  - same mechanisms and data flow
         MBExclusionQualityStep exclusionOrientationStep = new MBExclusionQualityStep(null, client, sessionData);
         ss.appendStep(exclusionOrientationStep);
