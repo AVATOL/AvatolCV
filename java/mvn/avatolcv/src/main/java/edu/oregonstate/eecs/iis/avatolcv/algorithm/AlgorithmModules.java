@@ -7,7 +7,6 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.Platform;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms.LaunchThrough;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms.ScoringScope;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms.ScoringSessionFocus;
 
@@ -124,10 +123,10 @@ public class AlgorithmModules {
 	        	ScoringAlgorithms.ScoringSessionFocus focus = getFocusFromProperties(name, ap);
 	        	ScoringAlgorithms.ScoringScope scope = getScopeFromProperties(name, ap);
 	        	String algLaunchString = getLaunchStringFromProperties(name, ap);
-	        	ScoringAlgorithms.LaunchThrough launchThrough = getLaunchThroughValueFromProperties(name, ap);
-	        	this.scoringAlgorithms.addAlgorithm(name, focus, scope, launchThrough, algLaunchString, true, ap.getParentDir());
+	        	this.scoringAlgorithms.addAlgorithm(name, focus, scope, algLaunchString, true, ap.getParentDir());
 	      }
 	}
+	/*
 	private ScoringAlgorithms.LaunchThrough getLaunchThroughValueFromProperties(String name, AlgorithmProperties ap) throws AvatolCVException {
 		ScoringAlgorithms.LaunchThrough launchThrough = null;
 		if (ap.getLaunchFileLanguage().equals(AlgorithmProperties.PROPERTY_LAUNCH_FILE_LANGUAGE_MATLAB)){
@@ -138,6 +137,7 @@ public class AlgorithmModules {
     	}
 		return launchThrough;
 	}
+	*/
 	private String getLaunchStringFromProperties(String name, AlgorithmProperties ap) throws AvatolCVException {
 		String algLaunchString = null;
 		try {

@@ -21,7 +21,7 @@ public class AlgorithmProperties {
 	public static final String PROPERTY_SCORING_FOCUS = "scoringFocus";
 	public static final String PROPERTY_SCORING_SCOPE = "scoringScope";
 
-	public static final String PROPERTY_LAUNCH_FILE_LANGUAGE = "launchFileLanguage";
+	//public static final String PROPERTY_LAUNCH_FILE_LANGUAGE = "launchFileLanguage";
 	public static final String PROPERTY_LAUNCH_FILE_LANGUAGE_MATLAB = "matlab";
 	public static final String PROPERTY_LAUNCH_FILE_LANGUAGE_OTHER = "other";
 	public static final String PROPERTY_PARENT_DIR = "parentDir";
@@ -58,7 +58,6 @@ public class AlgorithmProperties {
 			reader.close();
 			// try to access the key properties to make sure they are present.
 			String launchFile = getLaunchFile();
-			String launchFileLanguage = getLaunchFileLanguage();
 		}
 		catch(IOException ioe){
 			throw new AvatolCVException("Could not read AlgorithmProperties file " + path);
@@ -94,16 +93,7 @@ public class AlgorithmProperties {
 		}
 		return value;
 	}
-	public String getLaunchFileLanguage() throws AvatolCVException {
-		String value = propsHash.get(PROPERTY_LAUNCH_FILE_LANGUAGE);
-		if (null == value){
-			throw new AvatolCVException("no value for property " + PROPERTY_LAUNCH_FILE_LANGUAGE + " in algorithm properties file " + this.path);
-		}
-		if ((!value.equals(PROPERTY_LAUNCH_FILE_LANGUAGE_MATLAB)) && (!value.equals(PROPERTY_LAUNCH_FILE_LANGUAGE_OTHER))){
-			throw new AvatolCVException("value for property " + PROPERTY_LAUNCH_FILE_LANGUAGE + " must be 'matlab' or 'other' in algorithm properties file " + this.path);
-		}
-		return value; 
-	}
+	
 	public String getLaunchFile() throws AvatolCVException {
 		String value = propsHash.get(PROPERTY_LAUNCH_FILE);
 		if (null == value){

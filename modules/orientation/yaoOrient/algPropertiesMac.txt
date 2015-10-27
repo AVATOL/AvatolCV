@@ -1,2 +1,1 @@
 launchWith=orientationRunner.sh
-launchFileLanguage=other

@@ -24,10 +24,6 @@ public class ScoringAlgorithms {
         MULTIPLE_ITEM
     }
     // 
-    public enum LaunchThrough {
-    	MATLAB,
-    	OTHER
-    }
     private ScoringAlgorithms.ScoringSessionFocus sessionFocus = null;
     private String chosenScoringAlgorithm = null;
     private Hashtable<ScoringSessionFocus, String> radioButtonTextForFocusHash = new Hashtable<ScoringSessionFocus, String>();
@@ -69,7 +65,7 @@ public class ScoringAlgorithms {
     public String getChosenAlgorithmName(){
         return this.chosenScoringAlgorithm;
     }
-    public void addAlgorithm(String name, ScoringSessionFocus scoringFocus, ScoringScope scoringScope, LaunchThrough launchThrough, String commandLineInvocationName, boolean isEnabled, String parentDir) throws AvatolCVException {
+    public void addAlgorithm(String name, ScoringSessionFocus scoringFocus, ScoringScope scoringScope, String commandLineInvocationName, boolean isEnabled, String parentDir) throws AvatolCVException {
         ScoringSessionFocus priorSetFocus = scoringFocusForName.get(name);
         if (null != priorSetFocus){
             throw new AvatolCVException("Algorithms must have unique names - this occurs twice: " + name);
