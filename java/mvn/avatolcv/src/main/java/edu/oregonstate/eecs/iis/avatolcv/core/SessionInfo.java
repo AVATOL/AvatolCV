@@ -83,6 +83,9 @@ public class SessionInfo{
         AvatolCVFileSystem.setSessionID(this.sessionID);
 	}
 	
+	public AlgorithmModules getAlgoritmModules(){
+		return this.algorithmModules;
+	}
 	public void setDataSource(DataSource dataSource){
 	    this.dataSource = dataSource;
 	    AvatolCVFileSystem.setDatasourceName(dataSource.getName());

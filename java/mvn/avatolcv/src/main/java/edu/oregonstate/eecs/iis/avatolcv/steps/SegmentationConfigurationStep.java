@@ -1,12 +1,16 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 
 public class SegmentationConfigurationStep extends Answerable implements Step {
     private SessionInfo sessionInfo = null;
     public SegmentationConfigurationStep(SessionInfo sessionInfo){
         this.sessionInfo = sessionInfo;
+    }
+    public AlgorithmModules getAlgorithmModules(){
+    	return this.sessionInfo.getAlgoritmModules();
     }
     @Override
     public void init() throws AvatolCVException {

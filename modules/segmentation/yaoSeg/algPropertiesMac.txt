@@ -1,1 +1,3 @@
 launchWith=segmentationRunner.sh
+algName=simpleLeafSegmenter
+algType=segmentation

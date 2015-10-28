@@ -1,4 +1,5 @@
 launchWith=batSkullScore.bat
-launchFileLanguage=other
+algName=dpmPresenceAbsenceScoring
+algType=scoring
 scoringFocus=SPECIMEN_PART_PRESENCE_ABSENCE
 scoringScope=MULTIPLE_ITEM

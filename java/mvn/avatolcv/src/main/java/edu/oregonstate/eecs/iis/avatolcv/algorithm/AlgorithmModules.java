@@ -90,12 +90,12 @@ public class AlgorithmModules {
 				// this is an AlgorithmProperties file
 				String configFilePath = f.getAbsolutePath();				
 				AlgorithmProperties algProps = new AlgorithmProperties(configFilePath);
-				String[] nameParts = name.split("\\.");
-				String nameRoot = nameParts[0];
-				String[] nameRootParts = nameRoot.split("_");
-				String algName = nameRootParts[1];
-				algProps.setAlgName(algName);
-
+				//String[] nameParts = name.split("\\.");
+				//String nameRoot = nameParts[0];
+				//String[] nameRootParts = nameRoot.split("_");
+				//String algName = nameRootParts[1];
+				//algProps.setAlgName(algName);
+				String algName = algProps.getAlgName();
 				String algTypeString = algProps.getAlgType();
 				if (algTypeString.equals(AlgorithmProperties.PROPERTY_ALG_TYPE_VALUE_ORIENTATION)){
 					propsForNameHashOrientation.put(algName, algProps);
@@ -203,7 +203,7 @@ public class AlgorithmModules {
 		return result;
 	}
 	private String loadAlg(File algDir, AlgType algType, String propsFilename, Hashtable<String, AlgorithmProperties> propsForNameHash) throws AvatolCVException {
-		String algName = algDir.getName();
+		
 		String configFilePath = null;
 		configFilePath = algDir.getAbsolutePath() + FILESEP + propsFilename;
 		
@@ -211,12 +211,12 @@ public class AlgorithmModules {
 		File propsFile = new File(configFilePath);
 		if (propsFile.exists()){
 			AlgorithmProperties algProps = new AlgorithmProperties(propsFile.getAbsolutePath());
+			String algName = algProps.getAlgName();
 			propsForNameHash.put(algName, algProps);
-			algProps.setAlgName(algName);
 			return algName;
 		}
 		else {
-			System.out.println("no properties file exists for algorithm " + algName + " of type " + algType);
+			System.out.println("no properties file exists in algorithm dir " + algDir.getName() + " of type " + algType);
 			return null;
 		}
 		
@@ -231,5 +231,8 @@ public class AlgorithmModules {
 				}
 			}
 		}
+	}
+	public List<String> getSegmentationAlgNames() {
+		return this.algNamesSegmentation;
 	}
 }

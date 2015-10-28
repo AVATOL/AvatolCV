@@ -58,6 +58,7 @@ public class AlgorithmProperties {
 			reader.close();
 			// try to access the key properties to make sure they are present.
 			String launchFile = getLaunchFile();
+			String algName = getAlgName();
 		}
 		catch(IOException ioe){
 			throw new AvatolCVException("Could not read AlgorithmProperties file " + path);

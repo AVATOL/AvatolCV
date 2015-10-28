@@ -12,12 +12,12 @@
          <children>
             <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
             <Label text="Select data source" />
-            <RadioButton fx:id="radioMorphobank" mnemonicParsing="false" selected="true" text="Morphobank">
+            <RadioButton fx:id="radioMorphobank" mnemonicParsing="false" text="Morphobank">
                <toggleGroup>
                   <ToggleGroup fx:id="dataSourceToggle" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="radioBisque" mnemonicParsing="false" text="Bisque" toggleGroup="$dataSourceToggle" />
+            <RadioButton fx:id="radioBisque" mnemonicParsing="false" selected="true" text="Bisque" toggleGroup="$dataSourceToggle" />
             <RadioButton fx:id="radioFileSystem" disable="true" mnemonicParsing="false" text="local file system" toggleGroup="$dataSourceToggle" />
             <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
          </children>
