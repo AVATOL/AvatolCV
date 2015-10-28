@@ -1,0 +1,3 @@
+launchWith=segmentationRunner.bat
+algName=simpleLeafSegmenter
+algType=segmentation
