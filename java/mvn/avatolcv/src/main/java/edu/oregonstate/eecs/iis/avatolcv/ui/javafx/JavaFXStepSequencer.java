@@ -34,6 +34,7 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.DatasetChoiceStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ExclusionQualityStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ImagePullStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.LoginStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationConfigurationStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SummaryFilterStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernStep;
@@ -123,8 +124,18 @@ public class JavaFXStepSequencer  {
         controllerForStep.put(exclusionQualityStep, qualityStepController);
         addLabelForStep(exclusionQualityStep,"Image Quality");
         imagePullStep.setNextAnswerableInSeries(exclusionQualityStep);
-        //Step exclusionStep = new MBExclusionPropertyStep(null, sessionData);
-        //ss.appendStep(exclusionStep);
+
+       
+        
+        SegmentationConfigurationStep segConfigStep = new SegmentationConfigurationStep(sessionInfo);
+        ss.appendStep(segConfigStep);
+        SegmentationConfigurationStepController segConfigStepController = new SegmentationConfigurationStepController(segConfigStep, "SegmentationConfigurationStep.fxml");
+        controllerForStep.put(segConfigStep, segConfigStepController);
+        addLabelForStep(segConfigStep,"Configure Segmentation");
+        scoringConcernStep.setNextAnswerableInSeries(segConfigStep);
+        
+        
+        
         
         /*
         //Step charQuestionsStep = new CharQuestionsStep(null, sessionData);
@@ -137,22 +148,10 @@ public class JavaFXStepSequencer  {
         controllerForStep.put(exclusionOrientationStep, orientationStepController);
         addLabelForStep(exclusionOrientationStep,"Orientation");
    */
-  /*      
-        ScoringAlgorithms scoringAlgorithms = new ScoringAlgorithms();
-        MBCharQuestionsStep charQuestionsStep = new MBCharQuestionsStep(null, scoringAlgorithms, sessionData);
-        ss.appendStep(charQuestionsStep);
-        MBCharQuestionsController charQuestionsStepController = new MBCharQuestionsController(charQuestionsStep, "MBCharQuestionsStep.fxml");
-        controllerForStep.put(charQuestionsStep, charQuestionsStepController);
-        Label loginLabel = new Label("Login");
-        stepList.getChildren().add(loginLabel);
-        */
+ 
         
   /*      
-        MBTrainingDataPullStep trainingDataPullStep = new MBTrainingDataPullStep(null, client, sessionData);
-        ss.appendStep(trainingDataPullStep);
-        MBTrainingDataPullStepController trainingDataPullStepController = new MBTrainingDataPullStepController(this, trainingDataPullStep, "MBTrainingDataPullStep.fxml");
-        controllerForStep.put(trainingDataPullStep, trainingDataPullStepController);
-        addLabelForStep(trainingDataPullStep,"Pull Training Data");
+     
        
         MBTrainingExampleCheckStep scoringTrainingExampleCheckStep = new MBTrainingExampleCheckStep(null, sessionData, client);
         ss.appendStep(scoringTrainingExampleCheckStep);

@@ -32,11 +32,18 @@
 }
 
 .scroll-pane > .viewport {  
-   -fx-background-color: transparent;
+   	-fx-background-color: transparent;
 }
 
 .scroll-pane {  
-   -fx-background-color: transparent;
+   	-fx-background-color: transparent;
+}
+.text-area {
+	-fx-background-color: transparent;
+	-fx-text-box-border: transparent;
+}
+.text-area .content {
+    -fx-background-color: transparent, transparent, transparent, transparent;
 }
 .label {
 	-fx-font-size: 17px;
