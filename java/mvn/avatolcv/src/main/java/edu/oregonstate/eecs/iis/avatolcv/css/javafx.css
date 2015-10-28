@@ -41,9 +41,11 @@
 .text-area {
 	-fx-background-color: transparent;
 	-fx-text-box-border: transparent;
+	-fx-font-size: 14px;
 }
 .text-area .content {
     -fx-background-color: transparent, transparent, transparent, transparent;
+    
 }
 .label {
 	-fx-font-size: 17px;
