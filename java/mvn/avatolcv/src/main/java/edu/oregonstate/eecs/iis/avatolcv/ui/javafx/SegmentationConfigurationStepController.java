@@ -9,6 +9,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
@@ -17,6 +18,7 @@ import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJava
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationConfigurationStep;
 
 public class SegmentationConfigurationStepController implements StepController {
+    public RadioButton radioSegSkip = null;
 	public ChoiceBox<String> segAlgChoiceBox = null;
 	public TextArea segAlgNotes = null;
     private SegmentationConfigurationStep step = null;
@@ -50,10 +52,15 @@ public class SegmentationConfigurationStepController implements StepController {
             Collections.sort(segAlgNames);
             this.segAlgChoiceBox.getItems().addAll(segAlgNames);
             this.segAlgChoiceBox.setValue(this.segAlgChoiceBox.getItems().get(0));
-            String algDescription = algModules.getAlgDescription(this.segAlgChoiceBox.getValue(), AlgorithmModules.AlgType.SEGMENTATION);
-            this.segAlgNotes.setText(algDescription);
             this.segAlgChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new AlgChangeListener(this.segAlgChoiceBox, this.segAlgNotes, algModules));
-                
+            
+            if (radioSegSkip.isSelected()){
+                skipSegmentationSelected();
+            }
+            else {
+                useSegmentationSelected();
+            }
+            
             return content;
         }
         catch(IOException ioe){
@@ -78,6 +85,25 @@ public class SegmentationConfigurationStepController implements StepController {
             catch(AvatolCVException e){
                 AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem loading algorithm description ");
             }
+        }
+    }
+    public void skipSegmentationSelected(){
+        // disable the algChooser
+        segAlgChoiceBox.setDisable(true);
+        // clear the algDescription
+        this.segAlgNotes.setText("");
+    }
+    public void useSegmentationSelected(){
+        // enable the algChooser
+        segAlgChoiceBox.setDisable(false);
+        // show the alg description
+        try {
+            AlgorithmModules am = this.step.getAlgorithmModules();
+            String description = am.getAlgDescription(segAlgChoiceBox.getValue(), AlgorithmModules.AlgType.SEGMENTATION);
+            segAlgNotes.setText(description);
+        }
+        catch(AvatolCVException e){
+            AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem loading algorithm description ");
         }
     }
     @Override
