@@ -40,7 +40,7 @@ public class AvatolCVJavaFX extends Application {
     public RadioButton radioReviewResults;
     public RadioButton radioTutorial;
     public ChoiceBox<String> priorSessionSelector;
-    public static AvatolCVExceptionExpresser exceptionExpresser = new AvatolCVExceptionExpresserJavaFX();
+    //public static AvatolCVExceptionExpresser exceptionExpresser = new AvatolCVExceptionExpresserJavaFX();
     
     Stage mainWindow = null;
     private static final Logger logger = LogManager.getLogger(AvatolCVJavaFXMB.class);
@@ -83,7 +83,7 @@ public class AvatolCVJavaFX extends Application {
         catch(Exception e){
             System.out.println(e.getMessage());
             e.printStackTrace();
-            exceptionExpresser.showException(e, "Problem during launch");
+            AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem during launch");
         }
     }
     
@@ -102,7 +102,7 @@ public class AvatolCVJavaFX extends Application {
         try {
            
             if (radioNewSession.isSelected()){
-                JavaFXStepSequencer session = new JavaFXStepSequencer(exceptionExpresser, this);
+                JavaFXStepSequencer session = new JavaFXStepSequencer(this);
                 session.init(rootDir, mainWindow);
                 
             }
@@ -110,7 +110,7 @@ public class AvatolCVJavaFX extends Application {
                 
             }
             else if (radioReviewResults.isSelected()){
-                ResultsReview rr = new ResultsReview(exceptionExpresser);
+                ResultsReview rr = new ResultsReview();
                 String runChoice = (String)priorSessionSelector.getValue();
                 rr.init(rootDir, this, mainWindow, runChoice);
             }
@@ -119,7 +119,7 @@ public class AvatolCVJavaFX extends Application {
             }    
         } 
         catch(AvatolCVException e){
-            exceptionExpresser.showException(e, "Problem initializing session");
+            AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem initializing session");
         }
     }
     public static String findRoot(String currentDir) throws AvatolCVException {

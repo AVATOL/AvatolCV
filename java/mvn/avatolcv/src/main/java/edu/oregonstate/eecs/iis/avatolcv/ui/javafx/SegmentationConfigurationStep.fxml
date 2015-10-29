@@ -8,10 +8,10 @@
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Region prefWidth="100.0" HBox.hgrow="NEVER" />
-      <VBox spacing="10.0" HBox.hgrow="NEVER">
+      <VBox spacing="20.0" HBox.hgrow="NEVER">
          <children>
-            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-            <TextArea editable="false" style="-fx-background-color: transparent; : ;" stylesheets="@../../css/javafx.css" text="Segmentation can help isolate the specimen of interest when the image contains background clutter or other objects.  " wrapText="true" VBox.vgrow="NEVER" />
+            <Region VBox.vgrow="ALWAYS" />
+            <TextArea editable="false" prefHeight="50.0" style="-fx-background-color: transparent; : ;" stylesheets="@../../css/javafx.css" text="Segmentation can help isolate the specimen of interest when the image contains background clutter or other objects.  " wrapText="true" VBox.vgrow="NEVER" />
             <RadioButton fx:id="radioSegNo" mnemonicParsing="false" selected="true" text="skip segmentation">
                <toggleGroup>
                   <ToggleGroup fx:id="dataSourceToggle" />
@@ -34,12 +34,12 @@
                   <ChoiceBox fx:id="segAlgChoiceBox" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" />
                </children>
             </GridPane>
-            <TextArea fx:id="segAlgNotes" prefHeight="200.0" prefWidth="200.0">
+            <TextArea fx:id="segAlgNotes" editable="false" prefHeight="100.0" wrapText="true" VBox.vgrow="NEVER">
                <VBox.margin>
-                  <Insets top="10.0" />
+                  <Insets />
                </VBox.margin>
             </TextArea>
-            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+            <Region VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
       <Region prefWidth="100.0" HBox.hgrow="ALWAYS" />

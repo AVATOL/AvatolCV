@@ -61,6 +61,24 @@ public class AlgorithmModules {
 		this.scoringAlgorithms = new ScoringAlgorithms();
 		configureScoringAlgorithms();
 	}
+	public String getAlgDescription(String name, AlgType type) throws AvatolCVException {
+	    AlgorithmProperties props = null;
+	    if (type == AlgType.SEGMENTATION){
+	        props = propsForNameHashSegmentation.get(name);
+	    }
+	    else if (type == AlgType.ORIENTATION){
+	        props = propsForNameHashOrientation.get(name);
+	    }
+	    else {
+	        // must be scoring
+	        props = propsForNameHashScoring.get(name);
+	    }
+	    if (null == props){
+	        throw new AvatolCVException("no properties found for alg name " + name);
+	    }
+	    String description = props.getAlgDescription();
+	    return description;
+	}
 	public AlgorithmProperties getAlgPropertiesForAlgName(String algName, AlgType algType){
 		AlgorithmProperties props = null;
 		if (algType == AlgType.SEGMENTATION){

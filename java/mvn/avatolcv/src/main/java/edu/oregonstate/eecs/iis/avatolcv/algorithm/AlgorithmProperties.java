@@ -32,6 +32,7 @@ public class AlgorithmProperties {
 	public static final String PROPERTY_ALG_TYPE_VALUE_ORIENTATION = "orientation";
 	public static final String PROPERTY_ALG_TYPE_VALUE_SCORING = "scoring";
 	
+	public static final String PROPERTY_ALG_DESCRIPTION = "description";
 	
 	private Hashtable<String, String> propsHash = new Hashtable<String,String>();
 	private String path = null;
@@ -63,6 +64,9 @@ public class AlgorithmProperties {
 		catch(IOException ioe){
 			throw new AvatolCVException("Could not read AlgorithmProperties file " + path);
 		}
+	}
+	public String getAlgDescription() throws AvatolCVException {
+	    return getProperty(PROPERTY_ALG_DESCRIPTION);
 	}
 	public String getAlgType() throws AvatolCVException  {
 		String value = propsHash.get(PROPERTY_ALG_TYPE);

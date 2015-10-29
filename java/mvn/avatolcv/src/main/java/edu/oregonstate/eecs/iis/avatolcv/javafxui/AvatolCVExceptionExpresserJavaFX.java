@@ -9,7 +9,7 @@ import edu.oregonstate.eecs.iis.obsolete.avatolcv.morphobank.javafx.MBImagePullS
 
 public class AvatolCVExceptionExpresserJavaFX implements
         AvatolCVExceptionExpresser {
-
+    public static AvatolCVExceptionExpresser instance = new AvatolCVExceptionExpresserJavaFX();
     @Override
     public void showException(AvatolCVException e, String header) {
         System.out.println(e.getMessage());

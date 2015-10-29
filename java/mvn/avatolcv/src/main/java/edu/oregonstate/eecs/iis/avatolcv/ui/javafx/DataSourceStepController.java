@@ -9,6 +9,7 @@ import javafx.scene.control.RadioButton;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
+import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DataSourceStep;
 
@@ -46,7 +47,7 @@ public class DataSourceStepController implements StepController {
             return true;
         }
         catch(AvatolCVException e){
-            AvatolCVJavaFX.exceptionExpresser.showException(e, "Problem activating data source");
+            AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem activating data source");
             return false;
         }
     }

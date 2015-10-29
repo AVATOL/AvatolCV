@@ -57,15 +57,13 @@ public class ResultsReview {
     public GridPane scoredImagesGridPane = null;
     public GridPane trainingImagesGridPane = null;
     public VBox trainingImagesVBox = null;
-    private AvatolCVExceptionExpresser exceptionExpresser = null;
     private Stage mainWindow = null;
     private Scene scene = null;
     private String runID = null;
     private RunSummary runSummary = null;
     private AvatolCVJavaFX mainScreen = null;
     private ResultsTable resultsTable = null;
-    public ResultsReview(AvatolCVExceptionExpresser exceptionExpresser){
-        this.exceptionExpresser = exceptionExpresser;
+    public ResultsReview(){
     }
     public void init(String avatolCVRootDir, AvatolCVJavaFX mainScreen, Stage mainWindow, String runID) throws AvatolCVException {
         this.mainWindow = mainWindow;

@@ -27,6 +27,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
+import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DataSourceStep;
@@ -50,12 +51,10 @@ public class JavaFXStepSequencer  {
     private StepSequence ss = null;
     private Stage mainWindow = null;
     private Scene scene = null;
-    private AvatolCVExceptionExpresser exceptionExpresser = null;
     private Hashtable<Step,Label> labelForStepHash = new Hashtable<Step,Label>();
     private AvatolCVJavaFX mainScreen = null;
     private Hashtable<Step,StepController> controllerForStep = new Hashtable<Step,StepController>();
-    public JavaFXStepSequencer(AvatolCVExceptionExpresser exceptionExpresser, AvatolCVJavaFX mainScreen){
-        this.exceptionExpresser = exceptionExpresser;
+    public JavaFXStepSequencer(AvatolCVJavaFX mainScreen){
         this.mainScreen = mainScreen;
         AvatolCVFileSystem.flushPriorSettings();
     }
@@ -64,7 +63,7 @@ public class JavaFXStepSequencer  {
     	initUI();
 
         //MorphobankWSClient client = new MorphobankWSClientImpl();
-        sessionInfo = new SessionInfo(exceptionExpresser);
+        sessionInfo = new SessionInfo();
         ss = new StepSequence();
         
         
@@ -161,9 +160,7 @@ public class JavaFXStepSequencer  {
    */
         activateCurrentStep();
     }
-    public AvatolCVExceptionExpresser getExceptionExpresser(){
-        return this.exceptionExpresser;
-    }
+    
     private void addLabelForStep(Step step, String text){
     	Label label = new Label(text);
     	label.getStyleClass().add("stepListLabel");
@@ -338,7 +335,7 @@ public class JavaFXStepSequencer  {
     			activateCurrentStep();
     		}
     		catch (AvatolCVException ace){
-    		    SessionInfo.exceptionExpresser.showException(ace, "An error was encountered while trying to move to next screen.");
+    		    AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "An error was encountered while trying to move to next screen.");
     		}
 		}
     }

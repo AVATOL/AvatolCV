@@ -15,6 +15,7 @@ import javafx.scene.control.ProgressBar;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
+import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ImagePullStep;
 
 public class ImagePullStepController implements StepController, ProgressPresenter{
@@ -162,7 +163,7 @@ public class ImagePullStepController implements StepController, ProgressPresente
         @Override
         protected Boolean call() throws Exception {
             try {
-                this.step.downloadImages(this.controller, processName, fxSession.getExceptionExpresser());
+                this.step.downloadImages(this.controller, processName);
                 NavButtonEnablerRunner runner = new NavButtonEnablerRunner();
                 Platform.runLater(runner);
                 return new Boolean(true);
@@ -173,7 +174,7 @@ public class ImagePullStepController implements StepController, ProgressPresente
                 logger.error(ace.getMessage());
                 System.out.println("AvatolCV error downloading images");
                 ace.printStackTrace();
-                fxSession.getExceptionExpresser().showException(ace, "problem downloading image");
+                AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem downloading image");
                 return new Boolean(false);
             }
         }

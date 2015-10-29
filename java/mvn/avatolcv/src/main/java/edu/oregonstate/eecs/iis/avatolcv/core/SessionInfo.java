@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Properties;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmProperties;
@@ -65,11 +64,9 @@ public class SessionInfo{
     private AlgorithmProperties scoringAlgorithmProperties = null;
     private ScoringAlgorithms.ScoringScope scoringScope = null;
     private ScoringAlgorithms.ScoringSessionFocus scoringFocus = null;
-    public static AvatolCVExceptionExpresser exceptionExpresser = null;
     private DataFilter dataFilter = null;
     
-	public SessionInfo(AvatolCVExceptionExpresser exceptionExpresser) throws AvatolCVException {
-        SessionInfo.exceptionExpresser = exceptionExpresser;
+	public SessionInfo() throws AvatolCVException {
 		File f = new File(AvatolCVFileSystem.getAvatolCVRootDir());
         if (!f.isDirectory()){
             throw new AvatolCVException("directory does not exist for being avatolCVRootDir " + AvatolCVFileSystem.getAvatolCVRootDir());

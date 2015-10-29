@@ -14,6 +14,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
+import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SessionFocusStep;
 
 public class SessionFocusStepController implements StepController {
@@ -57,7 +58,7 @@ public class SessionFocusStepController implements StepController {
             return true;
         }
         catch(AvatolCVException e){
-            SessionInfo.exceptionExpresser.showException(e, "Problem consuming info from Session Focus screen");
+            AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem consuming info from Session Focus screen");
             return false;
         }
         
