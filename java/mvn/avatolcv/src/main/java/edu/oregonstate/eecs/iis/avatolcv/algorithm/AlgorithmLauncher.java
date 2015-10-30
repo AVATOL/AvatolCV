@@ -43,11 +43,7 @@ public class AlgorithmLauncher {
 	}
 	public AlgorithmLauncher(String algPropertiesPath, String runConfigPath){
 	    try {
-	        String modulesRootPath = getModulesRootFromAlgPropsPath(algPropertiesPath);
-	        AlgorithmModules modules = new AlgorithmModules(modulesRootPath);
             AlgorithmProperties algorithmProperties = new AlgorithmProperties(algPropertiesPath);
-            File f = new File(algPropertiesPath);
-            
             String launchFile = algorithmProperties.getLaunchFile();
             String algDir = algorithmProperties.getParentDir();
             String commandLine = "";
@@ -72,6 +68,7 @@ public class AlgorithmLauncher {
 	    System.out.println("usage:" + NL);
         System.out.println("java -jar algLauncher.jar <algPropertiesPath> <runConfigPath>" + NL); 
 	}
+	/*
 	public static String getModulesRootFromAlgPropsPath(String algPropertiesPath) throws AvatolCVException {
 	    File f = new File(algPropertiesPath);
 	    File parentFile = f.getParentFile();
@@ -83,4 +80,5 @@ public class AlgorithmLauncher {
 	    }
 	    return parentFile.getAbsolutePath();
 	}
+	*/
 }
