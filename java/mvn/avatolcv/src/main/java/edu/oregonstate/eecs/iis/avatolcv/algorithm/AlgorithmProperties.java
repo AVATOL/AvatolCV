@@ -40,7 +40,7 @@ public class AlgorithmProperties {
 		this.path = path;
 		File f = new File(path);
 		if (!f.exists()){
-			throw new AvatolCVException("AlgorithmProperties given nonexistent path : " + path);
+			throw new AvatolCVException("AlgorithmProperties file does not exist : " + path);
 		}
 		String parentPath = f.getParent();
 		propsHash.put(PROPERTY_PARENT_DIR, parentPath);
@@ -60,8 +60,11 @@ public class AlgorithmProperties {
 			// try to access the key properties to make sure they are present.
 			String launchFile = getLaunchFile();
 			String algName = getAlgName();
+			String algDescription = getAlgDescription();
+			String algType = getAlgType();
 		}
 		catch(IOException ioe){
+		    System.out.println(ioe.getMessage());
 			throw new AvatolCVException("Could not read AlgorithmProperties file " + path);
 		}
 	}

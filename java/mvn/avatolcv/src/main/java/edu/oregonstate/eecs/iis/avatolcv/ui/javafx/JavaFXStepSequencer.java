@@ -36,6 +36,7 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.ExclusionQualityStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ImagePullStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.LoginStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationConfigurationStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SummaryFilterStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernStep;
@@ -124,15 +125,22 @@ public class JavaFXStepSequencer  {
         addLabelForStep(exclusionQualityStep,"Image Quality");
         imagePullStep.setNextAnswerableInSeries(exclusionQualityStep);
 
-       
+        //
+        // Segmentation
+        //
         
         SegmentationConfigurationStep segConfigStep = new SegmentationConfigurationStep(sessionInfo);
         ss.appendStep(segConfigStep);
         SegmentationConfigurationStepController segConfigStepController = new SegmentationConfigurationStepController(segConfigStep, "SegmentationConfigurationStep.fxml");
         controllerForStep.put(segConfigStep, segConfigStepController);
         addLabelForStep(segConfigStep,"Configure Segmentation");
-        scoringConcernStep.setNextAnswerableInSeries(segConfigStep);
+        exclusionQualityStep.setNextAnswerableInSeries(segConfigStep);
         
+        SegmentationRunStep segRunStep = new SegmentationRunStep(sessionInfo);
+        ss.appendStep(segRunStep);
+        SegmentationRunStepController segRunStepController = new SegmentationRunStepController(segRunStep, "SegmentationRunStep.fxml");
+        controllerForStep.put(segRunStep, segRunStepController);
+        addLabelForStep(segRunStep,"Run Segmentation");
         
         
         

@@ -12,7 +12,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationConfigurationStep;
@@ -47,12 +46,11 @@ public class SegmentationConfigurationStepController implements StepController {
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
-            AlgorithmModules algModules = this.step.getAlgorithmModules();
-            List<String> segAlgNames = algModules.getSegmentationAlgNames();
+            List<String> segAlgNames = this.step.getSegmentationAlgNames();
             Collections.sort(segAlgNames);
             this.segAlgChoiceBox.getItems().addAll(segAlgNames);
             this.segAlgChoiceBox.setValue(this.segAlgChoiceBox.getItems().get(0));
-            this.segAlgChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new AlgChangeListener(this.segAlgChoiceBox, this.segAlgNotes, algModules));
+            this.segAlgChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new AlgChangeListener(this.segAlgChoiceBox, this.segAlgNotes, this.step));
             
             if (radioSegSkip.isSelected()){
                 skipSegmentationSelected();
@@ -70,16 +68,16 @@ public class SegmentationConfigurationStepController implements StepController {
     public class AlgChangeListener implements ChangeListener<Number> {
         private ChoiceBox<String> cb;
         private TextArea ta;
-        private AlgorithmModules am;
-        public AlgChangeListener(ChoiceBox<String> cb, TextArea ta, AlgorithmModules am){
+        private SegmentationConfigurationStep step;
+        public AlgChangeListener(ChoiceBox<String> cb, TextArea ta, SegmentationConfigurationStep step){
             this.ta = ta;
             this.cb = cb;
-            this.am = am;
+            this.step = step;
         }
         @Override
         public void changed(ObservableValue ov, Number value, Number newValue) {
             try {
-                String description = am.getAlgDescription((String)cb.getItems().get((Integer)newValue), AlgorithmModules.AlgType.SEGMENTATION);
+                String description = step.getSegmentationAlgDescription((String)cb.getItems().get((Integer)newValue));
                 ta.setText(description);
             }
             catch(AvatolCVException e){
@@ -98,8 +96,7 @@ public class SegmentationConfigurationStepController implements StepController {
         segAlgChoiceBox.setDisable(false);
         // show the alg description
         try {
-            AlgorithmModules am = this.step.getAlgorithmModules();
-            String description = am.getAlgDescription(segAlgChoiceBox.getValue(), AlgorithmModules.AlgType.SEGMENTATION);
+            String description = this.step.getSegmentationAlgDescription(segAlgChoiceBox.getValue());
             segAlgNotes.setText(description);
         }
         catch(AvatolCVException e){
