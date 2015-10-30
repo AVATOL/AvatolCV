@@ -1,10 +1,11 @@
 package edu.oregonstate.eecs.iis.avatolcv.algorithm;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.Platform;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules.AlgType;
 
 /**
  * 
@@ -20,10 +21,12 @@ public class AlgorithmLauncher {
 	        usage();
 	        System.exit(0);
 	    }
-	    
-	    
 	    String algPropertiesPath = args[0];
-	    try {
+	    String runConfigFilePath = args[1];
+	    AlgorithmLauncher launcher = new AlgorithmLauncher(algPropertiesPath, runConfigFilePath);
+	}
+	public AlgorithmLauncher(String algPropertiesPath, String runConfigPath){
+		try {
 	        AlgorithmProperties algorithmProperties = new AlgorithmProperties(algPropertiesPath);
 	    }
 	    catch(AvatolCVException ex){
@@ -31,36 +34,47 @@ public class AlgorithmLauncher {
 	        System.out.println("problem : " + algPropertiesPath + " is not a valid algProperties file"+ NL);
 	        System.exit(0);
 	    }
-	    String runConfigFilePath = args[1];
-	    File f = new File(runConfigFilePath);
+		File f = new File(runConfigPath);
 	    if (!f.exists()){
-	        System.out.println("problem : " + runConfigFilePath + " does not exist"+ NL);
+	        System.out.println("problem : " + runConfigPath + " does not exist"+ NL);
             System.exit(0);
 	    }
-	    
-	    AlgorithmLauncher launcher = new AlgorithmLauncher(algPropertiesPath, runConfigFilePath);
-		
-	}
-	public AlgorithmLauncher(String algPropertiesPath, String runConfigPath){
 	    try {
             AlgorithmProperties algorithmProperties = new AlgorithmProperties(algPropertiesPath);
             String launchFile = algorithmProperties.getLaunchFile();
             String algDir = algorithmProperties.getParentDir();
-            String commandLine = "";
+            String launchFilePath = algDir + FILESEP + launchFile;
+            /*
+             * if (Platform.isWindows()){
+    	 fullCommandLine = "\"cd " + this.dirToRunIn + "\", " + " \"&\", " + commandLine ;
+     }
+     else {
+    	 fullCommandLine = "cd " + this.dirToRunIn + ";" + commandLine;
+     }
+             */
+            List<String> commands = new ArrayList<String>();
             if (Platform.isWindows()){
-                commandLine = launchFile + " " + runConfigPath;
+            	commands.add("cmd.exe");
+            	commands.add("/C");
+            	//commands.add("cd " + algDir);
+            	//commands.add("&");
+            	commands.add(launchFilePath + " " + runConfigPath);
             }
             else {
-                commandLine = "./" + launchFile + " " + runConfigPath;
+            	commands.add("/bin/bash");
+            	commands.add("-c");
+            	commands.add("cd " + algDir);
+            	commands.add(" ; ");
+            	commands.add("./" + launchFile + " " + runConfigPath);
             }
             
             CommandLineInvoker invoker = new CommandLineInvoker(algDir);
             String stdoutPath = algDir + FILESEP + "stdoutLog.txt";
-            invoker.runCommandLine(commandLine, stdoutPath);
+            invoker.runCommandLine(commands, stdoutPath);
 	    }
 	    catch(AvatolCVException e){
 	        e.printStackTrace();
-            System.out.println(e.getMessage());
+            System.out.println(NL + NL + e.getMessage());
 	    }
 		
 	}

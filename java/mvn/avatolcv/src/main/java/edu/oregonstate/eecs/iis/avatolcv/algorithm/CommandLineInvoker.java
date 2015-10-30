@@ -5,14 +5,18 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import edu.oregonstate.eecs.iis.avatolcv.Platform;
 
 /**
  * This will launch a process to run a shell command.  This is a 
  * copy of OsuCommandLineRunner from the ADAMS project, but without logging
  */
 public class CommandLineInvoker {
+	private static final String NL = System.getProperty("line.separator");
 	private String dirToRunIn = null;
     public CommandLineInvoker(String dirToRunIn){
     	this.dirToRunIn = dirToRunIn;
@@ -28,15 +32,25 @@ public class CommandLineInvoker {
          
     }
     
-    public boolean runCommandLine(String commandLine, String stdoutPath){
+    public boolean runCommandLine(List<String> commands, String stdoutPath){
        // ddh preOperation();
      boolean result = false;
-     System.out.println("Execute Command: " + commandLine);
-     String fullCommandLine = "cd " + this.dirToRunIn + ";" + commandLine;
-     ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", fullCommandLine);
-     
+     System.out.println("Execute Command: " + commands);
+    
+     StringBuilder sb = new StringBuilder();
+     System.out.println("command array given as : " + NL);
+     for (String s : commands){
+    	 System.out.println("  " + s);
+    	 sb.append(s + " ");
+     }
+     System.out.println("...or, as a single string...");
+     System.out.println("" + sb);
+     ProcessBuilder builder = null;
+     builder = new ProcessBuilder(commands);
      Map<String, String> env = builder.environment();
-     printEnvironment(env);
+     //printEnvironment(env);
+     
+     
      // redirect the stderr to stdout
      builder.redirectErrorStream(true);
      try {
@@ -72,7 +86,7 @@ public class CommandLineInvoker {
          }
 
      } catch (Exception e) {
-         System.out.println("OsuCommandRunner tried to run : " + commandLine + ": " + e.getMessage());
+         System.out.println("OsuCommandRunner tried to run : " + sb.toString() + ": " + e.getMessage());
          e.printStackTrace();
          Throwable t = e.getCause();
          logNestedException(t);
