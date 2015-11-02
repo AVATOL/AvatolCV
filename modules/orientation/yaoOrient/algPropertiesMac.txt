@@ -1,3 +1,4 @@
 launchWith=orientationRunner.sh
 algName=simpleLeafOrienter
 algType=orientation
+description=Algorithm simpleLeafOrienter will align leaves so their stems lie along the horizontal plane.  Then it ensures that the apex and base are consistent in their position from image to image.  This algorithm is shipped with training data.
