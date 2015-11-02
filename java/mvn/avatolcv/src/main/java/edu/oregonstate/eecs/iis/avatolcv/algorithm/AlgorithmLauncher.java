@@ -63,9 +63,10 @@ public class AlgorithmLauncher {
             else {
             	commands.add("/bin/bash");
             	commands.add("-c");
-            	commands.add("cd " + algDir);
-            	commands.add(" ; ");
-            	commands.add("./" + launchFile + " " + runConfigPath);
+            	//commands.add("cd " + algDir);
+            	//commands.add(" ; ");
+            	//commands.add("./" + launchFile + " " + runConfigPath);
+            	commands.add(launchFilePath + " " + runConfigPath);
             }
             
             CommandLineInvoker invoker = new CommandLineInvoker(algDir);
