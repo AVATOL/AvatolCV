@@ -90,18 +90,23 @@ public class SegmentationConfigurationStepController implements StepController {
         segAlgChoiceBox.setDisable(true);
         // clear the algDescription
         this.segAlgNotes.setText("");
+        this.step.setIsAglorithmChosen(false);
+        this.step.setChosenAlgorithm(null);
     }
     public void useSegmentationSelected(){
         // enable the algChooser
         segAlgChoiceBox.setDisable(false);
         // show the alg description
         try {
+            this.step.setChosenAlgorithm(segAlgChoiceBox.getValue());
             String description = this.step.getSegmentationAlgDescription(segAlgChoiceBox.getValue());
             segAlgNotes.setText(description);
         }
         catch(AvatolCVException e){
             AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem loading algorithm description ");
         }
+
+        this.step.setIsAglorithmChosen(true);
     }
     @Override
     public boolean delayEnableNavButtons() {

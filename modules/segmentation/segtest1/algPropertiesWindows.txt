@@ -1,0 +1,4 @@
+launchWith=bogusSegmentationRunner.bat
+algName=bogusSegmenter
+algType=segmentation
+description=This is a dummy algorithm present just to help test the UI.

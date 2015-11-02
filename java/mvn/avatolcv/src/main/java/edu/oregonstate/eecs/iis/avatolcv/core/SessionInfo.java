@@ -65,6 +65,7 @@ public class SessionInfo{
     private ScoringAlgorithms.ScoringScope scoringScope = null;
     private ScoringAlgorithms.ScoringSessionFocus scoringFocus = null;
     private DataFilter dataFilter = null;
+    private String chosenSegmentationAlg = null;
     
 	public SessionInfo() throws AvatolCVException {
 		File f = new File(AvatolCVFileSystem.getAvatolCVRootDir());
@@ -125,6 +126,25 @@ public class SessionInfo{
     public ScoringAlgorithms.ScoringSessionFocus getScoringFocus(){
         return this.scoringFocus;
     }
+    /*
+     * SEGMENTATION
+     */
+    public void setChosenSegmentationAlgorithm(String algName){
+        this.chosenSegmentationAlg = algName;
+    }
+    public boolean isSegmentationAlgChosen(){
+        if (null == this.chosenSegmentationAlg){
+            return false;
+        }
+        return true;
+    }
+    public String getSegmentationAlg(){
+        return this.chosenSegmentationAlg;
+    }
+    
+    /*
+     * FILTER
+     */
     public DataFilter getDataFilter() throws AvatolCVException {
         this.dataFilter = new DataFilter(AvatolCVFileSystem.getSessionDir());
         String dir = AvatolCVFileSystem.getNormalizedImageInfoDir();

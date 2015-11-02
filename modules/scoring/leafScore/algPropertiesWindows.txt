@@ -7,3 +7,4 @@ scoringScope=SINGLE_ITEM
 inputRequired=alignOrig:testImagesFile
 # this next line will cause avatolCV to create an entry in the runConfigScoring file that will have the key of testImagesMaskFile, and the value will be a pathname to a file that contains pathnames of image files that contain the string "alignMask"
 inputRequired=alignMask:testImagesMaskFile
+description=Scores shape related characters of simple shapes such Monocot leaves.

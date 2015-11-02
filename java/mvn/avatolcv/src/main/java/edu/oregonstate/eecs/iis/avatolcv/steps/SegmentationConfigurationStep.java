@@ -8,6 +8,8 @@ import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 
 public class SegmentationConfigurationStep extends Answerable implements Step {
     private SessionInfo sessionInfo = null;
+    private boolean algChosen = false;
+    private String algName = null;
     public SegmentationConfigurationStep(SessionInfo sessionInfo){
         this.sessionInfo = sessionInfo;
     }
@@ -23,14 +25,19 @@ public class SegmentationConfigurationStep extends Answerable implements Step {
         String answer = am.getAlgDescription(segAlgName, AlgorithmModules.AlgType.SEGMENTATION);
         return answer;
     }
+    public void setIsAglorithmChosen(boolean isChosen){
+        this.algChosen = isChosen;
+    }
+    public void setChosenAlgorithm(String algName){
+        this.algName = algName;
+    }
     @Override
     public void init() throws AvatolCVException {
     }
 
     @Override
     public void consumeProvidedData() throws AvatolCVException {
-        // TODO Auto-generated method stub
-
+        this.sessionInfo.setChosenSegmentationAlgorithm(this.algName);
     }
 
     @Override

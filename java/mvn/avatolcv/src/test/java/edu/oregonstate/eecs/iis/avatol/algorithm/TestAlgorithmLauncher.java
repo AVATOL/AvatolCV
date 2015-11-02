@@ -7,7 +7,9 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class TestAlgorithmLauncher extends TestCase {
+    /*
     public void testGetModuleRoot(){
+
         
         if (Platform.isWindows()){
             try {
@@ -40,4 +42,5 @@ public class TestAlgorithmLauncher extends TestCase {
             }
         }
     }
+    */
 }
