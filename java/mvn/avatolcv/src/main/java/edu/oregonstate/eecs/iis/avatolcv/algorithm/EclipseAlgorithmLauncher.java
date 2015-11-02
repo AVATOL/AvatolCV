@@ -8,8 +8,10 @@ public class EclipseAlgorithmLauncher {
         String runConfigPath = "";
         String algPropertiesPath = "";
         if (Platform.isWindows()){
-            runConfigPath = "C:\\avatol\\git\\modules\\segmentation\\yaoSeg\\runConfig.txt";
-            algPropertiesPath = "C:\\avatol\\git\\modules\\segmentation\\yaoSeg\\algPropertiesWindows.txt";
+            //runConfigPath = "C:\\avatol\\git\\avatol_cv\\modules\\segmentation\\yaoSeg\\runConfig.txt";
+            //algPropertiesPath = "C:\\avatol\\git\\avatol_cv\\modules\\segmentation\\yaoSeg\\algPropertiesWindows.txt";
+            runConfigPath = "C:\\avatol\\git\\avatol_cv\\modules\\segmentation\\launchTest\\runConfig.txt";
+            algPropertiesPath = "C:\\avatol\\git\\avatol_cv\\modules\\segmentation\\launchTest\\algPropertiesWindows.txt";
         }
         else {
             runConfigPath = "/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/runConfig.txt";

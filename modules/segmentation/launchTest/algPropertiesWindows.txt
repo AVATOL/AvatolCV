@@ -1,0 +1,4 @@
+launchWith=launchTest.bat
+algName=launchTest
+algType=segmentation
+description=This is a dummy algorithm used to test AvatolCV's module system.
