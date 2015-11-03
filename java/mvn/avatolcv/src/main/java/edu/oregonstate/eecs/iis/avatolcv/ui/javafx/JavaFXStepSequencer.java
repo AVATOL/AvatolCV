@@ -138,7 +138,7 @@ public class JavaFXStepSequencer  {
         
         SegmentationRunStep segRunStep = new SegmentationRunStep(sessionInfo);
         ss.appendStep(segRunStep);
-        SegmentationRunStepController segRunStepController = new SegmentationRunStepController(segRunStep, "SegmentationRunStep.fxml");
+        SegmentationRunStepController segRunStepController = new SegmentationRunStepController(this, segRunStep, "SegmentationRunStep.fxml");
         controllerForStep.put(segRunStep, segRunStepController);
         addLabelForStep(segRunStep,"Run Segmentation");
         

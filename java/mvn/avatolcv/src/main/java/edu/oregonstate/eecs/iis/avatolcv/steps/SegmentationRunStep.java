@@ -9,7 +9,7 @@ public class SegmentationRunStep implements Step {
         this.sessionInfo = sessionInfo;
     }
     public String getSelectedSegmentationAlgorithm(){
-        return this.sessionInfo.getSelectedSegmentationAlgorithm();
+        return this.sessionInfo.getSegmentationAlg();
     }
     @Override
     public void init() throws AvatolCVException {

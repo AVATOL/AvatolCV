@@ -19,7 +19,6 @@ import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJava
 import edu.oregonstate.eecs.iis.avatolcv.steps.ImagePullStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ImagePullStepController.ImageDownloadTask;
-import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ImagePullStepController.NavButtonEnablerRunner;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.SegmentationConfigurationStepController.AlgChangeListener;
 
 public class SegmentationRunStepController implements StepController, ProgressPresenter {
@@ -28,9 +27,11 @@ public class SegmentationRunStepController implements StepController, ProgressPr
     private String fxmlDocName = null;
     public Label segmentationStatus = null;
     public Label segAlgName = null;
-    public SegmentationRunStepController(SegmentationRunStep step, String fxmlDocName){
+    private JavaFXStepSequencer fxSession = null;
+    public SegmentationRunStepController(JavaFXStepSequencer fxSession, SegmentationRunStep step, String fxmlDocName){
         this.step = step;
         this.fxmlDocName = fxmlDocName;
+        this.fxSession = fxSession;
     }
     @Override
     public boolean consumeUIData() {
@@ -95,6 +96,13 @@ public class SegmentationRunStepController implements StepController, ProgressPr
         // TODO Auto-generated method stub
         return false;
     }
+    public class NavButtonEnablerRunner implements Runnable{
+        @Override
+        public void run() {
+            fxSession.enableNavButtons();
+        }
+        
+    }
     public class RunSegmentationTask extends Task<Boolean> {
         private String processName;
         private SegmentationRunStep step;
@@ -109,13 +117,14 @@ public class SegmentationRunStepController implements StepController, ProgressPr
         @Override
         protected Boolean call() throws Exception {
             try {
-                this.step.downloadImages(this.controller, processName);
+                //this.step.runSegmentation(this.controller, processName);
                 NavButtonEnablerRunner runner = new NavButtonEnablerRunner();
                 Platform.runLater(runner);
+                
                 return new Boolean(true);
             }
-            catch(AvatolCVException ace){
-                
+            //catch(AvatolCVException ace){
+            catch(Exception ace){    
                 logger.error("AvatolCV error downloading images");
                 logger.error(ace.getMessage());
                 System.out.println("AvatolCV error downloading images");
@@ -135,6 +144,7 @@ public class SegmentationRunStepController implements StepController, ProgressPr
         // TODO Auto-generated method stub
         
     }
+    /*
     public class MessageUpdater implements Runnable {
         private String processName;
         private String message;
@@ -148,4 +158,5 @@ public class SegmentationRunStepController implements StepController, ProgressPr
                 imageFileDownloadMessage.setText(message);
             }
         }
+        */
 }
