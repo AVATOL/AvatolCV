@@ -55,7 +55,7 @@ public class AlgorithmModules {
 		String segmentationAlgPath = moduleRootDir + FILESEP + "segmentation";
 		String orientationAlgPath = moduleRootDir + FILESEP + "orientation";
 		String scoringAlgPath = moduleRootDir + FILESEP + "scoring";
-		String algsSetsPath = moduleRootDir + FILESEP + "algSets";
+		//String algsSetsPath = moduleRootDir + FILESEP + "algSets";
 		
 		String propertiesFileName = getPropertiesFilename();
 		File segDir = new File(segmentationAlgPath);
@@ -167,16 +167,7 @@ public class AlgorithmModules {
 		}
 		return result;
 	}
-	private String getPropertiesFilenamePrefix(){
-		String result = null;
-		if (Platform.isWindows()){
-			result = "algPropertiesWindows";
-		}
-		else {
-			result ="algPropertiesMac";
-		}
-		return result;
-	}
+	
 	private void loadAlg(File algDir, String propsFilename) throws AvatolCVException {
 		String configFilePath = null;
 		configFilePath = algDir.getAbsolutePath() + FILESEP + propsFilename;
@@ -201,7 +192,7 @@ public class AlgorithmModules {
 		    }
 		}
 		else {
-		    throw new AvatolCVException("no properties file exists in algorithm dir " + algDir.getName());
+		    System.out.println("no properties file exists in algorithm dir " + algDir.getName() + " for this platform.");
 		}
 		
 	}
@@ -227,7 +218,7 @@ public class AlgorithmModules {
 	private void loadAlgs(File parentDir, String propsFilename) throws AvatolCVException {
 		File[] algDirs = parentDir.listFiles();
 		for (File f : algDirs){
-			if (!(f.getName().equals(".") || f.getName().equals(".."))){
+			if (!(f.getName().equals(".") || f.getName().equals("..") || f.isFile())){
 				loadAlg(f, propsFilename);
 			}
 		}
