@@ -1,14 +1,23 @@
 package edu.oregonstate.eecs.iis.avatolcv.algorithm;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.Platform;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms.ScoringScope;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms.ScoringSessionFocus;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringScope;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringSessionFocus;
 
 /**
  * 
@@ -23,14 +32,21 @@ public class AlgorithmModules {
 		SCORING
 	}
 	private static final String FILESEP = System.getProperty("file.separator");
-	private Hashtable<String, AlgorithmProperties> propsForNameHashSegmentation = new Hashtable<String, AlgorithmProperties>();
-	private Hashtable<String, AlgorithmProperties> propsForNameHashOrientation = new Hashtable<String, AlgorithmProperties>();
-	private Hashtable<String, AlgorithmProperties> propsForNameHashScoring = new Hashtable<String, AlgorithmProperties>();
-	private List<String> algNamesSegmentation = new ArrayList<String>();
-	private List<String> algNamesOrientation = new ArrayList<String>();
-	private List<String> algNamesScoring = new ArrayList<String>();
-
-	private ScoringAlgorithms scoringAlgorithms = null;
+	//private Hashtable<String, Algorithm> propsForNameHashSegmentation = new Hashtable<String, Algorithm>();
+	//private Hashtable<String, Algorithm> propsForNameHashOrientation = new Hashtable<String, Algorithm>();
+	//private Hashtable<String, Algorithm> propsForNameHashScoring = new Hashtable<String, Algorithm>();
+	//private List<String> algNamesSegmentation = new ArrayList<String>();
+	//private List<String> algNamesOrientation = new ArrayList<String>();
+	//private List<String> algNamesScoring = new ArrayList<String>();
+	private List<Algorithm> segAlgs = new ArrayList<Algorithm>();
+    private List<Algorithm> orientAlgs = new ArrayList<Algorithm>();
+    private List<Algorithm> scoringAlgs = new ArrayList<Algorithm>();
+    public static AlgorithmModules instance = null;
+    
+    public static void init() throws AvatolCVException {
+        instance = new AlgorithmModules(AvatolCVFileSystem.getModulesDir());
+    }
+	//private ScoringAlgorithms scoringAlgorithms = null;
 	public AlgorithmModules(String moduleRootDir) throws AvatolCVException {
 		File moduleRootFile = new File(moduleRootDir);
 		if (!moduleRootFile.exists()){
@@ -44,55 +60,62 @@ public class AlgorithmModules {
 		String propertiesFileName = getPropertiesFilename();
 		File segDir = new File(segmentationAlgPath);
 		if (segDir.exists()){
-			loadAlgs(segDir, AlgType.SEGMENTATION,propertiesFileName, propsForNameHashSegmentation, algNamesSegmentation);
+			loadAlgs(segDir, propertiesFileName);
 		}
 		File orientDir = new File(orientationAlgPath);
 		if (orientDir.exists()){
-			loadAlgs(orientDir, AlgType.ORIENTATION,propertiesFileName, propsForNameHashOrientation, algNamesOrientation);
+			loadAlgs(orientDir,propertiesFileName);
 		}
 		File scoringDir = new File(scoringAlgPath);
 		if (scoringDir.exists()){
-			loadAlgs(scoringDir, AlgType.SCORING, propertiesFileName, propsForNameHashScoring, algNamesScoring);
+			loadAlgs(scoringDir, propertiesFileName);
 		}
+		/*
 		File algsSetsDir = new File(algsSetsPath);
 		if (algsSetsDir.exists()){
 			loadAlgSets(algsSetsDir);
 		}
-		this.scoringAlgorithms = new ScoringAlgorithms();
-		configureScoringAlgorithms();
+		*/
+	}
+	public List<String> getAlgNamesForScoringFocus(ScoringAlgorithm.ScoringSessionFocus focus) throws AvatolCVException {
+	    List<String> names = new ArrayList<String>();
+        for (Algorithm alg : scoringAlgs){
+            ScoringAlgorithm sa = (ScoringAlgorithm)alg;
+            if (sa.hasFocus(focus)){
+                names.add(alg.getAlgName());
+            }
+        }
+        Collections.sort(names);;
+        return names;
+    }
+	public Algorithm getAlgWithName(String name, List<Algorithm> algs, AlgType type) throws AvatolCVException {
+	    for (Algorithm alg : algs){
+	        if (alg.getAlgName().equals(name)){
+	            return alg;
+	        }
+	    }
+	    throw new AvatolCVException("no algorithm named " + name + " of type " + type + " found.");
 	}
 	public String getAlgDescription(String name, AlgType type) throws AvatolCVException {
-	    AlgorithmProperties props = null;
+	    Algorithm alg = null;
 	    if (type == AlgType.SEGMENTATION){
-	        props = propsForNameHashSegmentation.get(name);
+	        alg = getAlgWithName(name, segAlgs, AlgType.SEGMENTATION);
+	        
 	    }
 	    else if (type == AlgType.ORIENTATION){
-	        props = propsForNameHashOrientation.get(name);
+	        alg = getAlgWithName(name, orientAlgs, AlgType.ORIENTATION);
 	    }
 	    else {
 	        // must be scoring
-	        props = propsForNameHashScoring.get(name);
+	        alg = getAlgWithName(name, scoringAlgs, AlgType.SCORING);
 	    }
-	    if (null == props){
+	    if (null == alg){
 	        throw new AvatolCVException("no properties found for alg name " + name);
 	    }
-	    String description = props.getAlgDescription();
+	    String description = alg.getAlgDescription();
 	    return description;
 	}
-	public AlgorithmProperties getAlgPropertiesForAlgName(String algName, AlgType algType){
-		AlgorithmProperties props = null;
-		if (algType == AlgType.SEGMENTATION){
-			props = propsForNameHashSegmentation.get(algName);
-		}
-		else if (algType == AlgType.ORIENTATION){
-			props = propsForNameHashOrientation.get(algName);
-		}
-		else {
-			// algType == AlgType.SCORING
-			props = propsForNameHashScoring.get(algName);
-		}
-		return props;
-	}
+	/*
 	private void loadAlgSets(File parentDir) throws AvatolCVException {
 		File[] algSetDirs = parentDir.listFiles();
 		for (File f : algSetDirs){
@@ -106,8 +129,9 @@ public class AlgorithmModules {
 			String name = f.getName();
 			if (name.startsWith(prefixToMatch)){
 				// this is an AlgorithmProperties file
-				String configFilePath = f.getAbsolutePath();				
-				AlgorithmProperties algProps = new AlgorithmProperties(configFilePath);
+				String configFilePath = f.getAbsolutePath();
+				List<String> lines = loadProps(configFilePath);
+				Algorithm algProps = new Algorithm(lines,configFilePath);
 				//String[] nameParts = name.split("\\.");
 				//String nameRoot = nameParts[0];
 				//String[] nameRootParts = nameRoot.split("_");
@@ -115,11 +139,11 @@ public class AlgorithmModules {
 				//algProps.setAlgName(algName);
 				String algName = algProps.getAlgName();
 				String algTypeString = algProps.getAlgType();
-				if (algTypeString.equals(AlgorithmProperties.PROPERTY_ALG_TYPE_VALUE_ORIENTATION)){
+				if (algTypeString.equals(Algorithm.PROPERTY_ALG_TYPE_VALUE_ORIENTATION)){
 					propsForNameHashOrientation.put(algName, algProps);
 
 				}
-				else if (algTypeString.equals(AlgorithmProperties.PROPERTY_ALG_TYPE_VALUE_SCORING)){
+				else if (algTypeString.equals(Algorithm.PROPERTY_ALG_TYPE_VALUE_SCORING)){
 					propsForNameHashScoring.put(algName, algProps);
 					algNamesScoring.add(algName);
 				}
@@ -131,75 +155,8 @@ public class AlgorithmModules {
 			}
 		}
 	}
-	public ScoringAlgorithms getScoringAlgorithms(){
-		return this.scoringAlgorithms;
-	}
-	private void configureScoringAlgorithms() throws AvatolCVException {
-		 for (String name : algNamesScoring){
-			   	AlgorithmProperties ap = propsForNameHashScoring.get(name);
-	        	// presence of scope and focus strings
-	        	ScoringAlgorithms.ScoringSessionFocus focus = getFocusFromProperties(name, ap);
-	        	ScoringAlgorithms.ScoringScope scope = getScopeFromProperties(name, ap);
-	        	String algLaunchString = getLaunchStringFromProperties(name, ap);
-	        	this.scoringAlgorithms.addAlgorithm(name, focus, scope, algLaunchString, true, ap.getParentDir());
-	      }
-	}
-	/*
-	private ScoringAlgorithms.LaunchThrough getLaunchThroughValueFromProperties(String name, AlgorithmProperties ap) throws AvatolCVException {
-		ScoringAlgorithms.LaunchThrough launchThrough = null;
-		if (ap.getLaunchFileLanguage().equals(AlgorithmProperties.PROPERTY_LAUNCH_FILE_LANGUAGE_MATLAB)){
-    		launchThrough = ScoringAlgorithms.LaunchThrough.MATLAB;
-    	}
-    	else {
-    		launchThrough = ScoringAlgorithms.LaunchThrough.OTHER;
-    	}
-		return launchThrough;
-	}
+
 	*/
-	private String getLaunchStringFromProperties(String name, AlgorithmProperties ap) throws AvatolCVException {
-		String algLaunchString = null;
-		try {
-			algLaunchString = ap.getLaunchFile();
-		}
-		catch(Exception e){
-			throw new AvatolCVException("Scoring algorithm " + name + " needs " + AlgorithmProperties.PROPERTY_LAUNCH_FILE + " property defined as per README");
-		}
-		return algLaunchString;
-	}
-	private ScoringAlgorithms.ScoringScope getScopeFromProperties(String name, AlgorithmProperties ap) throws AvatolCVException {
-    	String scoringScopeString = null;
-    	try {
-    		scoringScopeString = ap.getProperty("scoringScope");
-    	}
-    	catch(Exception e){
-    		throw new AvatolCVException("Scoring algorithm " + name + " needs scoringScope property defined as per README");
-    	}
-    	ScoringAlgorithms.ScoringScope scope = null;
-    	try {
-    	    scope = ScoringAlgorithms.ScoringScope.valueOf(scoringScopeString);
-    	}
-    	catch(Exception e){
-    		throw new AvatolCVException("invalid scoringScope value for scoring algorithm " + name + ": " + scoringScopeString);
-    	}
-    	return scope;
-	}
-	private ScoringAlgorithms.ScoringSessionFocus getFocusFromProperties(String name, AlgorithmProperties ap) throws AvatolCVException {
-    	String scoringFocusString = null;
-    	try {
-    		scoringFocusString = ap.getProperty("scoringFocus");
-    	}
-    	catch(Exception e){
-    		throw new AvatolCVException("Scoring algorithm " + name + " needs scoringFocus property defined as per README");
-    	}
-    	ScoringAlgorithms.ScoringSessionFocus focus = null;
-    	try {
-    	    focus = ScoringAlgorithms.ScoringSessionFocus.valueOf(scoringFocusString);
-    	}
-    	catch(Exception e){
-    		throw new AvatolCVException("invalid scoringFocus value for scoring algorithm " + name + ": " + scoringFocusString);
-    	}
-    	return focus;
-	}
 	private String getPropertiesFilename(){
 		String result = null;
 		if (Platform.isWindows()){
@@ -220,37 +177,78 @@ public class AlgorithmModules {
 		}
 		return result;
 	}
-	private String loadAlg(File algDir, AlgType algType, String propsFilename, Hashtable<String, AlgorithmProperties> propsForNameHash) throws AvatolCVException {
-		
+	private void loadAlg(File algDir, String propsFilename) throws AvatolCVException {
 		String configFilePath = null;
 		configFilePath = algDir.getAbsolutePath() + FILESEP + propsFilename;
-		
-		
 		File propsFile = new File(configFilePath);
 		if (propsFile.exists()){
-			AlgorithmProperties algProps = new AlgorithmProperties(propsFile.getAbsolutePath());
-			String algName = algProps.getAlgName();
-			propsForNameHash.put(algName, algProps);
-			return algName;
+		    List<String> propStrings = loadProps(configFilePath);
+		    String algType = getAlgTypeFromProps(propStrings);
+		    if (null == algType){
+		        throw new AvatolCVException(configFilePath + " contains no line with key " + Algorithm.PROPERTY_ALG_TYPE);
+		    }
+		    if (algType.equals(Algorithm.PROPERTY_ALG_TYPE_VALUE_SCORING)){
+		        scoringAlgs.add(new ScoringAlgorithm(propStrings,configFilePath));
+		    }
+		    else if (algType.equals(Algorithm.PROPERTY_ALG_TYPE_VALUE_ORIENTATION)){
+		        orientAlgs.add(new OrientationAlgorithm(propStrings,configFilePath));
+		    }
+		    else if (algType.equals(Algorithm.PROPERTY_ALG_TYPE_VALUE_SEGMENTATION)){
+		        segAlgs.add(new SegmentationAlgorithm(propStrings,configFilePath));
+		    }
+		    else {
+		        throw new AvatolCVException(configFilePath + " contains unknown algorithm type " + algType);
+		    }
 		}
 		else {
-			System.out.println("no properties file exists in algorithm dir " + algDir.getName() + " of type " + algType);
-			return null;
+		    throw new AvatolCVException("no properties file exists in algorithm dir " + algDir.getName());
 		}
 		
 	}
-	private void loadAlgs(File parentDir, AlgType algType, String propsFilename, Hashtable<String, AlgorithmProperties> propsForNameHash, List<String> algNames) throws AvatolCVException {
+	public static String getAlgTypeFromProps(List<String> strings){
+	    for (String s : strings){
+	        if (s.startsWith(Algorithm.PROPERTY_ALG_TYPE)){
+	            String[] parts = s.split("=");
+	            String algType = parts[1];
+	            return algType;
+	        }
+	    }
+	    return null;
+	}
+	private List<String> loadProps(String path) throws AvatolCVException {
+	    try {
+	        List<String> lines = Files.readAllLines(Paths.get(path), Charset.defaultCharset());
+	        return lines;
+	    }
+	    catch(IOException ioe){
+	        throw new AvatolCVException("Problem loading algorithm properties file " + path + " : " + ioe.getMessage(), ioe);
+	    }
+	}
+	private void loadAlgs(File parentDir, String propsFilename) throws AvatolCVException {
 		File[] algDirs = parentDir.listFiles();
 		for (File f : algDirs){
 			if (!(f.getName().equals(".") || f.getName().equals(".."))){
-				String algName = loadAlg(f, algType, propsFilename, propsForNameHash);
-				if (null != algName){
-					algNames.add(algName);
-				}
+				loadAlg(f, propsFilename);
 			}
 		}
 	}
-	public List<String> getSegmentationAlgNames() {
-		return this.algNamesSegmentation;
+	public List<String> getSegmentationAlgNames()  throws AvatolCVException{
+	    return getNameList(segAlgs);
+	}
+	public List<String> getNameList(List<Algorithm> algs) throws AvatolCVException {
+	    List<String> names = new ArrayList<String>();
+	    for (Algorithm alg : algs){
+	        names.add(alg.getAlgName());
+	    }
+	    Collections.sort(names);
+	    return names;
+	}
+	public ScoringAlgorithm getScoringAlgorithm(String name) throws AvatolCVException {
+	    for (Algorithm alg : scoringAlgs){
+	        if (name.equals(alg.getAlgName())){
+	            return (ScoringAlgorithm)alg;
+	        }
+	    }
+	    throw new AvatolCVException("No scoring algorithm found for name " + name);
 	}
 }

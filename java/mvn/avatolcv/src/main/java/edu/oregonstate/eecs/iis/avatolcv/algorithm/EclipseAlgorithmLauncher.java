@@ -18,6 +18,7 @@ public class EclipseAlgorithmLauncher {
             algPropertiesPath = "/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/algPropertiesMac.txt";
         }
         AlgorithmLauncher launcher = new AlgorithmLauncher(algPropertiesPath, runConfigPath);
+        launcher.launch();
     }
 
 }

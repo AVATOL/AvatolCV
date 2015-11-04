@@ -1,33 +1,27 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms.ScoringSessionFocus;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringSessionFocus;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 
 public class SessionFocusStep  extends Answerable implements Step {
-    private ScoringAlgorithms scoringAlgorithms = null;
     private SessionInfo sessionInfo = null;
-    private ScoringSessionFocus scoringFocus = null;
     private String scoringAlgName = null;
     public SessionFocusStep(SessionInfo sessionInfo) throws AvatolCVException {
         this.sessionInfo = sessionInfo;
-    }
-    public ScoringAlgorithms getScoringAlgorithms(){
-        return this.sessionInfo.getScoringAlgorithms();
     }
     @Override
     public void init() throws AvatolCVException {
         // TODO Auto-generated method stub
 
     }
-    public void setScoringAlgInfo(ScoringAlgorithms.ScoringSessionFocus focus, String algName) throws AvatolCVException {
-        this.scoringFocus = focus;
+    public void setSelectedScoringAlgName(String algName) throws AvatolCVException {
         this.scoringAlgName = algName;
     }
     @Override
     public void consumeProvidedData() throws AvatolCVException {
-        this.sessionInfo.setScoringAlgInfo(scoringFocus, scoringAlgName);
+        this.sessionInfo.setSelectedScoringAlgName(this.scoringAlgName);
     }
     @Override
     public boolean hasFollowUpDataLoadPhase() {

@@ -10,7 +10,7 @@ import java.util.Properties;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter.Pair;
 import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
@@ -172,13 +172,13 @@ public class MorphobankDataSource implements DataSource {
         return result;
     }
     @Override
-    public List<ChoiceItem> getScoringConcernOptions(ScoringAlgorithms.ScoringScope scoringScope, ScoringAlgorithms.ScoringSessionFocus scoringFocus) throws AvatolCVException{
-        if (scoringScope == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
+    public List<ChoiceItem> getScoringConcernOptions(ScoringAlgorithm.ScoringScope scoringScope, ScoringAlgorithm.ScoringSessionFocus scoringFocus) throws AvatolCVException{
+        if (scoringScope == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM){
             // select all appropriate for case
-            if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE){
+            if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE){
                 return getPresenceAbsenceScoringConcernItems();
             }
-            else if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT){
+            else if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT){
                 return getShapeScoringConcernItems();
             }
             else {
@@ -193,28 +193,28 @@ public class MorphobankDataSource implements DataSource {
         }
     }
     @Override
-    public String getInstructionsForScoringConcernScreen(ScoringAlgorithms.ScoringScope scoringScope, ScoringAlgorithms.ScoringSessionFocus scoringFocus) {
-        if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
-            scoringScope == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
+    public String getInstructionsForScoringConcernScreen(ScoringAlgorithm.ScoringScope scoringScope, ScoringAlgorithm.ScoringSessionFocus scoringFocus) {
+        if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
+            scoringScope == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM){
             return "Place a check mark next to characters that refer to presence/absence of a part." +
                     "(AvatolCV has tried to deduce this from metadata.)";
         }
-        else if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
-                scoringScope == ScoringAlgorithms.ScoringScope.SINGLE_ITEM){
+        else if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
+                scoringScope == ScoringAlgorithm.ScoringScope.SINGLE_ITEM){
             return "Select the desired presence/absence character.";
         }
-        else if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
-                scoringScope == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM) {
+        else if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
+                scoringScope == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM) {
             return "Place a check mark next to characters that refer to shape aspect of a specimen.";
         }
 
-        else if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
-                scoringScope == ScoringAlgorithms.ScoringScope.SINGLE_ITEM) {
+        else if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
+                scoringScope == ScoringAlgorithm.ScoringScope.SINGLE_ITEM) {
             return "Select the desired shape aspect character.";
         }
 
-        else if (scoringFocus == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT &&
-                scoringScope == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM) {
+        else if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT &&
+                scoringScope == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM) {
             return "Place a check mark next to characters that refer to texture aspects of a specimen.";
         }
 

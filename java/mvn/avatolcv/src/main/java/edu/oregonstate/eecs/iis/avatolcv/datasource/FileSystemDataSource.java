@@ -4,9 +4,9 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms.ScoringScope;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms.ScoringSessionFocus;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringScope;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringSessionFocus;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;

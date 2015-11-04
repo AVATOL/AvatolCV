@@ -9,6 +9,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.JavaFXStepSequencer;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ResultsReview;
 import javafx.application.Application;
@@ -51,7 +52,15 @@ public class AvatolCVJavaFX extends Application {
             AvatolCVFileSystem.setRootDir(rootDir);
         }
         catch(AvatolCVException e){
-            startError = "Error running avatolCV - could not locate avatol_cv directory under installation area.";
+            startError = "Error running avatolCV - could not locate avatol_cv directory under installation area: " + e.getMessage();
+        }
+        if ("".equals(startError)){
+            try {
+                AlgorithmModules.init();
+            }
+            catch(AvatolCVException e){
+                startError = "Error running avatolCV - problem found initializing algorithm modules: " + e.getMessage();
+            }
         }
         launch(args);
     }

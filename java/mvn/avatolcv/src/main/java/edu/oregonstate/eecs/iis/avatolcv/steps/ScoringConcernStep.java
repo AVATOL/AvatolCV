@@ -4,8 +4,8 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms.ScoringScope;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringScope;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.ChoiceItem;
@@ -23,10 +23,6 @@ public class ScoringConcernStep  extends Answerable implements Step {
         return this.sessionInfo.getDataSource().getScoringConcernOptions(this.sessionInfo.getScoringScope(), this.sessionInfo.getScoringFocus());
     }
  
-    public ScoringAlgorithms getScoringAlgorithms(){
-        return this.sessionInfo.getScoringAlgorithms();
-    }
-   
     public ScoringScope getScoringScope(){
         return this.sessionInfo.getScoringScope();
     }
@@ -49,8 +45,8 @@ public class ScoringConcernStep  extends Answerable implements Step {
 
     @Override
     public void consumeProvidedData() throws AvatolCVException {
-        ScoringAlgorithms.ScoringScope scope = this.sessionInfo.getScoringScope();
-        if (scope == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
+        ScoringAlgorithm.ScoringScope scope = this.sessionInfo.getScoringScope();
+        if (scope == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM){
             sessionInfo.setScoringConcerns(chosenItems);
         }
         else {

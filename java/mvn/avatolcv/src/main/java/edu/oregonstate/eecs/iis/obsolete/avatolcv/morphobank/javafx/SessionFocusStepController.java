@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.morphobank.MBLoginStep;
@@ -60,15 +61,16 @@ public class SessionFocusStepController implements StepController {
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
-            ScoringAlgorithms sa = this.focusStep.getScoringAlgorithms();
+            //ScoringAlgorithms sa = this.focusStep.getScoringAlgorithms();
             
-            radioPresenceAbsence.setText(sa.getRadioButtonTextForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE));
-            radioShape.setText(          sa.getRadioButtonTextForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT));
-            radioTexture.setText(        sa.getRadioButtonTextForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT));
+            radioPresenceAbsence.setText(ScoringAlgorithm.getRadioButtonTextForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE));
+            radioShape.setText(          ScoringAlgorithm.getRadioButtonTextForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT));
+            radioTexture.setText(        ScoringAlgorithm.getRadioButtonTextForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT));
 
-            List<String> presenceAbsenceAlgNames = sa.getNamesForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE);
-            List<String> shapeAlgNames           = sa.getNamesForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT);
-            List<String> textureAlgNames         = sa.getNamesForScoringFocus(ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT);
+            List<String> presenceAbsenceAlgNames = ScoringAlgorithm.getAlgNamesForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE);
+            List<String> presenceAbsenceAlgNames = ScoringAlgorithm.getAlgNamesForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE);
+            List<String> shapeAlgNames           = ScoringAlgorithm.getAlgNamesForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT);
+            List<String> textureAlgNames         = ScoringAlgorithm.getAlgNamesForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT);
             ObservableList<String> paList        = FXCollections.observableList(presenceAbsenceAlgNames);
             ObservableList<String> shapeList     = FXCollections.observableList(shapeAlgNames);
             ObservableList<String> textureList   = FXCollections.observableList(textureAlgNames);

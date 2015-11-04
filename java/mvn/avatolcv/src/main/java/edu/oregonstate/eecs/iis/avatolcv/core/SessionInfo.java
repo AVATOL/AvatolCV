@@ -8,7 +8,8 @@ import java.util.Properties;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmProperties;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.Algorithm;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
@@ -54,16 +55,16 @@ public class SessionInfo{
     private String sessionsRootDir = null;
     private static final String NL = System.getProperty("line.separator");
     private static final String FILESEP = System.getProperty("file.separator");
-    private ScoringAlgorithms scoringAlgorithms = null;
     private String sessionID = null;
     private DataSource dataSource = null;
     private DatasetInfo chosenDataset = null;
     private List<ChoiceItem> chosenScoringConcerns = null;
     private ChoiceItem chosenScoringConcern = null;
     private AlgorithmModules algorithmModules = null;
-    private AlgorithmProperties scoringAlgorithmProperties = null;
-    private ScoringAlgorithms.ScoringScope scoringScope = null;
-    private ScoringAlgorithms.ScoringSessionFocus scoringFocus = null;
+    private Algorithm scoringAlgorithmProperties = null;
+    //private ScoringAlgorithms.ScoringScope scoringScope = null;
+    //private ScoringAlgorithms.ScoringSessionFocus scoringFocus = null;
+    private ScoringAlgorithm chosenScoringAlgorithm = null;
     private DataFilter dataFilter = null;
     private String chosenSegmentationAlg = null;
     
@@ -73,8 +74,7 @@ public class SessionInfo{
             throw new AvatolCVException("directory does not exist for being avatolCVRootDir " + AvatolCVFileSystem.getAvatolCVRootDir());
         }
         //File avatolCVRootParentFile = f.getParentFile();
-        this.algorithmModules = new AlgorithmModules(AvatolCVFileSystem.getModulesDir());
-        this.scoringAlgorithms = algorithmModules.getScoringAlgorithms();
+        this.algorithmModules = AlgorithmModules.instance;
        
         //this.sessionID = "" + System.currentTimeMillis() / 1000L;
         this.sessionID = AvatolCVFileSystem.createSessionID();
@@ -91,9 +91,7 @@ public class SessionInfo{
 	public DataSource getDataSource(){
 	    return this.dataSource;
 	}
-	public ScoringAlgorithms getScoringAlgorithms() {
-        return this.scoringAlgorithms;
-    }
+
 	public String getSessionsRootDir(){
 	    return this.sessionsRootDir;
 	}
@@ -112,19 +110,14 @@ public class SessionInfo{
 	    chosenScoringConcern = chosenItem;
 	    this.dataSource.setChosenScoringConcern(chosenItem);
 	}
-	public void setScoringAlgInfo(ScoringAlgorithms.ScoringSessionFocus focus, String algName) throws AvatolCVException {
-	    this.scoringAlgorithmProperties = this.algorithmModules.getAlgPropertiesForAlgName(algName, AlgorithmModules.AlgType.SCORING);
-	    if (null == this.scoringAlgorithmProperties){
-	        throw new AvatolCVException("problem loading algorithm properties for scoring algorithm : " + algName);
-	    }
-	    this.scoringScope = ScoringAlgorithms.getScopeForScopePropertiesValue(this.scoringAlgorithmProperties.getProperty(AlgorithmProperties.PROPERTY_SCORING_SCOPE));
-	    this.scoringFocus = focus;
+	public void setSelectedScoringAlgName(String algName) throws AvatolCVException {
+	    chosenScoringAlgorithm = this.algorithmModules.getScoringAlgorithm(algName);
 	}
-	public ScoringAlgorithms.ScoringScope getScoringScope(){
-	    return this.scoringScope;
+	public ScoringAlgorithm.ScoringScope getScoringScope(){
+	    return this.chosenScoringAlgorithm.getScoringScope();
 	}
-    public ScoringAlgorithms.ScoringSessionFocus getScoringFocus(){
-        return this.scoringFocus;
+    public ScoringAlgorithm.ScoringSessionFocus getScoringFocus(){
+        return this.chosenScoringAlgorithm.getScoringFocus();
     }
     /*
      * SEGMENTATION

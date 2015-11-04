@@ -23,7 +23,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
@@ -57,7 +57,7 @@ public class ScoringConcernStepController implements StepController {
     public boolean consumeUIData() {
         try {
         	Hashtable<String, String> answerHash = new Hashtable<String, String>();
-        	if (this.step.getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
+        	if (this.step.getScoringScope() == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM){
         		List<ChoiceItem> chosenItems = new ArrayList<ChoiceItem>();
         		for (ChoiceItem ci : this.allChoiceItems){
         			if (checkBoxForChoiceItemHash.get(ci).isSelected()){
@@ -186,12 +186,11 @@ public class ScoringConcernStepController implements StepController {
     @Override
     public Node getContentNode() throws AvatolCVException {
         System.out.println("trying to load" +  this.fxmlDocName);
-        ScoringAlgorithms sa = this.step.getScoringAlgorithms();
         this.allChoiceItems = this.step.getScoringConcernItems();
         if (this.allChoiceItems.size() == 0){
             throw new AvatolCVException("no valid ChoiceItems detected for scoring concern screen.");
         }
-        if (this.step.getScoringScope() == ScoringAlgorithms.ScoringScope.MULTIPLE_ITEM){
+        if (this.step.getScoringScope() == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM){
         	return getContentNodeForMultipleItem();
         }
         else {

@@ -16,7 +16,7 @@ public class SegmentationConfigurationStep extends Answerable implements Step {
     //public AlgorithmModules getAlgorithmModules(){
     //	return 
     //}
-    public List<String> getSegmentationAlgNames(){
+    public List<String> getSegmentationAlgNames() throws AvatolCVException {
         AlgorithmModules am = this.sessionInfo.getAlgoritmModules();
         return am.getSegmentationAlgNames();
     }
