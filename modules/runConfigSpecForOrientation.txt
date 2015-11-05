@@ -1,0 +1,51 @@
+At ORIENTATION step, I will pass one argument, which is the path to the runConfig_orientation.txt file
+
+runConfig_orientation.txt has these lines:
+    imagesToOrientDir,<points to where segmented files were put>   ---->> was   darwinOutputDir,<same as in xml file - points to where segmented files are put>
+    relaventImagesFile,<path to file that lists pathnames of images to orient>
+    orientationResultsDir,<path to dir to put orientation normalized images>
+    ___create document that specifies apexLocationConvention = left, so that if someone wants to 
+    outputFileSuffix=_oriented.jpg
+	
+relaventImagesFile will have entries that are the root names of images in the darwinOutputDir
+    00-5xayvrdPC3o5foKMpLbZ5H_imgXyz
+    03-uietIOuerto5foKMhUHYUh_imgAbc
+ 
+)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+At ORIENTATION step, I will pass one argument, which is the path to the runConfig_orientation.txt file
+
+runConfig_orientation.txt has these lines:
+    imagesToOrientDir,<points to where segmented files were put>   ---->> was   darwinOutputDir,<same as in xml file - points to where segmented files are put>
+    relaventImagesFile,<path to file that lists pathnames of images to orient>
+    orientationResultsDir,<path to dir to put orientation normalized images>
+    ___create document that specifies apexLocationConvention = left, so that if someone wants to 
+    outputFileSuffix=_oriented
+	
+relaventImagesFile will have entries that are the root names of images in the darwinOutputDir
+    00-5xayvrdPC3o5foKMpLbZ5H_imgXyz
+    03-uietIOuerto5foKMhUHYUh_imgAbc
+ 
+
+ 
+step 1 rotation
+(no other inputs - only the image list)
+result files of this step are  named like this:
+leaf1_rotatedMask.jpg
+leaf1_rotatedOrig.jpg
+
+
+step 2 orient
+over hundred images with training - maybe 20 minutes
+
+result files of this step are  named like this:
+leaf1<???>_Mask.jpg
+leaf1<???>.jpg      <--- this will be passed in
+
+csv file for annotation 
+each row represents leaf with its annotation
+
+pre-shipped label annotation file
+<somepath>/<someleaf>_rotatedMask.jpg, orientation-annotation (0 or 1)               // ground truth label for svm
+.
+.
+.

@@ -1,0 +1,67 @@
+At SCORING step, I will pass one argument, which is the path to the runConfig_scoring.txt file
+
+runConfig_scoring.txt has these lines, and others that can be ignored:
+    imagesToScoreDir, <path of images to score>  ---->>>  was   orientationResultsDir,<path to dir where orientation normalized images are>
+    trainingImagesFile,<path to training images file>  // file will be named trainingImages_scoring_<charId>_<charName>.txt
+    testingImagesFile,<path to testing images file>    // file will be named testingImages_scoring_<charId>_<charName>.txt
+    scoring_resultsFile,<pathname of file into which scoring algorithm will put results> // file will be named results_scoring_<charId>_<charName>.txt
+	___??? avatolCV shouldn't know about notion of apex.  How handle this ?   --->>>  apexLocationConvention,left
+    
+trainingImages_scoring_<charId>_<charName>.txt have entries that are the root names of images, followed by character state name
+    00-5xayvrdPC3o5foKMpLbZ5H_imgXyz,charStateName 
+    03-uietIOuerto5foKMhUHYUh_imgAbc,charStateName
+    
+testingImages_scoring_<charId>_<charName>.txt 
+    04-5xayvrdPC3o5foKMpLbZ5H_imgXyz
+    10-uietIOuerto5foKMhUHYUh_imgAbc
+    
+results_scoring_<charId>_<charName>.txt , to be created by SCORING step, has form identical to trainingImages_scoring_<charId>_<charName>.txt
+    04-5xayvrdPC3o5foKMpLbZ5H_imgXyz,charStateName 
+    10-uietIOuerto5foKMhUHYUh_imgAbc,charStateName   ___what about training/test discriminator???
+    
+    ===============================================================================================================
+    DATA PASSED TO ALGORITHM
+runConfigScoring.txt contains:
+
+    OBSOLETE -> inputImagesDir=<somedir> // this is the orientationOutput dir which has cropped,rotated orig image and mask image
+	testImagesFile=<somepath1> // the file referenced lists the full pathnames of files that are the cropped orig ones
+	testImagesMaskFile=<somepath2> // the file referenced lists the full pathnames of files that are the masks
+	scoringOutputDir=<someOutputDir> // where to put output
+    trainingDataDir=<dirWithTrainingData> // see below *
+    
+NOTE - presence of testImageFile and testImagesMaskFile keys and values will be driven by these lines in the algProperties file
+# this next line will cause avatolCV to create an entry in the runConfigScoring file that will have the key of testImagesFile, and the value will be a pathname to a file that contains pathnames of image files that contain the string "alignOrig"
+inputRequired=alignOrig:testImagesFile
+# this next line will cause avatolCV to create an entry in the runConfigScoring file that will have the key of testImagesMaskFile, and the value will be a pathname to a file that contains pathnames of image files that contain the string "alignMask"
+inputRequired=alignMask:testImagesMaskFile
+
+    
+* dirWithTrainingData contains one or more files that contain training data information:
+    
+    
+    training_<scoringConcernType>_<scoringConcernID>_<scoringConcernName>.txt   // scoring concern info is in the filename
+    
+        imageDir=<someDir>
+		scoringConcernType=<someType>
+		scoringConcernID=<someID>
+		scoringConcernName=<someName>
+        
+        (optional) trainingTestConcernName=<someName>  ___add trainingTestValue (optional) somehow
+        #imageName,scoringConcernValue,pointCoordinates
+        <image1Name>,<scoringConcernValue>,<pointCoords>
+        <image2Name>,<scoringConcernValue>,<pointCoords>
+        ...
+    
+if there are no pointCoordinates in play, the file will look like
+    
+        imageDir=<someDir>
+		scoringConcernType=<someType>
+		scoringConcernID=<someID>
+		scoringConcernName=<someName>
+        #imageName,scoringConcernValue,pointCoordinates
+        <image1Name>,<scoringConcernValue>,
+        <image2Name>,<scoringConcernValue>,
+        ...
+    
+if there is no scoringConcernType, then the filename will look like:   training__<scoringConcernID>_<scoringConcernName>.txt (note consec undercores)
+    

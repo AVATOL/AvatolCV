@@ -4,13 +4,13 @@ THIS_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 THIRD_PARTY_DIR=${THIS_DIR}/../../3rdParty
 
 trainingImagesFile=""
+groundTruthImagesFile=""
 testingImagesFile=""
 segmentationOutputDir=""
-outputFileSuffix=""
-croppedMaskImageSuffix=""
-croppedOrigImageSuffix=""
 avatolCVStatusFile=""
-groundTruthImagesFile=""
+
+croppedMaskImageSuffix="_croppedMask"
+croppedOrigImageSuffix="_croppedOrig"
 
 filename="$1"
 while read -r line
@@ -28,10 +28,6 @@ do
 	    testingImagesFile=${val}
 	elif [ "segmentationOutputDir" = "$key" ]; then
 	    segmentationOutputDir=${val}
-	elif [ "croppedOrigImageSuffix" = "$key" ]; then
-	    croppedOrigImageSuffix=${val}
-	elif [ "croppedMaskImageSuffix" = "$key" ]; then
-	    croppedMaskImageSuffix=${val}
     elif [ "avatolCVStatusFile" = "$key" ]; then
 	    avatolCVStatusFile=${val}
     elif [ "groundTruthImagesFile" = "$key" ]; then
@@ -52,15 +48,6 @@ if [ "$segmentationOutputDir" = "" ]; then
     missingArg=1
 	echo segRunConfig file missing entry for segmentationOutputDir
 fi
-if [ "$croppedMaskImageSuffix" = "" ]; then
-    missingArg=1
-	echo segRunConfig file missing entry for croppedMaskImageSuffix
-fi
-
-if [ "$croppedOrigImageSuffix" = "" ]; then
-    missingArg=1
-	echo segRunConfig file missing entry for croppedOrigImageSuffix
-fi
 if [ "$avatolCVStatusFile" = "" ]; then
     missingArg=1
 	echo segRunConfig file missing entry for avatolCVStatusFile
@@ -75,8 +62,6 @@ fi
 echo trainingImagesFile is ${trainingImagesFile}
 echo testingImagesFile is ${testingImagesFile}
 echo segmentationOutputDir is ${segmentationOutputDir}
-echo croppedOrigImageSuffix is ${croppedOrigImageSuffix}
-echo croppedMaskImageSuffix is ${croppedMaskImageSuffix}
 echo avatolCVStatusFile is ${avatolCVStatusFile}
 echo groundTruthImagesFile is ${groundTruthImagesFile}
 
@@ -239,10 +224,6 @@ echo cropping images > ${avatolCVStatusFile}
 #
 #  call matlab to crop the leaf on both raw and mask images
 #
-#echo matlab -r -nodisplay "run Yao_postprocessing\('${segmentationOutputDir}','${testingImagesFile}', '${croppedOrigImageSuffix}', '${croppedMaskImageSuffix}'\)"
-#matlab -r -nodisplay -nosplash "run Yao_postprocessing\('${segmentationOutputDir}','${testingImagesFile}', '${croppedOrigImageSuffix}', '${croppedMaskImageSuffix}'\)"
-
-#echo ${MATLAB_RUNTIME_LAUNCHER} ${THIS_DIR} Yao_postprocessing ${segmentationOutputDir} ${testingImagesFile} ${croppedOrigImageSuffix} ${croppedMaskImageSuffix}
 echo ./${THIS_DIR}/yaoSegPP_via_runtime.sh ${segmentationOutputDir} ${testingImagesFile} ${croppedOrigImageSuffix} ${croppedMaskImageSuffix}
 ${THIS_DIR}/yaoSegPP_via_runtime.sh ${segmentationOutputDir} ${testingImagesFile} ${croppedOrigImageSuffix} ${croppedMaskImageSuffix}
 echo done with segmentation
