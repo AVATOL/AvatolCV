@@ -10,7 +10,7 @@ function YaoRotateTest
     testImagesMaskFile = '/Users/jedirvine/av/avatol_cv/modules/orientation/yaoOrient/testMaskImagesFullPath.txt';
     %testImagesMaskFile = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\testMaskImagesFullPath.txt';
     
-    rotationOutputDir = '/Users/jedirvine/av/avatol_cv/modules/orientation/yaoOrient/orientationOutput';
+    %rotationOutputDir = '/Users/jedirvine/av/avatol_cv/modules/orientation/yaoOrient/orientationOutput';
     %rotationOutputDir = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\rotationOutput';
      
     orientationOutputDir = '/Users/jedirvine/av/avatol_cv/modules/orientation/yaoOrient/orientationOutput';
@@ -21,19 +21,19 @@ function YaoRotateTest
    
    
     % ___need a way to derive rotationOutputDir from orientationOutputDir as that's the only one that will be passed in
-    orientOutDirname = 'orientationOutput';
+    rotationOutDirname = 'rotationOutput';
     if ispc
-        parts = strsplit(path, '\');
+        parts = strsplit(orientationOutputDir, '\');
         parent = parts{end-1};
-        mkdir(parent, orientOutDirname);
-        orientationOutputDir = sprintf('%s\%s',parent,orientOutDirname);
+        mkdir(parent, rotationOutDirname);
+        rotationOutputDir = sprintf('%s\%s',parent,rotationOutDirname);
     else
-        parts = strsplit(path, '/');
+        parts = strsplit(orientationOutputDir, '/');
         parent = parts{end-1};
-        mkdir(parent, orientOutDirname);
-        orientationOutputDir = sprintf('%s/%s',parent,orientOutDirname);
+        mkdir(parent, rotationOutDirname);
+        rotationOutputDir = sprintf('%s/%s',parent,rotationOutDirname);
     end
-    fprintf('orientationOutputDir is %s',orientationOutputDir);
+    fprintf('rotationOutputDir is %s',rotationOutputDir);
     
  %   Yao_Rotation(inputImagesDir, testImagesFile, testImagesMaskFile,'_rotatedOrig', '_rotatedMask', rotationOutputDir);
     
