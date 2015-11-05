@@ -5,7 +5,6 @@ THIRD_PARTY_DIR=${THIS_DIR}/../../3rdParty
 
 trainingImagesFile=""
 testingImagesFile=""
-trainingImagesDir=""
 segmentationOutputDir=""
 trainingFileSuffix=""
 outputFileSuffix=""
@@ -28,8 +27,6 @@ do
 	    trainingImagesFile=${val}
     elif [ "testingImagesFile" = "$key" ]; then
 	    testingImagesFile=${val}
-	elif [ "trainingImagesDir" = "$key" ]; then
-	    trainingImagesDir=${val}
 	elif [ "segmentationOutputDir" = "$key" ]; then
 	    segmentationOutputDir=${val}
 	elif [ "trainingFileSuffix" = "$key" ]; then
@@ -53,10 +50,6 @@ fi
 if [ "$testingImagesFile" = "" ]; then
     missingArg=1
 	echo segRunConfig file missing entry for testingImagesFile
-fi
-if [ "$trainingImagesDir" = "" ]; then
-    missingArg=1
-	echo segRunConfig file missing entry for trainingImagesDir
 fi
 if [ "$segmentationOutputDir" = "" ]; then
     missingArg=1
@@ -88,7 +81,6 @@ if [ "$missingArg" = 1 ]; then
 fi
 echo trainingImagesFile is ${trainingImagesFile}
 echo testingImagesFile is ${testingImagesFile}
-echo trainingImagesDir is ${trainingImagesDir}
 echo segmentationOutputDir is ${segmentationOutputDir}
 echo trainingFileSuffix is ${trainingFileSuffix}
 echo croppedOrigImageSuffix is ${croppedOrigImageSuffix}
