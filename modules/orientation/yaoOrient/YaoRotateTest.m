@@ -2,15 +2,40 @@ function YaoRotateTest
     path(path,'.');
     % ----------------------------- Orientation Module ----------------------
     inputImagesDir = '/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/segOutput';
-%    inputImagesDir = 'C:\Users\collwe\Desktop\avatol_cv\modules\segmentation\yaoSeg\segOutput';
-    testImagesFile = '/Users/jedirvine/av/avatol_cv/modules/orientation/yaoOrient/testImagesFullPath.txt';
-%    testImagesFile = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\testImagesFullPath.txt';
-    testImagesMaskFile = '/Users/jedirvine/av/avatol_cv/modules/orientation/yaoOrient/testMaskImagesFullPath.txt';
-%    testImagesMaskFile = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\testMaskImagesFullPath.txt';
-    rotationOutputDir = '/Users/jedirvine/av/avatol_cv/modules/orientation/yaoOrient/orientationOutput';
-%    rotationOutputDir = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\rotationOutput';
+    %inputImagesDir = 'C:\Users\collwe\Desktop\avatol_cv\modules\segmentation\yaoSeg\segOutput';
     
-    Yao_Rotation(inputImagesDir, testImagesFile, testImagesMaskFile,'_rotatedOrig', '_rotatedMask', rotationOutputDir);
+    testImagesFile = '/Users/jedirvine/av/avatol_cv/modules/orientation/yaoOrient/testImagesFullPath.txt';
+    %testImagesFile = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\testImagesFullPath.txt';
+    
+    testImagesMaskFile = '/Users/jedirvine/av/avatol_cv/modules/orientation/yaoOrient/testMaskImagesFullPath.txt';
+    %testImagesMaskFile = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\testMaskImagesFullPath.txt';
+    
+    rotationOutputDir = '/Users/jedirvine/av/avatol_cv/modules/orientation/yaoOrient/orientationOutput';
+    %rotationOutputDir = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\rotationOutput';
+     
+    orientationOutputDir = '/Users/jedirvine/av/avatol_cv/modules/orientation/yaoOrient/orientationOutput';
+    %orientationOutputDir = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\orientationOutput';
+
+    pathAlignmentShipped = '/Users/jedirvine/av/avatol_cv/modules/orientation/yaoOrient/alignmentShipped';
+    %pathAlignmentShipped = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\alignmentShipped';
+   
+   
+    % ___need a way to derive rotationOutputDir from orientationOutputDir as that's the only one that will be passed in
+    orientOutDirname = 'orientationOutput';
+    if ispc
+        parts = strsplit(path, '\');
+        parent = parts{end-1};
+        mkdir(parent, orientOutDirname);
+        orientationOutputDir = sprintf('%s\%s',parent,orientOutDirname);
+    else
+        parts = strsplit(path, '/');
+        parent = parts{end-1};
+        mkdir(parent, orientOutDirname);
+        orientationOutputDir = sprintf('%s/%s',parent,orientOutDirname);
+    end
+    fprintf('orientationOutputDir is %s',orientationOutputDir);
+    
+ %   Yao_Rotation(inputImagesDir, testImagesFile, testImagesMaskFile,'_rotatedOrig', '_rotatedMask', rotationOutputDir);
     
     % ----------------------------- Alignment Module ----------------------
     %pathLibsvm = 'G:\libsvm-3.18\libsvm-3.18'; % make sure you already installed and mexed LIBSVM/matlab
@@ -20,15 +45,11 @@ function YaoRotateTest
     %pathVlfeat = 'G:\vlfeat\vlfeat'; 
     pathVlfeat = '/Users/jedirvine/av/avatol_cv/modules/3rdParty/vlfeat/vlfeat-0.9.20'; 
     %run([pathVlfeat '\toolbox\vl_setup']) 
-    run([pathVlfeat '/toolbox/vl_setup'])
+ %   run([pathVlfeat '/toolbox/vl_setup'])
     
-    %pathAlignmentShipped = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\alignmentShipped';
-    pathAlignmentShipped = '/Users/jedirvine/av/avatol_cv/modules/orientation/yaoOrient/alignmentShipped';
    
-    %orientationOutputDir = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\orientationOutput';
-    orientationOutputDir = '/Users/jedirvine/av/avatol_cv/modules/orientation/yaoOrient/orientationOutput';
     
-    [test_predict, model] = Yao_alignment(pathAlignmentShipped, rotationOutputDir, '_rotatedOrig','_rotatedMask','_alignOrig';,'_alignMask',orientationOutputDir  );
+ %   [test_predict, model] = Yao_alignment(pathAlignmentShipped, rotationOutputDir, '_rotatedOrig','_rotatedMask','_alignOrig';,'_alignMask',orientationOutputDir  );
 
     
     
