@@ -6,7 +6,6 @@ THIRD_PARTY_DIR=${THIS_DIR}/../../3rdParty
 trainingImagesFile=""
 testingImagesFile=""
 segmentationOutputDir=""
-trainingFileSuffix=""
 outputFileSuffix=""
 croppedMaskImageSuffix=""
 croppedOrigImageSuffix=""
@@ -29,8 +28,6 @@ do
 	    testingImagesFile=${val}
 	elif [ "segmentationOutputDir" = "$key" ]; then
 	    segmentationOutputDir=${val}
-	elif [ "trainingFileSuffix" = "$key" ]; then
-	    trainingFileSuffix=${val}
 	elif [ "croppedOrigImageSuffix" = "$key" ]; then
 	    croppedOrigImageSuffix=${val}
 	elif [ "croppedMaskImageSuffix" = "$key" ]; then
@@ -55,10 +52,6 @@ if [ "$segmentationOutputDir" = "" ]; then
     missingArg=1
 	echo segRunConfig file missing entry for segmentationOutputDir
 fi
-if [ "$trainingFileSuffix" = "" ]; then
-    missingArg=1
-	echo segRunConfig file missing entry for trainingFileSuffix
-fi
 if [ "$croppedMaskImageSuffix" = "" ]; then
     missingArg=1
 	echo segRunConfig file missing entry for croppedMaskImageSuffix
@@ -82,7 +75,6 @@ fi
 echo trainingImagesFile is ${trainingImagesFile}
 echo testingImagesFile is ${testingImagesFile}
 echo segmentationOutputDir is ${segmentationOutputDir}
-echo trainingFileSuffix is ${trainingFileSuffix}
 echo croppedOrigImageSuffix is ${croppedOrigImageSuffix}
 echo croppedMaskImageSuffix is ${croppedMaskImageSuffix}
 echo avatolCVStatusFile is ${avatolCVStatusFile}

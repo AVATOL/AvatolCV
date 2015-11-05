@@ -2,7 +2,6 @@ trainingImagesFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/tra
 groundTruthImagesFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/groundTruthListFullPath.txt
 testingImagesFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/testlistFullPath.txt
 segmentationOutputDir=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/segOutput
-trainingFileSuffix="_GT.png" 
 croppedOrigImageSuffix=_croppedOrig
 croppedMaskImageSuffix=_croppedMask
 avatolCVStatusFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/avatolCVStatus.txt
