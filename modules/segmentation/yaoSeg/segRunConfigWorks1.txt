@@ -1,7 +1,6 @@
 trainingImagesFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/trainlistFullPath.txt
 groundTruthImagesFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/groundTruthListFullPath.txt
 testingImagesFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/testlistFullPath.txt
-rawImagesDir=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/data/avcv_training_images
 trainingImagesDir=/somewhere
 segmentationOutputDir=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/segOutput
 trainingFileSuffix="_GT.png" 
