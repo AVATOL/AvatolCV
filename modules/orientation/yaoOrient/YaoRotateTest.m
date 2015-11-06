@@ -20,30 +20,19 @@ function YaoRotateTest
     %orientationOutputDir = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\orientationOutput';
     orientationOutputDir = 'C:\avatol\git\avatol_cv\modules\orientation\yaoOrient\orientationOutput';
 
-    %pathAlignmentShipped = '/Users/jedirvine/av/avatol_cv/modules/orientation/yaoOrient/alignmentShipped';
-    %pathAlignmentShipped = 'C:\Users\collwe\Desktop\avatol_cv\modules\orientation\yaoOrient\alignmentShipped';
-    pathAlignmentShipped = 'C:\avatol\git\avatol_cv\modules\orientation\yaoOrient\alignmentShipped';
-   
+	currentDir = pwd();
+    cd(fileparts(mfilename('fullpath')));
+	thisScriptDir = pwd();
+	pathAlignmentShipped = sprintf('%s%s%s', thisScriptDir, filesep,'alignmentShipped');
+	fprintf('pathAlignmentShipped derived as %s',pathAlignmentShipped);
     mkdir(orientationOutputDir);
-    currentDir = pwd();
+    
     cd(orientationOutputDir);
     cd('..');
     parentDir = pwd();
     cd(currentDir);
     rotationOutputDir = sprintf('%s%s%s', parentDir,filesep,'rotationOutput');
-    % ___need a way to derive rotationOutputDir from orientationOutputDir as that's the only one that will be passed in
-    %rotationOutDirname = 'rotationOutput';
-    %if ispc
-    %    parts = regex(orientationOutputDir, '_', 'split');
-    %    parent = parts{end-1};
-    %    mkdir(parent, rotationOutDirname);
-    %    rotationOutputDir = sprintf('%s\%s',parent,rotationOutDirname);
-    %else
-    %    parts = regex(orientationOutputDir, '_', 'split');
-    %    parent = parts{end-1};
-   %     mkdir(parent, rotationOutDirname);
-   %     rotationOutputDir = sprintf('%s/%s',parent,rotationOutDirname);
-   % end
+    
     fprintf('rotationOutputDir created as %s',rotationOutputDir);
     
     Yao_Rotation(inputImagesDir, testImagesFile, testImagesMaskFile,'_rotatedOrig', '_rotatedMask', rotationOutputDir);
