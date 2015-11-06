@@ -1,5 +1,5 @@
-trainImagesFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/trainlistFullPath.txt
-groundTruthImagesFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/groundTruthListFullPath.txt
+userProvidedTrainImagesFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/userProvidedTrainImagesFile.txt
+userProvidedGroundTruthImagesFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/userProvidedGroundTruthImagesFile.txt
 testImagesFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/testlistFullPath.txt
 segmentationOutputDir=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/segOutput
 avatolCVStatusFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/avatolCVStatus.txt

@@ -5,11 +5,11 @@ description=Algorithm simpleLeafOrienter will align leaves so their stems lie al
 dependency:pathLibSsvmMatlab=<modules>/3rdParty/libsvm/libsvm-318/matlab
 dependency:pathVlfeat=<modules>/3rdParty/vlfeat/vlfeat-0.9.20/toolbox/v1_setup
 
-inputRequired:testImagesMaskFile refsFilesWithSuffix _croppedMask ofType basicMask
-inputRequired:testImagesFile refsFilesWithSuffix _croppedOrig ofType primaryImage
+inputRequired:testImagesMaskFile refsFilesWithSuffix _croppedMask ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed
+inputRequired:testImagesFile refsFilesWithSuffix _croppedOrig ofType isolatedSpecimenImage
 
-outputGenerated:basicMask withSuffix _orientedMask
-outputGenerated:primaryImage withSuffix _orientedOrig
+outputGenerated:ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed withSuffix _orientedMask
+outputGenerated:ofType isolatedSpecimenImage withSuffix _orientedOrig
 
 
 

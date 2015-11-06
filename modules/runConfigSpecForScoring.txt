@@ -1,5 +1,8 @@
 At SCORING step, I will pass one argument, which is the path to the runConfig_scoring.txt file
 
+    avatolCVStatusFile=<path to file to write status to> (avatolCV will poll that file)
+
+
 runConfig_scoring.txt has these lines, and others that can be ignored:
     imagesToScoreDir, <path of images to score>  ---->>>  was   orientationResultsDir,<path to dir where orientation normalized images are>
     trainingImagesFile,<path to training images file>  // file will be named trainingImages_scoring_<charId>_<charName>.txt

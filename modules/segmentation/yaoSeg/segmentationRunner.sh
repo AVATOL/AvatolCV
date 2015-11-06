@@ -3,7 +3,7 @@
 THIS_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 THIRD_PARTY_DIR=${THIS_DIR}/../../3rdParty
 
-trainImagesFile=""
+userProvidedTrainImagesFile=""
 userProvidedGroundTruthImagesFile=""
 testImagesFile=""
 segmentationOutputDir=""
@@ -22,8 +22,8 @@ do
     #echo val ${val}
     if [ ${key:0:1} = "#" ]; then
         foo=1
-    elif [ "trainImagesFile" = "$key" ]; then
-	    trainImagesFile=${val}
+    elif [ "userProvidedTrainImagesFile" = "$key" ]; then
+	    userProvidedTrainImagesFile=${val}
     elif [ "testImagesFile" = "$key" ]; then
 	    testImagesFile=${val}
 	elif [ "segmentationOutputDir" = "$key" ]; then
@@ -36,9 +36,9 @@ do
 done < "$filename"
 
 missingArg=0
-if [ "$trainImagesFile" = "" ]; then
+if [ "$userProvidedTrainImagesFile" = "" ]; then
 	missingArg=1
-	echo segRunConfig file missing entry for trainImagesFile
+	echo segRunConfig file missing entry for userProvidedTrainImagesFile
 fi
 if [ "$testImagesFile" = "" ]; then
     missingArg=1
@@ -59,7 +59,7 @@ fi
 if [ "$missingArg" = 1 ]; then 
     exit 1
 fi
-echo trainImagesFile is ${trainImagesFile}
+echo userProvidedTrainImagesFile is ${userProvidedTrainImagesFile}
 echo testImagesFile is ${testImagesFile}
 echo segmentationOutputDir is ${segmentationOutputDir}
 echo avatolCVStatusFile is ${avatolCVStatusFile}
@@ -68,7 +68,7 @@ echo userProvidedGroundTruthImagesFile is ${userProvidedGroundTruthImagesFile}
 
 
 #
-# copy trainlistShipped.txt into trainlist.txt and add any files coming in from trainImagesFile
+# copy trainlistShipped.txt into trainlist.txt and add any files coming in from userProvidedTrainImagesFile
 #
 TRAIN_LIST=${THIS_DIR}/trainlist.txt
 
@@ -82,7 +82,7 @@ do
     fileroot=${lineAsArray[0]}
     echo fileroot found as ${fileroot}
     echo ${fileroot} >> ${TRAIN_LIST}
-done < "$trainImagesFile"
+done < "$userProvidedTrainImagesFile"
 # by this time we have our combined trainlist.txt file
 
 
@@ -144,7 +144,7 @@ do
     filepath=${line}
     echo training image filepath found for copying : ${filepath}
     cp ${filepath} ${ALL_IMAGES_DIR}
-done < "$trainImagesFile"
+done < "$userProvidedTrainImagesFile"
 #by this point, training images are in place
 
 

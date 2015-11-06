@@ -3,7 +3,10 @@ algName=simpleLeafSegmenter
 algType=segmentation
 description=Algorithm simpleLeafSegmenter will isolate simple leaves from background clutter. It produces a mask file where the green area represents the isolated leaf.  This algorithm is shipped with training data.
 
-inputOptional:userProvidedGroundTruthImagesFile refsFilesWithSuffix ?_GT ofType ?croppedMask 
+inputRequired:testImagesFile refsFilesWithSuffix * ofType rawImage
 
-outputGenerated:basicMask withSuffix _croppedMask
-outputGenerated:primaryImage withSuffix _croppedOrig
+inputOptional:userProvidedGroundTruthImagesFile refsFilesWithSuffix _GT ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed 
+inputOptional:userProvidedTrainImagesFile refsFilesWithSuffix * ofType rawImage
+
+outputGenerated:ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed withSuffix _croppedMask
+outputGenerated:ofType isolatedSpecimenImage withSuffix _croppedOrig

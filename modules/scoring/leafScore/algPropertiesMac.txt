@@ -1,14 +1,15 @@
 launchWith=leafScore.sh
 algName=simpleLeafScore
 algType=scoring
+description=Scores shape related characters of simple shapes such Monocot leaves.
+
 scoringFocus=SPECIMEN_SHAPE_ASPECT
 scoringScope=SINGLE_ITEM
-# this next line will cause avatolCV to create an entry in the runConfigScoring file that will have the key of testImagesFile, and the value will be a pathname to a file that contains pathnames of image files that contain the string "_orientedOrig"
-inputRequired:testImagesFile refsFilesWithSuffix _orientedOrig ofType primaryImage
-# this next line will cause avatolCV to create an entry in the runConfigScoring file that will have the key of testImagesMaskFile, and the value will be a pathname to a file that contains pathnames of image files that contain the string "_orientedMask"
 
-inputRequired:testImagesMaskFile refsFilesWithSuffix _orientedMask ofType basicMask
-description=Scores shape related characters of simple shapes such Monocot leaves.
+inputRequired:testImagesFile refsFilesWithSuffix _orientedOrig ofType isolatedSpecimenImage
+inputRequired:testImagesMaskFile refsFilesWithSuffix _orientedMask ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed
+
+
 
 
 
