@@ -2,7 +2,7 @@ At ORIENTATION step, I will pass one argument, which is the path to the runConfi
 
 AvatolCV knows to generate these lines:
     inputImagesDir=<path to output dir of segmentation>
-    orientationOutputDir = '/Users/jedirvine/av/avatol_cv/modules/orientation/yaoOrient/orientationOutput';
+    orientationOutputDir = <somePath>/orientationOutput';
  
 AvatolCV generates these two lines and the associated files due to inputRequired lines in algProperties file:
     testImagesFile=<somePath>/testImagesFile.txt

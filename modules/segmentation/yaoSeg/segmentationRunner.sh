@@ -4,7 +4,7 @@ THIS_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 THIRD_PARTY_DIR=${THIS_DIR}/../../3rdParty
 
 trainImagesFile=""
-groundTruthImagesFile=""
+userProvidedGroundTruthImagesFile=""
 testImagesFile=""
 segmentationOutputDir=""
 avatolCVStatusFile=""
@@ -30,8 +30,8 @@ do
 	    segmentationOutputDir=${val}
     elif [ "avatolCVStatusFile" = "$key" ]; then
 	    avatolCVStatusFile=${val}
-    elif [ "groundTruthImagesFile" = "$key" ]; then
-	    groundTruthImagesFile=${val}
+    elif [ "userProvidedGroundTruthImagesFile" = "$key" ]; then
+	    userProvidedGroundTruthImagesFile=${val}
     fi
 done < "$filename"
 
@@ -52,9 +52,9 @@ if [ "$avatolCVStatusFile" = "" ]; then
     missingArg=1
 	echo segRunConfig file missing entry for avatolCVStatusFile
 fi 
-if [ "$groundTruthImagesFile" = "" ]; then
+if [ "$userProvidedGroundTruthImagesFile" = "" ]; then
     missingArg=1
-	echo segRunConfig file missing entry for groundTruthImagesFile
+	echo segRunConfig file missing entry for userProvidedGroundTruthImagesFile
 fi 
 if [ "$missingArg" = 1 ]; then 
     exit 1
@@ -63,7 +63,7 @@ echo trainImagesFile is ${trainImagesFile}
 echo testImagesFile is ${testImagesFile}
 echo segmentationOutputDir is ${segmentationOutputDir}
 echo avatolCVStatusFile is ${avatolCVStatusFile}
-echo groundTruthImagesFile is ${groundTruthImagesFile}
+echo userProvidedGroundTruthImagesFile is ${userProvidedGroundTruthImagesFile}
 
 
 
@@ -170,7 +170,7 @@ do
     filepath=${line}
     echo ground truth image filepath found for copying : ${filepath}
     cp ${filepath} ${ALL_LABELS_DIR}
-done < "$groundTruthImagesFile"
+done < "$userProvidedGroundTruthImagesFile"
 
 
 #
