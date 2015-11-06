@@ -35,6 +35,13 @@ public class Algorithm {
 	
 	public static final String PROPERTY_ALG_DESCRIPTION = "description";
 	
+    public static final String DECLARATION_DEPENDENCY = "dependency:";
+    public static final String DECLARATION_INPUT_REQUIRED = "inputRequired:";
+    public static final String DECLARATION_INPUT_OPTIONAL = "inputOptional:";
+    public static final String DECLARATION_OUTPUT_GENERATED = "outputGenerated:";
+	
+	
+	
 	protected Hashtable<String, String> propsHash = new Hashtable<String,String>();
 	private String path = null;
 	public Algorithm(List<String> lines, String path) throws AvatolCVException {
@@ -49,9 +56,24 @@ public class Algorithm {
             if (line.startsWith("#") || line.equals("")){
                 // ignore comments
             }
-            else {
+            else if (line.startsWith(DECLARATION_DEPENDENCY)){
+                AlgorithmDependency ad = new AlgorithmDependency(line);
+            } 
+            else if (line.startsWith(DECLARATION_INPUT_REQUIRED)){
+                
+            }
+            else if (line.startsWith(DECLARATION_INPUT_OPTIONAL)){
+                
+            }
+            else if (line.startsWith(DECLARATION_OUTPUT_GENERATED)){
+     
+            }
+            else if (line.contains("=")){
                 String[] propPair = line.split("=");
                 propsHash.put(propPair[0], propPair[1]);
+            }
+            else {
+                throw new AvatolCVException("unrecognized Algorithm properties file entry : " + line);
             }
         }
         // try to access the key properties to make sure they are present.
@@ -60,7 +82,16 @@ public class Algorithm {
         String algDescription = getAlgDescription();
         String algType = getAlgType();
 	}
-	
+	/*
+	 * 
+
+inputRequired:testImagesMaskFile refsFilesWithSuffix _croppedMask ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed
+inputRequired:testImagesFile refsFilesWithSuffix _croppedOrig ofType isolatedSpecimenImage
+
+outputGenerated:ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed withSuffix _orientedMask
+outputGenerated:ofType isolatedSpecimenImage withSuffix _orientedOrig
+
+	 */
 
 	public String getAlgDescription() throws AvatolCVException {
 	    return getProperty(PROPERTY_ALG_DESCRIPTION);

@@ -102,7 +102,7 @@ public class TestAlgorithm extends TestCase {
         return lines;
     }
   
-    public String getValidRoot() throws AvatolCVException {
+    public static String getValidRoot() throws AvatolCVException {
         String jedDesktopRoot = "C:\\jed\\avatol\\git\\avatol_cv";
         File f = new File(jedDesktopRoot);
         if (f.exists()){
