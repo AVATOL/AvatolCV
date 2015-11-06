@@ -3,9 +3,9 @@
 THIS_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 THIRD_PARTY_DIR=${THIS_DIR}/../../3rdParty
 
-trainingImagesFile=""
+trainImagesFile=""
 groundTruthImagesFile=""
-testingImagesFile=""
+testImagesFile=""
 segmentationOutputDir=""
 avatolCVStatusFile=""
 
@@ -22,10 +22,10 @@ do
     #echo val ${val}
     if [ ${key:0:1} = "#" ]; then
         foo=1
-    elif [ "trainingImagesFile" = "$key" ]; then
-	    trainingImagesFile=${val}
-    elif [ "testingImagesFile" = "$key" ]; then
-	    testingImagesFile=${val}
+    elif [ "trainImagesFile" = "$key" ]; then
+	    trainImagesFile=${val}
+    elif [ "testImagesFile" = "$key" ]; then
+	    testImagesFile=${val}
 	elif [ "segmentationOutputDir" = "$key" ]; then
 	    segmentationOutputDir=${val}
     elif [ "avatolCVStatusFile" = "$key" ]; then
@@ -36,13 +36,13 @@ do
 done < "$filename"
 
 missingArg=0
-if [ "$trainingImagesFile" = "" ]; then
+if [ "$trainImagesFile" = "" ]; then
 	missingArg=1
-	echo segRunConfig file missing entry for trainingImagesFile
+	echo segRunConfig file missing entry for trainImagesFile
 fi
-if [ "$testingImagesFile" = "" ]; then
+if [ "$testImagesFile" = "" ]; then
     missingArg=1
-	echo segRunConfig file missing entry for testingImagesFile
+	echo segRunConfig file missing entry for testImagesFile
 fi
 if [ "$segmentationOutputDir" = "" ]; then
     missingArg=1
@@ -59,8 +59,8 @@ fi
 if [ "$missingArg" = 1 ]; then 
     exit 1
 fi
-echo trainingImagesFile is ${trainingImagesFile}
-echo testingImagesFile is ${testingImagesFile}
+echo trainImagesFile is ${trainImagesFile}
+echo testImagesFile is ${testImagesFile}
 echo segmentationOutputDir is ${segmentationOutputDir}
 echo avatolCVStatusFile is ${avatolCVStatusFile}
 echo groundTruthImagesFile is ${groundTruthImagesFile}
@@ -68,7 +68,7 @@ echo groundTruthImagesFile is ${groundTruthImagesFile}
 
 
 #
-# copy trainlistShipped.txt into trainlist.txt and add any files coming in from trainingImagesFile
+# copy trainlistShipped.txt into trainlist.txt and add any files coming in from trainImagesFile
 #
 TRAIN_LIST=${THIS_DIR}/trainlist.txt
 
@@ -82,7 +82,7 @@ do
     fileroot=${lineAsArray[0]}
     echo fileroot found as ${fileroot}
     echo ${fileroot} >> ${TRAIN_LIST}
-done < "$trainingImagesFile"
+done < "$trainImagesFile"
 # by this time we have our combined trainlist.txt file
 
 
@@ -101,7 +101,7 @@ do
     fileroot=${lineAsArray[0]}
     echo fileroot found as ${fileroot}
     echo ${fileroot} >> ${TEST_LIST}
-done < "$testingImagesFile"
+done < "$testImagesFile"
 # by this time we have our testlist.txt file
 
 
@@ -120,7 +120,7 @@ do
     filepath=${line}
     echo testing image filepath found for copying : ${filepath}
     cp ${filepath} ${ALL_IMAGES_DIR}
-done < "$testingImagesFile"
+done < "$testImagesFile"
 
 
 
@@ -144,7 +144,7 @@ do
     filepath=${line}
     echo training image filepath found for copying : ${filepath}
     cp ${filepath} ${ALL_IMAGES_DIR}
-done < "$trainingImagesFile"
+done < "$trainImagesFile"
 #by this point, training images are in place
 
 
@@ -224,7 +224,7 @@ echo cropping images > ${avatolCVStatusFile}
 #
 #  call matlab to crop the leaf on both raw and mask images
 #
-echo ./${THIS_DIR}/yaoSegPP_via_runtime.sh ${segmentationOutputDir} ${testingImagesFile} ${croppedOrigImageSuffix} ${croppedMaskImageSuffix}
-${THIS_DIR}/yaoSegPP_via_runtime.sh ${segmentationOutputDir} ${testingImagesFile} ${croppedOrigImageSuffix} ${croppedMaskImageSuffix}
+echo ./${THIS_DIR}/yaoSegPP_via_runtime.sh ${segmentationOutputDir} ${testImagesFile} ${croppedOrigImageSuffix} ${croppedMaskImageSuffix}
+${THIS_DIR}/yaoSegPP_via_runtime.sh ${segmentationOutputDir} ${testImagesFile} ${croppedOrigImageSuffix} ${croppedMaskImageSuffix}
 echo done with segmentation
 echo done with segmentation > ${avatolCVStatusFile}
