@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -20,11 +21,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
  */
 public class Algorithm {
 	public static final String PROPERTY_LAUNCH_FILE = "launchWith";  // can be a matlab function name, a script or executable.
-	
 
-	//public static final String PROPERTY_LAUNCH_FILE_LANGUAGE = "launchFileLanguage";
-	public static final String PROPERTY_LAUNCH_FILE_LANGUAGE_MATLAB = "matlab";
-	public static final String PROPERTY_LAUNCH_FILE_LANGUAGE_OTHER = "other";
 	public static final String PROPERTY_PARENT_DIR = "parentDir";
 	public static final String PROPERTY_ALG_NAME = "algName";
 	public static final String PROPERTY_ALG_TYPE = "algType";
@@ -41,8 +38,9 @@ public class Algorithm {
     public static final String DECLARATION_OUTPUT_GENERATED = "outputGenerated:";
 	
 	
-	
+	private List<AlgorithmDependency> dependencies = new ArrayList<AlgorithmDependency>();
 	protected Hashtable<String, String> propsHash = new Hashtable<String,String>();
+	protected List<String> algPropsEntriesNotYetConsumed = new ArrayList<String>();
 	private String path = null;
 	public Algorithm(List<String> lines, String path) throws AvatolCVException {
 	    this.path = path;
@@ -58,6 +56,7 @@ public class Algorithm {
             }
             else if (line.startsWith(DECLARATION_DEPENDENCY)){
                 AlgorithmDependency ad = new AlgorithmDependency(line);
+                this.dependencies.add(ad);
             } 
             else if (line.startsWith(DECLARATION_INPUT_REQUIRED)){
                 
@@ -68,12 +67,20 @@ public class Algorithm {
             else if (line.startsWith(DECLARATION_OUTPUT_GENERATED)){
      
             }
-            else if (line.contains("=")){
-                String[] propPair = line.split("=");
-                propsHash.put(propPair[0], propPair[1]);
+            else if (line.startsWith(PROPERTY_LAUNCH_FILE)){
+                acceptProperty(line);
+            }
+            else if (line.startsWith(PROPERTY_ALG_NAME)){
+                acceptProperty(line);
+            }
+            else if (line.startsWith(PROPERTY_ALG_TYPE)){
+                acceptProperty(line);
+            }
+            else if (line.startsWith(PROPERTY_ALG_DESCRIPTION)){
+                acceptProperty(line);
             }
             else {
-                throw new AvatolCVException("unrecognized Algorithm properties file entry : " + line);
+                algPropsEntriesNotYetConsumed.add(line);
             }
         }
         // try to access the key properties to make sure they are present.
@@ -81,6 +88,19 @@ public class Algorithm {
         String algName = getAlgName();
         String algDescription = getAlgDescription();
         String algType = getAlgType();
+	}
+	private void acceptProperty(String line) throws AvatolCVException {
+	    if (!line.contains("=")){
+	        expressPropertyDeclarationError(line);
+	    }
+	    String[] propPair = line.split("=");
+	    if (propPair.length < 2){
+	        expressPropertyDeclarationError(line);
+	    }
+        propsHash.put(propPair[0], propPair[1]);
+	}
+	private void expressPropertyDeclarationError(String line) throws AvatolCVException{
+	    throw new AvatolCVException("Algorithm property must be of the form key=value : " + line);
 	}
 	/*
 	 * 

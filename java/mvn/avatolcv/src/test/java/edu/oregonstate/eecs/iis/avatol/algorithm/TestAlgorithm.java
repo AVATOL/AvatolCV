@@ -8,17 +8,29 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.Algorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OrientationAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.SegmentationAlgorithm;
 import junit.framework.Assert;
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 public class TestAlgorithm extends TestCase {
     private static final String FILESEP = System.getProperty("file.separator");
     
+    protected void setUp(){
+        try {
+            AvatolCVFileSystem.setRootDir(TestAlgorithm.getValidRoot());
+        }
+        catch(AvatolCVException ace){
+            Assert.fail("could not find valid avatol_cv root for test");
+        }
+    }
+   
     public void testAlgorithmModules(){
         try {
             String root = getValidRoot();

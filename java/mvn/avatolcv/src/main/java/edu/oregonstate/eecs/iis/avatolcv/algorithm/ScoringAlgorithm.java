@@ -35,7 +35,7 @@ public class ScoringAlgorithm extends Algorithm {
     private ScoringScope thisAlgorithmScope = null;
     public ScoringAlgorithm(List<String> propsLines, String path) throws AvatolCVException {
         super(propsLines, path);
-        loadScoringAlgorithmSpecificProperties(propsLines);
+        loadScoringAlgorithmSpecificProperties(algPropsEntriesNotYetConsumed);
     }
     private void loadScoringAlgorithmSpecificProperties(List<String> lines) throws AvatolCVException {
         for (String line : lines){
