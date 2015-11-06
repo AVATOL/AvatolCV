@@ -3,9 +3,9 @@ At the SEGMENTATION step, avatolCV will pass one argument, which is the path to 
 runConfigSegmentation.txt has lines of the following form:
 
     # the following three files contain absolute pathnames
-    trainingImagesFile=<someAbsolutePath>/trainingImagesFile.txt  
+    trainImagesFile=<someAbsolutePath>/trainImagesFile.txt  
     groundTruthImagesFile=<someAbsolutePath>/groundTruthImagesFile.txt
-    testingImagesFile=<someAbsolutePath>/testingImagesFile.txt
+    testImagesFile=<someAbsolutePath>/testImagesFile.txt
     
 	segmentationOutputDir=<path of dir where output goes>
 	avatolCVStatusFile=<path to file to write status to> (avatolCV will poll that file)

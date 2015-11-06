@@ -47,5 +47,5 @@ function YaoRotateTest
     %run([pathVlfeat '\toolbox\vl_setup']) 
     run([pathVlfeat '/toolbox/vl_setup'])
     
-    [test_predict, model] = Yao_alignment(pathAlignmentShipped, rotationOutputDir, '_rotatedOrig','_rotatedMask','_alignOrig','_alignMask',orientationOutputDir  );
+    [test_predict, model] = Yao_alignment(pathAlignmentShipped, rotationOutputDir, '_rotatedOrig','_rotatedMask','_orientedOrig','_orientedMask',orientationOutputDir  );
 end

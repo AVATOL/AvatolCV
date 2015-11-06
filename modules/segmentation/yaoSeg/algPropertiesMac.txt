@@ -2,3 +2,6 @@ launchWith=segmentationRunner.sh
 algName=simpleLeafSegmenter
 algType=segmentation
 description=Algorithm simpleLeafSegmenter will isolate simple leaves from background clutter. It produces a mask file where the green area represents the isolated leaf.  This algorithm is shipped with training data.
+
+outputGenerated:basicMask withSuffix _croppedMask
+outputGenerated:primaryImage withSuffix _croppedOrig
