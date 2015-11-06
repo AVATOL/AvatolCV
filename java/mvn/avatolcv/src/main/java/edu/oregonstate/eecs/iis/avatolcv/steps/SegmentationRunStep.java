@@ -1,7 +1,10 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.SegmentationAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
+import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.SegmentationRunStepController;
 
 public class SegmentationRunStep implements Step {
     private SessionInfo sessionInfo = null;
@@ -9,7 +12,7 @@ public class SegmentationRunStep implements Step {
         this.sessionInfo = sessionInfo;
     }
     public String getSelectedSegmentationAlgorithm(){
-        return this.sessionInfo.getSegmentationAlg();
+        return this.sessionInfo.getSegmentationAlgName();
     }
     @Override
     public void init() throws AvatolCVException {
@@ -29,4 +32,8 @@ public class SegmentationRunStep implements Step {
         return false;
     }
 
+    public void runSegmentation(SegmentationRunStepController controller, String processName) throws AvatolCVException {
+        SegmentationAlgorithm sa  = sessionInfo.getSelectedSegmentationAlgorithm();
+        
+    }
 }

@@ -88,6 +88,18 @@ public class AlgorithmModules {
         Collections.sort(names);;
         return names;
     }
+	public Algorithm getAlgWithName(String name, AlgType type) throws AvatolCVException {
+	    if (type == AlgorithmModules.AlgType.SEGMENTATION){
+	        return getAlgWithName(name, this.segAlgs, type);
+	    }
+	    else if (type == AlgorithmModules.AlgType.ORIENTATION){
+	        return getAlgWithName(name, this.orientAlgs, type);
+        }
+	    else {
+	        // type == AlgorithmModules.AlgType.SCORING 
+	        return getAlgWithName(name, this.scoringAlgs, type);
+	    }
+    }
 	public Algorithm getAlgWithName(String name, List<Algorithm> algs, AlgType type) throws AvatolCVException {
 	    for (Algorithm alg : algs){
 	        if (alg.getAlgName().equals(name)){

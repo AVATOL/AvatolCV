@@ -37,7 +37,7 @@ public class SegmentationConfigurationStep extends Answerable implements Step {
 
     @Override
     public void consumeProvidedData() throws AvatolCVException {
-        this.sessionInfo.setChosenSegmentationAlgorithm(this.algName);
+        this.sessionInfo.setChosenSegmentationAlgorithmName(this.algName);
     }
 
     @Override

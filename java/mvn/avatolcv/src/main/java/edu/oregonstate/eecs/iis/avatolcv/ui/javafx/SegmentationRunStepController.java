@@ -117,7 +117,7 @@ public class SegmentationRunStepController implements StepController, ProgressPr
         @Override
         protected Boolean call() throws Exception {
             try {
-                //this.step.runSegmentation(this.controller, processName);
+                this.step.runSegmentation(this.controller, processName);
                 NavButtonEnablerRunner runner = new NavButtonEnablerRunner();
                 Platform.runLater(runner);
                 

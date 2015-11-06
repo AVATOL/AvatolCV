@@ -11,6 +11,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.Algorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.SegmentationAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
@@ -122,7 +123,7 @@ public class SessionInfo{
     /*
      * SEGMENTATION
      */
-    public void setChosenSegmentationAlgorithm(String algName){
+    public void setChosenSegmentationAlgorithmName(String algName){
         this.chosenSegmentationAlg = algName;
     }
     public boolean isSegmentationAlgChosen(){
@@ -131,10 +132,14 @@ public class SessionInfo{
         }
         return true;
     }
-    public String getSegmentationAlg(){
+    public String getSegmentationAlgName(){
         return this.chosenSegmentationAlg;
     }
-    
+    public SegmentationAlgorithm getSelectedSegmentationAlgorithm() throws AvatolCVException {
+        Algorithm a =  this.algorithmModules.getAlgWithName(getSegmentationAlgName(), AlgorithmModules.AlgType.SEGMENTATION);
+        SegmentationAlgorithm sa = (SegmentationAlgorithm)a;
+        return sa;
+    }
     /*
      * FILTER
      */
