@@ -1,0 +1,5 @@
+userProvidedTrainImagesFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/userProvidedTrainImagesFile201511Demo.txt
+userProvidedGroundTruthImagesFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/userProvidedGroundTruthImagesFile201511Demo.txt
+testImagesFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/testImagesFor201511Demo.txt
+segmentationOutputDir=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/segOutput2015Demo
+avatolCVStatusFile=/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/avatolCVStatus.txt
