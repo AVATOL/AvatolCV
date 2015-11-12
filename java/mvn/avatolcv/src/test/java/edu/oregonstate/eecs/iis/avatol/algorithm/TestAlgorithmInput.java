@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatol.algorithm;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmInputOptional;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmInputRequired;
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -8,7 +9,7 @@ import junit.framework.TestCase;
 /*
  * inputRequired:testImagesMaskFile refsFilesWithSuffix _croppedMask ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed
  */
-public class TestAlgorithmInputRequired extends TestCase {
+public class TestAlgorithmInput extends TestCase {
     public void testAlgorithmInputRequired(){
         // fail on insufficient content
         try {
@@ -16,6 +17,8 @@ public class TestAlgorithmInputRequired extends TestCase {
             Assert.fail("should have thrown exception");
         }
         catch(AvatolCVException ace){
+            System.out.println(ace.getMessage());
+            Assert.assertTrue(ace.getMessage().contains("inputRequired:"));
             Assert.assertTrue(true);
         }
         // fail on too few args
@@ -87,5 +90,18 @@ public class TestAlgorithmInputRequired extends TestCase {
         catch(AvatolCVException ace){
             Assert.fail(ace.getMessage());
         }
+    }
+    
+    public void testAlgorithmInputOptional(){
+        // fail on insufficient content
+        try {
+            AlgorithmInputOptional ad = new AlgorithmInputOptional("inputOptional:");
+            Assert.fail("should have thrown exception");
+        }
+        catch(AvatolCVException ace){
+            Assert.assertTrue(ace.getMessage().contains("inputOptional:"));
+            Assert.assertTrue(true);
+        }
+        
     }
 }

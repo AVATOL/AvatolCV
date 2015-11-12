@@ -39,6 +39,7 @@ public class Algorithm {
 	
 	
 	private List<AlgorithmDependency> dependencies = new ArrayList<AlgorithmDependency>();
+    private List<AlgorithmInputRequired> requiredInputs = new ArrayList<AlgorithmInputRequired>();
 	protected Hashtable<String, String> propsHash = new Hashtable<String,String>();
 	protected List<String> algPropsEntriesNotYetConsumed = new ArrayList<String>();
 	private String path = null;
@@ -59,7 +60,8 @@ public class Algorithm {
                 this.dependencies.add(ad);
             } 
             else if (line.startsWith(DECLARATION_INPUT_REQUIRED)){
-                
+                AlgorithmInputRequired air = new AlgorithmInputRequired(line);
+                this.requiredInputs.add(air);
             }
             else if (line.startsWith(DECLARATION_INPUT_OPTIONAL)){
                 
