@@ -30,6 +30,8 @@ public class AvatolCVFileSystem {
     
     private static final String DIR_NAME_THUMBNAIL = "thumbnail";
     private static final String DIR_NAME_LARGE = "large";
+    
+    private static final String DIR_NAME_SEGMENTATION_OUTPUT = "segOut";
 
 	private static String avatolCVRootDir = null;
 	private static String sessionsDir = null;
@@ -169,6 +171,7 @@ public class AvatolCVFileSystem {
 	public static void setChosenDataset(DatasetInfo di) throws AvatolCVException {
 	    datasetName = di.getName();
 	    ensureDir(getSessionDir());
+	    ensureDir(getSegmentationOutputDir());
 	    ensureDir(getSessionExclusionDir());
 	    ensureDir(getDatasetDir());
 	    ensureDir(getNormalizedDataDir());
@@ -365,4 +368,9 @@ public class AvatolCVFileSystem {
 	    return charQuestionsDir;
 	}
 	*/
+	public static String getSegmentationOutputDir()  throws AvatolCVException {
+		// TODO Auto-generated method stub
+		String dir = getSessionDir() + FILESEP + DIR_NAME_SEGMENTATION_OUTPUT;
+		return dir;
+	}
 }

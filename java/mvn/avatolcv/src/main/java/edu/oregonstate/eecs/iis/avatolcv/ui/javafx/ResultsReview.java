@@ -314,7 +314,6 @@ public class ResultsReview {
         scoredImagesGridPane.requestLayout();
     }
     private void setScoredImagesInfo(String runID, String scoringConcernName) throws AvatolCVException {
-    	scoredImagesGridPane.getChildren().clear();
     	if (this.runSummary.isCookingShow()){
     		setScoredImagesInfoCookingShow(runID, scoringConcernName);
     	}

@@ -36,6 +36,7 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.ExclusionQualityStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ImagePullStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.LoginStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationConfigurationStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationResultsStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SummaryFilterStep;
@@ -103,19 +104,20 @@ public class JavaFXStepSequencer  {
         addLabelForStep(scoringConcernStep,"Select Item To Score");
         focusStep.setNextAnswerableInSeries(scoringConcernStep);
         
-        SummaryFilterStep summaryFilterStep = new SummaryFilterStep(sessionInfo);
-        ss.appendStep(summaryFilterStep);
-        SummaryFilterStepController summaryFilterStepController = new SummaryFilterStepController(summaryFilterStep, "SummaryFilterStep.fxml");
-        controllerForStep.put(summaryFilterStep, summaryFilterStepController);
-        addLabelForStep(summaryFilterStep,"Summary/Filter");
-        scoringConcernStep.setNextAnswerableInSeries(summaryFilterStep);
+//        SummaryFilterStep summaryFilterStep = new SummaryFilterStep(sessionInfo);
+//        ss.appendStep(summaryFilterStep);
+//        SummaryFilterStepController summaryFilterStepController = new SummaryFilterStepController(summaryFilterStep, "SummaryFilterStep.fxml");
+//        controllerForStep.put(summaryFilterStep, summaryFilterStepController);
+//        addLabelForStep(summaryFilterStep,"Summary/Filter");
+//        scoringConcernStep.setNextAnswerableInSeries(summaryFilterStep);
         
         ImagePullStep imagePullStep = new ImagePullStep(sessionInfo);
         ss.appendStep(imagePullStep);
         ImagePullStepController imagePullController = new ImagePullStepController(this, imagePullStep, "ImagePullStep.fxml");
         controllerForStep.put(imagePullStep, imagePullController);
         addLabelForStep(imagePullStep,"Load Images");
-        summaryFilterStep.setNextAnswerableInSeries(imagePullStep);
+//        summaryFilterStep.setNextAnswerableInSeries(imagePullStep);
+scoringConcernStep.setNextAnswerableInSeries(imagePullStep);
         
         ExclusionQualityStep exclusionQualityStep = new ExclusionQualityStep(sessionInfo);
         ss.appendStep(exclusionQualityStep);
@@ -136,12 +138,18 @@ public class JavaFXStepSequencer  {
         addLabelForStep(segConfigStep,"Configure Segmentation");
         exclusionQualityStep.setNextAnswerableInSeries(segConfigStep);
         
-        SegmentationRunStep segRunStep = new SegmentationRunStep(sessionInfo);
+        SegmentationResultsStep segResultsStep = new SegmentationResultsStep();
+        ss.appendStep(segResultsStep);
+        SegmentationResultsStepController segResultsStepController = new SegmentationResultsStepController(segResultsStep, "SegmentationResultsStep.fxml");
+        controllerForStep.put(segResultsStep, segResultsStepController);
+        addLabelForStep(segResultsStep,"Demo Segmentation Results");
+        segConfigStep.setNextAnswerableInSeries(segResultsStep);
+ /*       SegmentationRunStep segRunStep = new SegmentationRunStep(sessionInfo);
         ss.appendStep(segRunStep);
         SegmentationRunStepController segRunStepController = new SegmentationRunStepController(this, segRunStep, "SegmentationRunStep.fxml");
         controllerForStep.put(segRunStep, segRunStepController);
         addLabelForStep(segRunStep,"Run Segmentation");
-        
+      */  
         
         
         /*
@@ -206,6 +214,10 @@ public class JavaFXStepSequencer  {
     private void activateCurrentStep() throws AvatolCVException {
     	reRenderStepList();
         Step step = ss.getCurrentStep();
+        if (step instanceof SegmentationResultsStep){
+        	int foo = 3;
+        	int bar = foo + 2;
+        }
         StepController controller = controllerForStep.get(step);
         Node contentNode = controller.getContentNode();
         AnchorPane anchorPane = (AnchorPane)scene.lookup("#navigationShellContentPane");

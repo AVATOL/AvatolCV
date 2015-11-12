@@ -28,8 +28,7 @@ public class SegmentationConfigurationStepController implements StepController {
     }
     @Override
     public boolean consumeUIData() {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
