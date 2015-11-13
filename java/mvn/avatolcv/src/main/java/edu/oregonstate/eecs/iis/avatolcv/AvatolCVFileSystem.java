@@ -31,7 +31,12 @@ public class AvatolCVFileSystem {
     private static final String DIR_NAME_THUMBNAIL = "thumbnail";
     private static final String DIR_NAME_LARGE = "large";
     
-    private static final String DIR_NAME_SEGMENTATION_OUTPUT = "segOut";
+    private static final String DIR_NAME_SEGMENTATION_OUTPUT = "segmentationOut";
+    private static final String DIR_NAME_SEGMENTATION_INPUT  = "segmentationIn";
+    private static final String DIR_NAME_ORIENTATION_OUTPUT  = "orientationOut";
+    private static final String DIR_NAME_ORIENTATION_INPUT   = "orientationIn";
+    private static final String DIR_NAME_SCORING_OUTPUT      = "scoringOut";
+    private static final String DIR_NAME_SCORING_INPUT       = "scoringIn";
 
 	private static String avatolCVRootDir = null;
 	private static String sessionsDir = null;
@@ -172,6 +177,11 @@ public class AvatolCVFileSystem {
 	    datasetName = di.getName();
 	    ensureDir(getSessionDir());
 	    ensureDir(getSegmentationOutputDir());
+        ensureDir(getSegmentationInputDir());
+        ensureDir(getOrientationOutputDir());
+        ensureDir(getOrientationInputDir());
+        ensureDir(getScoringOutputDir());
+        ensureDir(getScoringInputDir());
 	    ensureDir(getSessionExclusionDir());
 	    ensureDir(getDatasetDir());
 	    ensureDir(getNormalizedDataDir());
@@ -368,9 +378,33 @@ public class AvatolCVFileSystem {
 	    return charQuestionsDir;
 	}
 	*/
-	public static String getSegmentationOutputDir()  throws AvatolCVException {
-		// TODO Auto-generated method stub
-		String dir = getSessionDir() + FILESEP + DIR_NAME_SEGMENTATION_OUTPUT;
+	// segmetnation
+	public static String getSegmentationInputDir()  throws AvatolCVException {
+		String dir = getSessionDir() + FILESEP + DIR_NAME_SEGMENTATION_INPUT;
 		return dir;
 	}
+	public static String getSegmentationOutputDir()  throws AvatolCVException {
+        String dir = getSessionDir() + FILESEP + DIR_NAME_SEGMENTATION_OUTPUT;
+        return dir;
+    }
+	
+	// orientation
+    public static String getOrientationInputDir()  throws AvatolCVException {
+        String dir = getSessionDir() + FILESEP + DIR_NAME_ORIENTATION_INPUT;
+        return dir;
+    }
+    public static String getOrientationOutputDir()  throws AvatolCVException {
+        String dir = getSessionDir() + FILESEP + DIR_NAME_ORIENTATION_OUTPUT;
+        return dir;
+    }
+    
+    // scoring
+    public static String getScoringInputDir()  throws AvatolCVException {
+        String dir = getSessionDir() + FILESEP + DIR_NAME_SCORING_INPUT;
+        return dir;
+    }
+    public static String getScoringOutputDir()  throws AvatolCVException {
+        String dir = getSessionDir() + FILESEP + DIR_NAME_SCORING_OUTPUT;
+        return dir;
+    }
 }

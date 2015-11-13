@@ -103,7 +103,7 @@ public class TestAlgorithm extends TestCase {
             Assert.fail(ace.getMessage());
         }
     }
-    public List<String> loadAlg(String path){
+    public static List<String> loadAlg(String path){
         List<String> lines = null;
         try {
             lines = Files.readAllLines(Paths.get(path), Charset.defaultCharset());

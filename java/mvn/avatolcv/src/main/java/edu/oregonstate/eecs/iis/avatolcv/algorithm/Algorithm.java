@@ -41,6 +41,8 @@ public class Algorithm {
 	private List<AlgorithmDependency> dependencies = new ArrayList<AlgorithmDependency>();
     private List<AlgorithmInputRequired> requiredInputs = new ArrayList<AlgorithmInputRequired>();
     private List<AlgorithmInputOptional> optionalInputs = new ArrayList<AlgorithmInputOptional>();
+    private List<AlgorithmOutput> outputs = new ArrayList<AlgorithmOutput>();
+    
 	protected Hashtable<String, String> propsHash = new Hashtable<String,String>();
 	protected List<String> algPropsEntriesNotYetConsumed = new ArrayList<String>();
 	private String path = null;
@@ -69,19 +71,20 @@ public class Algorithm {
                 this.optionalInputs.add(aio);
             }
             else if (line.startsWith(DECLARATION_OUTPUT_GENERATED)){
-     
+                AlgorithmOutput ao = new AlgorithmOutput(line);
+                this.outputs.add(ao);
             }
             else if (line.startsWith(PROPERTY_LAUNCH_FILE)){
-                acceptProperty(line);
+                loadProperty(line);
             }
             else if (line.startsWith(PROPERTY_ALG_NAME)){
-                acceptProperty(line);
+                loadProperty(line);
             }
             else if (line.startsWith(PROPERTY_ALG_TYPE)){
-                acceptProperty(line);
+                loadProperty(line);
             }
             else if (line.startsWith(PROPERTY_ALG_DESCRIPTION)){
-                acceptProperty(line);
+                loadProperty(line);
             }
             else {
                 algPropsEntriesNotYetConsumed.add(line);
@@ -93,7 +96,7 @@ public class Algorithm {
         String algDescription = getAlgDescription();
         String algType = getAlgType();
 	}
-	private void acceptProperty(String line) throws AvatolCVException {
+	private void loadProperty(String line) throws AvatolCVException {
 	    if (!line.contains("=")){
 	        expressPropertyDeclarationError(line);
 	    }
@@ -158,4 +161,16 @@ outputGenerated:ofType isolatedSpecimenImage withSuffix _orientedOrig
 		}
 		return value;
 	}
+	public List<AlgorithmDependency> getDependencies(){
+	    return this.dependencies;
+	}
+    public List<AlgorithmInputRequired> getRequiredInputs(){
+        return this.requiredInputs;
+    }
+    public List<AlgorithmInputOptional> getOptionalInputs(){
+        return this.optionalInputs;
+    }
+    public List<AlgorithmOutput> getOutputs(){
+        return this.outputs;
+    }
 }

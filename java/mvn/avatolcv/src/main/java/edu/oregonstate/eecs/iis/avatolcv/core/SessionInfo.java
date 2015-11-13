@@ -195,4 +195,8 @@ public class SessionInfo{
     	    }
     	}
     }
+    
+    public String getPathOfInputFilesForNextStage() throws AvatolCVException {
+        throw new AvatolCVException("haven't implemented sessionInfo.getPathOfInputFilesForNextStage() ");
+    }
 }

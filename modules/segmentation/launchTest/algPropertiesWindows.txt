@@ -2,3 +2,11 @@ launchWith=launchTest.bat
 algName=launchTest
 algType=segmentation
 description=This is a dummy algorithm used to test AvatolCV's module system.
+
+inputRequired:testImagesFile refsFilesWithSuffix * ofType rawImage
+
+inputOptional:userProvidedGroundTruthImagesFile refsFilesWithSuffix _in ofType inputTestType 
+
+outputGenerated:ofType outputTestType withSuffix _out
+
+dependency:testDependency=<modules>\3rdParty\foo\bar\baz

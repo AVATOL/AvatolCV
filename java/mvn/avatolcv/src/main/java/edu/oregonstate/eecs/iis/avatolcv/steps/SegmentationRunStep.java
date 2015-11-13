@@ -36,7 +36,7 @@ public class SegmentationRunStep implements Step {
 
     public void runSegmentation(SegmentationRunStepController controller, String processName) throws AvatolCVException {
         SegmentationAlgorithm sa  = sessionInfo.getSelectedSegmentationAlgorithm();
-        RunConfigFile rcf = new RunConfigFile();
+        RunConfigFile rcf = new RunConfigFile(sa, sessionInfo.getPathOfInputFilesForNextStage());
         String runConfigPath = rcf.getRunConfigPath();
         
         AlgorithmLauncher launcher = new AlgorithmLauncher(sa, runConfigPath);
