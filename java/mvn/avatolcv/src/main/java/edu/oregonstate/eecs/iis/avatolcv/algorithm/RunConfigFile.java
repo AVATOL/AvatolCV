@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
@@ -32,9 +34,13 @@ public class RunConfigFile {
     
     public RunConfigFile(Algorithm alg, String pathOfSessionInputFiles, String pathOfUserProvidedFiles) throws AvatolCVException {
         handleDependencies(alg);
-        handleOptionalInputs(alg);
+        //handleOptionalInputs(alg);
         handleRequiredInputs(alg);
         this.pathOfSessionInputFiles = pathOfSessionInputFiles;
+        File f = new File(this.pathOfSessionInputFiles);
+        if (!f.exists()){
+            throw new AvatolCVException("pathOfSessionInputFiles does not exist " + pathOfSessionInputFiles);
+        }
         this.pathOfUserProvidedFiles = pathOfUserProvidedFiles;
     }
 
@@ -77,11 +83,100 @@ public class RunConfigFile {
     public void handleRequiredInputs(Algorithm alg) throws AvatolCVException {
         String algType = alg.getAlgType();
         List<AlgorithmInputRequired> requiredInputs = alg.getRequiredInputs();
+        // first create the entries for the file
         for (AlgorithmInputRequired air : requiredInputs){
             inputRequiredEntries.add(generateEntryForRequiredInput(air, algType));
-            String path = getFileListPathnameForKey(air.getKey(),algType);
-            generateFileList(path, air.getSuffix(), this.pathOfSessionInputFiles);
         }
+      
+        Hashtable<AlgorithmInput, List<String>> pathListHash = new Hashtable<AlgorithmInput, List<String>>();
+        
+        // make a list of the base class type for sorting
+        List<AlgorithmInput> inputs = new ArrayList<AlgorithmInput>();
+        inputs.addAll(requiredInputs);
+        verifyUniqueSuffixes(inputs);
+        
+        File dir = new File(this.pathOfSessionInputFiles);
+        File[] files = dir.listFiles();
+        List<String> allPathsFromDir = new ArrayList<String>();
+        for (File f : files){
+            allPathsFromDir.add(f.getAbsolutePath());
+        }
+        
+        suffixFileSort(inputs, pathListHash, allPathsFromDir);
+
+        // generate a file list for each requiredInput
+        for (AlgorithmInput air : requiredInputs){
+            String path = getFileListPathnameForKey(air.getKey(),algType);
+            generateFileList(path, pathListHash.get(air), this.pathOfSessionInputFiles);
+        }
+    }
+    public static void verifyUniqueSuffixes(List<AlgorithmInput> inputs) throws AvatolCVException {
+        List<String> suffixList = new ArrayList<String>();
+        for (AlgorithmInput ai : inputs){
+            if (suffixList.contains(ai.getSuffix())){
+                throw new AvatolCVException("two input types have the same suffix.  They must be unique");
+            }
+            else {
+                suffixList.add(ai.getSuffix());
+            }
+        }
+    }
+    public static void suffixFileSort(List<AlgorithmInput> inputs,  Hashtable<AlgorithmInput, List<String>> pathListHash, List<String> allPathsFromDir) throws AvatolCVException {
+        // next divide the required inputs into two lists, those with suffixes and those without
+        List<AlgorithmInput> withSuffixList = new ArrayList<AlgorithmInput>();
+        List<AlgorithmInput> withoutSuffixList = new ArrayList<AlgorithmInput>();
+        for (AlgorithmInput air : inputs){
+            if (air.hasSuffix()){
+                withSuffixList.add(air);
+            }
+            else {
+                withoutSuffixList.add(air);
+            }
+        }
+        // if more than one lacks a suffix, throw an exception as there is no way to tell which are which in the one dir
+        if (withoutSuffixList.size() > 1){
+            throw new AvatolCVException("More than one input has no identifying suffix.  Since all input files come from the same directory - no way to tell these sets apart");
+        }
+        // make a list of pathnames for each requiredInput
+        
+        for (AlgorithmInput air : inputs){
+            List<String> listOfPathnames = new ArrayList<String>();
+            pathListHash.put(air, listOfPathnames);
+        }
+        
+        // go through the path list, put each file into the correct bin for each suffix 
+        
+        
+        // first pull out for each one that matches suffix
+        for (AlgorithmInput air : inputs){
+            List<String> pathListForInput = pathListHash.get(air);
+            for (String path : allPathsFromDir){
+                if (pathHasSuffix(path,air.getSuffix())){
+                    pathListForInput.add(path);
+                }
+            }
+            Collections.sort(pathListForInput);
+            for (String s : pathListForInput){
+                if (allPathsFromDir.contains(s)){
+                    allPathsFromDir.remove(s);
+                }
+            }
+        }
+        // put the rest in the list for no suffix
+        if (!withoutSuffixList.isEmpty()){
+            List<String> noSuffixPathList = pathListHash.get(withoutSuffixList.get(0));
+            for (String path : allPathsFromDir){
+                noSuffixPathList.add(path);
+            }
+            Collections.sort(noSuffixPathList);
+        }
+        
+    }
+    public static boolean pathHasSuffix(String path, String suffix){
+        String[] parts = path.split("\\.");
+        String fileDescriptor = parts[parts.length - 1];
+        String root = path.replace("." + fileDescriptor, "");
+        return root.endsWith(suffix);
     }
     public static String generateEntryForRequiredInput(AlgorithmInputRequired air, String type) throws AvatolCVException {
         String key = air.getKey();
@@ -91,6 +186,7 @@ public class RunConfigFile {
     //
     // optional inputs
     //
+    /*
     public void handleOptionalInputs(Algorithm alg) throws AvatolCVException {
         String algType = alg.getAlgType();
         List<AlgorithmInputOptional> optionalInputs = alg.getOptionalInputs();
@@ -104,24 +200,12 @@ public class RunConfigFile {
         String key = aio.getKey();
         return key + "=" + getFileListPathnameForKey(key, type);
     }
-   
-    public void generateFileList(String pathOfFileToCreate, String suffix, String pathWhereDataLives) throws AvatolCVException {
-        File sourceDir = new File(pathWhereDataLives);
-        if (!sourceDir.exists()){
-            throw new AvatolCVException("Cannot generate runConfigFile - no directory where input files should be " + pathWhereDataLives);
-        }
-        File[] files = sourceDir.listFiles();
+   */
+    public void generateFileList(String pathOfFileToCreate, List<String> paths, String pathWhereDataLives) throws AvatolCVException {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(pathOfFileToCreate));
-            for (File f : files){
-                String fName = f.getName();
-                String[] parts = fName.split("\\.");
-                String fileDescriptor = parts[parts.length - 1];
-                String rootName = fName.replace("." + fileDescriptor, "");
-                
-                if (rootName.endsWith(suffix)){
-                    writer.write(f.getAbsolutePath() + NL);
-                }
+            for (String path : paths){
+                writer.write(path + NL);
             }
             writer.close();
         }

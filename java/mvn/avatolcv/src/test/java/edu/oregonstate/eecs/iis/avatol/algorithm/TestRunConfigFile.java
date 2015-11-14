@@ -1,9 +1,14 @@
 package edu.oregonstate.eecs.iis.avatol.algorithm;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.Algorithm;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmInput;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmInputRequired;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.RunConfigFile;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.SegmentationAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
@@ -26,6 +31,22 @@ public class TestRunConfigFile extends TestCase {
         catch(AvatolCVException ace){
             Assert.fail("Proplem initializing AvatolCVFileSystem " + ace.getMessage());
         }
+    }
+  /*  public void testAAA(){
+        Hashtable<Integer, List<String>> hash = new Hashtable<Integer, List<String>>();
+        List<String> list = new ArrayList<String>();
+        list.add("a");
+        hash.put(new Integer"a", list);
+        modHash(hash);
+        int size = list.size();
+        List<String> pulledList = hash.get("a");
+        int size2 = pulledList.size();
+        int bar = 3;
+    }*/
+    private void modHash(Hashtable<String, List<String>> hash){
+        int size = hash.get("a").size();
+        hash.get("a").add("2");
+        int size2 = hash.get("a").size();
     }
     /*
      * launchWith=launchTest.bat
@@ -57,8 +78,8 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             String depPath = modulesRoot + FILESEP + "3rdParty\\foo\\bar\\baz";
             Assert.assertEquals(entry,"testDependency=" + depPath);
             
-            entries = RunConfigFile.generateLinesForRequiredInputs(segAlg);
-            Assert.assertEquals(entries.get(0),"testImagesFile=" + AvatolCVFileSystem.getSegmentationInputDir() + FILESEP + "testImagesFile.txt");
+            entry = RunConfigFile.generateEntryForRequiredInput(segAlg.getRequiredInputs().get(0), Algorithm.PROPERTY_ALG_TYPE_VALUE_SEGMENTATION);
+            Assert.assertEquals(entry,"testImagesFile=" + AvatolCVFileSystem.getSegmentationInputDir() + FILESEP + "testImagesFile.txt");
             
         }
         catch(AvatolCVException ace){
@@ -66,4 +87,155 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             Assert.fail(ace.getMessage());
         }
     }
+    public void testVerifyUniqueSuffixes(){
+        List<AlgorithmInput> inputs = new ArrayList<AlgorithmInput>();
+        try {
+            AlgorithmInputRequired air1 = new AlgorithmInputRequired("key1 refsFilesWithSuffix _suffix1 ofType foo");
+            AlgorithmInputRequired air2 = new AlgorithmInputRequired("key2 refsFilesWithSuffix _suffix1 ofType bar");
+            inputs.add(air1);
+            inputs.add(air2);
+            RunConfigFile.verifyUniqueSuffixes(inputs);
+            Assert.fail("should have thrown exception on duplicate suffixes");
+        }
+        catch(AvatolCVException ace){
+            Assert.assertTrue(ace.getMessage().startsWith("two input types have the same suffix."));
+        }
+    }
+    
+    public void testSuffixSort_failConflictingNoSuffixEntries(){
+        try {
+            List<AlgorithmInput> inputs = new ArrayList<AlgorithmInput>();
+            AlgorithmInputRequired air1 = new AlgorithmInputRequired("key1 refsFilesWithSuffix * ofType foo");
+            AlgorithmInputRequired air2 = new AlgorithmInputRequired("key2 refsFilesWithSuffix * ofType bar");
+            inputs.add(air1);
+            inputs.add(air2);
+            Hashtable<AlgorithmInput, List<String>> pathListHash = new Hashtable<AlgorithmInput, List<String>>();
+            List<String> allPathsFromDir = new ArrayList<String>();
+            allPathsFromDir.add("foo/bar/a_suffix1.jpg");
+            allPathsFromDir.add("foo/bar/b_suffix1.jpg");
+            
+            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir);
+            Assert.fail("should have thrown exception on duplicate noSuffix case");
+        }
+        catch(AvatolCVException ace){
+            Assert.assertTrue(ace.getMessage().startsWith("More than one input has no identifying suffix."));
+        }
+    }
+    public void testSuffixSort_failNoneMatchingSuffix(){
+        Assert.fail("not yet implemented");
+    }
+    public void testSuffixSort_failNoLackingSuffixRemainingAfterThoseWithSuffixPickedOut(){
+        Assert.fail("not yet implemented");
+    }
+    public void testSuffixSort_noneWithNoSuffix_oneWithSuffix(){
+      
+        try {
+            List<AlgorithmInput> inputs = new ArrayList<AlgorithmInput>();
+            AlgorithmInputRequired air1 = new AlgorithmInputRequired("key1 refsFilesWithSuffix _x ofType foo");
+            inputs.add(air1);
+            
+            Hashtable<AlgorithmInput, List<String>> pathListHash = new Hashtable<AlgorithmInput, List<String>>();
+
+            List<String> allPathsFromDir = new ArrayList<String>();
+            allPathsFromDir.add("foo/bar/a_x.jpg");
+            allPathsFromDir.add("foo/bar/b_y.jpg"); // this should be ignored
+            
+            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir);
+            List<String> list1 = pathListHash.get(air1);
+            Assert.assertTrue(list1.get(0).equals("foo/bar/a_x.jpg"));
+            Assert.assertTrue(list1.size() == 1);
+        }
+        catch(AvatolCVException ace){
+            Assert.fail(ace.getMessage());
+        }
+    }
+    public void testSuffixSort_oneWithNoSuffix_noneWithSuffix(){
+       
+        try {
+            List<AlgorithmInput> inputs = new ArrayList<AlgorithmInput>();
+            AlgorithmInputRequired air1 = new AlgorithmInputRequired("key1 refsFilesWithSuffix * ofType foo");
+            inputs.add(air1);
+            
+            Hashtable<AlgorithmInput, List<String>> pathListHash = new Hashtable<AlgorithmInput, List<String>>();
+            
+            
+            List<String> allPathsFromDir = new ArrayList<String>();
+            allPathsFromDir.add("foo/bar/a.jpg");
+            allPathsFromDir.add("foo/bar/b_suffixWhatever.jpg");
+            
+            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir);
+            List<String> list1 = pathListHash.get(air1);
+            Assert.assertTrue(list1.get(0).equals("foo/bar/a.jpg"));
+            Assert.assertTrue(list1.get(1).equals("foo/bar/b_suffixWhatever.jpg"));  // all will hit if only * specified
+            Assert.assertTrue(list1.size() == 2);
+        }
+        catch(AvatolCVException ace){
+            Assert.fail(ace.getMessage());
+        }
+    }
+    public void testSuffixSort_oneWithNoSuffix_oneWithSuffix(){
+        
+        try {
+            List<AlgorithmInput> inputs = new ArrayList<AlgorithmInput>();
+            AlgorithmInputRequired air1 = new AlgorithmInputRequired("key1 refsFilesWithSuffix * ofType foo");
+            AlgorithmInputRequired air2 = new AlgorithmInputRequired("key2 refsFilesWithSuffix _x ofType bar");
+            inputs.add(air1);
+            inputs.add(air2);
+            
+            Hashtable<AlgorithmInput, List<String>> pathListHash = new Hashtable<AlgorithmInput, List<String>>();
+           
+            
+            List<String> allPathsFromDir = new ArrayList<String>();
+            allPathsFromDir.add("foo/bar/a_x.jpg");
+            allPathsFromDir.add("foo/bar/b.jpg");
+            
+            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir);
+            List<String> list1 = pathListHash.get(air1);
+            List<String> list2 = pathListHash.get(air2);
+            Assert.assertTrue(list1.get(0).equals("foo/bar/b.jpg"));
+            Assert.assertTrue(list1.size() == 1);
+            Assert.assertTrue(list2.get(0).equals("foo/bar/a_x.jpg"));
+            Assert.assertTrue(list2.size() == 1);
+        }
+        catch(AvatolCVException ace){
+            Assert.fail(ace.getMessage());
+        }
+    }
+    public void testSuffixSort_oneWithNoSuffix_twoWithSuffix(){
+        Assert.fail("not yet implemented");
+       
+    }
+
+    public void testSuffixSort_oneWithNoSuffix_threeWithSuffix(){
+        Assert.fail("not yet implemented");
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
