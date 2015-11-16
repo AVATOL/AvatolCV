@@ -31,6 +31,7 @@ public class RunConfigFile {
     List<String> dependencyEntries = new ArrayList<String>();
     List<String> inputRequiredEntries = new ArrayList<String>();
     List<String> inputOptionalEntries = new ArrayList<String>();
+    private String path = null;
     
     public RunConfigFile(Algorithm alg, String pathOfSessionInputFiles, String pathOfUserProvidedFiles) throws AvatolCVException {
         handleDependencies(alg);
@@ -42,10 +43,29 @@ public class RunConfigFile {
             throw new AvatolCVException("pathOfSessionInputFiles does not exist " + pathOfSessionInputFiles);
         }
         this.pathOfUserProvidedFiles = pathOfUserProvidedFiles;
+        persist(alg);
     }
-
+    private void persist(Algorithm alg) throws AvatolCVException {
+    	String algType = alg.getAlgType();
+    	String sessionDir = AvatolCVFileSystem.getSessionDir();
+    	this.path = sessionDir + FILESEP + "runConfig_" + algType + ".txt";
+    	 LEFT OFF HERE - need to finish off format listed above.
+    	try {
+    		BufferedWriter writer = new BufferedWriter(new FileWriter(this.path));
+    		for (String dependency : dependencyEntries){
+    			writer.write(dependency + NL);
+    		}
+    		for (String required : inputRequiredEntries){
+    			writer.write(required + NL);
+    		}
+    		writer.close();
+    	}
+    	catch(IOException ioe){
+    		throw new AvatolCVException("problem writing runConfig file " + this.path);
+    	}
+    }
     public String getRunConfigPath(){
-        return null;
+        return this.path;
     }
     public static String getFileListPathnameForKey(String key, String algType) throws AvatolCVException {
         String pathRoot = "";
@@ -107,7 +127,7 @@ public class RunConfigFile {
         // generate a file list for each requiredInput
         for (AlgorithmInput air : requiredInputs){
             String path = getFileListPathnameForKey(air.getKey(),algType);
-            generateFileList(path, pathListHash.get(air), this.pathOfSessionInputFiles);
+            generateFileList(path, pathListHash.get(air));
         }
     }
     public static void verifyUniqueSuffixes(List<AlgorithmInput> inputs) throws AvatolCVException {
@@ -213,7 +233,7 @@ public class RunConfigFile {
         return key + "=" + getFileListPathnameForKey(key, type);
     }
    */
-    public void generateFileList(String pathOfFileToCreate, List<String> paths, String pathWhereDataLives) throws AvatolCVException {
+    public void generateFileList(String pathOfFileToCreate, List<String> paths) throws AvatolCVException {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(pathOfFileToCreate));
             for (String path : paths){
