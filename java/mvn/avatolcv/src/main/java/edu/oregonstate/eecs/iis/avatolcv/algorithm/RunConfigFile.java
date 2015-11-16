@@ -162,6 +162,15 @@ public class RunConfigFile {
                 }
             }
         }
+        // look for case where no matches for desired suffix were found
+        for (AlgorithmInput air : inputs){
+            List<String> pathListForInput = pathListHash.get(air);
+            if (air.hasSuffix()){
+            	if (pathListForInput.size() == 0){
+                	throw new AvatolCVException("No files with required suffix " + air.getSuffix() + " found.");
+                }
+            }
+        }
         // put the rest in the list for no suffix
         if (!withoutSuffixList.isEmpty()){
             List<String> noSuffixPathList = pathListHash.get(withoutSuffixList.get(0));
@@ -169,8 +178,11 @@ public class RunConfigFile {
                 noSuffixPathList.add(path);
             }
             Collections.sort(noSuffixPathList);
+            // look for case where all the input files matched specified suffixes, leaving none to match the "no suffix" * declaration
+            if (noSuffixPathList.isEmpty()){
+            	throw new AvatolCVException("all the input files matched specified suffixes, leaving none to match the 'no suffix' * declaration");
+            }
         }
-        
     }
     public static boolean pathHasSuffix(String path, String suffix){
         String[] parts = path.split("\\.");
