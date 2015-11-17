@@ -244,9 +244,12 @@ public class RunConfigFile {
         File dir = new File(algSequence.getSupplementalInputDir());
         File[] files = dir.listFiles();
         List<String> allPathsFromDir = new ArrayList<String>();
-        for (File f : files){
-            allPathsFromDir.add(f.getAbsolutePath());
+        if (files.length > 0){
+            for (File f : files){
+                allPathsFromDir.add(f.getAbsolutePath());
+            }
         }
+        
         if (!allPathsFromDir.isEmpty()){
             suffixFileSort(inputs, pathListHash, allPathsFromDir, algSequence.getSupplementalInputDir());
         }
@@ -268,8 +271,12 @@ public class RunConfigFile {
     public void generateFileList(String pathOfFileToCreate, List<String> paths) throws AvatolCVException {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(pathOfFileToCreate));
-            for (String path : paths){
-                writer.write(path + NL);
+            if (null != paths){
+                if (!paths.isEmpty()){
+                    for (String path : paths){
+                        writer.write(path + NL);
+                    }
+                }
             }
             writer.close();
         }

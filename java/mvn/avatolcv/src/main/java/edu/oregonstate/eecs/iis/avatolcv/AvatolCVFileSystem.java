@@ -174,11 +174,16 @@ public class AvatolCVFileSystem {
         ensureDir(getScoredDataDir());
 	    ensureDir(getSessionExclusionDir());
 	    ensureDir(getDatasetDir());
+	    
 	    ensureDir(getNormalizedDataDir());
 	    ensureDir(getNormalizedImageInfoDir());
         ensureDir(getNormalizedImageDir());
         ensureDir(getNormalizedImagesLargeDir());
         ensureDir(getNormalizedImagesThumbnailDir());
+        
+        ensureDir(getManuallyProvidedSegmentationLabelsDir());
+        ensureDir(getManuallyProvidedOrientationLabelsDir());
+        ensureDir(getManuallyProvidedScoringLabelsDir());
 	    setSpecializedDataDir();
 
 	}
