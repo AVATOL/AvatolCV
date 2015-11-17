@@ -52,9 +52,9 @@ public class AlgorithmModules {
 		if (!moduleRootFile.exists()){
 			throw new AvatolCVException("moduleRootPath " + moduleRootDir + " does not exist.");
 		}
-		String segmentationAlgPath = moduleRootDir + FILESEP + "segmentation";
-		String orientationAlgPath = moduleRootDir + FILESEP + "orientation";
-		String scoringAlgPath = moduleRootDir + FILESEP + "scoring";
+		String segmentationAlgPath = moduleRootDir + FILESEP + AlgType.SEGMENTATION.toString().toLowerCase();
+		String orientationAlgPath = moduleRootDir + FILESEP + AlgType.ORIENTATION.toString().toLowerCase();
+		String scoringAlgPath = moduleRootDir + FILESEP + AlgType.SCORING.toString().toLowerCase();
 		//String algsSetsPath = moduleRootDir + FILESEP + "algSets";
 		
 		String propertiesFileName = getPropertiesFilename();

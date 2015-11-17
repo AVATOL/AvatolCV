@@ -3,6 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmLauncher;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.RunConfigFile;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.SegmentationAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
@@ -36,7 +37,8 @@ public class SegmentationRunStep implements Step {
 
     public void runSegmentation(SegmentationRunStepController controller, String processName) throws AvatolCVException {
         SegmentationAlgorithm sa  = sessionInfo.getSelectedSegmentationAlgorithm();
-        RunConfigFile rcf = new RunConfigFile(sa, sessionInfo.getPathOfInputFilesForNextStage());
+        AlgorithmSequence algorithmSequence = sessionInfo.getAlgorithmSequence();
+        RunConfigFile rcf = new RunConfigFile(sa, algorithmSequence);
         String runConfigPath = rcf.getRunConfigPath();
         
         AlgorithmLauncher launcher = new AlgorithmLauncher(sa, runConfigPath);

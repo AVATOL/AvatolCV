@@ -9,6 +9,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.Algorithm;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.SegmentationAlgorithm;
@@ -68,6 +69,7 @@ public class SessionInfo{
     private ScoringAlgorithm chosenScoringAlgorithm = null;
     private DataFilter dataFilter = null;
     private String chosenSegmentationAlg = null;
+    private AlgorithmSequence algorithmSequence = null;
     
 	public SessionInfo() throws AvatolCVException {
 		File f = new File(AvatolCVFileSystem.getAvatolCVRootDir());
@@ -195,8 +197,11 @@ public class SessionInfo{
     	    }
     	}
     }
-    
-    public String getPathOfInputFilesForNextStage() throws AvatolCVException {
-        throw new AvatolCVException("haven't implemented sessionInfo.getPathOfInputFilesForNextStage() ");
+
+    public AlgorithmSequence getAlgorithmSequence() {
+        if (this.algorithmSequence == null){
+            this.algorithmSequence = new AlgorithmSequence();
+        }
+        return this.algorithmSequence;
     }
 }

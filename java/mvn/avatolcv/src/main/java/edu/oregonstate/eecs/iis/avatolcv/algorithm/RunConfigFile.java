@@ -32,26 +32,39 @@ public class RunConfigFile {
     List<String> inputRequiredEntries = new ArrayList<String>();
     List<String> inputOptionalEntries = new ArrayList<String>();
     private String path = null;
+    private Algorithm alg = null;
+    private AlgorithmSequence algSequence = null;
     
-    public RunConfigFile(Algorithm alg, String pathOfSessionInputFiles, String pathOfUserProvidedFiles) throws AvatolCVException {
+    public RunConfigFile(Algorithm alg, AlgorithmSequence algSequence) throws AvatolCVException {
+        this.alg = alg;
+        this.algSequence = algSequence;
+        this.pathOfSessionInputFiles = algSequence.getInputDir();
         handleDependencies(alg);
-        //handleOptionalInputs(alg);
+        handleOptionalInputs(alg);
         handleRequiredInputs(alg);
-        this.pathOfSessionInputFiles = pathOfSessionInputFiles;
+        
         File f = new File(this.pathOfSessionInputFiles);
         if (!f.exists()){
             throw new AvatolCVException("pathOfSessionInputFiles does not exist " + pathOfSessionInputFiles);
         }
-        this.pathOfUserProvidedFiles = pathOfUserProvidedFiles;
-        persist(alg);
+        this.pathOfUserProvidedFiles = algSequence.getSupplementalInputDir();
+        persist();
     }
-    private void persist(Algorithm alg) throws AvatolCVException {
-    	String algType = alg.getAlgType();
-    	String sessionDir = AvatolCVFileSystem.getSessionDir();
-    	this.path = sessionDir + FILESEP + "runConfig_" + algType + ".txt";
-    	 LEFT OFF HERE - need to finish off format listed above.
+    
+    private void persist() throws AvatolCVException {
+    	String algType = this.alg.getAlgType();
+    	//String sessionDir = AvatolCVFileSystem.getSessionDir();
+    	this.path = AvatolCVFileSystem.getSessionDir() + FILESEP + "runConfig_" + algType + ".txt";
+    	
     	try {
     		BufferedWriter writer = new BufferedWriter(new FileWriter(this.path));
+    		String outputDirKey = this.alg.getAlgType() + "OutputDir";
+    		String outputDirPath = this.algSequence.getOutputDir();
+    		File outputDirFile = new File(outputDirPath);
+    		outputDirFile.mkdirs();
+    		writer.write(outputDirKey + "=" + outputDirPath + NL);
+    		String avatolCVStatusFile = AvatolCVFileSystem.getAvatolCVStatusFilePathForAlg(this.alg.getAlgType());
+    		writer.write("avatolCVStatusFile=" + avatolCVStatusFile + NL);
     		for (String dependency : dependencyEntries){
     			writer.write(dependency + NL);
     		}
@@ -67,23 +80,12 @@ public class RunConfigFile {
     public String getRunConfigPath(){
         return this.path;
     }
-    public static String getFileListPathnameForKey(String key, String algType) throws AvatolCVException {
-        String pathRoot = "";
-        if (algType.equals(Algorithm.PROPERTY_ALG_TYPE_VALUE_SEGMENTATION)){
-            pathRoot = AvatolCVFileSystem.getSegmentationInputDir();
-        }
-        else if  (algType.equals(Algorithm.PROPERTY_ALG_TYPE_VALUE_ORIENTATION)){
-            pathRoot = AvatolCVFileSystem.getOrientationInputDir();
-            
-        }
-        else if  (algType.equals(Algorithm.PROPERTY_ALG_TYPE_VALUE_SCORING)){
-            pathRoot = AvatolCVFileSystem.getScoringInputDir();
-        }
-        else {
-            throw new AvatolCVException("unrecognized algType " + algType);
-        }
-        return pathRoot + FILESEP + key + ".txt";
+    public static String getFileListPathnameForKey(String key, AlgorithmSequence algSequence) throws AvatolCVException {
+        return AvatolCVFileSystem.getSessionDir() + FILESEP + key + "_" + algSequence.getCurrentStage() + ".txt";
     }
+  //  public static String getFileListPathnameForKeyForExternallyProvidedData(String key, AlgorithmSequence algSequence) throws AvatolCVException {
+ //       return AvatolCVFileSystem.getSessionDir() + FILESEP + key + "_" + algSequence.getCurrentStage() + ".txt";
+  //  }
     //
     // dependencies
     //
@@ -105,7 +107,7 @@ public class RunConfigFile {
         List<AlgorithmInputRequired> requiredInputs = alg.getRequiredInputs();
         // first create the entries for the file
         for (AlgorithmInputRequired air : requiredInputs){
-            inputRequiredEntries.add(generateEntryForRequiredInput(air, algType));
+            inputRequiredEntries.add(generateEntryForRequiredInput(air, this.algSequence));
         }
       
         Hashtable<AlgorithmInput, List<String>> pathListHash = new Hashtable<AlgorithmInput, List<String>>();
@@ -122,11 +124,11 @@ public class RunConfigFile {
             allPathsFromDir.add(f.getAbsolutePath());
         }
         
-        suffixFileSort(inputs, pathListHash, allPathsFromDir);
+        suffixFileSort(inputs, pathListHash, allPathsFromDir, this.pathOfSessionInputFiles);
 
         // generate a file list for each requiredInput
         for (AlgorithmInput air : requiredInputs){
-            String path = getFileListPathnameForKey(air.getKey(),algType);
+            String path = getFileListPathnameForKey(air.getKey(), this.algSequence);
             generateFileList(path, pathListHash.get(air));
         }
     }
@@ -141,7 +143,11 @@ public class RunConfigFile {
             }
         }
     }
-    public static void suffixFileSort(List<AlgorithmInput> inputs,  Hashtable<AlgorithmInput, List<String>> pathListHash, List<String> allPathsFromDir) throws AvatolCVException {
+    public static void suffixFileSort(List<AlgorithmInput> inputs,  Hashtable<AlgorithmInput, List<String>> pathListHash, List<String> allPathsFromDir, String pathOfInputFiles) throws AvatolCVException {
+        
+        if (allPathsFromDir.isEmpty()){
+            throw new AvatolCVException("No input data present at " + pathOfInputFiles);
+        }
         // next divide the required inputs into two lists, those with suffixes and those without
         List<AlgorithmInput> withSuffixList = new ArrayList<AlgorithmInput>();
         List<AlgorithmInput> withoutSuffixList = new ArrayList<AlgorithmInput>();
@@ -155,7 +161,7 @@ public class RunConfigFile {
         }
         // if more than one lacks a suffix, throw an exception as there is no way to tell which are which in the one dir
         if (withoutSuffixList.size() > 1){
-            throw new AvatolCVException("More than one input has no identifying suffix.  Since all input files come from the same directory - no way to tell these sets apart");
+            throw new AvatolCVException("More than one input has no identifying suffix.  Since all input files come from the same directory - no way to tell these sets apart at " + pathOfInputFiles);
         }
         // make a list of pathnames for each requiredInput
         
@@ -187,7 +193,7 @@ public class RunConfigFile {
             List<String> pathListForInput = pathListHash.get(air);
             if (air.hasSuffix()){
             	if (pathListForInput.size() == 0){
-                	throw new AvatolCVException("No files with required suffix " + air.getSuffix() + " found.");
+                	throw new AvatolCVException("No files with required suffix " + air.getSuffix() + " found at " + pathOfInputFiles);
                 }
             }
         }
@@ -200,7 +206,7 @@ public class RunConfigFile {
             Collections.sort(noSuffixPathList);
             // look for case where all the input files matched specified suffixes, leaving none to match the "no suffix" * declaration
             if (noSuffixPathList.isEmpty()){
-            	throw new AvatolCVException("all the input files matched specified suffixes, leaving none to match the 'no suffix' * declaration");
+            	throw new AvatolCVException("all the input files matched specified suffixes, leaving none to match the 'no suffix' * declaration at " + pathOfInputFiles);
             }
         }
     }
@@ -210,29 +216,55 @@ public class RunConfigFile {
         String root = path.replace("." + fileDescriptor, "");
         return root.endsWith(suffix);
     }
-    public static String generateEntryForRequiredInput(AlgorithmInputRequired air, String type) throws AvatolCVException {
+    public static String generateEntryForRequiredInput(AlgorithmInputRequired air, AlgorithmSequence algSequence) throws AvatolCVException {
         String key = air.getKey();
-        return key + "=" + getFileListPathnameForKey(key, type);
+        return key + "=" + getFileListPathnameForKey(key, algSequence);
     }
    
     //
     // optional inputs
     //
-    /*
+    // for now, just generate empty file lists so this info can flow through the interface, but won't have effect
+   
     public void handleOptionalInputs(Algorithm alg) throws AvatolCVException {
         String algType = alg.getAlgType();
         List<AlgorithmInputOptional> optionalInputs = alg.getOptionalInputs();
-        for (AlgorithmInputOptional oi : optionalInputs){
-            inputOptionalEntries.add(generateEntryForOptionalInput(oi, algType));
-            String path = getFileListPathnameForKey(oi.getKey(),algType);
-            generateFileList(path, oi.getSuffix(), this.pathOfUserProvidedFiles);
+        // first create the entries for the file
+        for (AlgorithmInputOptional air : optionalInputs){
+            inputOptionalEntries.add(generateEntryForOptionalInput(air, this.algSequence));
+        }
+      
+        Hashtable<AlgorithmInput, List<String>> pathListHash = new Hashtable<AlgorithmInput, List<String>>();
+        
+        // make a list of the base class type for sorting
+        List<AlgorithmInput> inputs = new ArrayList<AlgorithmInput>();
+        inputs.addAll(optionalInputs);
+        verifyUniqueSuffixes(inputs);
+        
+        File dir = new File(algSequence.getSupplementalInputDir());
+        File[] files = dir.listFiles();
+        List<String> allPathsFromDir = new ArrayList<String>();
+        for (File f : files){
+            allPathsFromDir.add(f.getAbsolutePath());
+        }
+        if (!allPathsFromDir.isEmpty()){
+            suffixFileSort(inputs, pathListHash, allPathsFromDir, algSequence.getSupplementalInputDir());
+        }
+        
+        // generate a file list for each requiredInput
+        for (AlgorithmInput air : optionalInputs){
+            String path = getFileListPathnameForKey(air.getKey(), this.algSequence);
+            generateFileList(path, pathListHash.get(air));
         }
     }
-    public static String generateEntryForOptionalInput(AlgorithmInputOptional aio, String type) throws AvatolCVException {
+  
+    
+
+    public static String generateEntryForOptionalInput(AlgorithmInputOptional aio, AlgorithmSequence algSequence) throws AvatolCVException {
         String key = aio.getKey();
-        return key + "=" + getFileListPathnameForKey(key, type);
+        return key + "=" + getFileListPathnameForKey(key, algSequence);
     }
-   */
+   
     public void generateFileList(String pathOfFileToCreate, List<String> paths) throws AvatolCVException {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(pathOfFileToCreate));

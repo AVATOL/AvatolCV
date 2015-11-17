@@ -4,6 +4,7 @@ import edu.oregonstate.eecs.iis.avatol.algorithm.TestAlgorithm;
 import edu.oregonstate.eecs.iis.avatol.algorithm.TestAlgorithmDependency;
 import edu.oregonstate.eecs.iis.avatol.algorithm.TestAlgorithmInput;
 import edu.oregonstate.eecs.iis.avatol.algorithm.TestAlgorithmOutput;
+import edu.oregonstate.eecs.iis.avatol.algorithm.TestRunConfigFile;
 import edu.oregonstate.eecs.iis.avatolcv.core.TestDataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.TestHomeWindow;
 import junit.framework.Test;
@@ -36,6 +37,7 @@ public class AppTest extends TestCase
         suite.addTestSuite(TestAlgorithmDependency.class);
         suite.addTestSuite(TestAlgorithmInput.class);
         suite.addTestSuite(TestAlgorithmOutput.class);
+        suite.addTestSuite(TestRunConfigFile.class);
         suite.addTestSuite(TestAvatolCVFileSystem.class);
         suite.addTestSuite(TestJsonUtils.class);
         

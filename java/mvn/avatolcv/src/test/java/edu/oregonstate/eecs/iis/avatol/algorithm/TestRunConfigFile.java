@@ -1,5 +1,6 @@
 package edu.oregonstate.eecs.iis.avatol.algorithm;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -9,8 +10,12 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.Algorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmInput;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmInputRequired;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.OrientationAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.RunConfigFile;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.SegmentationAlgorithm;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules.AlgType;
 import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -32,23 +37,14 @@ public class TestRunConfigFile extends TestCase {
             Assert.fail("Proplem initializing AvatolCVFileSystem " + ace.getMessage());
         }
     }
-  /*  public void testAAA(){
-        Hashtable<Integer, List<String>> hash = new Hashtable<Integer, List<String>>();
-        List<String> list = new ArrayList<String>();
-        list.add("a");
-        hash.put(new Integer"a", list);
-        modHash(hash);
-        int size = list.size();
-        List<String> pulledList = hash.get("a");
-        int size2 = pulledList.size();
-        int bar = 3;
-    }*/
+
+
     private void modHash(Hashtable<String, List<String>> hash){
         int size = hash.get("a").size();
         hash.get("a").add("2");
         int size2 = hash.get("a").size();
     }
-    /*
+    /*  ALG PROPERTIES
      * launchWith=launchTest.bat
 algName=launchTest
 algType=segmentation
@@ -63,7 +59,21 @@ outputGenerated:ofType outputTestType withSuffix _out
 dependency:testDependency=<modules>\3rdParty\foo\bar\baz
 
      */
-    public void testRunConfigFile(){
+    
+    
+    /*  RUN CONFIG
+     *  segmentationOutputDir=<path of dir where output goes>
+        avatolCVStatusFile=<path to file to write status to> (avatolCV will poll that file)
+        
+    AvatolCV generates this line and the associated files due to inputRequired line in algProperties file:
+        testImagesFile=<someAbsolutePath>/testImagesFile.txt
+        
+    AvatolCV generates this line and the associated files entries(if any) due to inputOptional line in algProperties file:
+        userProvidedGroundTruthImagesFile=<someAbsolutePath>/userProvidedGroundTruthImagesFile.txt
+        userProvidedTrainImagesFile=<someAbsolutePath>/userProvidedTrainImagesFile.txt   
+     */
+    
+    public void testRunConfigFileSegmentation(){
         try {
             
             String root = TestAlgorithm.getValidRoot();
@@ -78,9 +88,65 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             String depPath = modulesRoot + FILESEP + "3rdParty\\foo\\bar\\baz";
             Assert.assertEquals(entry,"testDependency=" + depPath);
             
-            entry = RunConfigFile.generateEntryForRequiredInput(segAlg.getRequiredInputs().get(0), Algorithm.PROPERTY_ALG_TYPE_VALUE_SEGMENTATION);
-            Assert.assertEquals(entry,"testImagesFile=" + AvatolCVFileSystem.getSegmentationInputDir() + FILESEP + "testImagesFile.txt");
+            // required input
+            AlgorithmSequence algSequence = new AlgorithmSequence();
+            algSequence.enableSegmentation();
+            entry = RunConfigFile.generateEntryForRequiredInput(segAlg.getRequiredInputs().get(0), algSequence);
+            Assert.assertEquals(entry,"testImagesFile=" + AvatolCVFileSystem.getSessionDir() + FILESEP + "testImagesFile_segmentation.txt");
             
+            // 
+            String testImagesFilePath = AvatolCVFileSystem.getSessionDir() + FILESEP + "testImagesFile_segmentation.txt";
+            File tif = new File(testImagesFilePath);
+            tif.delete();
+            String path = AvatolCVFileSystem.getSessionDir() + FILESEP + "runConfig_" + "segmentation" + ".txt";
+            File f = new File(path);
+            f.delete();
+            RunConfigFile runConfigFile = new RunConfigFile(segAlg, algSequence);
+            Assert.assertTrue(f.exists());
+            Assert.assertTrue(tif.exists());
+        }
+        catch(AvatolCVException ace){
+            ace.printStackTrace();
+            Assert.fail(ace.getMessage());
+        }
+    }
+    public void testRunConfigFileOrientation(){
+        try {
+            
+            String root = TestAlgorithm.getValidRoot();
+            String orientRoot = root + FILESEP + "modules" + FILESEP + "orientation";
+            String launchTestPath = orientRoot + FILESEP + "launchTest" + FILESEP + "algPropertiesWindows.txt";
+            List<String> lines = TestAlgorithm.loadAlg(launchTestPath);
+            OrientationAlgorithm orientAlg = new OrientationAlgorithm(lines, launchTestPath);
+            
+            AlgorithmSequence algSequence = new AlgorithmSequence();
+            algSequence.enableSegmentation();
+            algSequence.enableOrientation();
+            //inputRequired:testImagesFile refsFilesWithSuffix _seg ofType segmentedImage
+            String entry = RunConfigFile.generateEntryForRequiredInput(orientAlg.getRequiredInputs().get(0), algSequence);
+            Assert.assertEquals(entry,"testImagesFile=" + AvatolCVFileSystem.getSessionDir() + FILESEP + "testImagesFile_orientation.txt");
+        }
+        catch(AvatolCVException ace){
+            ace.printStackTrace();
+            Assert.fail(ace.getMessage());
+        }
+    }
+    public void testRunConfigFileScoring(){
+        try {
+            
+            String root = TestAlgorithm.getValidRoot();
+            String scoringRoot = root + FILESEP + "modules" + FILESEP + "scoring";
+            String launchTestPath = scoringRoot + FILESEP + "launchTest" + FILESEP + "algPropertiesWindows.txt";
+            List<String> lines = TestAlgorithm.loadAlg(launchTestPath);
+            ScoringAlgorithm scoringAlg = new ScoringAlgorithm(lines, launchTestPath);
+            
+            AlgorithmSequence algSequence = new AlgorithmSequence();
+            algSequence.enableSegmentation();
+            algSequence.enableOrientation();
+            algSequence.enableScoring();
+            //inputRequired:testImagesFile refsFilesWithSuffix _seg ofType segmentedImage
+            String entry = RunConfigFile.generateEntryForRequiredInput(scoringAlg.getRequiredInputs().get(0), algSequence);
+            Assert.assertEquals(entry,"testImagesFile=" + AvatolCVFileSystem.getSessionDir() + FILESEP + "testImagesFile_scoring.txt");
         }
         catch(AvatolCVException ace){
             ace.printStackTrace();
@@ -115,7 +181,22 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             Assert.fail(ace.getMessage());
         }
     }
-    
+    public void testSuffixSort_failNoInputFilesAtAll(){
+        try {
+            List<AlgorithmInput> inputs = new ArrayList<AlgorithmInput>();
+            AlgorithmInputRequired air1 = new AlgorithmInputRequired("key1 refsFilesWithSuffix * ofType foo");
+            inputs.add(air1);
+            Hashtable<AlgorithmInput, List<String>> pathListHash = new Hashtable<AlgorithmInput, List<String>>();
+            List<String> allPathsFromDir = new ArrayList<String>();
+            
+            
+            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir, "/foo");
+            Assert.fail("should have thrown exception on lack of data case");
+        }
+        catch(AvatolCVException ace){
+            Assert.assertTrue(ace.getMessage().startsWith("No input data present"));
+        }
+    }
     public void testSuffixSort_failConflictingNoSuffixEntries1(){
         try {
             List<AlgorithmInput> inputs = new ArrayList<AlgorithmInput>();
@@ -128,7 +209,7 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             allPathsFromDir.add("foo/bar/a_suffix1.jpg");
             allPathsFromDir.add("foo/bar/b_suffix1.jpg");
             
-            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir);
+            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir, "foo/bar");
             Assert.fail("should have thrown exception on duplicate noSuffix case");
         }
         catch(AvatolCVException ace){
@@ -149,7 +230,7 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             allPathsFromDir.add("foo/bar/a_suffix1.jpg");
             allPathsFromDir.add("foo/bar/b_suffix1.jpg");
             
-            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir);
+            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir, "foo/bar");
             Assert.fail("should have thrown exception on duplicate noSuffix case");
         }
         catch(AvatolCVException ace){
@@ -166,7 +247,7 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             allPathsFromDir.add("foo/bar/a_suffix1.jpg");
             allPathsFromDir.add("foo/bar/b_suffix1.jpg");
             
-            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir);
+            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir, "foo/bar");
             Assert.fail("should have thrown exception on no match of desired suffix case");
         }
         catch(AvatolCVException ace){
@@ -184,7 +265,7 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             allPathsFromDir.add("foo/bar/a_suffix1.jpg");
             allPathsFromDir.add("foo/bar/b_suffix2.jpg");
             
-            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir);
+            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir, "foo/bar");
             Assert.assertTrue(true);
         }
         catch(AvatolCVException ace){
@@ -203,7 +284,7 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             allPathsFromDir.add("foo/bar/a_suffix1.jpg");
             allPathsFromDir.add("foo/bar/b_suffix1.jpg");
             
-            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir);
+            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir, "foo/bar");
             Assert.fail("should have thrown exception on no remaining to match * declaration");
         }
         catch(AvatolCVException ace){
@@ -223,7 +304,7 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             allPathsFromDir.add("foo/bar/a_x.jpg");
             allPathsFromDir.add("foo/bar/b_y.jpg"); // this should be ignored
             
-            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir);
+            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir, "foo/bar");
             List<String> list1 = pathListHash.get(air1);
             Assert.assertTrue(list1.get(0).equals("foo/bar/a_x.jpg"));
             Assert.assertTrue(list1.size() == 1);
@@ -246,7 +327,7 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             allPathsFromDir.add("foo/bar/a.jpg");
             allPathsFromDir.add("foo/bar/b_suffixWhatever.jpg");
             
-            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir);
+            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir, "foo/bar");
             List<String> list1 = pathListHash.get(air1);
             Assert.assertTrue(list1.get(0).equals("foo/bar/a.jpg"));
             Assert.assertTrue(list1.get(1).equals("foo/bar/b_suffixWhatever.jpg"));  // all will hit if only * specified
@@ -272,7 +353,7 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             allPathsFromDir.add("foo/bar/a_x.jpg");
             allPathsFromDir.add("foo/bar/b.jpg");
             
-            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir);
+            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir, "foo/bar");
             List<String> list1 = pathListHash.get(air1);
             List<String> list2 = pathListHash.get(air2);
             Assert.assertTrue(list1.get(0).equals("foo/bar/b.jpg"));
@@ -305,7 +386,7 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             allPathsFromDir.add("foo/bar/c_y.jpg");
             allPathsFromDir.add("foo/bar/b.jpg");
             
-            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir);
+            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir, "foo/bar");
             List<String> list1 = pathListHash.get(air1);
             List<String> list2 = pathListHash.get(air2);
             List<String> list3 = pathListHash.get(air3);
@@ -348,7 +429,7 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             allPathsFromDir.add("foo/bar/c_z.jpg");
             allPathsFromDir.add("foo/bar/b.jpg");
             
-            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir);
+            RunConfigFile.suffixFileSort(inputs,  pathListHash, allPathsFromDir, "foo/bar");
             List<String> list1 = pathListHash.get(air1);
             List<String> list2 = pathListHash.get(air2);
             List<String> list3 = pathListHash.get(air3);
@@ -368,6 +449,13 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             Assert.fail(ace.getMessage());
         }
        
+    }
+    public void testPathHasSuffix(){
+        Assert.assertTrue(RunConfigFile.pathHasSuffix("/foo/bar/x_suffix.jpg", "_suffix"));
+        Assert.assertTrue(RunConfigFile.pathHasSuffix("/foo/bar/x_suffix.jpg", "suffix"));
+        Assert.assertTrue(RunConfigFile.pathHasSuffix("/foo/bar/x_suffix.jpg", "fix"));
+        Assert.assertFalse(RunConfigFile.pathHasSuffix("/foo/bar/x_x.jpg", "_y"));
+        Assert.assertFalse(RunConfigFile.pathHasSuffix("/foo/bar/x.jpg", "_y"));
     }
 }
 

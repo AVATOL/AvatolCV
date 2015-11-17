@@ -26,9 +26,9 @@ public class Algorithm {
 	public static final String PROPERTY_ALG_NAME = "algName";
 	public static final String PROPERTY_ALG_TYPE = "algType";
 	
-	public static final String PROPERTY_ALG_TYPE_VALUE_SEGMENTATION = "segmentation";
-	public static final String PROPERTY_ALG_TYPE_VALUE_ORIENTATION = "orientation";
-	public static final String PROPERTY_ALG_TYPE_VALUE_SCORING = "scoring";
+	public static final String PROPERTY_ALG_TYPE_VALUE_SEGMENTATION = AlgorithmModules.AlgType.SEGMENTATION.toString().toLowerCase();
+	public static final String PROPERTY_ALG_TYPE_VALUE_ORIENTATION = AlgorithmModules.AlgType.ORIENTATION.toString().toLowerCase();
+	public static final String PROPERTY_ALG_TYPE_VALUE_SCORING = AlgorithmModules.AlgType.SCORING.toString().toLowerCase();
 	
 	public static final String PROPERTY_ALG_DESCRIPTION = "description";
 	
