@@ -369,7 +369,7 @@ public class AvatolCVFileSystem {
 	    return currentProjectUserAnswersDir;
 	}*/
 	
-	public static String getAvatolCVStatusFilePathForAlg(String algType) throws AvatolCVException {
+	public static String getStatusFilePathForAlg(String algType) throws AvatolCVException {
 	    return getSessionDir() + FILESEP + algType + "StatusFile.txt";
 	}
 	

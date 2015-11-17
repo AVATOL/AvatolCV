@@ -1,9 +1,12 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
+import java.io.File;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmLauncher;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.CommandLineInvoker;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.RunConfigFile;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.SegmentationAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
@@ -37,11 +40,16 @@ public class SegmentationRunStep implements Step {
 
     public void runSegmentation(SegmentationRunStepController controller, String processName) throws AvatolCVException {
         SegmentationAlgorithm sa  = sessionInfo.getSelectedSegmentationAlgorithm();
-        AlgorithmSequence algorithmSequence = sessionInfo.getAlgorithmSequence();
-        RunConfigFile rcf = new RunConfigFile(sa, algorithmSequence);
+        AlgorithmSequence algSequence = sessionInfo.getAlgorithmSequence();
+        algSequence.enableSegmentation();
+        RunConfigFile rcf = new RunConfigFile(sa, algSequence);
         String runConfigPath = rcf.getRunConfigPath();
-        
+        File runConfigFile = new File(runConfigPath);
+        if (!runConfigFile.exists()){
+            throw new AvatolCVException("runConfigFile path does not exist."); 
+        }
         AlgorithmLauncher launcher = new AlgorithmLauncher(sa, runConfigPath);
-        
+        String statusPath = rcf.getAlgorithmStatusPath();
+        launcher.launch();
     }
 }

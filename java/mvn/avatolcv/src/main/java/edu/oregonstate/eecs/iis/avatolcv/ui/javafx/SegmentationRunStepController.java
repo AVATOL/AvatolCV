@@ -125,11 +125,11 @@ public class SegmentationRunStepController implements StepController, ProgressPr
             }
             //catch(AvatolCVException ace){
             catch(Exception ace){    
-                logger.error("AvatolCV error downloading images");
+                logger.error("AvatolCV error running algorithm");
                 logger.error(ace.getMessage());
-                System.out.println("AvatolCV error downloading images");
+                System.out.println("AvatolCV error running algorithm");
                 ace.printStackTrace();
-                AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem downloading image");
+                AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem running algorithm");
                 return new Boolean(false);
             }
         }

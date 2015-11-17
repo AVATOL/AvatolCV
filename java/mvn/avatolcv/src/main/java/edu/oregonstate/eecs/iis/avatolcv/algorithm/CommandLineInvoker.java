@@ -17,9 +17,7 @@ import edu.oregonstate.eecs.iis.avatolcv.Platform;
  */
 public class CommandLineInvoker {
 	private static final String NL = System.getProperty("line.separator");
-	private String dirToRunIn = null;
-    public CommandLineInvoker(String dirToRunIn){
-    	this.dirToRunIn = dirToRunIn;
+    public CommandLineInvoker(){
     }
     public void printEnvironment(Map<String, String> env){
         System.out.println("...ENVIRONMENT...");

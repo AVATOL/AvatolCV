@@ -81,7 +81,7 @@ public class AlgorithmLauncher {
             	commands.add(launchFilePath + " " + runConfigPath);
             }
             
-            CommandLineInvoker invoker = new CommandLineInvoker(algDir);
+            CommandLineInvoker invoker = new CommandLineInvoker();
             String stdoutPath = algDir + FILESEP + "stdoutLog.txt";
             invoker.runCommandLine(commands, stdoutPath);
 	    }

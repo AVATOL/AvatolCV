@@ -34,7 +34,7 @@ public class RunConfigFile {
     private String path = null;
     private Algorithm alg = null;
     private AlgorithmSequence algSequence = null;
-    
+    private String algStatusPath = null;
     public RunConfigFile(Algorithm alg, AlgorithmSequence algSequence) throws AvatolCVException {
         this.alg = alg;
         this.algSequence = algSequence;
@@ -50,7 +50,9 @@ public class RunConfigFile {
         this.pathOfUserProvidedFiles = algSequence.getSupplementalInputDir();
         persist();
     }
-    
+    public String getAlgorithmStatusPath(){
+        return this.algStatusPath;
+    }
     private void persist() throws AvatolCVException {
     	String algType = this.alg.getAlgType();
     	//String sessionDir = AvatolCVFileSystem.getSessionDir();
@@ -63,14 +65,17 @@ public class RunConfigFile {
     		File outputDirFile = new File(outputDirPath);
     		outputDirFile.mkdirs();
     		writer.write(outputDirKey + "=" + outputDirPath + NL);
-    		String avatolCVStatusFile = AvatolCVFileSystem.getAvatolCVStatusFilePathForAlg(this.alg.getAlgType());
-    		writer.write("avatolCVStatusFile=" + avatolCVStatusFile + NL);
+    		this.algStatusPath = AvatolCVFileSystem.getStatusFilePathForAlg(this.alg.getAlgType());
+    		writer.write("avatolCVStatusFile=" + algStatusPath + NL);
     		for (String dependency : dependencyEntries){
     			writer.write(dependency + NL);
     		}
     		for (String required : inputRequiredEntries){
     			writer.write(required + NL);
     		}
+    		for (String optional : inputOptionalEntries){
+                writer.write(optional + NL);
+            }
     		writer.close();
     	}
     	catch(IOException ioe){
