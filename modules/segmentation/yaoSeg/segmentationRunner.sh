@@ -97,8 +97,9 @@ while read -r line
 do
     filename=$(basename $line)
     echo filename detected was ${filename}
-    lineAsArray=(${filename//./ })
-    fileroot=${lineAsArray[0]}
+#lineAsArray=(${filename//./ })
+#fileroot=${lineAsArray[0]}
+    fileroot=${filename%.*}
     echo fileroot found as ${fileroot}
     echo ${fileroot} >> ${TEST_LIST}
 done < "$testImagesFile"
