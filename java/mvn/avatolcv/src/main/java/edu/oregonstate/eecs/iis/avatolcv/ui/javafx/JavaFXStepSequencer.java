@@ -104,20 +104,20 @@ public class JavaFXStepSequencer  {
         addLabelForStep(scoringConcernStep,"Select Item To Score");
         focusStep.setNextAnswerableInSeries(scoringConcernStep);
         
-//        SummaryFilterStep summaryFilterStep = new SummaryFilterStep(sessionInfo);
-//        ss.appendStep(summaryFilterStep);
-//        SummaryFilterStepController summaryFilterStepController = new SummaryFilterStepController(summaryFilterStep, "SummaryFilterStep.fxml");
-//        controllerForStep.put(summaryFilterStep, summaryFilterStepController);
-//        addLabelForStep(summaryFilterStep,"Summary/Filter");
-//        scoringConcernStep.setNextAnswerableInSeries(summaryFilterStep);
+        SummaryFilterStep summaryFilterStep = new SummaryFilterStep(sessionInfo);
+        ss.appendStep(summaryFilterStep);
+        SummaryFilterStepController summaryFilterStepController = new SummaryFilterStepController(summaryFilterStep, "SummaryFilterStep.fxml");
+        controllerForStep.put(summaryFilterStep, summaryFilterStepController);
+        addLabelForStep(summaryFilterStep,"Summary/Filter");
+        scoringConcernStep.setNextAnswerableInSeries(summaryFilterStep);
         
         ImagePullStep imagePullStep = new ImagePullStep(sessionInfo);
         ss.appendStep(imagePullStep);
         ImagePullStepController imagePullController = new ImagePullStepController(this, imagePullStep, "ImagePullStep.fxml");
         controllerForStep.put(imagePullStep, imagePullController);
         addLabelForStep(imagePullStep,"Load Images");
-//        summaryFilterStep.setNextAnswerableInSeries(imagePullStep);
-scoringConcernStep.setNextAnswerableInSeries(imagePullStep);
+        summaryFilterStep.setNextAnswerableInSeries(imagePullStep);
+//scoringConcernStep.setNextAnswerableInSeries(imagePullStep);
         
         ExclusionQualityStep exclusionQualityStep = new ExclusionQualityStep(sessionInfo);
         ss.appendStep(exclusionQualityStep);
@@ -138,18 +138,24 @@ scoringConcernStep.setNextAnswerableInSeries(imagePullStep);
         addLabelForStep(segConfigStep,"Configure Segmentation");
         exclusionQualityStep.setNextAnswerableInSeries(segConfigStep);
         
+        
+        SegmentationRunStep segRunStep = new SegmentationRunStep(sessionInfo);
+        ss.appendStep(segRunStep);
+        SegmentationRunStepController segRunStepController = new SegmentationRunStepController(this, segRunStep, "SegmentationRunStep.fxml");
+        controllerForStep.put(segRunStep, segRunStepController);
+        addLabelForStep(segRunStep,"Run Segmentation");
+        
+        
+        //segConfigStep.setNextAnswerableInSeries(segRunStep);
+        
+        // THIS WAS SINISAS 20151112 DEMO
         SegmentationResultsStep segResultsStep = new SegmentationResultsStep();
         ss.appendStep(segResultsStep);
         SegmentationResultsStepController segResultsStepController = new SegmentationResultsStepController(segResultsStep, "SegmentationResultsStep.fxml");
         controllerForStep.put(segResultsStep, segResultsStepController);
         addLabelForStep(segResultsStep,"Demo Segmentation Results");
         segConfigStep.setNextAnswerableInSeries(segResultsStep);
- /*       SegmentationRunStep segRunStep = new SegmentationRunStep(sessionInfo);
-        ss.appendStep(segRunStep);
-        SegmentationRunStepController segRunStepController = new SegmentationRunStepController(this, segRunStep, "SegmentationRunStep.fxml");
-        controllerForStep.put(segRunStep, segRunStepController);
-        addLabelForStep(segRunStep,"Run Segmentation");
-      */  
+        
         
         
         /*
@@ -214,17 +220,14 @@ scoringConcernStep.setNextAnswerableInSeries(imagePullStep);
     private void activateCurrentStep() throws AvatolCVException {
     	reRenderStepList();
         Step step = ss.getCurrentStep();
-        if (step instanceof SegmentationResultsStep){
-        	int foo = 3;
-        	int bar = foo + 2;
-        }
+        
         StepController controller = controllerForStep.get(step);
         Node contentNode = controller.getContentNode();
         AnchorPane anchorPane = (AnchorPane)scene.lookup("#navigationShellContentPane");
-        ObservableList<Node> children = anchorPane.getChildren();
+        //ObservableList<Node> children = anchorPane.getChildren();
 
         anchorPane.getChildren().clear();
-        children = anchorPane.getChildren();
+        //children = anchorPane.getChildren();
         anchorPane.getChildren().add(contentNode);
         AnchorPane.setBottomAnchor(contentNode, 0.0);
         AnchorPane.setTopAnchor(contentNode, 0.0);
@@ -338,7 +341,14 @@ scoringConcernStep.setNextAnswerableInSeries(imagePullStep);
                     catch(InterruptedException e){ }
                 }
             }
-    		ss.next();
+    	    boolean seekingNext = true;
+    	    while (seekingNext){
+    	        ss.next();
+    	        if (ss.getCurrentStep().isEnabledByPriorAnswers()){
+    	            seekingNext = false;
+    	        }
+    	    }
+    		
     		// task of loading UI for next step is put back on the javaFX UI thread
     		CurrentStepRunner stepRunner = new CurrentStepRunner();
     		Platform.runLater(stepRunner);

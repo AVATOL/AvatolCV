@@ -39,4 +39,8 @@ public class ImagePullStep  extends Answerable implements Step {
             AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "Problem encountered loading images...");
         }
     }
+    @Override
+    public boolean isEnabledByPriorAnswers() {
+        return true;
+    }
 }

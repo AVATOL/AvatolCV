@@ -8,4 +8,5 @@ public interface Step {
     void init() throws AvatolCVException ;
     void consumeProvidedData() throws AvatolCVException;
     boolean hasFollowUpDataLoadPhase();
+    boolean isEnabledByPriorAnswers();
 }

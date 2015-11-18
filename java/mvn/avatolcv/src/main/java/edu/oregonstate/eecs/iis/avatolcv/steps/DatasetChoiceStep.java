@@ -68,4 +68,8 @@ public class DatasetChoiceStep extends Answerable implements Step {
         this.sessionInfo.getDataSource().loadPrimaryMetadataForChosenDataset(pp, processName);
         
     }
+    @Override
+    public boolean isEnabledByPriorAnswers() {
+        return true;
+    }
 }

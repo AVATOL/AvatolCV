@@ -19,6 +19,7 @@ import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJava
 import edu.oregonstate.eecs.iis.avatolcv.steps.ImagePullStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ImagePullStepController.ImageDownloadTask;
+import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ImagePullStepController.MessageUpdater;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.SegmentationConfigurationStepController.AlgChangeListener;
 
 public class SegmentationRunStepController implements StepController, ProgressPresenter {
@@ -35,8 +36,7 @@ public class SegmentationRunStepController implements StepController, ProgressPr
     }
     @Override
     public boolean consumeUIData() {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class SegmentationRunStepController implements StepController, ProgressPr
         // TODO Auto-generated method stub
 
     }
-
+    @SuppressWarnings("unchecked")
     @Override
     public Node getContentNode() throws AvatolCVException {
         try {
@@ -70,7 +70,7 @@ public class SegmentationRunStepController implements StepController, ProgressPr
             return content;
         }
         catch(IOException ioe){
-            throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
+            throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName() + " : " + ioe.getMessage());
         } 
     }
 
@@ -141,10 +141,10 @@ public class SegmentationRunStepController implements StepController, ProgressPr
     }
     @Override
     public void setMessage(String processName, String m) {
-        // TODO Auto-generated method stub
-        
+        MessageUpdater mu = new MessageUpdater(processName,m);
+        Platform.runLater(mu);
     }
-    /*
+    
     public class MessageUpdater implements Runnable {
         private String processName;
         private String message;
@@ -154,9 +154,10 @@ public class SegmentationRunStepController implements StepController, ProgressPr
         }
         @Override
         public void run() {
-            if (IMAGE_FILE_DOWNLOAD.equals(processName)){
-                imageFileDownloadMessage.setText(message);
-            }
+            segmentationStatus.setText(message);
         }
-        */
+    }
+    public void cancelSegmentation(){
+        
+    }
 }

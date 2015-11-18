@@ -22,6 +22,7 @@ public class AlgorithmLauncher {
     private static final String NL = System.getProperty("line.separator");
     private Algorithm algorithm = null;
     private String runConfigPath = null;
+    private CommandLineInvoker invoker = null;
 	public static void main(String[] args){
 	    if (args.length < 2){
 	        usage();
@@ -56,6 +57,12 @@ public class AlgorithmLauncher {
 	    }
 		 verifyRunConfigPath(runConfigPath);
 	}
+	public boolean isProcessRunning(){
+	    if (null == this.invoker){
+	        return true; // hasn't yet started
+	    }
+	    return this.invoker.isProcessRunning();
+	}
 	public void launch(){
 	    try {
 	        
@@ -81,9 +88,9 @@ public class AlgorithmLauncher {
             	commands.add(launchFilePath + " " + runConfigPath);
             }
             
-            CommandLineInvoker invoker = new CommandLineInvoker();
+            this.invoker = new CommandLineInvoker();
             String stdoutPath = algDir + FILESEP + "stdoutLog.txt";
-            invoker.runCommandLine(commands, stdoutPath);
+            this.invoker.runCommandLine(commands, stdoutPath);
 	    }
 	   
 	    catch(Exception e){

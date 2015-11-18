@@ -33,4 +33,8 @@ public class SummaryFilterStep  extends Answerable implements Step {
     public String getSummaryText(){
         return this.sessionInfo.getDataSource().getDatasetSummaryText();
     }
+    @Override
+    public boolean isEnabledByPriorAnswers() {
+        return true;
+    }
 }

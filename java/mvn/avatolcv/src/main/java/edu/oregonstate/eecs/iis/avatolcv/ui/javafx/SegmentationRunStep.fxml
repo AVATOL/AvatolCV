@@ -12,14 +12,12 @@
          <children>
             <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
             <Label fx:id="segAlgName" text="(segAlgName)" />
-            <Label text="Run status">
-               <VBox.margin>
-                  <Insets top="20.0" />
-               </VBox.margin></Label>
-            <Label fx:id="segmentationStatus">
-               <VBox.margin>
-                  <Insets top="20.0" />
-               </VBox.margin></Label>
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Label text="Run status : " />
+                  <Label fx:id="segmentationStatus" />
+               </children>
+            </HBox>
             <Button mnemonicParsing="false" onAction="#cancelSegmentation" prefWidth="250.0" stylesheets="@../../css/javafx.css" text="Cancel Segmentation" VBox.vgrow="NEVER">
                <VBox.margin>
                   <Insets top="70.0" />

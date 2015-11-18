@@ -17,6 +17,8 @@ import edu.oregonstate.eecs.iis.avatolcv.Platform;
  */
 public class CommandLineInvoker {
 	private static final String NL = System.getProperty("line.separator");
+	private Process process = null;
+	private boolean processHasStarted = false;
     public CommandLineInvoker(){
     }
     public void printEnvironment(Map<String, String> env){
@@ -29,7 +31,12 @@ public class CommandLineInvoker {
         }
          
     }
-    
+    public boolean isProcessRunning(){
+        if (!processHasStarted){
+            return true;
+        }
+        return process.isAlive();
+    }
     public boolean runCommandLine(List<String> commands, String stdoutPath){
        // ddh preOperation();
      boolean result = false;
@@ -57,8 +64,8 @@ public class CommandLineInvoker {
              System.out.println("Stdout filename: " + stdoutPath);
              writer = new BufferedWriter(new FileWriter(stdoutPath));
          }
-         Process process = builder.start();
-
+         this.process = builder.start();
+         this.processHasStarted = true;
          BufferedReader reader = new BufferedReader(new InputStreamReader(
              process.getInputStream()));
          String line;

@@ -25,7 +25,7 @@ public class SegmentationConfigurationStep extends Answerable implements Step {
         String answer = am.getAlgDescription(segAlgName, AlgorithmModules.AlgType.SEGMENTATION);
         return answer;
     }
-    public void setIsAglorithmChosen(boolean isChosen){
+    public void setIsAlgorithmChosen(boolean isChosen){
         this.algChosen = isChosen;
     }
     public void setChosenAlgorithm(String algName){
@@ -37,12 +37,21 @@ public class SegmentationConfigurationStep extends Answerable implements Step {
 
     @Override
     public void consumeProvidedData() throws AvatolCVException {
-        this.sessionInfo.setChosenSegmentationAlgorithmName(this.algName);
+        if (this.algChosen){
+            this.sessionInfo.setChosenSegmentationAlgorithmName(this.algName);
+        }
+        else {
+            this.sessionInfo.setChosenSegmentationAlgorithmName(null);
+        }
     }
 
     @Override
     public boolean hasFollowUpDataLoadPhase() {
         return false;
+    }
+    @Override
+    public boolean isEnabledByPriorAnswers() {
+        return true;
     }
 
 }

@@ -62,4 +62,8 @@ public class ScoringConcernStep  extends Answerable implements Step {
     public void loadRemainingMetadataForChosenDataset(ProgressPresenter pp, String processName) throws AvatolCVException {
         this.sessionInfo.getDataSource().loadRemainingMetadataForChosenDataset(pp, processName);
     }
+    @Override
+    public boolean isEnabledByPriorAnswers() {
+        return true;
+    }
 }

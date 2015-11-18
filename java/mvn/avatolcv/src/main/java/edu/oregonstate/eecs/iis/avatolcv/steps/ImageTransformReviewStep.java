@@ -65,4 +65,8 @@ public class ImageTransformReviewStep  extends Answerable implements Step {
         // TODO Auto-generated method stub
         return false;
     }
+    @Override
+    public boolean isEnabledByPriorAnswers() {
+        return true;
+    }
 }

@@ -22,4 +22,9 @@ public class SegmentationResultsStep extends Answerable implements Step {
 		return false;
 	}
 
+    @Override
+    public boolean isEnabledByPriorAnswers() {
+        return true;
+    }
+
 }

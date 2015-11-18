@@ -2,6 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 
 import javafx.beans.value.ChangeListener;
@@ -12,11 +13,14 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationConfigurationStep;
 
 public class SegmentationConfigurationStepController implements StepController {
+    private static final String KEY_SEG_ALG_CHOICE = "segAlgChoice";
+    private static final String SEG_SKIP = "skipSegmentation";
     public RadioButton radioSegSkip = null;
 	public ChoiceBox<String> segAlgChoiceBox = null;
 	public TextArea segAlgNotes = null;
@@ -28,6 +32,24 @@ public class SegmentationConfigurationStepController implements StepController {
     }
     @Override
     public boolean consumeUIData() {
+        Hashtable<String, String> answerHash = new Hashtable<String, String>();
+        if (radioSegSkip.isSelected()){
+            answerHash.put(KEY_SEG_ALG_CHOICE, SEG_SKIP);
+            this.step.setIsAlgorithmChosen(false);
+            this.step.setChosenAlgorithm(null);
+        }
+        else {
+            String segAlgName = segAlgChoiceBox.getValue();
+            answerHash.put(KEY_SEG_ALG_CHOICE, segAlgName);
+            this.step.setIsAlgorithmChosen(true);
+            this.step.setChosenAlgorithm(segAlgName);
+        }
+        try {
+            this.step.consumeProvidedData();
+        }
+        catch(AvatolCVException ace){
+            AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem trying to consume data at segmentation configuration");
+        }
         return true;
     }
 
@@ -89,23 +111,18 @@ public class SegmentationConfigurationStepController implements StepController {
         segAlgChoiceBox.setDisable(true);
         // clear the algDescription
         this.segAlgNotes.setText("");
-        this.step.setIsAglorithmChosen(false);
-        this.step.setChosenAlgorithm(null);
     }
     public void useSegmentationSelected(){
         // enable the algChooser
         segAlgChoiceBox.setDisable(false);
         // show the alg description
         try {
-            this.step.setChosenAlgorithm(segAlgChoiceBox.getValue());
             String description = this.step.getSegmentationAlgDescription(segAlgChoiceBox.getValue());
             segAlgNotes.setText(description);
         }
         catch(AvatolCVException e){
             AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem loading algorithm description ");
         }
-
-        this.step.setIsAglorithmChosen(true);
     }
     @Override
     public boolean delayEnableNavButtons() {
