@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,18 @@ public class AlgorithmLauncher {
 	    String algPropertiesPath = args[0];
 	    String runConfigFilePath = args[1];
 	    AlgorithmLauncher launcher = new AlgorithmLauncher(algPropertiesPath, runConfigFilePath);
-	    launcher.launch();
+	    launcher.launch(null);
+	}
+	public class MyOutputMonitor implements OutputMonitor {
+
+        @Override
+        public void acceptOutput(String s) {
+           System.out.println(s);
+        }
+	    
+	}
+	public void cancel(){
+	    invoker.cancel();
 	}
 	public AlgorithmLauncher(Algorithm algorithm, String runConfigPath){
 	    this.algorithm = algorithm;
@@ -47,7 +59,8 @@ public class AlgorithmLauncher {
 	}
 	public AlgorithmLauncher(String algPropertiesPath, String runConfigPath){
 		try {
-		    List<String> lines = Files.readAllLines(Paths.get(algPropertiesPath), Charset.defaultCharset());
+		    Path path = Paths.get(algPropertiesPath);
+		    List<String> lines = Files.readAllLines(path, Charset.defaultCharset());
 	        this.algorithm = new Algorithm(lines,algPropertiesPath);
 	    }
 	    catch(Exception ex){
@@ -63,7 +76,10 @@ public class AlgorithmLauncher {
 	    }
 	    return this.invoker.isProcessRunning();
 	}
-	public void launch(){
+	public void launch(OutputMonitor outputMonitor){
+	    if (null == outputMonitor){
+	        outputMonitor = new MyOutputMonitor();
+	    }
 	    try {
 	        
             String launchFile = this.algorithm.getLaunchFile();
@@ -90,7 +106,8 @@ public class AlgorithmLauncher {
             
             this.invoker = new CommandLineInvoker();
             String stdoutPath = algDir + FILESEP + "stdoutLog.txt";
-            this.invoker.runCommandLine(commands, stdoutPath);
+            //this.invoker.runCommandLine(commands, stdoutPath);
+            this.invoker.runCommandLine(commands, outputMonitor);
 	    }
 	   
 	    catch(Exception e){

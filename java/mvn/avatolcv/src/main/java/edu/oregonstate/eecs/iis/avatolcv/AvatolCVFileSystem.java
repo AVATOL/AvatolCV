@@ -70,16 +70,28 @@ public class AvatolCVFileSystem {
 	//
 	//  These are defined at construction time
 	//
-	public static String getAvatolCVRootDir(){
+	public static String getAvatolCVRootDir() throws AvatolCVException{
+	    if (null == avatolCVRootDir){
+            throw new AvatolCVException("avatolCVRootDir consulted before its set.");
+        }
 		return avatolCVRootDir;
 	}
-	public static String getModulesDir(){
+	public static String getModulesDir() throws AvatolCVException {
+	    if (null == modulesDir){
+	        throw new AvatolCVException("modulesDir consulted before its set.");
+	    }
 	    return modulesDir;
 	}
-    public static String getSessionsRoot(){
+    public static String getSessionsRoot() throws AvatolCVException {
+        if (null == sessionsDir){
+            throw new AvatolCVException("sessionsDir consulted before its set.");
+        }
         return sessionsDir;
     }
-    public static String getSessionSummariesDir(){
+    public static String getSessionSummariesDir() throws AvatolCVException {
+        if (null == sessionSummariesDir){
+            throw new AvatolCVException("sessionSummariesDir consulted before its set.");
+        }
         return sessionSummariesDir; 
     }
     
