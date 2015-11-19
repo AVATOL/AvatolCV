@@ -34,7 +34,7 @@
                   <ChoiceBox fx:id="orientAlgChoiceBox" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" />
                </children>
             </GridPane>
-            <TextArea fx:id="segAlgNotes" editable="false" prefHeight="100.0" wrapText="true" VBox.vgrow="NEVER">
+            <TextArea fx:id="orientAlgNotes" editable="false" prefHeight="100.0" wrapText="true" VBox.vgrow="NEVER">
                <VBox.margin>
                   <Insets />
                </VBox.margin>

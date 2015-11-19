@@ -26,8 +26,8 @@ public class OrientationRunStepController implements StepController, OutputMonit
     private OrientationRunStep step = null;
     private String fxmlDocName = null;
     public TextArea outputText = null;
-    public Label segAlgName = null;
-    public Button cancelOrientationButton = null;
+    public Label algName = null;
+    public Button cancelAlgorithmButton = null;
     private JavaFXStepSequencer fxSession = null;
     public OrientationRunStepController(JavaFXStepSequencer fxSession, OrientationRunStep step, String fxmlDocName){
         this.step = step;
@@ -53,7 +53,7 @@ public class OrientationRunStepController implements StepController, OutputMonit
             loader.setController(this);
             Node content = loader.load();
             String algName = this.step.getSelectedOrientationAlgorithm();
-            this.segAlgName.setText(algName);
+            this.algName.setText(algName);
             this.outputText.setText("Starting...");
             Task<Boolean> task = new RunOrientationTask(this, this.step, RUN_ORIENTATION);
             /*
@@ -153,7 +153,7 @@ public class OrientationRunStepController implements StepController, OutputMonit
             outputText.appendText(message + NL);
         }
     }
-    public void cancelOrientation(){
+    public void cancelAlgorithm(){
         System.out.println("heard cancel");
         this.step.cancelOrientation();
     }

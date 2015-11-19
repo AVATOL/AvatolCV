@@ -31,8 +31,8 @@ public class SegmentationRunStepController implements StepController, OutputMoni
     private SegmentationRunStep step = null;
     private String fxmlDocName = null;
     public TextArea outputText = null;
-    public Label segAlgName = null;
-    public Button cancelSegmentationButton = null;
+    public Label algName = null;
+    public Button cancelAlgorithmButton = null;
     private JavaFXStepSequencer fxSession = null;
     public SegmentationRunStepController(JavaFXStepSequencer fxSession, SegmentationRunStep step, String fxmlDocName){
         this.step = step;
@@ -58,7 +58,7 @@ public class SegmentationRunStepController implements StepController, OutputMoni
             loader.setController(this);
             Node content = loader.load();
             String algName = this.step.getSelectedSegmentationAlgorithm();
-            this.segAlgName.setText(algName);
+            this.algName.setText(algName);
             this.outputText.setText("Starting...");
             Task<Boolean> task = new RunSegmentationTask(this, this.step, RUN_SEGMENTATION);
             /*
@@ -158,7 +158,7 @@ public class SegmentationRunStepController implements StepController, OutputMoni
             outputText.appendText(message + NL);
         }
     }
-    public void cancelSegmentation(){
+    public void cancelAlgorithm(){
         System.out.println("heard cancel");
         this.step.cancelSegmentation();
     }

@@ -9,7 +9,7 @@
    <children>
       <VBox HBox.hgrow="ALWAYS">
          <children>
-            <Label fx:id="segAlgName" text="(segAlgName)">
+            <Label fx:id="algName" text="(AlgName)">
                <VBox.margin>
                   <Insets left="6.0" top="6.0" />
                </VBox.margin></Label>
@@ -18,7 +18,7 @@
                   <Insets left="6.0" top="6.0" />
                </VBox.margin>
             </TextArea>
-            <Button fx:id="cancelSegmentationButton" mnemonicParsing="false" onAction="#cancelSegmentation" stylesheets="@../../css/javafx.css" text="Cancel Segmentation" VBox.vgrow="NEVER">
+            <Button fx:id="cancelAlgorithmButton" mnemonicParsing="false" onAction="#cancelAlgorithm" stylesheets="@../../css/javafx.css" text="Cancel Algorithm" VBox.vgrow="NEVER">
                <VBox.margin>
                   <Insets bottom="6.0" left="6.0" top="6.0" />
                </VBox.margin>
