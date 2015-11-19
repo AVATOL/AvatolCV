@@ -35,6 +35,8 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.DatasetChoiceStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ExclusionQualityStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ImagePullStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.LoginStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.OrientationConfigurationStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.OrientationRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationConfigurationStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationResultsStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationRunStep;
@@ -145,6 +147,23 @@ public class JavaFXStepSequencer  {
         controllerForStep.put(segRunStep, segRunStepController);
         addLabelForStep(segRunStep,"Run Segmentation");
         
+        //
+        // Orientation
+        //
+        
+        OrientationConfigurationStep orientConfigStep = new OrientationConfigurationStep(sessionInfo);
+        ss.appendStep(orientConfigStep);
+        OrientationConfigurationStepController orientConfigStepController = new OrientationConfigurationStepController(orientConfigStep, "OrientationConfigurationStep.fxml");
+        controllerForStep.put(orientConfigStep, orientConfigStepController);
+        addLabelForStep(orientConfigStep,"Configure Orientation");
+        segConfigStep.setNextAnswerableInSeries(orientConfigStep);
+        
+        
+        OrientationRunStep orientRunStep = new OrientationRunStep(sessionInfo);
+        ss.appendStep(orientRunStep);
+        OrientationRunStepController orientRunStepController = new OrientationRunStepController(this, orientRunStep, "SegmentationRunStep.fxml");
+        controllerForStep.put(orientRunStep, orientRunStepController);
+        addLabelForStep(orientRunStep,"Run Orientation");
         
         //segConfigStep.setNextAnswerableInSeries(segRunStep);
         

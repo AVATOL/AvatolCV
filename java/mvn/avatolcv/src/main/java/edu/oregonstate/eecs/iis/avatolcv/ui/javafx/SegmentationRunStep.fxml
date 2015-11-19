@@ -7,28 +7,23 @@
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Region prefWidth="100.0" HBox.hgrow="NEVER" />
       <VBox HBox.hgrow="ALWAYS">
          <children>
-            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-            <Label fx:id="segAlgName" text="(segAlgName)" />
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-               <children>
-                  <Label text="Run status : " />
-                  <Label fx:id="segmentationStatus" />
-               </children>
-            </HBox>
-            <Button mnemonicParsing="false" onAction="#cancelSegmentation" prefWidth="250.0" stylesheets="@../../css/javafx.css" text="Cancel Segmentation" VBox.vgrow="NEVER">
+            <Label fx:id="algName" text="(AlgName)">
                <VBox.margin>
-                  <Insets top="70.0" />
+                  <Insets left="6.0" top="6.0" />
+               </VBox.margin></Label>
+            <TextArea fx:id="outputText" wrapText="true" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets left="6.0" top="6.0" />
                </VBox.margin>
-               <padding>
-                  <Insets left="40.0" right="40.0" />
-               </padding>
+            </TextArea>
+            <Button fx:id="cancelAlgorithmButton" mnemonicParsing="false" onAction="#cancelAlgorithm" stylesheets="@../../css/javafx.css" text="Cancel Algorithm" VBox.vgrow="NEVER">
+               <VBox.margin>
+                  <Insets bottom="6.0" left="6.0" top="6.0" />
+               </VBox.margin>
             </Button>
-            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
-      <Region prefWidth="100.0" />
    </children>
 </HBox>

@@ -29,7 +29,6 @@ public class CommandLineInvoker {
             String k = iter.next();
             System.out.println("key : " + k  + "   ,    value : " + env.get(k));
         }
-         
     }
     public boolean isProcessRunning(){
         if (!processHasStarted){
@@ -98,7 +97,65 @@ public class CommandLineInvoker {
      }
      return result;
  }
- 
+    public void cancel(){
+        if (null != this.process){
+            if (this.process.isAlive()){
+                this.process.destroyForcibly();
+            }
+        }
+    }
+    public boolean runCommandLine(List<String> commands, OutputMonitor outputMonitor){
+        // ddh preOperation();
+      boolean result = false;
+      System.out.println("Execute Command: " + commands);
+     
+      StringBuilder sb = new StringBuilder();
+      System.out.println("command array given as : " + NL);
+      for (String s : commands){
+          System.out.println("  " + s);
+          sb.append(s + " ");
+      }
+      System.out.println("...or, as a single string...");
+      System.out.println("" + sb);
+      ProcessBuilder builder = null;
+      builder = new ProcessBuilder(commands);
+      Map<String, String> env = builder.environment();
+      //printEnvironment(env);
+      
+      
+      // redirect the stderr to stdout
+      builder.redirectErrorStream(true);
+      try {
+          
+          this.process = builder.start();
+          this.processHasStarted = true;
+          BufferedReader reader = new BufferedReader(new InputStreamReader(
+              process.getInputStream()));
+          String line;
+          while ((line = reader.readLine()) != null) {
+              //System.out.println(line);
+              outputMonitor.acceptOutput(line);
+          }
+          
+
+          int status = process.waitFor();
+          System.out.println("process status: " + status);
+
+          if (status == 0) {
+              result = true;
+          }
+          else {
+             result = false;
+          }
+
+      } catch (Exception e) {
+          System.out.println("OsuCommandRunner tried to run : " + sb.toString() + ": " + e.getMessage());
+          e.printStackTrace();
+          Throwable t = e.getCause();
+          logNestedException(t);
+      }
+      return result;
+  }
  public void logNestedException(Throwable t){
      if (null != t){
         System.out.println("nestedException was " + t.getMessage());

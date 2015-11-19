@@ -11,8 +11,11 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.OutputMonitor;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
@@ -22,12 +25,14 @@ import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ImagePullStepController.Image
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ImagePullStepController.MessageUpdater;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.SegmentationConfigurationStepController.AlgChangeListener;
 
-public class SegmentationRunStepController implements StepController, ProgressPresenter {
+public class SegmentationRunStepController implements StepController, OutputMonitor {
     public static final String RUN_SEGMENTATION = "run segmentation";
+    public static final String NL = System.getProperty("line.separator");
     private SegmentationRunStep step = null;
     private String fxmlDocName = null;
-    public Label segmentationStatus = null;
-    public Label segAlgName = null;
+    public TextArea outputText = null;
+    public Label algName = null;
+    public Button cancelAlgorithmButton = null;
     private JavaFXStepSequencer fxSession = null;
     public SegmentationRunStepController(JavaFXStepSequencer fxSession, SegmentationRunStep step, String fxmlDocName){
         this.step = step;
@@ -53,8 +58,8 @@ public class SegmentationRunStepController implements StepController, ProgressPr
             loader.setController(this);
             Node content = loader.load();
             String algName = this.step.getSelectedSegmentationAlgorithm();
-            this.segAlgName.setText(algName);
-            this.segmentationStatus.setText("Starting...");
+            this.algName.setText(algName);
+            this.outputText.setText("Starting...");
             Task<Boolean> task = new RunSegmentationTask(this, this.step, RUN_SEGMENTATION);
             /*
              * NOTE - wanted to use javafx properties and binding here but couldn't dovetail it in.  I could not put
@@ -96,7 +101,7 @@ public class SegmentationRunStepController implements StepController, ProgressPr
         // TODO Auto-generated method stub
         return false;
     }
-    public class NavButtonEnablerRunner implements Runnable{
+    public class PostSegmentationUIAdjustments implements Runnable{
         @Override
         public void run() {
             fxSession.enableNavButtons();
@@ -118,7 +123,7 @@ public class SegmentationRunStepController implements StepController, ProgressPr
         protected Boolean call() throws Exception {
             try {
                 this.step.runSegmentation(this.controller, processName);
-                NavButtonEnablerRunner runner = new NavButtonEnablerRunner();
+                PostSegmentationUIAdjustments runner = new PostSegmentationUIAdjustments();
                 Platform.runLater(runner);
                 
                 return new Boolean(true);
@@ -135,29 +140,26 @@ public class SegmentationRunStepController implements StepController, ProgressPr
         }
        
     }
+   
     @Override
-    public void updateProgress(String processName, double percentDone) {
-        // not relevant for this
-    }
-    @Override
-    public void setMessage(String processName, String m) {
-        MessageUpdater mu = new MessageUpdater(processName,m);
+    public void acceptOutput(String s) {
+        System.out.println("OUTPUT MONITOR : " + s);
+        MessageUpdater mu = new MessageUpdater(s);
         Platform.runLater(mu);
     }
     
     public class MessageUpdater implements Runnable {
-        private String processName;
         private String message;
-        public MessageUpdater(String processName, String message){
-            this.processName = processName;
+        public MessageUpdater(String message){
             this.message = message;
         }
         @Override
         public void run() {
-            segmentationStatus.setText(message);
+            outputText.appendText(message + NL);
         }
     }
-    public void cancelSegmentation(){
-        
+    public void cancelAlgorithm(){
+        System.out.println("heard cancel");
+        this.step.cancelSegmentation();
     }
 }

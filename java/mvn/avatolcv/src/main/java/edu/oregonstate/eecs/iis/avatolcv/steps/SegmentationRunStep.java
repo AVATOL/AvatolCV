@@ -10,6 +10,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmLauncher;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.CommandLineInvoker;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.OutputMonitor;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.RunConfigFile;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.SegmentationAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
@@ -19,6 +20,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.SegmentationRunStepController
 public class SegmentationRunStep implements Step {
     private static final String NL = System.getProperty("line.separator");
     private SessionInfo sessionInfo = null;
+    private AlgorithmLauncher launcher = null;
     public SegmentationRunStep(SessionInfo sessionInfo){
         this.sessionInfo = sessionInfo;
     }
@@ -53,21 +55,25 @@ public class SegmentationRunStep implements Step {
         if (!runConfigFile.exists()){
             throw new AvatolCVException("runConfigFile path does not exist."); 
         }
-        AlgorithmLauncher launcher = new AlgorithmLauncher(sa, runConfigPath);
-        String statusPath = rcf.getAlgorithmStatusPath();
-        ProcessMonitor monitor = new ProcessMonitor(launcher, controller, statusPath);
-        Thread t = new Thread(monitor);
-        t.run();
-        launcher.launch();
+        this.launcher = new AlgorithmLauncher(sa, runConfigPath);
+        //String statusPath = rcf.getAlgorithmStatusPath();
+        //ProcessMonitor monitor = new ProcessMonitor(launcher, controller, statusPath);
+        //Thread t = new Thread(monitor);
+        //t.run();
+        this.launcher.launch(controller);
     }
+    public void cancelSegmentation(){
+        this.launcher.cancel();
+    }
+    /*
     public class ProcessMonitor implements Runnable {
         private AlgorithmLauncher launcher = null;
         private String statusPath = null;
-        private ProgressPresenter pp = null;
-        public ProcessMonitor(AlgorithmLauncher launcher, ProgressPresenter pp, String statusPath){
+        private OutputMonitor om = null;
+        public ProcessMonitor(AlgorithmLauncher launcher, OutputMonitor om, String statusPath){
             this.launcher = launcher;
             this.statusPath = statusPath;
-            this.pp = pp;
+            this.om = om;
         }
         @Override
         public void run() {
@@ -82,11 +88,9 @@ public class SegmentationRunStep implements Step {
                 System.out.println(NL + "========================" + NL + "STATUS is " + status + NL + "========================" + NL);
                 this.pp.setMessage("", status);
             }
-            LEFT OFF HERE - wonder if there is a problem reading and writing file at same time
-            https://varunvns.wordpress.com/2012/05/05/reading-and-writing-in-text-files-with-multiple-programs-accessing-it-simultaneously/
         }
-        
     }
+    */
     private String getStatus(String path) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path));
