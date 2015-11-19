@@ -457,6 +457,51 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
         Assert.assertFalse(RunConfigFile.pathHasSuffix("/foo/bar/x_x.jpg", "_y"));
         Assert.assertFalse(RunConfigFile.pathHasSuffix("/foo/bar/x.jpg", "_y"));
     }
+    
+    public void testGenRunConfigYaoOrient(){
+        try {
+            
+            String root = TestAlgorithm.getValidRoot();
+            String orientRoot = root + FILESEP + "modules" + FILESEP + "orientation";
+            String launchTestPath = orientRoot + FILESEP + "yaoOrient" + FILESEP + "algPropertiesMac.txt";
+            List<String> lines = TestAlgorithm.loadAlg(launchTestPath);
+            OrientationAlgorithm orientAlg = new OrientationAlgorithm(lines, launchTestPath);
+            
+          
+            AlgorithmSequence algSequence = new AlgorithmSequence();
+            algSequence.enableSegmentation();
+            algSequence.enableOrientation();
+            
+            RunConfigFile runConfigFile = new RunConfigFile(orientAlg, algSequence);
+           
+        }
+        catch(AvatolCVException ace){
+            ace.printStackTrace();
+            Assert.fail(ace.getMessage());
+        }
+    }
+    public void testGenRunConfigLeafScore(){
+        try {
+            
+            String root = TestAlgorithm.getValidRoot();
+            String scoringRoot = root + FILESEP + "modules" + FILESEP + "scoring";
+            String launchTestPath = scoringRoot + FILESEP + "leafScore" + FILESEP + "algPropertiesMac.txt";
+            List<String> lines = TestAlgorithm.loadAlg(launchTestPath);
+            OrientationAlgorithm orientAlg = new OrientationAlgorithm(lines, launchTestPath);
+            
+          
+            AlgorithmSequence algSequence = new AlgorithmSequence();
+            algSequence.enableSegmentation();
+            algSequence.enableOrientation();
+            
+            RunConfigFile runConfigFile = new RunConfigFile(orientAlg, algSequence);
+           
+        }
+        catch(AvatolCVException ace){
+            ace.printStackTrace();
+            Assert.fail(ace.getMessage());
+        }
+    }
 }
 
 

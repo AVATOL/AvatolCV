@@ -238,6 +238,9 @@ public class AlgorithmModules {
 	public List<String> getSegmentationAlgNames()  throws AvatolCVException{
 	    return getNameList(segAlgs);
 	}
+    public List<String> getOrientationAlgNames()  throws AvatolCVException{
+        return getNameList(orientAlgs);
+    }
 	public List<String> getNameList(List<Algorithm> algs) throws AvatolCVException {
 	    List<String> names = new ArrayList<String>();
 	    for (Algorithm alg : algs){

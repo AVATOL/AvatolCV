@@ -10,6 +10,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.Algorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.OrientationAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.SegmentationAlgorithm;
@@ -69,6 +70,7 @@ public class SessionInfo{
     private ScoringAlgorithm chosenScoringAlgorithm = null;
     private DataFilter dataFilter = null;
     private String chosenSegmentationAlg = null;
+    private String chosenOrientationAlg = null;
     private AlgorithmSequence algorithmSequence = null;
     
 	public SessionInfo() throws AvatolCVException {
@@ -141,6 +143,26 @@ public class SessionInfo{
         Algorithm a =  this.algorithmModules.getAlgWithName(getSegmentationAlgName(), AlgorithmModules.AlgType.SEGMENTATION);
         SegmentationAlgorithm sa = (SegmentationAlgorithm)a;
         return sa;
+    }
+    /*
+     * ORIENTATION
+     */
+    public void setChosenOrientationAlgorithmName(String algName){
+        this.chosenOrientationAlg = algName;
+    }
+    public boolean isOrientationAlgChosen(){
+        if (null == this.chosenOrientationAlg){
+            return false;
+        }
+        return true;
+    }
+    public String getOrientationAlgName(){
+        return this.chosenOrientationAlg;
+    }
+    public OrientationAlgorithm getSelectedOrientationAlgorithm() throws AvatolCVException {
+        Algorithm a =  this.algorithmModules.getAlgWithName(getOrientationAlgName(), AlgorithmModules.AlgType.ORIENTATION);
+        OrientationAlgorithm oa = (OrientationAlgorithm)a;
+        return oa;
     }
     /*
      * FILTER

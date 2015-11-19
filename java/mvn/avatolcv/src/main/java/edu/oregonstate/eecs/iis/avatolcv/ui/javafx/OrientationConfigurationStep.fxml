@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Region prefWidth="100.0" HBox.hgrow="NEVER" />
+      <VBox spacing="20.0" HBox.hgrow="NEVER">
+         <children>
+            <Region VBox.vgrow="ALWAYS" />
+            <TextArea editable="false" prefHeight="50.0" style="-fx-background-color: transparent; : ;" stylesheets="@../../css/javafx.css" text="Segmentation can help isolate the specimen of interest when the image contains background clutter or other objects.  " wrapText="true" VBox.vgrow="NEVER" />
+            <RadioButton fx:id="radioOrientSkip" mnemonicParsing="false" onAction="#skipOrientationSelected" selected="true" text="skip orientation">
+               <toggleGroup>
+                  <ToggleGroup fx:id="dataSourceToggle" />
+               </toggleGroup>
+            </RadioButton>
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+              </rowConstraints>
+               <children>
+                  <RadioButton fx:id="radioOrientYes" mnemonicParsing="false" onAction="#useOrientationSelected" text="use orientation algorithm" toggleGroup="$dataSourceToggle" GridPane.hgrow="ALWAYS">
+                     <padding>
+                        <Insets right="30.0" />
+                     </padding>
+                  </RadioButton>
+                  <ChoiceBox fx:id="orientAlgChoiceBox" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" />
+               </children>
+            </GridPane>
+            <TextArea fx:id="segAlgNotes" editable="false" prefHeight="100.0" wrapText="true" VBox.vgrow="NEVER">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </TextArea>
+            <Region VBox.vgrow="ALWAYS" />
+         </children>
+      </VBox>
+      <Region prefWidth="100.0" HBox.hgrow="ALWAYS" />
+   </children>
+</HBox>
