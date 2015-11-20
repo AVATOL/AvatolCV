@@ -65,8 +65,6 @@ public class RunConfigFile {
     		File outputDirFile = new File(outputDirPath);
     		outputDirFile.mkdirs();
     		writer.write(outputDirKey + "=" + outputDirPath + NL);
-    		this.algStatusPath = AvatolCVFileSystem.getStatusFilePathForAlg(this.alg.getAlgType());
-    		writer.write("avatolCVStatusFile=" + algStatusPath + NL);
     		for (String dependency : dependencyEntries){
     			writer.write(dependency + NL);
     		}

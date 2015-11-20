@@ -9,10 +9,18 @@
    <children>
       <VBox HBox.hgrow="ALWAYS">
          <children>
-            <Label fx:id="algName" text="(AlgName)">
+            <Label fx:id="algName" maxWidth="1.7976931348623157E308" text="(AlgName)">
                <VBox.margin>
                   <Insets left="6.0" top="6.0" />
                </VBox.margin></Label>
+            <Label fx:id="algRunStatus" maxWidth="1.7976931348623157E308" style="-fx-background-color: #E0E0E0;" text="Run status...">
+               <VBox.margin>
+                  <Insets left="6.0" right="6.0" top="6.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets left="6.0" right="6.0" />
+               </padding>
+            </Label>
             <TextArea fx:id="outputText" wrapText="true" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets left="6.0" top="6.0" />

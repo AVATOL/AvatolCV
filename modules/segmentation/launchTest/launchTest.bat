@@ -10,5 +10,5 @@ ping 127.0.0.1 -n 6
 echo running step 3
 ping 127.0.0.1 -n 6
 
-echo done
+echo run completed
 

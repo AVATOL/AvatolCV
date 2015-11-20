@@ -33,6 +33,7 @@ public class SegmentationRunStepController implements StepController, OutputMoni
     public TextArea outputText = null;
     public Label algName = null;
     public Button cancelAlgorithmButton = null;
+    public Label algRunStatus = null;
     private JavaFXStepSequencer fxSession = null;
     public SegmentationRunStepController(JavaFXStepSequencer fxSession, SegmentationRunStep step, String fxmlDocName){
         this.step = step;
@@ -155,6 +156,9 @@ public class SegmentationRunStepController implements StepController, OutputMoni
         }
         @Override
         public void run() {
+        	if (message.startsWith("running step") || message.equals("run completed")){
+        		algRunStatus.setText(message);
+        	}
             outputText.appendText(message + NL);
         }
     }

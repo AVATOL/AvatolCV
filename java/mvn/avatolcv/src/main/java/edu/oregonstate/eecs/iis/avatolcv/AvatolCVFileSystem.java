@@ -380,10 +380,7 @@ public class AvatolCVFileSystem {
 	    }
 	    return currentProjectUserAnswersDir;
 	}*/
-	
-	public static String getStatusFilePathForAlg(String algType) throws AvatolCVException {
-	    return getSessionDir() + FILESEP + algType + "StatusFile.txt";
-	}
+
 	
 	// segmentation
 	public static String getSegmentedDataDir()  throws AvatolCVException {
