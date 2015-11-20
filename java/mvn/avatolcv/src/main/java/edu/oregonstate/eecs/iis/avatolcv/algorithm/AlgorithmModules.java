@@ -57,18 +57,18 @@ public class AlgorithmModules {
 		String scoringAlgPath = moduleRootDir + FILESEP + AlgType.SCORING.toString().toLowerCase();
 		//String algsSetsPath = moduleRootDir + FILESEP + "algSets";
 		
-		String propertiesFileName = getPropertiesFilename();
+		String propertiesFileName = getPropertiesFileRootName();
 		File segDir = new File(segmentationAlgPath);
 		if (segDir.exists()){
-			loadAlgs(segDir, propertiesFileName);
+			loadAlgsForCategory(segDir, propertiesFileName);
 		}
 		File orientDir = new File(orientationAlgPath);
 		if (orientDir.exists()){
-			loadAlgs(orientDir,propertiesFileName);
+			loadAlgsForCategory(orientDir,propertiesFileName);
 		}
 		File scoringDir = new File(scoringAlgPath);
 		if (scoringDir.exists()){
-			loadAlgs(scoringDir, propertiesFileName);
+			loadAlgsForCategory(scoringDir, propertiesFileName);
 		}
 		/*
 		File algsSetsDir = new File(algsSetsPath);
@@ -179,7 +179,24 @@ public class AlgorithmModules {
 		}
 		return result;
 	}
-	
+	private String getPropertiesFileRootName(){
+        String result = null;
+        if (Platform.isWindows()){
+            result = "algPropertiesWindows";
+        }
+        else {
+            result ="algPropertiesMac";
+        }
+        return result;
+    }
+	private void loadAlgsFromDir(File algDir, String propsFileRootName) throws AvatolCVException {
+	    File[] files = algDir.listFiles();
+	    for (File f : files){
+	        if (f.getName().startsWith(propsFileRootName)){
+	            loadAlg(algDir, f.getName());
+	        }
+	    }
+	}
 	private void loadAlg(File algDir, String propsFilename) throws AvatolCVException {
 		String configFilePath = null;
 		configFilePath = algDir.getAbsolutePath() + FILESEP + propsFilename;
@@ -227,11 +244,11 @@ public class AlgorithmModules {
 	        throw new AvatolCVException("Problem loading algorithm properties file " + path + " : " + ioe.getMessage(), ioe);
 	    }
 	}
-	private void loadAlgs(File parentDir, String propsFilename) throws AvatolCVException {
+	private void loadAlgsForCategory(File parentDir, String propsFileRootName) throws AvatolCVException {
 		File[] algDirs = parentDir.listFiles();
 		for (File f : algDirs){
 			if (!(f.getName().equals(".") || f.getName().equals("..") || f.isFile())){
-				loadAlg(f, propsFilename);
+			    loadAlgsFromDir(f, propsFileRootName);
 			}
 		}
 	}
