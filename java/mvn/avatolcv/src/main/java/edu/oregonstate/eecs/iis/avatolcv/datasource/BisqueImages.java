@@ -16,9 +16,6 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
 
 public class BisqueImages {
     private static final String FILESEP = System.getProperty("file.separator");
-    public static final String STANDARD_IMAGE_FILE_EXTENSION = "jpg";
-    public static final String IMAGE_THUMBNAIL_WIDTH = "80";
-    public static final String IMAGE_LARGE_WIDTH = "1000";
     private List<BisqueImage> bisqueImages = null;
     private BisqueWSClient wsClient = null;
     private Hashtable<String,BisqueImage> bisqueImageForID = new Hashtable<String,BisqueImage>();
@@ -138,13 +135,13 @@ public class BisqueImages {
             String id = bi.getResourceUniq();
             bisqueImageForID.put(id, bi);
         }
-        generateImageInfoForSize(imagesThumbnail,bisqueImages,IMAGE_THUMBNAIL_WIDTH, AvatolCVFileSystem.getNormalizedImagesThumbnailDir());
+        generateImageInfoForSize(imagesThumbnail,bisqueImages,ImageInfo.IMAGE_THUMBNAIL_WIDTH, AvatolCVFileSystem.getNormalizedImagesThumbnailDir());
         for (ImageInfo ii : imagesThumbnail){
             String id = ii.getID();
             thumbnailForID.put(id, ii);
         }
         
-        generateImageInfoForSize(imagesLarge,    bisqueImages,IMAGE_LARGE_WIDTH,     AvatolCVFileSystem.getNormalizedImagesLargeDir());
+        generateImageInfoForSize(imagesLarge,    bisqueImages,ImageInfo.IMAGE_LARGE_WIDTH,     AvatolCVFileSystem.getNormalizedImagesLargeDir());
         for (ImageInfo ii : imagesLarge){
             String id = ii.getID();
             imageLargeForID.put(id, ii);
@@ -157,7 +154,7 @@ public class BisqueImages {
             String name = nameParts[0];
             // we use underscore as delimiter so can't have them in filename
             String normalizedName = name.replaceAll("_", "-");
-            ImageInfo ii = new ImageInfo(dir, bi.getResourceUniq(), normalizedName, width, "", STANDARD_IMAGE_FILE_EXTENSION);
+            ImageInfo ii = new ImageInfo(dir, bi.getResourceUniq(), normalizedName, width, "", ImageInfo.STANDARD_IMAGE_FILE_EXTENSION);
             ii.setNameAsUploadedOriginalForm(name);
             listToFill.add(ii);
         }

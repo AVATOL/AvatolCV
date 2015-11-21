@@ -1,0 +1,4 @@
+launchWith=segmentationRunner.bat
+algName=simpleLeafSegmenter (pre-trained)
+algType=segmentation
+description=Algorithm simpleLeafSegmenter will isolate simple leaves from background clutter. It produces a mask file where the green area represents the isolated leaf.  This algorithm is shipped with training data.

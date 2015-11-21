@@ -39,6 +39,8 @@ public class MorphobankDataSource implements DataSource {
     private DatasetInfo chosenDataset = null;
     private List<MBView> viewsForProject = null;
     private List<MBView> viewsPresent = null;
+    private List<MBMediaInfo> mediaInfosForSession = new ArrayList<MBMediaInfo>();
+    private List<String> mediaIDsForSession = new ArrayList<String>();
     private Hashtable<String, MBCharacter> charForIDHash = new Hashtable<String, MBCharacter>();
     private Hashtable<String, MBTaxon> taxonForIDHash = new Hashtable<String, MBTaxon>();
     private Hashtable<String, MBView> viewForIDHash = new Hashtable<String, MBView>();
@@ -46,6 +48,7 @@ public class MorphobankDataSource implements DataSource {
     private Hashtable<String,List<MBMediaInfo>> mediaInfoForCellHash = new Hashtable<String, List<MBMediaInfo>>();
     private MorphobankDataFiles mbDataFiles = null;
     private DataFilter dataFilter = null;
+    private MorphobankImages morphobankImages = null;
     public MorphobankDataSource(String sessionsRoot){
         wsClient = new MorphobankWSClientImpl();
         mbDataFiles = new MorphobankDataFiles();
@@ -241,6 +244,7 @@ public class MorphobankDataSource implements DataSource {
             String processName) throws AvatolCVException {
         try {
         	mbDataFiles.clearNormalizedImageFiles();
+        	mediaInfosForSession.clear();
             int rowCount = this.taxaForMatrix.size();
             int colCount = this.charactersForMatrix.size();
             String matrixID = this.chosenDataset.getID();
@@ -249,10 +253,12 @@ public class MorphobankDataSource implements DataSource {
             int curCount = 0;
             this.viewsPresent = new ArrayList<MBView>();
             List<String> viewIDsSeen = new ArrayList<String>();
-            for (MBCharacter character : this.charactersForMatrix){
+            //for (MBCharacter character : this.charactersForMatrix){
+            for (MBCharacter character : this.chosenCharacters){
                 for (MBTaxon taxon : this.taxaForMatrix){
                     String charID = character.getCharID();
                     String taxonID = taxon.getTaxonID();
+                    // GET CHARACTER STATES FOR THIS CELL
                     pp.setMessage(processName, "character " + character.getCharName() + " taxon " + taxon.getTaxonName());
                     String key = getKeyForCell( charID,taxonID);
                     List<MBCharStateValue> charStatesForCell = this.mbDataFiles.loadMBCharStatesFromDisk(charID, taxonID);
@@ -262,10 +268,12 @@ public class MorphobankDataSource implements DataSource {
                     }
                     charStateValuesForCellHash.put(key, charStatesForCell);
                     
+                    // GET MEDIA INFOS FOR CELL
                     List<MBMediaInfo> mediaInfosForCell = this.mbDataFiles.loadMBMediaInfosForCell(charID, taxonID);
                     if (null == mediaInfosForCell){
                         mediaInfosForCell = this.wsClient.getMediaForCell(matrixID, charID, taxonID);
                         this.mbDataFiles.persistMBMediaInfosForCell(mediaInfosForCell, character, taxon);
+                        mediaInfosForSession.addAll(mediaInfosForCell);
                     }
                     for (MBMediaInfo mi : mediaInfosForCell){
                         String viewID = mi.getViewID();
@@ -278,6 +286,7 @@ public class MorphobankDataSource implements DataSource {
                         }
                     }
                    
+                    // LOAD ANNOTATIONS FOR CELL AND CREATE NORMALIZED IMAGE INFO FILES
                     for (MBMediaInfo mi : mediaInfosForCell){
                     	String mediaID = mi.getMediaID();
                     	List<MBAnnotation> annotationsForCell = this.mbDataFiles.loadMBAnnotationsFromDisk(charID, taxonID, mediaID);
@@ -285,6 +294,7 @@ public class MorphobankDataSource implements DataSource {
                     		annotationsForCell = robustAnnotationDataDownload(pp, matrixID, charID, taxonID , mediaID, processName);
                     		this.mbDataFiles.persistAnnotationsForCell(annotationsForCell, charID, taxonID, mediaID);
                             createNormalizedImageFile(mi,character, taxon, charStatesForCell, annotationsForCell, this.chosenCharacters);
+                            
                     	}
                     }
                     mediaInfoForCellHash.put(key, mediaInfosForCell);
@@ -297,6 +307,7 @@ public class MorphobankDataSource implements DataSource {
                     this.viewsPresent.add(v);
                 }
             }
+            rememberFilenamesForSession(createdNormalizedFilenamesForSession);
         }
         catch(MorphobankWSException e){
             throw new AvatolCVException("problem loading data for matrix. " + e.getMessage(), e);
@@ -497,12 +508,16 @@ public class MorphobankDataSource implements DataSource {
     @Override
     public void downloadImages(ProgressPresenter pp, String processName)
             throws AvatolCVException {
-        // TODO Auto-generated method stub
-        
+        this.morphobankImages = new MorphobankImages(pp, wsClient, chosenDataset, processName, this);
     }
     @Override
     public String getDatasetTitleText() {
         return "Matrix";
     }
-	
+	public List<MBMediaInfo> getMBMediaInfoForSession(){
+	    return this.mediaInfosForSession;
+	}
+	private void rememberFilenamesForSession(List<String> names) throws AvatolCVException {
+	    String path = AvatolCVFileSystem.getSessionDir() ;
+	}
 }

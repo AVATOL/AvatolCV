@@ -11,7 +11,10 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 
 public class ImageInfo {
-
+    public static final String IMAGE_THUMBNAIL_WIDTH = "80";
+    public static final String IMAGE_LARGE_WIDTH = "1000";
+    public static final String STANDARD_IMAGE_FILE_EXTENSION = "jpg";
+    
 	private static final String FILESEP = System.getProperty("file.separator");	
 	private static final String NL = System.getProperty("line.separator");
 	public static final String EXCLUSION_REASON_IMAGE_QUALITY = "imageQuality";
@@ -33,8 +36,7 @@ public class ImageInfo {
 	private ImageInfo ancestorImage = null;
     
 	public ImageInfo(String parentDir, String ID, String nameAsUploadedNormalized, String imageWidth, String outputType, String extension)  {
-		this.parentDir = parentDir;
-		File parentFile = new File(parentDir);        
+		this.parentDir = parentDir;      
 		this.ID = ID;
 		this.nameAsUploadedNormalized = nameAsUploadedNormalized;
 		this.imageWidth = imageWidth;
