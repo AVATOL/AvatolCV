@@ -7,7 +7,6 @@ userProvidedTrainImagesFile=""
 userProvidedGroundTruthImagesFile=""
 testImagesFile=""
 segmentationOutputDir=""
-avatolCVStatusFile=""
 
 croppedMaskImageSuffix="_croppedMask"
 croppedOrigImageSuffix="_croppedOrig"
@@ -28,8 +27,6 @@ do
 	    testImagesFile=${val}
 	elif [ "segmentationOutputDir" = "$key" ]; then
 	    segmentationOutputDir=${val}
-    elif [ "avatolCVStatusFile" = "$key" ]; then
-	    avatolCVStatusFile=${val}
     elif [ "userProvidedGroundTruthImagesFile" = "$key" ]; then
 	    userProvidedGroundTruthImagesFile=${val}
     fi
@@ -48,10 +45,6 @@ if [ "$segmentationOutputDir" = "" ]; then
     missingArg=1
 	echo segRunConfig file missing entry for segmentationOutputDir
 fi
-if [ "$avatolCVStatusFile" = "" ]; then
-    missingArg=1
-	echo segRunConfig file missing entry for avatolCVStatusFile
-fi 
 if [ "$userProvidedGroundTruthImagesFile" = "" ]; then
     missingArg=1
 	echo segRunConfig file missing entry for userProvidedGroundTruthImagesFile
@@ -62,7 +55,6 @@ fi
 echo userProvidedTrainImagesFile is ${userProvidedTrainImagesFile}
 echo testImagesFile is ${testImagesFile}
 echo segmentationOutputDir is ${segmentationOutputDir}
-echo avatolCVStatusFile is ${avatolCVStatusFile}
 echo userProvidedGroundTruthImagesFile is ${userProvidedGroundTruthImagesFile}
 
 
@@ -190,41 +182,40 @@ OPENCV_LIB_DIR=${THIRD_PARTY_DIR}/darwin/drwn-1.8.0/external/opencv/lib
 export DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:${OPENCV_LIB_DIR}"
 DARWIN_BIN_DIR=${THIRD_PARTY_DIR}/darwin/drwn-1.8.0/bin
 # converting pixel labels
-echo running darwin step 1 of 6 > ${avatolCVStatusFile}
+echo running step 1 of 7  - Darwin convertPixellabels
 echo ${DARWIN_BIN_DIR}/convertPixelLabels -config ${DARWIN_CONFIG_XML} -i "_GT.png" ${TRAIN_LIST}
 ${DARWIN_BIN_DIR}/convertPixelLabels -config ${DARWIN_CONFIG_XML} -i "_GT.png" ${TRAIN_LIST}
 
 # train boosted classifiers
-echo running darwin step 2 of 6 > ${avatolCVStatusFile}
+echo running step 2 of 7 - Darwin learnPixelSegModel
 echo ${DARWIN_BIN_DIR}/learnPixelSegModel -config ${DARWIN_CONFIG_XML} -component BOOSTED -set drwnDecisionTree split MISCLASS -set drwnBoostedClassifier numRounds 200 -subSample 250 ${TRAIN_LIST}
 ${DARWIN_BIN_DIR}/learnPixelSegModel -config ${DARWIN_CONFIG_XML} -component BOOSTED -set drwnDecisionTree split MISCLASS -set drwnBoostedClassifier numRounds 200 -subSample 250 ${TRAIN_LIST}
 
 
 # train unary potentials
-echo running darwin step 3 of 6 > ${avatolCVStatusFile}
+echo running step 3 of 7 - Darwin learnPixelSegModel
 echo ${DARWIN_BIN_DIR}/learnPixelSegModel -config ${DARWIN_CONFIG_XML} -component UNARY -subSample 25 ${TRAIN_LIST}
 ${DARWIN_BIN_DIR}/learnPixelSegModel -config ${DARWIN_CONFIG_XML} -component UNARY -subSample 25 ${TRAIN_LIST}
 
 # evaluate with unary terms only
-echo running darwin step 4 of 6 > ${avatolCVStatusFile}
+echo running step 4 of 7 - Darwin inferPixelLabels
 echo ${DARWIN_BIN_DIR}/inferPixelLabels -config ${DARWIN_CONFIG_XML} -pairwise 0.0 -outLabels .unary.txt -outImages .unary.png ${TEST_LIST}
 ${DARWIN_BIN_DIR}/inferPixelLabels -config ${DARWIN_CONFIG_XML} -pairwise 0.0 -outLabels .unary.txt -outImages .unary.png ${TEST_LIST}
 
 # train pairwise potentials
-echo running darwin step 5 of 6 > ${avatolCVStatusFile}
+echo running step 5 of 7 - Darwin learnPixelSegModel
 echo ${DARWIN_BIN_DIR}/learnPixelSegModel -config ${DARWIN_CONFIG_XML} -component CONTRAST ${TRAIN_LIST}
 ${DARWIN_BIN_DIR}/learnPixelSegModel -config ${DARWIN_CONFIG_XML} -component CONTRAST ${TRAIN_LIST}
 
 # evaluate with unary and pariwise terms
-echo running darwin step 6 of 6 > ${avatolCVStatusFile}
+echo running step 6 of 7 - Darwin inferPixelLabels
 echo ${DARWIN_BIN_DIR}/inferPixelLabels -config ${DARWIN_CONFIG_XML} -outLabels .pairwise.txt -outImages .pairwise.png ${TEST_LIST}
 ${DARWIN_BIN_DIR}/inferPixelLabels -config ${DARWIN_CONFIG_XML} -outLabels .pairwise.txt -outImages .pairwise.png ${TEST_LIST}
-
-echo cropping images > ${avatolCVStatusFile}
 
 #
 #  call matlab to crop the leaf on both raw and mask images
 #
+echo running step 7 of 7 - cropping images
 echo ./${THIS_DIR}/yaoSegPP_via_runtime.sh ${segmentationOutputDir} ${testImagesFile} ${croppedOrigImageSuffix} ${croppedMaskImageSuffix}
 ${THIS_DIR}/yaoSegPP_via_runtime.sh ${segmentationOutputDir} ${testImagesFile} ${croppedOrigImageSuffix} ${croppedMaskImageSuffix}
 echo done with segmentation
