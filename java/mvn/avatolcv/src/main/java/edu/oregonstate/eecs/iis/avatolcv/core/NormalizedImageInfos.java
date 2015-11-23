@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Properties;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 
 public class NormalizedImageInfos {
 	private static final String FILESEP = System.getProperty("file.separator");
@@ -29,6 +28,28 @@ public class NormalizedImageInfos {
 			NormalizedImageInfo nii = new NormalizedImageInfo(f.getAbsolutePath());
 			niiHash.put(f.getName(), nii);
 			niiAllPresent.add(f.getName());
+		}
+	}
+	public List<NormalizedImageInfo> getSessionNIIsForKeyValue(String key, String value){
+		List<NormalizedImageInfo> niis = new ArrayList<NormalizedImageInfo>();
+		for (String name : niiSession){
+			NormalizedImageInfo nii = niiHash.get(name);
+			if (nii.hasKey(key)){
+				if (nii.getValueForKey(key).equals(value)){
+					niis.add(nii);
+				}
+			}
+		}
+		return niis;
+	}
+	public void flush(){
+		niiAllPresent.clear();
+		niiSession.clear();
+		niiHash.clear();
+		File dirFile = new File(this.root);
+		File[] files = dirFile.listFiles();
+		for (File f : files){
+			f.delete();
 		}
 	}
 	public Object getTotalCount() {
@@ -68,6 +89,16 @@ public class NormalizedImageInfos {
 		niiHash.put(newFilename, nii);
 		niiAllPresent.add(newFilename);
 		return newPath;
+	}
+	public NormalizedImageInfo getNormalizedImageInfoForSessionWithName(String name) throws AvatolCVException {
+		if (!(niiSession.contains(name))){
+			throw new AvatolCVException("No NormalizedImageInfo named " + name + " present in current session");
+		}
+		NormalizedImageInfo nii = niiHash.get(name);
+		if (null == nii){
+			throw new AvatolCVException("No NormalizedImageInfo named " + name + " known in niiHash.");
+		}
+		return nii;
 	}
 	public void focusToSession(List<String> filenames) throws AvatolCVException {
 		this.niiSession.clear();

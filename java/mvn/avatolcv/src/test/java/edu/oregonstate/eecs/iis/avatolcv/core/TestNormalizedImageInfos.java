@@ -43,16 +43,19 @@ public class TestNormalizedImageInfos extends TestCase {
 		list.add("2");
 		Assert.assertEquals(NormalizedImageInfos.getFirstUnusedSuffix(list),"1");
 	}
+	public void cleanDir(String path){
+		File niiDir = new File(path);
+		File[] files = niiDir.listFiles();
+		for (File f : files){
+			f.delete();
+		}
+	}
 	// populate a blank slate with three
 	public void testAPopulateBlankSlateDifferentIds(){
 		try {
 			// first delete any existing files
 			String niiDirPath = AvatolCVFileSystem.getNormalizedImageInfoDir();
-			File niiDir = new File(niiDirPath);
-			File[] files = niiDir.listFiles();
-			for (File f : files){
-				f.delete();
-			}
+			cleanDir(niiDirPath);
 			NormalizedImageInfos niis = new NormalizedImageInfos(niiDirPath);
 			Assert.assertEquals(niis.getTotalCount(), 0);
 			Assert.assertEquals(niis.getSessionCount(), 0);
@@ -82,11 +85,7 @@ public class TestNormalizedImageInfos extends TestCase {
 			try {
 				// first delete any existing files
 				String niiDirPath = AvatolCVFileSystem.getNormalizedImageInfoDir();
-				File niiDir = new File(niiDirPath);
-				File[] files = niiDir.listFiles();
-				for (File f : files){
-					f.delete();
-				}
+				cleanDir(niiDirPath);
 				NormalizedImageInfos niis = new NormalizedImageInfos(niiDirPath);
 				Assert.assertEquals(niis.getTotalCount(), 0);
 				Assert.assertEquals(niis.getSessionCount(), 0);
@@ -116,11 +115,7 @@ public class TestNormalizedImageInfos extends TestCase {
 		try {
 			// first delete any existing files
 			String niiDirPath = AvatolCVFileSystem.getNormalizedImageInfoDir();
-			File niiDir = new File(niiDirPath);
-			File[] files = niiDir.listFiles();
-			for (File f : files){
-				f.delete();
-			}
+			cleanDir(niiDirPath);
 			NormalizedImageInfos niis = new NormalizedImageInfos(niiDirPath);
 			Assert.assertEquals(niis.getTotalCount(), 0);
 			Assert.assertEquals(niis.getSessionCount(), 0);
@@ -152,11 +147,7 @@ public class TestNormalizedImageInfos extends TestCase {
 		try {
 			// first delete any existing files
 			String niiDirPath = AvatolCVFileSystem.getNormalizedImageInfoDir();
-			File niiDir = new File(niiDirPath);
-			File[] files = niiDir.listFiles();
-			for (File f : files){
-				f.delete();
-			}
+			cleanDir(niiDirPath);
 			NormalizedImageInfos niis = new NormalizedImageInfos(niiDirPath);
 			Assert.assertEquals(niis.getTotalCount(), 0);
 			Assert.assertEquals(niis.getSessionCount(), 0);
@@ -179,8 +170,8 @@ public class TestNormalizedImageInfos extends TestCase {
 			NormalizedImageInfos niis2 = new NormalizedImageInfos(niiDirPath);
 			try {
 				List<String> sessionList = new ArrayList<String>();
-				sessionList.add("id1_1");
-				sessionList.add("id1_2");
+				sessionList.add("id1_1.txt");
+				sessionList.add("id1_2.txt");
 				niis2.focusToSession(sessionList);
 				Assert.assertEquals(niis2.getSessionCount(),2);
 			}
@@ -191,48 +182,194 @@ public class TestNormalizedImageInfos extends TestCase {
 			NormalizedImageInfos niis3 = new NormalizedImageInfos(niiDirPath);
 			try {
 				List<String> sessionList = new ArrayList<String>();
-				sessionList.add("id1_1");
-				sessionList.add("id1_4");
+				sessionList.add("id1_1.txt");
+				sessionList.add("id1_4.txt");
 				niis3.focusToSession(sessionList);
 				Assert.fail("should have thrown exception on bogus filename");
 			}
 			catch(AvatolCVException ace){
 				Assert.assertTrue(ace.getMessage().startsWith("given filename "));
 			}
-			LEFT OFF HERE...
+			
 		}
 		catch(AvatolCVException ace){
 			Assert.fail(ace.getMessage());
 		}
 		
 	}
-	//storing unique properties files into unique filenames (for debugging)
-	public void testCVerifyUniqueFilenames(){
-		Assert.fail("not yet implemented");
-		
-	}
+	
 	//determine  "incoming" properties file already is present
 	public void testDVerifyFileALreadyExists(){
-		Assert.fail("not yet implemented");
+		try {
+			// first delete any existing files
+			String niiDirPath = AvatolCVFileSystem.getNormalizedImageInfoDir();
+			cleanDir(niiDirPath);
+			NormalizedImageInfos niis = new NormalizedImageInfos(niiDirPath);
+			Assert.assertEquals(niis.getTotalCount(), 0);
+			Assert.assertEquals(niis.getSessionCount(), 0);
+			String mediaId1 = "id1";
+			Properties p1 = new Properties();
+			p1.setProperty("key1", "value1");
+			p1.setProperty("key2", "value2");
+			niis.addMediaInfo(mediaId1, p1);
+			Assert.assertEquals(niis.getTotalCount(),1);
+			Properties p2 = new Properties();
+			p2.setProperty("key1", "value1");
+			p2.setProperty("key2", "value2");
+			niis.addMediaInfo(mediaId1, p2);
+			// no new one added
+			Assert.assertEquals(niis.getTotalCount(),1);
+		}
+		catch(AvatolCVException ace){
+			Assert.fail(ace.getMessage());
+		}
 		
 	}
 	//making a new file for it with one-up name if it isn't
 	public void testEVerifyFileNewAdded(){
-		Assert.fail("not yet implemented");
-		
+		try {
+			// first delete any existing files
+			String niiDirPath = AvatolCVFileSystem.getNormalizedImageInfoDir();
+			cleanDir(niiDirPath);
+			NormalizedImageInfos niis = new NormalizedImageInfos(niiDirPath);
+			Assert.assertEquals(niis.getTotalCount(), 0);
+			Assert.assertEquals(niis.getSessionCount(), 0);
+			String mediaId1 = "id1";
+			Properties p1 = new Properties();
+			p1.setProperty("key1", "value1");
+			p1.setProperty("key2", "value2");
+			niis.addMediaInfo(mediaId1, p1);
+			Assert.assertEquals(niis.getTotalCount(),1);
+			Properties p2 = new Properties();
+			// different values, thus distinct, should add new one
+			p2.setProperty("key1", "value3");
+			p2.setProperty("key2", "value4");
+			niis.addMediaInfo(mediaId1, p2);
+			// new one added
+			Assert.assertEquals(niis.getTotalCount(),2);
+		}
+		catch(AvatolCVException ace){
+			Assert.fail(ace.getMessage());
+		}
 	}
 	//providing properties files to scoringConfig screen based on filenames stored in the sessionImageList
 	public void testFRetrievePropsForFilenames(){
-		Assert.fail("not yet implemented");
+		try {
+			// first delete any existing files
+			String niiDirPath = AvatolCVFileSystem.getNormalizedImageInfoDir();
+			cleanDir(niiDirPath);
+			NormalizedImageInfos niis = new NormalizedImageInfos(niiDirPath);
+			String mediaId1 = "id1";
+			Properties p1 = new Properties();
+			p1.setProperty("key1", "value1");
+			p1.setProperty("key2", "value2");
+			niis.addMediaInfo(mediaId1, p1);
+			Assert.assertEquals(niis.getTotalCount(),1);
+			Properties p2 = new Properties();
+			// different values, thus distinct, should add new one
+			p2.setProperty("key1", "value3");
+			p2.setProperty("key2", "value4");
+			niis.addMediaInfo(mediaId1, p2);
+			// new one added
+			Assert.assertEquals(niis.getTotalCount(),2);
+			try {
+				NormalizedImageInfo nii1 = niis.getNormalizedImageInfoForSessionWithName("id1_1.txt");
+				Assert.fail("should have thrown exception - desired  nii not yet added to session");
+			}
+			catch(AvatolCVException ace){
+				Assert.assertTrue(true);
+			}
+			List<String> sessionList = new ArrayList<String>();
+			sessionList.add("id1_1.txt");
+			sessionList.add("id1_2.txt");
+			niis.focusToSession(sessionList);
+			NormalizedImageInfo nii1 = niis.getNormalizedImageInfoForSessionWithName("id1_1.txt");
+			Assert.assertEquals(nii1.getValueForKey("key1"),"value1");
+			Assert.assertEquals(nii1.getValueForKey("key2"),"value2");
+			NormalizedImageInfo nii2 = niis.getNormalizedImageInfoForSessionWithName("id1_2.txt");
+			Assert.assertEquals(nii2.getValueForKey("key1"),"value3");
+			Assert.assertEquals(nii2.getValueForKey("key2"),"value4");
+			
+			try {
+				NormalizedImageInfo nii3 = niis.getNormalizedImageInfoForSessionWithName("id1_3.txt");
+				Assert.fail("should have thrown exception getting nii from session that is not in the session");
+			}
+			catch(AvatolCVException ace){
+				Assert.assertTrue(true);
+			}
+		}
+		catch(AvatolCVException ace){
+			Assert.fail(ace.getMessage());
+		}
 		
 	}
 	//flushes on request (and deletes files)
 	public void testGFlush(){
-		Assert.fail("not yet implemented");
+		try {
+			// first delete any existing files
+			String niiDirPath = AvatolCVFileSystem.getNormalizedImageInfoDir();
+			cleanDir(niiDirPath);
+			NormalizedImageInfos niis = new NormalizedImageInfos(niiDirPath);
+			String mediaId1 = "id1";
+			Properties p1 = new Properties();
+			p1.setProperty("key1", "value1");
+			p1.setProperty("key2", "value2");
+			niis.addMediaInfo(mediaId1, p1);
+			Assert.assertEquals(niis.getTotalCount(),1);
+			Properties p2 = new Properties();
+			// different values, thus distinct, should add new one
+			p2.setProperty("key1", "value3");
+			p2.setProperty("key2", "value4");
+			niis.addMediaInfo(mediaId1, p2);
+			
+			List<String> sessionList = new ArrayList<String>();
+			sessionList.add("id1_1.txt");
+			niis.focusToSession(sessionList);
+			
+			Assert.assertEquals(niis.getSessionCount(),1);
+			Assert.assertEquals(niis.getTotalCount(), 2);
+			niis.flush();
+			Assert.assertEquals(niis.getSessionCount(),0);
+			Assert.assertEquals(niis.getTotalCount(), 0);
+			File dirFile = new File(niiDirPath);
+			File[] files = dirFile.listFiles();
+			Assert.assertTrue(files.length==0);
+		}
+		catch(AvatolCVException ace){
+			Assert.fail(ace.getMessage());
+		}
 		
 	}
-	public void testHGetSessionNIIsForTaxonValue(){
-		Assert.fail("not yet implemented");
+	public void testHGetSessionNIIsForKeyValue(){
+		try {
+			// first delete any existing files
+			String niiDirPath = AvatolCVFileSystem.getNormalizedImageInfoDir();
+			cleanDir(niiDirPath);
+			NormalizedImageInfos niis = new NormalizedImageInfos(niiDirPath);
+			String mediaId1 = "id1";
+			Properties p1 = new Properties();
+			p1.setProperty("key1", "value1");
+			p1.setProperty("key2", "value2");
+			niis.addMediaInfo(mediaId1, p1);
+			Assert.assertEquals(niis.getTotalCount(),1);
+			Properties p2 = new Properties();
+			// different values, thus distinct, should add new one
+			p2.setProperty("key1", "value3");
+			p2.setProperty("key2", "value4");
+			niis.addMediaInfo(mediaId1, p2);
+			
+			List<String> sessionList = new ArrayList<String>();
+			sessionList.add("id1_1.txt");
+			sessionList.add("id1_2.txt");
+			niis.focusToSession(sessionList);
+			
+			List<NormalizedImageInfo> niiList = niis.getSessionNIIsForKeyValue("key1","value1");
+			Assert.assertTrue(niiList.size() == 1);
+			Assert.assertEquals(niiList.get(0).getValueForKey("key1"),"value1");
+		}
+		catch(AvatolCVException ace){
+			Assert.fail(ace.getMessage());
+		}
 		
 	}
 }

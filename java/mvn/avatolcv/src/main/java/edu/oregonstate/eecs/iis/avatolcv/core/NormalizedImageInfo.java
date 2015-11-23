@@ -72,6 +72,10 @@ public class NormalizedImageInfo {
             throw new AvatolCVException(errorMessage + path);
         }
     }
+    public boolean hasKey(String key){
+    	Object val = keyValueHash.get(key);
+    	return !(null == val);
+    }
     public String getNiiString(){
     	return this.niiString;
     }
