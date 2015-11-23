@@ -15,6 +15,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter.Pair;
 import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
@@ -49,7 +50,9 @@ public class MorphobankDataSource implements DataSource {
     private MorphobankDataFiles mbDataFiles = null;
     private DataFilter dataFilter = null;
     private MorphobankImages morphobankImages = null;
-    public MorphobankDataSource(String sessionsRoot){
+    private NormalizedImageInfos niis = null;
+    public MorphobankDataSource(String sessionsRoot, NormalizedImageInfos niis){
+        this.niis = niis;
         wsClient = new MorphobankWSClientImpl();
         mbDataFiles = new MorphobankDataFiles();
     }
@@ -293,8 +296,8 @@ public class MorphobankDataSource implements DataSource {
                     	if (null == annotationsForCell){
                     		annotationsForCell = robustAnnotationDataDownload(pp, matrixID, charID, taxonID , mediaID, processName);
                     		this.mbDataFiles.persistAnnotationsForCell(annotationsForCell, charID, taxonID, mediaID);
-                            createNormalizedImageFile(mi,character, taxon, charStatesForCell, annotationsForCell, this.chosenCharacters);
-                            
+                            String niiFilename = createNormalizedImageFile(mi,character, taxon, charStatesForCell, annotationsForCell, this.chosenCharacters);
+                            //
                     	}
                     }
                     mediaInfoForCellHash.put(key, mediaInfosForCell);
@@ -307,7 +310,7 @@ public class MorphobankDataSource implements DataSource {
                     this.viewsPresent.add(v);
                 }
             }
-            rememberFilenamesForSession(createdNormalizedFilenamesForSession);
+            
         }
         catch(MorphobankWSException e){
             throw new AvatolCVException("problem loading data for matrix. " + e.getMessage(), e);
@@ -362,12 +365,12 @@ public class MorphobankDataSource implements DataSource {
     }
     
     
-    public void createNormalizedImageFile(MBMediaInfo mi,MBCharacter character, MBTaxon taxon, List<MBCharStateValue> charStatesForCell, List<MBAnnotation> annotationsForCell, List<MBCharacter> chosenScoringConcerns) throws AvatolCVException {
+    public String createNormalizedImageFile(MBMediaInfo mi,MBCharacter character, MBTaxon taxon, List<MBCharStateValue> charStatesForCell, List<MBAnnotation> annotationsForCell, List<MBCharacter> chosenScoringConcerns) throws AvatolCVException {
     	
         // FIXME - need to rework/simplify the format of these files as per 9/4/2015 decisions, and also add in the new avcv_scoringConcernLocation, avcv_scoreValueLocation keys using chosenScoringConcerns.
         
         String mediaID = mi.getMediaID();
-    	String mediaMetadataFilename = AvatolCVFileSystem.getMediaMetadataFilename(AvatolCVFileSystem.getNormalizedImageInfoDir(), mediaID);
+    	//String mediaMetadataFilename = AvatolCVFileSystem.getMediaMetadataFilename(AvatolCVFileSystem.getNormalizedImageInfoDir(), mediaID);
     	Properties p = new Properties();
     	String characterKey = "character:" + character.getCharID() + "|" + character.getCharName();
     	String characterValue = "characterState:";
@@ -388,8 +391,9 @@ public class MorphobankDataSource implements DataSource {
     	p.setProperty("view", viewValue);
     	String annotationsValueString = getAnnotationsValueString(annotationsForCell);
     	p.setProperty(NormalizedImageInfo.KEY_ANNOTATION, annotationsValueString);
-    	String path = AvatolCVFileSystem.getNormalizedImageInfoDir() + FILESEP + mediaMetadataFilename;
-    	mbDataFiles.persistNormalizedImageFile(path, p);
+    	return this.niis.addMediaInfo(mediaID,p);
+    	//String path = AvatolCVFileSystem.getNormalizedImageInfoDir() + FILESEP + mediaMetadataFilename;
+    	//mbDataFiles.persistNormalizedImageFile(path, p);
     }
     public static String getAnnotationsValueString(List<MBAnnotation> annotations){
     	// avcv_annotation=rectangle:25,45;35,87+point:98,92

@@ -72,7 +72,7 @@ public class SessionInfo{
     private String chosenSegmentationAlg = null;
     private String chosenOrientationAlg = null;
     private AlgorithmSequence algorithmSequence = null;
-    
+    private NormalizedImageInfos normalizedImageInfos = null;
 	public SessionInfo() throws AvatolCVException {
 		File f = new File(AvatolCVFileSystem.getAvatolCVRootDir());
         if (!f.isDirectory()){
@@ -84,8 +84,11 @@ public class SessionInfo{
         //this.sessionID = "" + System.currentTimeMillis() / 1000L;
         this.sessionID = AvatolCVFileSystem.createSessionID();
         AvatolCVFileSystem.setSessionID(this.sessionID);
+        
 	}
-	
+	public NormalizedImageInfos getNormalizedImageInfos(){
+	    return this.normalizedImageInfos;
+	}
 	public AlgorithmModules getAlgoritmModules(){
 		return this.algorithmModules;
 	}
@@ -105,6 +108,7 @@ public class SessionInfo{
 	    AvatolCVFileSystem.setChosenDataset(di);
 	    //this.datasetDir = this.sessionsRootDir + FILESEP + di.getName();
 	    this.dataSource.setChosenDataset(di);
+	    this.normalizedImageInfos = new NormalizedImageInfos(AvatolCVFileSystem.getNormalizedImageInfoDir());
 	}
 	
 	public void setScoringConcerns(List<ChoiceItem> chosenItems){

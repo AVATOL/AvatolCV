@@ -36,7 +36,7 @@ public class DataSourceStep  extends Answerable implements Step {
     @Override
     public void consumeProvidedData() throws AvatolCVException {
         if (choice == DataSourceChoice.MORPHOBANK){
-            this.sessionInfo.setDataSource(new MorphobankDataSource(this.sessionInfo.getSessionsRootDir()));
+            this.sessionInfo.setDataSource(new MorphobankDataSource(this.sessionInfo.getSessionsRootDir(), this.sessionInfo.getNormalizedImageInfos()));
         }
         else if (choice == DataSourceChoice.BISQUE){
             this.sessionInfo.setDataSource(new BisqueDataSource(this.sessionInfo.getSessionsRootDir()));

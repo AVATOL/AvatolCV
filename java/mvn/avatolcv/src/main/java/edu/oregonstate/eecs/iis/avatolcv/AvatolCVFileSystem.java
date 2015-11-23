@@ -287,6 +287,7 @@ public class AvatolCVFileSystem {
 	//    ensureDir(currentProjectDir);
 	    //currentProjectUserAnswersDir = currentProjectDir + FILESEP + "userAnswers";
 	//}
+	
 	public static String getMediaMetadataFilename(String parentDir, String mediaID)  throws AvatolCVException {
         File f = new File(parentDir);
         if (!f.isDirectory()){
