@@ -32,6 +32,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfoScored;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfosToReview;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoreIndex;
@@ -320,13 +321,13 @@ public class ResultsReview {
     	else {
     		addScoredImagesHeader(scoredImagesGridPane);
             NormalizedImageInfosToReview normalizedImageInfos = new NormalizedImageInfosToReview(runID);
-            List<NormalizedImageInfo> scoredImages = normalizedImageInfos.getScoredImages(scoringConcernName);
+            List<NormalizedImageInfoScored> scoredImages = normalizedImageInfos.getScoredImages(scoringConcernName);
             for (int i=0; i < scoredImages.size(); i++){
             	addScoredImageToGridPaneRow(scoredImages.get(i), scoredImagesGridPane, i+1);
             }
             //
             addTrainingImagesHeader(trainingImagesGridPane);
-            List<NormalizedImageInfo> trainingImages = normalizedImageInfos.getTrainingImages(scoringConcernName);
+            List<NormalizedImageInfoScored> trainingImages = normalizedImageInfos.getTrainingImages(scoringConcernName);
             for (int i=0; i < trainingImages.size(); i++){
             	addTrainingImageToGridPaneRow(trainingImages.get(i), trainingImagesGridPane, i+1);
             }
@@ -456,7 +457,7 @@ public class ResultsReview {
     	}
     	return conf;
     }
-    private void addScoredImageToGridPaneRow(NormalizedImageInfo si, GridPane gp, int row) throws AvatolCVException {
+    private void addScoredImageToGridPaneRow(NormalizedImageInfoScored si, GridPane gp, int row) throws AvatolCVException {
         // get the image
         String thumbnailPath = getThumbailPath(si);
         Image image = new Image("file:"+thumbnailPath);
@@ -618,7 +619,7 @@ public class ResultsReview {
         column++;
     }
 
-    private void addTrainingImageToGridPaneRow(NormalizedImageInfo si, GridPane gp, int row) throws AvatolCVException {
+    private void addTrainingImageToGridPaneRow(NormalizedImageInfoScored si, GridPane gp, int row) throws AvatolCVException {
         // get the image
         String thumbnailPath = getThumbailPath(si);
         Image image = new Image("file:"+thumbnailPath);

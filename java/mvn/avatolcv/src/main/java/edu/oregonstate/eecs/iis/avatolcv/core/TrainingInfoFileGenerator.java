@@ -37,7 +37,7 @@ public class TrainingInfoFileGenerator {
 			
 			for (File f : files){
 				System.out.println(f.getName());
-				NormalizedImageInfo nii = new NormalizedImageInfo(f.getAbsolutePath(), this.scoreIndex);
+				NormalizedImageInfoScored nii = new NormalizedImageInfoScored(f.getAbsolutePath(), this.scoreIndex);
 				String imageFilename = nii.getImageFilename();
 				String scoringConcernValue = nii.getValueForKey(scoringConcern);
 				if ("null".equals(scoringConcernValue) || null == scoringConcernValue || "".equals(scoringConcernValue)){

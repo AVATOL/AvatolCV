@@ -17,26 +17,27 @@ public class NormalizedImageInfo {
     //character:1824350|Diastema between I2 and C=characterState:4884329|Diastema present
     //taxon=773126|Artibeus jamaicensis
     //view=8905|Skull - ventral annotated teeth
-    Hashtable<String, Object> keyValueHash = new Hashtable<String, Object>();
-    Hashtable<String, Object> scoreHash = new Hashtable<String, Object>();
-    private static final String PREFIX = AvatolCVFileSystem.RESERVED_PREFIX;
+    protected Hashtable<String, Object> keyValueHash = new Hashtable<String, Object>();
+    public static final String PREFIX = AvatolCVFileSystem.RESERVED_PREFIX;
     public static final String KEY_ANNOTATION         = PREFIX + "annotation";
-    private static final String KEY_SCORING_CONFIDENCE = PREFIX + "scoringConfidence";
     public static final String KEY_IMAGE_NAME         = PREFIX + "imageName";
     public static final String KEY_TIMESTAMP          = PREFIX + "timestamp";
     private static final String KEY_TRAINING_VS_TEST_CONCERN_VALUE  = PREFIX + "trainingVsTestConcernValue";
-    private ScoreIndex scoreIndex = null;
     private String filename = null;
-      //private ScoreIndex scoreIndexForBaseFile = new ScoreIndex();
-    //private ScoreIndex scoreIndexForScoreFile = new ScoreIndex();
     private String imageName = "?";
     private String imageID = null;
-    public NormalizedImageInfo(String path, ScoreIndex scoreIndex) throws AvatolCVException {
+    private String niiString = null;
+    public NormalizedImageInfo(String path) throws AvatolCVException {
     	this.filename = new File(path).getName();
         this.imageID = getImageIDFromPath(path);
-        this.scoreIndex = scoreIndex;
-        loadNormalizedInfoFromPath(path, "Problem loading Normalized Image Info file: ", keyValueHash, scoreIndex);
+        loadNormalizedInfoFromPath(path, "Problem loading Normalized Image Info file: ", keyValueHash);
     }
+    public NormalizedImageInfo(List<String> lines, String imageID, String path) throws AvatolCVException {
+    	this.imageID = imageID;
+    	this.filename = new File(path).getName();
+    	loadNormalizedInfoFromLines(lines, "Problem loading Normalized Image Info file: ", keyValueHash);
+    }
+    
     public String getImageFilename(){
     	return this.filename;
     }
@@ -55,149 +56,71 @@ public class NormalizedImageInfo {
     public String getImageID(){
         return this.imageID;
     }
-    private void loadNormalizedInfoFromPath(String path, String errorMessage, Hashtable<String, Object> hash, ScoreIndex scoreIndex)throws AvatolCVException {
+    
+    protected void loadNormalizedInfoFromPath(String path, String errorMessage, Hashtable<String, Object> hash)throws AvatolCVException {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path));
+            List<String> lines = new ArrayList<String>();
             String line = null;
             while(null != (line = reader.readLine())){
-                if (line.startsWith("#")){
-                    // ignore
-                }
-                else {
-                    if (line.startsWith(AvatolCVFileSystem.RESERVED_PREFIX)){
-                        loadAvatolCVKeyedLine(line);
-                    }
-                    else {
-                        String[] parts = line.split("=");
-                        String key = parts[0];
-                        String value = "";
-                        if (parts.length > 1){
-                            value = parts[1];
-                        }
-                        if (key.contains(":")){
-                            // skip for now
-                        }
-                        else {
-                            if (value.contains("|")){
-                                String[] valueParts = value.split("|");
-                                String id = valueParts[0];
-                                String name = valueParts[1];
-                                ValueIDandName inv = new ValueIDandName(id, name);
-                                hash.put(key, inv);
-                            }
-                            else {
-                                hash.put(key,value);
-                            }
-                        }
-                    }
-                }
+                lines.add(line);
             }
             reader.close();
+            loadNormalizedInfoFromLines(lines, errorMessage, hash);
         }
         catch(IOException ioe){
             throw new AvatolCVException(errorMessage + path);
         }
     }
-    
-    public boolean hasScoringConcern(String scoringConcern, ScoreIndex scoreIndex){
-    	// as reminder, this is what feeds the scoring index object
-    	//avcv_scoringConcernLocation=leaf apex angle:key
-    	//avcv_scoreValueLocation=leaf apex angle:value
-    	String scoringConcernKey = scoreIndex.getkeyForScoringConcernName();
-    	String keyOrValue = scoreIndex.isScoringConcernNameTheKeyOrValue();
-    	if (null == keyOrValue){
-    		return false;
-    	}
-    	if (keyOrValue.equals("key")){
-    		// compare the key
-    		if (scoringConcernKey.equals(scoringConcern)){
-    			return true;
-    		}
-    		else{
-    			return false;
-    		}
-    	}
-    	else {
-    		// compare value to given scoringConcern string
-    		Object valueObject = scoreHash.get(scoringConcernKey);
-    		String value = "?";
-    		if (valueObject instanceof ValueIDandName){
-        		ValueIDandName vin = (ValueIDandName)valueObject;
-        		value = vin.getName();
-        	}
-    		else {
-    			value = (String)valueObject;
-    		}
-    		if (value.equals(scoringConcern)){
-    			return true;
-    		}
-    		else {
-    			return false;
-    		}
-    	}
-    	
-    	
+    public String getNiiString(){
+    	return this.niiString;
     }
-    /*
-     * 
-     */
-    public void loadAVCVScoreFile(String path, ScoreIndex scoreIndex) throws AvatolCVException {
-        File scoreFile = new File(path);
-        if (scoreFile.exists()){
-            loadNormalizedInfoFromPath(scoreFile.getAbsolutePath(), "Problem loading score info file: ", scoreHash, scoreIndex);
-            //if (!scoreIndexForScoreFile.equals(scoreIndexForBaseFile)){
-            //    throw new AvatolCVException("The base file and the score file should have the same scoreIndex values: " + path);
-            //}
-        }
+    protected void setNiiStringFromLines(List<String> lines){
+    	StringBuilder sb = new StringBuilder();
+    	for (String line : lines){
+    		sb.append(line);
+    	}
+    	this.niiString = "" + sb;
     }
-    public boolean isScored(){
-        return !scoreHash.isEmpty();
+    protected void loadNormalizedInfoFromLines(List<String> lines, String errorMessage, Hashtable<String, Object> hash) throws AvatolCVException {
+    	setNiiStringFromLines(lines);
+    	for (String line : lines){
+    		if (line.startsWith("#")){
+                // ignore
+            }
+            else {
+                if (line.startsWith(AvatolCVFileSystem.RESERVED_PREFIX)){
+                    loadAvatolCVKeyedLine(line);
+                }
+                else {
+                    String[] parts = line.split("=");
+                    String key = parts[0];
+                    String value = "";
+                    if (parts.length > 1){
+                        value = parts[1];
+                    }
+                    if (key.contains(":")){
+                        // skip for now
+                    }
+                    else {
+                        if (value.contains("|")){
+                            String[] valueParts = value.split("|");
+                            String id = valueParts[0];
+                            String name = valueParts[1];
+                            ValueIDandName inv = new ValueIDandName(id, name);
+                            hash.put(key, inv);
+                        }
+                        else {
+                            hash.put(key,value);
+                        }
+                    }
+                }
+            }
+    	}
     }
     
-    public String getScoringConfidence(){
-        return (String)keyValueHash.get(KEY_SCORING_CONFIDENCE);
-    }
-    public String getScoredItemName(ScoreIndex scoreIndex) throws AvatolCVException {
-        if (scoreHash.isEmpty()){
-            throw new AvatolCVException("Tried to get score information from a non-scored item");
-        }
-        String key = scoreIndex.getkeyForScoringConcernName();
-        Object valueObject = scoreHash.get(key);
-        String keyOrValue = scoreIndex.isScoringConcernNameTheKeyOrValue();
-        if (keyOrValue.equals("key")){
-            return key;
-        }
-        if (valueObject instanceof ValueIDandName){
-            ValueIDandName vid = (ValueIDandName)valueObject;
-            return vid.getName();
-        }
-        String result = (String) valueObject;
-        return result;
-    }
    
-    public String getScoreValue(ScoreIndex scoreIndex) throws AvatolCVException {
-        return getValue(scoreHash, scoreIndex);
-    }
-    public String getValue(Hashtable<String, Object> hash, ScoreIndex scoreIndex)  {
-        if (hash.isEmpty()){
-            return null;
-        }
-        String key = scoreIndex.getKeyForScoringConcernValue();
-        Object valueObject = hash.get(key);
-        String keyOrValue = scoreIndex.isScoringConcernValueTheKeyOrValue();
-        if (keyOrValue.equals("key")){
-            return key;
-        }
-        if (valueObject instanceof ValueIDandName){
-            ValueIDandName vid = (ValueIDandName)valueObject;
-            return vid.getName();
-        }
-        String result = (String) valueObject;
-        return result;
-    }
-    public String getTruthValue(ScoreIndex scoreIndex) throws AvatolCVException {
-        return getValue(keyValueHash, scoreIndex);
-    }
+   
     public String getImageName(){
         return this.imageName;
     }
