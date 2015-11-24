@@ -14,8 +14,10 @@ import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfosToReview;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
+import edu.oregonstate.eecs.iis.avatolcv.core.SessionImages;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSException;
@@ -34,8 +36,10 @@ public class BisqueDataSource implements DataSource {
     private BisqueDataFiles bisqueDataFiles = null;
     private DataFilter dataFilter = null;
     private BisqueImages bisqueImages = null;
-
-    public BisqueDataSource(String sessionsRoot){
+    private NormalizedImageInfos niis = null;
+    private SessionImages sessionImages = null;
+    public BisqueDataSource(String sessionsRoot, SessionImages sessionImages){
+        this.sessionImages = sessionImages;
         wsClient = new BisqueWSClientImpl();
         bisqueDataFiles = new BisqueDataFiles();
         //bisqueDataFiles.setSessionsRoot(sessionsRoot);
@@ -108,8 +112,11 @@ public class BisqueDataSource implements DataSource {
                 if (null == annotations){
                     annotations = this.wsClient.getAnnotationsForImage(imageResource_uniq);
                     this.bisqueDataFiles.persistAnnotationsForImage(annotations, imageResource_uniq);
-                    createNormalizedImageInfoFile(bi, annotations, scoringConcernAnnotations);
                 }
+                String niiFilename = getNormalizedImageFilenameForSession(bi, annotations, scoringConcernAnnotations);
+                if (!sessionImages.contains(niiFilename)){
+                    this.sessionImages.add(niiFilename);
+                }    
                 annotationsForImageIdHash.put(imageResource_uniq, annotations);
                 pp.updateProgress(processName, 0.1 + (percentProgressPerImage * curCount));
                 
@@ -278,7 +285,7 @@ public class BisqueDataSource implements DataSource {
         return "bisque";
     }
    
-    public void createNormalizedImageInfoFile(BisqueImage bi,List<BisqueAnnotation> annotations, List<String> chosenScoringConcerns) throws AvatolCVException {
+    public String getNormalizedImageFilenameForSession(BisqueImage bi,List<BisqueAnnotation> annotations, List<String> chosenScoringConcerns) throws AvatolCVException {
         String imageId = bi.getResourceUniq();
         String mediaMetadataFilename = AvatolCVFileSystem.getMediaMetadataFilename(AvatolCVFileSystem.getNormalizedImageInfoDir(), imageId);
         Properties p = new Properties();
@@ -302,7 +309,7 @@ public class BisqueDataSource implements DataSource {
             p.setProperty(name,  value);
         }
         String path = AvatolCVFileSystem.getNormalizedImageInfoDir() + FILESEP + mediaMetadataFilename;
-        bisqueDataFiles.persistNormalizedImageFile(path, p);
+        return this.niis.addMediaInfo(imageId,p);
     }
     @Override
     public void downloadImages(ProgressPresenter pp, String processName) throws AvatolCVException {
@@ -311,6 +318,10 @@ public class BisqueDataSource implements DataSource {
     @Override
     public String getDatasetTitleText() {
         return "Dataset";
+    }
+    @Override
+    public void setNormalizedImageInfos(NormalizedImageInfos niis) {
+        this.niis = niis;
     }
 
 

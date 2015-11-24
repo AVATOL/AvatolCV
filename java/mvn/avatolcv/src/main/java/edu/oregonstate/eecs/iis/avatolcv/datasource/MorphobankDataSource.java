@@ -17,6 +17,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
+import edu.oregonstate.eecs.iis.avatolcv.core.SessionImages;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
@@ -51,10 +52,11 @@ public class MorphobankDataSource implements DataSource {
     private DataFilter dataFilter = null;
     private MorphobankImages morphobankImages = null;
     private NormalizedImageInfos niis = null;
-    public MorphobankDataSource(String sessionsRoot, NormalizedImageInfos niis){
-        this.niis = niis;
+    private SessionImages sessionImages = null;
+    public MorphobankDataSource(String sessionsRoot, SessionImages sessionImages){
         wsClient = new MorphobankWSClientImpl();
         mbDataFiles = new MorphobankDataFiles();
+        this.sessionImages = sessionImages;
     }
     @Override
     public boolean authenticate(String username, String password) throws AvatolCVException {
@@ -296,9 +298,11 @@ public class MorphobankDataSource implements DataSource {
                     	if (null == annotationsForCell){
                     		annotationsForCell = robustAnnotationDataDownload(pp, matrixID, charID, taxonID , mediaID, processName);
                     		this.mbDataFiles.persistAnnotationsForCell(annotationsForCell, charID, taxonID, mediaID);
-                            String niiFilename = createNormalizedImageFile(mi,character, taxon, charStatesForCell, annotationsForCell, this.chosenCharacters);
-                            //
                     	}
+                    	String niiFilename = getNormalizedImageFilenameForSession(mi,character, taxon, charStatesForCell, annotationsForCell, this.chosenCharacters);
+                        if (!sessionImages.contains(niiFilename)){
+                            this.sessionImages.add(niiFilename);
+                        }    
                     }
                     mediaInfoForCellHash.put(key, mediaInfosForCell);
                     curCount++;
@@ -365,7 +369,7 @@ public class MorphobankDataSource implements DataSource {
     }
     
     
-    public String createNormalizedImageFile(MBMediaInfo mi,MBCharacter character, MBTaxon taxon, List<MBCharStateValue> charStatesForCell, List<MBAnnotation> annotationsForCell, List<MBCharacter> chosenScoringConcerns) throws AvatolCVException {
+    public String getNormalizedImageFilenameForSession(MBMediaInfo mi,MBCharacter character, MBTaxon taxon, List<MBCharStateValue> charStatesForCell, List<MBAnnotation> annotationsForCell, List<MBCharacter> chosenScoringConcerns) throws AvatolCVException {
     	
         // FIXME - need to rework/simplify the format of these files as per 9/4/2015 decisions, and also add in the new avcv_scoringConcernLocation, avcv_scoreValueLocation keys using chosenScoringConcerns.
         
@@ -523,5 +527,9 @@ public class MorphobankDataSource implements DataSource {
 	}
 	private void rememberFilenamesForSession(List<String> names) throws AvatolCVException {
 	    String path = AvatolCVFileSystem.getSessionDir() ;
+	}
+	@Override
+	public void setNormalizedImageInfos(NormalizedImageInfos niis) {
+	    this.niis = niis;
 	}
 }
