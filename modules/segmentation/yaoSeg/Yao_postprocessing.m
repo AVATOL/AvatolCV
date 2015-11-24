@@ -27,8 +27,10 @@ se = strel('disk',5);  % se = strel('disk', R, N)
 %% read the DARWIN output files and turn them into mask images
 for i = 1:1:length(testlist)
     fullpath = testlist{i,1};
+    fprintf('working image %s\n',fullpath);
     [pathstr,name,ext] = fileparts(fullpath); 
     mask_name = [name '.pairwise.txt']; % CRF pairwise
+    fprintf('now trying to load mask_name %s\n',mask_name);
     labelImage = textread(mask_name);
     Mask_0 = labelImage == 0;
     Mask = imdilate(Mask_0, se);
@@ -46,12 +48,23 @@ for i = 1:1:length(testlist)
     [biggest,CCidx] = max(numPixels);
     MaskCC = im2bw(zeros(size(Mask)));
     MaskCC(CC.PixelIdxList{CCidx}) = 1;
-    
     % find minimum BB that bound this mask and crop it on mask and raw image
     stats = regionprops(MaskCC,'BoundingBox');
+    display(size(stats, 1))
+    if size(stats, 1) == 0
+        continue;
+    end
     BB = num2cell(stats.BoundingBox);
     [x, y, l, h] = BB{:};
     x = floor(x); y = floor(y);
+    if x == 0
+        l = l -1;
+        x = 1;
+    end
+    if y == 0
+        h = h -1;
+        y = 1;
+    end
     Mask_crop = Mask(y:y+h,x:x+l);
     Image = imread(fullpath);
     Image_crop = Image(y:y+h,x:x+l,:);
