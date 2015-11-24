@@ -9,6 +9,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringScope
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringSessionFocus;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 
 public interface DataSource {
@@ -35,5 +36,6 @@ public interface DataSource {
     
     void downloadImages(ProgressPresenter pp, String processName)  throws AvatolCVException;
     //void setStandard
-    public String getDatasetTitleText();
+    String getDatasetTitleText();
+    void setNormalizedImageInfos(NormalizedImageInfos niis);
 }
