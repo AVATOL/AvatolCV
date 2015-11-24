@@ -186,6 +186,27 @@ echo running step 1 of 7  - Darwin convertPixellabels
 echo ${DARWIN_BIN_DIR}/convertPixelLabels -config ${DARWIN_CONFIG_XML} -i "_GT.png" ${TRAIN_LIST}
 ${DARWIN_BIN_DIR}/convertPixelLabels -config ${DARWIN_CONFIG_XML} -i "_GT.png" ${TRAIN_LIST}
 
+# train boosted classifiers
+echo running step 2 of 7 - Darwin learnPixelSegModel
+echo ${DARWIN_BIN_DIR}/learnPixelSegModel -config ${DARWIN_CONFIG_XML} -component BOOSTED -set drwnDecisionTree split MISCLASS -set drwnBoostedClassifier numRounds 200 -subSample 250 ${TRAIN_LIST}
+${DARWIN_BIN_DIR}/learnPixelSegModel -config ${DARWIN_CONFIG_XML} -component BOOSTED -set drwnDecisionTree split MISCLASS -set drwnBoostedClassifier numRounds 200 -subSample 250 ${TRAIN_LIST}
+
+
+# train unary potentials
+echo running step 3 of 7 - Darwin learnPixelSegModel
+echo ${DARWIN_BIN_DIR}/learnPixelSegModel -config ${DARWIN_CONFIG_XML} -component UNARY -subSample 25 ${TRAIN_LIST}
+${DARWIN_BIN_DIR}/learnPixelSegModel -config ${DARWIN_CONFIG_XML} -component UNARY -subSample 25 ${TRAIN_LIST}
+
+# evaluate with unary terms only
+echo running step 4 of 7 - Darwin inferPixelLabels
+echo ${DARWIN_BIN_DIR}/inferPixelLabels -config ${DARWIN_CONFIG_XML} -pairwise 0.0 -outLabels .unary.txt -outImages .unary.png ${TEST_LIST}
+${DARWIN_BIN_DIR}/inferPixelLabels -config ${DARWIN_CONFIG_XML} -pairwise 0.0 -outLabels .unary.txt -outImages .unary.png ${TEST_LIST}
+
+# train pairwise potentials
+echo running step 5 of 7 - Darwin learnPixelSegModel
+echo ${DARWIN_BIN_DIR}/learnPixelSegModel -config ${DARWIN_CONFIG_XML} -component CONTRAST ${TRAIN_LIST}
+${DARWIN_BIN_DIR}/learnPixelSegModel -config ${DARWIN_CONFIG_XML} -component CONTRAST ${TRAIN_LIST}
+
 # evaluate with unary and pariwise terms
 echo running step 6 of 7 - Darwin inferPixelLabels
 echo ${DARWIN_BIN_DIR}/inferPixelLabels -config ${DARWIN_CONFIG_XML} -outLabels .pairwise.txt -outImages .pairwise.png ${TEST_LIST}
