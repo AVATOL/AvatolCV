@@ -32,13 +32,18 @@ public class AlgorithmSequence {
         currentStage = seg;
     }
     public void enableOrientation() throws AvatolCVException {
+        System.out.println("enabling orientation... the following should match:");
+        System.out.println("seg:          " + seg);
+        System.out.println("currentStage: " + currentStage);
         if (seg.equals(currentStage)){
             // need to work off output of segmentation
             inputDir = AvatolCVFileSystem.getSegmentedDataDir();
+            System.out.println("matched");
         }
         else {
             // need to work off raw data
             inputDir = AvatolCVFileSystem.getNormalizedImagesLargeDir();
+            System.out.println("didn't match");
         }
         supplementatlInputDir = AvatolCVFileSystem.getManuallyProvidedOrientationLabelsDir();
         outputDir = AvatolCVFileSystem.getOrientedDataDir();

@@ -408,6 +408,7 @@ public class AvatolCVFileSystem {
 	// segmentation
 	public static String getSegmentedDataDir()  throws AvatolCVException {
 		String dir = getSessionDir() + FILESEP + DIR_NAME_SEGMENTATION_OUTPUT;
+        System.out.println("getting segmented data dir as " + dir);
 		return dir;
 	}
 	

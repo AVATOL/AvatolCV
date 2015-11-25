@@ -39,6 +39,7 @@ public class RunConfigFile {
         this.alg = alg;
         this.algSequence = algSequence;
         this.pathOfSessionInputFiles = algSequence.getInputDir();
+        System.out.println("RunConfigFile sets pathOfSessionInputFiles as " + this.pathOfSessionInputFiles);
         handleDependencies(alg);
         handleOptionalInputs(alg);
         handleRequiredInputs(alg);
@@ -107,6 +108,7 @@ public class RunConfigFile {
     //
     public void handleRequiredInputs(Algorithm alg) throws AvatolCVException {
         String algType = alg.getAlgType();
+        System.out.println("algType chosen is " + algType);
         List<AlgorithmInputRequired> requiredInputs = alg.getRequiredInputs();
         // first create the entries for the file
         for (AlgorithmInputRequired air : requiredInputs){
@@ -147,7 +149,7 @@ public class RunConfigFile {
         }
     }
     public static void suffixFileSort(List<AlgorithmInput> inputs,  Hashtable<AlgorithmInput, List<String>> pathListHash, List<String> allPathsFromDir, String pathOfInputFiles) throws AvatolCVException {
-        
+        System.out.println("suffixFileSort called with pathOfInputFiles as " + pathOfInputFiles);
         if (allPathsFromDir.isEmpty()){
             throw new AvatolCVException("No input data present at " + pathOfInputFiles);
         }
