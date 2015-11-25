@@ -38,6 +38,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoreIndex;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
+import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTable;
 import edu.oregonstate.eecs.iis.avatolcv.results.SortableRow;
@@ -163,9 +164,8 @@ public class ResultsReview {
                     sr.rememberReferenceToLargeImage(iv);
                     scoredImagesGridPane.add(iv, 0, targetRowIndex, 5, 1);
                 }
-                catch(AvatolCVException e){
-                    // just print error for now
-                    System.out.println(e.getMessage());
+                catch(Exception e){
+                    AvatolCVExceptionExpresserJavaFX.instance.showException(e, "problem trying to show image");
                 }
             }
             private void hideLargeImage(SortableRow sr){

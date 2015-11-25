@@ -251,7 +251,7 @@ public class MorphobankDataSource implements DataSource {
         	mbDataFiles.clearNormalizedImageFiles();
         	mediaInfosForSession.clear();
             int rowCount = this.taxaForMatrix.size();
-            int colCount = this.charactersForMatrix.size();
+            int colCount = this.chosenCharacters.size();
             String matrixID = this.chosenDataset.getID();
             int totalItemCount = colCount * rowCount;
             double increment = 1.0 / totalItemCount;
@@ -278,8 +278,8 @@ public class MorphobankDataSource implements DataSource {
                     if (null == mediaInfosForCell){
                         mediaInfosForCell = this.wsClient.getMediaForCell(matrixID, charID, taxonID);
                         this.mbDataFiles.persistMBMediaInfosForCell(mediaInfosForCell, character, taxon);
-                        mediaInfosForSession.addAll(mediaInfosForCell);
                     }
+                    mediaInfosForSession.addAll(mediaInfosForCell);
                     for (MBMediaInfo mi : mediaInfosForCell){
                         String viewID = mi.getViewID();
                         if (null == viewID){

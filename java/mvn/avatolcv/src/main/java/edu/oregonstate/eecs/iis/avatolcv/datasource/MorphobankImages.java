@@ -15,12 +15,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
-import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
 
 public class MorphobankImages {
     private MorphobankWSClient wsClient = null;
@@ -47,7 +42,7 @@ public class MorphobankImages {
                 tries++;
                 //progressMessage(pp, processNameFileDownload, "downloading image  : " + ii.getID());
                 // specify original image filename as "" since it isn't known from web service response
-                this.wsClient.downloadImageForMediaId(targetDir, ii.getID(), "", ii.getImageWidth());
+                this.wsClient.downloadImageForMediaId(targetDir, ii.getID(), "", ii.getImageSizeName(), ii.getImageWidth());
                 imageNotYetDownloaded = false;
             }
             catch(MorphobankWSException e){
@@ -89,11 +84,26 @@ public class MorphobankImages {
         }
     }
     public void downloadImagesForSession(ProgressPresenter pp, String processName) throws AvatolCVException {
-        
+        List<ImageInfo> imagesThumbnailUnique = new ArrayList<ImageInfo>();
+        List<ImageInfo> imagesLargeUnique = new ArrayList<ImageInfo>();
+        List<String> uniqueMediaIdsThumbnail = new ArrayList<String>();
+        List<String> uniqueMediaIdsLarge = new ArrayList<String>();
+        for (ImageInfo ii : imagesLarge){
+            if (!uniqueMediaIdsLarge.contains(ii.getID())){
+                uniqueMediaIdsLarge.add(ii.getID());
+                imagesLargeUnique.add(ii);
+            }
+        }
+        for (ImageInfo ii : imagesThumbnail){
+            if (!uniqueMediaIdsThumbnail.contains(ii.getID())){
+                uniqueMediaIdsThumbnail.add(ii.getID());
+                imagesThumbnailUnique.add(ii);
+            }
+        }
         double curCount = 0;
         int successCount = 0;
-        int imageCount = imagesLarge.size() * 2;
-        for (ImageInfo image : imagesLarge){
+        int imageCount = imagesLargeUnique.size() * 2;
+        for (ImageInfo image : imagesLargeUnique){
             curCount++;
             if (downloadImageIfNeeded(pp,image,AvatolCVFileSystem.getNormalizedImagesLargeDir(),processName)){
                 successCount++;
@@ -108,7 +118,7 @@ public class MorphobankImages {
             }
             
         }
-        for (ImageInfo image : imagesThumbnail){
+        for (ImageInfo image : imagesThumbnailUnique){
             curCount++;
             if (downloadImageIfNeeded(pp,image, AvatolCVFileSystem.getNormalizedImagesThumbnailDir(),processName)){
                 successCount++;

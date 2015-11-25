@@ -6,13 +6,17 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Hashtable;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 
 public class ImageInfo {
     public static final String IMAGE_THUMBNAIL_WIDTH = "80";
+    public static final String IMAGE_THUMBNAIL_STRING = "thumbnail";
     public static final String IMAGE_LARGE_WIDTH = "1000";
+    public static final String IMAGE_LARGE_STRING = "large";
+    
     public static final String STANDARD_IMAGE_FILE_EXTENSION = "jpg";
     
 	private static final String FILESEP = System.getProperty("file.separator");	
@@ -34,7 +38,11 @@ public class ImageInfo {
 	private String outputType = null;
 	private String extension = null;
 	private ImageInfo ancestorImage = null;
-    
+    private static Hashtable<String, String> imageSizeNameHash = new Hashtable<String, String>();
+    static {
+        imageSizeNameHash.put(IMAGE_LARGE_WIDTH, IMAGE_LARGE_STRING);
+        imageSizeNameHash.put(IMAGE_THUMBNAIL_WIDTH, IMAGE_THUMBNAIL_STRING);
+    }
 	public ImageInfo(String parentDir, String ID, String nameAsUploadedNormalized, String imageWidth, String outputType, String extension)  {
 		this.parentDir = parentDir;      
 		this.ID = ID;
@@ -57,6 +65,9 @@ public class ImageInfo {
         }
         
         this.filepath = this.parentDir + FILESEP + this.filename;
+	}
+	public String getImageSizeName(){
+	    return imageSizeNameHash.get(imageWidth);
 	}
 	public String getParentDir(){
 	    return this.parentDir;

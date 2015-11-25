@@ -35,8 +35,8 @@ public class ImagePullStep  extends Answerable implements Step {
             DataSource dataSource = sessionInfo.getDataSource();
             dataSource.downloadImages(controller, processName);
         }
-        catch(AvatolCVException ace){
-            AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "Problem encountered loading images...");
+        catch(Exception e){
+            AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem encountered loading images...");
         }
     }
     @Override

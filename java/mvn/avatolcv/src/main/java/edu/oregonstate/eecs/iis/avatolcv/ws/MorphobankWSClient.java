@@ -24,7 +24,7 @@ public interface MorphobankWSClient {
 	public List<MBMediaInfo> getMediaForCell(String matrixID, String charID, String taxonID)  throws MorphobankWSException;
 	public List<MBAnnotation> getAnnotationsForCellMedia(String matrixID, String charID, String taxonID, String mediaID)  throws MorphobankWSException ;
 	
-	public boolean downloadImageForMediaId(String dirToSaveTo, String mediaID, String mediaFileName, String type)  throws MorphobankWSException ;
+	public boolean downloadImageForMediaId(String dirToSaveTo, String mediaID, String mediaFileName, String type, String imageWidth)  throws MorphobankWSException ;
 	
 	// haven't yet coded in the results upload methods.
 }

@@ -53,9 +53,10 @@ public class DatasetChoiceStepController implements StepController {
 			this.step.consumeProvidedData();
 			return true;
 		}
-		catch (AvatolCVException ace){
-			return false;
-		}
+		catch (Exception e){
+            AvatolCVExceptionExpresserJavaFX.instance.showException(e, "problem choosing dataset.");
+            return false;
+        }
 	}
 
 	@Override

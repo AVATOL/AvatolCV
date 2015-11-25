@@ -457,7 +457,7 @@ http://morphobank.org/service.php/AVATOLCv/getViewsForProject/username/irvine@ee
      * mediaName will always be the empty string ("") since filename is not returned by the web service that gets the imageInfo.
      * Thus the resulting name will have two consecutive underscores.
      */
-    public boolean downloadImageForMediaId(String dirToSaveTo, String mediaID, String mediaFileName, String type)  throws MorphobankWSException {
+    public boolean downloadImageForMediaId(String dirToSaveTo, String mediaID, String mediaFileName, String type, String imageWidth)  throws MorphobankWSException {
         String thisMethodName = "downloadImageForMediaId";
         /*
          * 
@@ -520,7 +520,7 @@ http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_med
  
 
             InputStream inputStream = response.readEntity(InputStream.class);
-            String pathToSaveTo = dirToSaveTo + FILESEP + mediaID + "_" + mediaFileName + "_" + type + "." + imageFileExtension;// see comment above method re mediaFileName
+            String pathToSaveTo = dirToSaveTo + FILESEP + mediaID + "_" + mediaFileName + "_" + imageWidth + "." + imageFileExtension;// see comment above method re mediaFileName
             System.out.println("saving file to " + pathToSaveTo);
             OutputStream outputStream = new FileOutputStream(pathToSaveTo);
             byte[] buffer = new byte[1024];

@@ -59,7 +59,7 @@ public class SessionFocusStepController implements StepController {
             this.focusStep.consumeProvidedData();
             return true;
         }
-        catch(AvatolCVException e){
+        catch(Exception e){
             AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem consuming info from Session Focus screen");
             return false;
         }

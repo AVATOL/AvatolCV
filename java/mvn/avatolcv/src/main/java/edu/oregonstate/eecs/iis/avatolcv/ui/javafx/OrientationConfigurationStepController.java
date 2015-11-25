@@ -46,8 +46,8 @@ public class OrientationConfigurationStepController implements StepController {
         try {
             this.step.consumeProvidedData();
         }
-        catch(AvatolCVException ace){
-            AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem trying to consume data at segmentation configuration");
+        catch(Exception e){
+            AvatolCVExceptionExpresserJavaFX.instance.showException(e, "problem trying to consume data at segmentation configuration");
         }
         return true;
     }
@@ -100,7 +100,7 @@ public class OrientationConfigurationStepController implements StepController {
                 String description = step.getOrientationAlgDescription((String)cb.getItems().get((Integer)newValue));
                 ta.setText(description);
             }
-            catch(AvatolCVException e){
+            catch(Exception e){
                 AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem loading algorithm description ");
             }
         }
@@ -119,7 +119,7 @@ public class OrientationConfigurationStepController implements StepController {
             String description = this.step.getOrientationAlgDescription(orientAlgChoiceBox.getValue());
             orientAlgNotes.setText(description);
         }
-        catch(AvatolCVException e){
+        catch(Exception e){
             AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem loading algorithm description ");
         }
     }

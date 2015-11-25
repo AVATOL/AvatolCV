@@ -383,8 +383,8 @@ public class JavaFXStepSequencer  {
 			try {
     			activateCurrentStep();
     		}
-    		catch (AvatolCVException ace){
-    		    AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "An error was encountered while trying to move to next screen.");
+    		catch (Exception e){
+    		    AvatolCVExceptionExpresserJavaFX.instance.showException(e, "An error was encountered while trying to move to next screen.");
     		}
 		}
     }

@@ -129,13 +129,12 @@ public class SegmentationRunStepController implements StepController, OutputMoni
                 
                 return new Boolean(true);
             }
-            //catch(AvatolCVException ace){
-            catch(Exception ace){    
+            catch(Exception e){    
                 logger.error("AvatolCV error running algorithm");
-                logger.error(ace.getMessage());
+                logger.error(e.getMessage());
                 System.out.println("AvatolCV error running algorithm");
-                ace.printStackTrace();
-                AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem running algorithm");
+                e.printStackTrace();
+                AvatolCVExceptionExpresserJavaFX.instance.showException(e, "problem running algorithm");
                 return new Boolean(false);
             }
         }

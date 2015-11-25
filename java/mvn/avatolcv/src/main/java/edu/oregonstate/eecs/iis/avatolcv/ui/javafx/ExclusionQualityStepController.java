@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
+import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ExclusionQualityStep;
 
 public class ExclusionQualityStepController  implements StepController {
@@ -130,14 +131,8 @@ public class ExclusionQualityStepController  implements StepController {
         	renderExclusionStateOfImageView(source, ii);
         	renderExclusionStateOfImageView(largeImageView, ii);
     	}
-    	catch(AvatolCVException ace){
-    		logger.error("AvatolCV error while trying to save exclusion state");
-    		logger.error(ace.getMessage());
-    		Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error Dialog");
-            alert.setHeaderText("AvatolCV error while trying to save exclusion state");
-            alert.setContentText(ace.getMessage());
-            alert.showAndWait();
+    	catch(Exception ex){
+    	    AvatolCVExceptionExpresserJavaFX.instance.showException(ex, "AvatolCV error while trying to save exclusion state");
     	}
     }
 

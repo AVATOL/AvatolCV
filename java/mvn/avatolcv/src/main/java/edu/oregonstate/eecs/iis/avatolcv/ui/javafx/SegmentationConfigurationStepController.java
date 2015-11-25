@@ -47,8 +47,8 @@ public class SegmentationConfigurationStepController implements StepController {
         try {
             this.step.consumeProvidedData();
         }
-        catch(AvatolCVException ace){
-            AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem trying to consume data at segmentation configuration");
+        catch(Exception e){
+            AvatolCVExceptionExpresserJavaFX.instance.showException(e, "problem trying to consume data at segmentation configuration");
         }
         return true;
     }
@@ -101,7 +101,7 @@ public class SegmentationConfigurationStepController implements StepController {
                 String description = step.getSegmentationAlgDescription((String)cb.getItems().get((Integer)newValue));
                 ta.setText(description);
             }
-            catch(AvatolCVException e){
+            catch(Exception e){
                 AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem loading algorithm description ");
             }
         }
@@ -120,7 +120,7 @@ public class SegmentationConfigurationStepController implements StepController {
             String description = this.step.getSegmentationAlgDescription(segAlgChoiceBox.getValue());
             segAlgNotes.setText(description);
         }
-        catch(AvatolCVException e){
+        catch(Exception e){
             AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem loading algorithm description ");
         }
     }

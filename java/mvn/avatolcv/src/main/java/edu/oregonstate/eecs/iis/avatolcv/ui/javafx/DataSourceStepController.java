@@ -46,7 +46,7 @@ public class DataSourceStepController implements StepController {
             this.dataSourceStep.consumeProvidedData();
             return true;
         }
-        catch(AvatolCVException e){
+        catch(Exception e){
             AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem activating data source");
             return false;
         }

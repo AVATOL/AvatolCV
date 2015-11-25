@@ -28,6 +28,7 @@ public class NormalizedImageInfo {
     private String imageID = null;
     private String niiString = null;
     public NormalizedImageInfo(String path) throws AvatolCVException {
+        //System.out.println("loading nii " + path);
     	this.filename = new File(path).getName();
         this.imageID = getImageIDFromPath(path);
         loadNormalizedInfoFromPath(path, "Problem loading Normalized Image Info file: ", keyValueHash);
@@ -134,7 +135,10 @@ public class NormalizedImageInfo {
     private void loadAvatolCVKeyedLine(String line) throws AvatolCVException {
         String[] parts = line.split("=");
         String key = parts[0];
-        String value = parts[1];
+        String value = null;
+        if (parts.length > 1){
+            value = parts[1];
+        }
         if (key.equals(KEY_ANNOTATION)){
             loadAnnotationLine(key, value);
         }
@@ -153,19 +157,26 @@ public class NormalizedImageInfo {
         // ; delimits the points in the annotation
         // , delimits x and y coordinates
         // : delimits type from points
-        String[] annotationValueParts = value.split("+");
-        for (String annotation : annotationValueParts){
-            String[] annotationParts = annotation.split(":");
-            String annotationType = annotationParts[0];
-            String annotationPointSequence = annotationParts[1];
-            String[] annotationPointPairs = annotationPointSequence.split(";");
-            for (String pair : annotationPointPairs){
-                String[] pairParts = pair.split(",");
-                String x = pairParts[0];
-                String y = pairParts[1];
-                // FIXME - finish this liogic
+        if (null == value){
+            
+        }
+        else {
+            String[] annotationValueParts = value.split("\\+");
+            
+            for (String annotation : annotationValueParts){
+                String[] annotationParts = annotation.split(":");
+                String annotationType = annotationParts[0];
+                String annotationPointSequence = annotationParts[1];
+                String[] annotationPointPairs = annotationPointSequence.split(";");
+                for (String pair : annotationPointPairs){
+                    String[] pairParts = pair.split(",");
+                    String x = pairParts[0];
+                    String y = pairParts[1];
+                    // FIXME - finish this liogic
+                }
             }
         }
+        
     }
     public class ValueIDandName{
         private String id = null;

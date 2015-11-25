@@ -84,7 +84,8 @@ public class ScoringConcernStepController implements StepController {
         	}
             
         }
-        catch (AvatolCVException ace){
+        catch (Exception e){
+            AvatolCVExceptionExpresserJavaFX.instance.showException(e, "problem specifying scoring concern");
             return false;
         }
     }
@@ -226,11 +227,6 @@ public class ScoringConcernStepController implements StepController {
                 this.step.loadRemainingMetadataForChosenDataset(this.pp, processName1);
                 dataDownloadPhaseComplete = true;
                 return new Boolean(true);
-            }
-            
-            catch(AvatolCVException ace){
-                AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "AvatolCV error downloading scoring data info");
-                return new Boolean(false);
             }
             catch(Exception e){
                 AvatolCVExceptionExpresserJavaFX.instance.showException(e, "AvatolCV error downloading scoring data info");
