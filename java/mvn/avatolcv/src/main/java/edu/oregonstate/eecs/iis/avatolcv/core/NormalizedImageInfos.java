@@ -30,6 +30,13 @@ public class NormalizedImageInfos {
 			niiAllPresent.add(f.getName());
 		}
 	}
+	public List<NormalizedImageInfo> getNormalizedImageInfosForSession(){
+		List<NormalizedImageInfo> result = new ArrayList<NormalizedImageInfo>();
+		for (String s : niiSession){
+			result.add(niiHash.get(s));
+		}
+		return result;
+	}
 	public List<NormalizedImageInfo> getSessionNIIsForKeyValue(String key, String value){
 		List<NormalizedImageInfo> niis = new ArrayList<NormalizedImageInfo>();
 		for (String name : niiSession){

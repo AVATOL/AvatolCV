@@ -45,6 +45,18 @@ public class NormalizedImageInfo {
     public String getValueForKey(String key){
     	return (String)keyValueHash.get(key);
     }
+    public boolean hasValueForKey(String key){
+    	String value = getValueForKey(key);
+    	if (null == value){
+    		return false;
+    	}
+    	else if ("".equals(value)){
+    		return false;
+    	}
+    	else {
+    		return true;
+    	}
+    }
     public static String getImageIDFromPath(String path){
         File f = new File(path);
         String filename = f.getName();
@@ -72,6 +84,10 @@ public class NormalizedImageInfo {
         catch(IOException ioe){
             throw new AvatolCVException(errorMessage + path);
         }
+    }
+    // to support tests
+    public void forgetValue(String key){
+    	keyValueHash.put(key, "");
     }
     public boolean hasKey(String key){
     	Object val = keyValueHash.get(key);

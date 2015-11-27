@@ -7,7 +7,9 @@ import java.util.List;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.EvaluationSet;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
+import edu.oregonstate.eecs.iis.avatolcv.core.TrueScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConfigurationStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationConfigurationStep;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.SegmentationConfigurationStepController.AlgChangeListener;
@@ -38,8 +40,15 @@ public class ScoringConfigurationStepController implements StepController {
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
-
-
+            EvaluationSet es = this.step.getEvaluationSet();
+            
+            try {
+            	TrueScoringSet tss = this.step.getTrueScoringSet();
+            }
+            catch(AvatolCVException ace){
+            	// disable the radio
+            	//LEFT OFF HERE
+            }
             return content;
         }
         catch(IOException ioe){

@@ -20,6 +20,7 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.OrientationConfigurationStep;
 public class OrientationConfigurationStepController implements StepController {
     private static final String KEY_ORIENT_ALG_CHOICE = "orientAlgChoice";
     private static final String SEG_SKIP = "skipSegmentation";
+    public RadioButton radioOrientYes = null;
     public RadioButton radioOrientSkip = null;
     public ChoiceBox<String> orientAlgChoiceBox = null;
     public TextArea orientAlgNotes = null;
@@ -67,10 +68,17 @@ public class OrientationConfigurationStepController implements StepController {
             loader.setController(this);
             Node content = loader.load();
             List<String> orientAlgNames = this.step.getOrientationAlgNames();
-            Collections.sort(orientAlgNames);
-            this.orientAlgChoiceBox.getItems().addAll(orientAlgNames);
-            this.orientAlgChoiceBox.setValue(this.orientAlgChoiceBox.getItems().get(0));
-            this.orientAlgChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new AlgChangeListener(this.orientAlgChoiceBox, this.orientAlgNotes, this.step));
+            if (orientAlgNames.size() == 0){
+            	this.orientAlgChoiceBox.setDisable(true);
+            	this.radioOrientYes.setDisable(true);
+            }
+            else {
+            	Collections.sort(orientAlgNames);
+                this.orientAlgChoiceBox.getItems().addAll(orientAlgNames);
+                this.orientAlgChoiceBox.setValue(this.orientAlgChoiceBox.getItems().get(0));
+                this.orientAlgChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new AlgChangeListener(this.orientAlgChoiceBox, this.orientAlgNotes, this.step));
+                
+            }
             
             if (radioOrientSkip.isSelected()){
                 skipOrientationSelected();

@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.core;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
@@ -234,5 +235,24 @@ public class SessionInfo{
             this.algorithmSequence = new AlgorithmSequence();
         }
         return this.algorithmSequence;
+    }
+    
+    public EvaluationSet getEvaluationSet() throws AvatolCVException {
+    	if (chosenScoringConcern == null){
+    		throw new AvatolCVException("case of multiple scoring concerns (DPM) not yet handled by Scoring Configuration code ");
+    	}
+    	String keyToScore = chosenScoringConcern.getName();
+    	List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSession();
+    	EvaluationSet es = new EvaluationSet(niis, keyToScore, EvaluationSet.DEFAULT_EVALUATION_SPLIT);
+    	return es;
+    }
+    public TrueScoringSet getTrueScoringSet() throws AvatolCVException {
+    	if (chosenScoringConcern == null){
+    		throw new AvatolCVException("case of multiple scoring concerns (DPM) not yet handled by Scoring Configuration code ");
+    	}
+    	String keyToScore = chosenScoringConcern.getName();
+    	List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSession();
+    	TrueScoringSet es = new TrueScoringSet(niis, keyToScore);
+    	return es;
     }
 }

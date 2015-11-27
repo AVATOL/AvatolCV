@@ -1,12 +1,20 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.EvaluationSet;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.TrueScoringSet;
 
 public class ScoringConfigurationStep extends Answerable implements Step {
 	private SessionInfo sessionInfo = null;
 	public ScoringConfigurationStep(SessionInfo sessionInfo){
 		this.sessionInfo = sessionInfo;
+	}
+	public EvaluationSet getEvaluationSet() throws AvatolCVException {
+		return this.sessionInfo.getEvaluationSet();
+	}
+	public TrueScoringSet getTrueScoringSet() throws AvatolCVException {
+		return this.sessionInfo.getTrueScoringSet();
 	}
 	@Override
 	public void init() throws AvatolCVException {
@@ -22,14 +30,12 @@ public class ScoringConfigurationStep extends Answerable implements Step {
 
 	@Override
 	public boolean hasFollowUpDataLoadPhase() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean isEnabledByPriorAnswers() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 }

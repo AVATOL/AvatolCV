@@ -1,0 +1,70 @@
+package edu.oregonstate.eecs.iis.avatolcv.core;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
+public class TestTrueScoringSet extends TestCase {
+	public List<NormalizedImageInfo> getNiis(int count, String key, String val) throws AvatolCVException {
+		List<NormalizedImageInfo> niis = new ArrayList<NormalizedImageInfo>();
+		for (int i = 0 ; i < count ; i++){
+			List<String> lines = new ArrayList<String>();
+			lines.add(key + "=" + val);
+			NormalizedImageInfo nii = new NormalizedImageInfo(lines, "image" + i, "path" + i);
+			niis.add(nii);
+		}
+		return niis;
+	}
+	public void testTrueScoringSetAllScored(){
+		try {
+			// ten images, all scored, so all can participate in split
+			List<NormalizedImageInfo> niis = getNiis(10,"key1","value1");
+			try {
+				TrueScoringSet tss = new TrueScoringSet(niis, "key1");
+				Assert.fail("should have thrown an exception because all items are already scored");
+			}
+			catch(Exception e){
+				Assert.assertTrue(true);
+			}
+		}
+		catch(AvatolCVException ace){
+			Assert.fail(ace.getMessage());
+		}
+	}
+	public void testTrueScoringSetSomeScored(){
+		try {
+			// get 12 but remove scores from two of them, so we're back down to ten scored
+			List<NormalizedImageInfo> niis = getNiis(12,"key1","value1");
+			niis.get(0).forgetValue("key1");
+			niis.get(1).forgetValue("key1");
+			TrueScoringSet tss = new TrueScoringSet(niis, "key1");
+			Assert.assertEquals(10, tss.getImagesToTrainOn().size());
+			Assert.assertEquals(2, tss.getImagesToScore().size());
+		}
+		catch(AvatolCVException ace){
+			Assert.fail(ace.getMessage());
+		}
+	}
+	
+	public void testGetImagesToTrainOnForKeyValue(){
+		try {
+			// 
+			List<NormalizedImageInfo> niisA = getNiis(11,"key1","value1");
+			niisA.get(0).forgetValue("key1");
+			List<NormalizedImageInfo> niisB = getNiis(11,"key2","value2");
+			niisB.get(0).forgetValue("key2");
+			List<NormalizedImageInfo> niisC = new ArrayList<NormalizedImageInfo>();
+			niisC.addAll(niisA);
+			niisC.addAll(niisB);
+			TrueScoringSet tss = new TrueScoringSet(niisC, "key1");
+			Assert.assertEquals(10, tss.getImagesToTrainOnForKeyValue("key1","value1").size());
+			
+		}
+		catch(AvatolCVException ace){
+			Assert.fail(ace.getMessage());
+		}
+	}
+}
