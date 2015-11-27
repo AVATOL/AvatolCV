@@ -116,8 +116,30 @@ public class AvatolCVFileSystem {
                 idsFromToday.add(root);
             }
         }
-        String nextIDForToday = getNextIDForDate(date, idsFromToday);
+        String reusePreviousSessionPath = getSessionsRoot() + FILESEP + "reusePrevSessionId.txt";
+        File f = new File(reusePreviousSessionPath);
+        String nextIDForToday = null;
+        if (f.exists()){
+            nextIDForToday = getMostRecentIDForDate(date, idsFromToday);
+        }
+        else {
+            nextIDForToday = getNextIDForDate(date, idsFromToday);
+        }
         return nextIDForToday;
+    }
+    public static String getMostRecentIDForDate(String dateString, List<String> ids){
+        if (ids.isEmpty()){
+            return dateString + "_01";
+        }
+        List<String> numbersForToday = new ArrayList<String>();
+        for (String s : ids){
+            String[] parts = s.split("_");
+            String number = parts[1];
+            numbersForToday.add(number);
+        }
+        Collections.sort(numbersForToday);
+        String finalNumberString = numbersForToday.get(numbersForToday.size() - 1);
+        return dateString + "_" + finalNumberString;
     }
     public static String getNextIDForDate(String dateString, List<String> ids){
         if (ids.isEmpty()){
@@ -386,6 +408,7 @@ public class AvatolCVFileSystem {
 	// segmentation
 	public static String getSegmentedDataDir()  throws AvatolCVException {
 		String dir = getSessionDir() + FILESEP + DIR_NAME_SEGMENTATION_OUTPUT;
+        System.out.println("getting segmented data dir as " + dir);
 		return dir;
 	}
 	
