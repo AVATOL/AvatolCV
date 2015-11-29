@@ -62,18 +62,18 @@ public class TestNormalizedImageInfos extends TestCase {
 			String mediaId1 = "id1";
 			String mediaId2 = "id2";
 			String mediaId3 = "id3";
-			Properties p1 = new Properties();
-			p1.setProperty("key1", "value1");
-			p1.setProperty("key2", "value2");
-			Properties p2 = new Properties();
-			p2.setProperty("key3", "value3");
-			p2.setProperty("key4", "value4");
-			Properties p3 = new Properties();
-			p3.setProperty("key5", "value5");
-			p3.setProperty("key6", "value6");
-			Assert.assertEquals(niis.createNormalizedImageInfoFromProperties(mediaId1, p1), niiDirPath + FILESEP + "id1_1.txt");
-			Assert.assertEquals(niis.createNormalizedImageInfoFromProperties(mediaId2, p2), niiDirPath + FILESEP + "id2_1.txt");
-			Assert.assertEquals(niis.createNormalizedImageInfoFromProperties(mediaId3, p3), niiDirPath + FILESEP + "id3_1.txt");
+			List<String> lines1 = new ArrayList<String>();
+			lines1.add("key1=value1");
+			lines1.add("key2=value2");
+			List<String> lines2 = new ArrayList<String>();
+			lines2.add("key3=value3");
+			lines2.add("key4=value4");
+			List<String> lines3 = new ArrayList<String>();
+			lines3.add("key5=value5");
+			lines3.add("key6=value6");
+			Assert.assertEquals(niis.createNormalizedImageInfoFromLines(mediaId1, lines1), niiDirPath + FILESEP + "id1_1.txt");
+			Assert.assertEquals(niis.createNormalizedImageInfoFromLines(mediaId2, lines2), niiDirPath + FILESEP + "id2_1.txt");
+			Assert.assertEquals(niis.createNormalizedImageInfoFromLines(mediaId3, lines3), niiDirPath + FILESEP + "id3_1.txt");
 			
 		}
 		catch(AvatolCVException ace){
@@ -92,18 +92,18 @@ public class TestNormalizedImageInfos extends TestCase {
 				String mediaId1 = "id1";
 				String mediaId2 = "id1";
 				String mediaId3 = "id1";
-				Properties p1 = new Properties();
-				p1.setProperty("key1", "value1");
-				p1.setProperty("key2", "value2");
-				Properties p2 = new Properties();
-				p2.setProperty("key3", "value3");
-				p2.setProperty("key4", "value4");
-				Properties p3 = new Properties();
-				p3.setProperty("key5", "value5");
-				p3.setProperty("key6", "value6");
-				Assert.assertEquals(niis.createNormalizedImageInfoFromProperties(mediaId1, p1), niiDirPath + FILESEP + "id1_1.txt");
-				Assert.assertEquals(niis.createNormalizedImageInfoFromProperties(mediaId2, p2), niiDirPath + FILESEP + "id1_2.txt");
-				Assert.assertEquals(niis.createNormalizedImageInfoFromProperties(mediaId3, p3), niiDirPath + FILESEP + "id1_3.txt");
+				List<String> lines1 = new ArrayList<String>();
+				lines1.add("key1=value1");
+				lines1.add("key2=value2");
+				List<String> lines2 = new ArrayList<String>();
+				lines2.add("key3=value3");
+				lines2.add("key4=value4");
+				List<String> lines3 = new ArrayList<String>();
+				lines3.add("key5=value5");
+				lines3.add("key6=value6");
+				Assert.assertEquals(niis.createNormalizedImageInfoFromLines(mediaId1, lines1), niiDirPath + FILESEP + "id1_1.txt");
+				Assert.assertEquals(niis.createNormalizedImageInfoFromLines(mediaId2, lines2), niiDirPath + FILESEP + "id1_2.txt");
+				Assert.assertEquals(niis.createNormalizedImageInfoFromLines(mediaId3, lines3), niiDirPath + FILESEP + "id1_3.txt");
 				
 			}
 			catch(AvatolCVException ace){
@@ -122,18 +122,18 @@ public class TestNormalizedImageInfos extends TestCase {
 			String mediaId1 = "id1";
 			String mediaId2 = "id1";
 			String mediaId3 = "id1";
-			Properties p1 = new Properties();
-			p1.setProperty("key1", "value1");
-			p1.setProperty("key2", "value2");
-			Properties p2 = new Properties();
-			p2.setProperty("key3", "value3");
-			p2.setProperty("key4", "value4");
-			Properties p3 = new Properties();
-			p3.setProperty("key5", "value5");
-			p3.setProperty("key6", "value6");
-			niis.createNormalizedImageInfoFromProperties(mediaId1, p1);
-			niis.createNormalizedImageInfoFromProperties(mediaId2, p2);
-			niis.createNormalizedImageInfoFromProperties(mediaId3, p3);
+			List<String> lines1 = new ArrayList<String>();
+			lines1.add("key1=value1");
+			lines1.add("key2=value2");
+			List<String> lines2 = new ArrayList<String>();
+			lines2.add("key3=value3");
+			lines2.add("key4=value4");
+			List<String> lines3 = new ArrayList<String>();
+			lines3.add("key5=value5");
+			lines3.add("key6=value6");
+			niis.createNormalizedImageInfoFromLines(mediaId1, lines1);
+			niis.createNormalizedImageInfoFromLines(mediaId2, lines2);
+			niis.createNormalizedImageInfoFromLines(mediaId3, lines3);
 			NormalizedImageInfos niis2 = new NormalizedImageInfos(niiDirPath);
 			Assert.assertEquals(niis2.getTotalCount(),3);
 		}
@@ -154,18 +154,18 @@ public class TestNormalizedImageInfos extends TestCase {
 			String mediaId1 = "id1";
 			String mediaId2 = "id1";
 			String mediaId3 = "id1";
-			Properties p1 = new Properties();
-			p1.setProperty("key1", "value1");
-			p1.setProperty("key2", "value2");
-			Properties p2 = new Properties();
-			p2.setProperty("key3", "value3");
-			p2.setProperty("key4", "value4");
-			Properties p3 = new Properties();
-			p3.setProperty("key5", "value5");
-			p3.setProperty("key6", "value6");
-			niis.createNormalizedImageInfoFromProperties(mediaId1, p1);
-			niis.createNormalizedImageInfoFromProperties(mediaId2, p2);
-			niis.createNormalizedImageInfoFromProperties(mediaId3, p3);
+			List<String> lines1 = new ArrayList<String>();
+			lines1.add("key1=value1");
+			lines1.add("key2=value2");
+			List<String> lines2 = new ArrayList<String>();
+			lines2.add("key3=value3");
+			lines2.add("key4=value4");
+			List<String> lines3 = new ArrayList<String>();
+			lines3.add("key5=value5");
+			lines3.add("key6=value6");
+			niis.createNormalizedImageInfoFromLines(mediaId1, lines1);
+			niis.createNormalizedImageInfoFromLines(mediaId2, lines2);
+			niis.createNormalizedImageInfoFromLines(mediaId3, lines3);
 			
 			NormalizedImageInfos niis2 = new NormalizedImageInfos(niiDirPath);
 			try {
@@ -208,15 +208,15 @@ public class TestNormalizedImageInfos extends TestCase {
 			Assert.assertEquals(niis.getTotalCount(), 0);
 			Assert.assertEquals(niis.getSessionCount(), 0);
 			String mediaId1 = "id1";
-			Properties p1 = new Properties();
-			p1.setProperty("key1", "value1");
-			p1.setProperty("key2", "value2");
-			niis.createNormalizedImageInfoFromProperties(mediaId1, p1);
+			List<String> lines1 = new ArrayList<String>();
+			lines1.add("key1=value1");
+			lines1.add("key2=value2");
+			niis.createNormalizedImageInfoFromLines(mediaId1, lines1);
 			Assert.assertEquals(niis.getTotalCount(),1);
-			Properties p2 = new Properties();
-			p2.setProperty("key1", "value1");
-			p2.setProperty("key2", "value2");
-			niis.createNormalizedImageInfoFromProperties(mediaId1, p2);
+			List<String> lines2 = new ArrayList<String>();
+			lines2.add("key1=value1");
+			lines2.add("key2=value2");
+			niis.createNormalizedImageInfoFromLines(mediaId1, lines2);
 			// no new one added
 			Assert.assertEquals(niis.getTotalCount(),1);
 		}
@@ -235,16 +235,16 @@ public class TestNormalizedImageInfos extends TestCase {
 			Assert.assertEquals(niis.getTotalCount(), 0);
 			Assert.assertEquals(niis.getSessionCount(), 0);
 			String mediaId1 = "id1";
-			Properties p1 = new Properties();
-			p1.setProperty("key1", "value1");
-			p1.setProperty("key2", "value2");
-			niis.createNormalizedImageInfoFromProperties(mediaId1, p1);
+			List<String> lines1 = new ArrayList<String>();
+			lines1.add("key1=value1");
+			lines1.add("key2=value2");
+			niis.createNormalizedImageInfoFromLines(mediaId1, lines1);
 			Assert.assertEquals(niis.getTotalCount(),1);
-			Properties p2 = new Properties();
+			List<String> lines2 = new ArrayList<String>();
 			// different values, thus distinct, should add new one
-			p2.setProperty("key1", "value3");
-			p2.setProperty("key2", "value4");
-			niis.createNormalizedImageInfoFromProperties(mediaId1, p2);
+			lines2.add("key1=value3");
+			lines2.add("key2=value4");
+			niis.createNormalizedImageInfoFromLines(mediaId1, lines2);
 			// new one added
 			Assert.assertEquals(niis.getTotalCount(),2);
 		}
@@ -260,16 +260,16 @@ public class TestNormalizedImageInfos extends TestCase {
 			cleanDir(niiDirPath);
 			NormalizedImageInfos niis = new NormalizedImageInfos(niiDirPath);
 			String mediaId1 = "id1";
-			Properties p1 = new Properties();
-			p1.setProperty("key1", "value1");
-			p1.setProperty("key2", "value2");
-			niis.createNormalizedImageInfoFromProperties(mediaId1, p1);
+			List<String> lines1 = new ArrayList<String>();
+			lines1.add("key1=value1");
+			lines1.add("key2=value2");
+			niis.createNormalizedImageInfoFromLines(mediaId1, lines1);
 			Assert.assertEquals(niis.getTotalCount(),1);
-			Properties p2 = new Properties();
+			List<String> lines2 = new ArrayList<String>();
 			// different values, thus distinct, should add new one
-			p2.setProperty("key1", "value3");
-			p2.setProperty("key2", "value4");
-			niis.createNormalizedImageInfoFromProperties(mediaId1, p2);
+			lines2.add("key1=value3");
+			lines2.add("key2=value4");
+			niis.createNormalizedImageInfoFromLines(mediaId1, lines2);
 			// new one added
 			Assert.assertEquals(niis.getTotalCount(),2);
 			try {
@@ -311,16 +311,16 @@ public class TestNormalizedImageInfos extends TestCase {
 			cleanDir(niiDirPath);
 			NormalizedImageInfos niis = new NormalizedImageInfos(niiDirPath);
 			String mediaId1 = "id1";
-			Properties p1 = new Properties();
-			p1.setProperty("key1", "value1");
-			p1.setProperty("key2", "value2");
-			niis.createNormalizedImageInfoFromProperties(mediaId1, p1);
+			List<String> lines1 = new ArrayList<String>();
+			lines1.add("key1=value1");
+			lines1.add("key2=value2");
+			niis.createNormalizedImageInfoFromLines(mediaId1, lines1);
 			Assert.assertEquals(niis.getTotalCount(),1);
-			Properties p2 = new Properties();
+			List<String> lines2 = new ArrayList<String>();
 			// different values, thus distinct, should add new one
-			p2.setProperty("key1", "value3");
-			p2.setProperty("key2", "value4");
-			niis.createNormalizedImageInfoFromProperties(mediaId1, p2);
+			lines2.add("key1=value3");
+			lines2.add("key2=value4");
+			niis.createNormalizedImageInfoFromLines(mediaId1, lines2);
 			
 			List<String> sessionList = new ArrayList<String>();
 			sessionList.add("id1_1.txt");
@@ -347,16 +347,16 @@ public class TestNormalizedImageInfos extends TestCase {
 			cleanDir(niiDirPath);
 			NormalizedImageInfos niis = new NormalizedImageInfos(niiDirPath);
 			String mediaId1 = "id1";
-			Properties p1 = new Properties();
-			p1.setProperty("key1", "value1");
-			p1.setProperty("key2", "value2");
-			niis.createNormalizedImageInfoFromProperties(mediaId1, p1);
+			List<String> lines1 = new ArrayList<String>();
+			lines1.add("key1=value1");
+			lines1.add("key2=value2");
+			niis.createNormalizedImageInfoFromLines(mediaId1, lines1);
 			Assert.assertEquals(niis.getTotalCount(),1);
-			Properties p2 = new Properties();
+			List<String> lines2 = new ArrayList<String>();
 			// different values, thus distinct, should add new one
-			p2.setProperty("key1", "value3");
-			p2.setProperty("key2", "value4");
-			niis.createNormalizedImageInfoFromProperties(mediaId1, p2);
+			lines2.add("key1=value3");
+			lines2.add("key2=value4");
+			niis.createNormalizedImageInfoFromLines(mediaId1, lines2);
 			
 			List<String> sessionList = new ArrayList<String>();
 			sessionList.add("id1_1.txt");

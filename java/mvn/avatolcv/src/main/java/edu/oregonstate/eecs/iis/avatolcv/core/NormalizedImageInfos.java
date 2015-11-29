@@ -1,12 +1,17 @@
 package edu.oregonstate.eecs.iis.avatolcv.core;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
@@ -15,6 +20,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
 public class NormalizedImageInfos {
 	private static final String FILESEP = System.getProperty("file.separator");
+	private static final String NL = System.getProperty("line.separator");
 	private String root = null;
 	private Hashtable<String, NormalizedImageInfo> niiHash = new Hashtable<String, NormalizedImageInfo>();
 	private List<String> niiAllPresent = new ArrayList<String>();
@@ -31,6 +37,45 @@ public class NormalizedImageInfos {
 			niiAllPresent.add(f.getName());
 		}
 	}
+	public void ensureAllKeysPresentInAllImageInfos() throws AvatolCVException {
+		List<String> scorableKeys = getScorableKeys();
+		for (String name : niiAllPresent){
+			NormalizedImageInfo nii = niiHash.get(name);
+			for (String key : scorableKeys){
+				if (!nii.hasKey(key)){
+					nii.addUnscoredKey(key);
+				}
+			}
+		}
+	}
+	public List<String> getScorableKeys(){
+		List<String> scorableKeys = new ArrayList<String>();
+		for (String name : niiAllPresent){
+			NormalizedImageInfo nii = niiHash.get(name);
+			List<String> keys = nii.getKeys();
+			for (String key : keys){
+				if (key.startsWith(NormalizedImageInfo.KEY_TIMESTAMP)){
+					//skip
+				}
+				else if (key.startsWith(NormalizedImageInfo.KEY_IMAGE_NAME)){
+					// skip
+				}
+				else if (key.startsWith(NormalizedImageInfo.KEY_ANNOTATION)){
+					// skip
+				}
+				else if (key.startsWith(NormalizedImageInfo.PREFIX)){
+					// skip
+				}
+				else {
+					if (!scorableKeys.contains(key)){
+						scorableKeys.add(key);
+					}
+				}
+			}
+		}
+		return scorableKeys;
+	}
+	
 	public List<NormalizedImageInfo> getNormalizedImageInfosForSession(){
 		List<NormalizedImageInfo> result = new ArrayList<NormalizedImageInfo>();
 		for (String s : niiSession){
@@ -66,7 +111,17 @@ public class NormalizedImageInfos {
 	public Object getSessionCount() {
 		return niiSession.size();
 	}
-	public String createNormalizedImageInfoFromProperties(String mediaID, Properties newProps) throws AvatolCVException {
+	public boolean doesMatchingNormalizedImageFileExistAtPath(List<String> lines, String mediaID, String path) throws AvatolCVException {
+		File f = new File(path);
+		if (!f.exists()){
+			return false;
+		}
+		NormalizedImageInfo niiMatchCandidate = new NormalizedImageInfo(lines, mediaID, path);
+		NormalizedImageInfo niiExisting = new NormalizedImageInfo(path);
+		return niiMatchCandidate.equals(niiExisting);
+	}
+	
+	public String createNormalizedImageInfoFromLines(String mediaID, List<String> lines) throws AvatolCVException {
 		File dirFile = new File(this.root);
 		List<String> matchingNumbersForMediaID = new ArrayList<String>();
 		// look through the files
@@ -79,10 +134,7 @@ public class NormalizedImageInfos {
 			if (rootParts[0].equals(mediaID)){
 				//media ID matches, note number suffix
 				matchingNumbersForMediaID.add(rootParts[1]);
-				// and load up and compare to see if its already present.  If so, return the path
-				Properties p = getPropertiesForPath(f.getAbsolutePath());
-				if (p.equals(newProps)){
-					// matches existing file
+				if (doesMatchingNormalizedImageFileExistAtPath(lines, mediaID, f.getAbsolutePath())){
 					return f.getAbsolutePath();
 				}
 			}
@@ -91,9 +143,9 @@ public class NormalizedImageInfos {
 		String newSuffix = getFirstUnusedSuffix(matchingNumbersForMediaID);
 		String newFilename = mediaID + "_" + newSuffix + ".txt";
 		String newPath = this.root + FILESEP + newFilename;
-		savePropertiesAtPath(newProps, newPath);
 		// then load it up into the NII object form 
-		NormalizedImageInfo nii = new NormalizedImageInfo(newPath);
+		NormalizedImageInfo nii = new NormalizedImageInfo(lines, mediaID, newPath);
+		nii.persist();
 		niiHash.put(newFilename, nii);
 		niiAllPresent.add(newFilename);
 		System.out.println("$$ adding " + newFilename);
@@ -133,46 +185,6 @@ public class NormalizedImageInfos {
 			}
 			else {
 				return currentNumber;
-			}
-		}
-	}
-	public void savePropertiesAtPath(Properties p, String path) throws AvatolCVException {
-		OutputStream output = null;
-		try {
-			output = new FileOutputStream(path);
-			p.store(output, null);
-		} 
-		catch (IOException ioe) {
-			throw new AvatolCVException("io exception storing properties file at path " + path, ioe);
-		} 
-		finally {
-			if (output != null) {
-				try {
-					output.close();
-				} 
-				catch (IOException ioe) {
-					throw new AvatolCVException("io exception closing properties file stored at path " + path, ioe);
-				}
-			}
-
-		}
-	}
-	public Properties getPropertiesForPath(String path) throws AvatolCVException {
-		Properties p = new Properties();
-		InputStream input = null;
-		try {
-			input = new FileInputStream(path);
-			p.load(input);
-			return p;
-		} catch (IOException ioe) {
-			throw new AvatolCVException("io exception loading properties file from path " + path, ioe);
-		} finally {
-			if (input != null) {
-				try {
-					input.close();
-				} catch (IOException ioe) {
-					throw new AvatolCVException("could not close properties file from path " + path, ioe);
-				}
 			}
 		}
 	}

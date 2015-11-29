@@ -12,15 +12,21 @@ import java.util.Properties;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
-import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
 
 public class ExploreData {
     private List<Properties> props = new ArrayList<Properties>();
     private static final String NL = System.getProperty("line.separator");
     public static void main(String[] args){
         ExploreData ed = new ExploreData();
-        FileSystemPrimer.prime("C:\\jed\\avatol\\git\\avatol_cv", "explore", "leafDev", "20150924_01", "bisque");
-        ed.summarizeLabelPresence();
+        try {
+        	String root = ValidRoot.getValidRoot();
+            FileSystemPrimer.prime(root, "explore", "leafDev", "20151129_01", "bisque");
+            ed.summarizeLabelPresence();
+        }
+        catch(AvatolCVException ace){
+        	System.out.println(ace.getMessage());
+        }
+        
     }
     
     private void assessProperty(String name){

@@ -122,6 +122,8 @@ public class BisqueDataSource implements DataSource {
                 pp.updateProgress(processName, 0.1 + (percentProgressPerImage * curCount));
                 
             }
+            pp.setMessage(processName, "repair empty metadata files");
+            this.niis.ensureAllKeysPresentInAllImageInfos();
             pp.setMessage(processName, "finished!");
         }
         catch(BisqueWSException e){
@@ -288,8 +290,7 @@ public class BisqueDataSource implements DataSource {
    
     public String createNormalizedImageInfoForSession(BisqueImage bi,List<BisqueAnnotation> annotations, List<String> chosenScoringConcerns) throws AvatolCVException {
         String imageId = bi.getResourceUniq();
-        //String mediaMetadataFilename = AvatolCVFileSystem.getMediaMetadataFilename(AvatolCVFileSystem.getNormalizedImageInfoDir(), imageId);
-        Properties p = new Properties();
+        List<String> lines = new ArrayList<String>();
         for (BisqueAnnotation ba : annotations){
             String name = ba.getName();
             if (name.equals("filename")){
@@ -307,10 +308,9 @@ public class BisqueDataSource implements DataSource {
             //}
             
             String value = ba.getValue();
-            p.setProperty(name,  value);
+            lines.add(name+"="+value);
         }
-        //String path = AvatolCVFileSystem.getNormalizedImageInfoDir() + FILESEP + mediaMetadataFilename;
-        String path = this.niis.createNormalizedImageInfoFromProperties(imageId,p);
+        String path = this.niis.createNormalizedImageInfoFromLines(imageId,lines);
         File f = new File(path);
         return f.getName();
     }
