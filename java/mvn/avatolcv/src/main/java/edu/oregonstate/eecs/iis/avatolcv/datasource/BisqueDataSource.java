@@ -1,5 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.datasource;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -113,7 +114,7 @@ public class BisqueDataSource implements DataSource {
                     annotations = this.wsClient.getAnnotationsForImage(imageResource_uniq);
                     this.bisqueDataFiles.persistAnnotationsForImage(annotations, imageResource_uniq);
                 }
-                String niiFilename = getNormalizedImageFilenameForSession(bi, annotations, scoringConcernAnnotations);
+                String niiFilename = createNormalizedImageInfoForSession(bi, annotations, scoringConcernAnnotations);
                 if (!sessionImages.contains(niiFilename)){
                     this.sessionImages.add(niiFilename);
                 }    
@@ -285,9 +286,9 @@ public class BisqueDataSource implements DataSource {
         return "bisque";
     }
    
-    public String getNormalizedImageFilenameForSession(BisqueImage bi,List<BisqueAnnotation> annotations, List<String> chosenScoringConcerns) throws AvatolCVException {
+    public String createNormalizedImageInfoForSession(BisqueImage bi,List<BisqueAnnotation> annotations, List<String> chosenScoringConcerns) throws AvatolCVException {
         String imageId = bi.getResourceUniq();
-        String mediaMetadataFilename = AvatolCVFileSystem.getMediaMetadataFilename(AvatolCVFileSystem.getNormalizedImageInfoDir(), imageId);
+        //String mediaMetadataFilename = AvatolCVFileSystem.getMediaMetadataFilename(AvatolCVFileSystem.getNormalizedImageInfoDir(), imageId);
         Properties p = new Properties();
         for (BisqueAnnotation ba : annotations){
             String name = ba.getName();
@@ -308,8 +309,10 @@ public class BisqueDataSource implements DataSource {
             String value = ba.getValue();
             p.setProperty(name,  value);
         }
-        String path = AvatolCVFileSystem.getNormalizedImageInfoDir() + FILESEP + mediaMetadataFilename;
-        return this.niis.addMediaInfo(imageId,p);
+        //String path = AvatolCVFileSystem.getNormalizedImageInfoDir() + FILESEP + mediaMetadataFilename;
+        String path = this.niis.createNormalizedImageInfoFromProperties(imageId,p);
+        File f = new File(path);
+        return f.getName();
     }
     @Override
     public void downloadImages(ProgressPresenter pp, String processName) throws AvatolCVException {

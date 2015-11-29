@@ -27,6 +27,7 @@ public class NormalizedImageInfos {
 		for (File f : files){
 			NormalizedImageInfo nii = new NormalizedImageInfo(f.getAbsolutePath());
 			niiHash.put(f.getName(), nii);
+			System.out.println("+ adding " + f.getName());
 			niiAllPresent.add(f.getName());
 		}
 	}
@@ -65,7 +66,7 @@ public class NormalizedImageInfos {
 	public Object getSessionCount() {
 		return niiSession.size();
 	}
-	public String addMediaInfo(String mediaID, Properties newProps) throws AvatolCVException {
+	public String createNormalizedImageInfoFromProperties(String mediaID, Properties newProps) throws AvatolCVException {
 		File dirFile = new File(this.root);
 		List<String> matchingNumbersForMediaID = new ArrayList<String>();
 		// look through the files
@@ -95,6 +96,7 @@ public class NormalizedImageInfos {
 		NormalizedImageInfo nii = new NormalizedImageInfo(newPath);
 		niiHash.put(newFilename, nii);
 		niiAllPresent.add(newFilename);
+		System.out.println("$$ adding " + newFilename);
 		return newPath;
 	}
 	public NormalizedImageInfo getNormalizedImageInfoForSessionWithName(String name) throws AvatolCVException {
@@ -109,9 +111,15 @@ public class NormalizedImageInfos {
 	}
 	public void focusToSession(List<String> filenames) throws AvatolCVException {
 		this.niiSession.clear();
+		for (String s : niiAllPresent){
+			if (s.equals("00-3HPPsgoaeBaq2rDrGPnvhn_2.txt")){
+				System.out.println("%%% " + s);
+			}
+		}
 		for (String name : filenames){
+			
 			if (!niiAllPresent.contains(name)){
-				throw new AvatolCVException("given filename " + name + " not available.");
+				throw new AvatolCVException("given filename " + name + " not present.");
 			}
 			this.niiSession.add(name);
 		}

@@ -134,6 +134,20 @@ public class SessionInfo{
     public ScoringAlgorithm.ScoringSessionFocus getScoringFocus(){
         return this.chosenScoringAlgorithm.getScoringFocus();
     }
+    
+    public void reAssessImagesInPlay() throws AvatolCVException {
+    	this.normalizedImageInfos.focusToSession(removeExcludedImages(this.sessionImages));
+    }
+    public List<String> removeExcludedImages(SessionImages sessionImages) throws AvatolCVException {
+    	List<String> result = new ArrayList<String>();
+    	for (String s : sessionImages){
+    		String imageID = NormalizedImageInfo.getImageIDFromPath(s);
+    		if (!ImageInfo.isExcluded(imageID)){
+    			result.add(s);
+    		}
+    	}
+    	return result;
+    }
     /*
      * SEGMENTATION
      */

@@ -299,7 +299,7 @@ public class MorphobankDataSource implements DataSource {
                     		annotationsForCell = robustAnnotationDataDownload(pp, matrixID, charID, taxonID , mediaID, processName);
                     		this.mbDataFiles.persistAnnotationsForCell(annotationsForCell, charID, taxonID, mediaID);
                     	}
-                    	String niiFilename = getNormalizedImageFilenameForSession(mi,character, taxon, charStatesForCell, annotationsForCell, this.chosenCharacters);
+                    	String niiFilename = createNormalizedImageInfoForSession(mi,character, taxon, charStatesForCell, annotationsForCell, this.chosenCharacters);
                         if (!sessionImages.contains(niiFilename)){
                             this.sessionImages.add(niiFilename);
                         }    
@@ -369,7 +369,7 @@ public class MorphobankDataSource implements DataSource {
     }
     
     
-    public String getNormalizedImageFilenameForSession(MBMediaInfo mi,MBCharacter character, MBTaxon taxon, List<MBCharStateValue> charStatesForCell, List<MBAnnotation> annotationsForCell, List<MBCharacter> chosenScoringConcerns) throws AvatolCVException {
+    public String createNormalizedImageInfoForSession(MBMediaInfo mi,MBCharacter character, MBTaxon taxon, List<MBCharStateValue> charStatesForCell, List<MBAnnotation> annotationsForCell, List<MBCharacter> chosenScoringConcerns) throws AvatolCVException {
     	
         // FIXME - need to rework/simplify the format of these files as per 9/4/2015 decisions, and also add in the new avcv_scoringConcernLocation, avcv_scoreValueLocation keys using chosenScoringConcerns.
         
@@ -395,7 +395,7 @@ public class MorphobankDataSource implements DataSource {
     	p.setProperty("view", viewValue);
     	String annotationsValueString = getAnnotationsValueString(annotationsForCell);
     	p.setProperty(NormalizedImageInfo.KEY_ANNOTATION, annotationsValueString);
-    	return this.niis.addMediaInfo(mediaID,p);
+    	return this.niis.createNormalizedImageInfoFromProperties(mediaID,p);
     	//String path = AvatolCVFileSystem.getNormalizedImageInfoDir() + FILESEP + mediaMetadataFilename;
     	//mbDataFiles.persistNormalizedImageFile(path, p);
     }

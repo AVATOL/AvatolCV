@@ -60,7 +60,10 @@ public class NormalizedImageInfo {
     public static String getImageIDFromPath(String path){
         File f = new File(path);
         String filename = f.getName();
-        String[] parts = filename.split("\\.");
+        return getImageIDFromFilename(filename);
+    }
+    public static String getImageIDFromFilename(String fname){
+        String[] parts = fname.split("\\.");
         String root = parts[0];
         String[] rootParts = root.split("_");
         String id = rootParts[0];
@@ -82,7 +85,7 @@ public class NormalizedImageInfo {
             loadNormalizedInfoFromLines(lines, errorMessage, hash);
         }
         catch(IOException ioe){
-            throw new AvatolCVException(errorMessage + path);
+            throw new AvatolCVException(errorMessage + path + " : " + ioe.getMessage());
         }
     }
     // to support tests

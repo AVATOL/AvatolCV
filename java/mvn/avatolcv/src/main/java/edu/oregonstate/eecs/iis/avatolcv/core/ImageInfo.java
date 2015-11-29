@@ -152,26 +152,29 @@ public class ImageInfo {
 	 */
 	
 	public boolean isExcluded() throws AvatolCVException {
-		return (isExcludedForDataset() || isExcludedForSession());
+		return isExcluded(this.ID);
+	}
+	public static boolean isExcluded(String imageID) throws AvatolCVException {
+		return (isExcludedForDataset(imageID) || isExcludedForSession(imageID));
 	}
 	
-	public boolean isExcludedForDataset() throws AvatolCVException {
-		String path = AvatolCVFileSystem.getDatasetExclusionInfoFilePath(this.ID);
+	public static boolean isExcludedForDataset(String imageID) throws AvatolCVException {
+		String path = AvatolCVFileSystem.getDatasetExclusionInfoFilePath(imageID);
 		File f = new File(path);
 		return f.exists();
 	}
-	public boolean isExcludedForSession() throws AvatolCVException {
-		String path = AvatolCVFileSystem.getSessionExclusionInfoFilePath(this.ID);
+	public static boolean isExcludedForSession(String imageID) throws AvatolCVException {
+		String path = AvatolCVFileSystem.getSessionExclusionInfoFilePath(imageID);
 		File f = new File(path);
 		return f.exists();
 	}
 	public void undoExclude() throws AvatolCVException {
-		if (isExcludedForSession()){
+		if (isExcludedForSession(this.ID)){
 			String path = AvatolCVFileSystem.getSessionExclusionInfoFilePath(this.ID);
 			File f = new File(path);
 			f.delete();
 		}
-		else if (isExcludedForDataset()){
+		else if (isExcludedForDataset(this.ID)){
 			String path = AvatolCVFileSystem.getDatasetExclusionInfoFilePath(this.ID);
 			File f = new File(path);
 			f.delete();
@@ -197,12 +200,15 @@ public class ImageInfo {
 	    }
 	}
 	public String getExclusionReason() throws AvatolCVException {
+		return getExclusionReason(this.ID);
+	}
+	public static String getExclusionReason(String imageID) throws AvatolCVException {
 		String path = null;
-		if (isExcludedForSession()){
-			path = AvatolCVFileSystem.getSessionExclusionInfoFilePath(this.ID);
+		if (isExcludedForSession(imageID)){
+			path = AvatolCVFileSystem.getSessionExclusionInfoFilePath(imageID);
 		}
-		else if (isExcludedForDataset()){
-			path = AvatolCVFileSystem.getDatasetExclusionInfoFilePath(this.ID);
+		else if (isExcludedForDataset(imageID)){
+			path = AvatolCVFileSystem.getDatasetExclusionInfoFilePath(imageID);
 		}
 		else {
 			path = null;

@@ -21,7 +21,9 @@ public class ScoringConfigurationStep extends Answerable implements Step {
 		// TODO Auto-generated method stub
 		
 	}
-
+	public void reAssessImagesInPlay() throws AvatolCVException {
+		this.sessionInfo.reAssessImagesInPlay();
+	}
 	@Override
 	public void consumeProvidedData() throws AvatolCVException {
 		// TODO Auto-generated method stub
