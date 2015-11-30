@@ -48,6 +48,8 @@ public class NormalizedImageInfo {
     public boolean equals(Object other){
     	NormalizedImageInfo otherNii = (NormalizedImageInfo)other;
     	String niiStringOther = otherNii.getNiiString();
+    	System.out.println("other: " + niiStringOther);
+    	System.out.println("this : " + niiString);
     	return niiStringOther.equals(niiString);
     }
     public void persist() throws AvatolCVException {
@@ -140,6 +142,7 @@ public class NormalizedImageInfo {
     	return this.niiString;
     }
     protected void setNiiStringFromLines(List<String> lines){
+    	Collections.sort(lines);
     	StringBuilder sb = new StringBuilder();
     	for (String line : lines){
     		sb.append(line);

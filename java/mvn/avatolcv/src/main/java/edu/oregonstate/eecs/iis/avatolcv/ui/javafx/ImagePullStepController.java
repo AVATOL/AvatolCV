@@ -130,7 +130,7 @@ public class ImagePullStepController implements StepController, ProgressPresente
         @Override
         public void run() {
             if (IMAGE_FILE_DOWNLOAD.equals(processName)){
-                System.out.println("should have setr progress to " + percent);
+                //System.out.println("should have setr progress to " + percent);
                 imageFileDownloadProgress.setProgress((double)percent);
             }
         }

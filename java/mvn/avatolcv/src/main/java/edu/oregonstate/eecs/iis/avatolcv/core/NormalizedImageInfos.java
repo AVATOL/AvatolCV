@@ -1,20 +1,9 @@
 package edu.oregonstate.eecs.iis.avatolcv.core;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Properties;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
@@ -111,7 +100,7 @@ public class NormalizedImageInfos {
 	public Object getSessionCount() {
 		return niiSession.size();
 	}
-	public boolean doesMatchingNormalizedImageFileExistAtPath(List<String> lines, String mediaID, String path) throws AvatolCVException {
+	public static boolean doesMatchingNormalizedImageFileExistAtPath(List<String> lines, String mediaID, String path) throws AvatolCVException {
 		File f = new File(path);
 		if (!f.exists()){
 			return false;
@@ -132,13 +121,19 @@ public class NormalizedImageInfos {
 			String rootName = parts[0];
 			String[] rootParts = rootName.split("_");
 			if (rootParts[0].equals(mediaID)){
+				System.out.println(mediaID + " found potential match");
 				//media ID matches, note number suffix
 				matchingNumbersForMediaID.add(rootParts[1]);
 				if (doesMatchingNormalizedImageFileExistAtPath(lines, mediaID, f.getAbsolutePath())){
+					System.out.println(mediaID + " found match");
 					return f.getAbsolutePath();
+				}
+				else {
+					System.out.println(mediaID + " did not find match");
 				}
 			}
 		}
+		System.out.println(mediaID + " WHY?!?! made it to adding one for mediaID");
 		//none of the files matched, check for the first unused number suffix and store with that
 		String newSuffix = getFirstUnusedSuffix(matchingNumbersForMediaID);
 		String newFilename = mediaID + "_" + newSuffix + ".txt";

@@ -92,8 +92,8 @@ public class ScoringConfigurationStepController implements StepController {
 		List<ModalImageInfo> scoringImages = es.getImagesToScore();
 		int row = 1;
 		for (ModalImageInfo mii : trainingImages){
-			RadioButton radioTrain = new RadioButton();
-			RadioButton radioScore = new RadioButton();
+			RadioButton radioTrain = new RadioButton("train");
+			RadioButton radioScore = new RadioButton("score");
 			ToggleGroup tg = new ToggleGroup();
 			radioTrain.setToggleGroup(tg);
 			radioScore.setToggleGroup(tg);

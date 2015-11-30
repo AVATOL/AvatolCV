@@ -37,12 +37,12 @@ public class BisqueDataFiles extends AvatolCVDataFiles {
                 String owner = ba.getOwner();
                 String permission = ba.getPermission();
                 String uri = ba.getUri();
-                if (name.equals("filename") || name.equalsIgnoreCase("upload_datetime")){
+                //if (name.equals("filename") || name.equalsIgnoreCase("upload_datetime")){
                     // skip these
-                }
-                else {
+                //}
+                //else {
                     writer.write("name=" + name + ",value=" + value  + ",type=" + type + ",created=" + created + ",owner=" + owner + ",permission=" + permission + ",uri=" + uri + NL);
-                }
+                //}
             }
             writer.close();
         }

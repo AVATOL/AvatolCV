@@ -372,4 +372,30 @@ public class TestNormalizedImageInfos extends TestCase {
 		}
 		
 	}
+	
+	public void testDoesMatchingNormalizedImageFileExistAtPath(){
+		try {
+			String niiDirPath = AvatolCVFileSystem.getNormalizedImageInfoDir();
+			cleanDir(niiDirPath);
+			NormalizedImageInfos niis = new NormalizedImageInfos(niiDirPath);
+			String mediaId1 = "id1";
+			List<String> lines1 = new ArrayList<String>();
+			lines1.add("key1=value1");
+			lines1.add("key2=value2");
+			String path = niis.createNormalizedImageInfoFromLines(mediaId1, lines1);
+			Assert.assertTrue(NormalizedImageInfos.doesMatchingNormalizedImageFileExistAtPath(lines1, mediaId1, path));
+			
+			List<String> lines2 = new ArrayList<String>();
+			lines2.add("key1=valueX");
+			lines2.add("key2=valueY");
+			Assert.assertFalse(NormalizedImageInfos.doesMatchingNormalizedImageFileExistAtPath(lines2, mediaId1, path));
+			
+			File f = new File(path);
+			f.delete();
+		}
+		catch(AvatolCVException ace){
+			Assert.fail(ace.getMessage());
+		}
+		
+	}
 }
