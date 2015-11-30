@@ -1,6 +1,11 @@
 package edu.oregonstate.eecs.iis.avatolcv.ws;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -42,6 +47,15 @@ import javax.xml.bind.Unmarshaller;
 
 
 
+
+
+
+
+
+
+
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.AnnotationComboBox;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.AnnotationComboBoxProperty;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.AnnotationComboBoxTemplate;
@@ -68,14 +82,34 @@ import org.jsoup.Jsoup;
 
 
 public class BisqueWSClientImpl implements BisqueWSClient {
+	private static final String AUTH_COOKIE_FILENAME = "bisqueCookies.txt";
 	private static final String FILESEP = System.getProperty("file.separator");
 	Map<String, NewCookie> authenticationCookies = null;
    
 	public boolean isAuthenticated(){
-		if (null == this.authenticationCookies){
+		if (null != this.authenticationCookies){
+			return true;
+		}
+		try {
+			// load any cached authentication cookie
+			authenticationCookies = loadAuthenticationCookies();
+			if (null == authenticationCookies){
+				return false;
+			}
+			else {
+				// try doing a command to see if the authentication is still valid
+				try {
+					getDatasets();
+					return true;
+				}
+				catch(BisqueWSException awse){
+					return false;
+				}
+			}
+		}
+		catch(AvatolCVException ace){
 			return false;
 		}
-		return true;
 	}
 	public boolean authenticate(String name, String password) throws BisqueWSException{
 		/*
@@ -260,7 +294,7 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 	        for (String key : keySet4){
 	        	System.out.println("final cookie " + key + " " + authenticationCookies.get(key));
 	        }
-
+	        persistAuthenticationCookies(authenticationCookies);
 	        /*
 			 * FOLLOW REDIRECT with auth_tkt in hand
 			 */
@@ -283,6 +317,51 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 			throw new BisqueWSException("Problem unmarshalling xml response",je);
 		}
 		return true;
+	}
+	private Map<String, NewCookie> loadAuthenticationCookies() throws AvatolCVException {
+		HashMap<String,NewCookie> hashMap = new HashMap<String, NewCookie>();
+		try {
+			String path = AvatolCVFileSystem.getAvatolCVRootDir() + FILESEP + AUTH_COOKIE_FILENAME;
+			File f = new File(path);
+			if (!f.exists()){
+				return null;
+			}
+			BufferedReader reader = new BufferedReader(new FileReader(path));
+			String line = null;
+			while (null != (line = reader.readLine())){
+				String[] parts = line.split("=");
+				if (parts.length != 2){
+					reader.close();
+					return null;
+				}
+				String key = parts[0];
+				String value = parts[1];
+				NewCookie cookie = new NewCookie(key, value);
+				hashMap.put(key, cookie);
+			}
+			reader.close();
+			return hashMap;
+		}
+		catch(IOException ioe){
+			return null;
+		}
+	}
+	private void persistAuthenticationCookies(Map<String, NewCookie> authCookies) throws AvatolCVException {
+		try {
+			String path = AvatolCVFileSystem.getAvatolCVRootDir() + FILESEP + AUTH_COOKIE_FILENAME;
+			BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+			Set<String> keySet = authenticationCookies.keySet();
+	        for (String key : keySet){
+	        	NewCookie value = authCookies.get(key);
+	        	String valueString = value.getValue();
+	        	writer.write(key + "=" + valueString);
+	        }
+	        writer.close();
+		}
+		catch(IOException ioe){
+			// just move on
+		}
+		
 	}
 	public void logout(){
 		ClientConfig config = new ClientConfig();

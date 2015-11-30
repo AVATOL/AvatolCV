@@ -50,6 +50,9 @@ public class LoginStep  extends Answerable implements Step {
     }
     @Override
     public boolean isEnabledByPriorAnswers() {
+    	if (this.sessionInfo.getDataSource().isAuthenticated()){
+    		return false;
+    	}
         return true;
     }
 }
