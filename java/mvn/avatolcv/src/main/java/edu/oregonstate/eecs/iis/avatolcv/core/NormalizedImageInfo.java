@@ -171,7 +171,7 @@ public class NormalizedImageInfo {
                     }
                     else {
                         if (value.contains("|")){
-                            String[] valueParts = value.split("|");
+                            String[] valueParts = value.split("\\|");
                             String id = valueParts[0];
                             String name = valueParts[1];
                             ValueIDandName inv = new ValueIDandName(id, name);
@@ -254,6 +254,9 @@ public class NormalizedImageInfo {
         }
         public String getName(){
             return this.name;
+        }
+        public String toString(){
+        	return id + "|" + name;
         }
     }
 }

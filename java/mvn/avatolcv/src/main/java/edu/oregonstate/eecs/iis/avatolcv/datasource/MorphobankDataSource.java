@@ -1,11 +1,9 @@
 package edu.oregonstate.eecs.iis.avatolcv.datasource;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Properties;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
@@ -18,7 +16,6 @@ import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionImages;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
@@ -374,8 +371,6 @@ public class MorphobankDataSource implements DataSource {
         // FIXME - need to rework/simplify the format of these files as per 9/4/2015 decisions, and also add in the new avcv_scoringConcernLocation, avcv_scoreValueLocation keys using chosenScoringConcerns.
         
         String mediaID = mi.getMediaID();
-    	//String mediaMetadataFilename = AvatolCVFileSystem.getMediaMetadataFilename(AvatolCVFileSystem.getNormalizedImageInfoDir(), mediaID);
-    	Properties p = new Properties();
     	String characterKey = "character:" + character.getCharID() + "|" + character.getCharName();
     	String characterValue = "characterState:";
     	for (int i = 0; i < charStatesForCell.size(); i++){
@@ -389,15 +384,14 @@ public class MorphobankDataSource implements DataSource {
     			characterValue = characterValue + charStateID + "|" + charStateName + ",";
     		}
     	}
-    	p.setProperty(characterKey, characterValue);
-    	p.setProperty("taxon", taxon.getTaxonID() + "|" + taxon.getTaxonName());
+    	List<String> lines = new ArrayList<String>();
+    	lines.add(characterKey + "=" + characterValue);
+    	lines.add("taxon=" + taxon.getTaxonID() + "|" + taxon.getTaxonName());
     	String viewValue = mi.getViewID() + "|" + getViewNameForID(mi.getViewID());
-    	p.setProperty("view", viewValue);
+    	lines.add("view=" + viewValue);
     	String annotationsValueString = getAnnotationsValueString(annotationsForCell);
-    	p.setProperty(NormalizedImageInfo.KEY_ANNOTATION, annotationsValueString);
-    	return this.niis.createNormalizedImageInfoFromProperties(mediaID,p);
-    	//String path = AvatolCVFileSystem.getNormalizedImageInfoDir() + FILESEP + mediaMetadataFilename;
-    	//mbDataFiles.persistNormalizedImageFile(path, p);
+    	lines.add(NormalizedImageInfo.KEY_ANNOTATION + "=" + annotationsValueString);
+    	return this.niis.createNormalizedImageInfoFromLines(mediaID,lines);
     }
     public static String getAnnotationsValueString(List<MBAnnotation> annotations){
     	// avcv_annotation=rectangle:25,45;35,87+point:98,92

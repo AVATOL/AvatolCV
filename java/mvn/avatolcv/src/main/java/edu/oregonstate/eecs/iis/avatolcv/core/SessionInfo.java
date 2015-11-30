@@ -105,6 +105,9 @@ public class SessionInfo{
 	    return this.dataSource;
 	}
 
+	public List<String> getScoreConfigurationSortingValueOptions(){
+		return null;
+	}
 	public String getSessionsRootDir(){
 	    return this.sessionsRootDir;
 	}

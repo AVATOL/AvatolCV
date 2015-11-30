@@ -13,22 +13,36 @@
             <Insets left="6.0" top="6.0" />
          </VBox.margin>
       </Label>
-      <RadioButton fx:id="radioEvaluateAlgorithm" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="evaluate algorithm" VBox.vgrow="NEVER">
-         <VBox.margin>
-            <Insets left="6.0" top="6.0" />
-         </VBox.margin>
-         <toggleGroup>
-            <ToggleGroup fx:id="ScoringMode" />
-         </toggleGroup>
-      </RadioButton>
-      <RadioButton fx:id="radioScoreImages" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="score images" toggleGroup="$ScoringMode" VBox.vgrow="NEVER">
-         <VBox.margin>
-            <Insets left="6.0" top="6.0" />
-         </VBox.margin>
-      </RadioButton>
+      <GridPane>
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="227.0" minWidth="10.0" prefWidth="138.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <RadioButton fx:id="radioEvaluateAlgorithm" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="evaluate algorithm">
+               <toggleGroup>
+                  <ToggleGroup fx:id="ScoringMode" />
+               </toggleGroup>
+               <GridPane.margin>
+                  <Insets left="6.0" right="6.0" />
+               </GridPane.margin>
+            </RadioButton>
+            <RadioButton fx:id="radioScoreImages" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="score images" toggleGroup="$ScoringMode" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets left="6.0" right="6.0" />
+               </GridPane.margin>
+            </RadioButton>
+            <Label text="(Divide labeled images into training and test sets.)" GridPane.columnIndex="1" />
+            <Label text="(Labeled data is used for training, unlabeled data is scored.)" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+         </children>
+      </GridPane>
       <Label maxWidth="1.7976931348623157E308" text="View training vs scoring plan" VBox.vgrow="NEVER">
          <VBox.margin>
-            <Insets left="6.0" top="15.0" />
+            <Insets left="6.0" top="25.0" />
          </VBox.margin>
       </Label>
       <RadioButton fx:id="radioViewByImage" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="by image" VBox.vgrow="NEVER">
@@ -58,6 +72,10 @@
             <Insets top="6.0" />
          </VBox.margin>
       </TextArea>
-      <ScrollPane fx:id="trainTestSettingsScrollPane" maxWidth="1.7976931348623157E308" prefViewportHeight="300.0" prefViewportWidth="400.0" VBox.vgrow="ALWAYS" />
+      <ScrollPane fx:id="trainTestSettingsScrollPane" maxWidth="1.7976931348623157E308" prefViewportHeight="300.0" prefViewportWidth="400.0" VBox.vgrow="ALWAYS">
+         <VBox.margin>
+            <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+         </VBox.margin>
+      </ScrollPane>
    </children>
 </VBox>
