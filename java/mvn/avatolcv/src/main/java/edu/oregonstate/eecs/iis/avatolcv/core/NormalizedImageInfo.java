@@ -177,64 +177,7 @@ public class NormalizedImageInfo {
             }
     	}
     }
-    protected void loadNormalizedInfoFromLinesORIG(List<String> lines, String errorMessage, Hashtable<String, Object> hash) throws AvatolCVException {
-        setNiiStringFromLines(lines);
-        for (String line : lines){
-            if (line.startsWith("#")){
-                // ignore
-            }
-            else {
-                if (line.startsWith(AvatolCVFileSystem.RESERVED_PREFIX)){
-                    loadAvatolCVKeyedLine(line);
-                }
-                else {
-                    String[] parts = line.split("=");
-                    String key = parts[0];
-                    String value = "";
-                    if (parts.length > 1){
-                        value = parts[1];
-                    }
-                    if (key.contains(":")){
-                        //character:1824358|M3 presence=characterState:4884344|M3 present
-                        
-                    }
-                    else {
-                        if (value.contains("|")){
-                            ValueIDandName inv = getValueIdAndName(value);
-                            hash.put(key, inv);
-                        }
-                        else {
-                            hash.put(key,value);
-                        }
-                    }
-                }
-            }
-        }
-    }
     
-    public static ValueIDandName getValueIdAndName(String s) throws AvatolCVException {
-        int count = s.length() - s.replace("\\|", "").length();
-        if (count != 1){
-            throw new AvatolCVException("malformed ValuIDAndName construct - should only have one |  " + s);
-        }
-        String id = null;
-        String name = null;
-        if (s.startsWith("\\|")){
-            id = "idUnknown";
-            name = s.replaceAll("\\|", "");
-        }
-        else if (s.endsWith("\\|")){
-            id = s.replaceAll("\\|", "");
-            name = "nameUnknown";
-        }
-        else {
-            String[] valueParts = s.split("\\|");
-            id = valueParts[0];
-            name = valueParts[1];
-        }
-        return new ValueIDandName(id, name);
-    }
-   
     public String getImageName(){
         return this.imageName;
     }
@@ -244,14 +187,11 @@ public class NormalizedImageInfo {
     private void loadAvatolCVKeyedLine(String line) throws AvatolCVException {
         String[] parts = line.split("=");
         String key = parts[0];
-        String value = null;
+        String value = "";
         if (parts.length > 1){
             value = parts[1];
         }
-        if (key.equals(KEY_ANNOTATION)){
-            loadAnnotationLine(key, value);
-        }
-        else if (key.equals(KEY_IMAGE_NAME)){
+        if (key.equals(KEY_IMAGE_NAME)){
         	imageName = value;
         	keyValueHash.put(key, value);
         }

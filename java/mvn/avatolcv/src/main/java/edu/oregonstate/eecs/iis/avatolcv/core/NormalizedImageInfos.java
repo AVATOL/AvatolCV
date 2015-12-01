@@ -133,7 +133,7 @@ public class NormalizedImageInfos {
 				}
 			}
 		}
-		System.out.println(mediaID + " WHY?!?! made it to adding one for mediaID");
+		System.out.println(mediaID + "# making new nii");
 		//none of the files matched, check for the first unused number suffix and store with that
 		String newSuffix = getFirstUnusedSuffix(matchingNumbersForMediaID);
 		String newFilename = mediaID + "_" + newSuffix + ".txt";

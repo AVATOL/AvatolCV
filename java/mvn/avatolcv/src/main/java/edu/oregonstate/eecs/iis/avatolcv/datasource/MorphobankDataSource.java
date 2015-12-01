@@ -14,6 +14,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter.Pair;
 import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedTypeIDName;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionImages;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
@@ -371,17 +372,17 @@ public class MorphobankDataSource implements DataSource {
         // FIXME - need to rework/simplify the format of these files as per 9/4/2015 decisions, and also add in the new avcv_scoringConcernLocation, avcv_scoreValueLocation keys using chosenScoringConcerns.
         
         String mediaID = mi.getMediaID();
-    	String characterKey = "character:" + character.getCharID() + "|" + character.getCharName();
-    	String characterValue = "characterState:";
+    	String characterKey = NormalizedTypeIDName.buildTypeIdName("character",character.getCharID() ,character.getCharName());
+    	String characterValue = ":";
     	for (int i = 0; i < charStatesForCell.size(); i++){
     		MBCharStateValue csv = charStatesForCell.get(i);
     		String charStateID = csv.getCharStateID();
     		String charStateName = getCharStateNameForID(character, charStateID);
     		if (i == charStatesForCell.size() - 1){
-    			characterValue = characterValue + charStateID + "|" + charStateName;
+    			characterValue = characterValue + NormalizedTypeIDName.buildTypeIdName("characterState",charStateID,charStateName);
     		}
     		else {
-    			characterValue = characterValue + charStateID + "|" + charStateName + ",";
+    			characterValue = characterValue + NormalizedTypeIDName.buildTypeIdName("characterState",charStateID,charStateName) + ",";
     		}
     	}
     	List<String> lines = new ArrayList<String>();

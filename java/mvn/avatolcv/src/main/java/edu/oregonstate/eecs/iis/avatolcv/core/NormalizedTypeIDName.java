@@ -75,4 +75,7 @@ public class NormalizedTypeIDName {
     public String getName() {
         return name;
     }
+    public static String buildTypeIdName(String type, String id, String name){
+        return type + ":" + id + "|" + name;
+    }
 }
