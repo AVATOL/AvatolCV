@@ -7,7 +7,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
 public class NormalizedImageInfoScored extends NormalizedImageInfo {
     private static final String KEY_SCORING_CONFIDENCE = PREFIX + "scoringConfidence";
-    protected Hashtable<String, Object> scoreHash = new Hashtable<String, Object>();
+    protected Hashtable<String, String> scoreHash = new Hashtable<String, String>();
 
 	ScoreIndex scoreIndex = null;
     //private ScoreIndex scoreIndexForBaseFile = new ScoreIndex();
@@ -26,7 +26,7 @@ public class NormalizedImageInfoScored extends NormalizedImageInfo {
     }
     
    
-	public boolean hasScoringConcern(String scoringConcern, ScoreIndex scoreIndex){
+	public boolean hasScoringConcern(String scoringConcern, ScoreIndex scoreIndex) throws AvatolCVException {
     	// as reminder, this is what feeds the scoring index object
     	//avcv_scoringConcernLocation=leaf apex angle:key
     	//avcv_scoreValueLocation=leaf apex angle:value
@@ -37,7 +37,8 @@ public class NormalizedImageInfoScored extends NormalizedImageInfo {
     	}
     	if (keyOrValue.equals("key")){
     		// compare the key
-    		if (scoringConcernKey.equals(scoringConcern)){
+    	    NormalizedTypeIDName tin = new NormalizedTypeIDName(scoringConcernKey);
+    		if (tin.getName().equals(scoringConcern)){
     			return true;
     		}
     		else{
@@ -46,16 +47,11 @@ public class NormalizedImageInfoScored extends NormalizedImageInfo {
     	}
     	else {
     		// compare value to given scoringConcern string
-    		Object valueObject = scoreHash.get(scoringConcernKey);
-    		String value = "?";
-    		if (valueObject instanceof ValueIDandName){
-        		ValueIDandName vin = (ValueIDandName)valueObject;
-        		value = vin.getName();
-        	}
-    		else {
-    			value = (String)valueObject;
-    		}
-    		if (value.equals(scoringConcern)){
+    		String value = scoreHash.get(scoringConcernKey);
+    		NormalizedTypeIDName tin = new NormalizedTypeIDName(value);
+    		String valueName = tin.getName();
+    	
+    		if (valueName.equals(scoringConcern)){
     			return true;
     		}
     		else {
@@ -98,21 +94,19 @@ public class NormalizedImageInfoScored extends NormalizedImageInfo {
     public String getScoreValue(ScoreIndex scoreIndex) throws AvatolCVException {
         return getValue(scoreHash, scoreIndex);
     }
-    public static String getValue(Hashtable<String, Object> hash, ScoreIndex scoreIndex)  {
+    public static String getValue(Hashtable<String, String> hash, ScoreIndex scoreIndex)throws AvatolCVException  {
         if (hash.isEmpty()){
             return null;
         }
         String key = scoreIndex.getKeyForScoringConcernValue();
-        Object valueObject = hash.get(key);
+        String value = hash.get(key);
         String keyOrValue = scoreIndex.isScoringConcernValueTheKeyOrValue();
         if (keyOrValue.equals("key")){
-            return key;
+            NormalizedTypeIDName tin = new NormalizedTypeIDName(key);
+            return tin.getName();
         }
-        if (valueObject instanceof ValueIDandName){
-            ValueIDandName vid = (ValueIDandName)valueObject;
-            return vid.getName();
-        }
-        String result = (String) valueObject;
+        NormalizedTypeIDName tin = new NormalizedTypeIDName(value);
+        String result = tin.getName();
         return result;
     }
     public String getTruthValue(ScoreIndex scoreIndex) throws AvatolCVException {

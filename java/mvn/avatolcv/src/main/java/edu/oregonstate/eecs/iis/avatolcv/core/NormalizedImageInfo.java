@@ -20,7 +20,7 @@ public class NormalizedImageInfo {
     //character:1824350|Diastema between I2 and C=characterState:4884329|Diastema present
     //taxon=773126|Artibeus jamaicensis
     //view=8905|Skull - ventral annotated teeth
-    protected Hashtable<String, Object> keyValueHash = new Hashtable<String, Object>();
+    protected Hashtable<String, String> keyValueHash = new Hashtable<String, String>();
     public static final String NL = System.getProperty("line.separator");
     public static final String PREFIX = AvatolCVFileSystem.RESERVED_PREFIX;
     public static final String KEY_ANNOTATION         = PREFIX + "annotation";
@@ -85,7 +85,7 @@ public class NormalizedImageInfo {
     	return this.filename;
     }
     public String getValueForKey(String key){
-    	return (String)keyValueHash.get(key);
+    	return keyValueHash.get(key);
     }
     public boolean hasValueForKey(String key){
     	String value = getValueForKey(key);
@@ -118,7 +118,7 @@ public class NormalizedImageInfo {
     protected void loadNormalizedInfoFromPath(String path, String errorMessage)throws AvatolCVException {
         loadNormalizedInfoFromPath(path, errorMessage, keyValueHash);
     }
-    protected void loadNormalizedInfoFromPath(String path, String errorMessage, Hashtable<String, Object> hash)throws AvatolCVException {
+    protected void loadNormalizedInfoFromPath(String path, String errorMessage, Hashtable<String, String> hash)throws AvatolCVException {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path));
             List<String> lines = new ArrayList<String>();
@@ -155,7 +155,7 @@ public class NormalizedImageInfo {
     protected void loadNormalizedInfoFromLines(List<String> lines, String errorMessage) throws AvatolCVException {
         loadNormalizedInfoFromLines(lines, errorMessage, keyValueHash);
     }
-    protected void loadNormalizedInfoFromLines(List<String> lines, String errorMessage, Hashtable<String, Object> hash) throws AvatolCVException {
+    protected void loadNormalizedInfoFromLines(List<String> lines, String errorMessage, Hashtable<String, String> hash) throws AvatolCVException {
     	setNiiStringFromLines(lines);
     	for (String line : lines){
     		if (line.startsWith("#")){
@@ -172,16 +172,35 @@ public class NormalizedImageInfo {
                     if (parts.length > 1){
                         value = parts[1];
                     }
+                    hash.put(key,value);
+                }
+            }
+    	}
+    }
+    protected void loadNormalizedInfoFromLinesORIG(List<String> lines, String errorMessage, Hashtable<String, Object> hash) throws AvatolCVException {
+        setNiiStringFromLines(lines);
+        for (String line : lines){
+            if (line.startsWith("#")){
+                // ignore
+            }
+            else {
+                if (line.startsWith(AvatolCVFileSystem.RESERVED_PREFIX)){
+                    loadAvatolCVKeyedLine(line);
+                }
+                else {
+                    String[] parts = line.split("=");
+                    String key = parts[0];
+                    String value = "";
+                    if (parts.length > 1){
+                        value = parts[1];
+                    }
                     if (key.contains(":")){
-                    	//character:1824358|M3 presence=characterState:4884344|M3 present
-                        System.out.println("skipping : line: " + line);
+                        //character:1824358|M3 presence=characterState:4884344|M3 present
+                        
                     }
                     else {
                         if (value.contains("|")){
-                            String[] valueParts = value.split("\\|");
-                            String id = valueParts[0];
-                            String name = valueParts[1];
-                            ValueIDandName inv = new ValueIDandName(id, name);
+                            ValueIDandName inv = getValueIdAndName(value);
                             hash.put(key, inv);
                         }
                         else {
@@ -190,10 +209,31 @@ public class NormalizedImageInfo {
                     }
                 }
             }
-    	}
+        }
     }
     
-   
+    public static ValueIDandName getValueIdAndName(String s) throws AvatolCVException {
+        int count = s.length() - s.replace("\\|", "").length();
+        if (count != 1){
+            throw new AvatolCVException("malformed ValuIDAndName construct - should only have one |  " + s);
+        }
+        String id = null;
+        String name = null;
+        if (s.startsWith("\\|")){
+            id = "idUnknown";
+            name = s.replaceAll("\\|", "");
+        }
+        else if (s.endsWith("\\|")){
+            id = s.replaceAll("\\|", "");
+            name = "nameUnknown";
+        }
+        else {
+            String[] valueParts = s.split("\\|");
+            id = valueParts[0];
+            name = valueParts[1];
+        }
+        return new ValueIDandName(id, name);
+    }
    
     public String getImageName(){
         return this.imageName;
@@ -249,21 +289,5 @@ public class NormalizedImageInfo {
         }
         
     }
-    public class ValueIDandName{
-        private String id = null;
-        private String name = null;
-        public ValueIDandName(String id, String name){
-            this.id = id;
-            this.name = name;
-        }
-        public String getID(){
-            return this.id;
-        }
-        public String getName(){
-            return this.name;
-        }
-        public String toString(){
-        	return id + "|" + name;
-        }
-    }
+    
 }
