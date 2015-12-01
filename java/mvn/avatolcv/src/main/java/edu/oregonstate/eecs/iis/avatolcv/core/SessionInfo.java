@@ -105,9 +105,7 @@ public class SessionInfo{
 	    return this.dataSource;
 	}
 
-	public List<String> getScoreConfigurationSortingValueOptions(){
-		return null;
-	}
+	
 	public String getSessionsRootDir(){
 	    return this.sessionsRootDir;
 	}
@@ -271,5 +269,33 @@ public class SessionInfo{
     	List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSession();
     	TrueScoringSet es = new TrueScoringSet(niis, keyToScore);
     	return es;
+    }
+    public List<String> getScoreConfigurationSortingValueOptions(ScoringSet ss){
+        List<String> allKeys = ss.getAllKeys();
+        List<String> result = new ArrayList<String>();
+        if (this.chosenScoringConcerns != null){
+            List<String> scoringConcernStrings = getScoringConcernStrings(this.chosenScoringConcerns);
+            for (String key : allKeys){
+                if (!scoringConcernStrings.contains(key)){
+                    result.add(key);
+                }
+            }
+        }
+        else if (this.chosenScoringConcern != null){
+            for (String key : allKeys){
+                if (!this.chosenScoringConcern.getName().equals(key)){
+                    result.add(key);
+                }
+            }
+        }
+        return result;
+        
+    }
+    public List<String> getScoringConcernStrings(List<ChoiceItem> choiceItems){
+        List<String> result = new ArrayList<String>();
+        for (ChoiceItem item : choiceItems){
+            result.add(item.getName());
+        }
+        return result;
     }
 }

@@ -6,4 +6,5 @@ public interface ScoringSet {
 	List<ModalImageInfo> getImagesToTrainOn();
 	List<ModalImageInfo> getImagesToScore();
 	List<ModalImageInfo> getImagesToTrainOnForKeyValue(String key, String value);
+	List<String> getAllKeys();
 }
