@@ -116,6 +116,9 @@ public class NormalizedImageInfo {
     }
     
     protected void loadNormalizedInfoFromPath(String path, String errorMessage)throws AvatolCVException {
+        loadNormalizedInfoFromPath(path, errorMessage, keyValueHash);
+    }
+    protected void loadNormalizedInfoFromPath(String path, String errorMessage, Hashtable<String, Object> hash)throws AvatolCVException {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path));
             List<String> lines = new ArrayList<String>();
@@ -124,7 +127,7 @@ public class NormalizedImageInfo {
                 lines.add(line);
             }
             reader.close();
-            loadNormalizedInfoFromLines(lines, errorMessage);
+            loadNormalizedInfoFromLines(lines, errorMessage, hash);
         }
         catch(IOException ioe){
             throw new AvatolCVException(errorMessage + path + " : " + ioe.getMessage());
@@ -150,6 +153,9 @@ public class NormalizedImageInfo {
     	this.niiString = "" + sb;
     }
     protected void loadNormalizedInfoFromLines(List<String> lines, String errorMessage) throws AvatolCVException {
+        loadNormalizedInfoFromLines(lines, errorMessage, keyValueHash);
+    }
+    protected void loadNormalizedInfoFromLines(List<String> lines, String errorMessage, Hashtable<String, Object> hash) throws AvatolCVException {
     	setNiiStringFromLines(lines);
     	for (String line : lines){
     		if (line.startsWith("#")){
@@ -176,10 +182,10 @@ public class NormalizedImageInfo {
                             String id = valueParts[0];
                             String name = valueParts[1];
                             ValueIDandName inv = new ValueIDandName(id, name);
-                            keyValueHash.put(key, inv);
+                            hash.put(key, inv);
                         }
                         else {
-                            keyValueHash.put(key,value);
+                            hash.put(key,value);
                         }
                     }
                 }
