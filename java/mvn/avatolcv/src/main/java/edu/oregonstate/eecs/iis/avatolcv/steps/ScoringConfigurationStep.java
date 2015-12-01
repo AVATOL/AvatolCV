@@ -4,6 +4,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.EvaluationSet;
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrueScoringSet;
 
@@ -12,8 +13,8 @@ public class ScoringConfigurationStep extends Answerable implements Step {
 	public ScoringConfigurationStep(SessionInfo sessionInfo){
 		this.sessionInfo = sessionInfo;
 	}
-	public List<String> getScoreConfigurationSortingValueOptions(){
-		return this.sessionInfo.getScoreConfigurationSortingValueOptions();
+	public List<String> getScoreConfigurationSortingValueOptions(ScoringSet ss){
+		return this.sessionInfo.getScoreConfigurationSortingValueOptions(ss);
 	}
 	public EvaluationSet getEvaluationSet() throws AvatolCVException {
 		return this.sessionInfo.getEvaluationSet();

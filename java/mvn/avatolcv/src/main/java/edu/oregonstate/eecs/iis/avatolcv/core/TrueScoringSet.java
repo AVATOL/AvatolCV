@@ -81,4 +81,18 @@ public class TrueScoringSet implements ScoringSet {
 		return result;
 	}
 
+    @Override
+    public List<String> getAllKeys() {
+        List<String> result = new ArrayList<String>();
+        for (NormalizedImageInfo nii : niisWithKeyToScore){
+            List<String> keys = nii.getKeys();
+            for (String key : keys){
+                if (!result.contains(key)){
+                    result.add(key);
+                }
+            }
+        }
+        return result;
+    }
+
 }

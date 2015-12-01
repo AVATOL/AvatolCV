@@ -3,8 +3,12 @@ package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 import java.io.IOException;
 import java.util.List;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
@@ -13,6 +17,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.EvaluationSet;
 import edu.oregonstate.eecs.iis.avatolcv.core.ModalImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringSet;
@@ -27,6 +32,7 @@ public class ScoringConfigurationStepController implements StepController {
     public RadioButton radioEvaluateAlgorithm = null;
     public RadioButton radioViewByImage = null;
     public RadioButton radioViewByGroup = null;
+    public ChoiceBox choiceBoxGroupProerty = null;
     public ScrollPane trainTestSettingsScrollPane = null;
     public ScoringConfigurationStepController(ScoringConfigurationStep step, String fxmlDocName){
         this.step = step;
@@ -41,7 +47,6 @@ public class ScoringConfigurationStepController implements StepController {
 	@Override
 	public void clearUIFields() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -57,7 +62,8 @@ public class ScoringConfigurationStepController implements StepController {
             radioEvaluateAlgorithm.setSelected(true);
             try {
             	TrueScoringSet tss = this.step.getTrueScoringSet();
-            	List<String> sortingValueOptions = this.step.getScoreConfigurationSortingValueOptions();
+            	List<String> sortCandidateValues = this.step.getScoreConfigurationSortingValueOptions(tss);
+            	setSortSelectorValues(sortCandidateValues);
             }
             catch(AvatolCVException ace){
             	// disable the radio if true scoring set cannot be constructed (i.e. there are no unlabeled images)
@@ -71,6 +77,45 @@ public class ScoringConfigurationStepController implements StepController {
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
         } 
     }
+	private void setSortSelectorValues(List<String> sortCandidateValues){
+	    
+        ObservableList<String> sortCandidateList        = FXCollections.observableList(sortCandidateValues);
+        
+       // setSortSelector(presenceAbsenceAlgChoice, radioPresenceAbsence, paList,      KEY_PRESENCE_ABSENCE);
+	}
+	private void setSortSelector(ComboBox<String> choiceBox, RadioButton radioButton, ObservableList<String> oList, String key){
+        choiceBox.setItems(oList);
+        if (oList.size() > 0){
+            if (this.step.hasPriorAnswers()){
+                String paAlg = this.step.getPriorAnswers().get(key);
+                if(null == paAlg){
+                    // alg was not selected prior
+                    choiceBox.setValue(oList.get(0));
+                }
+                else {
+                    // alg was selected prior, use that value
+                    choiceBox.setValue(paAlg);
+                    radioButton.setSelected(true);
+                }
+            }
+            else {
+                choiceBox.setValue(oList.get(0));
+            }
+            choiceBox.requestLayout();
+        }
+    }
+	public void configureAsEvaluteAlgorithm(){
+	    System.out.println("configureAsEvaluteAlgorithm");
+	}
+	public void configureAsScoreImages(){
+	    System.out.println("configureAsScoreImages");
+	}
+	public void configureAsSortByImage(){
+	    System.out.println("configureAsSortByImage");
+	}
+	public void configureAsGroupByProperty(){
+	    System.out.println("configureAsGroupByProperty");
+	}
 	public void configureViewByProperty(ScoringSet ss){
 		
 	}
