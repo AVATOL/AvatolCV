@@ -167,7 +167,8 @@ public class NormalizedImageInfo {
                         value = parts[1];
                     }
                     if (key.contains(":")){
-                        // skip for now
+                    	//character:1824358|M3 presence=characterState:4884344|M3 present
+                        System.out.println("skipping : line: " + line);
                     }
                     else {
                         if (value.contains("|")){
