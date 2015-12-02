@@ -38,6 +38,7 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.LoginStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.OrientationConfigurationStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.OrientationRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConfigurationStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationConfigurationStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationResultsStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationRunStep;
@@ -174,6 +175,12 @@ public class JavaFXStepSequencer  {
         controllerForStep.put(scoringConfigStep, scoringConfigStepController);
         addLabelForStep(scoringConfigStep,"Configure Scoring");
         orientConfigStep.setNextAnswerableInSeries(scoringConfigStep);
+        
+        ScoringRunStep scoringRunStep = new ScoringRunStep(sessionInfo);
+        ss.appendStep(scoringRunStep);
+        ScoringRunStepController scoringRunStepController = new ScoringRunStepController(this, scoringRunStep, "SegmentationRunStep.fxml");
+        controllerForStep.put(scoringRunStep, scoringRunStepController);
+        addLabelForStep(scoringRunStep,"Run Scoring");
         
         // THIS WAS SINISAS 20151112 DEMO
         SegmentationResultsStep segResultsStep = new SegmentationResultsStep();

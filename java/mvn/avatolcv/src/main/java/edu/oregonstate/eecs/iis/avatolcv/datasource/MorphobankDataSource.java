@@ -1,5 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.datasource;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -392,7 +393,9 @@ public class MorphobankDataSource implements DataSource {
     	lines.add("view=" + viewValue);
     	String annotationsValueString = getAnnotationsValueString(annotationsForCell);
     	lines.add(NormalizedImageInfo.KEY_ANNOTATION + "=" + annotationsValueString);
-    	return this.niis.createNormalizedImageInfoFromLines(mediaID,lines);
+    	String path =  this.niis.createNormalizedImageInfoFromLines(mediaID,lines);
+    	File f = new File(path);
+        return f.getName();
     }
     public static String getAnnotationsValueString(List<MBAnnotation> annotations){
     	// avcv_annotation=rectangle:25,45;35,87+point:98,92

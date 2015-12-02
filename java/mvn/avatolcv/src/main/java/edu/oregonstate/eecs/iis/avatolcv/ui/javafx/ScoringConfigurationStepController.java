@@ -23,6 +23,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ModalImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrueScoringSet;
+import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConfigurationStep;
 
 public class ScoringConfigurationStepController implements StepController {
@@ -34,14 +35,22 @@ public class ScoringConfigurationStepController implements StepController {
     public RadioButton radioViewByGroup = null;
     public ChoiceBox choiceBoxGroupProerty = null;
     public ScrollPane trainTestSettingsScrollPane = null;
+    private EvaluationSet evaluationSet = null;
+    private TrueScoringSet trueScoringSet = null;
     public ScoringConfigurationStepController(ScoringConfigurationStep step, String fxmlDocName){
         this.step = step;
         this.fxmlDocName = fxmlDocName;
     }
 	@Override
 	public boolean consumeUIData() {
-		// TODO Auto-generated method stub
-		return false;
+	    this.step.setScoringSet(this.trueScoringSet);
+	    try {
+            this.step.consumeProvidedData();
+        }
+        catch(Exception e){
+            AvatolCVExceptionExpresserJavaFX.instance.showException(e, "problem trying to consume data at segmentation configuration");
+        }
+        return true;
 	}
 
 	@Override
@@ -58,11 +67,11 @@ public class ScoringConfigurationStepController implements StepController {
             Node content = loader.load();
             trainTestSettingsScrollPane.setStyle("-fx-border-color: black;");
             this.step.reAssessImagesInPlay();
-            EvaluationSet es = this.step.getEvaluationSet();
+            this.evaluationSet = this.step.getEvaluationSet();
             radioEvaluateAlgorithm.setSelected(true);
             try {
-            	TrueScoringSet tss = this.step.getTrueScoringSet();
-            	List<String> sortCandidateValues = this.step.getScoreConfigurationSortingValueOptions(tss);
+            	this.trueScoringSet = this.step.getTrueScoringSet();
+            	List<String> sortCandidateValues = this.step.getScoreConfigurationSortingValueOptions(this.trueScoringSet);
             	setSortSelectorValues(sortCandidateValues);
             }
             catch(AvatolCVException ace){
@@ -70,7 +79,7 @@ public class ScoringConfigurationStepController implements StepController {
             	radioScoreImages.setDisable(true);
             }
             radioViewByImage.setSelected(true);
-            configureViewByImage(es);
+            configureViewByImage(this.evaluationSet);
             return content;
         }
         catch(IOException ioe){

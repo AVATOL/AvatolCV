@@ -1,24 +1,16 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmLauncher;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.CommandLineInvoker;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OutputMonitor;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.RunConfigFile;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OrientationAlgorithm;
-import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
-import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.OrientationRunStepController;
 
 public class OrientationRunStep implements Step {
-    private static final String NL = System.getProperty("line.separator");
     private SessionInfo sessionInfo = null;
     private AlgorithmLauncher launcher = null;
     public OrientationRunStep(SessionInfo sessionInfo){
@@ -45,7 +37,7 @@ public class OrientationRunStep implements Step {
         return false;
     }
 
-    public void runOrientation(OrientationRunStepController controller, String processName) throws AvatolCVException {
+    public void runOrientation(OutputMonitor controller, String processName) throws AvatolCVException {
         OrientationAlgorithm sa  = sessionInfo.getSelectedOrientationAlgorithm();
         AlgorithmSequence algSequence = sessionInfo.getAlgorithmSequence();
         algSequence.enableOrientation();
@@ -91,17 +83,7 @@ public class OrientationRunStep implements Step {
         }
     }
     */
-    private String getStatus(String path) {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(path));
-            String line = reader.readLine();
-            reader.close();
-            return line;
-        }
-        catch(IOException ioe){
-            return "algorithm run status unavailable";
-        }
-    }
+    
     @Override
     public boolean isEnabledByPriorAnswers() {
         if (this.sessionInfo.isOrientationAlgChosen()){
@@ -110,6 +92,5 @@ public class OrientationRunStep implements Step {
         else {
             return false;
         }
-        
     }
 }

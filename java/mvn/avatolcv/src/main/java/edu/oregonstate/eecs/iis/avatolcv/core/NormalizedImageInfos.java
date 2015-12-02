@@ -164,9 +164,8 @@ public class NormalizedImageInfos {
 			}
 		}
 		for (String name : filenames){
-			
 			if (!niiAllPresent.contains(name)){
-				throw new AvatolCVException("given filename " + name + " not present.");
+				throw new AvatolCVException("given filename " + name + " not present in niiAllPresent list.");
 			}
 			this.niiSession.add(name);
 		}

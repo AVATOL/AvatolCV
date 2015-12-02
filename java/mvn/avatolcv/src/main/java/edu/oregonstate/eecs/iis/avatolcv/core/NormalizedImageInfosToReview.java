@@ -58,7 +58,7 @@ public class NormalizedImageInfosToReview {
             }
         }
     }
-    public List<NormalizedImageInfoScored> getScoredImages(String scoringConcern){
+    public List<NormalizedImageInfoScored> getScoredImages(String scoringConcern) throws AvatolCVException {
         List<NormalizedImageInfoScored> result = new ArrayList<NormalizedImageInfoScored>();
         for (NormalizedImageInfoScored nii: scoredImages){
             if (nii.hasScoringConcern(scoringConcern, this.scoreIndex)){
@@ -68,7 +68,7 @@ public class NormalizedImageInfosToReview {
         return result;
     }
 
-    public List<NormalizedImageInfoScored> getTrainingImages(String scoringConcern){
+    public List<NormalizedImageInfoScored> getTrainingImages(String scoringConcern) throws AvatolCVException{
         List<NormalizedImageInfoScored> result = new ArrayList<NormalizedImageInfoScored>();
         for (NormalizedImageInfoScored nii: trainingImages){
             if (nii.hasScoringConcern(scoringConcern, this.scoreIndex)){

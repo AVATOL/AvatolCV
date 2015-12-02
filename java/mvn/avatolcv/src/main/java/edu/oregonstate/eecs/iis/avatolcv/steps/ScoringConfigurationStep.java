@@ -10,8 +10,12 @@ import edu.oregonstate.eecs.iis.avatolcv.core.TrueScoringSet;
 
 public class ScoringConfigurationStep extends Answerable implements Step {
 	private SessionInfo sessionInfo = null;
+	private ScoringSet scoringSet = null;
 	public ScoringConfigurationStep(SessionInfo sessionInfo){
 		this.sessionInfo = sessionInfo;
+	}
+	public void setScoringSet(ScoringSet scoringSet){
+	    this.scoringSet = scoringSet;
 	}
 	public List<String> getScoreConfigurationSortingValueOptions(ScoringSet ss){
 		return this.sessionInfo.getScoreConfigurationSortingValueOptions(ss);
@@ -32,8 +36,7 @@ public class ScoringConfigurationStep extends Answerable implements Step {
 	}
 	@Override
 	public void consumeProvidedData() throws AvatolCVException {
-		// TODO Auto-generated method stub
-		
+		this.sessionInfo.setScoringSet(this.scoringSet);
 	}
 
 	@Override

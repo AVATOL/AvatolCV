@@ -72,9 +72,11 @@ public class SessionInfo{
     private DataFilter dataFilter = null;
     private String chosenSegmentationAlg = null;
     private String chosenOrientationAlg = null;
+    private String chosenScoringAlg = null;
     private AlgorithmSequence algorithmSequence = null;
     private NormalizedImageInfos normalizedImageInfos = null;
     private SessionImages sessionImages = null;
+    private ScoringSet scoringSet = null;
 	public SessionInfo() throws AvatolCVException {
 		File f = new File(AvatolCVFileSystem.getAvatolCVRootDir());
         if (!f.isDirectory()){
@@ -188,6 +190,32 @@ public class SessionInfo{
         Algorithm a =  this.algorithmModules.getAlgWithName(getOrientationAlgName(), AlgorithmModules.AlgType.ORIENTATION);
         OrientationAlgorithm oa = (OrientationAlgorithm)a;
         return oa;
+    }
+    /*
+     * SCORING
+     */
+    public void setChosenScoringAlgorithmName(String algName){
+        this.chosenScoringAlg = algName;
+    }
+    public boolean isScoringAlgChosen(){
+        if (null == this.chosenScoringAlg){
+            return false;
+        }
+        return true;
+    }
+    public String getScoringAlgName(){
+        return this.chosenScoringAlg;
+    }
+    public ScoringAlgorithm getSelectedScoringAlgorithm() throws AvatolCVException {
+        Algorithm a =  this.algorithmModules.getAlgWithName(getScoringAlgName(), AlgorithmModules.AlgType.SCORING);
+        ScoringAlgorithm sa = (ScoringAlgorithm)a;
+        return sa;
+    }
+    public void setScoringSet(ScoringSet scoringSet){
+        this.scoringSet = scoringSet;
+    }
+    public ScoringSet getSelectedScoringSet(){
+        return this.scoringSet;
     }
     /*
      * FILTER
