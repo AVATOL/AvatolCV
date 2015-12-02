@@ -16,7 +16,7 @@ public class ScoringRunStep implements Step {
     public ScoringRunStep(SessionInfo sessionInfo){
         this.sessionInfo = sessionInfo;
     }
-    public String getSelectedScoringAlgorithm(){
+    public String getSelectedScoringAlgorithm() throws AvatolCVException {
         return this.sessionInfo.getScoringAlgName();
     }
     public void runScoring(OutputMonitor controller, String processName) throws AvatolCVException {

@@ -65,14 +65,14 @@ public class SessionInfo{
     private List<ChoiceItem> chosenScoringConcerns = null;
     private ChoiceItem chosenScoringConcern = null;
     private AlgorithmModules algorithmModules = null;
-    private Algorithm scoringAlgorithmProperties = null;
+    //private Algorithm scoringAlgorithmProperties = null;
     //private ScoringAlgorithms.ScoringScope scoringScope = null;
     //private ScoringAlgorithms.ScoringSessionFocus scoringFocus = null;
     private ScoringAlgorithm chosenScoringAlgorithm = null;
     private DataFilter dataFilter = null;
     private String chosenSegmentationAlg = null;
     private String chosenOrientationAlg = null;
-    private String chosenScoringAlg = null;
+    //private String chosenScoringAlg = null;
     private AlgorithmSequence algorithmSequence = null;
     private NormalizedImageInfos normalizedImageInfos = null;
     private SessionImages sessionImages = null;
@@ -194,17 +194,15 @@ public class SessionInfo{
     /*
      * SCORING
      */
-    public void setChosenScoringAlgorithmName(String algName){
-        this.chosenScoringAlg = algName;
-    }
+    
     public boolean isScoringAlgChosen(){
-        if (null == this.chosenScoringAlg){
+        if (null == this.chosenScoringAlgorithm){
             return false;
         }
         return true;
     }
-    public String getScoringAlgName(){
-        return this.chosenScoringAlg;
+    public String getScoringAlgName() throws AvatolCVException {
+        return this.chosenScoringAlgorithm.getAlgName();
     }
     public ScoringAlgorithm getSelectedScoringAlgorithm() throws AvatolCVException {
         Algorithm a =  this.algorithmModules.getAlgWithName(getScoringAlgName(), AlgorithmModules.AlgType.SCORING);
