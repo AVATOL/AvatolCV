@@ -2,7 +2,7 @@ At SCORING step, I will pass one argument, which is the path to the runConfigSco
 
 AvatolCV knows to generate these lines:
 
-    //trainingDataDir=<dirWithTrainingData> // see below *
+    trainingDataDir=<dirWithTrainingData> // see below *
     scoringOutputDir=<someOutputDir> // where to put output
 
   

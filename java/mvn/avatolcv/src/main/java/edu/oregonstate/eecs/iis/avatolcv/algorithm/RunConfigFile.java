@@ -67,8 +67,9 @@ public class RunConfigFile {
     		File outputDirFile = new File(outputDirPath);
     		outputDirFile.mkdirs();
     		writer.write(outputDirKey + "=" + outputDirPath + NL);
-    		if (this.alg.getAlgType().equals("" + AlgorithmModules.AlgType.SCORING)){
-    		    writer.write("trainingDataDir=" + AvatolCVFileSystem.getTrainingDataDirForScoring());
+    		String algTypeScoringName = AlgorithmModules.AlgType.SCORING.name().toLowerCase();
+    		if (algType.equals(algTypeScoringName)){
+    		    writer.write("trainingDataDir=" + AvatolCVFileSystem.getTrainingDataDirForScoring() + NL);
     		}
     		for (String dependency : dependencyEntries){
     			writer.write(dependency + NL);
