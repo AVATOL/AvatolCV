@@ -29,7 +29,7 @@ public class BisqueAnnotation {
 	@XmlAttribute
     private String value = null;
 	@XmlAttribute
-    private String type = null;
+    private String type = "";
 	
 	//@XmlAttribute(name="resource_uniq")
     //private String resourceUniq = null;
