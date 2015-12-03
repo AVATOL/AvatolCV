@@ -35,6 +35,7 @@ public class AvatolCVFileSystem {
     private static final String DIR_NAME_SEGMENTATION_OUTPUT = "segmentedData";
     private static final String DIR_NAME_ORIENTATION_OUTPUT  = "orientedData";
     private static final String DIR_NAME_SCORING_OUTPUT      = "scoredData";
+    private static final String DIR_NAME_SCORING_TRAINING    = "trainingDataForScoring";
     private static final String DIR_NAME_SEGMENTATION_MANUAL_INPUT = "segmentedInputSupplemental";
     private static final String DIR_NAME_ORIENTATION_MANUAL_INPUT  = "orientedInputSupplemental";
     private static final String DIR_NAME_SCORING_MANUAL_INPUT      = "scoredInputSupplemental";
@@ -206,6 +207,7 @@ public class AvatolCVFileSystem {
 	    ensureDir(getSegmentedDataDir());
         ensureDir(getOrientedDataDir());
         ensureDir(getScoredDataDir());
+        ensureDir(getTrainingDataDirForScoring());
 	    ensureDir(getSessionExclusionDir());
 	    ensureDir(getDatasetDir());
 	    
@@ -421,6 +423,10 @@ public class AvatolCVFileSystem {
     // scoring
     public static String getScoredDataDir()  throws AvatolCVException {
         String dir = getSessionDir() + FILESEP + DIR_NAME_SCORING_OUTPUT;
+        return dir;
+    }
+    public static String getTrainingDataDirForScoring() throws AvatolCVException {
+        String dir = getSessionDir() + FILESEP + DIR_NAME_SCORING_TRAINING;
         return dir;
     }
     public static String getManuallyProvidedSegmentationLabelsDir() throws AvatolCVException {

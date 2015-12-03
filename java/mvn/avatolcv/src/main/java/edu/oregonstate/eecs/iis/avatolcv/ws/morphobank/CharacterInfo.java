@@ -2,6 +2,8 @@ package edu.oregonstate.eecs.iis.avatolcv.ws.morphobank;
 
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoringConcernDetails;
+
 public class CharacterInfo {
 //{"ok":true,"characters":[{"charID":"383114","charName":"Tube material!!!","charStates":[{"charStateID":"821248","charStateName":"mucus???","charStateNum":"0"},{"charStateID":"821249","charStateName":"chitinous","charStateNum":"1"},{"charStateID":"821250","charStateName":"calcareous","charStateNum":"2"}]},{"charID":"555957","charName":"meow","charStates":[{"charStateID":"1245629","charStateName":"New state","charStateNum":"0"},{"charStateID":"1245630","charStateName":"New state","charStateNum":"1"},{"charStateID":"1245631","charStateName":"New state","charStateNum":"2"}]},{"charID":"519541","charName":"test task.","charStates":[{"charStateID":"1157844","charStateName":"state 1","charStateNum":"0"},{"charStateID":"1157845","charStateName":"state 2","charStateNum":"1"}]}]}
     private String ok;
@@ -21,7 +23,7 @@ public class CharacterInfo {
 		return this.characters;
 	}
 	
-    public static class MBCharacter {
+    public static class MBCharacter implements ScoringConcernDetails {
     	//{"charID":"383114","charName":"Tube material!!!","charStates":[{"charStateID":"821248","charStateName":"mucus???","charStateNum":"0"},{"charStateID":"821249","charStateName":"chitinous","charStateNum":"1"},{"charStateID":"821250","charStateName":"calcareous","charStateNum":"2"}]}
     	private String charID;
     	private String charName;
@@ -71,6 +73,18 @@ public class CharacterInfo {
         	}
         	return false;
     	}
+        @Override
+        public String getType() {
+            return "character";
+        }
+        @Override
+        public String getID() {
+            return this.getCharID();
+        }
+        @Override
+        public String getName() {
+            return this.getCharName();
+        }
     }
     
     public static class MBCharState {

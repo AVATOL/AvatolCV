@@ -13,14 +13,9 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.Algorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OrientationAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.SegmentationAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
-import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.ViewInfo.MBView;
 
 /*
  * Directory layout:
@@ -119,7 +114,18 @@ public class SessionInfo{
 	    this.normalizedImageInfos = new NormalizedImageInfos(AvatolCVFileSystem.getNormalizedImageInfoDir());
 	    this.dataSource.setNormalizedImageInfos(this.normalizedImageInfos);
 	}
-	
+	public List<ChoiceItem> getChosenScoringConcerns(){
+	    List<ChoiceItem> result = new ArrayList<ChoiceItem>();
+	    if (this.chosenScoringConcern != null){
+	        result.add(this.chosenScoringConcern);
+	    }
+	    if (this.chosenScoringConcerns != null){
+	        for (ChoiceItem ci : this.chosenScoringConcerns){
+	            result.add(ci);
+	        }
+	    }
+	    return result;
+	}
 	public void setScoringConcerns(List<ChoiceItem> chosenItems){
 	    chosenScoringConcerns = chosenItems;
 	    this.dataSource.setChosenScoringConcerns(chosenItems);

@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import java.io.File;
+import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmLauncher;
@@ -8,7 +9,12 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OutputMonitor;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.RunConfigFile;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
+import edu.oregonstate.eecs.iis.avatolcv.core.ModalImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoringConcernDetails;
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.ChoiceItem;
 
 public class ScoringRunStep implements Step {
     private SessionInfo sessionInfo = null;
@@ -28,6 +34,23 @@ public class ScoringRunStep implements Step {
         File runConfigFile = new File(runConfigPath);
         if (!runConfigFile.exists()){
             throw new AvatolCVException("runConfigFile path does not exist."); 
+        }
+        List<ChoiceItem> scoringConcerns = this.sessionInfo.getChosenScoringConcerns();
+        for (ChoiceItem scoringConcern : scoringConcerns){
+            Object backingObject = scoringConcern.getBackingObject();
+            ScoringConcernDetails scd = (ScoringConcernDetails)backingObject;
+            String scoringConcernType = scd.getType();
+            String scoringConcernID = scd.getID();
+            String scoringConcernName = scd.getName();
+            TrainingInfoFile tif = new TrainingInfoFile(scoringConcernType, scoringConcernID, scoringConcernName);
+            tif.setImageDir(algSequence.getInputDir());
+            ScoringSet scoringSet = this.sessionInfo.getSelectedScoringSet();
+            List<ModalImageInfo> trainingImages = scoringSet.getImagesToTrainOn();
+            for (ModalImageInfo mii : trainingImages){
+                // LEFT OFF HERE
+                // maybe do something simple for bisque data, then complicate for MB data
+                //tif.addImageInfo(mii.getNormalizedImageInfo().getImageName(), String scoringConcernValue, String pointCoordinates)
+            }
         }
         this.launcher = new AlgorithmLauncher(sa, runConfigPath);
         this.launcher.launch(controller);

@@ -54,6 +54,7 @@ public class RunConfigFile {
     public String getAlgorithmStatusPath(){
         return this.algStatusPath;
     }
+    
     private void persist() throws AvatolCVException {
     	String algType = this.alg.getAlgType();
     	//String sessionDir = AvatolCVFileSystem.getSessionDir();
@@ -66,6 +67,9 @@ public class RunConfigFile {
     		File outputDirFile = new File(outputDirPath);
     		outputDirFile.mkdirs();
     		writer.write(outputDirKey + "=" + outputDirPath + NL);
+    		if (this.alg.getAlgType().equals("" + AlgorithmModules.AlgType.SCORING)){
+    		    writer.write("trainingDataDir=" + AvatolCVFileSystem.getTrainingDataDirForScoring());
+    		}
     		for (String dependency : dependencyEntries){
     			writer.write(dependency + NL);
     		}

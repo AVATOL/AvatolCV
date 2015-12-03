@@ -2,15 +2,14 @@ At SCORING step, I will pass one argument, which is the path to the runConfigSco
 
 AvatolCV knows to generate these lines:
 
-    avatolCVStatusFile=<path to file to write status to> (avatolCV will poll that file)
-    trainingDataDir=<dirWithTrainingData> // see below *
-	scoringOutputDir=<someOutputDir> // where to put output
+    //trainingDataDir=<dirWithTrainingData> // see below *
+    scoringOutputDir=<someOutputDir> // where to put output
 
   
     
 AvatolCV generates these two lines and the associated files due to inputRequired lines in algProperties file:   
     testImagesFile=<somepath1> // the file referenced lists the full pathnames of files that are the cropped orig ones
-	testImagesMaskFile=<somepath2> // the file referenced lists the full pathnames of files that are the masks
+    testImagesMaskFile=<somepath2> // the file referenced lists the full pathnames of files that are the masks
     
 AvatolCV generates these two lines and the associated files due to dependency lines in algProperties file:
     pathLibSsvmMatlab=<modulesPath>/3rdParty/libsvm/libsvm-318/matlab

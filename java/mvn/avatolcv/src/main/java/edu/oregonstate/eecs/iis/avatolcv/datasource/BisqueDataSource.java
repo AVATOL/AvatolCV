@@ -18,6 +18,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfosToReview;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoringConcernDetails;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionImages;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
@@ -155,10 +156,31 @@ public class BisqueDataSource implements DataSource {
             }
         }
         for (String annotationName : annotationNames){
-            ChoiceItem ci = new ChoiceItem(annotationName, false, annotationName);
+            ChoiceItem ci = new ChoiceItem(annotationName, false, new ScoringConcernDetailsImpl(annotationName));
             items.add(ci);
         }
         return items;
+    }
+    public class ScoringConcernDetailsImpl implements ScoringConcernDetails {
+        private String name = null;
+        public ScoringConcernDetailsImpl(String name){
+            this.name = name;
+        }
+        @Override
+        public String getType() {
+            return "bisqueProperty";
+        }
+
+        @Override
+        public String getID() {
+            return "ID_"+name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+        
     }
     @Override
     public String getInstructionsForScoringConcernScreen(ScoringAlgorithm.ScoringScope scoringScope, ScoringAlgorithm.ScoringSessionFocus scoringFocus) {
