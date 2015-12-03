@@ -29,6 +29,14 @@ public class ScoringRunStep implements Step {
     public String getSelectedScoringAlgorithm() throws AvatolCVException {
         return this.sessionInfo.getScoringAlgName();
     }
+    public String getImageNameWithIDFromFileList(String id, File[] files){
+        for (File f : files){
+            if (f.getName().startsWith(id)){
+                return f.getName();
+            }
+        }
+        return null;
+    }
     public void runScoring(OutputMonitor controller, String processName) throws AvatolCVException {
         ScoringAlgorithm sa  = sessionInfo.getSelectedScoringAlgorithm();
         AlgorithmSequence algSequence = sessionInfo.getAlgorithmSequence();
@@ -55,7 +63,15 @@ public class ScoringRunStep implements Step {
             	NormalizedImageInfo nii = mii.getNormalizedImageInfo();
             	String value = nii.getValueForKey(scoringConcernName);
             	String valueName = new NormalizedTypeIDName(value).getName();
-            	String imageName = nii.getImageName();
+            	String imageID = nii.getImageID();
+            	String pathWhereInputImagesForScoringLive = algSequence.getInputDir();
+            	File f = new File(pathWhereInputImagesForScoringLive);
+            	File[] files = f.listFiles();
+            	String imageNameForScoring = getImageNameWithIDFromFileList(imageID, files);
+            	if (null == imageNameForScoring){
+            	    throw new AvatolCVException("Cannot find file in scoring input dir " + pathWhereInputImagesForScoringLive + " with id " + imageID);
+            	}
+            	//String imageName = nii.getImageName();
             	String pointCoordinates = nii.getAnnotationCoordinates();
 
             	if (pointCoordinatesRelevant){
@@ -63,11 +79,11 @@ public class ScoringRunStep implements Step {
                 		ImageInfo.excludeForReason(ImageInfo.EXCLUSION_REASON_MISSING_ANNOTATION, false, nii.getImageID());
                 	}
                 	else {
-                		tif.addImageInfo(imageName, valueName,  pointCoordinates);
+                		tif.addImageInfo(imageNameForScoring, valueName,  pointCoordinates);
                 	}
             	}
             	else {
-            		tif.addImageInfo(imageName, valueName,  "");
+            		tif.addImageInfo(imageNameForScoring, valueName,  "");
             	}
             	
             }
