@@ -142,11 +142,14 @@ public class BisqueDataSource implements DataSource {
             throws AvatolCVException {
         List<ChoiceItem> items = new ArrayList<ChoiceItem>();
         List<String> annotationNames = new ArrayList<String>();
+        Hashtable<String, String> annotationIDforNameHash = new Hashtable<String, String>();
         for (BisqueImage bi : this.bisqueImagesForCurrentDataset){
             String imageID = bi.getResourceUniq();
             List<BisqueAnnotation> annotations = annotationsForImageIdHash.get(imageID);
             for (BisqueAnnotation a : annotations){
                 String annotationName = a.getName();
+                String annotationId = a.getAnnotationID();
+                annotationIDforNameHash.put(annotationName, annotationId);
                 if (annotationName.equals("filename") || annotationName.equals("upload_datetime")){
                     // don't present these as potential scoring concerns
                 }
@@ -156,15 +159,17 @@ public class BisqueDataSource implements DataSource {
             }
         }
         for (String annotationName : annotationNames){
-            ChoiceItem ci = new ChoiceItem(annotationName, false, new ScoringConcernDetailsImpl(annotationName));
+            ChoiceItem ci = new ChoiceItem(annotationName, false, new ScoringConcernDetailsImpl(annotationName, annotationIDforNameHash.get(annotationName)));
             items.add(ci);
         }
         return items;
     }
     public class ScoringConcernDetailsImpl implements ScoringConcernDetails {
         private String name = null;
-        public ScoringConcernDetailsImpl(String name){
+        private String id = null;
+        public ScoringConcernDetailsImpl(String name, String id){
             this.name = name;
+            this.id = id;
         }
         @Override
         public String getType() {
@@ -173,7 +178,7 @@ public class BisqueDataSource implements DataSource {
 
         @Override
         public String getID() {
-            return "ID_"+name;
+            return id;
         }
 
         @Override

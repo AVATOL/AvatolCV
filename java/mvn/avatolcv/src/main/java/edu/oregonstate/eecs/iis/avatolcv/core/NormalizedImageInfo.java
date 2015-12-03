@@ -229,5 +229,8 @@ public class NormalizedImageInfo {
         }
         
     }
+	public String getAnnotationCoordinates() {
+		return keyValueHash.get(KEY_ANNOTATION);
+	}
     
 }

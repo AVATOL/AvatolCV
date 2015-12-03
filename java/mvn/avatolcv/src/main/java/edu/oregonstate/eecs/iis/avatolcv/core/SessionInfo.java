@@ -101,7 +101,9 @@ public class SessionInfo{
 	public DataSource getDataSource(){
 	    return this.dataSource;
 	}
-
+	public boolean arePointCoordinatesRelavent(){
+		return this.normalizedImageInfos.arePointCoordinatesRelavent();
+	}
 	
 	public String getSessionsRootDir(){
 	    return this.sessionsRootDir;

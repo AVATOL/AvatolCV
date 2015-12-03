@@ -4,12 +4,15 @@ import java.io.File;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmLauncher;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OutputMonitor;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.RunConfigFile;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ModalImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringConcernDetails;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
@@ -36,6 +39,7 @@ public class ScoringRunStep implements Step {
             throw new AvatolCVException("runConfigFile path does not exist."); 
         }
         List<ChoiceItem> scoringConcerns = this.sessionInfo.getChosenScoringConcerns();
+        boolean pointCoordinatesRelevant = this.sessionInfo.arePointCoordinatesRelavent();
         for (ChoiceItem scoringConcern : scoringConcerns){
             Object backingObject = scoringConcern.getBackingObject();
             ScoringConcernDetails scd = (ScoringConcernDetails)backingObject;
@@ -47,10 +51,25 @@ public class ScoringRunStep implements Step {
             ScoringSet scoringSet = this.sessionInfo.getSelectedScoringSet();
             List<ModalImageInfo> trainingImages = scoringSet.getImagesToTrainOn();
             for (ModalImageInfo mii : trainingImages){
-                // LEFT OFF HERE
-                // maybe do something simple for bisque data, then complicate for MB data
-                //tif.addImageInfo(mii.getNormalizedImageInfo().getImageName(), String scoringConcernValue, String pointCoordinates)
+            	NormalizedImageInfo nii = mii.getNormalizedImageInfo();
+            	String value = nii.getValueForKey(scoringConcernName);
+            	String imageName = nii.getImageName();
+            	String pointCoordinates = nii.getAnnotationCoordinates();
+
+            	if (pointCoordinatesRelevant){
+            		if (null == pointCoordinates){
+                		ImageInfo.excludeForReason(ImageInfo.EXCLUSION_REASON_MISSING_ANNOTATION, false, nii.getImageID());
+                	}
+                	else {
+                		tif.addImageInfo(imageName, value,  pointCoordinates);
+                	}
+            	}
+            	else {
+            		tif.addImageInfo(imageName, value,  "");
+            	}
+            	
             }
+            tif.persist(AvatolCVFileSystem.getTrainingDataDirForScoring());
         }
         this.launcher = new AlgorithmLauncher(sa, runConfigPath);
         this.launcher.launch(controller);

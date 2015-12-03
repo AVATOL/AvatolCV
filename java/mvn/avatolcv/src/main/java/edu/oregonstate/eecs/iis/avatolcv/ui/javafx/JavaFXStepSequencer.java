@@ -108,20 +108,21 @@ public class JavaFXStepSequencer  {
         addLabelForStep(scoringConcernStep,"Select Item To Score");
         focusStep.setNextAnswerableInSeries(scoringConcernStep);
         
+        /*
         SummaryFilterStep summaryFilterStep = new SummaryFilterStep(sessionInfo);
         ss.appendStep(summaryFilterStep);
         SummaryFilterStepController summaryFilterStepController = new SummaryFilterStepController(summaryFilterStep, "SummaryFilterStep.fxml");
         controllerForStep.put(summaryFilterStep, summaryFilterStepController);
         addLabelForStep(summaryFilterStep,"Summary/Filter");
         scoringConcernStep.setNextAnswerableInSeries(summaryFilterStep);
-        
+        */
         ImagePullStep imagePullStep = new ImagePullStep(sessionInfo);
         ss.appendStep(imagePullStep);
         ImagePullStepController imagePullController = new ImagePullStepController(this, imagePullStep, "ImagePullStep.fxml");
         controllerForStep.put(imagePullStep, imagePullController);
         addLabelForStep(imagePullStep,"Load Images");
-        summaryFilterStep.setNextAnswerableInSeries(imagePullStep);
-//scoringConcernStep.setNextAnswerableInSeries(imagePullStep);
+        //summaryFilterStep.setNextAnswerableInSeries(imagePullStep);
+scoringConcernStep.setNextAnswerableInSeries(imagePullStep);
         
         ExclusionQualityStep exclusionQualityStep = new ExclusionQualityStep(sessionInfo);
         ss.appendStep(exclusionQualityStep);

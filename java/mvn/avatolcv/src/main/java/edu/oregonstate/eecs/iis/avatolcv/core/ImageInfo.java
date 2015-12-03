@@ -24,6 +24,7 @@ public class ImageInfo {
 	public static final String EXCLUSION_REASON_IMAGE_QUALITY = "imageQuality";
 	public static final String EXCLUSION_REASON_ORIENTATION = "imageOrientation";
     public static final String EXCLUSION_REASON_UNAVAILABLE = "imageUnavailable";
+    public static final String EXCLUSION_REASON_MISSING_ANNOTATION = "trainingSampleMissingPointAnnotation";
 
 	private String nameAsUploadedNormalized = null;
 	private String nameAsUploadedOriginal = null;
@@ -182,12 +183,15 @@ public class ImageInfo {
 		
 	}
 	public void excludeForReason(String s, boolean excludeJustForSession) throws AvatolCVException {
+		excludeForReason(s, excludeJustForSession, this.ID);
+	}
+	public static void excludeForReason(String s, boolean excludeJustForSession, String ID) throws AvatolCVException {
 		String path = null;
 	    if (excludeJustForSession){
-	    	path = AvatolCVFileSystem.getSessionExclusionInfoFilePath(this.ID);
+	    	path = AvatolCVFileSystem.getSessionExclusionInfoFilePath(ID);
 	    }
 	    else {
-	    	path = AvatolCVFileSystem.getDatasetExclusionInfoFilePath(this.ID);
+	    	path = AvatolCVFileSystem.getDatasetExclusionInfoFilePath(ID);
 	    }
 		
 		try {

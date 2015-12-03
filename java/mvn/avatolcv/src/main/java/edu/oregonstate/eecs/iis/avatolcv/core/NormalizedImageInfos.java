@@ -26,6 +26,16 @@ public class NormalizedImageInfos {
 			niiAllPresent.add(f.getName());
 		}
 	}
+	public boolean arePointCoordinatesRelavent(){
+		for (String s : niiAllPresent){
+			NormalizedImageInfo nii = niiHash.get(s);
+			String coords = nii.getAnnotationCoordinates();
+			if (null != coords){
+				return true;
+			}
+		}
+		return false;
+	}
 	public void ensureAllKeysPresentInAllImageInfos() throws AvatolCVException {
 		List<String> scorableKeys = getScorableKeys();
 		for (String name : niiAllPresent){
