@@ -18,6 +18,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfosToReview;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoreIndex;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringConcernDetails;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionImages;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
@@ -353,7 +354,4 @@ public class BisqueDataSource implements DataSource {
     public void setNormalizedImageInfos(NormalizedImageInfos niis) {
         this.niis = niis;
     }
-
-
-    
 }

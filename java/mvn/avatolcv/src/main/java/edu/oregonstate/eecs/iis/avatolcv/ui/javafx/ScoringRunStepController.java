@@ -16,11 +16,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OutputMonitor;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
-import edu.oregonstate.eecs.iis.avatolcv.steps.OrientationRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringRunStep;
-import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.OrientationRunStepController.MessageUpdater;
-import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.OrientationRunStepController.PostOrientationUIAdjustments;
-import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.OrientationRunStepController.RunOrientationTask;
 
 public class ScoringRunStepController implements StepController, OutputMonitor{
     public static final String RUN_SCORING = "run scoring";

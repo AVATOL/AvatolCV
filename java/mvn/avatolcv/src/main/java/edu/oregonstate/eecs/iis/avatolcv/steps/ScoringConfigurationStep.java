@@ -20,11 +20,11 @@ public class ScoringConfigurationStep extends Answerable implements Step {
 	public List<String> getScoreConfigurationSortingValueOptions(ScoringSet ss){
 		return this.sessionInfo.getScoreConfigurationSortingValueOptions(ss);
 	}
-	public EvaluationSet getEvaluationSet() throws AvatolCVException {
-		return this.sessionInfo.getEvaluationSet();
+	public List<EvaluationSet> getEvaluationSets() throws AvatolCVException {
+		return this.sessionInfo.getEvaluationSets();
 	}
-	public TrueScoringSet getTrueScoringSet() throws AvatolCVException {
-		return this.sessionInfo.getTrueScoringSet();
+	public List<TrueScoringSet> getTrueScoringSets() throws AvatolCVException {
+		return this.sessionInfo.getTrueScoringSets();
 	}
 	@Override
 	public void init() throws AvatolCVException {

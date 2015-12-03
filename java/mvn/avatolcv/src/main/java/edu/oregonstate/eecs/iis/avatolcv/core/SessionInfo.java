@@ -55,7 +55,7 @@ public class SessionInfo{
     private static final String NL = System.getProperty("line.separator");
     private static final String FILESEP = System.getProperty("file.separator");
     private String sessionID = null;
-    private DataSource dataSource = null;
+    private static DataSource dataSource = null;
     private DatasetInfo chosenDataset = null;
     private List<ChoiceItem> chosenScoringConcerns = null;
     private ChoiceItem chosenScoringConcern = null;
@@ -286,23 +286,27 @@ public class SessionInfo{
         return this.algorithmSequence;
     }
     
-    public EvaluationSet getEvaluationSet() throws AvatolCVException {
-    	if (chosenScoringConcern == null){
-    		throw new AvatolCVException("case of multiple scoring concerns (DPM) not yet handled by Scoring Configuration code ");
+    public List<EvaluationSet> getEvaluationSets() throws AvatolCVException {
+        List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
+        List<EvaluationSet> esets = new ArrayList<EvaluationSet>();
+    	for (ChoiceItem item : scoringConcerns){
+    	    String keyToScore = item.getName();
+            List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSession();
+            EvaluationSet es = new EvaluationSet(niis, keyToScore, EvaluationSet.DEFAULT_EVALUATION_SPLIT);
+            esets.add(es);
     	}
-    	String keyToScore = chosenScoringConcern.getName();
-    	List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSession();
-    	EvaluationSet es = new EvaluationSet(niis, keyToScore, EvaluationSet.DEFAULT_EVALUATION_SPLIT);
-    	return es;
+    	return esets;
     }
-    public TrueScoringSet getTrueScoringSet() throws AvatolCVException {
-    	if (chosenScoringConcern == null){
-    		throw new AvatolCVException("case of multiple scoring concerns (DPM) not yet handled by Scoring Configuration code ");
-    	}
-    	String keyToScore = chosenScoringConcern.getName();
-    	List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSession();
-    	TrueScoringSet es = new TrueScoringSet(niis, keyToScore);
-    	return es;
+    public List<TrueScoringSet> getTrueScoringSets() throws AvatolCVException {
+        List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
+        List<TrueScoringSet> tssets = new ArrayList<TrueScoringSet>();
+        for (ChoiceItem item : scoringConcerns){
+            String keyToScore = item.getName();
+            List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSession();
+            TrueScoringSet tss = new TrueScoringSet(niis, keyToScore);
+            tssets.add(tss);
+        }
+    	return tssets;
     }
     public List<String> getScoreConfigurationSortingValueOptions(ScoringSet ss){
         List<String> allKeys = ss.getAllKeys();
@@ -331,5 +335,8 @@ public class SessionInfo{
             result.add(item.getName());
         }
         return result;
+    }
+    public static boolean isBisqueSession(){
+        return dataSource.getName().equals("bisque");
     }
 }

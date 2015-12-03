@@ -7,7 +7,15 @@ import java.io.IOException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 
-
+/**
+ * 
+ * @author admin-jed
+ *
+ *  ScoreIndex is used to allow for the idea that scoring concern name and value might be contained inside an 
+ *  expression like type:id|name (i.e. the NormalizedTyopeIDName class).  It is the name field that is of interest, but in various contexts 
+ *  it might be the name in the key or the name in the value that is either the Scoring concern or the value.
+ *  
+ */
 public class ScoreIndex {
 	private static final String PREFIX = AvatolCVFileSystem.RESERVED_PREFIX;
 	public static final String KEY_SCORING_CONCERN_LOCATION = PREFIX + "scoringConcernLocation";

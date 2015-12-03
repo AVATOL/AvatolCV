@@ -11,6 +11,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoreIndex;
 
 public interface DataSource {
     String getName();

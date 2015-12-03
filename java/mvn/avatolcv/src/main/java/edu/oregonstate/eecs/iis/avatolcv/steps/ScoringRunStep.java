@@ -13,6 +13,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ModalImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedTypeIDName;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringConcernDetails;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
@@ -53,6 +54,7 @@ public class ScoringRunStep implements Step {
             for (ModalImageInfo mii : trainingImages){
             	NormalizedImageInfo nii = mii.getNormalizedImageInfo();
             	String value = nii.getValueForKey(scoringConcernName);
+            	String valueName = new NormalizedTypeIDName(value).getName();
             	String imageName = nii.getImageName();
             	String pointCoordinates = nii.getAnnotationCoordinates();
 
@@ -61,11 +63,11 @@ public class ScoringRunStep implements Step {
                 		ImageInfo.excludeForReason(ImageInfo.EXCLUSION_REASON_MISSING_ANNOTATION, false, nii.getImageID());
                 	}
                 	else {
-                		tif.addImageInfo(imageName, value,  pointCoordinates);
+                		tif.addImageInfo(imageName, valueName,  pointCoordinates);
                 	}
             	}
             	else {
-            		tif.addImageInfo(imageName, value,  "");
+            		tif.addImageInfo(imageName, valueName,  "");
             	}
             	
             }
