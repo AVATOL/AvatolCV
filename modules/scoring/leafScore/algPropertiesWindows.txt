@@ -1,11 +1,13 @@
 launchWith=leafScore.bat
 algName=simpleLeafScore
 algType=scoring
+description=Scores shape related characters of simple shapes such Monocot leaves.
+
 scoringFocus=SPECIMEN_SHAPE_ASPECT
 scoringScope=SINGLE_ITEM
 
-inputRequired:testImagesFile refsFilesWithSuffix _alignOrig ofType rawImage
+trainingLabelImageSuffix=_orientedOrig
 
+inputRequired:testImagesFile refsFilesWithSuffix _alignOrig ofType rawImage
 inputRequired:testImagesMaskFile refsFilesWithSuffix _alignMask ofType rawImage
 
-description=Scores shape related characters of simple shapes such Monocot leaves.
