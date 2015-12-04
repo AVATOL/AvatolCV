@@ -67,7 +67,7 @@ public class ScoringRunStep implements Step {
             	String pathWhereInputImagesForScoringLive = algSequence.getInputDir();
             	File f = new File(pathWhereInputImagesForScoringLive);
             	File[] files = f.listFiles();
-            	String imageNameForScoring = getImageNameWithIDFromFileList(imageID, files, "_orientedOrig");
+            	String imageNameForScoring = getImageNameWithIDFromFileList(imageID, files, sa.getTrainingLabelImageSuffix());
             	if (null == imageNameForScoring){
             	    throw new AvatolCVException("Cannot find file in scoring input dir " + pathWhereInputImagesForScoringLive + " with id " + imageID);
             	}

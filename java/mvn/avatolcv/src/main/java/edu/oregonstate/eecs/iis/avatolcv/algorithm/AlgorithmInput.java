@@ -2,6 +2,8 @@ package edu.oregonstate.eecs.iis.avatolcv.algorithm;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
+//inputRequired:testImagesFile refsFilesWithSuffix _orientedOrig ofType isolatedSpecimenImage
+//inputOptional:userProvidedTrainImagesFile refsFilesWithSuffix * ofType rawImage
 public class AlgorithmInput {
     public static final String REFS_FILES_WITH_SUFFIX = "refsFilesWithSuffix";
     public static final String NO_SUFFIX = "*";
