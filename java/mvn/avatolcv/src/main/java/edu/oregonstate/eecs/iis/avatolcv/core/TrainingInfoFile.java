@@ -122,11 +122,12 @@ public class TrainingInfoFile {
 		String path = parentDir + FILESEP + getFilename();
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(path));
-			writer.write("imageDir="+imageDir+NL);
-			writer.write("scoringConcernType="+scoringConcernType+NL);
-			writer.write("scoringConcernID="+scoringConcernID+NL);
-			writer.write("scoringConcernName="+scoringConcernName+NL);
-			writer.write("#imageName,scoringConcernValue,pointCoordinates"+NL);
+			// decided to use full paths 
+			//writer.write("imageDir="+imageDir+NL);
+			//writer.write("scoringConcernType="+scoringConcernType+NL);
+			//writer.write("scoringConcernID="+scoringConcernID+NL);
+			//writer.write("scoringConcernName="+scoringConcernName+NL);
+			//writer.write("#imageName,scoringConcernValue,pointCoordinates"+NL);
 			for (String trainingLine : trainingLines){
 				writer.write(trainingLine);
 			}
