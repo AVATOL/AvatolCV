@@ -29,9 +29,9 @@ public class ScoringRunStep implements Step {
     public String getSelectedScoringAlgorithm() throws AvatolCVException {
         return this.sessionInfo.getScoringAlgName();
     }
-    public String getImageNameWithIDFromFileList(String id, File[] files){
+    public String getImageNameWithIDFromFileList(String id, File[] files, String suffix){
         for (File f : files){
-            if (f.getName().startsWith(id)){
+            if (f.getName().startsWith(id) && f.getName().contains(suffix)){
                 return f.getName();
             }
         }
@@ -67,7 +67,7 @@ public class ScoringRunStep implements Step {
             	String pathWhereInputImagesForScoringLive = algSequence.getInputDir();
             	File f = new File(pathWhereInputImagesForScoringLive);
             	File[] files = f.listFiles();
-            	String imageNameForScoring = getImageNameWithIDFromFileList(imageID, files);
+            	String imageNameForScoring = getImageNameWithIDFromFileList(imageID, files, "_orientedOrig");
             	if (null == imageNameForScoring){
             	    throw new AvatolCVException("Cannot find file in scoring input dir " + pathWhereInputImagesForScoringLive + " with id " + imageID);
             	}
