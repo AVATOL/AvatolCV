@@ -17,7 +17,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
  *
  *  Each algortihm in the modules are contains a file for each platform it is supported under, which tells 
  *  avatolCV about itself.  This way, avatolCV knows which dropdown menu to include it in 
- *  (the one for present/absence, shape or exture), and how to invoke it.
+ *  (the one for present/absence, shape or texture), and how to invoke it.
  */
 public class Algorithm {
 	public static final String PROPERTY_LAUNCH_FILE = "launchWith";  // can be a matlab function name, a script or executable.
@@ -31,6 +31,7 @@ public class Algorithm {
 	public static final String PROPERTY_ALG_TYPE_VALUE_SCORING = AlgorithmModules.AlgType.SCORING.toString().toLowerCase();
 	
 	public static final String PROPERTY_ALG_DESCRIPTION = "description";
+    public static final String PROPERTY_ALG_TRAINING_LABEL_IMAGE_SUFFIX = "trainingLabelImageSuffix";
 	
     public static final String DECLARATION_DEPENDENCY = "dependency:";
     public static final String DECLARATION_INPUT_REQUIRED = "inputRequired:";
@@ -46,6 +47,7 @@ public class Algorithm {
 	protected Hashtable<String, String> propsHash = new Hashtable<String,String>();
 	protected List<String> algPropsEntriesNotYetConsumed = new ArrayList<String>();
 	private String path = null;
+	private String trainingLabelImageSuffix = "";
 	public Algorithm(List<String> lines, String path) throws AvatolCVException {
 	    this.path = path;
 	    File f = new File(path);
@@ -84,6 +86,9 @@ public class Algorithm {
                 loadProperty(line);
             }
             else if (line.startsWith(PROPERTY_ALG_DESCRIPTION)){
+                loadProperty(line);
+            }
+            else if (line.startsWith(PROPERTY_ALG_TRAINING_LABEL_IMAGE_SUFFIX)){
                 loadProperty(line);
             }
             else {
@@ -172,5 +177,8 @@ outputGenerated:ofType isolatedSpecimenImage withSuffix _orientedOrig
     }
     public List<AlgorithmOutput> getOutputs(){
         return this.outputs;
+    }
+    public String getTrainingLabelImageSuffix() throws AvatolCVException {
+        return getProperty(PROPERTY_ALG_TRAINING_LABEL_IMAGE_SUFFIX);
     }
 }

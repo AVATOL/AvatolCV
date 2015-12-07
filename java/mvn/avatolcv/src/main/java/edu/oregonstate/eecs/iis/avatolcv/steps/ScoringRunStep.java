@@ -29,10 +29,10 @@ public class ScoringRunStep implements Step {
     public String getSelectedScoringAlgorithm() throws AvatolCVException {
         return this.sessionInfo.getScoringAlgName();
     }
-    public String getImageNameWithIDFromFileList(String id, File[] files, String suffix){
+    public String getImagePathWithIDFromFileList(String id, File[] files, String suffix){
         for (File f : files){
             if (f.getName().startsWith(id) && f.getName().contains(suffix)){
-                return f.getName();
+                return f.getAbsolutePath();
             }
         }
         return null;
@@ -67,8 +67,8 @@ public class ScoringRunStep implements Step {
             	String pathWhereInputImagesForScoringLive = algSequence.getInputDir();
             	File f = new File(pathWhereInputImagesForScoringLive);
             	File[] files = f.listFiles();
-            	String imageNameForScoring = getImageNameWithIDFromFileList(imageID, files, "_orientedOrig");
-            	if (null == imageNameForScoring){
+            	String imagePathForScoring = getImagePathWithIDFromFileList(imageID, files, sa.getTrainingLabelImageSuffix());
+            	if (null == imagePathForScoring){
             	    throw new AvatolCVException("Cannot find file in scoring input dir " + pathWhereInputImagesForScoringLive + " with id " + imageID);
             	}
             	//String imageName = nii.getImageName();
@@ -79,11 +79,11 @@ public class ScoringRunStep implements Step {
                 		ImageInfo.excludeForReason(ImageInfo.EXCLUSION_REASON_MISSING_ANNOTATION, false, nii.getImageID());
                 	}
                 	else {
-                		tif.addImageInfo(imageNameForScoring, valueName,  pointCoordinates);
+                		tif.addImageInfo(imagePathForScoring, valueName,  pointCoordinates);
                 	}
             	}
             	else {
-            		tif.addImageInfo(imageNameForScoring, valueName,  "");
+            		tif.addImageInfo(imagePathForScoring, valueName,  "");
             	}
             	
             }
