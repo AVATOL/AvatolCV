@@ -21,7 +21,8 @@ numTrain = round(length(list_img)*fraction);
 
 list_idx = 1:1:length(list_img);  % store the image index
 train_idx = vl_colsubset(list_idx,numTrain);
-trainlist = list_img(train_idx',1);
+
+= list_img(train_idx',1);
 
 addpath(inputImagesDir);
 fileID = fopen(testImagesFile);

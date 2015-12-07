@@ -1,1 +1,1 @@
-C:\Users\collwe\Desktop\avatol_cv\modules\segmentation\yaoSeg\segOutput\bar_croppedMask.jpg
+/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/segOutput/bar_croppedMask.jpg

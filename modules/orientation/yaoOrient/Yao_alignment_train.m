@@ -103,11 +103,12 @@ for i = 1:1:length(testlist)
 %     imgfullpath = testlist{i,1};
 %     [~,name,ext] = fileparts(imgfullpath); 
     name = testlist{i};
+    display(name)
     I = imread(name);
     [height,width,~] = size(I);
     ratio = width/height;
     
-    if ratio >= 2 
+    if (ratio >= 2) || (round(height/2-width/4) < 1)
         testpatch_left = I(:,round(1:height),:);
         testpatch_right = I(:,round(width-height):end,:);
     else 
