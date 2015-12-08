@@ -31,7 +31,7 @@ public class ResultsTable {
         return answer;
     }
     public SortableRow createRow(String thumbnailPathname, String origImageName, String score, String conf, String truth, int index){
-    	System.out.println("creating row for " + score + " , " + conf + " , " + truth + " , " + origImageName );
+    	//System.out.println("creating row for " + score + " , " + conf + " , " + truth + " , " + origImageName );
         List<String> values = new ArrayList<String>();
         values.add(thumbnailPathname);
         values.add(truth);

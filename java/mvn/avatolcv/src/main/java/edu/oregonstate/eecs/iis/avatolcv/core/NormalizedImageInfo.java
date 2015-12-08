@@ -48,8 +48,8 @@ public class NormalizedImageInfo {
     public boolean equals(Object other){
     	NormalizedImageInfo otherNii = (NormalizedImageInfo)other;
     	String niiStringOther = otherNii.getNiiString();
-    	System.out.println("other: " + niiStringOther);
-    	System.out.println("this : " + niiString);
+    	//System.out.println("other: " + niiStringOther);
+    	//System.out.println("this : " + niiString);
     	return niiStringOther.equals(niiString);
     }
     public void persist() throws AvatolCVException {

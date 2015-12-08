@@ -11,12 +11,15 @@ public class EvaluationSet implements ScoringSet {
 	//private List<NormalizedImageInfo> niisForEvaluationScore = new ArrayList<NormalizedImageInfo>();
 	private List<ModalImageInfo> modals = new ArrayList<ModalImageInfo>();
 	private double percentToTrainOn = 0;
+	private String keyToScore = null;
 	public EvaluationSet(List<NormalizedImageInfo> niis, String keyToScore, double percentToTrainOn){
 		this.niis = niis;
 		this.percentToTrainOn = percentToTrainOn;
+		this.keyToScore = keyToScore;
 		// isolate the ones that have values for the scoring key
 		for (NormalizedImageInfo nii : this.niis){
 			if (nii.hasKey(keyToScore)){
+				//LEFT OFF HERE - WHY MB CASE NO MATCH?
 				if (nii.hasValueForKey(keyToScore)){
 					niisWithValueForKey.add(nii);
 				}
@@ -93,4 +96,8 @@ public class EvaluationSet implements ScoringSet {
         }
         return result;
     }
+	@Override
+	public String getKeyToScore() {
+		return this.keyToScore;
+	}
 }

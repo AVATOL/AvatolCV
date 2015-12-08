@@ -77,7 +77,7 @@ public class OrientationRunStep implements Step {
                     
                 }
                 String status = getStatus(statusPath);
-                System.out.println(NL + "========================" + NL + "STATUS is " + status + NL + "========================" + NL);
+                //System.out.println(NL + "========================" + NL + "STATUS is " + status + NL + "========================" + NL);
                 this.pp.setMessage("", status);
             }
         }

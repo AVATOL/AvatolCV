@@ -23,7 +23,7 @@
           <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <RadioButton fx:id="radioEvaluateAlgorithm" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#configureAsEvaluteAlgorithm" text="evaluate algorithm">
+            <RadioButton fx:id="radioEvaluateAlgorithm" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#configureAsEvaluateAlgorithm" text="evaluate algorithm">
                <toggleGroup>
                   <ToggleGroup fx:id="ScoringMode" />
                </toggleGroup>
@@ -67,7 +67,7 @@
             </ChoiceBox>
          </children>
       </HBox>
-      <TextArea prefHeight="70.0" VBox.vgrow="NEVER">
+      <TextArea fx:id="groupDescriptionTextArea" prefHeight="70.0" VBox.vgrow="NEVER">
          <VBox.margin>
             <Insets top="6.0" />
          </VBox.margin>
