@@ -22,7 +22,7 @@ public class NormalizedImageInfos {
 		for (File f : files){
 			NormalizedImageInfo nii = new NormalizedImageInfo(f.getAbsolutePath());
 			niiHash.put(f.getName(), nii);
-			System.out.println("+ adding " + f.getName());
+			//System.out.println("+ adding " + f.getName());
 			niiAllPresent.add(f.getName());
 		}
 	}
@@ -131,19 +131,19 @@ public class NormalizedImageInfos {
 			String rootName = parts[0];
 			String[] rootParts = rootName.split("_");
 			if (rootParts[0].equals(mediaID)){
-				System.out.println(mediaID + " found potential match");
+				//System.out.println(mediaID + " found potential match");
 				//media ID matches, note number suffix
 				matchingNumbersForMediaID.add(rootParts[1]);
 				if (doesMatchingNormalizedImageFileExistAtPath(lines, mediaID, f.getAbsolutePath())){
-					System.out.println(mediaID + " found match");
+					//System.out.println(mediaID + " found match");
 					return f.getAbsolutePath();
 				}
 				else {
-					System.out.println(mediaID + " did not find match");
+					//System.out.println(mediaID + " did not find match");
 				}
 			}
 		}
-		System.out.println(mediaID + "# making new nii");
+		//System.out.println(mediaID + "# making new nii");
 		//none of the files matched, check for the first unused number suffix and store with that
 		String newSuffix = getFirstUnusedSuffix(matchingNumbersForMediaID);
 		String newFilename = mediaID + "_" + newSuffix + ".txt";
@@ -153,7 +153,7 @@ public class NormalizedImageInfos {
 		nii.persist();
 		niiHash.put(newFilename, nii);
 		niiAllPresent.add(newFilename);
-		System.out.println("$$ adding " + newFilename);
+		//System.out.println("$$ adding " + newFilename);
 		return newPath;
 	}
 	public NormalizedImageInfo getNormalizedImageInfoForSessionWithName(String name) throws AvatolCVException {
@@ -168,11 +168,11 @@ public class NormalizedImageInfos {
 	}
 	public void focusToSession(List<String> filenames) throws AvatolCVException {
 		this.niiSession.clear();
-		for (String s : niiAllPresent){
-			if (s.equals("00-3HPPsgoaeBaq2rDrGPnvhn_2.txt")){
-				System.out.println("%%% " + s);
-			}
-		}
+		//for (String s : niiAllPresent){
+		//	if (s.equals("00-3HPPsgoaeBaq2rDrGPnvhn_2.txt")){
+		//		System.out.println("%%% " + s);
+		//	}
+		//}
 		for (String name : filenames){
 			if (!niiAllPresent.contains(name)){
 				throw new AvatolCVException("given filename " + name + " not present in niiAllPresent list.");

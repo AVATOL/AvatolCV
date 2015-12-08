@@ -3,6 +3,8 @@ package edu.oregonstate.eecs.iis.avatolcv.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+
 public class EvaluationSet implements ScoringSet {
 	public static double DEFAULT_EVALUATION_SPLIT = 0.7;
 	private List<NormalizedImageInfo> niis = null;
@@ -16,6 +18,7 @@ public class EvaluationSet implements ScoringSet {
 		this.percentToTrainOn = percentToTrainOn;
 		// isolate the ones that have values for the scoring key
 		for (NormalizedImageInfo nii : this.niis){
+		    //LEFT OFF HERE
 			if (nii.hasKey(keyToScore)){
 				if (nii.hasValueForKey(keyToScore)){
 					niisWithValueForKey.add(nii);
@@ -65,13 +68,14 @@ public class EvaluationSet implements ScoringSet {
 	}
 	@Override
 	public List<ModalImageInfo> getImagesToTrainOnForKeyValue(String key,
-			String value) {
+			String value) throws AvatolCVException {
+	    String keyName = new NormalizedTypeIDName(key).getName();
 		List<ModalImageInfo> result = new ArrayList<ModalImageInfo>();
 		for (ModalImageInfo mii : this.modals){
 			if (mii.isTraining()){
 				NormalizedImageInfo nii = mii.getNormalizedImageInfo();
-				if (nii.hasKey(key)){
-					if (nii.getValueForKey(key).equals(value)){
+				if (nii.hasKey(keyName)){
+					if (nii.getValueForKey(keyName).equals(value)){
 						result.add(mii);
 					}
 				}

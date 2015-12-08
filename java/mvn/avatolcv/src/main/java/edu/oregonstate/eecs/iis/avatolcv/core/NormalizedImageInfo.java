@@ -28,7 +28,7 @@ public class NormalizedImageInfo {
     public static final String KEY_TIMESTAMP          = PREFIX + "timestamp";
     private static final String KEY_TRAINING_VS_TEST_CONCERN_VALUE  = PREFIX + "trainingVsTestConcernValue";
     private String filename = null;
-    private String imageName = "?";
+    private String imageName = "";
     private String imageID = null;
     private String niiString = null;
     private String path = null;
@@ -48,8 +48,8 @@ public class NormalizedImageInfo {
     public boolean equals(Object other){
     	NormalizedImageInfo otherNii = (NormalizedImageInfo)other;
     	String niiStringOther = otherNii.getNiiString();
-    	System.out.println("other: " + niiStringOther);
-    	System.out.println("this : " + niiString);
+    	//System.out.println("other: " + niiStringOther);
+    	//System.out.println("this : " + niiString);
     	return niiStringOther.equals(niiString);
     }
     public void persist() throws AvatolCVException {
@@ -199,6 +199,7 @@ public class NormalizedImageInfo {
         	keyValueHash.put(key, value);
         }
     }
+    /*
     private void loadAnnotationLine(String key, String value){
       //avcv_annotation=point:21.2571225071225,55.3632478632479+point:21.84729344729345,40.810256410256414
         // ...from MorphobankDataSource.java
@@ -222,13 +223,14 @@ public class NormalizedImageInfo {
                     String[] pairParts = pair.split(",");
                     String x = pairParts[0];
                     String y = pairParts[1];
-                    // FIXME - finish this liogic
+                    
                 }
             }
             System.out.println("#############  loadAnnotationLine not yet implemented " + value);
         }
         
     }
+    */
 	public String getAnnotationCoordinates() {
 		return keyValueHash.get(KEY_ANNOTATION);
 	}
