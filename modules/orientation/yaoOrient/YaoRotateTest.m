@@ -45,6 +45,7 @@ function YaoRotateTest
     %pathVlfeat = 'G:\vlfeat\vlfeat'; 
     pathVlfeat = '/Users/jedirvine/av/avatol_cv/modules/3rdParty/vlfeat/vlfeat-0.9.20'; 
     %run([pathVlfeat '\toolbox\vl_setup']) 
+    
     run([pathVlfeat '/toolbox/vl_setup'])
     
     [test_predict, model] = Yao_alignment(pathAlignmentShipped, rotationOutputDir, '_rotatedOrig','_rotatedMask','_orientedOrig','_orientedMask',orientationOutputDir  );

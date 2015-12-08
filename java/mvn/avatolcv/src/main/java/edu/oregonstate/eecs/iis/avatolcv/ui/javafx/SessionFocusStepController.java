@@ -51,9 +51,9 @@ public class SessionFocusStepController implements StepController {
             }
             else {
                 // must be texture
-            	String scoringAlg = textureAlgChoice.getValue();
-    			answerHash.put(KEY_TEXTURE_ASPECT, scoringAlg);
-                this.focusStep.setSelectedScoringAlgName(scoringAlg);
+            	//String scoringAlg = textureAlgChoice.getValue();
+    			//answerHash.put(KEY_TEXTURE_ASPECT, scoringAlg);
+                //this.focusStep.setSelectedScoringAlgName(scoringAlg);
             }
 			this.focusStep.saveAnswers(answerHash);
             this.focusStep.consumeProvidedData();
@@ -81,19 +81,19 @@ public class SessionFocusStepController implements StepController {
             
             radioPresenceAbsence.setText(ScoringAlgorithm.getRadioButtonTextForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE));
             radioShape.setText(          ScoringAlgorithm.getRadioButtonTextForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT));
-            radioTexture.setText(        ScoringAlgorithm.getRadioButtonTextForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT));
+            //radioTexture.setText(        ScoringAlgorithm.getRadioButtonTextForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT));
 
             AlgorithmModules am = AlgorithmModules.instance;
             List<String> presenceAbsenceAlgNames = am.getAlgNamesForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE);
             List<String> shapeAlgNames           = am.getAlgNamesForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT);
-            List<String> textureAlgNames         = am.getAlgNamesForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT);
+            //List<String> textureAlgNames         = am.getAlgNamesForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT);
             ObservableList<String> paList        = FXCollections.observableList(presenceAbsenceAlgNames);
             ObservableList<String> shapeList     = FXCollections.observableList(shapeAlgNames);
-            ObservableList<String> textureList   = FXCollections.observableList(textureAlgNames);
+            //ObservableList<String> textureList   = FXCollections.observableList(textureAlgNames);
             
             setAlgSelector(presenceAbsenceAlgChoice, radioPresenceAbsence, paList,      KEY_PRESENCE_ABSENCE);
             setAlgSelector(shapeAlgChoice,           radioShape,           shapeList,   KEY_SHAPE_ASPECT);
-            setAlgSelector(textureAlgChoice,         radioTexture, 		   textureList, KEY_TEXTURE_ASPECT);
+            //setAlgSelector(textureAlgChoice,         radioTexture, 		   textureList, KEY_TEXTURE_ASPECT);
             return content;
         }
         catch(IOException ioe){

@@ -170,26 +170,9 @@ done < "$userProvidedGroundTruthImagesFile"
 # create darwin's config.xml file
 #
 DARWIN_CONFIG_XML=${THIS_DIR}/darwinConfig.xml
+
 ${THIS_DIR}/createDarwinConfigXml.sh ${DARWIN_CONFIG_XML} ${THIS_DIR} ${RELATIVE_ALL_IMAGES_DIR} ${RELATIVE_LABELS_DIR}
 
-
-#
-#
-# RUN THE STEPS OF DARWIN
-#
-#
-OPENCV_LIB_DIR=${THIRD_PARTY_DIR}/darwin/drwn-1.8.0/external/opencv/lib
-export DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:${OPENCV_LIB_DIR}"
-DARWIN_BIN_DIR=${THIRD_PARTY_DIR}/darwin/drwn-1.8.0/bin
-# converting pixel labels
-echo running step 1 of 7  - Darwin convertPixellabels
-echo ${DARWIN_BIN_DIR}/convertPixelLabels -config ${DARWIN_CONFIG_XML} -i "_GT.png" ${TRAIN_LIST}
-${DARWIN_BIN_DIR}/convertPixelLabels -config ${DARWIN_CONFIG_XML} -i "_GT.png" ${TRAIN_LIST}
-
-# evaluate with unary and pariwise terms
-echo running step 6 of 7 - Darwin inferPixelLabels
-echo ${DARWIN_BIN_DIR}/inferPixelLabels -config ${DARWIN_CONFIG_XML} -outLabels .pairwise.txt -outImages .pairwise.png ${TEST_LIST}
-${DARWIN_BIN_DIR}/inferPixelLabels -config ${DARWIN_CONFIG_XML} -outLabels .pairwise.txt -outImages .pairwise.png ${TEST_LIST}
 
 #
 #  call matlab to crop the leaf on both raw and mask images

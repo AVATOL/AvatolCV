@@ -16,6 +16,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedTypeIDName;
+import edu.oregonstate.eecs.iis.avatolcv.core.PointAnnotations;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionImages;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
@@ -398,18 +399,18 @@ public class MorphobankDataSource implements DataSource {
         return f.getName();
     }
     public static String getAnnotationsValueString(List<MBAnnotation> annotations){
-    	// avcv_annotation=rectangle:25,45;35,87+point:98,92
-    	// + delimits the annotations in the series
-    	// ; delimits the points in the annotation
-    	// , delimits x and y coordinates
-    	// : delimits type from points
+        // avcv_annotation=rectangle:25-45;35-87+point:98-92
+        // + delimits the annotations in the series
+        // ; delimits the points in the annotation
+        // - delimits x and y coordinates
+        // : delimits type from points
         if (annotations.isEmpty()){
             return "";
         }
     	StringBuilder sb = new StringBuilder();
     	for (int i = 0; i < annotations.size() - 1; i++){
     		String annotationValueString = getAnnotationValueStringForAnnotation(annotations.get(i));
-    		sb.append(annotationValueString + "+");
+    		sb.append(annotationValueString + PointAnnotations.ANNOTATION_SEQUENCE_DELIMETER);
     	}
     	String finalAnnotationValueString = getAnnotationValueStringForAnnotation(annotations.get(annotations.size() -1));
 		sb.append(finalAnnotationValueString);
@@ -418,18 +419,18 @@ public class MorphobankDataSource implements DataSource {
     public static String getAnnotationValueStringForAnnotation(MBAnnotation a){
     	StringBuilder sb = new StringBuilder();
     	String annotationType = a.getType();
-    	sb.append(annotationType + ":");
+    	sb.append(annotationType + PointAnnotations.ANNOTATION_TYPE_DELIMETER);
 		List<MBAnnotationPoint> points = a.getPoints();
 		if (points.isEmpty()){
 		    return "";
 		}
 		for (int i = 0; i < points.size() - 1; i++){
 			MBAnnotationPoint p = points.get(i);
-			String value = p.getX() + "," + p.getY();
-			sb.append(value + ";");
+			String value = p.getX() + PointAnnotations.XY_DELIMETER + p.getY();
+			sb.append(value + PointAnnotations.POINT_SERIES_DELIMETER);
 		}
 		MBAnnotationPoint finalp = points.get(points.size() -1);
-		String finalValue = finalp.getX() + "," + finalp.getY();
+		String finalValue = finalp.getX() + PointAnnotations.XY_DELIMETER + finalp.getY();
 		sb.append(finalValue);
 		return "" + sb;
     }

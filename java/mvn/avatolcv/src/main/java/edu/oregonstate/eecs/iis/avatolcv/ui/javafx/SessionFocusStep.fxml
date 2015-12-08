@@ -29,10 +29,8 @@
                      </toggleGroup>
                   </RadioButton>
                   <RadioButton fx:id="radioShape" mnemonicParsing="false" text="shape" toggleGroup="$focusGroup" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
-                  <RadioButton fx:id="radioTexture" disable="true" mnemonicParsing="false" text="texture" toggleGroup="$focusGroup" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
                   <ComboBox fx:id="presenceAbsenceAlgChoice" minWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" />
                   <ComboBox fx:id="shapeAlgChoice" minWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
-                  <ComboBox fx:id="textureAlgChoice" disable="true" minWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
                </children>
                <VBox.margin>
                   <Insets top="20.0" />

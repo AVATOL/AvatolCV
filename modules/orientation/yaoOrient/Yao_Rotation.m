@@ -45,8 +45,8 @@ for i = 1:1:length(testlist)
     img_name = [name ext];
     rotRecord{i,1} = img_name;
     mask_name = [nameMask extMask];
-    I = imread(img_name);
-    I_mask = im2bw(imread(mask_name)); % raw mask image, may have multiple CC
+    I = imread(imgfullpath);
+    I_mask = im2bw(imread(imgMaskfullpath)); % raw mask image, may have multiple CC
     
     % finding the largest connected component
     CC = bwconncomp(I_mask);
@@ -72,7 +72,7 @@ for i = 1:1:length(testlist)
         % record the rotation angles
         rotRecord{i,2} = -angle;
     else
-        angle = Yao_hough_findlines(mask_name,img_name);
+        angle = Yao_hough_findlines(imgMaskfullpath,imgfullpath);
         I_rotate = imrotate(I,angle-90);
         Mask_rotate = imrotate(Mask, angle-90); % imrotate is in counterclockwise
         % record the rotation angles

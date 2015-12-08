@@ -1,7 +1,7 @@
 function [test_predict, model] = Yao_alignment(pathAlignmentShipped, rotationOutputDir, rotatedOrigImageSuffix,rotatedMaskImageSuffix, alignOrigImageSuffix,aligndMaskImageSuffix,orientationOutputDir )
 %       pathAlignmentShipped:       preshipped folder of alignment
 
-
+display('running step alignment.');
 close all;
 
 %--------------------------------------------------------------------------
@@ -20,6 +20,7 @@ else
     slashStar = '/*';
     slash = '/';
 end
+[pathAlignmentShipped annotationCSV]
 fileID = fopen([pathAlignmentShipped annotationCSV]);
 C = textscan(fileID, '%s %f', 'Delimiter',',');
 fclose(fileID);
@@ -42,7 +43,7 @@ train_counts = round(length(list_img)*4/5); % using 80% of preshipped to train
     trainlist = list_img(train_idx',1);
     [test_predict, model] = Yao_alignment_train(trainlist,pathAlignmentShipped,rotationOutputDir, annotation, rotatedOrigImageSuffix);
     
-    
+    display('running completed for svm')
     % do results evaluation (if Ground Truth is known)
 %     [C_cm, accuracy_all, accuracy_base] = Yao_evaluate_results(test_predict_final,trainlist);
 %     eval_results{n,1} = C_cm;
@@ -82,6 +83,6 @@ for i = 1:1:size(test_predict,1)
     imwrite(Mask_rot, [orientationOutputDir slash nameMask(1:end-4) aligndMaskImageSuffix fullNameMask(end-3:end)] );
 end
 
-
+display('run completed for alignment.');
 
 end 
