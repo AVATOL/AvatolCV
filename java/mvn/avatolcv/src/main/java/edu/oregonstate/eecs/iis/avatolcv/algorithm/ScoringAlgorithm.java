@@ -25,8 +25,8 @@ public class ScoringAlgorithm extends Algorithm {
     
     static {
         radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE, "Score presence/absence of parts in a specimen");
-        radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT, "Score shape aspects of a specimen");
-        radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT, "Score texture aspects a specimen");
+        radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT, "Score shape or texture aspects of a specimen");
+        //radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT, "Score texture aspects a specimen");
     }
     //private static ScoringSessionFocus focusChosenForSession = null;
     //private static ScoringScope scopeChosenForSession = null;

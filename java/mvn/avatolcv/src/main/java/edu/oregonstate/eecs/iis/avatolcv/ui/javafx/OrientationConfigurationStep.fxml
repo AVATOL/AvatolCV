@@ -11,7 +11,7 @@
       <VBox spacing="20.0" HBox.hgrow="NEVER">
          <children>
             <Region VBox.vgrow="ALWAYS" />
-            <TextArea editable="false" prefHeight="50.0" style="-fx-background-color: transparent; : ;" stylesheets="@../../css/javafx.css" text="Segmentation can help isolate the specimen of interest when the image contains background clutter or other objects.  " wrapText="true" VBox.vgrow="NEVER" />
+            <TextArea editable="false" prefHeight="100.0" style="-fx-background-color: transparent; : ;" stylesheets="@../../css/javafx.css" text="Specimens with a regular shape can best be scored if they are oriented consistently.   For example, leaves could have their central stem horizontal, and the apex pointed to the right.&#10;" wrapText="true" VBox.vgrow="NEVER" />
             <RadioButton fx:id="radioOrientSkip" mnemonicParsing="false" onAction="#skipOrientationSelected" selected="true" text="skip orientation">
                <toggleGroup>
                   <ToggleGroup fx:id="dataSourceToggle" />

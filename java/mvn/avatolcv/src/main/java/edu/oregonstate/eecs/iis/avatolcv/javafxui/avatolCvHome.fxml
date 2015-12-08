@@ -46,7 +46,6 @@
                         </RadioButton>
                      </children>
                   </HBox>
-                  <RadioButton fx:id="radioTutorial" disable="true" minWidth="-Infinity" mnemonicParsing="false" styleClass="control-text" text="Show Tutorial" toggleGroup="$sessionChoice" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="5" GridPane.vgrow="NEVER" />
                   <Region minHeight="50.0" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="5" GridPane.vgrow="ALWAYS" />
                   <ChoiceBox fx:id="sessionResumeChooser" disable="true" prefWidth="200.0" styleClass="control-text" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <RadioButton fx:id="radioReviewResults" mnemonicParsing="false" text="Review results of prior session" toggleGroup="$sessionChoice" GridPane.rowIndex="3" />
