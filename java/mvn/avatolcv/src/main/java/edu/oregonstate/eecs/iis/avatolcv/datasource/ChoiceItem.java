@@ -4,10 +4,12 @@ public class ChoiceItem implements Comparable {
     private String name;
     private boolean isSelected;
     private Object backingObject;
-    public ChoiceItem(String name, boolean isSelected, Object o){
+    private boolean hasNativeType;
+    public ChoiceItem(String name, boolean isSelected, boolean hasNativeType, Object o){
         this.name = name;
         this.isSelected = isSelected;
         this.backingObject = o;
+        this.hasNativeType = hasNativeType;
     }
     public Object getBackingObject(){
         return this.backingObject;
@@ -24,6 +26,9 @@ public class ChoiceItem implements Comparable {
         String otherName = other.getName();
         String thisName = this.getName();
         return thisName.compareTo(otherName);
+    }
+    public boolean hasNativeType(){
+    	return this.hasNativeType;
     }
     
 }

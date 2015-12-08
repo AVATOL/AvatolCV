@@ -143,7 +143,7 @@ public class MorphobankDataSource implements DataSource {
     public List<ChoiceItem> getScoringConcernItemsNoneSelected(){
         List<ChoiceItem> result = new ArrayList<ChoiceItem>();
         for (MBCharacter character : this.charactersForMatrix){
-            ChoiceItem ci = new ChoiceItem(character.getCharName(), false, character);
+            ChoiceItem ci = new ChoiceItem(character.getCharName(), false, true, character);
             result.add(ci);
         }
         Collections.sort(result);
@@ -153,7 +153,7 @@ public class MorphobankDataSource implements DataSource {
         List<ChoiceItem> result = new ArrayList<ChoiceItem>();
         for (MBCharacter character : this.charactersForMatrix){
             boolean isPresenceAbsence = character.isPresenceAbsence();
-            ChoiceItem ci = new ChoiceItem(character.getCharName(), isPresenceAbsence, character);
+            ChoiceItem ci = new ChoiceItem(character.getCharName(), isPresenceAbsence, true, character);
             result.add(ci);
         }
         Collections.sort(result);
@@ -163,7 +163,7 @@ public class MorphobankDataSource implements DataSource {
         List<ChoiceItem> result = new ArrayList<ChoiceItem>();
         for (MBCharacter character : this.charactersForMatrix){
             boolean isShapeAspect = character.isShapeAspect();
-            ChoiceItem ci = new ChoiceItem(character.getCharName(), isShapeAspect, character);
+            ChoiceItem ci = new ChoiceItem(character.getCharName(), isShapeAspect, true, character);
             result.add(ci);
         }
         Collections.sort(result);
@@ -173,7 +173,7 @@ public class MorphobankDataSource implements DataSource {
         List<ChoiceItem> result = new ArrayList<ChoiceItem>();
         for (MBCharacter character : this.charactersForMatrix){
             boolean isTextureAspect = character.isTextureAspect();
-            ChoiceItem ci = new ChoiceItem(character.getCharName(), isTextureAspect, character);
+            ChoiceItem ci = new ChoiceItem(character.getCharName(), isTextureAspect, true, character);
             result.add(ci);
         }
         Collections.sort(result);
@@ -375,7 +375,7 @@ public class MorphobankDataSource implements DataSource {
         
         String mediaID = mi.getMediaID();
     	String characterKey = NormalizedTypeIDName.buildTypeIdName("character",character.getCharID() ,character.getCharName());
-    	String characterValue = ":";
+    	String characterValue = "";
     	for (int i = 0; i < charStatesForCell.size(); i++){
     		MBCharStateValue csv = charStatesForCell.get(i);
     		String charStateID = csv.getCharStateID();

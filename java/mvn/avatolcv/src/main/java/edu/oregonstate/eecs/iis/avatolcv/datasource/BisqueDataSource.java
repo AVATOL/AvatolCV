@@ -160,7 +160,7 @@ public class BisqueDataSource implements DataSource {
             }
         }
         for (String annotationName : annotationNames){
-            ChoiceItem ci = new ChoiceItem(annotationName, false, new ScoringConcernDetailsImpl(annotationName, annotationIDforNameHash.get(annotationName)));
+            ChoiceItem ci = new ChoiceItem(annotationName, false, false, new ScoringConcernDetailsImpl(annotationName, annotationIDforNameHash.get(annotationName)));
             items.add(ci);
         }
         return items;

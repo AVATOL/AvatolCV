@@ -9,8 +9,10 @@ public class TrueScoringSet implements ScoringSet {
 	private List<NormalizedImageInfo> niis = null;
 	private List<NormalizedImageInfo> niisWithKeyToScore = new ArrayList<NormalizedImageInfo>();
 	private List<ModalImageInfo> modals = new ArrayList<ModalImageInfo>();
+	private String keyToScore = null;
 	public TrueScoringSet(List<NormalizedImageInfo> niis, String keyToScore) throws AvatolCVException {
 		this.niis = niis;
+		this.keyToScore = keyToScore;
 		// isolate the ones that have values for the scoring key
 		for (NormalizedImageInfo nii : this.niis){
 			if (nii.hasKey(keyToScore)){
@@ -94,5 +96,10 @@ public class TrueScoringSet implements ScoringSet {
         }
         return result;
     }
+
+	@Override
+	public String getKeyToScore() {
+		return this.keyToScore;
+	}
 
 }

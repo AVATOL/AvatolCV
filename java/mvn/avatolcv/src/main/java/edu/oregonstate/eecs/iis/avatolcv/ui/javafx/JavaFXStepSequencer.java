@@ -400,7 +400,7 @@ scoringConcernStep.setNextAnswerableInSeries(imagePullStep);
     			activateCurrentStep();
     		}
     		catch (Exception e){
-    		    AvatolCVExceptionExpresserJavaFX.instance.showException(e, "An error was encountered while trying to move to next screen.");
+    		    AvatolCVExceptionExpresserJavaFX.instance.showException(e, "An error was encountered while trying to move to next screen: " + e.getMessage());
     		}
 		}
     }

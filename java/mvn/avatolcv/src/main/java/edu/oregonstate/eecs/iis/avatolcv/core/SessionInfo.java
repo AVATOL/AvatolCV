@@ -85,6 +85,26 @@ public class SessionInfo{
         AvatolCVFileSystem.setSessionID(this.sessionID);
         this.sessionImages = new SessionImages();
 	}
+	public List<String> getScoringSortingCandidates() throws AvatolCVException {
+		List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
+		List<String> scorableKeys = normalizedImageInfos.getScorableKeys();
+		List<String> result = new ArrayList<String>();
+		for (String key : scorableKeys){
+			boolean keyDisqualified = false;
+			NormalizedTypeIDName nKey = new NormalizedTypeIDName(key);
+			String keyName = nKey.getName();
+			for (ChoiceItem scoringConcern : scoringConcerns){
+				String scName = scoringConcern.getName();
+				if (keyName.equals(scName)){
+					keyDisqualified = true;
+				}
+			}
+			if (!keyDisqualified){
+				result.add(keyName);
+			}
+		}
+		return result;
+	}
 	public SessionImages getSessionImages(){
 	    return this.sessionImages;
 	}
@@ -290,7 +310,16 @@ public class SessionInfo{
         List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
         List<EvaluationSet> esets = new ArrayList<EvaluationSet>();
     	for (ChoiceItem item : scoringConcerns){
-    	    String keyToScore = item.getName();
+    		String keyToScore = "";
+    		if (item.hasNativeType()){
+    			ScoringConcernDetails scd = (ScoringConcernDetails)item.getBackingObject();
+        	    keyToScore = NormalizedTypeIDName.buildTypeIdName(scd.getType(), scd.getID(), scd.getName()); 
+        	    
+    		}
+    		else{
+    			keyToScore = item.getName();
+    		}
+    		// in bisque case, we want key to just be the name part
             List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSession();
             EvaluationSet es = new EvaluationSet(niis, keyToScore, EvaluationSet.DEFAULT_EVALUATION_SPLIT);
             esets.add(es);

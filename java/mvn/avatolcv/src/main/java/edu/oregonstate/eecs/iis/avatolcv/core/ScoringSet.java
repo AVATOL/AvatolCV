@@ -9,4 +9,5 @@ public interface ScoringSet {
 	List<ModalImageInfo> getImagesToScore() throws AvatolCVException;
 	List<ModalImageInfo> getImagesToTrainOnForKeyValue(String key, String value) throws AvatolCVException;
 	List<String> getAllKeys();
+	String getKeyToScore();
 }

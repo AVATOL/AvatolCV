@@ -26,6 +26,9 @@ public class ScoringConfigurationStep extends Answerable implements Step {
 	public List<TrueScoringSet> getTrueScoringSets() throws AvatolCVException {
 		return this.sessionInfo.getTrueScoringSets();
 	}
+	public List<String> getScoringSortingCandidates() throws AvatolCVException {
+		return this.sessionInfo.getScoringSortingCandidates();
+	}
 	@Override
 	public void init() throws AvatolCVException {
 		// TODO Auto-generated method stub
