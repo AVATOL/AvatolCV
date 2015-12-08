@@ -5,9 +5,10 @@ THIRD_PARTY_DIR=${THIS_DIR}/../../3rdParty
 
 testImagesMaskFile=""
 testImagesFile=""
-orientationOutputDir=""
+scoringOutputDir=""
 pathLibSsvmMatlab=""
 pathVlfeat=""
+trainingDataDir=""
 filename="$1"
 while read -r line
 do
@@ -22,12 +23,14 @@ do
 	    testImagesMaskFile=${val}
     elif [ "testImagesFile" = "$key" ]; then
 	    testImagesFile=${val}
-	elif [ "orientationOutputDir" = "$key" ]; then
+	elif [ "scoringOutputDir" = "$key" ]; then
 	    orientationOutputDir=${val}
     elif [ "pathLibSsvmMatlab" = "$key" ]; then
         pathLibSsvmMatlab=${val}
     elif [ "pathVlfeat" = "$key" ]; then
         pathVlfeat=${val}
+    elif ["trainingDataDir" = "$key"]; then
+        trainingDataDir = ${val}
 fi
 done < "$filename"
 
@@ -40,13 +43,17 @@ if [ "$testImagesFile" = "" ]; then
     missingArg=1
 	echo segRunConfig file missing entry for testImagesFile
 fi
-if [ "$orientationOutputDir" = "" ]; then
+if [ "$scoringOutputDir" = "" ]; then
     missingArg=1
 	echo segRunConfig file missing entry for rawImagesDir
 fi
 if [ "$pathLibSsvmMatlab" = "" ]; then
 missingArg=1
 echo segRunConfig file missing entry for pathLibSsvmMatlab
+fi
+if [ "$trainingDataDir" = "" ]; then
+missingArg=1
+echo segRunConfig file missing entry for trainingDataDir
 fi
 if [ "$pathVlfeat" = "" ]; then
 missingArg=1
@@ -57,9 +64,10 @@ if [ "$missingArg" = 1 ]; then
 fi
 echo testImagesMaskFile is ${testImagesMaskFile}
 echo testImagesFile is ${testImagesFile}
-echo orientationOutputDir is ${orientationOutputDir}
+echo scoringOutputDir is ${scoringOutputDir}
 echo pathLibSsvmMatlab is ${pathLibSsvmMatlab}
 echo pathVlfeat is ${pathVlfeat}
+echo trainingDataDir is ${trainingDataDir}
 
 #
 #  call matlab to crop the leaf on both raw and mask images
@@ -67,16 +75,18 @@ echo pathVlfeat is ${pathVlfeat}
 
 #direct matlabe call
 
-matlab_func='orient('
+matlab_func='score('
 matlab_func+="'"${testImagesFile}"'"
 matlab_func+=','
 matlab_func+="'"${testImagesMaskFile}"'"
 matlab_func+=','
-matlab_func+="'"${orientationOutputDir}"'"
+matlab_func+="'"${scoringOutputDir}"'"
 matlab_func+=','
 matlab_func+="'"${pathLibSsvmMatlab}"'"
 matlab_func+=','
 matlab_func+="'"${pathVlfeat}"'"
+matlab_func+=','
+matlab_func+="'"${trainingDataDir}"'"
 matlab_func+=')'
 
 echo $matlab_func
