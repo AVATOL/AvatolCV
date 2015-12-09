@@ -61,9 +61,16 @@ public class NormalizedImageInfo {
     		List<NormalizedKey> keys = getKeys();
     		Collections.sort(keys);
     		BufferedWriter writer = new BufferedWriter(new FileWriter(this.path));
-    		writer.write(KEY_IMAGE_NAME + "=" + this.imageName +  NL);
-            writer.write(KEY_TIMESTAMP + "=" + this.timestamp +  NL);
-            writer.write(KEY_ANNOTATION + "=" + this.annotationString +  NL);
+    		if (!this.imageName.equals("")){
+    		    writer.write(KEY_IMAGE_NAME + "=" + this.imageName +  NL);
+    		}
+    		if (!this.timestamp.equals("")){
+    		    writer.write(KEY_TIMESTAMP + "=" + this.timestamp +  NL);
+    		}
+    		if (!this.annotationString.equals("")){
+    		    writer.write(KEY_ANNOTATION + "=" + this.annotationString +  NL);
+    		}
+            
             if (!this.trainingTestConcern.equals("")){
                 writer.write(KEY_TRAINING_VS_TEST_CONCERN + "=" + this.trainingTestConcern +  NL);
             }
