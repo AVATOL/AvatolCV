@@ -20,7 +20,7 @@ public class ExploreData {
         ExploreData ed = new ExploreData();
         try {
         	String root = ValidRoot.getValidRoot();
-            FileSystemPrimer.prime(root, "explore", "leafDev", "20151129_01", "bisque");
+            FileSystemPrimer.prime(root, "explore", "leafDev", "20151208_01", "bisque");
             ed.summarizeLabelPresence();
         }
         catch(AvatolCVException ace){

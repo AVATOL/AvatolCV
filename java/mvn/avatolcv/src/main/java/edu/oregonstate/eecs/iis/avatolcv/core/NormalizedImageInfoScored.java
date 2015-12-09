@@ -76,12 +76,20 @@ public class NormalizedImageInfoScored extends NormalizedImageInfo  {
         if (parts.length > 1){
             value = parts[1];
         }
-        if (key.equals(KEY_IMAGE_NAME)){
-        	imageName = value;
-        	keyValueHash.put(new NormalizedKey(key),new NormalizedValue(value));
+        if (key.equals(KEY_ANNOTATION)){
+            this.annotationString = value;
+        }
+        else if (key.equals(KEY_IMAGE_NAME)){
+            this.imageName = value;
+        }
+        else if (key.equals(KEY_TIMESTAMP)){
+            this.timestamp = value;
+        }
+        else if (key.equals(KEY_TRAINING_VS_TEST_CONCERN)){
+            this.trainingTestConcern = value;
         }
         else {
-        	keyValueHash.put(new NormalizedKey(key),new NormalizedValue(value));
+            System.out.println("Warning - unrecognized " + PREFIX + " key encountered loading NormalizedImageFile: " + key);
         }
     }
 	protected void loadNormalizedInfoFromLines(List<String> lines, String errorMessage, Hashtable<String, String> hash, boolean dummyVal) throws AvatolCVException {

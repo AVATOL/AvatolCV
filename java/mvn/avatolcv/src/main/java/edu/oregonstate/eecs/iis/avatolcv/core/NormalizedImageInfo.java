@@ -26,9 +26,12 @@ public class NormalizedImageInfo {
     public static final String KEY_ANNOTATION         = PREFIX + "annotation";
     public static final String KEY_IMAGE_NAME         = PREFIX + "imageName";
     public static final String KEY_TIMESTAMP          = PREFIX + "timestamp";
-    private static final String KEY_TRAINING_VS_TEST_CONCERN_VALUE  = PREFIX + "trainingVsTestConcernValue";
+    public static final String KEY_TRAINING_VS_TEST_CONCERN  = PREFIX + "trainingVsTestConcern";
     private String filename = null;
     protected String imageName = "";
+    protected String annotationString = "";
+    protected String timestamp = "";
+    protected String trainingTestConcern = "";
     private String imageID = null;
     private String niiString = null;
     private String path = null;
@@ -58,6 +61,12 @@ public class NormalizedImageInfo {
     		List<NormalizedKey> keys = getKeys();
     		Collections.sort(keys);
     		BufferedWriter writer = new BufferedWriter(new FileWriter(this.path));
+    		writer.write(KEY_IMAGE_NAME + "=" + this.imageName +  NL);
+            writer.write(KEY_TIMESTAMP + "=" + this.timestamp +  NL);
+            writer.write(KEY_ANNOTATION + "=" + this.annotationString +  NL);
+            if (!this.trainingTestConcern.equals("")){
+                writer.write(KEY_TRAINING_VS_TEST_CONCERN + "=" + this.trainingTestConcern +  NL);
+            }
     		for (NormalizedKey key : keys){
     			writer.write(key + "=" + keyValueHash.get(key) + NL);
     		}
@@ -160,9 +169,15 @@ public class NormalizedImageInfo {
     	    if (parts.length > 1){
     	    	val = parts[1];
     	    }
-    	    NormalizedKey nKey = new NormalizedKey(key);
-    	    NormalizedValue nValue = new NormalizedValue(val);
-    		sb.append(nKey.toString() + "=" + nValue.toString() + "  ");
+    	    if (key.startsWith(PREFIX)){
+    	        sb.append(line);
+    	    }
+    	    else {
+    	        NormalizedKey nKey = new NormalizedKey(key);
+                NormalizedValue nValue = new NormalizedValue(val);
+                sb.append(nKey.toString() + "=" + nValue.toString() + "  ");
+    	    }
+    	    
     	}
     	this.niiString = "" + sb;
     }
@@ -196,8 +211,10 @@ public class NormalizedImageInfo {
         return this.imageName;
     }
     public String getTrainingVsTestName() throws AvatolCVException {
-        NormalizedValue nv = keyValueHash.get(new NormalizedKey(KEY_TRAINING_VS_TEST_CONCERN_VALUE));
-        return nv.getName();
+        return this.trainingTestConcern;
+    }
+    public String getAnnotationString(){
+        return this.annotationString;
     }
     private void loadAvatolCVKeyedLine(String line) throws AvatolCVException {
         String[] parts = line.split("=");
@@ -206,52 +223,25 @@ public class NormalizedImageInfo {
         if (parts.length > 1){
             value = parts[1];
         }
-        if (key.equals(KEY_IMAGE_NAME)){
-        	imageName = value;
-        	keyValueHash.put(new NormalizedKey(key), new NormalizedValue(value));
+        if (key.equals(KEY_ANNOTATION)){
+            this.annotationString = value;
+        }
+        else if (key.equals(KEY_IMAGE_NAME)){
+        	this.imageName = value;
+        }
+        else if (key.equals(KEY_TIMESTAMP)){
+        	this.timestamp = value;
+        }
+        else if (key.equals(KEY_TRAINING_VS_TEST_CONCERN)){
+            this.trainingTestConcern = value;
         }
         else {
-        	keyValueHash.put(new NormalizedKey(key), new NormalizedValue(value));
+            System.out.println("Warning - unrecognized " + PREFIX + " key encountered loading NormalizedImageFile: " + key);
         }
     }
-    /*
-    private void loadAnnotationLine(String key, String value){
-      //avcv_annotation=point:21.2571225071225,55.3632478632479+point:21.84729344729345,40.810256410256414
-        // ...from MorphobankDataSource.java
-        // avcv_annotation=rectangle:25,45;35,87+point:98,92
-        // + delimits the annotations in the series
-        // ; delimits the points in the annotation
-        // , delimits x and y coordinates
-        // : delimits type from points
-        if (null == value){
-            
-        }
-        else {
-            String[] annotationValueParts = value.split("\\+");
-            
-            for (String annotation : annotationValueParts){
-                String[] annotationParts = annotation.split(":");
-                String annotationType = annotationParts[0];
-                String annotationPointSequence = annotationParts[1];
-                String[] annotationPointPairs = annotationPointSequence.split(";");
-                for (String pair : annotationPointPairs){
-                    String[] pairParts = pair.split(",");
-                    String x = pairParts[0];
-                    String y = pairParts[1];
-                    
-                }
-            }
-            System.out.println("#############  loadAnnotationLine not yet implemented " + value);
-        }
-        
-    }
-    */
+   
 	public String getAnnotationCoordinates() throws AvatolCVException  {
-		NormalizedValue nv = keyValueHash.get(new NormalizedKey(KEY_ANNOTATION));
-		if (null == nv){
-			return null;
-		}
-		return nv.getName();
+		return this.annotationString;
 	}
     
 }
