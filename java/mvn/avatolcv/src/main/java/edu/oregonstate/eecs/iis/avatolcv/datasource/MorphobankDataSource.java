@@ -409,7 +409,7 @@ public class MorphobankDataSource implements DataSource {
     	lines.add("view=" + viewValue);
     	String annotationsValueString = getAnnotationsValueString(annotationsForCell);
     	lines.add(NormalizedImageInfo.KEY_ANNOTATION + "=" + annotationsValueString);
-    	lines.add(NormalizedImageInfo.KEY_IMAGE_NAME + "=" + "");
+    	lines.add(NormalizedImageInfo.KEY_IMAGE_NAME + "=" + mediaID);
     	String path =  this.niis.createNormalizedImageInfoFromLines(mediaID,lines);
     	File f = new File(path);
         return f.getName();

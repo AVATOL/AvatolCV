@@ -8,3 +8,4 @@ description=Scores presence/absence of simple parts, for example, types of teeth
 inputRequired:testImagesFile refsFilesWithSuffix * ofType rawImage
 
 outputGenerated:ofType isolatedSpecimenImage withSuffix _scored
+trainingLabelImageSuffix=*

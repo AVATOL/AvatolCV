@@ -124,7 +124,7 @@ public class TrainingInfoFile {
 		return FILE_PREFIX + typeString + "_" + idString + "_" + scoringConcernName + ".txt";
 	}
 	public void addImageInfo(String imageName, String scoringConcernValue, String pointCoordinates, String trainTestConcern, String trainTestConcernValue){
-		String trainingLine = imageName+","+scoringConcernValue+","+pointCoordinates+NL;
+		String trainingLine = imageName+","+scoringConcernValue+","+pointCoordinates + "," + trainTestConcern + "," + trainTestConcernValue +NL;
 		trainingLines.add(trainingLine);
 	}
 	public void persist(String parentDir) throws AvatolCVException {

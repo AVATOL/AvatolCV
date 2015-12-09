@@ -32,11 +32,21 @@ public class ScoringRunStep implements Step {
         return this.sessionInfo.getScoringAlgName();
     }
     public String getImagePathWithIDFromFileList(String id, File[] files, String suffix){
-        for (File f : files){
-            if (f.getName().startsWith(id) && f.getName().contains(suffix)){
-                return f.getAbsolutePath();
+    	if (suffix.equals("*") || suffix.equals("")){
+    		for (File f : files){
+                if (f.getName().startsWith(id)){
+                    return f.getAbsolutePath();
+                }
             }
-        }
+    	}
+    	else {
+    		for (File f : files){
+                if (f.getName().startsWith(id) && f.getName().contains(suffix)){
+                    return f.getAbsolutePath();
+                }
+            }
+    	}
+        
         return null;
     }
     public void runScoring(OutputMonitor controller, String processName) throws AvatolCVException {
