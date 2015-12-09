@@ -21,14 +21,14 @@ AvatolCV generates these two lines and the associated files due to dependency li
     
     training_<scoringConcernType>_<scoringConcernID>_<scoringConcernName>.txt   // scoring concern info is in the filename
     
-        <image1Path>,<scoringConcernValue>,<pointCoords>
-        <image2Path>,<scoringConcernValue>,<pointCoords>
+        <image1Path>,<scoringConcernValue>,<pointCoords>,<trainTestConcern>,<trainTestValue>
+        <image2Path>,<scoringConcernValue>,<pointCoords>,<trainTestConcern>,<trainTestValue>
         ...
     
 if there are no pointCoordinates in play, the file will look like
  
-        <image1Path>,<scoringConcernValue>,
-        <image2Path>,<scoringConcernValue>,
+        <image1Path>,<scoringConcernValue>,,<trainTestConcern>,<trainTestValue>
+        <image2Path>,<scoringConcernValue>,,<trainTestConcern>,<trainTestValue>
         ...
     
 if there is no scoringConcernType, then the filename will look like:   training__<scoringConcernID>_<scoringConcernName>.txt (note consec undercores)
