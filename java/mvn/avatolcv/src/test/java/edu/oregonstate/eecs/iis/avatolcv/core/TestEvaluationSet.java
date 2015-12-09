@@ -22,10 +22,10 @@ public class TestEvaluationSet extends TestCase {
 		try {
 			// ten images, all scored, so all can participate in split
 			List<NormalizedImageInfo> niis = getNiis(10,"key1","value1");
-			EvaluationSet es = new EvaluationSet(niis, "key1", 0.8);
+			EvaluationSet es = new EvaluationSet(niis, new NormalizedKey("key1"), 0.8);
 			Assert.assertEquals(8, es.getImagesToTrainOn().size());
 			Assert.assertEquals(2, es.getImagesToScore().size());
-			es = new EvaluationSet(niis, "key1", 0.3);
+			es = new EvaluationSet(niis, new NormalizedKey("key1"), 0.3);
 			Assert.assertEquals(3, es.getImagesToTrainOn().size());
 			Assert.assertEquals(7, es.getImagesToScore().size());
 		}
@@ -37,12 +37,12 @@ public class TestEvaluationSet extends TestCase {
 		try {
 			// get 12 but remove scores from two of them, so we're back down to ten candidates
 			List<NormalizedImageInfo> niis = getNiis(12,"key1","value1");
-			niis.get(0).forgetValue("key1");
-			niis.get(1).forgetValue("key1");
-			EvaluationSet es = new EvaluationSet(niis, "key1", 0.8);
+			niis.get(0).forgetValue(new NormalizedKey("key1"));
+			niis.get(1).forgetValue(new NormalizedKey("key1"));
+			EvaluationSet es = new EvaluationSet(niis, new NormalizedKey("key1"), 0.8);
 			Assert.assertEquals(8, es.getImagesToTrainOn().size());
 			Assert.assertEquals(2, es.getImagesToScore().size());
-			es = new EvaluationSet(niis, "key1", 0.3);
+			es = new EvaluationSet(niis, new NormalizedKey("key1"), 0.3);
 			Assert.assertEquals(3, es.getImagesToTrainOn().size());
 			Assert.assertEquals(7, es.getImagesToScore().size());
 		}
@@ -61,14 +61,14 @@ public class TestEvaluationSet extends TestCase {
 		try {
 			// 
 			List<NormalizedImageInfo> niisA = getNiis(11,"key1","value1");
-			niisA.get(0).forgetValue("key1");
+			niisA.get(0).forgetValue(new NormalizedKey("key1"));
 			List<NormalizedImageInfo> niisB = getNiis(11,"key2","value2");
-			niisB.get(0).forgetValue("key2");
+			niisB.get(0).forgetValue(new NormalizedKey("key2"));
 			List<NormalizedImageInfo> niisC = new ArrayList<NormalizedImageInfo>();
 			niisC.addAll(niisA);
 			niisC.addAll(niisB);
-			EvaluationSet es = new EvaluationSet(niisC, "key1", 0.5);
-			Assert.assertEquals(5, es.getImagesToTrainOnForKeyValue("key1","value1").size());
+			EvaluationSet es = new EvaluationSet(niisC, new NormalizedKey("key1"), 0.5);
+			Assert.assertEquals(5, es.getImagesToTrainOnForKeyValue(new NormalizedKey("key1"),new NormalizedValue("value1")).size());
 			
 		}
 		catch(AvatolCVException ace){

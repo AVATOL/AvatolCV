@@ -20,7 +20,7 @@ public class NormalizedImageInfo {
     //character:1824350|Diastema between I2 and C=characterState:4884329|Diastema present
     //taxon=773126|Artibeus jamaicensis
     //view=8905|Skull - ventral annotated teeth
-    protected Hashtable<String, String> keyValueHash = new Hashtable<String, String>();
+    protected Hashtable<NormalizedKey, NormalizedValue> keyValueHash = new Hashtable<NormalizedKey, NormalizedValue>();
     public static final String NL = System.getProperty("line.separator");
     public static final String PREFIX = AvatolCVFileSystem.RESERVED_PREFIX;
     public static final String KEY_ANNOTATION         = PREFIX + "annotation";
@@ -28,7 +28,7 @@ public class NormalizedImageInfo {
     public static final String KEY_TIMESTAMP          = PREFIX + "timestamp";
     private static final String KEY_TRAINING_VS_TEST_CONCERN_VALUE  = PREFIX + "trainingVsTestConcernValue";
     private String filename = null;
-    private String imageName = "";
+    protected String imageName = "";
     private String imageID = null;
     private String niiString = null;
     private String path = null;
@@ -48,16 +48,17 @@ public class NormalizedImageInfo {
     public boolean equals(Object other){
     	NormalizedImageInfo otherNii = (NormalizedImageInfo)other;
     	String niiStringOther = otherNii.getNiiString();
+    	String niiStringThis = niiString;
     	//System.out.println("other: " + niiStringOther);
     	//System.out.println("this : " + niiString);
     	return niiStringOther.equals(niiString);
     }
     public void persist() throws AvatolCVException {
     	try {
-    		List<String> keys = getKeys();
+    		List<NormalizedKey> keys = getKeys();
     		Collections.sort(keys);
     		BufferedWriter writer = new BufferedWriter(new FileWriter(this.path));
-    		for (String key : keys){
+    		for (NormalizedKey key : keys){
     			writer.write(key + "=" + keyValueHash.get(key) + NL);
     		}
     		writer.close();
@@ -66,33 +67,38 @@ public class NormalizedImageInfo {
     		throw new AvatolCVException("problem persisting NormalizedImageInfo file " + path + " : " + ioe.getMessage());
     	}
     }
-    public List<String> getKeys(){
-    	List<String> result = new ArrayList<String>();
-    	Enumeration<String> keysEnum = keyValueHash.keys();
+    public List<NormalizedKey> getKeys(){
+    	List<NormalizedKey> result = new ArrayList<NormalizedKey>();
+    	Enumeration<NormalizedKey> keysEnum = keyValueHash.keys();
     	while (keysEnum.hasMoreElements()){
-    		String key = keysEnum.nextElement();
+    		NormalizedKey key = keysEnum.nextElement();
     		result.add(key);
     	}
     	return result;
     }
-    public void addUnscoredKey(String key) throws AvatolCVException {
+    public void addUnscoredKey(NormalizedKey key) throws AvatolCVException {
     	if (hasValueForKey(key)){
     		throw new AvatolCVException("cannot add unscored key " + key + " to NormalizedImageInfoFile because it already has value " + keyValueHash.get(key) + " (imageID " + imageID + ")");
     	}
-    	keyValueHash.put(key, "");
+    	keyValueHash.put(key, new NormalizedValue(""));
     }
     public String getImageFilename(){
     	return this.filename;
     }
-    public String getValueForKey(String key){
+    /*
+     * Some keys and values are NormalizedTypeIDName constructs (type:ID|name) ex. (character:123456|big tooth) and some are just simple strings (name) ex. (leaf apex angle)
+     * We want to support having client code be able to ask for a value by giving the full type:ID|name construct(character:123456|big tooth) or just name (big tooth) and
+     *  have both return the value.  This brings the assumption that name is unique among all keys.  So if we had (type
+     */
+    public NormalizedValue getValueForKey(NormalizedKey key){
     	return keyValueHash.get(key);
     }
-    public boolean hasValueForKey(String key){
-    	String value = getValueForKey(key);
+    public boolean hasValueForKey(NormalizedKey key){
+    	NormalizedValue value = getValueForKey(key);
     	if (null == value){
     		return false;
     	}
-    	else if ("".equals(value)){
+    	else if ("".equals(value.getName())){
     		return false;
     	}
     	else {
@@ -118,7 +124,7 @@ public class NormalizedImageInfo {
     protected void loadNormalizedInfoFromPath(String path, String errorMessage)throws AvatolCVException {
         loadNormalizedInfoFromPath(path, errorMessage, keyValueHash);
     }
-    protected void loadNormalizedInfoFromPath(String path, String errorMessage, Hashtable<String, String> hash)throws AvatolCVException {
+    protected void loadNormalizedInfoFromPath(String path, String errorMessage, Hashtable<NormalizedKey, NormalizedValue> hash)throws AvatolCVException {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path));
             List<String> lines = new ArrayList<String>();
@@ -134,28 +140,36 @@ public class NormalizedImageInfo {
         }
     }
     // to support tests
-    public void forgetValue(String key){
-    	keyValueHash.put(key, "");
+    public void forgetValue(NormalizedKey key) throws AvatolCVException {
+    	keyValueHash.put(key, new NormalizedValue(""));
     }
-    public boolean hasKey(String key){
+    public boolean hasKey(NormalizedKey key){
     	Object val = keyValueHash.get(key);
     	return !(null == val);
     }
     public String getNiiString(){
     	return this.niiString;
     }
-    protected void setNiiStringFromLines(List<String> lines){
+    protected void setNiiStringFromLines(List<String> lines) throws AvatolCVException {
     	Collections.sort(lines);
     	StringBuilder sb = new StringBuilder();
     	for (String line : lines){
-    		sb.append(line);
+    		String[] parts = line.split("=");
+    		String key = parts[0];
+    		String val = "";
+    	    if (parts.length > 1){
+    	    	val = parts[1];
+    	    }
+    	    NormalizedKey nKey = new NormalizedKey(key);
+    	    NormalizedValue nValue = new NormalizedValue(val);
+    		sb.append(nKey.toString() + "=" + nValue.toString() + "  ");
     	}
     	this.niiString = "" + sb;
     }
     protected void loadNormalizedInfoFromLines(List<String> lines, String errorMessage) throws AvatolCVException {
         loadNormalizedInfoFromLines(lines, errorMessage, keyValueHash);
     }
-    protected void loadNormalizedInfoFromLines(List<String> lines, String errorMessage, Hashtable<String, String> hash) throws AvatolCVException {
+    protected void loadNormalizedInfoFromLines(List<String> lines, String errorMessage, Hashtable<NormalizedKey, NormalizedValue> hash) throws AvatolCVException {
     	setNiiStringFromLines(lines);
     	for (String line : lines){
     		if (line.startsWith("#")){
@@ -172,7 +186,7 @@ public class NormalizedImageInfo {
                     if (parts.length > 1){
                         value = parts[1];
                     }
-                    hash.put(key,value);
+                    hash.put(new NormalizedKey(key),new NormalizedValue(value));
                 }
             }
     	}
@@ -181,8 +195,9 @@ public class NormalizedImageInfo {
     public String getImageName(){
         return this.imageName;
     }
-    public String getTrainingVsTestName(){
-        return (String)keyValueHash.get(KEY_TRAINING_VS_TEST_CONCERN_VALUE);
+    public String getTrainingVsTestName() throws AvatolCVException {
+        NormalizedValue nv = keyValueHash.get(new NormalizedKey(KEY_TRAINING_VS_TEST_CONCERN_VALUE));
+        return nv.getName();
     }
     private void loadAvatolCVKeyedLine(String line) throws AvatolCVException {
         String[] parts = line.split("=");
@@ -193,10 +208,10 @@ public class NormalizedImageInfo {
         }
         if (key.equals(KEY_IMAGE_NAME)){
         	imageName = value;
-        	keyValueHash.put(key, value);
+        	keyValueHash.put(new NormalizedKey(key), new NormalizedValue(value));
         }
         else {
-        	keyValueHash.put(key, value);
+        	keyValueHash.put(new NormalizedKey(key), new NormalizedValue(value));
         }
     }
     /*
@@ -231,8 +246,12 @@ public class NormalizedImageInfo {
         
     }
     */
-	public String getAnnotationCoordinates() {
-		return keyValueHash.get(KEY_ANNOTATION);
+	public String getAnnotationCoordinates() throws AvatolCVException  {
+		NormalizedValue nv = keyValueHash.get(new NormalizedKey(KEY_ANNOTATION));
+		if (null == nv){
+			return null;
+		}
+		return nv.getName();
 	}
     
 }

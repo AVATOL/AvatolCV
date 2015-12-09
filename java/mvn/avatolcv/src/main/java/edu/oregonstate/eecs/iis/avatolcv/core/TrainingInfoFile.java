@@ -112,9 +112,18 @@ public class TrainingInfoFile {
 		this.imageDir = imageDir;
 	}
 	public String getFilename(){
-		return FILE_PREFIX + scoringConcernType + "_" + scoringConcernID + "_" + scoringConcernName + ".txt";
+		
+		String typeString = scoringConcernType;
+		if (typeString.equals(NormalizedTypeIDName.TYPE_UNSPECIFIED)){
+			typeString = "";
+		}
+		String idString = scoringConcernID;
+		if (idString.equals(NormalizedTypeIDName.ID_UNSPECIFIED)){
+			idString = "";
+		}
+		return FILE_PREFIX + typeString + "_" + idString + "_" + scoringConcernName + ".txt";
 	}
-	public void addImageInfo(String imageName, String scoringConcernValue, String pointCoordinates){
+	public void addImageInfo(String imageName, String scoringConcernValue, String pointCoordinates, String trainTestConcern, String trainTestConcernValue){
 		String trainingLine = imageName+","+scoringConcernValue+","+pointCoordinates+NL;
 		trainingLines.add(trainingLine);
 	}

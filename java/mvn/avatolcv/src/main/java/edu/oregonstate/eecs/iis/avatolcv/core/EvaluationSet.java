@@ -13,8 +13,8 @@ public class EvaluationSet implements ScoringSet {
 	//private List<NormalizedImageInfo> niisForEvaluationScore = new ArrayList<NormalizedImageInfo>();
 	private List<ModalImageInfo> modals = new ArrayList<ModalImageInfo>();
 	private double percentToTrainOn = 0;
-	private String keyToScore = null;
-	public EvaluationSet(List<NormalizedImageInfo> niis, String keyToScore, double percentToTrainOn){
+	private NormalizedKey keyToScore = null;
+	public EvaluationSet(List<NormalizedImageInfo> niis, NormalizedKey keyToScore, double percentToTrainOn){
 		this.niis = niis;
 		this.percentToTrainOn = percentToTrainOn;
 		this.keyToScore = keyToScore;
@@ -70,15 +70,14 @@ public class EvaluationSet implements ScoringSet {
 		return result;
 	}
 	@Override
-	public List<ModalImageInfo> getImagesToTrainOnForKeyValue(String key,
-			String value) throws AvatolCVException {
-	    String keyName = new NormalizedTypeIDName(key).getName();
+	public List<ModalImageInfo> getImagesToTrainOnForKeyValue(NormalizedKey key,
+			NormalizedValue value) throws AvatolCVException {
 		List<ModalImageInfo> result = new ArrayList<ModalImageInfo>();
 		for (ModalImageInfo mii : this.modals){
 			if (mii.isTraining()){
 				NormalizedImageInfo nii = mii.getNormalizedImageInfo();
-				if (nii.hasKey(keyName)){
-					if (nii.getValueForKey(keyName).equals(value)){
+				if (nii.hasKey(key)){
+					if (nii.getValueForKey(key).equals(value)){
 						result.add(mii);
 					}
 				}
@@ -88,11 +87,11 @@ public class EvaluationSet implements ScoringSet {
 		return result;
 	}
     @Override
-    public List<String> getAllKeys() {
-        List<String> result = new ArrayList<String>();
+    public List<NormalizedKey> getAllKeys() {
+        List<NormalizedKey> result = new ArrayList<NormalizedKey>();
         for (NormalizedImageInfo nii : niisWithValueForKey){
-            List<String> keys = nii.getKeys();
-            for (String key : keys){
+            List<NormalizedKey> keys = nii.getKeys();
+            for (NormalizedKey key : keys){
                 if (!result.contains(key)){
                     result.add(key);
                 }
@@ -101,7 +100,7 @@ public class EvaluationSet implements ScoringSet {
         return result;
     }
 	@Override
-	public String getKeyToScore() {
+	public NormalizedKey getKeyToScore() {
 		return this.keyToScore;
 	}
 }

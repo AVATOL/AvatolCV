@@ -1,25 +1,49 @@
 package edu.oregonstate.eecs.iis.avatolcv.core;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 
 // keys or values can have name, id and name, or type + id + name
 //character:1824350|Diastema between I2 and C=characterState:4884329|Diastema present
 //taxon=773126|Artibeus jamaicensis
 //view=8905|Skull - ventral annotated teeth
 public class NormalizedTypeIDName {
-    public static final String TYPE_UNSPECIFIED = "typeNotSpecified";
-    public static final String ID_UNSPECIFIED = "idNotSpecified";
-    public static final String NAME_UNSPECIFIED = "nameNotSpecified";
+    public static final String TYPE_UNSPECIFIED = "?";
+    public static final String ID_UNSPECIFIED = "?";
+    public static final String NAME_UNSPECIFIED = "?";
 
     private String type = TYPE_UNSPECIFIED;
     private String ID = ID_UNSPECIFIED;
     private String name = NAME_UNSPECIFIED;
+    protected String normalizedValue = null;
     public NormalizedTypeIDName(String s) throws AvatolCVException {
+    	//System.out.println("instantiating from " + s);
+    	if (null == s){
+    		// create a "null" instance 
+    		this.type = "";
+    		this.ID = "";
+    		this.name = "";
+    		this.normalizedValue = "";
+    		return;		
+    	}
+    	if (s.startsWith(AvatolCVFileSystem.RESERVED_PREFIX)){
+    		// don't add type and id to avcv_* 
+    		this.type = "";
+    		this.ID = "";
+    		this.name = s;
+    		this.normalizedValue = s;
+    		return;
+    	}
         int colonCount = s.length() - s.replace(":", "").length();
         if (colonCount > 1){
-            throw new AvatolCVException("malformed NormalizedTypeIDName construct - should only have one :  " + s);
+            // assume that this is a simple string value with more than one : in it, like a time value
+        	// but, since we might be parsing a prior output of buildTypeIdName(), trim off leading ":|" if present
+        	if (s.startsWith(":|")){
+        		s = s.replaceFirst(":|", "");
+        	}
+        	parseAsIDName(s);
         }
-        if (colonCount == 0){
+        else if (colonCount == 0){
             parseAsIDName(s);
         }
         else {
@@ -37,6 +61,7 @@ public class NormalizedTypeIDName {
             } 
             
         }
+        this.normalizedValue = buildTypeIdName(this.type,this.ID,this.name);
     }
     public void parseAsIDName(String s) throws AvatolCVException {
         int count = s.length() - s.replace("|", "").length();
@@ -49,7 +74,7 @@ public class NormalizedTypeIDName {
         if (s.startsWith("|")){
             this.name = s.replaceAll("\\|", "");
             // no ID specified, make up ID
-            this.ID = "ID_" + this.name;
+            this.ID = ID_UNSPECIFIED;
             
         }
         else if (s.endsWith("|")){
@@ -58,7 +83,7 @@ public class NormalizedTypeIDName {
         }
         else if (count == 0){
             this.name = s;
-            this.ID = "ID_" + name;
+            this.ID = ID_UNSPECIFIED;
         }
         else {
             String[] valueParts = s.split("\\|");
@@ -78,4 +103,10 @@ public class NormalizedTypeIDName {
     public static String buildTypeIdName(String type, String id, String name){
         return type + ":" + id + "|" + name;
     }
+    public String getNormalizedValue(){
+    	return this.normalizedValue;
+    }
+    public String toString(){
+		return this.normalizedValue;
+	}
 }

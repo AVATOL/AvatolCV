@@ -17,6 +17,8 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfosToReview;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedKey;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedTypeIDName;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoreIndex;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringConcernDetails;
@@ -34,7 +36,7 @@ public class BisqueDataSource implements DataSource {
     private DatasetInfo chosenDataset = null;
     private List<BisqueImage> bisqueImagesForCurrentDataset = null;
     private Hashtable<String, List<BisqueAnnotation>> annotationsForImageIdHash = null;
-    private List<String> scoringConcernAnnotations = null;
+    private List<NormalizedKey> scoringConcernAnnotations = null;
     private Hashtable<String, List<String>> valuesForEnumAnnotation = null;
     private BisqueDataFiles bisqueDataFiles = null;
     private DataFilter dataFilter = null;
@@ -142,7 +144,7 @@ public class BisqueDataSource implements DataSource {
     public List<ChoiceItem> getScoringConcernOptions(ScoringAlgorithm.ScoringScope scoringScope, ScoringAlgorithm.ScoringSessionFocus scoringFocus)
             throws AvatolCVException {
         List<ChoiceItem> items = new ArrayList<ChoiceItem>();
-        List<String> annotationNames = new ArrayList<String>();
+        List<String> annotationKeys = new ArrayList<String>();
         Hashtable<String, String> annotationIDforNameHash = new Hashtable<String, String>();
         for (BisqueImage bi : this.bisqueImagesForCurrentDataset){
             String imageID = bi.getResourceUniq();
@@ -150,17 +152,20 @@ public class BisqueDataSource implements DataSource {
             for (BisqueAnnotation a : annotations){
                 String annotationName = a.getName();
                 String annotationId = a.getAnnotationID();
+                String annotationKey = NormalizedTypeIDName.buildTypeIdName(NormalizedTypeIDName.TYPE_UNSPECIFIED, annotationId, annotationName);
                 annotationIDforNameHash.put(annotationName, annotationId);
                 if (annotationName.equals("filename") || annotationName.equals("upload_datetime")){
                     // don't present these as potential scoring concerns
                 }
-                else if (!annotationNames.contains(annotationName)){
-                    annotationNames.add(annotationName);
+                else if (!annotationKeys.contains(annotationKey)){
+                    annotationKeys.add(annotationKey);
                 }
             }
         }
-        for (String annotationName : annotationNames){
-            ChoiceItem ci = new ChoiceItem(annotationName, false, false, new ScoringConcernDetailsImpl(annotationName, annotationIDforNameHash.get(annotationName)));
+        for (String annotationKey : annotationKeys){
+        	NormalizedKey normalizedAnnotationKey = new NormalizedKey(annotationKey);
+        	String annotationName = normalizedAnnotationKey.getName();
+            ChoiceItem ci = new ChoiceItem(normalizedAnnotationKey, false, false, new ScoringConcernDetailsImpl(annotationName, annotationIDforNameHash.get(annotationName)));
             items.add(ci);
         }
         return items;
@@ -174,7 +179,7 @@ public class BisqueDataSource implements DataSource {
         }
         @Override
         public String getType() {
-            return "bisqueProperty";
+            return NormalizedTypeIDName.TYPE_UNSPECIFIED;
         }
 
         @Override
@@ -221,15 +226,15 @@ public class BisqueDataSource implements DataSource {
     }
     @Override
     public void setChosenScoringConcerns(List<ChoiceItem> items) {
-        this.scoringConcernAnnotations = new ArrayList<String>();
+        this.scoringConcernAnnotations = new ArrayList<NormalizedKey>();
         for (ChoiceItem item : items){
-            this.scoringConcernAnnotations.add(item.getName());
+            this.scoringConcernAnnotations.add(item.getNormalizedKey());
         }
     }
     @Override
     public void setChosenScoringConcern(ChoiceItem item) {
-        this.scoringConcernAnnotations = new ArrayList<String>();
-        this.scoringConcernAnnotations.add(item.getName());
+        this.scoringConcernAnnotations = new ArrayList<NormalizedKey>();
+        this.scoringConcernAnnotations.add(item.getNormalizedKey());
     }
     @Override
     public void loadRemainingMetadataForChosenDataset(ProgressPresenter pp,
@@ -316,16 +321,21 @@ public class BisqueDataSource implements DataSource {
         return "bisque";
     }
    
-    public String createNormalizedImageInfoForSession(BisqueImage bi,List<BisqueAnnotation> annotations, List<String> chosenScoringConcerns) throws AvatolCVException {
+    public String createNormalizedImageInfoForSession(BisqueImage bi,List<BisqueAnnotation> annotations, List<NormalizedKey> chosenScoringConcerns) throws AvatolCVException {
         String imageId = bi.getResourceUniq();
         List<String> lines = new ArrayList<String>();
         for (BisqueAnnotation ba : annotations){
             String name = ba.getName();
+            String id = ba.getAnnotationID();
+            //if (!id.equals("null") && !id.equals("datetime")){
+            //	int foo = 3;
+            //}
+            String keyString = NormalizedTypeIDName.buildTypeIdName(NormalizedTypeIDName.TYPE_UNSPECIFIED, id, name);
             if (name.equals("filename")){
-                name = NormalizedImageInfo.KEY_IMAGE_NAME;
+                keyString = NormalizedImageInfo.KEY_IMAGE_NAME;
             } 
             else if (name.equals("upload_datetime")){
-                name = NormalizedImageInfo.KEY_TIMESTAMP;
+                keyString = NormalizedImageInfo.KEY_TIMESTAMP;
             }
             // don't know scoring concern yet, so just use the ScoreIndex from the score file
             //for (String s : chosenScoringConcerns){
@@ -336,7 +346,7 @@ public class BisqueDataSource implements DataSource {
             //}
             
             String value = ba.getValue();
-            lines.add(name+"="+value);
+            lines.add(keyString+"="+value);
         }
         String path = this.niis.createNormalizedImageInfoFromLines(imageId,lines);
         File f = new File(path);
@@ -354,4 +364,8 @@ public class BisqueDataSource implements DataSource {
     public void setNormalizedImageInfos(NormalizedImageInfos niis) {
         this.niis = niis;
     }
+	@Override
+	public String getDefaultTrainTestConcern() {
+		return null;
+	}
 }

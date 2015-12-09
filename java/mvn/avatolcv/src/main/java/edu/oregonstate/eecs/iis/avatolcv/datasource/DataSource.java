@@ -39,4 +39,5 @@ public interface DataSource {
     //void setStandard
     String getDatasetTitleText();
     void setNormalizedImageInfos(NormalizedImageInfos niis);
+    String getDefaultTrainTestConcern();
 }

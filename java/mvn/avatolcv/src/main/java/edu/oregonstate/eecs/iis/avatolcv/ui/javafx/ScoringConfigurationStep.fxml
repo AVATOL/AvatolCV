@@ -40,7 +40,7 @@
             <Label text="(Labeled data is used for training, unlabeled data is scored.)" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <Label maxWidth="1.7976931348623157E308" text="View training vs scoring plan" VBox.vgrow="NEVER">
+      <Label maxWidth="1.7976931348623157E308" text="Training vs Scoring Plan" VBox.vgrow="NEVER">
          <VBox.margin>
             <Insets left="6.0" top="25.0" />
          </VBox.margin>
@@ -55,7 +55,7 @@
       </RadioButton>
       <HBox>
          <children>
-            <RadioButton fx:id="radioViewByGroup" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#configureAsGroupByProperty" text="grouped by value of property" toggleGroup="$TrainVsScoring" VBox.vgrow="NEVER">
+            <RadioButton fx:id="radioViewByGroup" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#configureAsGroupByProperty" text="decide training vs scoring by value of " toggleGroup="$TrainVsScoring" VBox.vgrow="NEVER">
                <HBox.margin>
                   <Insets left="6.0" top="6.0" />
                </HBox.margin>

@@ -15,6 +15,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter.Pair;
 import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedTypeIDName;
 import edu.oregonstate.eecs.iis.avatolcv.core.PointAnnotations;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
@@ -140,40 +141,48 @@ public class MorphobankDataSource implements DataSource {
     public void setChosenDataset(DatasetInfo di) {
         this.chosenDataset = di;
     }
-    public List<ChoiceItem> getScoringConcernItemsNoneSelected(){
+    public List<ChoiceItem> getScoringConcernItemsNoneSelected() throws AvatolCVException {
         List<ChoiceItem> result = new ArrayList<ChoiceItem>();
         for (MBCharacter character : this.charactersForMatrix){
-            ChoiceItem ci = new ChoiceItem(character.getCharName(), false, true, character);
+        	String normalizedString = NormalizedTypeIDName.buildTypeIdName("character", character.getCharID(), character.getCharName());
+        	NormalizedKey nKey = new NormalizedKey(normalizedString);
+            ChoiceItem ci = new ChoiceItem(nKey, false, true, character);
             result.add(ci);
         }
         Collections.sort(result);
         return result;
     }
-    public List<ChoiceItem> getPresenceAbsenceScoringConcernItems(){
+    public List<ChoiceItem> getPresenceAbsenceScoringConcernItems() throws AvatolCVException {
         List<ChoiceItem> result = new ArrayList<ChoiceItem>();
         for (MBCharacter character : this.charactersForMatrix){
             boolean isPresenceAbsence = character.isPresenceAbsence();
-            ChoiceItem ci = new ChoiceItem(character.getCharName(), isPresenceAbsence, true, character);
+            String normalizedString = NormalizedTypeIDName.buildTypeIdName("character", character.getCharID(), character.getCharName());
+        	NormalizedKey nKey = new NormalizedKey(normalizedString);
+            ChoiceItem ci = new ChoiceItem(nKey, isPresenceAbsence, true, character);
             result.add(ci);
         }
         Collections.sort(result);
         return result;
     }
-    public List<ChoiceItem> getShapeScoringConcernItems(){
+    public List<ChoiceItem> getShapeScoringConcernItems()  throws AvatolCVException{
         List<ChoiceItem> result = new ArrayList<ChoiceItem>();
         for (MBCharacter character : this.charactersForMatrix){
             boolean isShapeAspect = character.isShapeAspect();
-            ChoiceItem ci = new ChoiceItem(character.getCharName(), isShapeAspect, true, character);
+            String normalizedString = NormalizedTypeIDName.buildTypeIdName("character", character.getCharID(), character.getCharName());
+        	NormalizedKey nKey = new NormalizedKey(normalizedString);
+            ChoiceItem ci = new ChoiceItem(nKey, isShapeAspect, true, character);
             result.add(ci);
         }
         Collections.sort(result);
         return result;
     }
-    public List<ChoiceItem> getTextureScoringConcernItems(){
+    public List<ChoiceItem> getTextureScoringConcernItems()  throws AvatolCVException{
         List<ChoiceItem> result = new ArrayList<ChoiceItem>();
         for (MBCharacter character : this.charactersForMatrix){
             boolean isTextureAspect = character.isTextureAspect();
-            ChoiceItem ci = new ChoiceItem(character.getCharName(), isTextureAspect, true, character);
+            String normalizedString = NormalizedTypeIDName.buildTypeIdName("character", character.getCharID(), character.getCharName());
+        	NormalizedKey nKey = new NormalizedKey(normalizedString);
+            ChoiceItem ci = new ChoiceItem(nKey, isTextureAspect, true, character);
             result.add(ci);
         }
         Collections.sort(result);
@@ -376,7 +385,8 @@ public class MorphobankDataSource implements DataSource {
         String mediaID = mi.getMediaID();
     	String characterKey = NormalizedTypeIDName.buildTypeIdName("character",character.getCharID() ,character.getCharName());
     	String characterValue = "";
-    	for (int i = 0; i < charStatesForCell.size(); i++){
+    	System.out.println("charStateCount " + charStatesForCell.size() + " for key " + characterKey);
+    	/*for (int i = 0; i < charStatesForCell.size(); i++){
     		MBCharStateValue csv = charStatesForCell.get(i);
     		String charStateID = csv.getCharStateID();
     		String charStateName = getCharStateNameForID(character, charStateID);
@@ -386,10 +396,15 @@ public class MorphobankDataSource implements DataSource {
     		else {
     			characterValue = characterValue + NormalizedTypeIDName.buildTypeIdName("characterState",charStateID,charStateName) + ",";
     		}
-    	}
+    	}*/
+    	MBCharStateValue csv = charStatesForCell.get(0);
+		String charStateID = csv.getCharStateID();
+		String charStateName = getCharStateNameForID(character, charStateID);
+		characterValue = characterValue + NormalizedTypeIDName.buildTypeIdName("characterState",charStateID,charStateName);
     	List<String> lines = new ArrayList<String>();
     	lines.add(characterKey + "=" + characterValue);
     	lines.add("taxon=" + taxon.getTaxonID() + "|" + taxon.getTaxonName());
+    	System.out.println("taxon " + taxon.getTaxonName());
     	String viewValue = mi.getViewID() + "|" + getViewNameForID(mi.getViewID());
     	lines.add("view=" + viewValue);
     	String annotationsValueString = getAnnotationsValueString(annotationsForCell);
@@ -531,5 +546,9 @@ public class MorphobankDataSource implements DataSource {
 	@Override
 	public void setNormalizedImageInfos(NormalizedImageInfos niis) {
 	    this.niis = niis;
+	}
+	@Override
+	public String getDefaultTrainTestConcern() {
+		return "taxon";
 	}
 }

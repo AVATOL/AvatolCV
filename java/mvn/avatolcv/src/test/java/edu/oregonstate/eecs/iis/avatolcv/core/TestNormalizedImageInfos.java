@@ -218,7 +218,7 @@ public class TestNormalizedImageInfos extends TestCase {
 			lines2.add("key2=value2");
 			niis.createNormalizedImageInfoFromLines(mediaId1, lines2);
 			// no new one added
-			Assert.assertEquals(niis.getTotalCount(),1);
+			Assert.assertEquals(1,niis.getTotalCount());
 		}
 		catch(AvatolCVException ace){
 			Assert.fail(ace.getMessage());
@@ -284,11 +284,11 @@ public class TestNormalizedImageInfos extends TestCase {
 			sessionList.add("id1_2.txt");
 			niis.focusToSession(sessionList);
 			NormalizedImageInfo nii1 = niis.getNormalizedImageInfoForSessionWithName("id1_1.txt");
-			Assert.assertEquals(nii1.getValueForKey("key1"),"value1");
-			Assert.assertEquals(nii1.getValueForKey("key2"),"value2");
+			Assert.assertEquals(nii1.getValueForKey(new NormalizedKey("key1")).getName(),"value1");
+			Assert.assertEquals(nii1.getValueForKey(new NormalizedKey("key2")).getName(),"value2");
 			NormalizedImageInfo nii2 = niis.getNormalizedImageInfoForSessionWithName("id1_2.txt");
-			Assert.assertEquals(nii2.getValueForKey("key1"),"value3");
-			Assert.assertEquals(nii2.getValueForKey("key2"),"value4");
+			Assert.assertEquals(nii2.getValueForKey(new NormalizedKey("key1")).getName(),"value3");
+			Assert.assertEquals(nii2.getValueForKey(new NormalizedKey("key2")).getName(),"value4");
 			
 			try {
 				NormalizedImageInfo nii3 = niis.getNormalizedImageInfoForSessionWithName("id1_3.txt");
@@ -363,9 +363,9 @@ public class TestNormalizedImageInfos extends TestCase {
 			sessionList.add("id1_2.txt");
 			niis.focusToSession(sessionList);
 			
-			List<NormalizedImageInfo> niiList = niis.getSessionNIIsForKeyValue("key1","value1");
+			List<NormalizedImageInfo> niiList = niis.getSessionNIIsForKeyValue(new NormalizedKey("key1"),new NormalizedValue("value1"));
 			Assert.assertTrue(niiList.size() == 1);
-			Assert.assertEquals(niiList.get(0).getValueForKey("key1"),"value1");
+			Assert.assertEquals(niiList.get(0).getValueForKey(new NormalizedKey("key1")).getName(),"value1");
 		}
 		catch(AvatolCVException ace){
 			Assert.fail(ace.getMessage());

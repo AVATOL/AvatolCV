@@ -3,6 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 
 import javafx.beans.value.ChangeListener;
@@ -22,17 +23,16 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.EvaluationSet;
 import edu.oregonstate.eecs.iis.avatolcv.core.ModalImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedValue;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrueScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
-import edu.oregonstate.eecs.iis.avatolcv.steps.OrientationConfigurationStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConfigurationStep;
-import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.OrientationConfigurationStepController.AlgChangeListener;
 
 public class ScoringConfigurationStepController implements StepController {
 	private ScoringConfigurationStep step = null;
@@ -48,6 +48,7 @@ public class ScoringConfigurationStepController implements StepController {
     private List<TrueScoringSet> trueScoringSets = null;
     private boolean activeSetIsEvaluation = true;
     private boolean sortByImage = true;
+    private Hashtable<String, NormalizedKey> normalizedKeyHash = new Hashtable<String, NormalizedKey>();
     public ScoringConfigurationStepController(ScoringConfigurationStep step, String fxmlDocName){
         this.step = step;
         this.fxmlDocName = fxmlDocName;
@@ -104,8 +105,7 @@ public class ScoringConfigurationStepController implements StepController {
             
             try {
             	this.trueScoringSets = this.step.getTrueScoringSets();
-            	List<String> sortCandidateValues = this.step.getScoreConfigurationSortingValueOptions(this.trueScoringSets.get(0));
-            	setSortSelectorValues(sortCandidateValues);
+            	
             }
             catch(AvatolCVException ace){
             	// disable the radio if true scoring set cannot be constructed (i.e. there are no unlabeled images)
@@ -114,6 +114,8 @@ public class ScoringConfigurationStepController implements StepController {
             configureAsEvaluateAlgorithm();
             populateSortingChoiceBox();
             configureAsSortByImage();
+            NormalizedKey trainTestKey = this.step.getDefaultTrainTestConcern();
+            this.step.setTrainTestConcern(trainTestKey);
             return content;
         }
         catch(IOException ioe){
@@ -121,9 +123,15 @@ public class ScoringConfigurationStepController implements StepController {
         } 
     }
 	private void populateSortingChoiceBox() throws AvatolCVException {
-		List<String> sortCandidates = this.step.getScoringSortingCandidates();
-		Collections.sort(sortCandidates);
-        this.choiceBoxGroupProperty.getItems().addAll(sortCandidates);
+		List<NormalizedKey> sortCandidates = this.step.getScoringSortingCandidates();
+		List<String> sortCandidateStrings = new ArrayList<String>();
+		for (NormalizedKey nk : sortCandidates){
+			String keyName = nk.getName();
+			normalizedKeyHash.put(keyName, nk);
+			sortCandidateStrings.add(keyName);
+		}
+		Collections.sort(sortCandidateStrings);
+        this.choiceBoxGroupProperty.getItems().addAll(sortCandidateStrings);
         this.choiceBoxGroupProperty.setValue(this.choiceBoxGroupProperty.getItems().get(0));
         this.choiceBoxGroupProperty.getSelectionModel().selectedIndexProperty().addListener(new GroupChangeListener(this.choiceBoxGroupProperty, this.groupDescriptionTextArea, this.step));
 	}
@@ -139,19 +147,15 @@ public class ScoringConfigurationStepController implements StepController {
         @Override
         public void changed(ObservableValue ov, Number value, Number newValue) {
             try {
-                System.out.println("new Value " + newValue);
+                //System.out.println("new Value " + newValue);
+                configureAsGroupByProperty();
             }
             catch(Exception e){
                 AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem changing grouping of training vs score ");
             }
         }
     }
-	private void setSortSelectorValues(List<String> sortCandidateValues){
-	    
-        ObservableList<String> sortCandidateList        = FXCollections.observableList(sortCandidateValues);
-        
-       // setSortSelector(presenceAbsenceAlgChoice, radioPresenceAbsence, paList,      KEY_PRESENCE_ABSENCE);
-	}
+	
 	private void setSortSelector(ComboBox<String> choiceBox, RadioButton radioButton, ObservableList<String> oList, String key){
         choiceBox.setItems(oList);
         if (oList.size() > 0){
@@ -174,45 +178,78 @@ public class ScoringConfigurationStepController implements StepController {
         }
     }
 	public void configureAsEvaluateAlgorithm(){
-		radioEvaluateAlgorithm.setSelected(true);
-		this.activeSetIsEvaluation = true;
-		List<ScoringSet> sets = getActiveScoringSets();
-		if (this.sortByImage){
-			configureAsSortByImage(sets);
+		try {
+			radioEvaluateAlgorithm.setSelected(true);
+			this.activeSetIsEvaluation = true;
+			List<ScoringSet> sets = getActiveScoringSets();
+			if (this.sortByImage){
+				configureAsSortByImage(sets);
+			}
+			else {
+				configureAsSortByProperty(sets);
+			}
 		}
-		else {
-			configureAsSortByProperty(sets);
+		catch(AvatolCVException ace){
+			AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "Problem configuring evaluation run ");
 		}
+		
 	}
-	public void configureAsScoreImages(){
-		radioScoreImages.setSelected(true);
-		this.activeSetIsEvaluation = false;
-		List<ScoringSet> sets = getActiveScoringSets();
-		if (this.sortByImage){
-			configureAsSortByImage(sets);
+	public void configureAsScoreImages() {
+		try {
+			radioScoreImages.setSelected(true);
+			this.activeSetIsEvaluation = false;
+			List<ScoringSet> sets = getActiveScoringSets();
+			if (this.sortByImage){
+				configureAsSortByImage(sets);
+			}
+			else {
+				configureAsSortByProperty(sets);
+			}
 		}
-		else {
-			configureAsSortByProperty(sets);
+		catch(AvatolCVException ace){
+			AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "Problem configuring scoring run ");
 		}
+		
 	}
 	public void configureAsSortByImage(){
-		this.sortByImage = true;
-		//choiceBoxGroupProperty.setDisable(true);
-		radioViewByImage.setSelected(true);
-	    List<ScoringSet> sets = getActiveScoringSets();
-		configureAsSortByImage(sets);
+		try {
+			this.sortByImage = true;
+			//choiceBoxGroupProperty.setDisable(true);
+			radioViewByImage.setSelected(true);
+			List<ScoringSet> sets = getActiveScoringSets();
+			configureAsSortByImage(sets);
+		}
+		catch(AvatolCVException ace){
+			AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "Problem setting 'sort by image' ");
+		}
+		
 	}
-	public void configureAsGroupByProperty(){
+	public void configureAsGroupByProperty() throws AvatolCVException {
 		this.sortByImage = false;
 		choiceBoxGroupProperty.setDisable(false);
 		radioViewByGroup.setSelected(true);
 		List<ScoringSet> sets = getActiveScoringSets();
 		configureAsSortByProperty(sets);
+		this.step.setTrainTestConcern(new NormalizedKey(choiceBoxGroupProperty.getValue()));
 	}
-	public void configureAsSortByProperty(List<ScoringSet> scoringSets){
+	public void configureAsSortByProperty(List<ScoringSet> scoringSets) throws AvatolCVException {
 		trainTestSettingsScrollPane.setContent(null);
+		if (scoringSets.size() == 1){
+			GridPane gp = loadGridPaneWithSetByGrouping(scoringSets.get(0));
+			trainTestSettingsScrollPane.setContent(gp);
+		}
+		else {
+			VBox vbox = new VBox();
+			for (ScoringSet ss : scoringSets){
+				Label label = new Label(ss.getKeyToScore().getName());
+				vbox.getChildren().add(label);
+				GridPane gp = loadGridPaneWithSetByGrouping(ss);
+				vbox.getChildren().add(gp);
+			}
+			trainTestSettingsScrollPane.setContent(vbox);
+		}
 	}
-	public void configureAsSortByImage(List<ScoringSet> scoringSets){
+	public void configureAsSortByImage(List<ScoringSet> scoringSets) throws AvatolCVException{
 		trainTestSettingsScrollPane.setContent(null);
 		if (scoringSets.size() == 1){
 			GridPane gp = loadGridPaneWithSetByImage(scoringSets.get(0));
@@ -221,7 +258,7 @@ public class ScoringConfigurationStepController implements StepController {
 		else {
 			VBox vbox = new VBox();
 			for (ScoringSet ss : scoringSets){
-				Label label = new Label(ss.getKeyToScore());
+				Label label = new Label(ss.getKeyToScore().getName());
 				vbox.getChildren().add(label);
 				GridPane gp = loadGridPaneWithSetByImage(ss);
 				vbox.getChildren().add(gp);
@@ -229,7 +266,57 @@ public class ScoringConfigurationStepController implements StepController {
 			trainTestSettingsScrollPane.setContent(vbox);
 		}
 	}
-	public GridPane loadGridPaneWithSetByImage(ScoringSet ss){ 
+	public GridPane loadGridPaneWithSetByImage(ScoringSet ss) throws AvatolCVException { 
+		GridPane gp = new GridPane();
+		ColumnConstraints column1 = new ColumnConstraints();
+	    //column1.setPercentWidth(15);
+	    ColumnConstraints column2 = new ColumnConstraints();
+	    //column2.setPercentWidth(15);
+	    ColumnConstraints column3 = new ColumnConstraints();
+	   // column3.setPercentWidth(80);
+	    gp.getColumnConstraints().addAll(column1, column2, column3); 
+	    gp.setHgap(20);
+	    gp.setVgap(6);
+	    
+		List<ModalImageInfo> trainingImages = ss.getImagesToTrainOn();
+		List<ModalImageInfo> scoringImages = ss.getImagesToScore();
+		int row = 0;
+		for (ModalImageInfo mii : trainingImages){
+			RadioButton radioTrain = new RadioButton("train");
+			RadioButton radioScore = new RadioButton("score");
+			ToggleGroup tg = new ToggleGroup();
+			radioTrain.setToggleGroup(tg);
+			radioScore.setToggleGroup(tg);
+			radioTrain.setSelected(true);
+			Label imageLabel = new Label(mii.getNormalizedImageInfo().getImageName());
+			gp.add(radioTrain, 0, row);
+			gp.add(radioScore, 1, row);
+			gp.add(imageLabel, 2, row);
+			row++;
+		}
+		for (ModalImageInfo mii : scoringImages){
+			RadioButton radioTrain = new RadioButton("train");
+			RadioButton radioScore = new RadioButton("score");
+			ToggleGroup tg = new ToggleGroup();
+			radioTrain.setToggleGroup(tg);
+			radioScore.setToggleGroup(tg);
+			radioScore.setSelected(true);
+			Label imageLabel = new Label(mii.getNormalizedImageInfo().getImageName());
+			gp.add(radioTrain, 0, row);
+			gp.add(radioScore, 1, row);
+			gp.add(imageLabel, 2, row);
+			row++;
+		}
+		return gp;
+	}
+	public GridPane loadGridPaneWithSetByGrouping(ScoringSet ss) throws AvatolCVException { 
+		String trainTestConcern = choiceBoxGroupProperty.getValue();
+		NormalizedKey trainTestConcernKey = normalizedKeyHash.get(trainTestConcern);
+		List<NormalizedValue> trainTestValues = this.step.getValuesForTrainTestConcern(trainTestConcernKey);
+		for (NormalizedValue ttValue : trainTestValues){
+			//ss.g
+		}
+		
 		GridPane gp = new GridPane();
 		ColumnConstraints column1 = new ColumnConstraints();
 	    //column1.setPercentWidth(15);

@@ -1,11 +1,17 @@
 package edu.oregonstate.eecs.iis.avatolcv.core;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 
-public class NormalizedImageInfoScored extends NormalizedImageInfo {
+public class NormalizedImageInfoScored extends NormalizedImageInfo  {
     private static final String KEY_SCORING_CONFIDENCE = PREFIX + "scoringConfidence";
     protected Hashtable<String, String> scoreHash = new Hashtable<String, String>();
 
@@ -21,8 +27,9 @@ public class NormalizedImageInfoScored extends NormalizedImageInfo {
         return !scoreHash.isEmpty();
     }
     
-    public String getScoringConfidence(){
-        return (String)keyValueHash.get(KEY_SCORING_CONFIDENCE);
+    public String getScoringConfidence() throws AvatolCVException {
+        NormalizedValue nv = keyValueHash.get(new NormalizedKey(KEY_SCORING_CONFIDENCE));
+        return nv.getName();
     }
     
    
@@ -61,13 +68,67 @@ public class NormalizedImageInfoScored extends NormalizedImageInfo {
     	
     	
     }
+	// copied this temporarily until figure out how whether need normalizedKey and Value in results
+	private void loadAvatolCVKeyedLine(String line) throws AvatolCVException {
+        String[] parts = line.split("=");
+        String key = parts[0];
+        String value = "";
+        if (parts.length > 1){
+            value = parts[1];
+        }
+        if (key.equals(KEY_IMAGE_NAME)){
+        	imageName = value;
+        	keyValueHash.put(new NormalizedKey(key),new NormalizedValue(value));
+        }
+        else {
+        	keyValueHash.put(new NormalizedKey(key),new NormalizedValue(value));
+        }
+    }
+	protected void loadNormalizedInfoFromLines(List<String> lines, String errorMessage, Hashtable<String, String> hash, boolean dummyVal) throws AvatolCVException {
+    	setNiiStringFromLines(lines);
+    	for (String line : lines){
+    		if (line.startsWith("#")){
+                // ignore
+            }
+            else {
+                if (line.startsWith(AvatolCVFileSystem.RESERVED_PREFIX)){
+                    loadAvatolCVKeyedLine(line);
+                }
+                else {
+                    String[] parts = line.split("=");
+                    String key = parts[0];
+                    String value = "";
+                    if (parts.length > 1){
+                        value = parts[1];
+                    }
+                    hash.put(key,value);
+                }
+            }
+    	}
+    }
+	protected void loadNormalizedInfoFromPath(String path, String errorMessage, Hashtable<String, String> hash, boolean value)throws AvatolCVException {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(path));
+            List<String> lines = new ArrayList<String>();
+            String line = null;
+            while(null != (line = reader.readLine())){
+                lines.add(line);
+            }
+            reader.close();
+            loadNormalizedInfoFromLines(lines, errorMessage, hash, false);
+        }
+        catch(IOException ioe){
+            throw new AvatolCVException(errorMessage + path + " : " + ioe.getMessage());
+        }
+    }
+    // to support tes
 	 /*
      * 
      */
     public void loadAVCVScoreFile(String path, ScoreIndex scoreIndex) throws AvatolCVException {
         File scoreFile = new File(path);
         if (scoreFile.exists()){
-            loadNormalizedInfoFromPath(scoreFile.getAbsolutePath(), "Problem loading score info file: ", scoreHash);
+            loadNormalizedInfoFromPath(scoreFile.getAbsolutePath(), "Problem loading score info file: ", scoreHash, false);
             //if (!scoreIndexForScoreFile.equals(scoreIndexForBaseFile)){
             //    throw new AvatolCVException("The base file and the score file should have the same scoreIndex values: " + path);
             //}
@@ -92,9 +153,9 @@ public class NormalizedImageInfoScored extends NormalizedImageInfo {
     }
 
     public String getScoreValue(ScoreIndex scoreIndex) throws AvatolCVException {
-        return getValue(scoreHash, scoreIndex);
+        return getValue(scoreHash, scoreIndex, false);
     }
-    public static String getValue(Hashtable<String, String> hash, ScoreIndex scoreIndex)throws AvatolCVException  {
+    public static String getValue(Hashtable<String, String> hash, ScoreIndex scoreIndex, boolean dummyVal)throws AvatolCVException  {
         if (hash.isEmpty()){
             return null;
         }
@@ -110,6 +171,7 @@ public class NormalizedImageInfoScored extends NormalizedImageInfo {
         return result;
     }
     public String getTruthValue(ScoreIndex scoreIndex) throws AvatolCVException {
-        return getValue(keyValueHash, scoreIndex);
+    	return "";
+        // punt on this until revisit results review...... return getValue(keyValueHash, scoreIndex);
     }
 }

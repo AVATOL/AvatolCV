@@ -9,8 +9,8 @@ public class TrueScoringSet implements ScoringSet {
 	private List<NormalizedImageInfo> niis = null;
 	private List<NormalizedImageInfo> niisWithKeyToScore = new ArrayList<NormalizedImageInfo>();
 	private List<ModalImageInfo> modals = new ArrayList<ModalImageInfo>();
-	private String keyToScore = null;
-	public TrueScoringSet(List<NormalizedImageInfo> niis, String keyToScore) throws AvatolCVException {
+	private NormalizedKey keyToScore = null;
+	public TrueScoringSet(List<NormalizedImageInfo> niis, NormalizedKey keyToScore) throws AvatolCVException {
 		this.niis = niis;
 		this.keyToScore = keyToScore;
 		// isolate the ones that have values for the scoring key
@@ -67,8 +67,8 @@ public class TrueScoringSet implements ScoringSet {
 	}
 
 	@Override
-	public List<ModalImageInfo> getImagesToTrainOnForKeyValue(String key,
-			String value) {
+	public List<ModalImageInfo> getImagesToTrainOnForKeyValue(NormalizedKey key,
+			NormalizedValue value) throws AvatolCVException {
 		List<ModalImageInfo> result = new ArrayList<ModalImageInfo>();
 		for (ModalImageInfo mii : this.modals){
 			if (mii.isTraining()){
@@ -84,11 +84,11 @@ public class TrueScoringSet implements ScoringSet {
 	}
 
     @Override
-    public List<String> getAllKeys() {
-        List<String> result = new ArrayList<String>();
+    public List<NormalizedKey> getAllKeys() {
+        List<NormalizedKey> result = new ArrayList<NormalizedKey>();
         for (NormalizedImageInfo nii : niisWithKeyToScore){
-            List<String> keys = nii.getKeys();
-            for (String key : keys){
+            List<NormalizedKey> keys = nii.getKeys();
+            for (NormalizedKey key : keys){
                 if (!result.contains(key)){
                     result.add(key);
                 }
@@ -98,7 +98,7 @@ public class TrueScoringSet implements ScoringSet {
     }
 
 	@Override
-	public String getKeyToScore() {
+	public NormalizedKey getKeyToScore() {
 		return this.keyToScore;
 	}
 

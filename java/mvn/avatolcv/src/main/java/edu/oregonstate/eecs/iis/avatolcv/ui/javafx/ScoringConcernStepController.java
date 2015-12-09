@@ -62,10 +62,10 @@ public class ScoringConcernStepController implements StepController {
         		for (ChoiceItem ci : this.allChoiceItems){
         			if (checkBoxForChoiceItemHash.get(ci).isSelected()){
         				chosenItems.add(ci);
-        				answerHash.put(ci.getName(), VALUE_SCORING_CONCERN_SELECTED);
+        				answerHash.put(ci.getNormalizedKey().toString(), VALUE_SCORING_CONCERN_SELECTED);
         			}
         			else {
-        				answerHash.put(ci.getName(), VALUE_SCORING_CONCERN_UNSELECTED);
+        				answerHash.put(ci.getNormalizedKey().toString(), VALUE_SCORING_CONCERN_UNSELECTED);
         			}
         		}
     			this.step.saveAnswers(answerHash);
@@ -76,7 +76,7 @@ public class ScoringConcernStepController implements StepController {
         	else {
         	    String chosenAnswer = (String)this.itemChoiceComboBox.getValue();
         	    ChoiceItem chosenChoiceItem = choiceItemForNameHash.get(chosenAnswer);
-        	    answerHash.put(KEY_SCORING_CONCERN, chosenChoiceItem.getName());
+        	    answerHash.put(KEY_SCORING_CONCERN, chosenChoiceItem.getNormalizedKey().toString());
     			this.step.saveAnswers(answerHash);
         		this.step.setChosenChoiceItem(chosenChoiceItem);
                 this.step.consumeProvidedData();
@@ -92,7 +92,7 @@ public class ScoringConcernStepController implements StepController {
 
     @Override
     public void clearUIFields() {
-        itemChoiceComboBox.setValue(this.allChoiceItems.get(0).getName());
+        itemChoiceComboBox.setValue(this.allChoiceItems.get(0).getNormalizedKey().getName());
     }
     public Node getContentNodeForSingleItem() throws AvatolCVException {
     	try {
@@ -104,15 +104,15 @@ public class ScoringConcernStepController implements StepController {
             choiceItemForNameHash = new Hashtable<String, ChoiceItem>();
             ObservableList<String> list = itemChoiceComboBox.getItems();
             for (ChoiceItem ci : this.allChoiceItems){
-                list.add(ci.getName());
-                choiceItemForNameHash.put(ci.getName(), ci);
+                list.add(ci.getNormalizedKey().getName());
+                choiceItemForNameHash.put(ci.getNormalizedKey().getName(), ci);
             }
             if (this.step.hasPriorAnswers()){
                 String priorAnswer = this.step.getPriorAnswers().get(KEY_SCORING_CONCERN);
                 itemChoiceComboBox.setValue(priorAnswer);
             }
             else {
-                itemChoiceComboBox.setValue(this.allChoiceItems.get(0).getName());
+                itemChoiceComboBox.setValue(this.allChoiceItems.get(0).getNormalizedKey().getName());
             }
             return content;
     	}
@@ -149,7 +149,7 @@ public class ScoringConcernStepController implements StepController {
             	CheckBox cb = new CheckBox("");
             	grid.add(cb,0,curRow);
             	if (this.step.hasPriorAnswers()){
-            	    String selectionState = this.step.getPriorAnswers().get(ci.getName());
+            	    String selectionState = this.step.getPriorAnswers().get(ci.getNormalizedKey().getName());
             	    if (VALUE_SCORING_CONCERN_SELECTED.equals(selectionState)){
             	        cb.setSelected(true);
             	    }
@@ -167,7 +167,7 @@ public class ScoringConcernStepController implements StepController {
             	}
             	
             	checkBoxForChoiceItemHash.put(ci, cb);
-            	Label label = new Label(ci.getName());
+            	Label label = new Label(ci.getNormalizedKey().getName());
             	grid.add(label, 1, curRow);
             	curRow++;
             }

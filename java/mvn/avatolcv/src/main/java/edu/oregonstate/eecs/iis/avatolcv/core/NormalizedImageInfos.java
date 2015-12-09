@@ -26,7 +26,7 @@ public class NormalizedImageInfos {
 			niiAllPresent.add(f.getName());
 		}
 	}
-	public boolean arePointCoordinatesRelavent(){
+	public boolean arePointCoordinatesRelavent() throws AvatolCVException {
 		for (String s : niiAllPresent){
 			NormalizedImageInfo nii = niiHash.get(s);
 			String coords = nii.getAnnotationCoordinates();
@@ -37,32 +37,45 @@ public class NormalizedImageInfos {
 		return false;
 	}
 	public void ensureAllKeysPresentInAllImageInfos() throws AvatolCVException {
-		List<String> scorableKeys = getScorableKeys();
+		List<NormalizedKey> scorableKeys = getScorableKeys();
 		for (String name : niiAllPresent){
 			NormalizedImageInfo nii = niiHash.get(name);
-			for (String key : scorableKeys){
+			for (NormalizedKey key : scorableKeys){
 				if (!nii.hasKey(key)){
 					nii.addUnscoredKey(key);
 				}
 			}
 		}
 	}
-	public List<String> getScorableKeys(){
-		List<String> scorableKeys = new ArrayList<String>();
+	public List<NormalizedValue> getValuesForKey(NormalizedKey key){
+		List<NormalizedValue> result = new ArrayList<NormalizedValue>();
+		for (String name : niiSession){
+			NormalizedImageInfo nii = niiHash.get(name);
+			NormalizedValue value = nii.getValueForKey(key);
+			if (null != value){
+				if (!result.contains(value)){
+					result.add(value);
+				}
+			}
+		}
+		return result;
+	}
+	public List<NormalizedKey> getScorableKeys(){
+		List<NormalizedKey> scorableKeys = new ArrayList<NormalizedKey>();
 		for (String name : niiAllPresent){
 			NormalizedImageInfo nii = niiHash.get(name);
-			List<String> keys = nii.getKeys();
-			for (String key : keys){
-				if (key.startsWith(NormalizedImageInfo.KEY_TIMESTAMP)){
+			List<NormalizedKey> keys = nii.getKeys();
+			for (NormalizedKey key : keys){
+				if (key.getName().startsWith(NormalizedImageInfo.KEY_TIMESTAMP)){
 					//skip
 				}
-				else if (key.startsWith(NormalizedImageInfo.KEY_IMAGE_NAME)){
+				else if (key.getName().startsWith(NormalizedImageInfo.KEY_IMAGE_NAME)){
 					// skip
 				}
-				else if (key.startsWith(NormalizedImageInfo.KEY_ANNOTATION)){
+				else if (key.getName().startsWith(NormalizedImageInfo.KEY_ANNOTATION)){
 					// skip
 				}
-				else if (key.startsWith(NormalizedImageInfo.PREFIX)){
+				else if (key.getName().startsWith(NormalizedImageInfo.PREFIX)){
 					// skip
 				}
 				else {
@@ -82,7 +95,7 @@ public class NormalizedImageInfos {
 		}
 		return result;
 	}
-	public List<NormalizedImageInfo> getSessionNIIsForKeyValue(String key, String value){
+	public List<NormalizedImageInfo> getSessionNIIsForKeyValue(NormalizedKey key, NormalizedValue value){
 		List<NormalizedImageInfo> niis = new ArrayList<NormalizedImageInfo>();
 		for (String name : niiSession){
 			NormalizedImageInfo nii = niiHash.get(name);

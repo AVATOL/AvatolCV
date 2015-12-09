@@ -72,6 +72,7 @@ public class SessionInfo{
     private NormalizedImageInfos normalizedImageInfos = null;
     private SessionImages sessionImages = null;
     private ScoringSet scoringSet = null;
+    private NormalizedKey trainTestConcern = null;
 	public SessionInfo() throws AvatolCVException {
 		File f = new File(AvatolCVFileSystem.getAvatolCVRootDir());
         if (!f.isDirectory()){
@@ -85,22 +86,21 @@ public class SessionInfo{
         AvatolCVFileSystem.setSessionID(this.sessionID);
         this.sessionImages = new SessionImages();
 	}
-	public List<String> getScoringSortingCandidates() throws AvatolCVException {
+	public List<NormalizedKey> getScoringSortingCandidates() throws AvatolCVException {
 		List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
-		List<String> scorableKeys = normalizedImageInfos.getScorableKeys();
-		List<String> result = new ArrayList<String>();
-		for (String key : scorableKeys){
+		List<NormalizedKey> scorableKeys = normalizedImageInfos.getScorableKeys();
+		List<NormalizedKey> result = new ArrayList<NormalizedKey>();
+		for (NormalizedKey key : scorableKeys){
 			boolean keyDisqualified = false;
-			NormalizedTypeIDName nKey = new NormalizedTypeIDName(key);
-			String keyName = nKey.getName();
+			String keyName = key.getName();
 			for (ChoiceItem scoringConcern : scoringConcerns){
-				String scName = scoringConcern.getName();
-				if (keyName.equals(scName)){
+				NormalizedKey nKey = scoringConcern.getNormalizedKey();
+				if (nKey.equals(key)){
 					keyDisqualified = true;
 				}
 			}
 			if (!keyDisqualified){
-				result.add(keyName);
+				result.add(key);
 			}
 		}
 		return result;
@@ -121,7 +121,7 @@ public class SessionInfo{
 	public DataSource getDataSource(){
 	    return this.dataSource;
 	}
-	public boolean arePointCoordinatesRelavent(){
+	public boolean arePointCoordinatesRelavent() throws AvatolCVException {
 		return this.normalizedImageInfos.arePointCoordinatesRelavent();
 	}
 	
@@ -243,6 +243,30 @@ public class SessionInfo{
     public ScoringSet getSelectedScoringSet(){
         return this.scoringSet;
     }
+    public boolean hasTrainTestConcern(){
+    	return this.trainTestConcern != null;
+    }
+    public  NormalizedKey getTrainTestConcern(){
+    	return this.trainTestConcern;
+    }
+    public void setTrainTestConcern(NormalizedKey trainTestConcern){
+    	this.trainTestConcern = trainTestConcern;
+    }
+    public List<NormalizedValue> getValuesForTrainTestConcern(NormalizedKey trainTestConcern) throws AvatolCVException {
+    	List<NormalizedValue> result = new ArrayList<NormalizedValue>();
+    	List<NormalizedValue> nas = this.normalizedImageInfos.getValuesForKey(trainTestConcern);
+    	for (NormalizedValue na : nas){
+    		result.add(na);
+    	}
+    	return result;
+    }
+    public NormalizedKey getDefaultTrainTestConcern() throws AvatolCVException {
+		String ttc = this.dataSource.getDefaultTrainTestConcern();
+		if (null == ttc){
+			return null;
+		}
+		return new NormalizedKey(ttc);
+	}
     /*
      * FILTER
      */
@@ -310,14 +334,14 @@ public class SessionInfo{
         List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
         List<EvaluationSet> esets = new ArrayList<EvaluationSet>();
     	for (ChoiceItem item : scoringConcerns){
-    		String keyToScore = "";
+    		NormalizedKey keyToScore = null;
     		if (item.hasNativeType()){
     			ScoringConcernDetails scd = (ScoringConcernDetails)item.getBackingObject();
-        	    keyToScore = NormalizedTypeIDName.buildTypeIdName(scd.getType(), scd.getID(), scd.getName()); 
+        	    keyToScore = new NormalizedKey(NormalizedTypeIDName.buildTypeIdName(scd.getType(), scd.getID(), scd.getName())); 
         	    
     		}
     		else{
-    			keyToScore = item.getName();
+    			keyToScore = item.getNormalizedKey();
     		}
     		// in bisque case, we want key to just be the name part
             List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSession();
@@ -330,27 +354,27 @@ public class SessionInfo{
         List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
         List<TrueScoringSet> tssets = new ArrayList<TrueScoringSet>();
         for (ChoiceItem item : scoringConcerns){
-            String keyToScore = item.getName();
+            NormalizedKey keyToScore = item.getNormalizedKey();
             List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSession();
             TrueScoringSet tss = new TrueScoringSet(niis, keyToScore);
             tssets.add(tss);
         }
     	return tssets;
     }
-    public List<String> getScoreConfigurationSortingValueOptions(ScoringSet ss){
-        List<String> allKeys = ss.getAllKeys();
-        List<String> result = new ArrayList<String>();
+    public List<NormalizedKey> getScoreConfigurationSortingValueOptions(ScoringSet ss){
+        List<NormalizedKey> allKeys = ss.getAllKeys();
+        List<NormalizedKey> result = new ArrayList<NormalizedKey>();
         if (this.chosenScoringConcerns != null){
-            List<String> scoringConcernStrings = getScoringConcernStrings(this.chosenScoringConcerns);
-            for (String key : allKeys){
+            List<NormalizedKey> scoringConcernStrings = getScoringConcernKeys(this.chosenScoringConcerns);
+            for (NormalizedKey key : allKeys){
                 if (!scoringConcernStrings.contains(key)){
                     result.add(key);
                 }
             }
         }
         else if (this.chosenScoringConcern != null){
-            for (String key : allKeys){
-                if (!this.chosenScoringConcern.getName().equals(key)){
+            for (NormalizedKey key : allKeys){
+                if (!this.chosenScoringConcern.getNormalizedKey().equals(key)){
                     result.add(key);
                 }
             }
@@ -358,10 +382,10 @@ public class SessionInfo{
         return result;
         
     }
-    public List<String> getScoringConcernStrings(List<ChoiceItem> choiceItems){
-        List<String> result = new ArrayList<String>();
+    public List<NormalizedKey> getScoringConcernKeys(List<ChoiceItem> choiceItems){
+        List<NormalizedKey> result = new ArrayList<NormalizedKey>();
         for (ChoiceItem item : choiceItems){
-            result.add(item.getName());
+            result.add(item.getNormalizedKey());
         }
         return result;
     }
