@@ -194,6 +194,7 @@ public class ScoringConfigurationStepController implements StepController {
 		}
 		
 	}
+
 	public void configureAsScoreImages() {
 		try {
 			radioScoreImages.setSelected(true);
@@ -211,6 +212,7 @@ public class ScoringConfigurationStepController implements StepController {
 		}
 		
 	}
+
 	public void configureAsSortByImage(){
 		try {
 			this.sortByImage = true;
@@ -222,7 +224,6 @@ public class ScoringConfigurationStepController implements StepController {
 		catch(AvatolCVException ace){
 			AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "Problem setting 'sort by image' ");
 		}
-		
 	}
 	public void configureAsGroupByProperty() throws AvatolCVException {
 		this.sortByImage = false;
@@ -249,7 +250,8 @@ public class ScoringConfigurationStepController implements StepController {
 			trainTestSettingsScrollPane.setContent(vbox);
 		}
 	}
-	public void configureAsSortByImage(List<ScoringSet> scoringSets) throws AvatolCVException{
+
+	public void configureAsSortByImage(List<ScoringSet> scoringSets) throws AvatolCVException {
 		trainTestSettingsScrollPane.setContent(null);
 		if (scoringSets.size() == 1){
 			GridPane gp = loadGridPaneWithSetByImage(scoringSets.get(0));
@@ -316,7 +318,6 @@ public class ScoringConfigurationStepController implements StepController {
 		for (NormalizedValue ttValue : trainTestValues){
 			//ss.g
 		}
-		
 		GridPane gp = new GridPane();
 		ColumnConstraints column1 = new ColumnConstraints();
 	    //column1.setPercentWidth(15);
