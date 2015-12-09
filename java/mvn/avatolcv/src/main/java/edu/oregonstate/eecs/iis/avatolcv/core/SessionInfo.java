@@ -3,6 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv.core;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
 
@@ -71,7 +72,7 @@ public class SessionInfo{
     private AlgorithmSequence algorithmSequence = null;
     private NormalizedImageInfos normalizedImageInfos = null;
     private SessionImages sessionImages = null;
-    private ScoringSet scoringSet = null;
+    private Hashtable<String, ScoringSet> scoringSetForScoringConcernHash = new Hashtable<String, ScoringSet>();
     private NormalizedKey trainTestConcern = null;
 	public SessionInfo() throws AvatolCVException {
 		File f = new File(AvatolCVFileSystem.getAvatolCVRootDir());
@@ -237,11 +238,11 @@ public class SessionInfo{
         ScoringAlgorithm sa = (ScoringAlgorithm)a;
         return sa;
     }
-    public void setScoringSet(ScoringSet scoringSet){
-        this.scoringSet = scoringSet;
+    public void setScoringSetForConcernName(String name, ScoringSet scoringSet){
+        this.scoringSetForScoringConcernHash.put(name,scoringSet);
     }
-    public ScoringSet getSelectedScoringSet(){
-        return this.scoringSet;
+    public ScoringSet getScoringSetForScoringConcern(String name){
+        return this.scoringSetForScoringConcernHash.get(name);
     }
     public boolean hasTrainTestConcern(){
     	return this.trainTestConcern != null;

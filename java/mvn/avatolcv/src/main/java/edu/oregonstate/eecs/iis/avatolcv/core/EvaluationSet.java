@@ -103,4 +103,8 @@ public class EvaluationSet implements ScoringSet {
 	public NormalizedKey getKeyToScore() {
 		return this.keyToScore;
 	}
+	@Override
+	public String getScoringConcernName() {
+		return this.keyToScore.getName();
+	}
 }

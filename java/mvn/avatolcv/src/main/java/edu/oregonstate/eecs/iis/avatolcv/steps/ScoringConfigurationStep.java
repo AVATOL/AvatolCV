@@ -12,13 +12,13 @@ import edu.oregonstate.eecs.iis.avatolcv.core.TrueScoringSet;
 
 public class ScoringConfigurationStep extends Answerable implements Step {
 	private SessionInfo sessionInfo = null;
-	private ScoringSet scoringSet = null;
+	private List<ScoringSet> scoringSets = null;
 	private NormalizedKey trainTestConcern = null;
 	public ScoringConfigurationStep(SessionInfo sessionInfo){
 		this.sessionInfo = sessionInfo;
 	}
-	public void setScoringSet(ScoringSet scoringSet){
-	    this.scoringSet = scoringSet;
+	public void setScoringSets(List<ScoringSet> scoringSets){
+	    this.scoringSets = scoringSets;
 	}
 	public NormalizedKey getDefaultTrainTestConcern() throws AvatolCVException {
 		return this.sessionInfo.getDefaultTrainTestConcern();
@@ -51,7 +51,10 @@ public class ScoringConfigurationStep extends Answerable implements Step {
 	}
 	@Override
 	public void consumeProvidedData() throws AvatolCVException {
-		this.sessionInfo.setScoringSet(this.scoringSet);
+		for (ScoringSet ss : this.scoringSets){
+			String scoringConcern = ss.getScoringConcernName();
+			this.sessionInfo.setScoringSetForConcernName(scoringConcern, ss);
+		}
 		this.sessionInfo.setTrainTestConcern(this.trainTestConcern);
 	}
 

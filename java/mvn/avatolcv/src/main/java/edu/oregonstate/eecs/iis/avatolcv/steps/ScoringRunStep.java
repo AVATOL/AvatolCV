@@ -77,7 +77,7 @@ public class ScoringRunStep implements Step {
             NormalizedKey scoringConcernKey = new NormalizedKey(NormalizedTypeIDName.buildTypeIdName(scoringConcernType, scoringConcernID, scoringConcernName));
             TrainingInfoFile tif = new TrainingInfoFile(scoringConcernType, scoringConcernID, scoringConcernName);
             tif.setImageDir(algSequence.getInputDir());
-            ScoringSet scoringSet = this.sessionInfo.getSelectedScoringSet();
+            ScoringSet scoringSet = this.sessionInfo.getScoringSetForScoringConcern(scoringConcernName);
             List<ModalImageInfo> trainingImages = scoringSet.getImagesToTrainOn();
             for (ModalImageInfo mii : trainingImages){
             	NormalizedImageInfo nii = mii.getNormalizedImageInfo();

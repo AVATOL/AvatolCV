@@ -70,11 +70,11 @@ public class ScoringConfigurationStepController implements StepController {
 	public boolean consumeUIData() {
 	    if (SessionInfo.isBisqueSession()){
 	        System.out.println("true scoring set for bisque");
-	        this.step.setScoringSet(this.trueScoringSets.get(0));
+	        consumeTrueScoringSets();
 	    }
 	    else {
 	        System.out.println("evaluation set for morphobank");
-	        this.step.setScoringSet(this.evaluationSets.get(0));
+	        consumeEvaluationSets();
 	    }
 	    
 	    try {
@@ -86,6 +86,16 @@ public class ScoringConfigurationStepController implements StepController {
         return true;
 	}
 
+	private void consumeEvaluationSets(){
+		List<ScoringSet> sSets = new ArrayList<ScoringSet>();
+        sSets.addAll(this.evaluationSets);
+        this.step.setScoringSets(sSets);
+	}
+	private void consumeTrueScoringSets(){
+		List<ScoringSet> sSets = new ArrayList<ScoringSet>();
+        sSets.addAll(this.trueScoringSets);
+        this.step.setScoringSets(sSets);
+	}
 	@Override
 	public void clearUIFields() {
 		// TODO Auto-generated method stub

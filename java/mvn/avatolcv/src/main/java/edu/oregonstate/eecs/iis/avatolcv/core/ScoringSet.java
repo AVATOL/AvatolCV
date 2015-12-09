@@ -10,4 +10,5 @@ public interface ScoringSet {
 	List<ModalImageInfo> getImagesToTrainOnForKeyValue(NormalizedKey key, NormalizedValue value) throws AvatolCVException;
 	List<NormalizedKey> getAllKeys();
 	NormalizedKey getKeyToScore();
+	String getScoringConcernName();
 }

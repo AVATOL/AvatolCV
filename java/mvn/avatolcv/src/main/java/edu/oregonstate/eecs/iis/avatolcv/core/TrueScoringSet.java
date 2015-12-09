@@ -102,4 +102,9 @@ public class TrueScoringSet implements ScoringSet {
 		return this.keyToScore;
 	}
 
+	@Override
+	public String getScoringConcernName() {
+		return this.keyToScore.getName();
+	}
+
 }
