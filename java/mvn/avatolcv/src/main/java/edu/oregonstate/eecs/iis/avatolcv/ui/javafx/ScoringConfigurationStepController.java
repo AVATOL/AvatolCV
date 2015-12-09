@@ -173,7 +173,7 @@ public class ScoringConfigurationStepController implements StepController {
             choiceBox.requestLayout();
         }
     }
-	public void configureAsEvaluateAlgorithm(){
+	public void configureAsEvaluateAlgorithm()throws AvatolCVException{
 		radioEvaluateAlgorithm.setSelected(true);
 		this.activeSetIsEvaluation = true;
 		List<ScoringSet> sets = getActiveScoringSets();
@@ -184,7 +184,7 @@ public class ScoringConfigurationStepController implements StepController {
 			configureAsSortByProperty(sets);
 		}
 	}
-	public void configureAsScoreImages(){
+	public void configureAsScoreImages()throws AvatolCVException{
 		radioScoreImages.setSelected(true);
 		this.activeSetIsEvaluation = false;
 		List<ScoringSet> sets = getActiveScoringSets();
@@ -195,7 +195,7 @@ public class ScoringConfigurationStepController implements StepController {
 			configureAsSortByProperty(sets);
 		}
 	}
-	public void configureAsSortByImage(){
+	public void configureAsSortByImage()throws AvatolCVException{
 		this.sortByImage = true;
 		//choiceBoxGroupProperty.setDisable(true);
 		radioViewByImage.setSelected(true);
@@ -212,7 +212,7 @@ public class ScoringConfigurationStepController implements StepController {
 	public void configureAsSortByProperty(List<ScoringSet> scoringSets){
 		trainTestSettingsScrollPane.setContent(null);
 	}
-	public void configureAsSortByImage(List<ScoringSet> scoringSets){
+	public void configureAsSortByImage(List<ScoringSet> scoringSets) throws AvatolCVException {
 		trainTestSettingsScrollPane.setContent(null);
 		if (scoringSets.size() == 1){
 			GridPane gp = loadGridPaneWithSetByImage(scoringSets.get(0));
@@ -229,7 +229,7 @@ public class ScoringConfigurationStepController implements StepController {
 			trainTestSettingsScrollPane.setContent(vbox);
 		}
 	}
-	public GridPane loadGridPaneWithSetByImage(ScoringSet ss){ 
+	public GridPane loadGridPaneWithSetByImage(ScoringSet ss) throws AvatolCVException { 
 		GridPane gp = new GridPane();
 		ColumnConstraints column1 = new ColumnConstraints();
 	    //column1.setPercentWidth(15);
