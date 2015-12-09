@@ -32,4 +32,16 @@ if there are no pointCoordinates in play, the file will look like
         ...
     
 if there is no scoringConcernType, then the filename will look like:   training__<scoringConcernID>_<scoringConcernName>.txt (note consec undercores)
+
+
+Point Coordinates 
++ delimits the annotations in the series
+: delimits type from points  
+; delimits the points in the annotation
+- delimits x and y coordinates  (prefered comma but that has meaning already on the rest of the line
+  
+
+example:
+rectangle:25-45;35-87+point:98-92
+    	
     
