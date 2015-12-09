@@ -111,11 +111,6 @@ public class ScoringRunStep implements Step {
                 	}
             	}
             	else {
-            		System.out.println("=====adding tif image:");
-            		System.out.println("imagePath: " + imagePathForScoring);
-            		System.out.println("value : " + value);
-            		System.out.println("trainTestConcern: " + trainTestConcern);
-            		System.out.println("trainTestConcernValue: " + trainTestConcernValue);
             		tif.addImageInfo(imagePathForScoring, value.toString(),  "", trainTestConcern.toString(), trainTestConcernValue.toString());
             	}
             	

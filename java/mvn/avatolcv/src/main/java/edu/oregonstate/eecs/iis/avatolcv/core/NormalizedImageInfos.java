@@ -66,22 +66,8 @@ public class NormalizedImageInfos {
 			NormalizedImageInfo nii = niiHash.get(name);
 			List<NormalizedKey> keys = nii.getKeys();
 			for (NormalizedKey key : keys){
-				if (key.getName().startsWith(NormalizedImageInfo.KEY_TIMESTAMP)){
-					//skip
-				}
-				else if (key.getName().startsWith(NormalizedImageInfo.KEY_IMAGE_NAME)){
-					// skip
-				}
-				else if (key.getName().startsWith(NormalizedImageInfo.KEY_ANNOTATION)){
-					// skip
-				}
-				else if (key.getName().startsWith(NormalizedImageInfo.PREFIX)){
-					// skip
-				}
-				else {
-					if (!scorableKeys.contains(key)){
-						scorableKeys.add(key);
-					}
+				if (!scorableKeys.contains(key)){
+					scorableKeys.add(key);
 				}
 			}
 		}
