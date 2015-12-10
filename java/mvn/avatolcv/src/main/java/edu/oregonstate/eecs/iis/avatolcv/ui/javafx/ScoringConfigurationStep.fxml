@@ -72,10 +72,6 @@
             <Insets top="6.0" />
          </VBox.margin>
       </TextArea>
-      <ScrollPane fx:id="trainTestSettingsScrollPane" maxWidth="1.7976931348623157E308" prefViewportHeight="300.0" prefViewportWidth="400.0" VBox.vgrow="ALWAYS">
-         <VBox.margin>
-            <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
-         </VBox.margin>
-      </ScrollPane>
+      <AnchorPane fx:id="trainTestSettingsAnchorPane" maxWidth="1.7976931348623157E308" />
    </children>
 </VBox>

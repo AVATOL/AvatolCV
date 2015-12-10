@@ -11,15 +11,19 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.EvaluationSet;
@@ -42,7 +46,7 @@ public class ScoringConfigurationStepController implements StepController {
     public RadioButton radioViewByGroup = null;
     public ChoiceBox<String> choiceBoxGroupProperty = null;
     public TextArea groupDescriptionTextArea = null;
-    public ScrollPane trainTestSettingsScrollPane = null;
+    public AnchorPane trainTestSettingsAnchorPane = null;
     private List<EvaluationSet> evaluationSets = null;
     private List<TrueScoringSet> trueScoringSets = null;
     private boolean activeSetIsEvaluation = true;
@@ -108,7 +112,7 @@ public class ScoringConfigurationStepController implements StepController {
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
-            trainTestSettingsScrollPane.setStyle("-fx-border-color: black;");
+            //trainTestSettingsPane.setStyle("-fx-border-color: black;");
             this.step.reAssessImagesInPlay();
             this.evaluationSets = this.step.getEvaluationSets();
             
@@ -201,9 +205,7 @@ public class ScoringConfigurationStepController implements StepController {
 		catch(AvatolCVException ace){
 			AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "Problem configuring evaluation run ");
 		}
-		
 	}
-
 	public void configureAsScoreImages() {
 		try {
 			radioScoreImages.setSelected(true);
@@ -219,9 +221,7 @@ public class ScoringConfigurationStepController implements StepController {
 		catch(AvatolCVException ace){
 			AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "Problem configuring scoring run ");
 		}
-		
 	}
-
 	public void configureAsSortByImage(){
 		try {
 			this.sortByImage = true;
@@ -242,11 +242,12 @@ public class ScoringConfigurationStepController implements StepController {
 		configureAsSortByProperty(sets);
 		this.step.setTrainTestConcern(new NormalizedKey(choiceBoxGroupProperty.getValue()));
 	}
+	
 	public void configureAsSortByProperty(List<ScoringSet> scoringSets) throws AvatolCVException {
-		trainTestSettingsScrollPane.setContent(null);
+	    trainTestSettingsAnchorPane.getChildren().clear();
 		if (scoringSets.size() == 1){
 			GridPane gp = loadGridPaneWithSetByGrouping(scoringSets.get(0));
-			trainTestSettingsScrollPane.setContent(gp);
+			trainTestSettingsAnchorPane.getChildren().add(gp);
 		}
 		else {
 			VBox vbox = new VBox();
@@ -256,15 +257,15 @@ public class ScoringConfigurationStepController implements StepController {
 				GridPane gp = loadGridPaneWithSetByGrouping(ss);
 				vbox.getChildren().add(gp);
 			}
-			trainTestSettingsScrollPane.setContent(vbox);
+			trainTestSettingsAnchorPane.getChildren().add(vbox);
 		}
 	}
 
-	public void configureAsSortByImage(List<ScoringSet> scoringSets) throws AvatolCVException {
-		trainTestSettingsScrollPane.setContent(null);
+	public void configureAsSortByImageOrig(List<ScoringSet> scoringSets) throws AvatolCVException {
+	    trainTestSettingsAnchorPane.getChildren().clear();
 		if (scoringSets.size() == 1){
 			GridPane gp = loadGridPaneWithSetByImage(scoringSets.get(0));
-			trainTestSettingsScrollPane.setContent(gp);
+			trainTestSettingsAnchorPane.getChildren().add(gp);
 		}
 		else {
 			VBox vbox = new VBox();
@@ -274,8 +275,26 @@ public class ScoringConfigurationStepController implements StepController {
 				GridPane gp = loadGridPaneWithSetByImage(ss);
 				vbox.getChildren().add(gp);
 			}
-			trainTestSettingsScrollPane.setContent(vbox);
+			trainTestSettingsAnchorPane.getChildren().add(vbox);
 		}
+	}
+	public void configureAsSortByImage(List<ScoringSet> scoringSets) throws AvatolCVException {
+	    trainTestSettingsAnchorPane.getChildren().clear();
+        Accordion accordion = loadAccordionWithSetsByImage(scoringSets);
+        trainTestSettingsAnchorPane.getChildren().add(accordion);
+    }
+	public Accordion loadAccordionWithSetsByImage(List<ScoringSet> sets) throws AvatolCVException {
+	    Accordion accordion = new Accordion();
+	    for (ScoringSet ss : sets){
+	        TitledPane tp = new TitledPane();
+	        tp.setText(ss.getScoringConcernName());
+	        GridPane gp = loadGridPaneWithSetByImage(ss);
+	        ScrollPane sp = new ScrollPane();
+	        sp.setContent(gp);
+	        tp.setContent(sp);
+	        accordion.getPanes().add(tp);
+	    }
+	    return accordion;
 	}
 	public GridPane loadGridPaneWithSetByImage(ScoringSet ss) throws AvatolCVException { 
 		GridPane gp = new GridPane();
