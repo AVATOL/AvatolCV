@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageWithInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ExclusionQualityStep;
@@ -179,17 +180,7 @@ public class ExclusionQualityStepController  implements StepController {
     }
     
    
-    public class ImageWithInfo extends Image{
-    	private ImageInfo ii = null;
-
-		public ImageWithInfo(String arg0, ImageInfo ii) {
-			super(arg0);
-			this.ii = ii;
-		}
-    	public ImageInfo getImageInfo(){
-    		return this.ii;
-    	}
-    }
+    
 
 
 	@Override

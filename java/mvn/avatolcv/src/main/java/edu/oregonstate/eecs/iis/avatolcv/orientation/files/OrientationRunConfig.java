@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForAlgorithmStep;
+import edu.oregonstate.eecs.iis.avatolcv.core.ObsoleteImagesForAlgorithmStep;
 import edu.oregonstate.eecs.iis.avatolcv.orientation.OrientationSessionData;
 
 /*
@@ -23,8 +23,8 @@ output files    ..._rotated.jpg
 public class OrientationRunConfig {
     private static final String NL = System.getProperty("line.separator");
     private OrientationSessionData osd = null;
-    private ImagesForAlgorithmStep ifs = null;
-    public OrientationRunConfig(OrientationSessionData osd, ImagesForAlgorithmStep ifs)throws AvatolCVException {
+    private ObsoleteImagesForAlgorithmStep ifs = null;
+    public OrientationRunConfig(OrientationSessionData osd, ObsoleteImagesForAlgorithmStep ifs)throws AvatolCVException {
         this.ifs = ifs;
         this.osd = osd;
     }

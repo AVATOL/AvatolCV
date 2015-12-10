@@ -14,7 +14,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.FileRootNameList;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageTranformReviewData;
-import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForAlgorithmStep;
+import edu.oregonstate.eecs.iis.avatolcv.core.ObsoleteImagesForAlgorithmStep;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.files.DarwinDriverFile;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.files.SegmentationRunConfig;
 
@@ -41,7 +41,7 @@ public class SegmentationSessionData implements ImageTranformReviewData {
 	//private String segmentationDir = null;
 	private String testImageDir = null;
 	private List<ImageInfo> candidateImages = new ArrayList<ImageInfo>();
-    private ImagesForAlgorithmStep ifs = null;
+    private ObsoleteImagesForAlgorithmStep ifs = null;
     
 	public SegmentationSessionData(String parentDataDir, String testImageDir) throws AvatolCVException {
 		this.parentDataDir = parentDataDir;
@@ -177,11 +177,11 @@ public class SegmentationSessionData implements ImageTranformReviewData {
         return this.outputDir;
     }
 
-    public void setImagesForStage(ImagesForAlgorithmStep ifs){
+    public void setImagesForStage(ObsoleteImagesForAlgorithmStep ifs){
         this.ifs = ifs;
     }
     @Override
-    public ImagesForAlgorithmStep getImagesForStage(){
+    public ObsoleteImagesForAlgorithmStep getImagesForStage(){
         return this.ifs;
     }
     @Override

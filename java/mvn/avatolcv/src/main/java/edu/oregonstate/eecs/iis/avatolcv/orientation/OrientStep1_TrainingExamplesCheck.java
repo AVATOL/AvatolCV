@@ -5,7 +5,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForAlgorithmStep;
+import edu.oregonstate.eecs.iis.avatolcv.core.ObsoleteImagesForAlgorithmStep;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.View;
@@ -14,7 +14,7 @@ public class OrientStep1_TrainingExamplesCheck implements Step {
 
     private boolean orientLabelFileAssessmentHasBeenRun = false;
     private OrientationSessionData osd = null;
-    ImagesForAlgorithmStep ifs = null;
+    ObsoleteImagesForAlgorithmStep ifs = null;
     public OrientStep1_TrainingExamplesCheck(OrientationSessionData osd) throws AvatolCVException {
         this.osd = osd;
         
@@ -28,7 +28,7 @@ public class OrientStep1_TrainingExamplesCheck implements Step {
         	orientTrainingImageDir.mkdirs();
         }
         List<ImageInfo> candidateImages = osd.getCandidateImages();
-        ifs = new ImagesForAlgorithmStep(orientTrainingImageDirPath, this.osd.getOrientationOutputDir(), candidateImages);
+        ifs = new ObsoleteImagesForAlgorithmStep(orientTrainingImageDirPath, this.osd.getOrientationOutputDir(), candidateImages);
         ifs.reload();
     }
     @Override

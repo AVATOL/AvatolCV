@@ -12,7 +12,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
  * - images can be disqualified or re-qualified
  * - it maintains lists of training, test and result images
  */
-public class ImagesForAlgorithmStep {
+public class ObsoleteImagesForAlgorithmStep {
 	public static final String TRAINING_IMAGE = "train";
     public static final String TEST_IMAGE = "test";
 	private List<ImageInfo> trainingImages = new ArrayList<ImageInfo>();
@@ -24,7 +24,7 @@ public class ImagesForAlgorithmStep {
 	private List<ImageInfo> disqualifiedImages = new ArrayList<ImageInfo>();
 	private Hashtable<ImageInfo, String> disqualifiedSource = new Hashtable<ImageInfo, String>();
 	private Hashtable<String, String> imageStatusForId = null;
-	public ImagesForAlgorithmStep(String trainingImageDirPath, String outputImageDirPath, List<ImageInfo> candidateImages){
+	public ObsoleteImagesForAlgorithmStep(String trainingImageDirPath, String outputImageDirPath, List<ImageInfo> candidateImages){
 		this.trainingImageDirPath = trainingImageDirPath;
 		this.outputImageDirPath = outputImageDirPath;
 		this.inPlayImages = candidateImages;

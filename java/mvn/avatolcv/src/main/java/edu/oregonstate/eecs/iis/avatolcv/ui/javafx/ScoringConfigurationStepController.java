@@ -20,13 +20,20 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.EvaluationSet;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageWithInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForStep;
 import edu.oregonstate.eecs.iis.avatolcv.core.ModalImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedKey;
@@ -52,7 +59,8 @@ public class ScoringConfigurationStepController implements StepController {
     private boolean activeSetIsEvaluation = true;
     private boolean sortByImage = true;
     private Hashtable<String, NormalizedKey> normalizedKeyHash = new Hashtable<String, NormalizedKey>();
-    public ScoringConfigurationStepController(ScoringConfigurationStep step, String fxmlDocName){
+    private ImagesForStep imageAccessor = null;
+    public ScoringConfigurationStepController(ScoringConfigurationStep step, String fxmlDocName) throws AvatolCVException {
         this.step = step;
         this.fxmlDocName = fxmlDocName;
     }
@@ -124,6 +132,9 @@ public class ScoringConfigurationStepController implements StepController {
             	// disable the radio if true scoring set cannot be constructed (i.e. there are no unlabeled images)
             	radioScoreImages.setDisable(true);
             }
+            String pathOfLargeImages = AvatolCVFileSystem.getNormalizedImagesLargeDir();
+            String pathOfThumbnailImages = AvatolCVFileSystem.getNormalizedImagesThumbnailDir();
+            this.imageAccessor = new ImagesForStep(pathOfLargeImages, pathOfThumbnailImages);
             configureAsEvaluateAlgorithm();
             populateSortingChoiceBox();
             configureAsSortByImage();
@@ -302,7 +313,57 @@ public class ScoringConfigurationStepController implements StepController {
 	    accordion.setExpandedPane(accordion.getPanes().get(0));
 	    return accordion;
 	}
+	public ImageView getImageViewForImageID(String imageID) throws AvatolCVException {
+		ImageInfo ii = this.imageAccessor.getThumbnailImageForID(imageID);
+		ImageView iv = new ImageView();
+        iv.setPreserveRatio(true);
+        ImageWithInfo imageWithInfo = new ImageWithInfo("file:" + ii.getFilepath(), ii);
+        iv.setImage(imageWithInfo);
+        iv.setFitHeight(80);
+        return iv;
+	}
 	public GridPane loadGridPaneWithSetByImage(ScoringSet ss) throws AvatolCVException { 
+		GridPane gp = new GridPane();
+		System.out.println("Laying out gp for " + ss.getScoringConcernName());
+	    gp.setHgap(4);
+	    gp.setVgap(4);
+	    //DropShadow dsTraining = new DropShadow( 20, Color.AQUA );
+	    //DropShadow dsScoring = new DropShadow( 20, Color.TOMATO );
+		List<ModalImageInfo> trainingImages = ss.getImagesToTrainOn();
+		List<ModalImageInfo> scoringImages = ss.getImagesToScore();
+		int row = 0;
+		int column = 0;
+		for (ModalImageInfo mii : trainingImages){
+			System.out.println("training " + mii.getNormalizedImageInfo().getNiiString());
+			String imageId = mii.getNormalizedImageInfo().getImageID();
+			ImageView iv = getImageViewForImageID(imageId);
+			Label label = new Label();
+			label.setGraphic(iv);
+			label.setStyle("-fx-border-color: #0000FF;-fx-border-width:4px");
+			gp.add(label, column++, row);
+			if (column == 10){
+				column = 0;
+				row++;
+			}
+			
+		}
+		for (ModalImageInfo mii : scoringImages){
+			System.out.println("test " + mii.getNormalizedImageInfo().getNiiString());
+			String imageId = mii.getNormalizedImageInfo().getImageID();
+			ImageView iv = getImageViewForImageID(imageId);
+			Label label = new Label();
+			label.setGraphic(iv);
+			label.setStyle("-fx-border-color: #00FF00;-fx-border-width:4px");
+			gp.add(label, column++, row);
+			if (column == 10){
+				column = 0;
+				row++;
+			}
+		}
+		
+		return gp;
+	}
+	public GridPane loadGridPaneWithSetByImageOld(ScoringSet ss) throws AvatolCVException { 
 		GridPane gp = new GridPane();
 		ColumnConstraints column1 = new ColumnConstraints();
 	    //column1.setPercentWidth(15);

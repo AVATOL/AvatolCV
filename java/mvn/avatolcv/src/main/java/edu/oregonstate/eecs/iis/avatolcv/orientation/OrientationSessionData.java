@@ -13,7 +13,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.FileRootNameList;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageTranformReviewData;
-import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForAlgorithmStep;
+import edu.oregonstate.eecs.iis.avatolcv.core.ObsoleteImagesForAlgorithmStep;
 import edu.oregonstate.eecs.iis.avatolcv.orientation.files.OrientationRunConfig;
 
 public class OrientationSessionData implements ImageTranformReviewData {
@@ -26,7 +26,7 @@ public class OrientationSessionData implements ImageTranformReviewData {
 	private String outputDir = null;
 	private String imagesToOrientDir = null;
 	private String rawImagesDir = null;
-    private ImagesForAlgorithmStep ifs = null;
+    private ObsoleteImagesForAlgorithmStep ifs = null;
     private List<ImageInfo> candidateImages = new ArrayList<ImageInfo>();
     
 	public OrientationSessionData(String parentDataDir, String rawImagesDir, String imagesToOrientDir, String inputTypeSuffix) throws AvatolCVException  {
@@ -114,7 +114,7 @@ public class OrientationSessionData implements ImageTranformReviewData {
 		}
 	}			
 			
-	public void setImagesForStage(ImagesForAlgorithmStep ifs){
+	public void setImagesForStage(ObsoleteImagesForAlgorithmStep ifs){
 		this.ifs = ifs;
 	}
 	public List<ImageInfo> getInPlayRawImages(){
@@ -129,7 +129,7 @@ public class OrientationSessionData implements ImageTranformReviewData {
 	}
 	
     @Override
-    public ImagesForAlgorithmStep getImagesForStage(){
+    public ObsoleteImagesForAlgorithmStep getImagesForStage(){
         return this.ifs;
     }
 	@Override

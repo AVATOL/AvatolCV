@@ -5,7 +5,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForAlgorithmStep;
+import edu.oregonstate.eecs.iis.avatolcv.core.ObsoleteImagesForAlgorithmStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.View;
 
@@ -13,7 +13,7 @@ public class SegStep1_TrainingExamplesCheck implements Step {
 
 	private boolean segLabelFileAssessmentHasBeenRun = false;
 	private SegmentationSessionData ssd = null;
-	ImagesForAlgorithmStep ifs = null;
+	ObsoleteImagesForAlgorithmStep ifs = null;
 	public SegStep1_TrainingExamplesCheck(SegmentationSessionData ssd) throws AvatolCVException {
 		this.ssd = ssd;
         
@@ -27,7 +27,7 @@ public class SegStep1_TrainingExamplesCheck implements Step {
             segLabelDir.mkdirs();
         }
         List<ImageInfo> candidateImages = ssd.getCandidateImages();
-        ifs = new ImagesForAlgorithmStep(segTrainingImageDirPath, this.ssd.getSegmentationOutputDir(), candidateImages);
+        ifs = new ObsoleteImagesForAlgorithmStep(segTrainingImageDirPath, this.ssd.getSegmentationOutputDir(), candidateImages);
         ifs.reload();
     }
 	@Override
