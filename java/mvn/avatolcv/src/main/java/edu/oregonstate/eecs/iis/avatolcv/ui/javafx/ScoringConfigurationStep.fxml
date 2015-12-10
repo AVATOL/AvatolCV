@@ -8,19 +8,19 @@
 
 <VBox maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label maxWidth="1.7976931348623157E308" text="Scoring Mode" VBox.vgrow="NEVER">
+      <Label maxWidth="1.7976931348623157E308" minHeight="30.0" text="Scoring Mode" VBox.vgrow="NEVER">
          <VBox.margin>
             <Insets left="6.0" top="6.0" />
          </VBox.margin>
       </Label>
-      <GridPane>
+      <GridPane VBox.vgrow="NEVER">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="227.0" minWidth="10.0" prefWidth="138.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
-          <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
+          <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
         </rowConstraints>
          <children>
             <RadioButton fx:id="radioEvaluateAlgorithm" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#configureAsEvaluateAlgorithm" text="evaluate algorithm">
@@ -40,12 +40,12 @@
             <Label text="(Labeled data is used for training, unlabeled data is scored.)" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <Label maxWidth="1.7976931348623157E308" text="Training vs Scoring Plan" VBox.vgrow="NEVER">
+      <Label maxWidth="1.7976931348623157E308" minHeight="30.0" text="Training vs Scoring Plan" VBox.vgrow="NEVER">
          <VBox.margin>
-            <Insets left="6.0" top="25.0" />
+            <Insets left="6.0" top="6.0" />
          </VBox.margin>
       </Label>
-      <RadioButton fx:id="radioViewByImage" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#configureAsSortByImage" text="by image" VBox.vgrow="NEVER">
+      <RadioButton fx:id="radioViewByImage" maxWidth="1.7976931348623157E308" minHeight="30.0" mnemonicParsing="false" onAction="#configureAsSortByImage" text="by image" VBox.vgrow="NEVER">
          <VBox.margin>
             <Insets left="6.0" top="6.0" />
          </VBox.margin>
@@ -53,25 +53,44 @@
             <ToggleGroup fx:id="TrainVsScoring" />
          </toggleGroup>
       </RadioButton>
-      <HBox>
+      <HBox minHeight="30.0" VBox.vgrow="NEVER">
          <children>
             <RadioButton fx:id="radioViewByGroup" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#configureAsGroupByProperty" text="decide training vs scoring by value of " toggleGroup="$TrainVsScoring" VBox.vgrow="NEVER">
                <HBox.margin>
                   <Insets left="6.0" top="6.0" />
                </HBox.margin>
             </RadioButton>
-            <ChoiceBox fx:id="choiceBoxGroupProperty" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+            <ChoiceBox fx:id="choiceBoxGroupProperty" maxHeight="20.0" maxWidth="1.7976931348623157E308" prefHeight="20.0" HBox.hgrow="ALWAYS">
                <HBox.margin>
-                  <Insets left="15.0" right="15.0" />
+                  <Insets left="12.0" right="6.0" />
                </HBox.margin>
             </ChoiceBox>
          </children>
       </HBox>
-      <TextArea fx:id="groupDescriptionTextArea" prefHeight="70.0" VBox.vgrow="NEVER">
+      <AnchorPane fx:id="trainTestSettingsAnchorPane" maxWidth="1.7976931348623157E308" style="-fx-font-size: 12;">
          <VBox.margin>
-            <Insets top="6.0" />
+            <Insets left="6.0" right="6.0" top="12.0" />
          </VBox.margin>
-      </TextArea>
-      <AnchorPane fx:id="trainTestSettingsAnchorPane" maxWidth="1.7976931348623157E308" />
+         <children>
+            <Accordion>
+              <panes>
+                <TitledPane animated="false" stylesheets="@../../css/javafx.css" text="untitled 1">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  </content>
+                </TitledPane>
+                <TitledPane animated="false" text="untitled 2">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  </content>
+                </TitledPane>
+                <TitledPane animated="false" text="untitled 3">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  </content>
+                </TitledPane>
+              </panes>
+            </Accordion>
+         </children></AnchorPane>
    </children>
 </VBox>

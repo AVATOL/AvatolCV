@@ -280,13 +280,18 @@ public class ScoringConfigurationStepController implements StepController {
 	}
 	public void configureAsSortByImage(List<ScoringSet> scoringSets) throws AvatolCVException {
 	    trainTestSettingsAnchorPane.getChildren().clear();
-        Accordion accordion = loadAccordionWithSetsByImage(scoringSets);
-        trainTestSettingsAnchorPane.getChildren().add(accordion);
+        Accordion accordian = loadAccordionWithSetsByImage(scoringSets);
+        AnchorPane.setTopAnchor(accordian, 0.0);
+        AnchorPane.setLeftAnchor(accordian, 0.0);
+        AnchorPane.setRightAnchor(accordian, 0.0);
+        AnchorPane.setBottomAnchor(accordian, 0.0);
+        trainTestSettingsAnchorPane.getChildren().add(accordian);
     }
 	public Accordion loadAccordionWithSetsByImage(List<ScoringSet> sets) throws AvatolCVException {
 	    Accordion accordion = new Accordion();
 	    for (ScoringSet ss : sets){
 	        TitledPane tp = new TitledPane();
+	        tp.setAnimated(false);
 	        tp.setText(ss.getScoringConcernName());
 	        GridPane gp = loadGridPaneWithSetByImage(ss);
 	        ScrollPane sp = new ScrollPane();
@@ -294,6 +299,7 @@ public class ScoringConfigurationStepController implements StepController {
 	        tp.setContent(sp);
 	        accordion.getPanes().add(tp);
 	    }
+	    accordion.setExpandedPane(accordion.getPanes().get(0));
 	    return accordion;
 	}
 	public GridPane loadGridPaneWithSetByImage(ScoringSet ss) throws AvatolCVException { 
