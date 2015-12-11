@@ -60,11 +60,21 @@ public class ImagesForStep {
 	}
 	public ImageInfo getLargeImageForImage(ImageInfo ii) throws AvatolCVException {
     	String imageID = ii.getID();
+    	return getLargeImageForID(imageID);
+    }
+	public ImageInfo getLargeImageForID(String imageID) throws AvatolCVException {
     	ImageInfo large = this.imageLargeForID.get(imageID);
     	if (null == large){
     		throw new AvatolCVException("no large image found with imageID " + imageID);
     	}
     	return large;
+    }
+	public ImageInfo getThumbnailImageForID(String imageID) throws AvatolCVException {
+    	ImageInfo tn = this.thumbnailForID.get(imageID);
+    	if (null == tn){
+    		throw new AvatolCVException("no thumbnail image found with imageID " + imageID);
+    	}
+    	return tn;
     }
 	 /*
      * Rotation vertical

@@ -17,10 +17,10 @@
 	-fx-background-color: transparent;
 	
 }
-
+/* 
 .accordion .titled-pane .title  {
     -fx-background-color: transparent ;
-}
+}*/
 .vbox {
 	-fx-background-color: transparent ;
 }
@@ -68,6 +68,10 @@
 }
 .password-field {
 	-fx-font-size: 15px;
+}
+
+.short-choice-box {
+	-fx-font-size: 12px;
 }
 .choice-box {
 	-fx-font-size: 15px;
@@ -135,3 +139,7 @@
 	-fx-font-style:plain;
 	-fx-font:arial;
 }
+/*
+ * TITLED PANE
+ */
+ 

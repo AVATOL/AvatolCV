@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Region prefWidth="100.0" HBox.hgrow="NEVER" />
+      <VBox spacing="10.0" HBox.hgrow="NEVER">
+         <children>
+            <Region prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+            <Label text="Scoring Mode" />
+            <TextArea editable="false" prefHeight="270.0" text="The scoring algorithm can be run in one of two ways.  In Evaluation mode, the images that are already labeled are divided into a training set and a testing set. This data is fed to the algorithm and the labels determined for the test set can be compared to their true values.&#10;&#10;In Scoring mode, all the labeled images are used for training and images that do not yet have labels are labeled." wrapText="true" VBox.vgrow="NEVER" />
+            <RadioButton fx:id="radioEvaluateAlgorithm" mnemonicParsing="false" text="evaluate algorithm" VBox.vgrow="NEVER">
+               <toggleGroup>
+                  <ToggleGroup fx:id="dataSourceToggle" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="radioScoreImages" mnemonicParsing="false" selected="true" text="score images" toggleGroup="$dataSourceToggle" VBox.vgrow="NEVER" />
+            <TextArea fx:id="scoringModeNotesTextArea" editable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true" VBox.vgrow="ALWAYS" />
+            <Region prefHeight="100.0" prefWidth="200.0" VBox.vgrow="NEVER" />
+         </children>
+      </VBox>
+      <Region prefWidth="100.0" HBox.hgrow="ALWAYS" />
+   </children>
+</HBox>

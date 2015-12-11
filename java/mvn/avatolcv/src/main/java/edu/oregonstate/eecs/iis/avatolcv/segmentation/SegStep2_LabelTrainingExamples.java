@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForAlgorithmStep;
+import edu.oregonstate.eecs.iis.avatolcv.core.ObsoleteImagesForAlgorithmStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.View;
 
@@ -14,7 +14,7 @@ import edu.oregonstate.eecs.iis.obsolete.avatolcv.View;
 public class SegStep2_LabelTrainingExamples implements Step {	
 	private String view = null;
 	private SegmentationSessionData ssd = null;
-	ImagesForAlgorithmStep ifs = null;
+	ObsoleteImagesForAlgorithmStep ifs = null;
 	boolean needsAnswering = true;
 	public SegStep2_LabelTrainingExamples(String view, SegmentationSessionData ssd){
 		this.view = view;
