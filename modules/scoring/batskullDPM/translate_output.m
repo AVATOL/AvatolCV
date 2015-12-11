@@ -1,4 +1,4 @@
-function translate_output( runConfigScoringPath )
+function translate_output( scoringOutputDir, trainingDataDir, testImagesFile )
 %TRANSLATE_OUTPUT Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -11,17 +11,23 @@ SUMMARY_FILE = 'summary.txt';
 
 LEGACY_FOLDER = 'legacy_format';
 
-%% read runConfig_scoring.txt
-logdebug('runConfig_scoring.txt path: %s', runConfigScoringPath);
-[scoringOutputDir, trainingDataDir, testImagesFile] = ...
-    read_run_config_scoring_path_file(runConfigScoringPath);
-
+%% make sure folders and files exist
 logdebug('scoringOutputDir: %s', scoringOutputDir);
 logdebug('trainingDataDir: %s', trainingDataDir);
 logdebug('testImagesFile: %s', testImagesFile);
 
+if ~exist(scoringOutputDir, 'dir')
+    error('directory "%s" does not exist!', scoringOutputDir);
+end
+if ~exist(trainingDataDir, 'dir')
+    error('directory "%s" does not exist!', trainingDataDir);
+end
+if ~exist(testImagesFile, 'file')
+    error('file "%s" does not exist!', testImagesFile);
+end
+
 %% make sure directories are there
-[rootDir, ~, ~] = fileparts(runConfigScoringPath);
+[rootDir, ~, ~] = fileparts(testImagesFile);
 rootDir = fullfile(rootDir, LEGACY_FOLDER);
 if ~exist(rootDir, 'dir')
     error('root directory from batskull algorithm does not exist');
@@ -38,8 +44,8 @@ if ~exist(detectionResultsDir, 'dir')
 end
 
 %% read and parse output TODO
-outputDirList = dir([trainingDataDir filesep '*.txt']);
-nCharacters = length(trainingDirList);
+outputDirList = dir([outputDir filesep '*.txt']);
+nCharacters = length(outputDirList);
 
 scoredDataList = cell(nCharacters, 1);
 unscoredDataList = cell(nCharacters, 1);

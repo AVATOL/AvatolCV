@@ -11,11 +11,7 @@ SUMMARY_FILE = 'summary.txt';
 
 LEGACY_FOLDER = 'legacy_format';
 
-%% read runConfig_scoring.txt
-%logdebug('runConfig_scoring.txt path: %s', runConfigScoringPath);
-%[scoringOutputDir, trainingDataDir, testImagesFile] = ...
-%    read_run_config_scoring_path_file(runConfigScoringPath);
-
+%% make sure folders and files exist
 logdebug('scoringOutputDir: %s', scoringOutputDir);
 logdebug('trainingDataDir: %s', trainingDataDir);
 logdebug('testImagesFile: %s', testImagesFile);
@@ -26,15 +22,14 @@ end
 if ~exist(trainingDataDir, 'dir')
     error('directory "%s" does not exist!', trainingDataDir);
 end
-if ~exist(testImagesFile, 'dir')
-    error('directory "%s" does not exist!', testImagesFile);
+if ~exist(testImagesFile, 'file')
+    error('file "%s" does not exist!', testImagesFile);
 end
 
 %% read in test images
 testImages = read_test_images_file(testImagesFile);
 
 %% read and parse training data
-logdebug('trainingDataDir pattern: %s', [trainingDataDir filesep '*.txt']);
 trainingDirList = dir([trainingDataDir filesep '*.txt']);
 nCharacters = length(trainingDirList);
 
@@ -43,7 +38,7 @@ scoringConcernIDList = cell(nCharacters, 1);
 scoringConcernNameList = cell(nCharacters, 1);
 
 for i = 1:nCharacters
-    logdebug('parsing training file %d', i);
+    logdebug('parsing training file %d...', i);
     trainingFile = fullfile(trainingDataDir, trainingDirList(i).name);
     [trainingDataList{i}, scoringConcernIDList{i}, ...
         scoringConcernNameList{i}] = ...
@@ -51,7 +46,8 @@ for i = 1:nCharacters
 end
 
 %% set up directories
-[rootDir, ~, ~] = fileparts(runConfigScoringPath);
+logdebug('setting up directories...');
+[rootDir, ~, ~] = fileparts(testImagesFile);
 rootDir = fullfile(rootDir, LEGACY_FOLDER);
 if ~exist(rootDir, 'dir')
     mkdir(rootDir);
@@ -78,23 +74,26 @@ if ~exist(annotationsDir, 'dir')
 end
 
 %% generate summary file
+logdebug('generating summary file...');
 summaryFile = fullfile(inputDir, SUMMARY_FILE);
 generate_summary_file(summaryFile, INPUT, OUTPUT, DETECTION_RESULTS, ...
     trainingDataList, scoringConcernIDList, scoringConcernNameList, ...
     testImages);
 
 %% generate annotation files
+logdebug('generating annotation files...');
 generate_annotation_files(trainingDataList, ...
     scoringConcernIDList, scoringConcernNameList, annotationsDir);
 
 %% generate sorted_input_data_ files
 for i = 1:nCharacters
+    logdebug('generating sorted input file %d...', i);
     charId = scoringConcernIDList{i};
     fileName = ['sorted_input_data_' charId '_' ...
         scoringConcernNameList{i} '.txt'];
     filePath = fullfile(inputDir, fileName);
     generate_sorted_input_data_file(filePath, charId, trainingDataList{i}, ...
-        testImages, ANNOTATIONS);
+        testImages, ANNOTATIONS, rootDir);
 end
 
 end % translate
@@ -110,56 +109,56 @@ end
 
 end % logdebug
 
-function [scoringOutputDir, trainingDataDir, testImagesFile] = ...
-    read_run_config_scoring_path_file(runConfigScoringPath)
-
-%% constants
-DELIMITER = '=';
-
-%% read file
-fh = fopen(runConfigScoringPath, 'rt');
-results = textscan(fh, '%s %s', 'Delimiter', DELIMITER);
-fclose(fh);
-
-%% error handling
-if size(results, 1) ~= 1 || size(results, 2) ~= 2 ...
-        || length(results{1}) ~= length(results{2})
-    error('unexepcted parse format for "%s"', runConfigScoringPath);
-end
-
-%% get key=value
-scoringOutputDir = '';
-trainingDataDir = '';
-testImagesFile = '';
-for i = 1:length(results{1})
-    key = results{1}{i};
-    value = results{2}{i};
-    
-    if strcmp(key, 'scoringOutputDir') == 1
-        scoringOutputDir = value;
-    elseif strcmp(key, 'trainingDataDir') == 1
-        trainingDataDir = value;
-    elseif strcmp(key, 'testImagesFile') == 1
-        testImagesFile = value;
-    else
-        error('unknown key "%s" when parsing "%s"', key, ...
-            runConfigScoringPath);
-    end
-end
-
-%% error handling
-if strcmp(scoringOutputDir, '') == 1
-    error('empty, missing or unable to parse key "scoringOutputDir" in "%s"', ...
-        runConfigScoringPath);
-elseif strcmp(trainingDataDir, '') == 1
-    error('empty, missing or unable to parse key "trainingDataDir" in "%s"', ...
-        runConfigScoringPath);
-elseif strcmp(testImagesFile, '') == 1
-    error('empty, missing or unable to parse key "testImagesFile" in "%s"', ...
-        runConfigScoringPath);
-end
-
-end % read_run_config_scoring_path_file
+% function [scoringOutputDir, trainingDataDir, testImagesFile] = ...
+%     read_run_config_scoring_path_file(runConfigScoringPath)
+% 
+% %% constants
+% DELIMITER = '=';
+% 
+% %% read file
+% fh = fopen(runConfigScoringPath, 'rt');
+% results = textscan(fh, '%s %s', 'Delimiter', DELIMITER);
+% fclose(fh);
+% 
+% %% error handling
+% if size(results, 1) ~= 1 || size(results, 2) ~= 2 ...
+%         || length(results{1}) ~= length(results{2})
+%     error('unexepcted parse format for "%s"', runConfigScoringPath);
+% end
+% 
+% %% get key=value
+% scoringOutputDir = '';
+% trainingDataDir = '';
+% testImagesFile = '';
+% for i = 1:length(results{1})
+%     key = results{1}{i};
+%     value = results{2}{i};
+%     
+%     if strcmp(key, 'scoringOutputDir') == 1
+%         scoringOutputDir = value;
+%     elseif strcmp(key, 'trainingDataDir') == 1
+%         trainingDataDir = value;
+%     elseif strcmp(key, 'testImagesFile') == 1
+%         testImagesFile = value;
+%     else
+%         error('unknown key "%s" when parsing "%s"', key, ...
+%             runConfigScoringPath);
+%     end
+% end
+% 
+% %% error handling
+% if strcmp(scoringOutputDir, '') == 1
+%     error('empty, missing or unable to parse key "scoringOutputDir" in "%s"', ...
+%         runConfigScoringPath);
+% elseif strcmp(trainingDataDir, '') == 1
+%     error('empty, missing or unable to parse key "trainingDataDir" in "%s"', ...
+%         runConfigScoringPath);
+% elseif strcmp(testImagesFile, '') == 1
+%     error('empty, missing or unable to parse key "testImagesFile" in "%s"', ...
+%         runConfigScoringPath);
+% end
+% 
+% end % read_run_config_scoring_path_file
 
 function testImages = read_test_images_file(testImagesFile)
 
@@ -210,16 +209,16 @@ end
 
 %% parse training file
 fh = fopen(trainingFile, 'rt');
-% count number of lines in file
-nLines = 0;
-while 1
-    tline = fgetl(fh);
-    if ~ischar(tline)
-        break
-    end
-    nLines = nLines + 1;
-end
-frewind(fh);
+% % count number of lines in file
+% nLines = 0;
+% while 1
+%     tline = fgetl(fh);
+%     if ~ischar(tline)
+%         break
+%     end
+%     nLines = nLines + 1;
+% end
+% frewind(fh);
 
 % set up data structure
 trainingData = struct;
@@ -310,10 +309,10 @@ for charIndex = 1:length(trainingDataList)
     trainingData = trainingDataList{charIndex};
     for exampleIndex = 1:length(trainingData)
         mediaPath = trainingData(exampleIndex).image;
-        [~, mediaId, mediaExt] = fileparts(mediaPath);
+        [mediaBase, mediaId, mediaExt] = fileparts(mediaPath);
         
         if ~ismember(mediaId, mediaIdList)
-            fprintf(fh, 'media,%s,%s,training\n', mediaId, [mediaId mediaExt]);
+            fprintf(fh, 'media,%s,%s,training\n', mediaId, mediaPath);
             mediaIdList{length(mediaIdList)+1} = mediaId;
         end
     end
@@ -321,10 +320,10 @@ end
 
 for exampleIndex = 1:length(testImages)
     mediaPath = testImages{exampleIndex};
-    [~, mediaId, mediaExt] = fileparts(mediaPath);
+    [mediaBase, mediaId, mediaExt] = fileparts(mediaPath);
 
     if ~ismember(mediaId, mediaIdList)
-        fprintf(fh, 'media,%s,%s,toScore\n', mediaId, [mediaId mediaExt]);
+        fprintf(fh, 'media,%s,%s,toScore\n', mediaId, mediaPath);
         mediaIdList{length(mediaIdList)+1} = mediaId;
     end
 end
@@ -355,7 +354,8 @@ for charIndex = 1:length(trainingDataList)
         taxonName = trainingData(exampleIndex).taxonName;
         
         if ~ismember(taxonId, taxonIdList)
-            fprintf(fh, 'taxon,%s,%s\n', taxonId, taxonName);
+            fprintf(fh, 'taxon,%s,%s,%s\n', taxonId, taxonName, ...
+                'training'); % TODO
             taxonIdList{length(taxonIdList)+1} = taxonId;
         end
     end
@@ -392,10 +392,6 @@ for charIndex = 1:length(trainingDataList)
         %% write to file
         annotationFile = [mediaId '_' charId '.txt'];
         annotationPath = fullfile(annotationsDir, annotationFile);
-        if exist(annotationPath, 'file')
-            error('annotation file already exists (%s)', annotationPath);
-        end
-        
         fh = fopen(annotationPath, 'wt');
         
         fprintf(fh, [num2str(x) COORDS_DELIM ...
@@ -412,7 +408,7 @@ end
 end % generate_annotation_files
 
 function generate_sorted_input_data_file(filePath, charId, trainingData, ...
-    testImages, ANNOTATIONS)
+    testImages, ANNOTATIONS, rootDir)
 
 %% constants
 DELIM = '|';
@@ -422,13 +418,13 @@ fh = fopen(filePath, 'wt');
 
 %% write training data
 for i = 1:length(trainingData)
-    [~, mediaId, mediaExt] = fileparts(trainingData(i).image);
-    media = [mediaId mediaExt];
+    [mediaPath, mediaId, mediaExt] = fileparts(trainingData(i).image);
+    media = trainingData(i).image;
     charStateId = trainingData(i).charStateId;
     charStateName = trainingData(i).charStateName;
-    annotationPath = [ANNOTATIONS filesep mediaId '_' charId '.txt'];
+    annotationPath = fullfile(rootDir, ANNOTATIONS, [mediaId '_' charId '.txt']);
     taxonId = trainingData(i).taxonId;
-    lineNum = '1'; %TODO
+    lineNum = '1';
     
     fprintf(fh, ['training_data' DELIM ...
         media DELIM ...
@@ -443,9 +439,9 @@ end
 for i = 1:length(testImages)
     [~, mediaId, mediaExt] = fileparts(testImages{i});
     media = [mediaId mediaExt];
-    taxonId = 'NA'; %TODO
-    annotationPath = 'NA'; %TODO
-    lineNum = '1'; %TODO
+    taxonId = 'NA';
+    annotationPath = 'NA';
+    lineNum = 'NA';
     
     fprintf(fh, ['image_to_score' DELIM ...
         media DELIM ...
