@@ -102,8 +102,8 @@ public class AlgorithmLauncher {
             	//commands.add("cd " + algDir);
             	//commands.add(" ; ");
             	//commands.add("./" + launchFile + " " + runConfigPath);
-            	String escapedLaunchFilePath = launchFilePath.replaceAll(" ", "\\ ");
-                String escapedArgs = runConfigPath.replaceAll(" ", "\\ ");
+            	String escapedLaunchFilePath = launchFilePath.replaceAll(" ", "\\\\ ");
+                String escapedArgs = runConfigPath.replaceAll(" ", "\\\\ ");
             	commands.add(escapedLaunchFilePath + " " + escapedArgs);
             }
             
