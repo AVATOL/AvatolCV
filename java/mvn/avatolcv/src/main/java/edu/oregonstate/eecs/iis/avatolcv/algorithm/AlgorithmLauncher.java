@@ -96,12 +96,15 @@ public class AlgorithmLauncher {
             	commands.add(launchFilePath + " " + runConfigPath);
             }
             else {
+                
             	commands.add("/bin/bash");
             	commands.add("-c");
             	//commands.add("cd " + algDir);
             	//commands.add(" ; ");
             	//commands.add("./" + launchFile + " " + runConfigPath);
-            	commands.add(launchFilePath + " " + runConfigPath);
+            	String escapedLaunchFilePath = launchFilePath.replaceAll(" ", "\\ ");
+                String escapedArgs = runConfigPath.replaceAll(" ", "\\ ");
+            	commands.add(escapedLaunchFilePath + " " + escapedArgs);
             }
             
             this.invoker = new CommandLineInvoker();
