@@ -8,44 +8,12 @@
 
 <VBox maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label maxWidth="1.7976931348623157E308" minHeight="30.0" text="Scoring Mode" VBox.vgrow="NEVER">
+      <Label maxWidth="1.7976931348623157E308" minHeight="30.0" text="How the data is divided into Training vs Scoring" VBox.vgrow="NEVER">
          <VBox.margin>
             <Insets left="6.0" top="6.0" />
          </VBox.margin>
       </Label>
-      <GridPane VBox.vgrow="NEVER">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="227.0" minWidth="10.0" prefWidth="138.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
-          <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
-        </rowConstraints>
-         <children>
-            <RadioButton fx:id="radioEvaluateAlgorithm" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#configureAsEvaluateAlgorithm" text="evaluate algorithm">
-               <toggleGroup>
-                  <ToggleGroup fx:id="ScoringMode" />
-               </toggleGroup>
-               <GridPane.margin>
-                  <Insets left="6.0" right="6.0" />
-               </GridPane.margin>
-            </RadioButton>
-            <RadioButton fx:id="radioScoreImages" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#configureAsScoreImages" text="score images" toggleGroup="$ScoringMode" GridPane.rowIndex="1">
-               <GridPane.margin>
-                  <Insets left="6.0" right="6.0" />
-               </GridPane.margin>
-            </RadioButton>
-            <Label text="(Divide labeled images into training and test sets.)" GridPane.columnIndex="1" />
-            <Label text="(Labeled data is used for training, unlabeled data is scored.)" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-         </children>
-      </GridPane>
-      <Label maxWidth="1.7976931348623157E308" minHeight="30.0" text="Training vs Scoring Plan" VBox.vgrow="NEVER">
-         <VBox.margin>
-            <Insets left="6.0" top="6.0" />
-         </VBox.margin>
-      </Label>
-      <RadioButton fx:id="radioViewByImage" maxWidth="1.7976931348623157E308" minHeight="30.0" mnemonicParsing="false" onAction="#configureAsSortByImage" text="by image" VBox.vgrow="NEVER">
+      <RadioButton fx:id="radioViewByImage" maxWidth="1.7976931348623157E308" minHeight="30.0" mnemonicParsing="false" onAction="#configureAsSortByImage" text="view by image" VBox.vgrow="NEVER">
          <VBox.margin>
             <Insets left="6.0" top="6.0" />
          </VBox.margin>
@@ -55,7 +23,7 @@
       </RadioButton>
       <HBox minHeight="30.0" VBox.vgrow="NEVER">
          <children>
-            <RadioButton fx:id="radioViewByGroup" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#configureAsGroupByProperty" text="decide training vs scoring by value of " toggleGroup="$TrainVsScoring" VBox.vgrow="NEVER">
+            <RadioButton fx:id="radioViewByGroup" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#configureAsGroupByProperty" text="view by value of " toggleGroup="$TrainVsScoring" VBox.vgrow="NEVER">
                <HBox.margin>
                   <Insets left="6.0" top="6.0" />
                </HBox.margin>

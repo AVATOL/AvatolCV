@@ -38,6 +38,7 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.LoginStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.OrientationConfigurationStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.OrientationRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConfigurationStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringModeStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationConfigurationStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationResultsStep;
@@ -170,12 +171,19 @@ scoringConcernStep.setNextAnswerableInSeries(imagePullStep);
         
         //segConfigStep.setNextAnswerableInSeries(segRunStep);
         
+        ScoringModeStep scoringModeStep = new ScoringModeStep(sessionInfo);
+        ss.appendStep(scoringModeStep);
+        ScoringModeStepController scoringModeStepController = new ScoringModeStepController(scoringModeStep, "ScoringModeStep.fxml");
+        controllerForStep.put(scoringModeStep, scoringModeStepController);
+        addLabelForStep(scoringModeStep,"Eval/Score");
+        orientConfigStep.setNextAnswerableInSeries(scoringModeStep);
+        
         ScoringConfigurationStep scoringConfigStep = new ScoringConfigurationStep(sessionInfo);
         ss.appendStep(scoringConfigStep);
         ScoringConfigurationStepController scoringConfigStepController = new ScoringConfigurationStepController(scoringConfigStep, "ScoringConfigurationStep.fxml");
         controllerForStep.put(scoringConfigStep, scoringConfigStepController);
         addLabelForStep(scoringConfigStep,"Configure Scoring");
-        orientConfigStep.setNextAnswerableInSeries(scoringConfigStep);
+        scoringModeStep.setNextAnswerableInSeries(scoringConfigStep);
         
         ScoringRunStep scoringRunStep = new ScoringRunStep(sessionInfo);
         ss.appendStep(scoringRunStep);

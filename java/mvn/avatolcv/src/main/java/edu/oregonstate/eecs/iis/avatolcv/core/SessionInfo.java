@@ -74,6 +74,7 @@ public class SessionInfo{
     private SessionImages sessionImages = null;
     private Hashtable<String, ScoringSet> scoringSetForScoringConcernHash = new Hashtable<String, ScoringSet>();
     private NormalizedKey trainTestConcern = null;
+    private boolean scoringModeIsEvaluation = true;
 	public SessionInfo() throws AvatolCVException {
 		File f = new File(AvatolCVFileSystem.getAvatolCVRootDir());
         if (!f.isDirectory()){
@@ -223,7 +224,12 @@ public class SessionInfo{
     /*
      * SCORING
      */
-    
+    public void setScoringModeToEvaluation(boolean value){
+        this.scoringModeIsEvaluation = value;
+    }
+    public boolean isScoringModeEvaluation(){
+        return this.scoringModeIsEvaluation;
+    }
     public boolean isScoringAlgChosen(){
         if (null == this.chosenScoringAlgorithm){
             return false;
@@ -268,6 +274,20 @@ public class SessionInfo{
 		}
 		return new NormalizedKey(ttc);
 	}
+    public boolean isAllImagesLabeled(){
+        List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSession();
+        for (ChoiceItem ci : chosenScoringConcerns){
+            NormalizedKey nKey = ci.getNormalizedKey();
+            for (NormalizedImageInfo nii : niis){
+                if (nii.hasKey(nKey)){
+                    if (!nii.hasValueForKey(nKey)){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
     /*
      * FILTER
      */
