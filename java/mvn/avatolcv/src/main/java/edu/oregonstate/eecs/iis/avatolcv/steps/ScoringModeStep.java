@@ -18,6 +18,9 @@ public class ScoringModeStep  extends Answerable implements Step {
         // TODO Auto-generated method stub
 
     }
+    public String getChosenScoringAlgName() throws AvatolCVException {
+    	return this.sessionInfo.getScoringAlgName();
+    }
     public boolean isAllImagesLabeled(){
         return this.sessionInfo.isAllImagesLabeled();
     }

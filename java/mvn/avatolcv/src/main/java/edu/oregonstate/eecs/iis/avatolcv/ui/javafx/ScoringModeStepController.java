@@ -5,6 +5,7 @@ import java.util.Hashtable;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
@@ -18,7 +19,7 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringModeStep;
 public class ScoringModeStepController implements StepController {
     public RadioButton radioEvaluateAlgorithm;
     public RadioButton radioScoreImages;
- 
+    public Label scoringAlgLabel;
     public TextArea scoringModeNotesTextArea;
     private ScoringModeStep step;
     private String fxmlDocName;
@@ -73,6 +74,7 @@ public class ScoringModeStepController implements StepController {
             	    radioScoreImages.setSelected(true);
             	}
             }
+            scoringAlgLabel.setText("Scoring Algorithm:  " + this.step.getChosenScoringAlgName());
             if (this.step.isAllImagesLabeled()){
                 radioScoreImages.setDisable(true);
                 radioEvaluateAlgorithm.setSelected(true);
