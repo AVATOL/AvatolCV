@@ -17,6 +17,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedTypeIDName;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringConcernDetails;
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoringInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
@@ -75,6 +76,10 @@ public class ScoringRunStep implements Step {
             String scoringConcernID = scd.getID();
             String scoringConcernName = scd.getName();
             NormalizedKey scoringConcernKey = new NormalizedKey(NormalizedTypeIDName.buildTypeIdName(scoringConcernType, scoringConcernID, scoringConcernName));
+            
+            /*
+             * training file
+             */
             TrainingInfoFile tif = new TrainingInfoFile(scoringConcernType, scoringConcernID, scoringConcernName);
             tif.setImageDir(algSequence.getInputDir());
             ScoringSet scoringSet = this.sessionInfo.getScoringSetForScoringConcern(scoringConcernName);
@@ -116,6 +121,37 @@ public class ScoringRunStep implements Step {
             	
             }
             tif.persist(AvatolCVFileSystem.getTrainingDataDirForScoring());
+
+            /*
+             * scoring_ file
+             */
+            ScoringInfoFile sif = new ScoringInfoFile(scoringConcernType, scoringConcernID, scoringConcernName);
+            sif.setImageDir(algSequence.getInputDir());
+            List<ModalImageInfo> scoringImages = scoringSet.getImagesToScore();
+            for (ModalImageInfo mii : scoringImages){
+            	NormalizedImageInfo nii = mii.getNormalizedImageInfo();
+            	if (hasTrainTestConcern){
+            		trainTestConcernValue = nii.getValueForKey(trainTestConcern);
+            	}
+            	//NormalizedValue value = nii.getValueForKey(scoringConcernKey);
+            	//String valueName = new NormalizedTypeIDName(value).getName();
+            	String imageID = nii.getImageID();
+            	String pathWhereInputImagesForScoringLive = algSequence.getInputDir();
+            	File f = new File(pathWhereInputImagesForScoringLive);
+            	File[] files = f.listFiles();
+            	String imagePath = getImagePathWithIDFromFileList(imageID, files, "*");
+            	if (null == imagePath){
+            		System.out.println("WARNING - no imageFile found for imageID " + imageID);
+            		imagePath = "imageFileNotAvailable";
+            	    //throw new AvatolCVException("Cannot find file in scoring input dir " + pathWhereInputImagesForScoringLive + " with id " + imageID);
+            	}
+            	
+            	if (!trainTestConcern.getName().equals("")){
+            		trainTestConcernValue = nii.getValueForKey(trainTestConcern);
+            	}
+            	sif.addImageInfo(imagePath, trainTestConcern.toString(), trainTestConcernValue.toString());
+            }
+            sif.persist(AvatolCVFileSystem.getTrainingDataDirForScoring());
         }
         this.launcher = new AlgorithmLauncher(sa, runConfigPath);
         this.launcher.launch(controller);
