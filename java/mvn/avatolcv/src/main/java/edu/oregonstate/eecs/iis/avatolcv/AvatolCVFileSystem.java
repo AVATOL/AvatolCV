@@ -438,4 +438,6 @@ public class AvatolCVFileSystem {
     public static String getManuallyProvidedScoringLabelsDir() throws AvatolCVException {
         return getSessionDir() + FILESEP + DIR_NAME_SCORING_MANUAL_INPUT;
     }
+    
+    
 }

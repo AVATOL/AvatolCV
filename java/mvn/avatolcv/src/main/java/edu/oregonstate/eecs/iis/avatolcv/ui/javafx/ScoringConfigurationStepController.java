@@ -25,6 +25,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -53,6 +54,7 @@ public class ScoringConfigurationStepController implements StepController {
     public ChoiceBox<String> choiceBoxGroupProperty = null;
     public TextArea groupDescriptionTextArea = null;
     public AnchorPane trainTestSettingsAnchorPane = null;
+    public HBox percentageExpressionHbox = null;
     private List<EvaluationSet> evaluationSets = null;
     private List<TrueScoringSet> trueScoringSets = null;
     private boolean activeSetIsEvaluation = true;
@@ -245,7 +247,25 @@ public class ScoringConfigurationStepController implements StepController {
 	}
 	
 	public void renderEvalByGroup(List<ScoringSet> sets) throws AvatolCVException {
+		percentageExpressionHbox.getChildren().clear();
+		Label totalImagesLabel =         new Label("Total images in play: ");
+		Label totalImagesValueLabel =    new Label();
+		Label percentToTrainLabel =      new Label("    % to train: ");
+		Label percentToTainValueLabel =  new Label();
+		Label percentToScoreLabel =      new Label("    % to score: ");
+		Label percentToScoreValueLabel = new Label();
+		Label ratioCountLabel =          new Label();
+		
+		percentageExpressionHbox.getChildren().add(totalImagesLabel);
+		percentageExpressionHbox.getChildren().add(totalImagesValueLabel);
+		percentageExpressionHbox.getChildren().add(percentToTrainLabel);
+		percentageExpressionHbox.getChildren().add(percentToTainValueLabel);
+		percentageExpressionHbox.getChildren().add(percentToScoreLabel);
+		percentageExpressionHbox.getChildren().add(percentToScoreValueLabel);
+		percentageExpressionHbox.getChildren().add(ratioCountLabel);
+		
 	    trainTestSettingsAnchorPane.getChildren().clear();
+	    
 	    List<EvaluationSet> esets = new ArrayList<EvaluationSet>();
 	    for (ScoringSet set : sets){
 	        esets.add((EvaluationSet)set);
@@ -253,15 +273,20 @@ public class ScoringConfigurationStepController implements StepController {
 	    String trainTestConcern = choiceBoxGroupProperty.getValue();
         NormalizedKey trainTestConcernKey = normalizedKeyHash.get(trainTestConcern);
         List<NormalizedValue> trainTestValues = this.step.getValuesForTrainTestConcern(trainTestConcernKey);
-	    ScoringSetsKeySorter ssks = new ScoringSetsKeySorter(esets,trainTestConcernKey);
+        if (null == ssks){
+        	 ssks = new ScoringSetsKeySorter(esets,trainTestConcernKey);
+        }
+	   
+	    
+	    NumbersUpdater nu = new NumbersUpdater(ssks, totalImagesValueLabel, percentToTainValueLabel, percentToScoreValueLabel,ratioCountLabel);
 	    GridPane gp = new GridPane();
-        gp.setHgap(4);
+        gp.setHgap(17);
         gp.setVgap(4);
         
         
         Label ttConcernLabel = new Label(trainTestConcern);
         gp.add(ttConcernLabel, 2, 0);
-        Label countTitleLabel = new Label("count");
+        Label countTitleLabel = new Label("image count");
         gp.add(countTitleLabel, 3, 0);
         /*
         int column = 4;
@@ -282,8 +307,8 @@ public class ScoringConfigurationStepController implements StepController {
             radioTrain.setStyle("styleClass:indentedFirstColumn");
             radioScore.setToggleGroup(tg);
             radioTrain.setSelected(true);
-            radioTrain.selectedProperty().addListener(new RadioChangeListener(ttValue, ssks, true));
-            radioScore.selectedProperty().addListener(new RadioChangeListener(ttValue, ssks, false));
+            radioTrain.selectedProperty().addListener(new RadioChangeListener(ttValue, ssks, true, nu));
+            radioScore.selectedProperty().addListener(new RadioChangeListener(ttValue, ssks, false, nu));
             gp.add(radioTrain, 0,row);
             gp.add(radioScore, 1,row);
             
@@ -309,21 +334,51 @@ public class ScoringConfigurationStepController implements StepController {
         ScrollPane sp = new ScrollPane();
         sp.setContent(gp);
         sp.setStyle("-fx-font-size: 20px;");  // set the font size to something big.
-        gp.setStyle("-fx-font-size: 12px;");
+        gp.setStyle("-fx-font-size: 10px;");
         AnchorPane.setTopAnchor(sp, 0.0);
         AnchorPane.setLeftAnchor(sp, 0.0);
         AnchorPane.setRightAnchor(sp, 0.0);
         AnchorPane.setBottomAnchor(sp, 0.0);
         trainTestSettingsAnchorPane.getChildren().add(sp);
 	}
+	
+	public class NumbersUpdater {
+		private Label totalImages;
+		private Label percentToTrain;
+		private Label percentToScore;
+		private Label ratioCount;
+		private ScoringSetsKeySorter ssks;
+		public NumbersUpdater(ScoringSetsKeySorter ssks, Label totalImages, Label percentToTrain, Label percentToScore, Label ratioCount){
+			this.totalImages = totalImages;
+			this.percentToTrain = percentToTrain;
+			this.percentToScore = percentToScore;
+			this.ratioCount = ratioCount;
+			this.ssks = ssks;
+			update();
+		}
+		public void update(){
+			double imageCount = ssks.getTotalScoringCount() + ssks.getTotalTrainingCount();
+			totalImages.setText("" + (int)imageCount);
+			double pTrain = 100 * ssks.getTotalTrainingCount() / imageCount;
+			String pTrainString = String.format( "%.2f", pTrain );
+			percentToTrain.setText("" + pTrainString);
+			double pScore = 100 * ssks.getTotalScoringCount() / imageCount;
+			String pScoreString = String.format( "%.2f", pScore );
+			percentToScore.setText("" + pScoreString);
+			ratioCount.setText("    (" + ssks.getTotalTrainingCount() + " vs " + ssks.getTotalScoringCount() + ")");
+		}
+		
+	}
 	public class RadioChangeListener implements ChangeListener<Boolean> {
 	    private NormalizedValue nv = null;
 	    private ScoringSetsKeySorter ssks = null;
 	    private boolean isTraining = false;
-	    public RadioChangeListener(NormalizedValue nv, ScoringSetsKeySorter ssks, boolean isTraining){
+	    private NumbersUpdater nu = null;
+	    public RadioChangeListener(NormalizedValue nv, ScoringSetsKeySorter ssks, boolean isTraining, NumbersUpdater nu){
 	        this.nv = nv;
 	        this.ssks = ssks;
 	        this.isTraining = isTraining;
+	        this.nu = nu;
 	    }
         @Override
         public void changed(ObservableValue<? extends Boolean> obs,
@@ -332,9 +387,11 @@ public class ScoringConfigurationStepController implements StepController {
                 try {
                     if (isTraining){
                         ssks.setValueToTrain(this.nv);
+                        nu.update();
                     }
                     else {
                         ssks.setValueToScore(this.nv);
+                        nu.update();
                     }
                 }
                 catch(AvatolCVException ace){

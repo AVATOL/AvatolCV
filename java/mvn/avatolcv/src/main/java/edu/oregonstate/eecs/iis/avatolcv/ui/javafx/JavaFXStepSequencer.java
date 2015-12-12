@@ -300,6 +300,7 @@ scoringConcernStep.setNextAnswerableInSeries(imagePullStep);
             Parent navShell = loader.load();
             
             this.scene = new Scene(navShell, AvatolCVJavaFX.MAIN_WINDOW_WIDTH, AvatolCVJavaFX.MAIN_WINDOW_HEIGHT);
+            scene.getStylesheets().add("../css/javafx.css");
             this.mainWindow.setScene(scene);
         }
         catch(Exception e){
