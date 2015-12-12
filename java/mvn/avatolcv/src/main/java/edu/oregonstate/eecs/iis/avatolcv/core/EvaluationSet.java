@@ -109,4 +109,7 @@ public class EvaluationSet implements ScoringSet {
 	public String getScoringConcernName() {
 		return this.keyToScore.getName();
 	}
+	public double getPercentToTrainOn(){
+	    return this.percentToTrainOn;
+	}
 }
