@@ -225,6 +225,7 @@ trainingData = struct;
 
 % parse each line
 lineNum = 0;
+counter = 1;
 while 1
     tline = fgetl(fh);
     if ~ischar(tline)
@@ -243,16 +244,6 @@ while 1
     [imagePath, scoringConcernValue, pointCoords, trainTestConcern, ...
         trainTestValue] = deal(lineComponents{:});
     
-    %% parse image path
-    trainingData(lineNum).image = imagePath;
-    
-    %% parse scoring concern value
-    components1 = strsplit(scoringConcernValue, ':');
-    components2 = strsplit(components1{2}, '|');
-    [trainingData(lineNum).charStateId, ...
-        trainingData(lineNum).charStateName] = ...
-        deal(components2{1}, components2{2});
-    
     %% parse point coordinates
     if strcmp(pointCoords, '') == 0
         components1 = strsplit(pointCoords, ':');
@@ -262,22 +253,38 @@ while 1
         end
         
         components2 = strsplit(components1{2}, POINT_COORDS_DELIMITER);
-        [trainingData(lineNum).x, ...
-            trainingData(lineNum).y] = ...
+        [trainingData(counter).x, ...
+            trainingData(counter).y] = ...
             deal(str2double(components2{1}), str2double(components2{2}));
+    else
+        fprintf('omitting example due to no annotation: %s\n', ...
+            imagePath);
+        continue;
     end
+    
+    %% parse image path
+    trainingData(counter).image = imagePath;
+    
+    %% parse scoring concern value
+    components1 = strsplit(scoringConcernValue, ':');
+    components2 = strsplit(components1{2}, '|');
+    [trainingData(counter).charStateId, ...
+        trainingData(counter).charStateName] = ...
+        deal(components2{1}, components2{2});
     
     %% parse traintest concern
     components1 = strsplit(trainTestConcern, ':');
     components2 = strsplit(components1{2}, '|');
-    trainingData(lineNum).trainTestConcern = deal(components2{2});
+    trainingData(counter).trainTestConcern = deal(components2{2});
     
     %% parse traintest value
     components1 = strsplit(trainTestValue, ':');
     components2 = strsplit(components1{2}, '|');
-    [trainingData(lineNum).taxonId, ...
-        trainingData(lineNum).taxonName] = ...
+    [trainingData(counter).taxonId, ...
+        trainingData(counter).taxonName] = ...
         deal(components2{1}, components2{2});
+    
+    counter = counter + 1;
     
 end
 
