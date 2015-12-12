@@ -139,6 +139,9 @@
 	-fx-font-style:plain;
 	-fx-font:arial;
 }
+.indentedFirstColumn {
+	-fx-margin-left:10px;
+}
 /*
  * TITLED PANE
  */

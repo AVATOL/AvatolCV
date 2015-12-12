@@ -38,6 +38,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ModalImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringSet;
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoringSetsKeySorter;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrueScoringSet;
@@ -58,6 +59,7 @@ public class ScoringConfigurationStepController implements StepController {
     private boolean sortByImage = true;
     private Hashtable<String, NormalizedKey> normalizedKeyHash = new Hashtable<String, NormalizedKey>();
     private ImagesForStep imageAccessor = null;
+    private ScoringSetsKeySorter ssks = null;
     public ScoringConfigurationStepController(ScoringConfigurationStep step, String fxmlDocName) throws AvatolCVException {
         this.step = step;
         this.fxmlDocName = fxmlDocName;
@@ -132,7 +134,6 @@ public class ScoringConfigurationStepController implements StepController {
             String pathOfLargeImages = AvatolCVFileSystem.getNormalizedImagesLargeDir();
             String pathOfThumbnailImages = AvatolCVFileSystem.getNormalizedImagesThumbnailDir();
             this.imageAccessor = new ImagesForStep(pathOfLargeImages, pathOfThumbnailImages);
-            configureAsEvaluateAlgorithm();
             populateSortingChoiceBox();
             configureAsSortByImage();
             NormalizedKey trainTestKey = this.step.getDefaultTrainTestConcern();
@@ -198,43 +199,20 @@ public class ScoringConfigurationStepController implements StepController {
             choiceBox.requestLayout();
         }
     }
-	public void configureAsEvaluateAlgorithm(){
-		try {
-			this.activeSetIsEvaluation = true;
-			List<ScoringSet> sets = getActiveScoringSets();
-			if (this.sortByImage){
-				configureAsSortByImage(sets);
-			}
-			else {
-				configureAsGroupByProperty(sets);
-			}
-		}
-		catch(AvatolCVException ace){
-			AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "Problem configuring evaluation run ");
-		}
-	}
-	public void configureAsScoreImages() {
-		try {
-			this.activeSetIsEvaluation = false;
-			List<ScoringSet> sets = getActiveScoringSets();
-			if (this.sortByImage){
-				configureAsSortByImage(sets);
-			}
-			else {
-				configureAsGroupByProperty(sets);
-			}
-		}
-		catch(AvatolCVException ace){
-			AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "Problem configuring scoring run ");
-		}
-	}
+	
 	public void configureAsSortByImage(){
 		try {
 			this.sortByImage = true;
-			//choiceBoxGroupProperty.setDisable(true);
+			choiceBoxGroupProperty.setDisable(true);
 			radioViewByImage.setSelected(true);
 			List<ScoringSet> sets = getActiveScoringSets();
-			configureAsSortByImage(sets);
+			if (sets.get(0) instanceof EvaluationSet){
+			    renderByImage(sets, true);
+			}
+			else {
+			    renderByImage(sets, false);
+			}
+			//configureAsSortByImage(sets);
 		}
 		catch(AvatolCVException ace){
 			AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "Problem setting 'sort by image' ");
@@ -246,151 +224,152 @@ public class ScoringConfigurationStepController implements StepController {
 		radioViewByGroup.setSelected(true);
 		List<ScoringSet> sets = getActiveScoringSets();
 		this.step.setTrainTestConcern(new NormalizedKey(choiceBoxGroupProperty.getValue()));
-		configureAsGroupByProperty(sets);
+		if (sets.get(0) instanceof EvaluationSet){
+            renderEvalByGroup(sets);
+        }
+        else {
+            renderScoreByGroup(sets);
+        }
+		//configureAsGroupByProperty(sets);
 	}
 	
-	public void configureAsGroupByProperty(List<ScoringSet> scoringSets) throws AvatolCVException {
-	    trainTestSettingsAnchorPane.getChildren().clear();
-        GridPane gp = loadGridPaneWithSetsByGroup(scoringSets);
-        ScrollPane sp = new ScrollPane();
-        sp.setContent(gp);
-        trainTestSettingsAnchorPane.getChildren().add(sp);
-	}
 
-    
-/*
-	public void configureAsSortByImageOrig(List<ScoringSet> scoringSets) throws AvatolCVException {
+	public void renderByImage(List<ScoringSet> sets, boolean allowUserChanges) throws AvatolCVException {
 	    trainTestSettingsAnchorPane.getChildren().clear();
-		if (scoringSets.size() == 1){
-			GridPane gp = loadGridPaneWithSetByImage(scoringSets.get(0));
-			trainTestSettingsAnchorPane.getChildren().add(gp);
-		}
-		else {
-			VBox vbox = new VBox();
-			for (ScoringSet ss : scoringSets){
-				Label label = new Label(ss.getKeyToScore().getName());
-				vbox.getChildren().add(label);
-				GridPane gp = loadGridPaneWithSetByImage(ss);
-				vbox.getChildren().add(gp);
-			}
-			trainTestSettingsAnchorPane.getChildren().add(vbox);
-		}
-	}*/
-	public void configureAsSortByImage(List<ScoringSet> scoringSets) throws AvatolCVException {
-	    trainTestSettingsAnchorPane.getChildren().clear();
-        Accordion accordian = loadAccordionWithSetsByImage(scoringSets);
+        Accordion accordian = loadAccordionWithSetsByImage(sets, allowUserChanges);
         AnchorPane.setTopAnchor(accordian, 0.0);
         AnchorPane.setLeftAnchor(accordian, 0.0);
         AnchorPane.setRightAnchor(accordian, 0.0);
         AnchorPane.setBottomAnchor(accordian, 0.0);
         trainTestSettingsAnchorPane.getChildren().add(accordian);
-    }
-	public Accordion loadAccordionWithSetsByImage(List<ScoringSet> sets) throws AvatolCVException {
-	    Accordion accordion = new Accordion();
-	    for (ScoringSet ss : sets){
-	        TitledPane tp = new TitledPane();
-	        //tp.setAnimated(false);
-	        tp.setText(ss.getScoringConcernName());
-	        GridPane gp = loadGridPaneWithSetByImage(ss);
-	        ScrollPane sp = new ScrollPane();
-	        sp.setContent(gp);
-	        tp.setContent(sp);
-	        accordion.getPanes().add(tp);
-	    }
-	    accordion.setExpandedPane(accordion.getPanes().get(0));
-	    return accordion;
-	}
-	public ImageView getImageViewForImageID(String imageID) throws AvatolCVException {
-		ImageInfo ii = this.imageAccessor.getThumbnailImageForID(imageID);
-		ImageView iv = new ImageView();
-        iv.setPreserveRatio(true);
-        ImageWithInfo imageWithInfo = new ImageWithInfo("file:" + ii.getFilepath(), ii);
-        iv.setImage(imageWithInfo);
-        iv.setFitHeight(80);
-        return iv;
-	}
-	public GridPane loadGridPaneWithSetByImage(ScoringSet ss) throws AvatolCVException { 
-		GridPane gp = new GridPane();
-		System.out.println("Laying out gp for " + ss.getScoringConcernName());
-	    gp.setHgap(4);
-	    gp.setVgap(4);
-	    //DropShadow dsTraining = new DropShadow( 20, Color.AQUA );
-	    //DropShadow dsScoring = new DropShadow( 20, Color.TOMATO );
-		List<ModalImageInfo> trainingImages = ss.getImagesToTrainOn();
-		List<ModalImageInfo> scoringImages = ss.getImagesToScore();
-		int row = 0;
-		int column = 0;
-		for (ModalImageInfo mii : trainingImages){
-			System.out.println("training " + mii.getNormalizedImageInfo().getNiiString());
-			String imageId = mii.getNormalizedImageInfo().getImageID();
-			ImageView iv = getImageViewForImageID(imageId);
-			Label label = new Label();
-			label.setGraphic(iv);
-			label.setStyle("-fx-border-color: #80808FF;-fx-border-width:4px");
-			gp.add(label, column++, row);
-			if (column == 10){
-				column = 0;
-				row++;
-			}
-			
-		}
-		for (ModalImageInfo mii : scoringImages){
-			System.out.println("test " + mii.getNormalizedImageInfo().getNiiString());
-			String imageId = mii.getNormalizedImageInfo().getImageID();
-			ImageView iv = getImageViewForImageID(imageId);
-			Label label = new Label();
-			label.setGraphic(iv);
-			label.setStyle("-fx-border-color: #80FF80;-fx-border-width:4px");
-			gp.add(label, column++, row);
-			if (column == 10){
-				column = 0;
-				row++;
-			}
-		}
-		
-		return gp;
 	}
 	
-	public GridPane loadGridPaneWithSetsByGroup(List<ScoringSet> sets) throws AvatolCVException { 
+	public void renderEvalByGroup(List<ScoringSet> sets) throws AvatolCVException {
+	    trainTestSettingsAnchorPane.getChildren().clear();
+	    List<EvaluationSet> esets = new ArrayList<EvaluationSet>();
+	    for (ScoringSet set : sets){
+	        esets.add((EvaluationSet)set);
+	    }
+	    String trainTestConcern = choiceBoxGroupProperty.getValue();
+        NormalizedKey trainTestConcernKey = normalizedKeyHash.get(trainTestConcern);
+        List<NormalizedValue> trainTestValues = this.step.getValuesForTrainTestConcern(trainTestConcernKey);
+	    ScoringSetsKeySorter ssks = new ScoringSetsKeySorter(esets,trainTestConcernKey);
 	    GridPane gp = new GridPane();
         gp.setHgap(4);
         gp.setVgap(4);
         
-	    String trainTestConcern = choiceBoxGroupProperty.getValue();
-        NormalizedKey trainTestConcernKey = normalizedKeyHash.get(trainTestConcern);
-        List<NormalizedValue> trainTestValues = this.step.getValuesForTrainTestConcern(trainTestConcernKey);
-        // put headers in grid
+        
         Label ttConcernLabel = new Label(trainTestConcern);
         gp.add(ttConcernLabel, 2, 0);
-        Label countLabel = new Label("count");
-        gp.add(countLabel, 3, 0);
-        int index = 4;
+        Label countTitleLabel = new Label("count");
+        gp.add(countTitleLabel, 3, 0);
+        /*
+        int column = 4;
         for (ScoringSet set : sets){
             String scName = set.getScoringConcernName();
             Label scNameLabel = new Label(scName);
-            gp.add(countLabel, index++, 0);
-        }
-        for (NormalizedValue nValue : trainTestValues){
-            String valueName = nValue.getName();
+            gp.add(countLabel, column++, 0);
+        } 
+        */
+        int row = 1;
+        for (NormalizedValue ttValue : trainTestValues){
+            String ttValName = ttValue.getName();
             // put train/test radios in grid line
             RadioButton radioTrain = new RadioButton("train");
             RadioButton radioScore = new RadioButton("score");
             ToggleGroup tg = new ToggleGroup();
             radioTrain.setToggleGroup(tg);
+            radioTrain.setStyle("styleClass:indentedFirstColumn");
             radioScore.setToggleGroup(tg);
             radioTrain.setSelected(true);
+            radioTrain.selectedProperty().addListener(new RadioChangeListener(ttValue, ssks, true));
+            radioScore.selectedProperty().addListener(new RadioChangeListener(ttValue, ssks, false));
+            gp.add(radioTrain, 0,row);
+            gp.add(radioScore, 1,row);
+            
+            
             // put (ex.) taxon name in grid line
-            
+            Label ttValNameLabel = new Label(ttValName);
+            gp.add(ttValNameLabel, 2, row);
             // put total count for that taxa
+            Label countLabel = new Label();
+            if (ssks.isValueToTrain(ttValue)){
+                radioTrain.setSelected(true);
+                countLabel.setText("" + ssks.getCountForValue(ttValue));
+            }
+            else {
+                radioScore.setSelected(true);
+                countLabel.setText("" + ssks.getCountForValue(ttValue));
+            }
+            gp.add(countLabel, 3, row);
+            // put count for each character <--- defer this
             
-            // put count for each character
-            
-            
+            row++;
         }
-	    
-        
-        List<ModalImageInfo> trainingImages = sets.get(0).getImagesToTrainOn();
-        List<ModalImageInfo> scoringImages = sets.get(0).getImagesToScore();
+        ScrollPane sp = new ScrollPane();
+        sp.setContent(gp);
+        sp.setStyle("-fx-font-size: 20px;");  // set the font size to something big.
+        gp.setStyle("-fx-font-size: 12px;");
+        AnchorPane.setTopAnchor(sp, 0.0);
+        AnchorPane.setLeftAnchor(sp, 0.0);
+        AnchorPane.setRightAnchor(sp, 0.0);
+        AnchorPane.setBottomAnchor(sp, 0.0);
+        trainTestSettingsAnchorPane.getChildren().add(sp);
+	}
+	public class RadioChangeListener implements ChangeListener<Boolean> {
+	    private NormalizedValue nv = null;
+	    private ScoringSetsKeySorter ssks = null;
+	    private boolean isTraining = false;
+	    public RadioChangeListener(NormalizedValue nv, ScoringSetsKeySorter ssks, boolean isTraining){
+	        this.nv = nv;
+	        this.ssks = ssks;
+	        this.isTraining = isTraining;
+	    }
+        @Override
+        public void changed(ObservableValue<? extends Boolean> obs,
+                Boolean wasPreviouslySelected, Boolean isNowSelected) {
+            if (isNowSelected){
+                try {
+                    if (isTraining){
+                        ssks.setValueToTrain(this.nv);
+                    }
+                    else {
+                        ssks.setValueToScore(this.nv);
+                    }
+                }
+                catch(AvatolCVException ace){
+                    AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem trying to adjust train/score selections " + ace.getMessage());
+                }
+            }
+        }
+	}
+	public void renderScoreByGroup(List<ScoringSet> sets) throws AvatolCVException {
+    
+	}
+	public Accordion loadAccordionWithSetsByImage(List<ScoringSet> sets, boolean allowUserChanges) throws AvatolCVException {
+        Accordion accordion = new Accordion();
+        for (ScoringSet ss : sets){
+            TitledPane tp = new TitledPane();
+            //tp.setAnimated(false);
+            tp.setText(ss.getScoringConcernName());
+            GridPane gp = loadGridPaneWithSetByImage(ss, allowUserChanges);
+            ScrollPane sp = new ScrollPane();
+            sp.setContent(gp);
+            tp.setContent(sp);
+            accordion.getPanes().add(tp);
+        }
+        accordion.setExpandedPane(accordion.getPanes().get(0));
+        return accordion;
+    }
+	public GridPane loadGridPaneWithSetByImage(ScoringSet ss, boolean allowUserChanges) throws AvatolCVException { 
+        GridPane gp = new GridPane();
+        System.out.println("Laying out gp for " + ss.getScoringConcernName());
+        gp.setHgap(4);
+        gp.setVgap(4);
+        //DropShadow dsTraining = new DropShadow( 20, Color.AQUA );
+        //DropShadow dsScoring = new DropShadow( 20, Color.TOMATO );
+        List<ModalImageInfo> trainingImages = ss.getImagesToTrainOn();
+        List<ModalImageInfo> scoringImages = ss.getImagesToScore();
         int row = 0;
         int column = 0;
         for (ModalImageInfo mii : trainingImages){
@@ -405,7 +384,6 @@ public class ScoringConfigurationStepController implements StepController {
                 column = 0;
                 row++;
             }
-            
         }
         for (ModalImageInfo mii : scoringImages){
             System.out.println("test " + mii.getNormalizedImageInfo().getNiiString());
@@ -420,55 +398,17 @@ public class ScoringConfigurationStepController implements StepController {
                 row++;
             }
         }
-        
-        
-		/*
-		for (NormalizedValue ttValue : trainTestValues){
-			//ss.g
-		}
-		GridPane gp = new GridPane();
-		ColumnConstraints column1 = new ColumnConstraints();
-	    //column1.setPercentWidth(15);
-	    ColumnConstraints column2 = new ColumnConstraints();
-	    //column2.setPercentWidth(15);
-	    ColumnConstraints column3 = new ColumnConstraints();
-	   // column3.setPercentWidth(80);
-	    gp.getColumnConstraints().addAll(column1, column2, column3); 
-	    gp.setHgap(20);
-	    gp.setVgap(6);
-	    
-		List<ModalImageInfo> trainingImages = ss.getImagesToTrainOn();
-		List<ModalImageInfo> scoringImages = ss.getImagesToScore();
-		int row = 0;
-		for (ModalImageInfo mii : trainingImages){
-			RadioButton radioTrain = new RadioButton("train");
-			RadioButton radioScore = new RadioButton("score");
-			ToggleGroup tg = new ToggleGroup();
-			radioTrain.setToggleGroup(tg);
-			radioScore.setToggleGroup(tg);
-			radioTrain.setSelected(true);
-			Label imageLabel = new Label(mii.getNormalizedImageInfo().getImageName());
-			gp.add(radioTrain, 0, row);
-			gp.add(radioScore, 1, row);
-			gp.add(imageLabel, 2, row);
-			row++;
-		}
-		for (ModalImageInfo mii : scoringImages){
-			RadioButton radioTrain = new RadioButton("train");
-			RadioButton radioScore = new RadioButton("score");
-			ToggleGroup tg = new ToggleGroup();
-			radioTrain.setToggleGroup(tg);
-			radioScore.setToggleGroup(tg);
-			radioScore.setSelected(true);
-			Label imageLabel = new Label(mii.getNormalizedImageInfo().getImageName());
-			gp.add(radioTrain, 0, row);
-			gp.add(radioScore, 1, row);
-			gp.add(imageLabel, 2, row);
-			row++;
-		}
-		*/
-		return gp;
-	}
+        return gp;
+    }
+	public ImageView getImageViewForImageID(String imageID) throws AvatolCVException {
+        ImageInfo ii = this.imageAccessor.getThumbnailImageForID(imageID);
+        ImageView iv = new ImageView();
+        iv.setPreserveRatio(true);
+        ImageWithInfo imageWithInfo = new ImageWithInfo("file:" + ii.getFilepath(), ii);
+        iv.setImage(imageWithInfo);
+        iv.setFitHeight(80);
+        return iv;
+    }
 	@Override
 	public boolean delayEnableNavButtons() {
 		// TODO Auto-generated method stub
