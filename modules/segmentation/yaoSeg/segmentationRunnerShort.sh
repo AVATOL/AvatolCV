@@ -14,7 +14,8 @@ croppedOrigImageSuffix="_croppedOrig"
 filename="$1"
 while read -r line
 do
-    lineAsArray=(${line//=/ })
+    IFS='=' read -a lineAsArray <<< "$line"
+    #lineAsArray=(${line//=/ })
     key=${lineAsArray[0]}
     val=${lineAsArray[1]}
     #echo key ${key}
