@@ -11,6 +11,8 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.core.ModalImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 
 /*
  *  segmentationOutputDir=<path of dir where output goes>
@@ -35,14 +37,18 @@ public class RunConfigFile {
     private Algorithm alg = null;
     private AlgorithmSequence algSequence = null;
     private String algStatusPath = null;
-    public RunConfigFile(Algorithm alg, AlgorithmSequence algSequence) throws AvatolCVException {
+    private List<ModalImageInfo> scoringImages = null;
+    public RunConfigFile(Algorithm alg, AlgorithmSequence algSequence, List<ModalImageInfo> scoringImages) throws AvatolCVException {
         this.alg = alg;
         this.algSequence = algSequence;
+        this.scoringImages = scoringImages;
         this.pathOfSessionInputFiles = algSequence.getInputDir();
         System.out.println("RunConfigFile sets pathOfSessionInputFiles as " + this.pathOfSessionInputFiles);
         handleDependencies(alg);
         handleOptionalInputs(alg);
-        handleRequiredInputs(alg);
+        
+       
+        handleRequiredInputs(alg, scoringImages);
         
         File f = new File(this.pathOfSessionInputFiles);
         if (!f.exists()){
@@ -111,7 +117,8 @@ public class RunConfigFile {
     //
     // required inputs
     //
-    public void handleRequiredInputs(Algorithm alg) throws AvatolCVException {
+   
+    public void handleRequiredInputs(Algorithm alg, List<ModalImageInfo> scoringList) throws AvatolCVException {
         String algType = alg.getAlgType();
         System.out.println("algType chosen is " + algType);
         List<AlgorithmInputRequired> requiredInputs = alg.getRequiredInputs();
@@ -135,12 +142,54 @@ public class RunConfigFile {
         }
         
         suffixFileSort(inputs, pathListHash, allPathsFromDir, this.pathOfSessionInputFiles);
-
+        
+        /*
+         * FOREACH inputRequiredForTest, need to have the following happen:
+			from the dir that is output from previous stage
+			they need to match the id of the files in the scoringList
+			they need to match the iRFT suffix
+			AND they need to match the TYPE of output from prior stage (if there was a prior stage)  We can 
+			ignore this for now as out limited implementation won't experience malfunction because of this
+         * now filter on what images are actually in play for this scoring run
+         */
+        for (AlgorithmInput air : requiredInputs){
+        	List<String> desiredFiles = new ArrayList<String>();
+        	List<String> candidatesWithMatchedSuffix = pathListHash.get(air);
+        	int count = 0;
+        	for (ModalImageInfo mii : scoringList){
+            	String imageID = mii.getNormalizedImageInfo().getImageID();
+            	if (imageID.equals("381004")){
+            		int foo = 3;
+            		int bar = foo;
+            	}
+            	String pathWithMatchingImageID = getPathWithMatchingImageID(candidatesWithMatchedSuffix, imageID);
+            	if (null == pathWithMatchingImageID){
+            		throw new AvatolCVException("Cannot find file to score with imageID " + imageID + " and reqiured suffix " + air.getSuffix() + " in "  + this.pathOfSessionInputFiles);
+            	}
+            	desiredFiles.add(pathWithMatchingImageID);
+            	if (++count > 63){
+            		int foo = 3;
+            		int bar = foo;
+            	}
+            }
+        	// replace the candidate list with the desired list
+        	pathListHash.put(air,desiredFiles);
+        }
+        
         // generate a file list for each requiredInput
         for (AlgorithmInput air : requiredInputs){
             String path = getFileListPathnameForKey(air.getKey(), this.algSequence);
             generateFileList(path, pathListHash.get(air));
         }
+    }
+    public static String getPathWithMatchingImageID(List<String> paths, String imageID){
+    	for (String path : paths){
+    		String thisID = NormalizedImageInfo.getImageIDFromPath(path);
+    		if (thisID.equals(imageID)){
+    			return path;
+    		}
+    	}
+    	return null;
     }
     public static void verifyUniqueSuffixes(List<AlgorithmInput> inputs) throws AvatolCVException {
         List<String> suffixList = new ArrayList<String>();
@@ -153,6 +202,7 @@ public class RunConfigFile {
             }
         }
     }
+    
     public static void suffixFileSort(List<AlgorithmInput> inputs,  Hashtable<AlgorithmInput, List<String>> pathListHash, List<String> allPathsFromDir, String pathOfInputFiles) throws AvatolCVException {
         System.out.println("suffixFileSort called with pathOfInputFiles as " + pathOfInputFiles);
         if (allPathsFromDir.isEmpty()){
@@ -182,13 +232,13 @@ public class RunConfigFile {
         
         // go through the path list, put each file into the correct bin for each suffix 
         
-        
         // first pull out for each one that matches suffix
-        for (AlgorithmInput air : inputs){
+        for (AlgorithmInput air : withSuffixList){
             List<String> pathListForInput = pathListHash.get(air);
+            
             for (String path : allPathsFromDir){
                 if (pathHasSuffix(path,air.getSuffix())){
-                    pathListForInput.add(path);
+                	pathListForInput.add(path);
                 }
             }
             Collections.sort(pathListForInput);
@@ -199,12 +249,10 @@ public class RunConfigFile {
             }
         }
         // look for case where no matches for desired suffix were found
-        for (AlgorithmInput air : inputs){
+        for (AlgorithmInput air : withSuffixList){
             List<String> pathListForInput = pathListHash.get(air);
-            if (air.hasSuffix()){
-            	if (pathListForInput.size() == 0){
-                	throw new AvatolCVException("No files with required suffix " + air.getSuffix() + " found at " + pathOfInputFiles);
-                }
+            if (pathListForInput.size() == 0){
+                throw new AvatolCVException("No files with required suffix " + air.getSuffix() + " found at " + pathOfInputFiles);
             }
         }
         // put the rest in the list for no suffix
@@ -278,6 +326,7 @@ public class RunConfigFile {
         return key + "=" + getFileListPathnameForKey(key, algSequence);
     }
    
+  
     public void generateFileList(String pathOfFileToCreate, List<String> paths) throws AvatolCVException {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(pathOfFileToCreate));

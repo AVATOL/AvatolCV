@@ -49,6 +49,17 @@ public class ScoringInfoFile {
 	public List<String> getImageNames(){
 		return this.imageNames;
 	}
+	public List<String> getMatchingImageNames(List<String> otherImageNames){
+		List<String> result = new ArrayList<String>();
+		for (String otherName : otherImageNames){
+			for (String name : imageNames){
+				if (name.equals(otherName)){
+					result.add(name);
+				}
+			}
+		}
+		return result;
+	}
 	//public String getScoringConcernValueForImageName(String imageName){
 	//	return this.scoringConcernValueHash.get(imageName);
 	//}

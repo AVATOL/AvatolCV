@@ -19,7 +19,7 @@ public class AlgorithmSequence {
     private String inputDir = null;
     private String supplementatlInputDir = null;
     private String outputDir = null;
-            
+    
     public AlgorithmSequence(){
         
     }

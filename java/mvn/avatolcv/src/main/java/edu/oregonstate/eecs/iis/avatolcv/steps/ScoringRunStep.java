@@ -24,8 +24,10 @@ import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.ChoiceItem;
 
 public class ScoringRunStep implements Step {
+	private static final String NL = System.getProperty("file.separator");
     private SessionInfo sessionInfo = null;
     private AlgorithmLauncher launcher = null;
+    private RunConfigFile runConfigFile = null;
     public ScoringRunStep(SessionInfo sessionInfo){
         this.sessionInfo = sessionInfo;
     }
@@ -61,12 +63,7 @@ public class ScoringRunStep implements Step {
         ScoringAlgorithm sa  = sessionInfo.getSelectedScoringAlgorithm();
         AlgorithmSequence algSequence = sessionInfo.getAlgorithmSequence();
         algSequence.enableScoring();
-        RunConfigFile rcf = new RunConfigFile(sa, algSequence);
-        String runConfigPath = rcf.getRunConfigPath();
-        File runConfigFile = new File(runConfigPath);
-        if (!runConfigFile.exists()){
-            throw new AvatolCVException("runConfigFile path does not exist."); 
-        }
+        
         List<ChoiceItem> scoringConcerns = this.sessionInfo.getChosenScoringConcerns();
         boolean pointCoordinatesRelevant = this.sessionInfo.arePointCoordinatesRelavent();
         for (ChoiceItem scoringConcern : scoringConcerns){
@@ -95,10 +92,11 @@ public class ScoringRunStep implements Step {
             	String pathWhereInputImagesForScoringLive = algSequence.getInputDir();
             	File f = new File(pathWhereInputImagesForScoringLive);
             	File[] files = f.listFiles();
-            	String imagePathForScoring = getImagePathWithIDFromFileList(imageID, files, sa.getTrainingLabelImageSuffix());
-            	if (null == imagePathForScoring){
+            	String imagePath = getImagePathWithIDFromFileList(imageID, files, sa.getTrainingLabelImageSuffix());
+            	//String imagePath = getImagePathWithIDFromFileList(imageID, files, algSequence.getSuffixOfOutputFromPriorStage());
+            	if (null == imagePath){
             		System.out.println("WARNING - no imageFile found for imageID " + imageID);
-            		imagePathForScoring = "imageFileNotAvailable";
+            		imagePath = "imageFileNotAvailable";
             	    //throw new AvatolCVException("Cannot find file in scoring input dir " + pathWhereInputImagesForScoringLive + " with id " + imageID);
             	}
             	//String imageName = nii.getImageName();
@@ -112,11 +110,11 @@ public class ScoringRunStep implements Step {
                 		ImageInfo.excludeForSession(ImageInfo.EXCLUSION_REASON_MISSING_ANNOTATION, nii.getImageID());
                 	}
                 	else {
-                		tif.addImageInfo(imagePathForScoring, value.toString(),  pointCoordinates, trainTestConcern.toString(), trainTestConcernValue.toString());
+                		tif.addImageInfo(imagePath, value.toString(),  pointCoordinates, trainTestConcern.toString(), trainTestConcernValue.toString());
                 	}
             	}
             	else {
-            		tif.addImageInfo(imagePathForScoring, value.toString(),  "", trainTestConcern.toString(), trainTestConcernValue.toString());
+            		tif.addImageInfo(imagePath, value.toString(),  "", trainTestConcern.toString(), trainTestConcernValue.toString());
             	}
             	
             }
@@ -140,6 +138,7 @@ public class ScoringRunStep implements Step {
             	File f = new File(pathWhereInputImagesForScoringLive);
             	File[] files = f.listFiles();
             	String imagePath = getImagePathWithIDFromFileList(imageID, files, "*");
+            	//String imagePath = getImagePathWithIDFromFileList(imageID, files, algSequence.getSuffixOfOutputFromPriorStage());
             	if (null == imagePath){
             		System.out.println("WARNING - no imageFile found for imageID " + imageID);
             		imagePath = "imageFileNotAvailable";
@@ -152,8 +151,26 @@ public class ScoringRunStep implements Step {
             	sif.addImageInfo(imagePath, trainTestConcern.toString(), trainTestConcernValue.toString());
             }
             sif.persist(AvatolCVFileSystem.getTrainingDataDirForScoring());
+            List<String> imagesWronglyInBoth = sif.getMatchingImageNames(tif.getImageNames());
+            if (imagesWronglyInBoth.size() != 0){
+            	StringBuilder sb = new StringBuilder();
+            	sb.append("ERROR - images that appear in both training and soring lists are : " + NL);
+            	for (String image : imagesWronglyInBoth){
+            		sb.append(image + NL);
+            	}
+            	throw new AvatolCVException("" + sb);
+            }
+            runConfigFile = new RunConfigFile(sa, algSequence, scoringImages);
+            String runConfigPath = runConfigFile.getRunConfigPath();
+            File runConfigFile = new File(runConfigPath);
+            if (!runConfigFile.exists()){
+                throw new AvatolCVException("runConfigFile path does not exist."); 
+            }
         }
-        this.launcher = new AlgorithmLauncher(sa, runConfigPath);
+        
+       
+       
+        this.launcher = new AlgorithmLauncher(sa, runConfigFile.getRunConfigPath());
         this.launcher.launch(controller);
     }
     public void cancelScoring(){
