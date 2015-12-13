@@ -176,8 +176,10 @@ public class SessionInfo{
     }
     
     public void reAssessImagesInPlay() throws AvatolCVException {
-    	this.normalizedImageInfos.focusToSession(removeExcludedImages(this.sessionImages));
+    	this.normalizedImageInfos.focusToSession(this.sessionImages);
     }
+    /*
+     * DECIDED NEED TO KEEP ALL IMAGES IN PLAY AND CHECK EXCLUSION JUST BEFORE USE
     public List<String> removeExcludedImages(SessionImages sessionImages) throws AvatolCVException {
     	List<String> result = new ArrayList<String>();
     	for (String s : sessionImages){
@@ -188,6 +190,7 @@ public class SessionInfo{
     	}
     	return result;
     }
+    */
     /*
      * SEGMENTATION
      */
