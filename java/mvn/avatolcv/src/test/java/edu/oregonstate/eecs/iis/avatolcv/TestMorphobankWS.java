@@ -289,7 +289,7 @@ public class TestMorphobankWS extends TestCase {
 			}
 			String mediaID = "-1";
 			deleteIfExists("C:\\\\avatol\\temp\\" + mediaID + "_thumbnail.jpg");
-			boolean result1 = wsClient.downloadImageForMediaId(thumbnailDir,mediaID,"","thumbnail");
+			boolean result1 = wsClient.downloadImageForMediaId(thumbnailDir,mediaID,"","thumbnail","80");
 			
 		}
 		catch(MorphobankWSException me){

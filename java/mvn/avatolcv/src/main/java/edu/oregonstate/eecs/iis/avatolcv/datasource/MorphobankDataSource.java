@@ -11,7 +11,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
-import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter.Pair;
+import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter.FilterItem;
 import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
@@ -516,7 +516,7 @@ public class MorphobankDataSource implements DataSource {
         }
     */
     }
-    private void filterCharacter(Pair p){
+    private void filterCharacter(FilterItem p){
         if (p.isSelected()){
             
         }

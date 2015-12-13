@@ -109,7 +109,7 @@ public class ScoringRunStep implements Step {
             	
             	if (pointCoordinatesRelevant){
             		if (null == pointCoordinates){
-                		ImageInfo.excludeForReason(ImageInfo.EXCLUSION_REASON_MISSING_ANNOTATION, false, nii.getImageID());
+                		ImageInfo.excludeForSession(ImageInfo.EXCLUSION_REASON_MISSING_ANNOTATION, nii.getImageID());
                 	}
                 	else {
                 		tif.addImageInfo(imagePathForScoring, value.toString(),  pointCoordinates, trainTestConcern.toString(), trainTestConcernValue.toString());

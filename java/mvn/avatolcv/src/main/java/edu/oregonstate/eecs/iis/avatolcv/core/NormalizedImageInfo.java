@@ -250,5 +250,21 @@ public class NormalizedImageInfo {
 	public String getAnnotationCoordinates() throws AvatolCVException  {
 		return this.annotationString;
 	}
-    
+	public boolean isExcluded() throws AvatolCVException {
+		return ImageInfo.isExcluded(this.imageID);
+	}
+	public void excludeForSession(String reason) throws AvatolCVException {
+		ImageInfo.excludeForSession(reason, this.imageID);
+	}
+	public void excludeForDataset(String reason) throws AvatolCVException {
+		ImageInfo.excludeForDataset(reason, this.imageID);
+	}
+	public void undoExcludeForSession(String reason) throws AvatolCVException {
+		ImageInfo.undoExcludeForSession(reason, this.imageID);
+	}
+
+	public void undoExcludeForDataset(String reason) throws AvatolCVException {
+		ImageInfo.undoExcludeForDataset(reason, this.imageID);
+	}
+	
 }

@@ -71,6 +71,10 @@ public class SessionInfo{
     //private String chosenScoringAlg = null;
     private AlgorithmSequence algorithmSequence = null;
     private NormalizedImageInfos normalizedImageInfos = null;
+    /**
+     * sessionImages are filled by the MBDataSource during 2nd metadata pull, in BisqueDataSource during first metadata pull,
+     * It's contents will be filled after ScoringConcern choice
+     */
     private SessionImages sessionImages = null;
     private Hashtable<String, ScoringSet> scoringSetForScoringConcernHash = new Hashtable<String, ScoringSet>();
     private NormalizedKey trainTestConcern = null;
@@ -107,6 +111,9 @@ public class SessionInfo{
 		}
 		return result;
 	}
+	/*
+	 * sessionImages are filled by the DataSource when DataSource is instantiated
+	 */
 	public SessionImages getSessionImages(){
 	    return this.sessionImages;
 	}
@@ -274,7 +281,7 @@ public class SessionInfo{
 		}
 		return new NormalizedKey(ttc);
 	}
-    public boolean isAllImagesLabeled(){
+    public boolean isAllImagesLabeled() throws AvatolCVException {
         List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSession();
         for (ChoiceItem ci : chosenScoringConcerns){
             NormalizedKey nKey = ci.getNormalizedKey();
@@ -292,7 +299,21 @@ public class SessionInfo{
      * FILTER
      */
     public DataFilter getDataFilter() throws AvatolCVException {
+    	if (this.dataFilter != null){
+    		return this.dataFilter;
+    	}
         this.dataFilter = new DataFilter(AvatolCVFileSystem.getSessionDir());
+        List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSessionWithExcluded();
+        for (NormalizedImageInfo nii : niis){
+        	List<NormalizedKey> keys = nii.getKeys();
+        	for (NormalizedKey key : keys){
+        		if (!isKeyOneOfTheScoringConcerns(key)){
+        			NormalizedValue nv = nii.getValueForKey(key);
+        			this.dataFilter.addFilterItem(key, nv, true);
+        		}
+        	}
+        }
+        /*
         String dir = AvatolCVFileSystem.getNormalizedImageInfoDir();
         File dirFile = new File(dir);
         File[] files = dirFile.listFiles();
@@ -308,41 +329,20 @@ public class SessionInfo{
         		}
         	}
         }
+        */
         return this.dataFilter;
     }
-    public void addKeyValToFilter(DataFilter dataFilter, String key, String val) throws AvatolCVException {
-    	//character:1824356|Diastema between M1 and M2=characterState:4884340|Diastema absent
-    	//taxon=773126|Artibeus jamaicensis
-    	//view=8905|Skull - ventral annotated teeth
-    	// if there is a type prefix (something:), then type and string value of type are what's added to the filter (ex : character, Diastema between M1 and M2)
-    	// otherwise, the key and the string value portion of the value (ex: taxon, Artibeus jamaicensis)
-    	if (key.startsWith(AvatolCVFileSystem.RESERVED_PREFIX)){
-    		//skip it
+    public boolean isKeyOneOfTheScoringConcerns(NormalizedKey key){
+    	List<ChoiceItem> cis = this.getChosenScoringConcerns();
+    	for (ChoiceItem ci : cis){
+    		NormalizedKey ciKey = ci.getNormalizedKey();
+    		if (ciKey.equals(key)){
+    			return true;
+    		}
     	}
-    	else if (key.contains(":")){
-    		String[] parts = key.split(":");
-    		String type = parts[0];
-    		String propertyInfo = parts[1];
-    		String[] propertyInfoParts = propertyInfo.split("|");
-    		String valueID = propertyInfoParts[0];
-    		String propertyValueWeWillUse = propertyInfoParts[1];
-    		dataFilter.addPropertyValue(type, propertyValueWeWillUse, valueID, true);
-    	}
-    	else {
-    	    if (val.contains("|")){
-    	        String[] valParts = val.split("|");
-                String valID = valParts[0];
-                String valName = "";
-                if (valParts.length > 1){
-                    valName = valParts[1];
-                }
-                dataFilter.addPropertyValue(key, valName, valID, true);
-    	    }
-    	    else{
-    	        dataFilter.addPropertyValue(key, val, val, true);
-    	    }
-    	}
+    	return false;
     }
+   
 
     public AlgorithmSequence getAlgorithmSequence() {
         if (this.algorithmSequence == null){

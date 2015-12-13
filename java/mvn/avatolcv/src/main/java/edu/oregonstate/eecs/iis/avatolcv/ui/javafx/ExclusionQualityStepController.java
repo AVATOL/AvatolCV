@@ -93,7 +93,7 @@ public class ExclusionQualityStepController  implements StepController {
  	                
  	                renderExclusionStateOfImageView(iv,ii);
  	                iv.setOnMouseEntered(this::showCurrentImageLarge);
- 	                iv.setOnMouseClicked(this::excludeOrUnexcludeImage);
+ 	                iv.setOnMouseClicked(this::toggleExclusionForImage);
  	                excludeImageGrid.add(iv,curCol, curRow);
  	                curRow += 1;
  	                if (curRow > 2){
@@ -118,16 +118,16 @@ public class ExclusionQualityStepController  implements StepController {
     		iv.setOpacity(1.0);
     	}
     }
-    public void excludeOrUnexcludeImage(MouseEvent e){
+    public void toggleExclusionForImage(MouseEvent e){
     	try {
     		ImageView source = (ImageView)e.getSource();
         	ImageWithInfo sourceImage = (ImageWithInfo)source.getImage();
         	ImageInfo ii = sourceImage.getImageInfo();
         	if (ii.isExcluded()){
-        		ii.undoExclude();
+        		ii.undoExcludeForDataset(ImageInfo.EXCLUSION_REASON_IMAGE_QUALITY);
         	}
         	else {
-        		ii.excludeForReason(ImageInfo.EXCLUSION_REASON_IMAGE_QUALITY, false);
+        		ii.excludeForDataset(ImageInfo.EXCLUSION_REASON_IMAGE_QUALITY);
         	}
         	renderExclusionStateOfImageView(source, ii);
         	renderExclusionStateOfImageView(largeImageView, ii);

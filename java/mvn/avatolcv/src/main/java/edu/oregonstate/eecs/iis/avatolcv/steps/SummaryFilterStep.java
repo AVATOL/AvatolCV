@@ -1,7 +1,15 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
+import java.util.List;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
+import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter.FilterItem;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedKey;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 
 public class SummaryFilterStep  extends Answerable implements Step {
@@ -11,18 +19,31 @@ public class SummaryFilterStep  extends Answerable implements Step {
     }
     @Override
     public void init() throws AvatolCVException {
-        // TODO Auto-generated method stub
-
+    	
     }
 
     public DataFilter getDataFilter() throws AvatolCVException {
+    	this.sessionInfo.reAssessImagesInPlay();
     	return this.sessionInfo.getDataFilter();
-        //return this.sessionInfo.getDataSource().getDataFilter(AvatolCVFileSystem.getSessionDir());
     }
     @Override
     public void consumeProvidedData() throws AvatolCVException {
-        // TODO Auto-generated method stub
-
+    	DataFilter df = this.sessionInfo.getDataFilter();
+    	List<FilterItem> items = df.getItems();
+    	for (FilterItem item : items){
+    		NormalizedKey key = item.getKey();
+			NormalizedValue value = item.getValue();
+			NormalizedImageInfos niis = this.sessionInfo.getNormalizedImageInfos();
+			List<NormalizedImageInfo> niisForKeyValue = niis.getSessionNIIsForKeyValue(key, value);
+			for (NormalizedImageInfo nii : niisForKeyValue){
+				if (item.isSelected()){
+	    			nii.excludeForSession("filter");
+	    		}
+	    		else {
+	    			nii.undoExcludeForSession("filter");
+	    		}
+			}
+    	}
     }
 
     @Override

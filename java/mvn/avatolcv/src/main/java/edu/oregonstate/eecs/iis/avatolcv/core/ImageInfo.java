@@ -169,7 +169,9 @@ public class ImageInfo {
 		File f = new File(path);
 		return f.exists();
 	}
-	public void undoExclude() throws AvatolCVException {
+	
+	
+	/*public void undoExclude() throws AvatolCVException {
 		if (isExcludedForSession(this.ID)){
 			String path = AvatolCVFileSystem.getSessionExclusionInfoFilePath(this.ID);
 			File f = new File(path);
@@ -182,27 +184,81 @@ public class ImageInfo {
 		}
 		
 	}
-	public void excludeForReason(String s, boolean excludeJustForSession) throws AvatolCVException {
-		excludeForReason(s, excludeJustForSession, this.ID);
+	*/
+	/**
+	 * Undo exclusion for dataset by deleting the file if it contains the specified reason
+	 * @param reason
+	 * @throws AvatolCVException
+	 */
+	public void undoExcludeForDataset(String reason) throws AvatolCVException {
+		undoExcludeForDataset(reason, this.ID);
 	}
-	public static void excludeForReason(String s, boolean excludeJustForSession, String ID) throws AvatolCVException {
-		String path = null;
-	    if (excludeJustForSession){
-	    	path = AvatolCVFileSystem.getSessionExclusionInfoFilePath(ID);
-	    }
-	    else {
-	    	path = AvatolCVFileSystem.getDatasetExclusionInfoFilePath(ID);
-	    }
-		
+	public static void undoExcludeForDataset(String reason, String id) throws AvatolCVException {
+		if (isExcludedForDataset(id)){
+			String path =  AvatolCVFileSystem.getDatasetExclusionInfoFilePath(id);
+			deleteExclusionAtPathForReason(path, reason, id);
+		}
+	}
+	/**
+	 * Undo exclusion for session by deleting the file if it contains the specified reason
+	 * @param reason
+	 * @throws AvatolCVException
+	 */
+	public void undoExcludeForSession(String reason) throws AvatolCVException {
+		undoExcludeForSession(reason, this.ID);
+	}
+	public static void undoExcludeForSession(String reason, String id) throws AvatolCVException {
+		if (isExcludedForSession(id)){
+			String path =  AvatolCVFileSystem.getSessionExclusionInfoFilePath(id);
+			deleteExclusionAtPathForReason(path, reason, id);
+		}
+	}
+	public static void deleteExclusionAtPathForReason(String path, String reason, String id) throws AvatolCVException {
 		try {
+			BufferedReader reader = new BufferedReader(new FileReader(path));
+			String storedReason = reader.readLine();
+			reader.close();
+			if (storedReason.equals(reason)){
+				File f = new File(path);
+				f.delete();
+			}
+		}
+		catch(IOException ioe){
+			throw new AvatolCVException("problem re-including image " + id + " : " + ioe.getMessage());
+		}
+	}
+	/**
+	 * 
+	 * @param reason
+	 * @throws AvatolCVException
+	 */
+	public void excludeForDataset(String reason)  throws AvatolCVException {
+		excludeForDataset(reason, this.ID);
+	}
+	public static void excludeForDataset(String reason, String ID) throws AvatolCVException {
+	    String path =  AvatolCVFileSystem.getDatasetExclusionInfoFilePath(ID);
+	    excludeAtPath(path, reason);
+	}
+	 
+	public void excludeForSession(String reason) throws AvatolCVException {
+		excludeForSession(reason, this.ID);
+	}
+	public static void excludeForSession(String reason, String ID) throws AvatolCVException {
+		String path = AvatolCVFileSystem.getSessionExclusionInfoFilePath(ID);
+	    excludeAtPath(path, reason);
+	}
+   
+    public static void excludeAtPath(String path, String reason) throws AvatolCVException {
+    	try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(path));
-			writer.write(s + NL);
+			writer.write(reason + NL);
 			writer.close();
 		}
 	    catch(IOException ioe){
-	    	throw new AvatolCVException("problem writing exclusion state to path " + path);
+	    	throw new AvatolCVException("problem writing exclusion reason " + reason + "  to path " + path);
 	    }
-	}
+    }
+	
 	public String getExclusionReason() throws AvatolCVException {
 		return getExclusionReason(this.ID);
 	}

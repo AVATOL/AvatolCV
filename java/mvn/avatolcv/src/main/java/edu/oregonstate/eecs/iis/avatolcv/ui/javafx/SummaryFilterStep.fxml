@@ -6,50 +6,49 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<TabPane fx:id="summaryFilterTabPane" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-  <tabs>
-    <Tab fx:id="SummaryTab" text="Dataset Summary">
-         <content>
-            <TextArea fx:id="summaryTextArea" prefHeight="200.0" prefWidth="200.0" />
-         </content>
-    </Tab>
-    <Tab text="Filter the dataset">
-         <content>
-            <ScrollPane prefViewportHeight="200.0" prefViewportWidth="232.0">
-               <content>
-                  <GridPane fx:id="filterGridPane" hgap="10.0" vgap="4.0">
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label text="Filtering">
+         <VBox.margin>
+            <Insets left="6.0" right="6.0" top="10.0" />
+         </VBox.margin>
+      </Label>
+      <TextArea maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="140.0" text="Filtering out images may be desired in some datasets.  Consider the example of skull images.  The image may be of the ventral or dorsal view.  If &quot;view&quot; is a data attribute of the image, then scoring should focus on one view at a time.  This means images from other views should be filtered out.&#10;&#10;Filter out images by checking the &quot;filter&quot; checkbox where appropriate." wrapText="true" VBox.vgrow="NEVER">
+         <VBox.margin>
+            <Insets right="10.0" top="10.0" />
+         </VBox.margin>
+      </TextArea>
+      <ScrollPane style="-fx-font-size: 16;" VBox.vgrow="ALWAYS">
+        <content>
+          <AnchorPane maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
+               <children>
+                  <GridPane fx:id="filterGrid" hgap="4.0" vgap="4.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columnConstraints>
+                      <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" />
                       <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
                     </columnConstraints>
                     <rowConstraints>
-                      <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" vgrow="NEVER" />
+                      <RowConstraints minHeight="10.0" vgrow="NEVER" />
+                      <RowConstraints minHeight="10.0" vgrow="NEVER" />
                     </rowConstraints>
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
                      <children>
-                        <Label text="Keep in Play">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Label>
-                        <Label text="Item" GridPane.columnIndex="1">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Label>
-                        <Label text="Value" GridPane.columnIndex="2">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Label>
+                        <Label styleClass="columnHeader" text="Filter" GridPane.hgrow="ALWAYS" />
+                        <Label styleClass="columnHeader" text="attribute" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                        <Label styleClass="columnHeader" text="value" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" />
                      </children>
+                     <padding>
+                        <Insets left="6.0" />
+                     </padding>
                   </GridPane>
-               </content>
-            </ScrollPane>
-         </content>
-    </Tab>
-  </tabs>
-</TabPane>
+               </children>
+            </AnchorPane>
+        </content>
+         <VBox.margin>
+            <Insets bottom="10.0" right="10.0" />
+         </VBox.margin>
+      </ScrollPane>
+   </children>
+</VBox>

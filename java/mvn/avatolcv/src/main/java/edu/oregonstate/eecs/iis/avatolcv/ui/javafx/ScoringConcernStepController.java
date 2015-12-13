@@ -168,6 +168,7 @@ public class ScoringConcernStepController implements StepController {
             	
             	checkBoxForChoiceItemHash.put(ci, cb);
             	Label label = new Label(ci.getNormalizedKey().getName());
+            	label.getStyleClass().add("columnValue");
             	grid.add(label, 1, curRow);
             	curRow++;
             }

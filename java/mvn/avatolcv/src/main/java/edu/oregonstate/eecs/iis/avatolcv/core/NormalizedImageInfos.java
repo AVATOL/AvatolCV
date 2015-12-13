@@ -74,10 +74,21 @@ public class NormalizedImageInfos {
 		return scorableKeys;
 	}
 	
-	public List<NormalizedImageInfo> getNormalizedImageInfosForSession(){
+	public List<NormalizedImageInfo> getNormalizedImageInfosForSession() throws AvatolCVException {
 		List<NormalizedImageInfo> result = new ArrayList<NormalizedImageInfo>();
 		for (String s : niiSession){
-			result.add(niiHash.get(s));
+	    	String imageID = NormalizedImageInfo.getImageIDFromPath(s);
+	    	if (!ImageInfo.isExcluded(imageID)){
+	    		result.add(niiHash.get(s));
+	    	}
+		}
+		return result;
+	}
+	public List<NormalizedImageInfo> getNormalizedImageInfosForSessionWithExcluded() throws AvatolCVException {
+		List<NormalizedImageInfo> result = new ArrayList<NormalizedImageInfo>();
+		for (String s : niiSession){
+	    	String imageID = NormalizedImageInfo.getImageIDFromPath(s);
+	    	result.add(niiHash.get(s));
 		}
 		return result;
 	}

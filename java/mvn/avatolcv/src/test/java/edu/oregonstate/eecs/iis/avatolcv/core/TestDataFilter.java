@@ -5,7 +5,7 @@ package edu.oregonstate.eecs.iis.avatolcv.core;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter.Pair;
+import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter.FilterItem;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -19,7 +19,7 @@ public class TestDataFilter extends TestCase {
             df.addPropertyValue("propC", "c", "someID", true);
             df.addPropertyValue("propA", "a", "someID",true);
             df.addPropertyValue("propB", "b", "someID",true);
-            List<Pair> pairs = df.getItems();
+            List<FilterItem> pairs = df.getItems();
             
             assertEquals("a", pairs.get(0).getValue());
             assertEquals("b", pairs.get(1).getValue());
@@ -37,7 +37,7 @@ public class TestDataFilter extends TestCase {
             df.addPropertyValue("propC", "c", "someID",true);
             df.addPropertyValue("propA", "a", "someID",true);
             df.addPropertyValue("propA", "a", "someID",true);
-            List<Pair> pairs = df.getItems();
+            List<FilterItem> pairs = df.getItems();
             Assert.fail("should not thrown exception on redundant value");
         }
         catch(AvatolCVException e){
@@ -51,7 +51,7 @@ public class TestDataFilter extends TestCase {
             df.addPropertyValue("propC", "c", "someID",false);
             df.addPropertyValue("propA", "a", "someID",true);
             df.addPropertyValue("propB", "b", "someID",true);
-            List<Pair> pairs = df.getItems();
+            List<FilterItem> pairs = df.getItems();
             
             assertEquals("a", pairs.get(0).getValue());
             assertEquals("b", pairs.get(1).getValue());
@@ -61,7 +61,7 @@ public class TestDataFilter extends TestCase {
             DataFilter df2 = new DataFilter(curDir);
             boolean loaded = df2.load();
             Assert.assertTrue(loaded);;
-            List<Pair> pairs2 = df2.getItems();
+            List<FilterItem> pairs2 = df2.getItems();
             assertEquals("a", pairs2.get(0).getValue());
             assertEquals("b", pairs2.get(1).getValue());
             assertEquals("c", pairs2.get(2).getValue());

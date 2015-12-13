@@ -17,107 +17,97 @@ public class DataFilter {
 	private static final String FILTER_FILE_NAME = "filter.txt";
 	private static final String FILESEP = System.getProperty("file.separator");
 	private static final String NL = System.getProperty("line.separator");
-	private List<String> knownProperties = new ArrayList<String>();
-	private Hashtable<String, Pair> pairForKeyHash = new Hashtable<String, Pair>();
+	private List<String> knownKeyVals = new ArrayList<String>();
+	private Hashtable<String, FilterItem> pairForKeyHash = new Hashtable<String, FilterItem>();
 	private String sessionDir = null;
 	public DataFilter(String sessionDir){
 		this.sessionDir = sessionDir;
 	}
-	public List<Pair> getItems(){
-		List<Pair> result = new ArrayList<Pair>();
-		for (String id : knownProperties){
-			Pair p = pairForKeyHash.get(id);
-			result.add(p);
+	public List<FilterItem> getItems(){
+		List<FilterItem> result = new ArrayList<FilterItem>();
+		for (String key : knownKeyVals){
+			FilterItem fi = pairForKeyHash.get(key);
+			result.add(fi);
 		}
 		Collections.sort(result);
 		return result;
 	}
-	public Pair addPropertyValue(String name, String value, String valueId, boolean isEditable) throws AvatolCVException {
-		Pair p = new Pair(name, value, valueId, isEditable);
-		String id = p.getID();
-		if (knownProperties.contains(id)){
-			Pair existingPair = pairForKeyHash.get(id);
-			return existingPair;
-			//throw new AvatolCVException("Filter already has name value combination: name " + name + " value: " + value);
+	public FilterItem addFilterItem(NormalizedKey key, NormalizedValue value, boolean isEditable) throws AvatolCVException {
+		String keyValString = key.toString() + "=" + value.toString();
+		if (knownKeyVals.contains(keyValString)){
+			FilterItem existingItem = pairForKeyHash.get(keyValString);
+			return existingItem;
 		}
-		knownProperties.add(id);
-		pairForKeyHash.put(id, p);
+		FilterItem fi = new FilterItem(key, value, isEditable);
+
+		knownKeyVals.add(keyValString);
+		pairForKeyHash.put(keyValString, fi);
 		persist();
-		return p;
+		return fi;
 	}
-	public class Pair implements Comparable<Pair> {
-		private String name;
-		private String value;
-		private boolean isSelected = true;
+	public class FilterItem implements Comparable<FilterItem> {
+		private NormalizedKey key;
+		private NormalizedValue value;
+		private boolean isSelected = false;
 		private boolean isEditable = true;
-		private String valueId = null;
-		public Pair(String name, String value, String valueId, boolean isEditable){
-			this.name = name;
+		public FilterItem(NormalizedKey key, NormalizedValue value, boolean isEditable){
+			this.key = key;
 			this.value = value;
-			this.valueId = valueId;
 			this.isEditable = isEditable;
 		}
-		public String getValueID(){
-		    return this.valueId;
+		public NormalizedKey getKey(){
+		    return this.key;
 		}
 		public void setSelected(boolean value){
 			this.isSelected = value;
 		}
-		public String getID(){
-			return name + "_" + value;
-		}
 		public boolean isEditable(){
 		    return this.isEditable;
 		}
-		public String getName(){
-			return this.name;
-		}
-		public String getValue(){
+		public NormalizedValue getValue(){
 			return this.value;
 		}
 		public boolean isSelected(){
 			return this.isSelected;
 		}
 		@Override
-		public int compareTo(Pair other) {
-	        String otherID = other.getID();
-	        String thisID = this.getID();
-	        return thisID.compareTo(otherID);
+		public int compareTo(FilterItem other) {
+	        NormalizedKey otherKey = other.getKey();
+	        return key.compareTo(otherKey);
 		}
 	}
-	public void enablePropertyValue(String name, String value) throws AvatolCVException {
+	/*public void enablePropertyValue(String name, String value) throws AvatolCVException {
 		String id = name + "_" + value;
 		if (!knownProperties.contains(id)){
 			throw new AvatolCVException("Filter cannot enable unknown property and value : " + name + " , " + value);
 		}
-		Pair p = pairForKeyHash.get(id);
+		FilterItem p = pairForKeyHash.get(id);
 		p.setSelected(true);
 		persist();
-	}
-	public void disablePropertyValue(String name, String value) throws AvatolCVException {
+	}*/
+	/*public void disablePropertyValue(String name, String value) throws AvatolCVException {
 		String id = name + "_" + value;
 		if (!knownProperties.contains(id)){
 			throw new AvatolCVException("Filter cannot disable unknown property and value : " + name + " , " + value);
 		}
-		Pair p = pairForKeyHash.get(id);
+		FilterItem p = pairForKeyHash.get(id);
 		p.setSelected(false);
 		persist();
-	}
+	}*/
 	public String getFilterFilePath(){
 		return this.sessionDir + FILESEP + FILTER_FILE_NAME;
 	}
 	public void persist() throws AvatolCVException {
 		String path = getFilterFilePath();
-		List<Pair> items = getItems();
+		List<FilterItem> items = getItems();
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(path));
-			for (Pair item : items){
-				String name = item.getName();
-				String value = item.getValue();
+			for (FilterItem item : items){
+				NormalizedKey key = item.getKey();
+				NormalizedValue value = item.getValue();
 				String isEnabled = "" + item.isSelected();
 				String isEditable = "" + item.isEditable();
-				String valueId = item.getValueID();
-				writer.write(name + "," + value + "," + valueId + "," + isEnabled + "," + isEditable + NL);
+				writer.write(key + "," + value + "," + isEnabled + "," + isEditable + NL);
 			}
 			writer.close();
 		}
@@ -136,17 +126,16 @@ public class DataFilter {
 			String line = null;
 			while (null != (line = reader.readLine())){
 				String[] parts = line.split(",");
-				String name = parts[0];
+				String key = parts[0];
 				String value = parts[1];
-                String valueId = parts[2];
-				String isSelectedString = parts[3];
-                String isEditableString = parts[4];
+				String isSelectedString = parts[2];
+                String isEditableString = parts[3];
                 Boolean isEditableBoolean = new Boolean (isEditableString);
                 boolean isEditable = isEditableBoolean.booleanValue();
-				Pair p = addPropertyValue(name, value, valueId, isEditable);
+				FilterItem fi = addFilterItem(new NormalizedKey(key), new NormalizedValue(value), isEditable);
 				Boolean b = new Boolean(isSelectedString);
 				boolean isSelected = b.booleanValue();
-				p.setSelected(isSelected);
+				fi.setSelected(isSelected);
 			}
 			reader.close();
 			return true;
