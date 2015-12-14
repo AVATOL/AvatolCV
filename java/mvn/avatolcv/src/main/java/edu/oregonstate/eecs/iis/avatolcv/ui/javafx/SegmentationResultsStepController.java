@@ -34,13 +34,13 @@ public class SegmentationResultsStepController implements StepController {
 
 	@Override
 	public boolean consumeUIData() {
-		// TODO Auto-generated method stub
+		// NA
 		return false;
 	}
 
 	@Override
 	public void clearUIFields() {
-		// TODO Auto-generated method stub
+		// NA
 
 	}
 
@@ -64,25 +64,23 @@ public class SegmentationResultsStepController implements StepController {
 
 	@Override
 	public boolean delayEnableNavButtons() {
-		// TODO Auto-generated method stub
+		// NA
 		return false;
 	}
 
 	@Override
 	public void executeFollowUpDataLoadPhase() throws AvatolCVException {
-		// TODO Auto-generated method stub
-
+		// NA
 	}
 
 	@Override
 	public void configureUIForFollowUpDataLoadPhase() {
-		// TODO Auto-generated method stub
-
+		// NA
 	}
 
 	@Override
 	public boolean isFollowUpDataLoadPhaseComplete() {
-		// TODO Auto-generated method stub
+		// NA
 		return false;
 	}
 

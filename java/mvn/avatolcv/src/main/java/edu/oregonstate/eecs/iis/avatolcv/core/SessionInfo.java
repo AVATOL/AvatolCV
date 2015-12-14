@@ -90,7 +90,6 @@ public class SessionInfo{
         //this.sessionID = "" + System.currentTimeMillis() / 1000L;
         this.sessionID = AvatolCVFileSystem.createSessionID();
         AvatolCVFileSystem.setSessionID(this.sessionID);
-        this.sessionImages = new SessionImages();
 	}
 	public List<NormalizedKey> getScoringSortingCandidates() throws AvatolCVException {
 		List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
@@ -126,6 +125,11 @@ public class SessionInfo{
 	public void setDataSource(DataSource dataSource){
 	    this.dataSource = dataSource;
 	    AvatolCVFileSystem.setDatasourceName(dataSource.getName());
+	    this.sessionImages = new SessionImages();
+	    this.dataSource.setSessionImages(this.sessionImages);
+	    this.chosenDataset = null;
+	    this.dataFilter = null;
+	    this.normalizedImageInfos = null;
 	}
 	public DataSource getDataSource(){
 	    return this.dataSource;

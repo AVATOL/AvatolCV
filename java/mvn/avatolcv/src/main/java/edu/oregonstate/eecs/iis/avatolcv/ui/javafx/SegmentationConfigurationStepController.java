@@ -126,25 +126,23 @@ public class SegmentationConfigurationStepController implements StepController {
     }
     @Override
     public boolean delayEnableNavButtons() {
-        // TODO Auto-generated method stub
+        // NA
         return false;
     }
 
     @Override
     public void executeFollowUpDataLoadPhase() throws AvatolCVException {
-        // TODO Auto-generated method stub
-
+        // NA
     }
 
     @Override
     public void configureUIForFollowUpDataLoadPhase() {
-        // TODO Auto-generated method stub
-
+        // NA
     }
 
     @Override
     public boolean isFollowUpDataLoadPhaseComplete() {
-        // TODO Auto-generated method stub
+        // NA
         return false;
     }
 

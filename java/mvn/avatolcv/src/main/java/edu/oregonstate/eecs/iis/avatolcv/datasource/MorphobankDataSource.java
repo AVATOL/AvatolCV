@@ -54,10 +54,13 @@ public class MorphobankDataSource implements DataSource {
     private MorphobankImages morphobankImages = null;
     private NormalizedImageInfos niis = null;
     private SessionImages sessionImages = null;
-    public MorphobankDataSource(String sessionsRoot, SessionImages sessionImages){
+    public MorphobankDataSource(String sessionsRoot){
         wsClient = new MorphobankWSClientImpl();
         mbDataFiles = new MorphobankDataFiles();
-        this.sessionImages = sessionImages;
+    }
+    @Override
+    public void setSessionImages(SessionImages sessionImages){
+    	this.sessionImages = sessionImages;
     }
     @Override
     public boolean authenticate(String username, String password) throws AvatolCVException {
@@ -481,21 +484,7 @@ public class MorphobankDataSource implements DataSource {
         return this.mbDataFiles;
     }
     
-    @Override
-    public DataFilter getDataFilter(String specificSessionDir) throws AvatolCVException {
-        this.dataFilter = new DataFilter(AvatolCVFileSystem.getSessionDir());
-        for (MBCharacter character : this.chosenCharacters){
-            this.dataFilter.addPropertyValue("character", character.getCharName(), character.getCharID(), false);
-        }
-        for (MBTaxon taxon : this.taxaForMatrix){
-            this.dataFilter.addPropertyValue("taxon", taxon.getTaxonName(), taxon.getTaxonID(), false);
-        }
-        
-        for (MBView v : this.viewsPresent){
-            this.dataFilter.addPropertyValue("view", v.getName(), v.getViewID(), true);
-        }
-        return this.dataFilter;
-    }
+   
     @Override
     public void acceptFilter() {
         /*

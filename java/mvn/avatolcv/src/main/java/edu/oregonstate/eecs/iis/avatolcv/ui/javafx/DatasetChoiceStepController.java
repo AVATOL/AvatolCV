@@ -82,6 +82,7 @@ public class DatasetChoiceStepController implements StepController {
     			list.add(m);
     		}
             if (this.step.hasPriorAnswers()){
+            	followUpDataDownloadPhaseComplete = false;
             	Hashtable<String, String> hash = this.step.getPriorAnswers();
             	String choice = hash.get("chosenDataset");
             	selectedDataset.setValue(choice);

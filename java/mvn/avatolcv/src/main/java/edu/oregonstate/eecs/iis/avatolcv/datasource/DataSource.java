@@ -12,6 +12,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoreIndex;
+import edu.oregonstate.eecs.iis.avatolcv.core.SessionImages;
 
 public interface DataSource {
     String getName();
@@ -32,7 +33,8 @@ public interface DataSource {
     
     String getDatasetSummaryText();
     AvatolCVDataFiles getAvatolCVDataFiles();
-    DataFilter getDataFilter(String specificSessionDir)  throws AvatolCVException;
+    //DataFilter getDataFilter(String specificSessionDir)  throws AvatolCVException;
+    void setSessionImages(SessionImages sessionImages);
     void acceptFilter();
     
     void downloadImages(ProgressPresenter pp, String processName)  throws AvatolCVException;

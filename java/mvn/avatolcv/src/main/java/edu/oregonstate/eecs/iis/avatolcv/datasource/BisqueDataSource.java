@@ -19,6 +19,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfosToReview;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedTypeIDName;
+import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoreIndex;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringConcernDetails;
@@ -43,11 +44,15 @@ public class BisqueDataSource implements DataSource {
     private BisqueImages bisqueImages = null;
     private NormalizedImageInfos niis = null;
     private SessionImages sessionImages = null;
-    public BisqueDataSource(String sessionsRoot, SessionImages sessionImages){
-        this.sessionImages = sessionImages;
+    public BisqueDataSource(String sessionsRoot){
+        
         wsClient = new BisqueWSClientImpl();
         bisqueDataFiles = new BisqueDataFiles();
         //bisqueDataFiles.setSessionsRoot(sessionsRoot);
+    }
+    @Override
+    public void setSessionImages(SessionImages sessionImages){
+    	this.sessionImages = sessionImages;
     }
     @Override
     public boolean authenticate(String username, String password) throws AvatolCVException {
@@ -148,7 +153,12 @@ public class BisqueDataSource implements DataSource {
         Hashtable<String, String> annotationIDforNameHash = new Hashtable<String, String>();
         for (BisqueImage bi : this.bisqueImagesForCurrentDataset){
             String imageID = bi.getResourceUniq();
+            System.out.println(imageID);
             List<BisqueAnnotation> annotations = annotationsForImageIdHash.get(imageID);
+            if (null == annotations){
+            	int foo = 3;
+            	int bar = foo;
+            }
             for (BisqueAnnotation a : annotations){
                 String annotationName = a.getName();
                 String annotationId = a.getAnnotationID();
@@ -304,13 +314,7 @@ public class BisqueDataSource implements DataSource {
     public AvatolCVDataFiles getAvatolCVDataFiles() {
         return (AvatolCVDataFiles)this.bisqueDataFiles;
     }
-    @Override
-    public DataFilter getDataFilter(String specificSessionDir)
-            throws AvatolCVException {
-        this.dataFilter = new DataFilter(AvatolCVFileSystem.getSessionDir());
-        //this.dataFilter.
-        return this.dataFilter;
-    }
+    
     @Override
     public void acceptFilter() {
         // TODO Auto-generated method stub
@@ -346,7 +350,8 @@ public class BisqueDataSource implements DataSource {
             //}
             
             String value = ba.getValue();
-            lines.add(keyString+"="+value);
+            String normalizedValueString = new NormalizedValue(value).toString();
+            lines.add(keyString+"="+normalizedValueString);
         }
         String path = this.niis.createNormalizedImageInfoFromLines(imageId,lines);
         File f = new File(path);

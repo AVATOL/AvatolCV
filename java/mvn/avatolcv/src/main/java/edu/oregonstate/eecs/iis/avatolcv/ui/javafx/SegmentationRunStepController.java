@@ -47,7 +47,7 @@ public class SegmentationRunStepController implements StepController, OutputMoni
 
     @Override
     public void clearUIFields() {
-        // TODO Auto-generated method stub
+        // NA
 
     }
     @SuppressWarnings("unchecked")
@@ -87,19 +87,19 @@ public class SegmentationRunStepController implements StepController, OutputMoni
 
     @Override
     public void executeFollowUpDataLoadPhase() throws AvatolCVException {
-        // TODO Auto-generated method stub
+        // NA
 
     }
 
     @Override
     public void configureUIForFollowUpDataLoadPhase() {
-        // TODO Auto-generated method stub
+        // NA
 
     }
 
     @Override
     public boolean isFollowUpDataLoadPhaseComplete() {
-        // TODO Auto-generated method stub
+        // NA
         return false;
     }
     public class PostSegmentationUIAdjustments implements Runnable{

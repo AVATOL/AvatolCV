@@ -96,15 +96,15 @@ public class ScoringModeStepController implements StepController {
 	}
     @Override
     public void executeFollowUpDataLoadPhase() throws AvatolCVException {
-     // nothing to be done
+     // NA
     }
     @Override
     public void configureUIForFollowUpDataLoadPhase() {
-     // nothing to be done
+     // NA
     }
     @Override
     public boolean isFollowUpDataLoadPhaseComplete() {
-     // not relevant
+     // NA
         return true;
     }
 

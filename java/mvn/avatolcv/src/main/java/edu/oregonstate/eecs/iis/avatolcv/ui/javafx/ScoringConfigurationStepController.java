@@ -468,70 +468,24 @@ public class ScoringConfigurationStepController implements StepController {
     }
 	@Override
 	public boolean delayEnableNavButtons() {
-		// TODO Auto-generated method stub
+		// NA
 		return false;
 	}
 
 	@Override
 	public void executeFollowUpDataLoadPhase() throws AvatolCVException {
-		// TODO Auto-generated method stub
-
+		// NA
 	}
 
 	@Override
 	public void configureUIForFollowUpDataLoadPhase() {
-		// TODO Auto-generated method stub
-
+		// NA
 	}
 
 	@Override
 	public boolean isFollowUpDataLoadPhaseComplete() {
-		// TODO Auto-generated method stub
+		// NA
 		return false;
 	}
-	/*
-    public GridPane loadGridPaneWithSetByImageOld(ScoringSet ss) throws AvatolCVException { 
-        GridPane gp = new GridPane();
-        ColumnConstraints column1 = new ColumnConstraints();
-        //column1.setPercentWidth(15);
-        ColumnConstraints column2 = new ColumnConstraints();
-        //column2.setPercentWidth(15);
-        ColumnConstraints column3 = new ColumnConstraints();
-       // column3.setPercentWidth(80);
-        gp.getColumnConstraints().addAll(column1, column2, column3); 
-        gp.setHgap(20);
-        gp.setVgap(6);
-        
-        List<ModalImageInfo> trainingImages = ss.getImagesToTrainOn();
-        List<ModalImageInfo> scoringImages = ss.getImagesToScore();
-        int row = 0;
-        for (ModalImageInfo mii : trainingImages){
-            RadioButton radioTrain = new RadioButton("train");
-            RadioButton radioScore = new RadioButton("score");
-            ToggleGroup tg = new ToggleGroup();
-            radioTrain.setToggleGroup(tg);
-            radioScore.setToggleGroup(tg);
-            radioTrain.setSelected(true);
-            Label imageLabel = new Label(mii.getNormalizedImageInfo().getImageName());
-            gp.add(radioTrain, 0, row);
-            gp.add(radioScore, 1, row);
-            gp.add(imageLabel, 2, row);
-            row++;
-        }
-        for (ModalImageInfo mii : scoringImages){
-            RadioButton radioTrain = new RadioButton("train");
-            RadioButton radioScore = new RadioButton("score");
-            ToggleGroup tg = new ToggleGroup();
-            radioTrain.setToggleGroup(tg);
-            radioScore.setToggleGroup(tg);
-            radioScore.setSelected(true);
-            Label imageLabel = new Label(mii.getNormalizedImageInfo().getImageName());
-            gp.add(radioTrain, 0, row);
-            gp.add(radioScore, 1, row);
-            gp.add(imageLabel, 2, row);
-            row++;
-        }
-        return gp;
-    }
-    */
+	
 }

@@ -40,26 +40,7 @@ public class SummaryFilterStepController implements StepController {
     }
     @Override
     public boolean consumeUIData() {
-    	// filter already has everything
-    	/*
-    	Hashtable<String, String> answerHash = new Hashtable<String, String>();
-    	try {
-    		DataFilter df = this.step.getDataFilter();
-    		List<FilterItem> items = df.getItems();
-    		for (FilterItem item : items){
-    			if (item.isSelected()){
-    				answerHash.put(item.getName()+":"+item.getValue(), "checked");
-    			}
-    			else {
-    				answerHash.put(item.getName()+":"+item.getValue(), "unchecked");
-    			}
-    		}
-    	}
-    	catch(AvatolCVException ace){
-    		 AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "Problem using filter data " +ace.getMessage());
-    	}
-		this.step.saveAnswers(answerHash);
-		*/
+    	// filter already has everything for reuse, no need to save answers in the usual way
     	try {
     		this.step.consumeProvidedData();
     	}
@@ -71,8 +52,7 @@ public class SummaryFilterStepController implements StepController {
 
     @Override
     public void clearUIFields() {
-        // TODO Auto-generated method stub
-
+        // NA
     }
 
     @Override

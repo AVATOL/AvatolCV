@@ -189,17 +189,15 @@ public class ExclusionQualityStepController  implements StepController {
 	}
 	@Override
 	public void executeFollowUpDataLoadPhase() throws AvatolCVException {
-		// TODO Auto-generated method stub
-		
+		// NA
 	}
 	@Override
 	public void configureUIForFollowUpDataLoadPhase() {
-		// TODO Auto-generated method stub
-		
+		// NA
 	}
 	@Override
 	public boolean isFollowUpDataLoadPhaseComplete() {
-		// TODO Auto-generated method stub
-		return false;
+		// NA
+		return true;
 	}
 }
