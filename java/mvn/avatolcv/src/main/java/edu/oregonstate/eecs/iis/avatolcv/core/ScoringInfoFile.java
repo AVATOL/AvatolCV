@@ -93,6 +93,17 @@ public class ScoringInfoFile {
 		String scoringLine = imageName+","+ trainTestConcern + "," + trainTestConcernValue +NL;
 		scoringLines.add(scoringLine);
 	}
+	/**
+	 * this one is for helping Michael with debugging Shell's alg
+	 * @param imageName
+	 * @param trainTestConcern
+	 * @param trainTestConcernValue
+	 * @param pointCoordinates
+	 */
+	public void addImageInfo(String imageName, String trainTestConcern, String trainTestConcernValue, String pointCoordinates){
+		String scoringLine = imageName+","+ trainTestConcern + "," + trainTestConcernValue  + "," + pointCoordinates+NL;
+		scoringLines.add(scoringLine);
+	}
 	public void persist(String parentDir) throws AvatolCVException {
 		String path = parentDir + FILESEP + getFilename();
 		try {

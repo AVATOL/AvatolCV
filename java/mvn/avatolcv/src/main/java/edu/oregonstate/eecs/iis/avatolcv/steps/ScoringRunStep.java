@@ -126,6 +126,7 @@ public class ScoringRunStep implements Step {
             ScoringInfoFile sif = new ScoringInfoFile(scoringConcernType, scoringConcernID, scoringConcernName);
             sif.setImageDir(algSequence.getInputDir());
             List<ModalImageInfo> scoringImages = scoringSet.getImagesToScore();
+            boolean genPointCoordsForDebug = sa.shouldIncludePointAnnotationsInScoringFile();
             for (ModalImageInfo mii : scoringImages){
             	NormalizedImageInfo nii = mii.getNormalizedImageInfo();
             	if (hasTrainTestConcern){
@@ -148,13 +149,19 @@ public class ScoringRunStep implements Step {
             	if (!trainTestConcern.getName().equals("")){
             		trainTestConcernValue = nii.getValueForKey(trainTestConcern);
             	}
-            	sif.addImageInfo(imagePath, trainTestConcern.toString(), trainTestConcernValue.toString());
+            	if (genPointCoordsForDebug){
+            		String pointCoordinates = nii.getAnnotationCoordinates();
+                	sif.addImageInfo(imagePath, trainTestConcern.toString(), trainTestConcernValue.toString(), pointCoordinates);
+            	}
+            	else {
+            		sif.addImageInfo(imagePath, trainTestConcern.toString(), trainTestConcernValue.toString());
+            	}
             }
             sif.persist(AvatolCVFileSystem.getTrainingDataDirForScoring());
             List<String> imagesWronglyInBoth = sif.getMatchingImageNames(tif.getImageNames());
             if (imagesWronglyInBoth.size() != 0){
             	StringBuilder sb = new StringBuilder();
-            	sb.append("ERROR - images that appear in both training and soring lists are : " + NL);
+            	sb.append("ERROR - images that appear in both training and scoring lists are : " + NL);
             	for (String image : imagesWronglyInBoth){
             		sb.append(image + NL);
             	}
@@ -173,6 +180,7 @@ public class ScoringRunStep implements Step {
         this.launcher = new AlgorithmLauncher(sa, runConfigFile.getRunConfigPath());
         this.launcher.launch(controller);
     }
+    
     public void cancelScoring(){
         this.launcher.cancel();
     }

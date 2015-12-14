@@ -8,7 +8,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 public class ScoringAlgorithm extends Algorithm {
     public static final String PROPERTY_SCORING_FOCUS = "scoringFocus";
     public static final String PROPERTY_SCORING_SCOPE = "scoringScope";
-    
+    private static final String PROPERTY_INCLUDE_POINT_ANNOTATIONS_IN_SCORING_FILE = "includePointAnnotationsInScoringFile";
     public enum ScoringSessionFocus { 
         SPECIMEN_PART_PRESENCE_ABSENCE, 
         SPECIMEN_SHAPE_ASPECT, 
@@ -18,7 +18,7 @@ public class ScoringAlgorithm extends Algorithm {
         SINGLE_ITEM,
         MULTIPLE_ITEM
     }
-    
+    private boolean includePointAnnotationsInScoringFile = false;
     private static Hashtable<ScoringSessionFocus, String> radioButtonTextForFocusHash = new Hashtable<ScoringSessionFocus, String>();
     private static Hashtable<String, ScoringSessionFocus> scoringFocusForName = new Hashtable<String,ScoringSessionFocus>();
     private static Hashtable<ScoringSessionFocus, List<String>> namesForScoringFocus = new Hashtable<ScoringSessionFocus,List<String>>();
@@ -45,18 +45,29 @@ public class ScoringAlgorithm extends Algorithm {
             else {
                 String[] parts = line.split("=");
                 String key = parts[0];
-                String val = parts[1];
+                String val = "";
+                if (parts.length > 1){
+                	val = parts[1];
+                } 
                 if (key.equals(PROPERTY_SCORING_FOCUS)){
                     setFocusValue(val);
                 }
                 else if (key.equals(PROPERTY_SCORING_SCOPE)){
                     setScopeValue(val);
                 }
+                else if (key.equalsIgnoreCase(PROPERTY_INCLUDE_POINT_ANNOTATIONS_IN_SCORING_FILE)){
+                	if (val.equals("true")){
+                		includePointAnnotationsInScoringFile = true;
+                	}
+                }
                 else {
                     // ignore the rest at this level
                 }
             }
         }
+    }
+    public boolean shouldIncludePointAnnotationsInScoringFile(){
+    	return includePointAnnotationsInScoringFile;
     }
     public boolean hasFocus(ScoringSessionFocus focus){
         if (focus == thisAlgorithmFocus){

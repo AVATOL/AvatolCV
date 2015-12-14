@@ -3,6 +3,9 @@ algName=dpmPresenceAbsenceScoring
 algType=scoring
 scoringFocus=SPECIMEN_PART_PRESENCE_ABSENCE
 scoringScope=MULTIPLE_ITEM
+
+includePointAnnotationsInScoringFile=true
+
 description=Scores presence/absence of simple parts, for example, types of teeth.
 
 inputRequired:testImagesFile refsFilesWithSuffix * ofType rawImage
