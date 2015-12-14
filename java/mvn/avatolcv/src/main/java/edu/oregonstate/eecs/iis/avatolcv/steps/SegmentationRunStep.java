@@ -49,7 +49,7 @@ public class SegmentationRunStep implements Step {
         SegmentationAlgorithm sa  = sessionInfo.getSelectedSegmentationAlgorithm();
         AlgorithmSequence algSequence = sessionInfo.getAlgorithmSequence();
         algSequence.enableSegmentation();
-        RunConfigFile rcf = new RunConfigFile(sa, algSequence);
+        RunConfigFile rcf = new RunConfigFile(sa, algSequence, null);
         String runConfigPath = rcf.getRunConfigPath();
         File runConfigFile = new File(runConfigPath);
         if (!runConfigFile.exists()){

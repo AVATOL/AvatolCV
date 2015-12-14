@@ -286,7 +286,8 @@ public class SessionInfo{
 	}
     public boolean isAllImagesLabeled() throws AvatolCVException {
         List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSession();
-        for (ChoiceItem ci : chosenScoringConcerns){
+        List<ChoiceItem> scoringConcerns = this.getChosenScoringConcerns();
+        for (ChoiceItem ci : scoringConcerns){
             NormalizedKey nKey = ci.getNormalizedKey();
             for (NormalizedImageInfo nii : niis){
                 if (nii.hasKey(nKey)){
@@ -312,7 +313,9 @@ public class SessionInfo{
         	for (NormalizedKey key : keys){
         		if (!isKeyOneOfTheScoringConcerns(key)){
         			NormalizedValue nv = nii.getValueForKey(key);
-        			this.dataFilter.addFilterItem(key, nv, true);
+        			if (!nv.getName().equals("")){
+        				this.dataFilter.addFilterItem(key, nv, true);
+        			}
         		}
         	}
         }
