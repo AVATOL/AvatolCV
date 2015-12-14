@@ -69,4 +69,8 @@ public class ImageTransformReviewStep  extends Answerable implements Step {
     public boolean isEnabledByPriorAnswers() {
         return true;
     }
+    @Override
+	public boolean shouldRenderIfBackingIntoIt() {
+		return true;
+	}
 }

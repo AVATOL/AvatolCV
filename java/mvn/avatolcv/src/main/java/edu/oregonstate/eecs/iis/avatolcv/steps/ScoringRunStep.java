@@ -206,5 +206,9 @@ public class ScoringRunStep implements Step {
     public boolean isEnabledByPriorAnswers() {
         return true;
     }
-
+    @Override
+	public boolean shouldRenderIfBackingIntoIt() {
+		return false;
+	}
+    
 }

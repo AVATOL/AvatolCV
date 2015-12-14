@@ -9,4 +9,5 @@ public interface Step {
     void consumeProvidedData() throws AvatolCVException;
     boolean hasFollowUpDataLoadPhase();
     boolean isEnabledByPriorAnswers();
+    boolean shouldRenderIfBackingIntoIt();
 }

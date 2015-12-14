@@ -43,5 +43,9 @@ public class ScoringModeStep  extends Answerable implements Step {
     public boolean isEnabledByPriorAnswers() {
         return true;
     }
-   
+    @Override
+	public boolean shouldRenderIfBackingIntoIt() {
+		return true;
+	}
+    
 }

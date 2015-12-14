@@ -192,13 +192,14 @@ public class JavaFXStepSequencer  {
         addLabelForStep(scoringRunStep,"Run Scoring");
         
         // THIS WAS SINISAS 20151112 DEMO
+        /*
         SegmentationResultsStep segResultsStep = new SegmentationResultsStep();
         ss.appendStep(segResultsStep);
         SegmentationResultsStepController segResultsStepController = new SegmentationResultsStepController(segResultsStep, "SegmentationResultsStep.fxml");
         controllerForStep.put(segResultsStep, segResultsStepController);
         addLabelForStep(segResultsStep,"Demo Segmentation Results");
         segConfigStep.setNextAnswerableInSeries(segResultsStep);
-        
+        */
         
         
         /*
@@ -364,6 +365,11 @@ public class JavaFXStepSequencer  {
      */
     public void requestPreviousStep() throws AvatolCVException {
 		ss.prev();
+		Step step = ss.getCurrentStep();
+		while (!step.shouldRenderIfBackingIntoIt()){
+			ss.prev();
+			step = ss.getCurrentStep();
+		}
     	CurrentStepRunner stepRunner = new CurrentStepRunner();
 		Platform.runLater(stepRunner);
     }

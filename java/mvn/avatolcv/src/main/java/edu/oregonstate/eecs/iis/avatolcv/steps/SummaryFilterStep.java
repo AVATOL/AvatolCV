@@ -58,4 +58,9 @@ public class SummaryFilterStep  extends Answerable implements Step {
     public boolean isEnabledByPriorAnswers() {
         return true;
     }
+    @Override
+	public boolean shouldRenderIfBackingIntoIt() {
+		return true;
+	}
+    
 }

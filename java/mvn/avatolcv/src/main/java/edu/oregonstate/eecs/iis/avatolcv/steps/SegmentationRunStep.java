@@ -110,6 +110,10 @@ public class SegmentationRunStep implements Step {
         else {
             return false;
         }
-        
     }
+    @Override
+	public boolean shouldRenderIfBackingIntoIt() {
+		return false;
+	}
+    
 }

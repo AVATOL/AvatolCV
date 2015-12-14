@@ -93,4 +93,9 @@ public class OrientationRunStep implements Step {
             return false;
         }
     }
+    @Override
+	public boolean shouldRenderIfBackingIntoIt() {
+		return false;
+	}
+    
 }

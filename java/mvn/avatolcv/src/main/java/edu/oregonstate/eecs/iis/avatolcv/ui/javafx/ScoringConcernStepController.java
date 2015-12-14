@@ -36,6 +36,9 @@ public class ScoringConcernStepController implements StepController {
     private static final String KEY_SCORING_CONCERN = "scoringConcern";
     private static final String VALUE_SCORING_CONCERN_SELECTED = "selected";
     private static final String VALUE_SCORING_CONCERN_UNSELECTED = "unselected";
+    //private static final String ANSWER_COUNT = "answerCount";
+    //private static final String SINGLE_ANSWER = "singleAnswer";
+    //private static final String MULTIPLE_ANSWER = "multipleAnswer";
     public VBox scoringConcernVBox;
     public Label remainingMetadataDownloadLabel;
     public ProgressBar remainingMetadataDownloadProgressBar;
@@ -59,6 +62,7 @@ public class ScoringConcernStepController implements StepController {
         	Hashtable<String, String> answerHash = new Hashtable<String, String>();
         	if (this.step.getScoringScope() == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM){
         		List<ChoiceItem> chosenItems = new ArrayList<ChoiceItem>();
+        		//answerHash.put(ANSWER_COUNT, MULTIPLE_ANSWER);
         		for (ChoiceItem ci : this.allChoiceItems){
         			if (checkBoxForChoiceItemHash.get(ci).isSelected()){
         				chosenItems.add(ci);
@@ -74,6 +78,7 @@ public class ScoringConcernStepController implements StepController {
         		return true;
         	}
         	else {
+        		//answerHash.put(ANSWER_COUNT, SINGLE_ANSWER);
         	    String chosenAnswer = (String)this.itemChoiceComboBox.getValue();
         	    ChoiceItem chosenChoiceItem = choiceItemForNameHash.get(chosenAnswer);
         	    answerHash.put(KEY_SCORING_CONCERN, chosenChoiceItem.getNormalizedKey().toString());
@@ -108,8 +113,11 @@ public class ScoringConcernStepController implements StepController {
                 choiceItemForNameHash.put(ci.getNormalizedKey().getName(), ci);
             }
             if (this.step.hasPriorAnswers()){
-                String priorAnswer = this.step.getPriorAnswers().get(KEY_SCORING_CONCERN);
-                itemChoiceComboBox.setValue(priorAnswer);
+            	Hashtable<String, String> answerHash = this.step.getPriorAnswers();
+            	//if (answerHash.get(ANSWER_COUNT).equals(SINGLE_ANSWER)){
+            		String priorAnswer = this.step.getPriorAnswers().get(KEY_SCORING_CONCERN);
+                    itemChoiceComboBox.setValue(priorAnswer);
+            	//}
             }
             else {
                 itemChoiceComboBox.setValue(this.allChoiceItems.get(0).getNormalizedKey().getName());
@@ -149,7 +157,7 @@ public class ScoringConcernStepController implements StepController {
             	CheckBox cb = new CheckBox("");
             	grid.add(cb,0,curRow);
             	if (this.step.hasPriorAnswers()){
-            	    String selectionState = this.step.getPriorAnswers().get(ci.getNormalizedKey().getName());
+            	    String selectionState = this.step.getPriorAnswers().get(ci.getNormalizedKey().toString());
             	    if (VALUE_SCORING_CONCERN_SELECTED.equals(selectionState)){
             	        cb.setSelected(true);
             	    }
@@ -162,7 +170,7 @@ public class ScoringConcernStepController implements StepController {
                         cb.setSelected(true);
                     }
                     else {
-                        
+                    	cb.setSelected(false);
                     }
             	}
             	

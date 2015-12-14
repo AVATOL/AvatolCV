@@ -55,4 +55,11 @@ public class LoginStep  extends Answerable implements Step {
     	}
         return true;
     }
+    @Override
+	public boolean shouldRenderIfBackingIntoIt() {
+    	if (!this.sessionInfo.getDataSource().isAuthenticated()){
+    		return true;
+    	}
+		return false;
+	}
 }
