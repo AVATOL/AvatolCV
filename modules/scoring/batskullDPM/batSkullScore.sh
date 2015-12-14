@@ -62,7 +62,7 @@ matlab_func1+="${trainingDataDir}"
 matlab_func1+="','"
 matlab_func1+="${testImagesFile}"
 matlab_func1+="'"
-matlab_func1+=');catch exception;disp(getReport(exception));exit;end;exit'
+matlab_func1+=');catch exception;disp(getReport(exception));exit(1);end;exit'
 
 echo $matlab_func1
 cd $THIS_DIR
@@ -87,7 +87,7 @@ matlab_func2='try;invoke_batskull_system('
 matlab_func2+="'"${summaryFile}"'"
 matlab_func2+=','
 matlab_func2+="'regime2'"
-matlab_func2+=');catch exception;disp(getReport(exception));exit;end;exit'
+matlab_func2+=');catch exception;disp(getReport(exception));exit(1);end;exit'
 
 echo $matlab_func2
 cd bat/chain_rpm
@@ -99,29 +99,29 @@ echo "matlab exited!!! (invoke_batskull_system)"
 
 cd $THIS_DIR
 
-# #
-# #  call matlab to translate output
-# #
+#
+#  call matlab to translate output
+#
 
-# #direct matlab call
+#direct matlab call
 
-# matlab_func3='try;translate_output('
-# matlab_func3+="'"
-# matlab_func3+="${scoringOutputDir}"
-# matlab_func3+="','"
-# matlab_func3+="${trainingDataDir}"
-# matlab_func3+="','"
-# matlab_func3+="${testImagesFile}"
-# matlab_func3+="'"
-# matlab_func3+=');catch exception;disp(getReport(exception));exit;end;exit'
+matlab_func3='try;translate_output('
+matlab_func3+="'"
+matlab_func3+="${scoringOutputDir}"
+matlab_func3+="','"
+matlab_func3+="${trainingDataDir}"
+matlab_func3+="','"
+matlab_func3+="${testImagesFile}"
+matlab_func3+="'"
+matlab_func3+=');catch exception;disp(getReport(exception));exit(1);end;exit'
 
-# echo $matlab_func3
-# cd $THIS_DIR
+echo $matlab_func3
+cd $THIS_DIR
 
-# #/Applications/MATLAB_R2012b.app/bin/matlab -nodisplay -r "$matlab_func3"
-# /Applications/MATLAB_R2015b.app/bin/matlab -nodisplay -r "$matlab_func3"
+#/Applications/MATLAB_R2012b.app/bin/matlab -nodisplay -r "$matlab_func3"
+/Applications/MATLAB_R2015b.app/bin/matlab -nodisplay -r "$matlab_func3"
 
-# echo "matlab exited!!! (translate_output)"
+echo "matlab exited!!! (translate_output)"
 
 #hopefully we will be able to resolve the library issue from Invalid MEX-file '/Users/jedirvine/.mcrCache8.0/yaoOri0/modules/3rdParty/vlfeat/vlfeat-0.9.20/toolbox/mex/mexmaci64/vl_hog.mexmaci64': dlopen(/Users/jedirvine/.mcrCache8.0/yaoOri0/modules/3rdParty/vlfeat/vlfeat-0.9.20/toolbox/mex/mexmaci64/vl_hog.mexmaci64, 1): Library not loaded: @loader_path/libvl.dylib. But for now we have decided to go with the direct matlab call
 

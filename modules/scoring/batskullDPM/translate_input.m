@@ -30,7 +30,7 @@ end
 testImages = read_test_images_file(testImagesFile);
 
 %% read and parse training data
-trainingDirList = dir([trainingDataDir filesep '*.txt']);
+trainingDirList = dir([trainingDataDir filesep 'training_*.txt']);
 nCharacters = length(trainingDirList);
 
 trainingDataList = cell(nCharacters, 1);
@@ -43,6 +43,22 @@ for i = 1:nCharacters
     [trainingDataList{i}, scoringConcernIDList{i}, ...
         scoringConcernNameList{i}] = ...
         parse_training_images_file(trainingFile);
+end
+
+%% read and parse scoring data
+scoringDirList = dir([trainingDataDir filesep 'scoring_*.txt']);
+if nCharacters ~= length(scoringDirList)
+    error('mismatch number of scoring files (%d) vs. training files (%d)', ...
+        length(scoringDirList), nCharacters);
+end
+
+scoringDataList = cell(nCharacters, 1);
+
+for i = 1:nCharacters
+    logdebug('parsing scoring file %d...', i);
+    scoringFile = fullfile(trainingDataDir, scoringDirList(i).name);
+    scoringDataList{i} = ...
+        parse_scoring_images_file(scoringFile);
 end
 
 %% set up directories
@@ -78,7 +94,7 @@ logdebug('generating summary file...');
 summaryFile = fullfile(inputDir, SUMMARY_FILE);
 generate_summary_file(summaryFile, INPUT, OUTPUT, DETECTION_RESULTS, ...
     trainingDataList, scoringConcernIDList, scoringConcernNameList, ...
-    testImages);
+    scoringDataList);
 
 %% generate annotation files
 logdebug('generating annotation files...');
@@ -93,7 +109,7 @@ for i = 1:nCharacters
         scoringConcernNameList{i} '.txt'];
     filePath = fullfile(inputDir, fileName);
     generate_sorted_input_data_file(filePath, charId, trainingDataList{i}, ...
-        testImages, ANNOTATIONS, rootDir);
+        scoringDataList{i}, ANNOTATIONS, rootDir);
 end
 
 end % translate
@@ -108,57 +124,6 @@ if PRINT_DEBUG_MESSAGES
 end
 
 end % logdebug
-
-% function [scoringOutputDir, trainingDataDir, testImagesFile] = ...
-%     read_run_config_scoring_path_file(runConfigScoringPath)
-% 
-% %% constants
-% DELIMITER = '=';
-% 
-% %% read file
-% fh = fopen(runConfigScoringPath, 'rt');
-% results = textscan(fh, '%s %s', 'Delimiter', DELIMITER);
-% fclose(fh);
-% 
-% %% error handling
-% if size(results, 1) ~= 1 || size(results, 2) ~= 2 ...
-%         || length(results{1}) ~= length(results{2})
-%     error('unexepcted parse format for "%s"', runConfigScoringPath);
-% end
-% 
-% %% get key=value
-% scoringOutputDir = '';
-% trainingDataDir = '';
-% testImagesFile = '';
-% for i = 1:length(results{1})
-%     key = results{1}{i};
-%     value = results{2}{i};
-%     
-%     if strcmp(key, 'scoringOutputDir') == 1
-%         scoringOutputDir = value;
-%     elseif strcmp(key, 'trainingDataDir') == 1
-%         trainingDataDir = value;
-%     elseif strcmp(key, 'testImagesFile') == 1
-%         testImagesFile = value;
-%     else
-%         error('unknown key "%s" when parsing "%s"', key, ...
-%             runConfigScoringPath);
-%     end
-% end
-% 
-% %% error handling
-% if strcmp(scoringOutputDir, '') == 1
-%     error('empty, missing or unable to parse key "scoringOutputDir" in "%s"', ...
-%         runConfigScoringPath);
-% elseif strcmp(trainingDataDir, '') == 1
-%     error('empty, missing or unable to parse key "trainingDataDir" in "%s"', ...
-%         runConfigScoringPath);
-% elseif strcmp(testImagesFile, '') == 1
-%     error('empty, missing or unable to parse key "testImagesFile" in "%s"', ...
-%         runConfigScoringPath);
-% end
-% 
-% end % read_run_config_scoring_path_file
 
 function testImages = read_test_images_file(testImagesFile)
 
@@ -285,16 +250,89 @@ while 1
         deal(components2{1}, components2{2});
     
     counter = counter + 1;
-    
 end
 
 fclose(fh);
 
 end % parse_training_images_file
 
+function scoringData = parse_scoring_images_file(scoringFile)
+
+%% constants
+FILE_NAME_DELIMITER = '_';
+SCORING = 'scoring';
+SCORING_CONCERN_TYPE_CHARACTER = 'character';
+
+FILE_WITHIN_LINE_DELIMITER = ',';
+EXPECTED_NUM_LINE_COMPONENTS = 4;
+
+%% parse file name
+[~, fileName, ~] = fileparts(scoringFile);
+fileNameComponents = strsplit(fileName, FILE_NAME_DELIMITER, ...
+    'CollapseDelimiters', false);
+if length(fileNameComponents) ~= 4
+    error('unexpected # of components from parsing file name "%s"', ...
+        fileName);
+end
+
+[scoringString, scoringConcernType, ~, ~] = deal(fileNameComponents{:});
+if strcmp(scoringString, SCORING) == 0 ...
+        || strcmp(scoringConcernType, SCORING_CONCERN_TYPE_CHARACTER) == 0
+    error('expected "%s" instead of "%s" when parse of file name "%s"', ...
+        SCORING_CONCERN_TYPE_CHARACTER, scoringConcernType, fileName);
+end
+
+%% parse scoring file
+fh = fopen(scoringFile, 'rt');
+
+% set up data structure
+scoringData = struct;
+
+% parse each line
+lineNum = 0;
+counter = 1;
+while 1
+    tline = fgetl(fh);
+    if ~ischar(tline)
+        break
+    end
+    lineNum = lineNum + 1;
+    
+    %% parse line
+    lineComponents = strsplit(tline, FILE_WITHIN_LINE_DELIMITER, ...
+        'CollapseDelimiters', false);
+    if length(lineComponents) ~= EXPECTED_NUM_LINE_COMPONENTS
+        error('expected %d components from parsing line(%d) in file "%s"', ...
+            EXPECTED_NUM_LINE_COMPONENTS, lineNum, fileName);
+    end
+    
+    [imagePath, trainTestConcern, trainTestValue, pointCoords] = deal(lineComponents{:});
+    
+    %% parse image path
+    scoringData(counter).image = imagePath;
+    
+    %% parse traintest concern
+    components1 = strsplit(trainTestConcern, ':');
+    components2 = strsplit(components1{2}, '|');
+    scoringData(counter).trainTestConcern = deal(components2{2});
+    
+    %% parse traintest value
+    components1 = strsplit(trainTestValue, ':');
+    components2 = strsplit(components1{2}, '|');
+    [scoringData(counter).taxonId, ...
+        scoringData(counter).taxonName] = ...
+        deal(components2{1}, components2{2});
+    
+    counter = counter + 1;
+end
+
+fclose(fh);
+
+end % parse_scoring_images_file
+
 function generate_summary_file(summaryFile, INPUT, OUTPUT, ...
     DETECTION_RESULTS, trainingDataList, scoringConcernIDList, ...
-    scoringConcernNameList, testImages)
+    scoringConcernNameList, scoringDataList)
 
 %% write to file
 fh = fopen(summaryFile, 'wt');
@@ -316,7 +354,7 @@ for charIndex = 1:length(trainingDataList)
     trainingData = trainingDataList{charIndex};
     for exampleIndex = 1:length(trainingData)
         mediaPath = trainingData(exampleIndex).image;
-        [mediaBase, mediaId, mediaExt] = fileparts(mediaPath);
+        [~, mediaId, ~] = fileparts(mediaPath);
         
         if ~ismember(mediaId, mediaIdList)
             fprintf(fh, 'media,%s,%s,training\n', mediaId, mediaPath);
@@ -325,13 +363,16 @@ for charIndex = 1:length(trainingDataList)
     end
 end
 
-for exampleIndex = 1:length(testImages)
-    mediaPath = testImages{exampleIndex};
-    [mediaBase, mediaId, mediaExt] = fileparts(mediaPath);
-
-    if ~ismember(mediaId, mediaIdList)
-        fprintf(fh, 'media,%s,%s,toScore\n', mediaId, mediaPath);
-        mediaIdList{length(mediaIdList)+1} = mediaId;
+for charIndex = 1:length(scoringDataList)
+    scoringData = scoringDataList{charIndex};
+    for exampleIndex = 1:length(scoringData)
+        mediaPath = scoringData(exampleIndex).image;
+        [~, mediaId, ~] = fileparts(mediaPath);
+        
+        if ~ismember(mediaId, mediaIdList)
+            fprintf(fh, 'media,%s,%s,toScore\n', mediaId, mediaPath);
+            mediaIdList{length(mediaIdList)+1} = mediaId;
+        end
     end
 end
 
@@ -362,7 +403,21 @@ for charIndex = 1:length(trainingDataList)
         
         if ~ismember(taxonId, taxonIdList)
             fprintf(fh, 'taxon,%s,%s,%s\n', taxonId, taxonName, ...
-                'training'); % TODO
+                'training');
+            taxonIdList{length(taxonIdList)+1} = taxonId;
+        end
+    end
+end
+
+for charIndex = 1:length(scoringDataList)
+    scoringData = scoringDataList{charIndex};
+    for exampleIndex = 1:length(scoringData)
+        taxonId = scoringData(exampleIndex).taxonId;
+        taxonName = scoringData(exampleIndex).taxonName;
+        
+        if ~ismember(taxonId, taxonIdList)
+            fprintf(fh, 'taxon,%s,%s,%s\n', taxonId, taxonName, ...
+                'scoring');
             taxonIdList{length(taxonIdList)+1} = taxonId;
         end
     end
@@ -415,7 +470,7 @@ end
 end % generate_annotation_files
 
 function generate_sorted_input_data_file(filePath, charId, trainingData, ...
-    testImages, ANNOTATIONS, rootDir)
+    scoringData, ANNOTATIONS, rootDir)
 
 %% constants
 DELIM = '|';
@@ -424,8 +479,9 @@ DELIM = '|';
 fh = fopen(filePath, 'wt');
 
 %% write training data
+mediaIdList = cell(0);
 for i = 1:length(trainingData)
-    [mediaPath, mediaId, mediaExt] = fileparts(trainingData(i).image);
+    [~, mediaId, ~] = fileparts(trainingData(i).image);
     media = trainingData(i).image;
     charStateId = trainingData(i).charStateId;
     charStateName = trainingData(i).charStateName;
@@ -440,15 +496,22 @@ for i = 1:length(trainingData)
         annotationPath DELIM ...
         taxonId DELIM ...
         lineNum '\n']);
+    
+    if ~ismember(media, mediaIdList)
+        mediaIdList{length(mediaIdList)+1} = media;
+    end
 end
 
-%% write test data
-for i = 1:length(testImages)
-    [~, mediaId, mediaExt] = fileparts(testImages{i});
-    media = [mediaId mediaExt];
-    taxonId = 'NA';
+%% write scoring data
+for i = 1:length(scoringData)
+    media = scoringData(i).image;
+    taxonId = scoringData(i).taxonId;
     annotationPath = 'NA';
     lineNum = 'NA';
+    
+    if ismember(media, mediaIdList)
+        fprintf('warning: test image found in training: %s\n', media);
+    end
     
     fprintf(fh, ['image_to_score' DELIM ...
         media DELIM ...

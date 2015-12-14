@@ -6,10 +6,11 @@ function translate_output( scoringOutputDir, trainingDataDir, testImagesFile )
 INPUT = 'input';
 OUTPUT = 'output';
 DETECTION_RESULTS = 'detection_results';
-ANNOTATIONS = 'annotations';
 SUMMARY_FILE = 'summary.txt';
 
 LEGACY_FOLDER = 'legacy_format';
+
+SCORING_CONCERN_TYPE = 'character';
 
 %% make sure folders and files exist
 logdebug('scoringOutputDir: %s', scoringOutputDir);
@@ -33,6 +34,11 @@ if ~exist(rootDir, 'dir')
     error('root directory from batskull algorithm does not exist');
 end
 
+inputDir = fullfile(rootDir, INPUT);
+if ~exist(inputDir, 'dir')
+    error('input directory from batskull algorithm does not exist');
+end
+
 outputDir = fullfile(rootDir, OUTPUT);
 if ~exist(outputDir, 'dir')
     error('output directory from batskull algorithm does not exist');
@@ -43,8 +49,8 @@ if ~exist(detectionResultsDir, 'dir')
     error('detection_results directory from batskull algorithm does not exist');
 end
 
-%% read and parse output TODO
-outputDirList = dir([outputDir filesep '*.txt']);
+%% read and parse output
+outputDirList = dir([outputDir filesep 'sorted_output_data*.txt']);
 nCharacters = length(outputDirList);
 
 scoredDataList = cell(nCharacters, 1);
@@ -57,6 +63,21 @@ for i = 1:nCharacters
     outputFile = fullfile(outputDir, outputDirList(i).name);
     [scoredDataList{i}, unscoredDataList{i}, charIdList{i}, ...
         charNameList{i}] = parse_output_file(outputFile);
+end
+
+%% read and parse summary file for characters and states
+summaryFile = fullfile(inputDir, SUMMARY_FILE);
+[charMetaList, charNameList] = parse_summary_file(summaryFile, charIdList, charNameList);
+
+%% write output
+for i = 1:nCharacters
+    logdebug('writing output file %d', i);
+    
+    outputFile = fullfile(scoringOutputDir, ...
+        ['scored_' SCORING_CONCERN_TYPE '_' ...
+        charIdList{i} '_' charNameList{i} '.txt']);
+    write_output_file(outputFile, charMetaList{i}, ...
+        scoredDataList{i}, unscoredDataList{i});
 end
 
 end % translate
@@ -88,7 +109,7 @@ COULD_NOT_SCORE = 'COULD_NOT_SCORE';
 
 EXPECTED_DET_NUM_LINE_COMPONENTS = 5;
 POINT_COORDS_DELIMITER = ',';
-DETECTION_RESULTS_DELIMITER = '|';
+DETECTION_RESULTS_DELIMITER = ':';
 
 %% parse file name
 [~, fileName, ~] = fileparts(outputFile);
@@ -108,17 +129,7 @@ if strcmp(sortedString, SORTED) == 0 ...
 end
 
 %% parse score file
-fh = fopen(trainingFile, 'rt');
-% count number of lines in file
-nLines = 0;
-while 1
-    tline = fgetl(fh);
-    if ~ischar(tline)
-        break
-    end
-    nLines = nLines + 1;
-end
-frewind(fh);
+fh = fopen(outputFile, 'rt');
 
 % set up data structure
 scoredData = struct;
@@ -153,7 +164,7 @@ while 1
     if strcmp(confidence, COULD_NOT_SCORE) == 1
         unscoredData(unscoredCounter).image = mediaPath;
         unscoredCounter = unscoredCounter + 1;
-    else
+    else        
         scoredData(scoredCounter).image = mediaPath;
         scoredData(scoredCounter).charStateId = charStateId;
         scoredData(scoredCounter).charStateName = charStateName;
@@ -209,3 +220,105 @@ end
 fclose(fh);
 
 end % parse_output_file
+
+function [charMeta, charNameList] = ...
+    parse_summary_file(summaryFile, charIdList, charNameList)
+
+%% constants
+DELIMITER = ',';
+
+%% parse score file
+fh = fopen(summaryFile, 'rt');
+
+% parse each line
+nCharacters = length(charIdList);
+charMeta = cell(nCharacters, 1);
+while 1
+    tline = fgetl(fh);
+    if ~ischar(tline)
+        break
+    end
+
+    strs = strsplit(tline, DELIMITER);
+
+    if strcmp(strs{1},'character')
+        id = strs{2};
+        name = strs{3};
+        for i = 1:nCharacters % inefficient loop
+            if strcmp(charIdList(i), id) == 1
+                charNameList{i} = name; % use full name
+                break;
+            end
+        end
+    elseif strcmp(strs{1},'media')
+        continue;
+    elseif strcmp(strs{1},'state')
+        stateId = strs{2};
+        stateName = strs{3};
+        charId = strs{4};
+        for i = 1:nCharacters % inefficient loop
+            if strcmp(charIdList(i), charId) == 1
+                charMeta{i}(end+1).id = stateId;
+                charMeta{i}(end).name = stateName;
+                break;
+            end
+        end
+    elseif strcmp(strs{1},'taxon')
+        continue;
+    elseif strcmp(strs{1},'view')
+        continue;
+    elseif strcmp(strs{1},'inputDir')
+        continue
+    elseif strcmp(strs{1},'outputDir')
+        continue
+    elseif strcmp(strs{1},'detectionResultsDir')
+        continue
+    else
+        error('summary.txt: unknown line');
+    end
+end
+
+fclose(fh);
+
+end % parse_summary_file
+
+function write_output_file(outputFile, charMeta, scoredData, unscoredData)
+
+%% constants
+DELIM = ',';
+CHARACTER_STATE = 'characterState';
+POINT = 'point';
+POINT_COORDS_DELIM = '-';
+
+%% write to file
+fh = fopen(outputFile, 'wt');
+
+%% write class header
+class1Name = charMeta(1).name;
+class2Name = charMeta(2).name;
+fprintf(fh, 'classNames=%s,%s\n', class1Name, class2Name);
+
+%% write scored data
+for i = 1:length(scoredData)
+    fullpathtoScoredImage = scoredData(i).image;
+    classValue = [CHARACTER_STATE ':' scoredData(i).charStateId ...
+        '|' scoredData(i).charStateName];
+    pointAnnotations = [POINT ':' num2str(scoredData(i).x) ...
+        POINT_COORDS_DELIM num2str(scoredData(i).y)];
+    
+    confClass1 = str2double(scoredData(i).confidence);
+    confClass2 = 1.0-confClass1;
+    
+    fprintf(fh, '%s\n', ...
+        [fullpathtoScoredImage DELIM ...
+        classValue DELIM ...
+        pointAnnotations DELIM ...
+        num2str(confClass1) DELIM ...
+        num2str(confClass2)]);
+end
+
+fclose(fh);
+
+%% write unscored data TODO
+
+end % write_output_file
