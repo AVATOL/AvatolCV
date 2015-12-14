@@ -1,0 +1,12 @@
+launchWith=hcsearchSegRunner.sh
+algName=nematocystSegmenter
+algType=segmentation
+description=Algorithm nematocystSegmenter will isolate foreground objects from heavy background clutter, such as nematocysts.
+
+inputRequired:testImagesFile refsFilesWithSuffix * ofType rawImage
+
+inputOptional:userProvidedGroundTruthImagesFile refsFilesWithSuffix _GT ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed 
+inputOptional:userProvidedTrainImagesFile refsFilesWithSuffix * ofType rawImage
+
+outputGenerated:ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed withSuffix _croppedMask
+outputGenerated:ofType isolatedSpecimenImage withSuffix _croppedOrig
