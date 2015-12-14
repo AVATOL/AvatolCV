@@ -41,7 +41,7 @@ public class OrientationRunStep implements Step {
         OrientationAlgorithm sa  = sessionInfo.getSelectedOrientationAlgorithm();
         AlgorithmSequence algSequence = sessionInfo.getAlgorithmSequence();
         algSequence.enableOrientation();
-        RunConfigFile rcf = new RunConfigFile(sa, algSequence);
+        RunConfigFile rcf = new RunConfigFile(sa, algSequence, null);
         String runConfigPath = rcf.getRunConfigPath();
         File runConfigFile = new File(runConfigPath);
         if (!runConfigFile.exists()){

@@ -152,29 +152,26 @@ public class RunConfigFile {
 			ignore this for now as out limited implementation won't experience malfunction because of this
          * now filter on what images are actually in play for this scoring run
          */
-        for (AlgorithmInput air : requiredInputs){
-        	List<String> desiredFiles = new ArrayList<String>();
-        	List<String> candidatesWithMatchedSuffix = pathListHash.get(air);
-        	int count = 0;
-        	for (ModalImageInfo mii : scoringList){
-            	String imageID = mii.getNormalizedImageInfo().getImageID();
-            	if (imageID.equals("381004")){
-            		int foo = 3;
-            		int bar = foo;
-            	}
-            	String pathWithMatchingImageID = getPathWithMatchingImageID(candidatesWithMatchedSuffix, imageID);
-            	if (null == pathWithMatchingImageID){
-            		throw new AvatolCVException("Cannot find file to score with imageID " + imageID + " and reqiured suffix " + air.getSuffix() + " in "  + this.pathOfSessionInputFiles);
-            	}
-            	desiredFiles.add(pathWithMatchingImageID);
-            	if (++count > 63){
-            		int foo = 3;
-            		int bar = foo;
-            	}
+        if (null!= scoringList){
+        	for (AlgorithmInput air : requiredInputs){
+            	List<String> desiredFiles = new ArrayList<String>();
+            	List<String> candidatesWithMatchedSuffix = pathListHash.get(air);
+            	int count = 0;
+            	for (ModalImageInfo mii : scoringList){
+                	String imageID = mii.getNormalizedImageInfo().getImageID();
+                	String pathWithMatchingImageID = getPathWithMatchingImageID(candidatesWithMatchedSuffix, imageID);
+                	if (null == pathWithMatchingImageID){
+                		System.out.println("WARNING - Cannot find file to score with imageID " + imageID + " and reqiured suffix " + air.getSuffix() + " in "  + this.pathOfSessionInputFiles);
+                	}
+                	else {
+                		desiredFiles.add(pathWithMatchingImageID);
+                	}
+                }
+            	// replace the candidate list with the desired list
+            	pathListHash.put(air,desiredFiles);
             }
-        	// replace the candidate list with the desired list
-        	pathListHash.put(air,desiredFiles);
         }
+        
         
         // generate a file list for each requiredInput
         for (AlgorithmInput air : requiredInputs){
@@ -237,7 +234,8 @@ public class RunConfigFile {
             List<String> pathListForInput = pathListHash.get(air);
             
             for (String path : allPathsFromDir){
-                if (pathHasSuffix(path,air.getSuffix())){
+            	String suffix = air.getSuffix();
+                if (pathHasSuffix(path,suffix)){
                 	pathListForInput.add(path);
                 }
             }

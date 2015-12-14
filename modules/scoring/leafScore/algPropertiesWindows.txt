@@ -8,6 +8,6 @@ scoringScope=SINGLE_ITEM
 
 trainingLabelImageSuffix=_orientedOrig
 
-inputRequired:testImagesFile refsFilesWithSuffix _alignOrig ofType rawImage
-inputRequired:testImagesMaskFile refsFilesWithSuffix _alignMask ofType rawImage
+inputRequired:testImagesFile refsFilesWithSuffix _orientedOrig ofType rawImage
+inputRequired:testImagesMaskFile refsFilesWithSuffix _orientedMask ofType rawImage
 

@@ -30,7 +30,7 @@ public class NormalizedImageInfos {
 		for (String s : niiAllPresent){
 			NormalizedImageInfo nii = niiHash.get(s);
 			String coords = nii.getAnnotationCoordinates();
-			if (null != coords){
+			if ((null != coords) && (!coords.equals(""))){
 				return true;
 			}
 		}

@@ -125,7 +125,7 @@ public class BisqueImages {
             return true;
         }
         else {
-            image.excludeForReason(ImageInfo.EXCLUSION_REASON_UNAVAILABLE, false);
+            image.excludeForDataset(ImageInfo.EXCLUSION_REASON_UNAVAILABLE);
             return false;
         }
     }
