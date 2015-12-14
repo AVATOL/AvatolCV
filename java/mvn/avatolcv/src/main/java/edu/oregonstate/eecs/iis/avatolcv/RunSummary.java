@@ -1,8 +1,10 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +27,11 @@ public class RunSummary {
     private static final String KEY_SCORING_ALGORITHM = "scoring algorithm";
     private static final String KEY_RUNID = "runID";
     private static final String KEY_SCORING_CONCERN_VALUE = "scoring concern value";
-    
+    private static final String NL = System.getProperty("line.separator");
     
     private static final String FILESEP = System.getProperty("file.separator");
     private String scoringConcern = null;
+    
     private String dataset = null;
     private String dataSource = null;
     private String scoringAlgorithm = null;
@@ -36,9 +39,40 @@ public class RunSummary {
     private String trainTestConcern = null;
     private List<String> scoringConcernValues = new ArrayList<String>();
     private boolean cookingShow = false;
+    
     public RunSummary(String ID) throws AvatolCVException {
-        
-        
+        this.runID = runID;
+    }
+    
+    
+    public void persist() throws AvatolCVException {
+        String dir = AvatolCVFileSystem.getSessionSummariesDir();
+        String path = dir + FILESEP + this.runID + ".txt";
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+            writer.write(KEY_SCORING_CONCERN + "=" + getScoringConcern() + NL);
+            writer.write(KEY_DATASET + "=" + getDataset() + NL);
+            writer.write(KEY_DATA_SOURCE + "=" + getDataSource() + NL);
+            writer.write(KEY_SCORING_ALGORITHM + "=" + getScoringAlgorithm() + NL);
+            writer.write(KEY_RUNID + "=" + getRunID() + NL);
+            if (null != getTrainTestConcern()){
+                writer.write(KEY_TRAIN_TEST_CONCERN + "=" + getTrainTestConcern() + NL);
+            }
+            
+            //if (isCookingShow()){
+            //    writer.write(KEY_COOKING_SHOW + "=" + isCookingShow() + NL);
+            //}
+            for (String scVal : this.scoringConcernValues){
+                writer.write(KEY_SCORING_CONCERN_VALUE + "=" + scVal + NL);
+            }
+            writer.close();
+        }
+        catch(IOException ioe){
+            throw new AvatolCVException("problem persisting session summary " + ioe.getMessage());
+        }
+    }
+    public static RunSummary loadSummary(String ID) throws AvatolCVException {
+        RunSummary rs = new RunSummary(ID);
         String dir = AvatolCVFileSystem.getSessionSummariesDir();
         String path = dir + FILESEP + ID + ".txt";
         File f = new File(path);
@@ -57,36 +91,40 @@ public class RunSummary {
                     String key = parts[0];
                     String value = parts[1];
                     if (key.equals(KEY_SCORING_CONCERN)){
-                        this.scoringConcern = value;
+                        rs.setScoringConcern(value);
                     }
                     else if (key.equals(KEY_DATASET)){
-                        this.dataset = value;
+                        rs.setDataset(value);
                     }
                     else if (key.equals(KEY_DATA_SOURCE)){
-                        this.dataSource = value;
+                        rs.setDataSource(value);
                     }
                     else if (key.equals(KEY_SCORING_ALGORITHM)){
-                        this.scoringAlgorithm = value;
+                        rs.setScoringAlgorithm(value);
                     }
                     else if (key.equals(KEY_RUNID)){
-                        this.runID = value;
+                        rs.setRunID(value);
                     }
                     else if (key.equals(KEY_TRAIN_TEST_CONCERN)){
-                        this.trainTestConcern = value;
+                        rs.setTrainTestConcern(value);
                     }
                     else if (key.equals(KEY_COOKING_SHOW)){
-                        this.cookingShow = true;
+                        rs.setCookingShow(true);
                     }
                     else if (key.equals(KEY_SCORING_CONCERN_VALUE)){
-                        this.scoringConcernValues.add(value);
+                        rs.addScoringConcernValue(value);
                     }
                 }
             }
             reader.close();
+            return rs;
         }
         catch(IOException ioe){
             throw new AvatolCVException("problem reading session file " + path);
         }
+    }
+    public void setCookingShow(boolean cookingShow) {
+        this.cookingShow = cookingShow;
     }
     public boolean isCookingShow(){
     	return this.cookingShow;
@@ -94,6 +132,30 @@ public class RunSummary {
     public String getRunID(){
         return this.runID;
     }
+    public void setRunID(String id){
+        this.runID = id;
+    }
+    
+    public void setScoringConcern(String scoringConcern) {
+        this.scoringConcern = scoringConcern;
+    }
+    public void setDataset(String dataset) {
+        this.dataset = dataset;
+    }
+    public void setDataSource(String dataSource) {
+        this.dataSource = dataSource;
+    }
+    public void setScoringAlgorithm(String scoringAlgorithm) {
+        this.scoringAlgorithm = scoringAlgorithm;
+    }
+    public void setTrainTestConcern(String trainTestConcern) {
+        this.trainTestConcern = trainTestConcern;
+    }
+    public void addScoringConcernValue(String scoringConcernValue) {
+        this.scoringConcernValues.add(scoringConcernValue);
+    }
+    
+   
     public String getScoringConcern(){
         return this.scoringConcern;
     }

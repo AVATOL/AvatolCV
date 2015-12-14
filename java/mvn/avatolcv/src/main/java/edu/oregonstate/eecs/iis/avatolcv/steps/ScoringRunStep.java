@@ -34,6 +34,9 @@ public class ScoringRunStep implements Step {
     public String getSelectedScoringAlgorithm() throws AvatolCVException {
         return this.sessionInfo.getScoringAlgName();
     }
+    public void generateRunSummaries() throws AvatolCVException{
+        this.sessionInfo.generateRunSummaries();
+    }
     public String getImagePathWithIDFromFileList(String id, File[] files, String suffix){
     	if (suffix.equals("*") || suffix.equals("")){
     		for (File f : files){
@@ -52,7 +55,13 @@ public class ScoringRunStep implements Step {
         
         return null;
     }
-    public void runScoring(OutputMonitor controller, String processName) throws AvatolCVException {
+    public void runScoring(OutputMonitor controller, String processName, boolean useRunConfig) throws AvatolCVException {
+        if (!useRunConfig){
+            String runConfigPath = null;
+            ScoringAlgorithm sa  = sessionInfo.getSelectedScoringAlgorithm();
+            this.launcher = new AlgorithmLauncher(sa, runConfigPath, false);
+            return;
+        }
     	boolean hasTrainTestConcern = this.sessionInfo.hasTrainTestConcern();
     	NormalizedKey trainTestConcern = new NormalizedKey(null);
     	NormalizedValue trainTestConcernValue = new NormalizedValue(null);
@@ -177,7 +186,7 @@ public class ScoringRunStep implements Step {
         
        
        
-        this.launcher = new AlgorithmLauncher(sa, runConfigFile.getRunConfigPath());
+        this.launcher = new AlgorithmLauncher(sa, runConfigFile.getRunConfigPath(), true);
         this.launcher.launch(controller);
     }
     

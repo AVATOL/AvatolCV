@@ -79,7 +79,8 @@ public class NormalizedTypeIDName {
         }
         else if (s.endsWith("|")){
             this.ID = s.replaceAll("\\|", "");
-            this.name = "NAME_" + this.ID;
+            //this.name = "NAME_" + this.ID;
+            this.name = this.ID;
         }
         else if (count == 0){
             this.name = s;

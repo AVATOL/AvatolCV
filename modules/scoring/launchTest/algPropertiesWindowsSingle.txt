@@ -1,0 +1,14 @@
+launchWith=launchTest.bat
+algName=zDummyAlgorithmSingleItem
+algType=scoring
+scoringFocus=SPECIMEN_SHAPE_ASPECT
+scoringScope=SINGLE_ITEM
+description=This is a dummy algorithm used to test AvatolCV's module system.
+
+inputRequired:testImagesFile refsFilesWithSuffix * ofType orientedImage
+
+outputGenerated:ofType outputTestType withSuffix _scored
+trainingLabelImageSuffix=*
+
+
+

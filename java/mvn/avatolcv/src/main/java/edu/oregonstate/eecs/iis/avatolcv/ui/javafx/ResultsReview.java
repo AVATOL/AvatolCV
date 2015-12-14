@@ -659,7 +659,7 @@ public class ResultsReview {
         column++;
     }
     private void setRunDetails(String runID) throws AvatolCVException {
-        RunSummary rs = new RunSummary(runID);
+        RunSummary rs = RunSummary.loadSummary(runID);
         this.runSummary = rs;
         AvatolCVFileSystem.setDatasourceName(rs.getDataSource());
         AvatolCVFileSystem.setSessionID(rs.getRunID());

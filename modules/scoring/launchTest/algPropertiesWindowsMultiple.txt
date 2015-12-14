@@ -1,0 +1,14 @@
+launchWith=launchTest.bat
+algName=dummyAlgorithmMultipleItem
+algType=scoring
+scoringFocus=SPECIMEN_PART_PRESENCE_ABSENCE
+scoringScope=MULTIPLE_ITEM
+description=This is a dummy algorithm used to test AvatolCV's module system.
+
+inputRequired:testImagesFile refsFilesWithSuffix * ofType orientedImage
+
+outputGenerated:ofType outputTestType withSuffix _scored
+trainingLabelImageSuffix=*
+
+
+

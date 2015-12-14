@@ -3,6 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 import java.io.File;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmLauncher;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OutputMonitor;
@@ -37,17 +38,32 @@ public class OrientationRunStep implements Step {
         return false;
     }
 
-    public void runOrientation(OutputMonitor controller, String processName) throws AvatolCVException {
+    public boolean skipRunConfigForOrientation() throws AvatolCVException {
+        String path = AvatolCVFileSystem.getDatasetDir() + "skipRunConfigForOrientationON.txt";
+        File f = new File(path);
+        if (f.exists()){
+            return true;
+        }
+        return false;
+    }
+    public void runOrientation(OutputMonitor controller, String processName, boolean useRunConfig) throws AvatolCVException {
         OrientationAlgorithm sa  = sessionInfo.getSelectedOrientationAlgorithm();
         AlgorithmSequence algSequence = sessionInfo.getAlgorithmSequence();
         algSequence.enableOrientation();
-        RunConfigFile rcf = new RunConfigFile(sa, algSequence, null);
-        String runConfigPath = rcf.getRunConfigPath();
-        File runConfigFile = new File(runConfigPath);
-        if (!runConfigFile.exists()){
-            throw new AvatolCVException("runConfigFile path does not exist."); 
+        String runConfigPath = null;
+        
+        if (useRunConfig) {
+            RunConfigFile rcf = new RunConfigFile(sa, algSequence, null);
+            runConfigPath = rcf.getRunConfigPath();
+            File runConfigFile = new File(runConfigPath);
+            if (!runConfigFile.exists()){
+                throw new AvatolCVException("runConfigFile path does not exist."); 
+            }
+            this.launcher = new AlgorithmLauncher(sa, runConfigPath, true);
         }
-        this.launcher = new AlgorithmLauncher(sa, runConfigPath);
+        else {
+            this.launcher = new AlgorithmLauncher(sa, runConfigPath, false);
+        }
         //String statusPath = rcf.getAlgorithmStatusPath();
         //ProcessMonitor monitor = new ProcessMonitor(launcher, controller, statusPath);
         //Thread t = new Thread(monitor);

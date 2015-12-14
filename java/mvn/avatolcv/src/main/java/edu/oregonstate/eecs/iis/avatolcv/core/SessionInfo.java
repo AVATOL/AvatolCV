@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.Algorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
@@ -422,5 +423,39 @@ public class SessionInfo{
     }
     public static boolean isBisqueSession(){
         return dataSource.getName().equals("bisque");
+    }
+    public void generateRunSummaries() throws AvatolCVException {
+        List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
+        String sessionIDRoot = AvatolCVFileSystem.createSessionID();
+        if (scoringConcerns.size() == 1){
+            ChoiceItem scoringConcern = scoringConcerns.get(0);
+            String runID = sessionIDRoot + "_" + scoringConcern.getNormalizedKey().getName();
+            generateRunSummary(runID, scoringConcern);
+        }
+        else {
+            for (ChoiceItem scoringConcern : scoringConcerns){
+                String runID = sessionIDRoot + "_" + scoringConcern.getNormalizedKey().getName();
+                generateRunSummary(runID, scoringConcern);
+            }
+        }
+    }
+    public void generateRunSummary(String runID, ChoiceItem scoringConcern) throws AvatolCVException{
+        RunSummary rs = new RunSummary(runID);
+        rs.setScoringConcern(scoringConcern.getNormalizedKey().toString());
+        rs.setDataset(this.chosenDataset.getName());
+        rs.setDataSource(dataSource.getName());
+        rs.setScoringAlgorithm(this.getScoringAlgName());
+        rs.setRunID(runID);
+        if (null != this.trainTestConcern){
+            rs.setTrainTestConcern(this.trainTestConcern.toString());
+        }
+        List<NormalizedValue> nvs = this.normalizedImageInfos.getValuesForKey(scoringConcern.getNormalizedKey());
+        for (NormalizedValue nv : nvs){
+            rs.addScoringConcernValue(nv.toString());
+        }
+        rs.persist();
+        
+        
+       
     }
 }

@@ -4,8 +4,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmLauncher;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
@@ -19,6 +22,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.SegmentationRunStepController
 
 public class SegmentationRunStep implements Step {
     private static final String NL = System.getProperty("line.separator");
+    private static final String FILESEP = System.getProperty("file.separator");
     private SessionInfo sessionInfo = null;
     private AlgorithmLauncher launcher = null;
     public SegmentationRunStep(SessionInfo sessionInfo){
@@ -44,18 +48,25 @@ public class SegmentationRunStep implements Step {
         // TODO Auto-generated method stub
         return false;
     }
-
-    public void runSegmentation(SegmentationRunStepController controller, String processName) throws AvatolCVException {
+    
+    public void runSegmentation(SegmentationRunStepController controller, String processName, boolean useRunConfig) throws AvatolCVException {
         SegmentationAlgorithm sa  = sessionInfo.getSelectedSegmentationAlgorithm();
         AlgorithmSequence algSequence = sessionInfo.getAlgorithmSequence();
         algSequence.enableSegmentation();
-        RunConfigFile rcf = new RunConfigFile(sa, algSequence, null);
-        String runConfigPath = rcf.getRunConfigPath();
-        File runConfigFile = new File(runConfigPath);
-        if (!runConfigFile.exists()){
-            throw new AvatolCVException("runConfigFile path does not exist."); 
+        String runConfigPath = null;
+        
+        if (useRunConfig) {
+            RunConfigFile rcf = new RunConfigFile(sa, algSequence, null);
+            runConfigPath = rcf.getRunConfigPath();
+            File runConfigFile = new File(runConfigPath);
+            if (!runConfigFile.exists()){
+                throw new AvatolCVException("runConfigFile path does not exist."); 
+            }
+            this.launcher = new AlgorithmLauncher(sa, runConfigPath, true);
         }
-        this.launcher = new AlgorithmLauncher(sa, runConfigPath);
+        else {
+            this.launcher = new AlgorithmLauncher(sa, runConfigPath, false);
+        }
         //String statusPath = rcf.getAlgorithmStatusPath();
         //ProcessMonitor monitor = new ProcessMonitor(launcher, controller, statusPath);
         //Thread t = new Thread(monitor);

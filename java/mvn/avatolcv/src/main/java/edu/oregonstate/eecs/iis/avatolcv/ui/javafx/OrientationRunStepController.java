@@ -1,5 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -11,10 +12,13 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Alert.AlertType;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OutputMonitor;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
@@ -22,6 +26,7 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.OrientationRunStep;
 
 public class OrientationRunStepController implements StepController, OutputMonitor {
     public static final String RUN_ORIENTATION = "run orientation";
+    public static final String FILESEP = System.getProperty("file.separator");
     public static final String NL = System.getProperty("line.separator");
     private OrientationRunStep step = null;
     private String fxmlDocName = null;
@@ -44,6 +49,14 @@ public class OrientationRunStepController implements StepController, OutputMonit
         // TODO Auto-generated method stub
 
     }
+    public boolean useRunConfig() throws AvatolCVException {
+        String path = AvatolCVFileSystem.getDatasetDir() + FILESEP + "skipRunConfigForOrientationON.txt";
+        File f = new File(path);
+        if (f.exists()){
+            return false;
+        }
+        return true;
+    }
     @SuppressWarnings("unchecked")
     @Override
     public Node getContentNode() throws AvatolCVException {
@@ -55,7 +68,16 @@ public class OrientationRunStepController implements StepController, OutputMonit
             String algName = this.step.getSelectedOrientationAlgorithm();
             this.algName.setText(algName);
             this.outputText.setText("Starting...");
-            Task<Boolean> task = new RunOrientationTask(this, this.step, RUN_ORIENTATION);
+            boolean useRunConfig = useRunConfig();
+            if (!useRunConfig){
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error Dialog");
+                alert.setHeaderText("DEBUGGIN MODE ENGAGED");
+                alert.setContentText("Orientation will run without the runConfig file being processed.  To disable, rename " + AvatolCVFileSystem.getDatasetDir() + "skipRunConfigForOrientationON.txt to OFF.txt");
+                alert.showAndWait();
+                
+            }
+            Task<Boolean> task = new RunOrientationTask(this, this.step, RUN_ORIENTATION, useRunConfig);
             /*
              * NOTE - wanted to use javafx properties and binding here but couldn't dovetail it in.  I could not put
              * the loops that do work in the call method of the Task (which manages updating on the JavaFX APp Thread), 
@@ -106,20 +128,30 @@ public class OrientationRunStepController implements StepController, OutputMonit
         private OrientationRunStep step;
         private OrientationRunStepController controller;
         private final Logger logger = LogManager.getLogger(RunOrientationTask.class);
-        
-        public RunOrientationTask(OrientationRunStepController controller, OrientationRunStep step, String processName){
+        private boolean useRunConfig = true;
+        public RunOrientationTask(OrientationRunStepController controller, OrientationRunStep step, String processName, boolean useRunConfig){
             this.controller = controller;
             this.step = step;
             this.processName = processName;
+            this.useRunConfig = useRunConfig;
         }
         @Override
         protected Boolean call() throws Exception {
             try {
-                this.step.runOrientation(this.controller, processName);
-                PostOrientationUIAdjustments runner = new PostOrientationUIAdjustments();
-                Platform.runLater(runner);
+                if (this.useRunConfig){
+                    
+                    this.step.runOrientation(this.controller, processName, true);
+                    PostOrientationUIAdjustments runner = new PostOrientationUIAdjustments();
+                    Platform.runLater(runner);
+                    return new Boolean(true);
+                }
+                else {
+                    this.step.runOrientation(this.controller, processName, false);
+                    PostOrientationUIAdjustments runner = new PostOrientationUIAdjustments();
+                    Platform.runLater(runner);
+                    return new Boolean(true);
+                }
                 
-                return new Boolean(true);
             }
             //catch(AvatolCVException ace){
             catch(Exception e){    
@@ -131,6 +163,7 @@ public class OrientationRunStepController implements StepController, OutputMonit
                 return new Boolean(false);
             }
         }
+       
        
     }
    

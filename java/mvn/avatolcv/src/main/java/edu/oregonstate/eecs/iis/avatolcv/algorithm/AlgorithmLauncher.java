@@ -31,7 +31,15 @@ public class AlgorithmLauncher {
 	    }
 	    String algPropertiesPath = args[0];
 	    String runConfigFilePath = args[1];
-	    AlgorithmLauncher launcher = new AlgorithmLauncher(algPropertiesPath, runConfigFilePath);
+	    AlgorithmLauncher launcher = null;
+	    try {
+	        launcher = new AlgorithmLauncher(algPropertiesPath, runConfigFilePath);
+	    }
+	    catch(AvatolCVException ace){
+	        ace.printStackTrace();
+	        System.out.println(ace.getMessage());
+	        System.exit(1);
+	    }
 	    launcher.launch(null);
 	}
 	public class MyOutputMonitor implements OutputMonitor {
@@ -45,19 +53,20 @@ public class AlgorithmLauncher {
 	public void cancel(){
 	    invoker.cancel();
 	}
-	public AlgorithmLauncher(Algorithm algorithm, String runConfigPath){
+	public AlgorithmLauncher(Algorithm algorithm, String runConfigPath, boolean verifyRunConfigPath) throws AvatolCVException {
 	    this.algorithm = algorithm;
-	    verifyRunConfigPath(runConfigPath);
+	    if (verifyRunConfigPath){
+	        verifyRunConfigPath(runConfigPath);
+	    }
 	}
-	public void verifyRunConfigPath(String path){
+	public void verifyRunConfigPath(String path) throws AvatolCVException{
 	    File f = new File(path);
         if (!f.exists()){
-            System.out.println("problem : " + path + " does not exist"+ NL);
-            System.exit(0);
+            throw new AvatolCVException("problem : " + path + " does not exist"+ NL);
         }
         this.runConfigPath = path;
 	}
-	public AlgorithmLauncher(String algPropertiesPath, String runConfigPath){
+	public AlgorithmLauncher(String algPropertiesPath, String runConfigPath) throws AvatolCVException {
 		try {
 		    Path path = Paths.get(algPropertiesPath);
 		    List<String> lines = Files.readAllLines(path, Charset.defaultCharset());
@@ -68,7 +77,7 @@ public class AlgorithmLauncher {
 	        System.out.println("problem : " + algPropertiesPath + " is not a valid algProperties file"+ NL);
 	        System.exit(0);
 	    }
-		 verifyRunConfigPath(runConfigPath);
+		verifyRunConfigPath(runConfigPath);
 	}
 	public boolean isProcessRunning(){
 	    if (null == this.invoker){

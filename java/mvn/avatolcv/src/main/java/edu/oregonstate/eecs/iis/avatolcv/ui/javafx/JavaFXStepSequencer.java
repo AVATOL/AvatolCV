@@ -192,14 +192,14 @@ public class JavaFXStepSequencer  {
         addLabelForStep(scoringRunStep,"Run Scoring");
         
         // THIS WAS SINISAS 20151112 DEMO
-        /*
+        
         SegmentationResultsStep segResultsStep = new SegmentationResultsStep();
         ss.appendStep(segResultsStep);
         SegmentationResultsStepController segResultsStepController = new SegmentationResultsStepController(segResultsStep, "SegmentationResultsStep.fxml");
         controllerForStep.put(segResultsStep, segResultsStepController);
         addLabelForStep(segResultsStep,"Demo Segmentation Results");
         segConfigStep.setNextAnswerableInSeries(segResultsStep);
-        */
+        
         
         
         /*
