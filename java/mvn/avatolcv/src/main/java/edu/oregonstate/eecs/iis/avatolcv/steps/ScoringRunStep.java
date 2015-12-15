@@ -87,7 +87,7 @@ public class ScoringRunStep implements Step {
              * training file
              */
             TrainingInfoFile tif = new TrainingInfoFile(scoringConcernType, scoringConcernID, scoringConcernName);
-            tif.setImageDir(algSequence.getInputDir());
+            //tif.setImageDir(algSequence.getInputDir());
             ScoringSet scoringSet = this.sessionInfo.getScoringSetForScoringConcern(scoringConcernName);
             List<ModalImageInfo> trainingImages = scoringSet.getImagesToTrainOn();
             for (ModalImageInfo mii : trainingImages){
@@ -167,7 +167,7 @@ public class ScoringRunStep implements Step {
             	}
             }
             sif.persist(AvatolCVFileSystem.getTrainingDataDirForScoring());
-            List<String> imagesWronglyInBoth = sif.getMatchingImageNames(tif.getImageNames());
+            List<String> imagesWronglyInBoth = sif.getMatchingImageNames(tif.getImagePaths());
             if (imagesWronglyInBoth.size() != 0){
             	StringBuilder sb = new StringBuilder();
             	sb.append("ERROR - images that appear in both training and scoring lists are : " + NL);

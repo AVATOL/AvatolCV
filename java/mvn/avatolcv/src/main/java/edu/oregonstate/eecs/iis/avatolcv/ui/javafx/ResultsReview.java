@@ -62,6 +62,7 @@ public class ResultsReview {
     private Stage mainWindow = null;
     private Scene scene = null;
     private String runID = null;
+    private String scoringMode = null;
     private RunSummary runSummary = null;
     private AvatolCVJavaFX mainScreen = null;
     private ResultsTable resultsTable = null;
@@ -98,6 +99,12 @@ public class ResultsReview {
             throw new AvatolCVException(e.getMessage(),e);
         }
     }
+    private boolean isEvaluationMode(){
+    	if ("evaluationMode".equals(this.scoringMode)){
+    		return true;
+    	}
+    	return false;
+    }
     private void setupSlider(){
     	double initValue = thresholdSlider.getValue();
     	adjustConfidencesToThreshold(initValue);
@@ -115,26 +122,36 @@ public class ResultsReview {
 	    disableAllUnderThreshold(twoDecimalString);
     }
     private void disableAllUnderThreshold(String threshold){
+    	Label truthLabel = null;
     	List<SortableRow> rows = resultsTable.getRows();
         for (SortableRow row : rows){
             int index = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_CONFIDENCE);
             Label confLabel = (Label)row.getWidget(ResultsTable.COLNAME_CONFIDENCE);
             Label nameLabel = (Label)row.getWidget(ResultsTable.COLNAME_NAME);
             Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
-            Label truthLabel = (Label)row.getWidget(ResultsTable.COLNAME_TRUTH);
+           
+            truthLabel = (Label)row.getWidget(ResultsTable.COLNAME_TRUTH);
+            
+            
             if (row.hasDoubleValueLessThanThisAtIndex(threshold, index)){
             	//confLabel.setStyle("-fx-background-color:#CC0000;");
             	confLabel.setDisable(true);
             	nameLabel.setDisable(true);
             	scoreLabel.setDisable(true);
-            	truthLabel.setDisable(true);
+            	//if (isEvaluationMode()){
+            		truthLabel.setDisable(true);
+            	//}
+            	
             }
             else {
             	//confLabel.setStyle("-fx-background-color:#00CC00;");
             	confLabel.setDisable(false);
             	nameLabel.setDisable(false);
             	scoreLabel.setDisable(false);
-            	truthLabel.setDisable(false);
+            	//if (isEvaluationMode()){
+            		truthLabel.setDisable(false);
+            	//}
+            	
             }
         }
         
@@ -191,11 +208,14 @@ public class ResultsReview {
         nameLabel.getStyleClass().add("columnValue");
         sr.setWidget(ResultsTable.COLNAME_NAME, nameLabel);
      
-        // get truth
-        String truth = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_TRUTH));
-        Label truthLabel = new Label(truth);
-        truthLabel.getStyleClass().add("columnValue");
-        sr.setWidget(ResultsTable.COLNAME_TRUTH, truthLabel);
+        //if (isEvaluationMode()){
+        	// get truth
+            String truth = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_TRUTH));
+            Label truthLabel = new Label(truth);
+            truthLabel.getStyleClass().add("columnValue");
+            sr.setWidget(ResultsTable.COLNAME_TRUTH, truthLabel);
+        //}
+        
 
         // get score
         String score = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_SCORE));
@@ -223,11 +243,14 @@ public class ResultsReview {
             System.out.println("col " + column + " row " + offset);
             scoredImagesGridPane.add(iv,column,offset);
             column++;
-            // get truth
-            Label truthLabel = (Label)row.getWidget(ResultsTable.COLNAME_TRUTH);
-            System.out.println("col " + column + " row " + offset);
-            scoredImagesGridPane.add(truthLabel,column,offset);
-            column++;
+            //if (isEvaluationMode()){
+            	// get truth
+                Label truthLabel = (Label)row.getWidget(ResultsTable.COLNAME_TRUTH);
+                System.out.println("col " + column + " row " + offset);
+                scoredImagesGridPane.add(truthLabel,column,offset);
+                column++;
+            //}
+            
             // get score
             
             Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
@@ -278,7 +301,14 @@ public class ResultsReview {
     		//System.out.println("got image " + path);
     		String value = sif.getScoringConcernValueForImagePath(path);
     		String conf = sif.getConfidenceForImageValue(path, value);
-    		String truth = tif.getScoringConcernValueForImagePath(path);
+    		String truth = null;
+    		if (isEvaluationMode()){
+    			truth = tif.getScoringConcernValueForImagePath(path);
+    		}
+    		else {
+    			truth = "";
+    		}
+    		
         	String origImageName = getTrueImageNameFromImagePathForCookingShow(path);
         	String thumbnailPathname = getThumbnailPathWithImagePathForCookingShow(path);
         	SortableRow sortableRow = resultsTable.createRow(thumbnailPathname, origImageName, value, conf, truth, row - 1);
@@ -345,10 +375,18 @@ public class ResultsReview {
         GridPane.setHalignment(imageLabel, HPos.CENTER);
         gp.add(imageLabel, column++, 0);
     	
-    	Label truthLabel = new Label("Truth");
-    	truthLabel.getStyleClass().add("columnHeader");
-        GridPane.setHalignment(truthLabel, HPos.CENTER);
-    	gp.add(truthLabel, column++, 0);
+        Label truthLabel = null;
+        if (isEvaluationMode()){
+        	truthLabel = new Label("Truth");
+        }
+        else {
+        	truthLabel = new Label(""); 
+        }
+        	truthLabel.getStyleClass().add("columnHeader");
+            GridPane.setHalignment(truthLabel, HPos.CENTER);
+        	gp.add(truthLabel, column++, 0);
+        
+    	
     	
     	Label scoreLabel = new Label("Score");
     	scoreLabel.getStyleClass().add("columnHeader");
@@ -533,11 +571,13 @@ public class ResultsReview {
     	String thumbnailDirPath = AvatolCVFileSystem.getNormalizedImagesThumbnailDir();
     	String[] imageNameParts = imageName.split("\\.");
     	String fileRoot = imageNameParts[0];
+    	String[] fileRootParts = fileRoot.split("_");
+    	String imageID = fileRootParts[0];
     	File thumbnailDir = new File(thumbnailDirPath);
     	File[] files = thumbnailDir.listFiles();
     	for (File f : files){
     		String fname = f.getName();
-    		if (fname.contains(fileRoot)){
+    		if (fname.contains(imageID)){
     			return f.getAbsolutePath();
     		}
     	}
@@ -646,6 +686,7 @@ public class ResultsReview {
         scoringConcernValue.setText(rs.getScoringConcern());
         dataSourceValue.setText(rs.getDataSource());
         scoringAlgorithmValue.setText(rs.getScoringAlgorithm());
+        scoringMode = rs.getScoringMode();
         
         List<String> values = rs.getScoringConcernValues();
         int row = 7;

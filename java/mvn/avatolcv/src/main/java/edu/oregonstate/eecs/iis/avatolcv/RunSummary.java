@@ -39,7 +39,7 @@ public class RunSummary {
     private String trainTestConcern = null;
     private List<String> scoringConcernValues = new ArrayList<String>();
     private boolean cookingShow = false;
-    
+    private String scoringMode = null;
     public RunSummary(String ID) throws AvatolCVException {
         this.runID = runID;
     }
@@ -126,6 +126,10 @@ public class RunSummary {
     public void setCookingShow(boolean cookingShow) {
         this.cookingShow = cookingShow;
     }
+
+    public void setScoringMode(String scoringMode) {
+        this.scoringMode = scoringMode;
+    }
     public boolean isCookingShow(){
     	return this.cookingShow;
     }
@@ -155,7 +159,9 @@ public class RunSummary {
         this.scoringConcernValues.add(scoringConcernValue);
     }
     
-   
+    public String getScoringMode(){
+    	return this.scoringMode;
+    }
     public String getScoringConcern(){
         return this.scoringConcern;
     }
