@@ -2,6 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.core;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
  */
 public class ScoresInfoFile {
 	public static final String FILE_PREFIX = "scores_";
+	public static final String FILE_PREFIX_ALTERNATE = "scoring_";
 	public static final String IMAGE_DIR = "imageDir";
 	private static final String SCORING_CONCERN_VALUES = "classNames";
 	private String scoringConcernType;
@@ -35,21 +37,22 @@ public class ScoresInfoFile {
 	private List<String> valuesList = new ArrayList<String>();
 	private Hashtable<String,String> scoringConcernValueHash = new Hashtable<String, String>();
 	private Hashtable<String,String> pointCoordinatesHash = new Hashtable<String, String>();
-	private List<String> imageNames = new ArrayList<String>();
+	//private List<String> imageNames = new ArrayList<String>();
+	private List<String> imagePaths = new ArrayList<String>();
 	private Hashtable<String,String> confidenceHash = new Hashtable<String, String>();
 	public ScoresInfoFile(String scoringConcernType, String scoringConcernID, String scoringConcernName){
 		this.scoringConcernType = scoringConcernType;
 		this.scoringConcernID   = scoringConcernID;
 		this.scoringConcernName = scoringConcernName;
 	}
-	public List<String> getImageNames(){
-		return this.imageNames;
+	public List<String> getImagePaths(){
+		return this.imagePaths;
 	}
-	public boolean hasImage(String name){
-		return imageNames.contains(name);
+	public boolean hasImage(String path){
+		return imagePaths.contains(path);
 	}
-	public String getScoringConcernValueForImageName(String imageName){
-		return this.scoringConcernValueHash.get(imageName);
+	public String getScoringConcernValueForImagePath(String imagePath){
+		return this.scoringConcernValueHash.get(imagePath);
 	}
 	public String getValue(String line){
 		String[] parts = line.split("=");
@@ -65,14 +68,14 @@ public class ScoresInfoFile {
 		int confCount = this.valuesList.size();
 		int i = 0;
 		String[] parts = line.split(",");
-		String filename = parts[i++];
+		String pathname = parts[i++];
 		String scoringConcernValue = parts[i++];
 		String pointCoordinates = parts[i++];
-		this.imageNames.add(filename);
-		this.scoringConcernValueHash.put(filename, scoringConcernValue);
-		this.pointCoordinatesHash.put(filename, pointCoordinates);
+		this.imagePaths.add(pathname);
+		this.scoringConcernValueHash.put(pathname, scoringConcernValue);
+		this.pointCoordinatesHash.put(pathname, pointCoordinates);
 		for (int j = 0; j < confCount; j++){
-			this.confidenceHash.put(filename+this.valuesList.get(j), parts[i++]);
+			this.confidenceHash.put(pathname+this.valuesList.get(j), parts[i++]);
 		}
 	}
 	/*
@@ -88,23 +91,19 @@ public class ScoresInfoFile {
 	        ...
 	 */
 	public ScoresInfoFile(String pathname) throws AvatolCVException {
+		File f = new File(pathname);
+		String filename = f.getName();
+		String[] parts = filename.split("\\.");
+		String root = parts[0];
+		String[] rootParts = root.split("_");
+		this.scoringConcernType = rootParts[1];
+		this.scoringConcernID   = rootParts[2];
+		this.scoringConcernName = rootParts[3];
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(pathname));
 			String line = null;
 			while (null != (line = reader.readLine())){
-				if (line.startsWith(TrainingInfoFile.SCORING_CONCERN_TYPE)){
-					this.scoringConcernType = getValue(line);
-				}
-				else if (line.startsWith(TrainingInfoFile.SCORING_CONCERN_ID)){
-					this.scoringConcernID = getValue(line);
-				}
-				else if (line.startsWith(TrainingInfoFile.SCORING_CONCERN_NAME)){
-					this.scoringConcernName = getValue(line);
-				}
-				else if (line.startsWith(IMAGE_DIR)){
-					this.imageDir = getValue(line);
-				}
-				else if (line.startsWith(SCORING_CONCERN_VALUES)){
+				if (line.startsWith(SCORING_CONCERN_VALUES)){
 					String valuesString = getValue(line);
 					String[] values = valuesString.split(",");
 					for (String v : values){
@@ -125,12 +124,12 @@ public class ScoresInfoFile {
 			throw new AvatolCVException("could not load trainingInfoFile " + pathname);
 		}
 	}
-	public String getConfidenceForImageValue(String filename, String value){
-		return this.confidenceHash.get(filename+value);
+	public String getConfidenceForImageValue(String path, String value){
+		return this.confidenceHash.get(path+value);
 	}
-	public void setImageDir(String imageDir){
-		this.imageDir = imageDir;
-	}
+	//public void setImageDir(String imageDir){
+	//	this.imageDir = imageDir;
+	//ß}
 	public String getFilename(){
 		return FILE_PREFIX + scoringConcernType + "_" + scoringConcernID + "_" + scoringConcernName + ".txt";
 	}

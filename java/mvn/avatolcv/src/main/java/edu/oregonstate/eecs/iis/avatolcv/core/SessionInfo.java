@@ -441,6 +441,13 @@ public class SessionInfo{
     }
     public void generateRunSummary(String runID, ChoiceItem scoringConcern) throws AvatolCVException{
         RunSummary rs = new RunSummary(runID);
+        if (this.scoringModeIsEvaluation){
+        	rs.setScoringMode("evaluateAlgorithm");
+        }
+        else {
+        	rs.setScoringMode("trueScoring");
+        }
+        
         rs.setScoringConcern(scoringConcern.getNormalizedKey().toString());
         rs.setDataset(this.chosenDataset.getName());
         rs.setDataSource(dataSource.getName());
