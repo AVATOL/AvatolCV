@@ -35,22 +35,23 @@ public class TrainingInfoFile {
 	private String scoringConcernType;
 	private String scoringConcernID;
 	private String scoringConcernName;
-	private String imageDir;
+	//private String imageDir;
 	private List<String> trainingLines = new ArrayList<String>();
 	
 	private Hashtable<String,String> scoringConcernValueHash = new Hashtable<String, String>();
 	private Hashtable<String,String> pointCoordinatesHash = new Hashtable<String, String>();
-	private List<String> imageNames = new ArrayList<String>();
+	//private List<String> imageNames = new ArrayList<String>();
+	private List<String> imagePaths = new ArrayList<String>();
 	public TrainingInfoFile(String scoringConcernType, String scoringConcernID, String scoringConcernName){
 		this.scoringConcernType = scoringConcernType;
 		this.scoringConcernID   = scoringConcernID;
 		this.scoringConcernName = scoringConcernName;
 	}
-	public List<String> getImageNames(){
-		return this.imageNames;
+	public List<String> getImagePaths(){
+		return this.imagePaths;
 	}
-	public String getScoringConcernValueForImageName(String imageName){
-		return this.scoringConcernValueHash.get(imageName);
+	public String getScoringConcernValueForImagePath(String imagePath){
+		return this.scoringConcernValueHash.get(imagePath);
 	}
 	public String getValue(String line){
 		String[] parts = line.split("=");
@@ -63,7 +64,7 @@ public class TrainingInfoFile {
 	}
 	public void extractImageInfo(String line) throws AvatolCVException {
 		String[] parts = line.split(",");
-		String filename = parts[0];
+		String filepath = parts[0];
 		String scoringConcernValue = parts[1];
 		String pointCoordinates = "?";
 		if (parts.length == 2){
@@ -72,28 +73,24 @@ public class TrainingInfoFile {
 		else {
 			pointCoordinates = parts[2];
 		}
-		this.imageNames.add(filename);
-		this.scoringConcernValueHash.put(filename, scoringConcernValue);
-		this.pointCoordinatesHash.put(filename, pointCoordinates);
+		this.imagePaths.add(filepath);
+		this.scoringConcernValueHash.put(filepath, scoringConcernValue);
+		this.pointCoordinatesHash.put(filepath, pointCoordinates);
 	}
 	public TrainingInfoFile(String pathname) throws AvatolCVException {
+		File f = new File(pathname);
+		String filename = f.getName();
+		String[] parts = filename.split("\\.");
+		String root = parts[0];
+		String[] rootParts = root.split("_");
+		this.scoringConcernType = rootParts[1];
+		this.scoringConcernID   = rootParts[2];
+		this.scoringConcernName = rootParts[3];
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(pathname));
 			String line = null;
 			while (null != (line = reader.readLine())){
-				if (line.startsWith(SCORING_CONCERN_TYPE)){
-					this.scoringConcernType = getValue(line);
-				}
-				else if (line.startsWith(SCORING_CONCERN_ID)){
-					this.scoringConcernID = getValue(line);
-				}
-				else if (line.startsWith(SCORING_CONCERN_NAME)){
-					this.scoringConcernName = getValue(line);
-				}
-				else if (line.startsWith(IMAGE_DIR)){
-					this.imageDir = getValue(line);
-				}
-				else if (line.startsWith("#")){
+				if (line.startsWith("#")){
 					// ignore
 				}
 				else {
@@ -108,9 +105,9 @@ public class TrainingInfoFile {
 		}
 	}
 	
-	public void setImageDir(String imageDir){
-		this.imageDir = imageDir;
-	}
+	//public void setImageDir(String imageDir){
+	//	this.imageDir = imageDir;
+	//}
 	public String getFilename(){
 		
 		String typeString = scoringConcernType;
@@ -123,8 +120,8 @@ public class TrainingInfoFile {
 		}
 		return FILE_PREFIX + typeString + "_" + idString + "_" + scoringConcernName + ".txt";
 	}
-	public void addImageInfo(String imageName, String scoringConcernValue, String pointCoordinates, String trainTestConcern, String trainTestConcernValue){
-		String trainingLine = imageName+","+scoringConcernValue+","+pointCoordinates + "," + trainTestConcern + "," + trainTestConcernValue +NL;
+	public void addImageInfo(String imagePath, String scoringConcernValue, String pointCoordinates, String trainTestConcern, String trainTestConcernValue){
+		String trainingLine = imagePath+","+scoringConcernValue+","+pointCoordinates + "," + trainTestConcern + "," + trainTestConcernValue +NL;
 		trainingLines.add(trainingLine);
 	}
 	public void persist(String parentDir) throws AvatolCVException {

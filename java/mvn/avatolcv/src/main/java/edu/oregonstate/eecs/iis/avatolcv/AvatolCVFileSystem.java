@@ -333,20 +333,20 @@ public class AvatolCVFileSystem {
     }
 
 	public static String getScoreFilePath(String runID, String scoringConcernName) throws AvatolCVException {
-		String dirToSearch = getDatasetDir() + FILESEP + runID;
+		String dirToSearch = getDatasetDir() + FILESEP + runID + FILESEP + "scoredData";
 		
 		File dir = new File(dirToSearch);
 		File[] files = dir.listFiles();
 		for (File f : files){
 			String fname = f.getName();
-			if (fname.contains(scoringConcernName) && fname.startsWith(ScoresInfoFile.FILE_PREFIX)){
+			if (fname.contains(scoringConcernName) && (fname.startsWith(ScoresInfoFile.FILE_PREFIX) || fname.startsWith(ScoresInfoFile.FILE_PREFIX_ALTERNATE))){
 				return f.getAbsolutePath();
 			}
 		}
 		return null;
 	}
 	public static String getTrainingFilePath(String runID, String scoringConcernName) throws AvatolCVException {
-		String dirToSearch = getDatasetDir() + FILESEP + runID;
+		String dirToSearch = getDatasetDir() + FILESEP + runID + FILESEP + "trainingDataForScoring";
 		
 		File dir = new File(dirToSearch);
 		File[] files = dir.listFiles();
