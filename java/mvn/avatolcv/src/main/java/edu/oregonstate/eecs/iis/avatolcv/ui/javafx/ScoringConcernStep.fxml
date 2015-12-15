@@ -11,7 +11,7 @@
       <VBox id="scoringConcernVBox" fx:id="scoringConcernVBox" maxWidth="500.0" HBox.hgrow="NEVER">
          <children>
             <Region VBox.vgrow="ALWAYS" />
-            <Label fx:id="comboBoxInstructionlabel" text="Select Scoring Concern" />
+            <Label fx:id="comboBoxInstructionlabel" text="Select item to score" />
             <ComboBox fx:id="itemChoiceComboBox" minWidth="300.0" />
             <Region VBox.vgrow="ALWAYS" />
          </children>

@@ -28,10 +28,10 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.ExclusionQualityStep;
 public class ExclusionQualityStepController  implements StepController {
 	private static final double DEFAULT_LARGE_IMAGE_HEIGHT = 300;
 	public ImageView largeImageView;
-    //public GridPane excludeImageGrid;
-	public GridPane imageColumnGrid;
-    //public HBox excludeImageSequence;
-    //public VBox imageVBox;
+    public GridPane excludeImageGrid;
+	//public GridPane imageColumnGrid;
+    public HBox excludeImageSequence;
+    public VBox imageVBox;
     private AnchorPane navigationShellContentPane = null;
     protected ExclusionQualityStep step;
     protected String fxmlDocName;
@@ -65,7 +65,7 @@ public class ExclusionQualityStepController  implements StepController {
         //selectedView.setValue(viewNames.get(0));
     }
     
-    
+    /*
     @Override
     public Node getContentNode() throws AvatolCVException {
     	try {
@@ -107,9 +107,10 @@ public class ExclusionQualityStepController  implements StepController {
          } 
     	
     }
-    /*
+    */
+    
     @Override
-    public Node getContentNodeOld() throws AvatolCVException {
+    public Node getContentNode() throws AvatolCVException {
         try {
             this.step.loadImages();
             System.out.println("trying to load " +  this.fxmlDocName);
@@ -153,7 +154,7 @@ public class ExclusionQualityStepController  implements StepController {
          } 
         
     }
-    */
+    
     public void renderExclusionStateOfImageView(ImageView iv, ImageInfo ii) throws AvatolCVException {
     	if (ii.isExcluded()){
     		iv.setOpacity(0.4);
