@@ -142,6 +142,9 @@
 .indentedFirstColumn {
 	-fx-margin-left:10px;
 }
+.imageGrid {
+	-fx-background-color:white;
+}
 /*
  * TITLED PANE
  */

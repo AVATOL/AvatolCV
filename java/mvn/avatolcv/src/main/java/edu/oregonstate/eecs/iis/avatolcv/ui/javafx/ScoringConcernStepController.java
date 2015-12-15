@@ -261,7 +261,7 @@ public class ScoringConcernStepController implements StepController {
         scoringConcernVBox.getChildren().add(header);
         
         remainingMetadataDownloadProgressBar = new ProgressBar(0.0);
-        remainingMetadataDownloadProgressBar.setMinWidth(300);
+        remainingMetadataDownloadProgressBar.setMinWidth(400);
         scoringConcernVBox.getChildren().add(remainingMetadataDownloadProgressBar);
         
         remainingMetadataDownloadLabel = new Label("");

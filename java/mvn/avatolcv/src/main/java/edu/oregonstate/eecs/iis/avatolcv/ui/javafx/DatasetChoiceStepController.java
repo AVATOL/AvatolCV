@@ -148,7 +148,7 @@ public class DatasetChoiceStepController implements StepController {
         datasetChoiceVBox.getChildren().add(header);
         
         scoringInfoDownloadProgressBar = new ProgressBar(0.0);
-        scoringInfoDownloadProgressBar.setMinWidth(300);
+        scoringInfoDownloadProgressBar.setMinWidth(400);
         datasetChoiceVBox.getChildren().add(scoringInfoDownloadProgressBar);
         
         scoringInfoDownloadMessageLabel = new Label("");
