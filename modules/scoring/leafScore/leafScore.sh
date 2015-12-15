@@ -25,14 +25,14 @@ do
     elif [ "testImagesFile" = "$key" ]; then
 	    testImagesFile=${val}
 	elif [ "scoringOutputDir" = "$key" ]; then
-	    orientationOutputDir=${val}
+	    scoringOutputDir=${val}
     elif [ "pathLibSsvmMatlab" = "$key" ]; then
         pathLibSsvmMatlab=${val}
     elif [ "pathVlfeat" = "$key" ]; then
         pathVlfeat=${val}
-    elif ["trainingDataDir" = "$key"]; then
-        trainingDataDir = ${val}
-fi
+    elif [ "trainingDataDir" = "$key" ]; then
+        trainingDataDir=${val}
+    fi
 done < "$filename"
 
 missingArg=0
@@ -46,7 +46,7 @@ if [ "$testImagesFile" = "" ]; then
 fi
 if [ "$scoringOutputDir" = "" ]; then
     missingArg=1
-	echo segRunConfig file missing entry for rawImagesDir
+	echo segRunConfig file missing entry for scoringOutputDir
 fi
 if [ "$pathLibSsvmMatlab" = "" ]; then
 missingArg=1
@@ -75,6 +75,8 @@ echo trainingDataDir is ${trainingDataDir}
 #
 
 #direct matlabe call
+#pathVlfeat='/Users/jedirvine/av/avatol_cv/modules/3rdParty/vlfeat/vlfeat-0.9.20/toolbox/vl_setup'
+#echo pathVlfeat is ${pathVlfeat}
 
 matlab_func='score('
 matlab_func+="'"${testImagesFile}"'"

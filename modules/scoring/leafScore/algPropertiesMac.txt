@@ -12,7 +12,7 @@ inputRequired:testImagesFile refsFilesWithSuffix _orientedOrig ofType isolatedSp
 inputRequired:testImagesMaskFile refsFilesWithSuffix _orientedMask ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed
 
 dependency:pathLibSsvmMatlab=<modules>/3rdParty/libsvm/libsvm-318/matlab
-dependency:pathVlfeat=<modules>/3rdParty/vlfeat/vlfeat-0.9.20/toolbox/v1_setup
+dependency:pathVlfeat=<modules>/3rdParty/vlfeat/vlfeat-0.9.20/toolbox/vl_setup
 
 
 

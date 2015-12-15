@@ -1,10 +1,12 @@
 function score(  testImagesFile, testImagesMaskFile, scoringOutputDir, pathLibsvm, pathVlfeat, trainingDataDir)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-flst=dir([trainingDataDir, 'training_*.txt']);
+flst=dir([trainingDataDir, '/training_*.txt']);
 flst={flst.name};
 flst =cell2mat(flst);
-outputFileName = ['scoring' flst(9:length(flst)-4), '.txt'];
+outputFileName = ['scored' flst(9:length(flst)-4), '.txt'];
+
+display(flst);
 
 apex  = findstr(flst, 'apex');
 display( apex);
@@ -14,9 +16,10 @@ else
     apex = 1;
 end
 
-display([trainingDataDir, flst])
-fileID = fopen([trainingDataDir, flst]);
-trainingData = textscan(fileID,'%s %s','Delimiter',',');
+display([trainingDataDir, filesep, flst])
+fileID = fopen([trainingDataDir, filesep, flst]);
+%trainingData = textscan(fileID,'%s %s','Delimiter',',');
+trainingData = textscan(fileID,'%s %s %s %s %s','Delimiter',',');
 fclose(fileID);
 
 

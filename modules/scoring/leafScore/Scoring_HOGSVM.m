@@ -19,6 +19,21 @@ for i=1:1:length(labelCells)
     end
 end
 
+fileID = fopen(outputFileName, 'w');
+labelValues=values(labelMap2);
+fprintf(fileID, 'classNames=')
+for i=1:1:length(labelValues)
+    if i < length(labelValues)
+        fprintf(fileID, [cell2mat(labelValues(1,i)), ','])
+    else
+        fprintf(fileID, [cell2mat(labelValues(1,i)), '\n'])
+    end
+end
+
+fclose(fileID);
+
+
+
 train_label = zeros(length(labelCells),1);
 for i=1:1:length(labelCells)
     train_label(i) = labelMap(cell2mat(labelCells(i)));
@@ -152,6 +167,8 @@ for i=1:1:length(testlist)
     results{i,2} =  labelMap2(cell2mat(results(i,2)));
 end
 mkdir(scoringOutputDir);
+
+
 Yao_cell2csv(outputFileName,results,',');
 movefile(outputFileName,scoringOutputDir);
 display('SVM done.');
