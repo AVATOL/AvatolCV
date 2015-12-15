@@ -28,9 +28,10 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.ExclusionQualityStep;
 public class ExclusionQualityStepController  implements StepController {
 	private static final double DEFAULT_LARGE_IMAGE_HEIGHT = 300;
 	public ImageView largeImageView;
-    public GridPane excludeImageGrid;
-    public HBox excludeImageSequence;
-    public VBox imageVBox;
+    //public GridPane excludeImageGrid;
+	public GridPane imageColumnGrid;
+    //public HBox excludeImageSequence;
+    //public VBox imageVBox;
     private AnchorPane navigationShellContentPane = null;
     protected ExclusionQualityStep step;
     protected String fxmlDocName;
@@ -73,15 +74,15 @@ public class ExclusionQualityStepController  implements StepController {
  	        FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
  	        loader.setController(this);
  	        Node content = loader.load();
- 	        excludeImageGrid.getChildren().clear();
+ 	        imageColumnGrid.getChildren().clear();
  	        //excludeImageGrid.set
  	        this.thumbnailImages = this.step.getImagesThumbnail();
  	        int curRow = 0;
- 	        int curCol = 0;
+ 	        //int curCol = 0;
  	        for (ImageInfo ii : thumbnailImages){
  	        	// show it if it's not excluded or it is, but due ot a previous image quality pass
  	            if (!(ii.isExcluded()) || (ii.isExcluded() && ImageInfo.EXCLUSION_REASON_IMAGE_QUALITY.equals(ii.getExclusionReason()))){
- 	                if ((curRow == 0) && (curCol == 0)){
+ 	                if (curRow == 0){
  	                	showLargeImageForImage(ii);
  	                }
  	                ImageView iv = new ImageView();
@@ -94,12 +95,8 @@ public class ExclusionQualityStepController  implements StepController {
  	                renderExclusionStateOfImageView(iv,ii);
  	                iv.setOnMouseEntered(this::showCurrentImageLarge);
  	                iv.setOnMouseClicked(this::toggleExclusionForImage);
- 	                excludeImageGrid.add(iv,curCol, curRow);
+ 	                imageColumnGrid.add(iv,0, curRow);
  	                curRow += 1;
- 	                if (curRow > 2){
- 	                    curRow = 0;
- 	                    curCol++;
- 	                }
  	            }
  	        }
  	        content.autosize();
@@ -110,6 +107,53 @@ public class ExclusionQualityStepController  implements StepController {
          } 
     	
     }
+    /*
+    @Override
+    public Node getContentNodeOld() throws AvatolCVException {
+        try {
+            this.step.loadImages();
+            System.out.println("trying to load " +  this.fxmlDocName);
+            FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
+            loader.setController(this);
+            Node content = loader.load();
+            excludeImageGrid.getChildren().clear();
+            //excludeImageGrid.set
+            this.thumbnailImages = this.step.getImagesThumbnail();
+            int curRow = 0;
+            int curCol = 0;
+            for (ImageInfo ii : thumbnailImages){
+                // show it if it's not excluded or it is, but due ot a previous image quality pass
+                if (!(ii.isExcluded()) || (ii.isExcluded() && ImageInfo.EXCLUSION_REASON_IMAGE_QUALITY.equals(ii.getExclusionReason()))){
+                    if ((curRow == 0) && (curCol == 0)){
+                        showLargeImageForImage(ii);
+                    }
+                    ImageView iv = new ImageView();
+                    iv.setPreserveRatio(true);
+                    ImageWithInfo imageWithInfo = new ImageWithInfo("file:" + ii.getFilepath(), ii);
+                    iv.setImage(imageWithInfo);
+                    iv.setFitHeight(60);
+                    //iv.setScaleX(-1);
+                    
+                    renderExclusionStateOfImageView(iv,ii);
+                    iv.setOnMouseEntered(this::showCurrentImageLarge);
+                    iv.setOnMouseClicked(this::toggleExclusionForImage);
+                    excludeImageGrid.add(iv,curCol, curRow);
+                    curRow += 1;
+                    if (curRow > 2){
+                        curRow = 0;
+                        curCol++;
+                    }
+                }
+            }
+            content.autosize();
+            return content;
+         }
+         catch(IOException ioe){
+             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
+         } 
+        
+    }
+    */
     public void renderExclusionStateOfImageView(ImageView iv, ImageInfo ii) throws AvatolCVException {
     	if (ii.isExcluded()){
     		iv.setOpacity(0.4);
