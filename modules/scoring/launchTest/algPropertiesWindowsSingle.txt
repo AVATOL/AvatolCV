@@ -1,5 +1,5 @@
 launchWith=launchTest.bat
-algName=zDummyAlgorithmSingleItem
+algName=uiDebugScoringSingleChar
 algType=scoring
 scoringFocus=SPECIMEN_SHAPE_ASPECT
 scoringScope=SINGLE_ITEM

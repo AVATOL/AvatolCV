@@ -6,10 +6,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label text="Filtering">
+      <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Filtering Data">
          <VBox.margin>
             <Insets left="6.0" right="6.0" top="10.0" />
          </VBox.margin>
