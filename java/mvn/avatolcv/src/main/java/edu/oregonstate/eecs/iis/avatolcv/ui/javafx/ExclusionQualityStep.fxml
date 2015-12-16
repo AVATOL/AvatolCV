@@ -6,30 +6,9 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
-<HBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ScrollPane HBox.hgrow="NEVER">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0">
-               <children>
-                  <GridPane fx:id="imageColumnGrid" styleClass="imageGrid" vgap="4.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" vgrow="NEVER" />
-                      <RowConstraints minHeight="10.0" vgrow="NEVER" />
-                      <RowConstraints minHeight="10.0" vgrow="NEVER" />
-                    </rowConstraints>
-                     <padding>
-                        <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
-                     </padding>
-                  </GridPane>
-               </children>
-            </AnchorPane>
-        </content>
-      </ScrollPane>
+      <AnchorPane fx:id="imageStripAnchorPane" maxHeight="1.7976931348623157E308" HBox.hgrow="NEVER" />
       <VBox HBox.hgrow="ALWAYS">
          <children>
             <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Excluding Poor Quality Images" textAlignment="CENTER" VBox.vgrow="ALWAYS">
@@ -57,12 +36,12 @@
             </Label>
             <ImageView fx:id="largeImageView" fitHeight="150.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
                <VBox.margin>
-                  <Insets left="50.0" top="15.0" />
+                  <Insets left="50.0" top="35.0" />
                </VBox.margin>
             </ImageView>
          </children>
          <HBox.margin>
-            <Insets right="20.0" />
+            <Insets left="40.0" right="20.0" />
          </HBox.margin>
       </VBox>
    </children>

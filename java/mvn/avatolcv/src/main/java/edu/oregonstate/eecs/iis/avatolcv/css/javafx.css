@@ -119,25 +119,25 @@
 	-fx-background-color:#EEEEEE;
 	-fx-font-size:14px;
 	-fx-font-style:bold;
-	-fx-font:arial;
+	-fx-font-name:arial;
 	-fx-padding:2px 8px 2px 8px;
 }
 .label.columnValue {
 	/*-fx-background-color:#CCCCCC;*/
 	-fx-font-size:13px;
 	-fx-font-style:plain;
-	-fx-font:arial;
+	-fx-font-name:arial;
 	-fx-padding:2px 8px 2px 8px;
 }
 .label.summaryHeader {
 	-fx-font-size:14px;
 	-fx-font-style:italic;
-	-fx-font:arial;
+	-fx-font-name:arial;
 }
 .label.summaryValue {
 	-fx-font-size:14px;
 	-fx-font-style:plain;
-	-fx-font:arial;
+	-fx-font-name:arial;
 }
 .indentedFirstColumn {
 	-fx-margin-left:10px;

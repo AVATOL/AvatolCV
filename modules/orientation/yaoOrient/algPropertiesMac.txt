@@ -4,7 +4,7 @@ algType=orientation
 description=Algorithm simpleLeafOrienter will align leaves so their stems lie along the horizontal plane.  Then it ensures that the apex and base are consistent in their position from image to image.  This algorithm is shipped with training data.
 
 dependency:pathLibSsvmMatlab=<modules>/3rdParty/libsvm/libsvm-318/matlab
-dependency:pathVlfeat=<modules>/3rdParty/vlfeat/vlfeat-0.9.20/
+dependency:pathVlfeat=<modules>/3rdParty/vlfeat/vlfeat-0.9.20/toolbox/vl_setup
 
 inputRequired:testImagesMaskFile refsFilesWithSuffix _croppedMask ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed
 inputRequired:testImagesFile refsFilesWithSuffix _croppedOrig ofType isolatedSpecimenImage

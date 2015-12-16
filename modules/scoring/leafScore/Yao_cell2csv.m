@@ -11,7 +11,7 @@ if nargin<3
     delimiter = ',';
 end
 
-datei = fopen(filename,'w');
+datei = fopen(filename,'a');
 for z=1:size(cellArray,1)
     for s=1:size(cellArray,2)
 

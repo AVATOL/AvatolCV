@@ -378,13 +378,14 @@ public class ResultsReview {
         Label truthLabel = null;
         if (isEvaluationMode()){
         	truthLabel = new Label("Truth");
-        }
-        else {
-        	truthLabel = new Label(""); 
-        }
         	truthLabel.getStyleClass().add("columnHeader");
             GridPane.setHalignment(truthLabel, HPos.CENTER);
         	gp.add(truthLabel, column++, 0);
+        }
+        else {
+        	column++; 
+        }
+        	
         
     	
     	
