@@ -6,7 +6,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label text="Filtering">
@@ -35,9 +34,9 @@
                       <RowConstraints minHeight="10.0" vgrow="NEVER" />
                     </rowConstraints>
                      <children>
-                        <Label styleClass="columnHeader" text="Filter" GridPane.hgrow="ALWAYS" />
-                        <Label styleClass="columnHeader" text="attribute" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
-                        <Label styleClass="columnHeader" text="value" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" />
+                        <Label maxWidth="1.7976931348623157E308" styleClass="columnHeader" text="Filter" GridPane.hgrow="ALWAYS" />
+                        <Label maxWidth="1.7976931348623157E308" styleClass="columnHeader" text="attribute" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                        <Label maxWidth="1.7976931348623157E308" styleClass="columnHeader" text="value" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" />
                      </children>
                      <padding>
                         <Insets left="6.0" />
