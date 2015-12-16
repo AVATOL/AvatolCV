@@ -318,7 +318,7 @@ public class SessionInfo{
         	for (NormalizedKey key : keys){
         		if (!isKeyOneOfTheScoringConcerns(key)){
         			NormalizedValue nv = nii.getValueForKey(key);
-        			if (!nv.getName().equals("")){
+        			if (!nv.getName().equals("") && !nv.getName().equals("?")){
         				this.dataFilter.addFilterItem(key, nv, true);
         			}
         		}
