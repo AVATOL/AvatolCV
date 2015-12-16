@@ -1,5 +1,5 @@
 launchWith=batSkullScore.bat
-algName=dpmPartsScoring
+algName=partsScoring
 algType=scoring
 scoringFocus=SPECIMEN_PART_PRESENCE_ABSENCE
 scoringScope=MULTIPLE_ITEM
