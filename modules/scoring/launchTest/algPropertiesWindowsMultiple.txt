@@ -1,5 +1,5 @@
 launchWith=launchTest.bat
-algName=dummyAlgorithmMultipleItem
+algName=uiDebugScoringMultipleChars
 algType=scoring
 scoringFocus=SPECIMEN_PART_PRESENCE_ABSENCE
 scoringScope=MULTIPLE_ITEM

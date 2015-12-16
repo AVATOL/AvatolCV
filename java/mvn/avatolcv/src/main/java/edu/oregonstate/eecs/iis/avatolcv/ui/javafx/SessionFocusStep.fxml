@@ -11,7 +11,7 @@
       <VBox HBox.hgrow="NEVER">
          <children>
             <Region prefHeight="200.0" VBox.vgrow="ALWAYS" />
-            <Label text="Select scoring focus for this session" />
+            <Label text="Select scoring approach" />
             <GridPane hgap="10.0" stylesheets="@../../css/javafx.css" vgap="20.0" VBox.vgrow="NEVER">
               <columnConstraints>
                 <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="0.0" />

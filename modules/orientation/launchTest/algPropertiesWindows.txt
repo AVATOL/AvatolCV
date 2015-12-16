@@ -1,5 +1,5 @@
 launchWith=launchTest.bat
-algName=dummyOrientationAlg
+algName=uiDebugOrient
 algType=orientation
 description=This is a dummy algorithm used to test AvatolCV's module system.
 

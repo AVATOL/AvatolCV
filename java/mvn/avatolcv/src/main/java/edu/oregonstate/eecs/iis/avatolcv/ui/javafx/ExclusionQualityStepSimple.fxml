@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" spacing="8.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label alignment="CENTER" text="Excluding poor quality images">
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin></Label>
+      <HBox alignment="CENTER" fillHeight="false" spacing="20.0" VBox.vgrow="NEVER">
+         <children>
+            <Label alignment="CENTER" text="Images that have quality problems can degrade scoring accuracy." wrapText="true" HBox.hgrow="NEVER">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin></Label>
+            <Button minWidth="150.0" mnemonicParsing="false" text="See examples" HBox.hgrow="NEVER" />
+         </children>
+         <VBox.margin>
+            <Insets left="6.0" right="6.0" top="15.0" />
+         </VBox.margin>
+      </HBox>
+      <Label alignment="CENTER" text="Click on a thumbnail to exclude it from consideration">
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin></Label>
+      <AnchorPane VBox.vgrow="ALWAYS">
+         <children>
+            <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                <AnchorPane minHeight="0.0" minWidth="0.0" VBox.vgrow="NEVER">
+                     <children>
+                        <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <content>
+                            <AnchorPane minHeight="-Infinity" minWidth="-Infinity">
+                                 <children>
+                                    <GridPane fx:id="excludeImageGrid" hgap="3.0" vgap="3.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" vgrow="NEVER" />
+                                          <RowConstraints minHeight="10.0" vgrow="NEVER" />
+                                       </rowConstraints>
+                                    </GridPane>
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </ScrollPane>
+                     </children>
+                  </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <content>
+                              <ImageView fx:id="largeImageView" pickOnBounds="true" preserveRatio="true" />
+                           </content>
+                        </ScrollPane>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </AnchorPane>
+               </children>
+            </VBox>
+         </children>
+         <VBox.margin>
+            <Insets left="6.0" right="6.0" />
+         </VBox.margin>
+      </AnchorPane>
+   </children>
+</VBox>

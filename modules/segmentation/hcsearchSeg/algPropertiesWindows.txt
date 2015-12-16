@@ -1,5 +1,5 @@
 launchWith=hcsearchSegRunner.bat
-algName=nematocystSegmenter
+algName=highClutterSegmenter
 algType=segmentation
 description=Algorithm nematocystSegmenter will isolate foreground objects from heavy background clutter, such as nematocysts.
 

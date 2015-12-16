@@ -1,5 +1,5 @@
 launchWith=batSkullScore.sh
-algName=dpmPresenceAbsenceScoring
+algName=partsScoring
 algType=scoring
 scoringFocus=SPECIMEN_PART_PRESENCE_ABSENCE
 scoringScope=MULTIPLE_ITEM
