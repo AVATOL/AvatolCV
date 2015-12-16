@@ -1,5 +1,5 @@
 launchWith=launchTest.sh
-algName=dummyAlgForUItesting
+algName=uiDebugScoring
 algType=scoring
 scoringFocus=SPECIMEN_PART_PRESENCE_ABSENCE
 scoringScope=MULTIPLE_ITEM

@@ -1,5 +1,5 @@
 launchWith=ping.bat
-algName=dummyOrientationAlgThatPings
+algName=uiDebugOrientPing
 algType=orientation
 description=This is a dummy algorithm used to test AvatolCV's module system.
 

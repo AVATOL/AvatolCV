@@ -11,7 +11,10 @@
       <VBox HBox.hgrow="ALWAYS">
          <children>
             <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-            <Label text="Loading Images " />
+            <Label text="Loading Images ">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin></Label>
             <ProgressBar fx:id="imageFileDownloadProgress" prefWidth="400.0" progress="0.0" />
             <Label fx:id="imageFileDownloadMessage" />
             <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />

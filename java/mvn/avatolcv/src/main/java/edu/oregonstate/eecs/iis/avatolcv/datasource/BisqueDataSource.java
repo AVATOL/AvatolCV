@@ -207,31 +207,30 @@ public class BisqueDataSource implements DataSource {
     public String getInstructionsForScoringConcernScreen(ScoringAlgorithm.ScoringScope scoringScope, ScoringAlgorithm.ScoringSessionFocus scoringFocus) {
         if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
                 scoringScope == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM){
-                return "Place a check mark next to annotations that refer to presence/absence of a part " +
+                return "Place a check mark next to the characters to score " +
                         "(AvatolCV has tried to deduce this from metadata)";
             }
             else if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
                     scoringScope == ScoringAlgorithm.ScoringScope.SINGLE_ITEM){
-                return "Select the desired presence/absence part to score";
+                return "Select the character to score";
             }
             else if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
                     scoringScope == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM) {
-                return "Place a check mark next to annotations that refer to aspects of a specimen to score";
+                return "Place a check mark next to the characters to score";
             }
 
             else if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
                     scoringScope == ScoringAlgorithm.ScoringScope.SINGLE_ITEM) {
-                return "Select the desired aspect of the specimen to score";
+                return "Select the character to score";
             }
 
             else if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT &&
                     scoringScope == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM) {
-                return "Place a check mark next to annotations that refer to aspects of a specimen to score";
+                return "Place a check mark next to the characters to score";
             }
-
             else {// (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT &&
                   //  sa.getScoringScope() == ScoringAlgorithms.ScoringScope.SINGLE_ITEM) {
-                return "Select the desired aspect of the specimen to score.";
+                return "Select the character to score.";
             }
     }
     @Override

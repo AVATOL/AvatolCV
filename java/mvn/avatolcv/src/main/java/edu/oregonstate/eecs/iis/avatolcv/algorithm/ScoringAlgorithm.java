@@ -24,8 +24,8 @@ public class ScoringAlgorithm extends Algorithm {
     private static Hashtable<ScoringSessionFocus, List<String>> namesForScoringFocus = new Hashtable<ScoringSessionFocus,List<String>>();
     
     static {
-        radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE, "Score presence/absence of parts in a specimen");
-        radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT, "Score shape or texture aspects of a specimen");
+        radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE, "character = part");
+        radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT, "character = shape or texture");
         //radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT, "Score texture aspects a specimen");
     }
     //private static ScoringSessionFocus focusChosenForSession = null;
