@@ -11,7 +11,10 @@
       <VBox id="scoringConcernVBox" fx:id="scoringConcernVBox" maxWidth="500.0" HBox.hgrow="NEVER">
          <children>
             <Region VBox.vgrow="ALWAYS" />
-            <Label fx:id="comboBoxInstructionlabel" text="Select character to score" />
+            <Label fx:id="comboBoxInstructionlabel" text="Select character to score">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin></Label>
             <ComboBox fx:id="itemChoiceComboBox" minWidth="300.0" />
             <Region VBox.vgrow="ALWAYS" />
          </children>

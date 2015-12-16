@@ -137,6 +137,7 @@ public class DatasetChoiceStepController implements StepController {
     @Override
     public void configureUIForFollowUpDataLoadPhase() {
         datasetChoiceVBox.getChildren().clear();
+        datasetChoiceVBox.setSpacing(10);
         Region regionTop = new Region();
         VBox.setVgrow(regionTop, Priority.ALWAYS);
         datasetChoiceVBox.getChildren().add(regionTop);

@@ -249,6 +249,7 @@ public class ScoringConcernStepController implements StepController {
     @Override
     public void configureUIForFollowUpDataLoadPhase() {
         scoringConcernVBox.getChildren().clear();
+        scoringConcernVBox.setSpacing(10);
         Region regionTop = new Region();
 //        regionTop.setStyle(value);
         VBox.setVgrow(regionTop, Priority.ALWAYS);
