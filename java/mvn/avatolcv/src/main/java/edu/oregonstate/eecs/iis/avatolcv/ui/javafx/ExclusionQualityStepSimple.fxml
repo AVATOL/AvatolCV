@@ -32,7 +32,7 @@
          <children>
             <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" VBox.vgrow="NEVER">
+                <AnchorPane minHeight="0.0" minWidth="0.0" VBox.vgrow="NEVER">
                      <children>
                         <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <content>
@@ -61,6 +61,9 @@
                            </content>
                         </ScrollPane>
                      </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
                   </AnchorPane>
                </children>
             </VBox>
