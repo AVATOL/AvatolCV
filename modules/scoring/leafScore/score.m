@@ -1,6 +1,7 @@
 function score(  testImagesFile, testImagesMaskFile, scoringOutputDir, pathLibsvm, pathVlfeat, trainingDataDir)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
+display('running step scoring.');
 flst=dir([trainingDataDir, '/training_*.txt']);
 flst={flst.name};
 flst =cell2mat(flst);
@@ -33,5 +34,6 @@ fclose(fileID);
   
    
     Scoring_HOGSVM(trainingData, testImagesFile, scoringOutputDir, apex, outputFileName);
+    display('running completed for scoring');
 end
 
