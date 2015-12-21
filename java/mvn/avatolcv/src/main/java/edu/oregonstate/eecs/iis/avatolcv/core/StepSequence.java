@@ -41,4 +41,11 @@ public class StepSequence {
 		result.addAll(steps);
 		return result;
 	}
+	public boolean hasMoreScreens() {
+		int indexOfFinalStep = steps.size() - 1;
+		if (currentStepIndex == indexOfFinalStep){
+			return false;
+		}
+		return true;
+	}
 }

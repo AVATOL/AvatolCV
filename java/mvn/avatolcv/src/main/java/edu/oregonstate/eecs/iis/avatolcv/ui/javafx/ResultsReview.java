@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -72,7 +73,35 @@ public class ResultsReview {
         this.mainWindow = mainWindow;
         this.mainScreen = mainScreen;
         this.runID = runID;
+        if (this.runID == null || "".equals(this.runID)){
+        	throw new AvatolCVException("null runID cannot be rendered in results viewer");
+        }
         initUI();
+    }
+    public void initOnAppThread(String avatolCVRootDir, AvatolCVJavaFX mainScreen, Stage mainWindow, String runID){
+    	ApplicationThreadResultsReviewInit atrri = new ApplicationThreadResultsReviewInit(avatolCVRootDir, mainScreen, mainWindow, runID);
+    	Platform.runLater(atrri);
+    }
+    public class ApplicationThreadResultsReviewInit implements Runnable {
+    	String avatolCVRootDir = null;
+    	AvatolCVJavaFX mainScreen = null;
+    	Stage mainWindow = null;
+    	String runID = null;
+    	public ApplicationThreadResultsReviewInit(String avatolCVRootDir, AvatolCVJavaFX mainScreen, Stage mainWindow, String runID){
+    		this.avatolCVRootDir = avatolCVRootDir;
+    		this.mainScreen = mainScreen;
+    		this.mainWindow = mainWindow;
+    		this.runID = runID;
+    	}
+		@Override
+		public void run() {
+			try {
+				init(avatolCVRootDir, mainScreen, mainWindow, runID);
+			}
+			catch(AvatolCVException ace){
+				AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem starting ResultsReview: " + ace.getMessage());
+			}
+		}
     }
     public void initUI() throws AvatolCVException {
         try {

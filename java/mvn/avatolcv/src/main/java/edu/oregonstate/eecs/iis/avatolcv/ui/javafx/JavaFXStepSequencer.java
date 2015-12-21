@@ -128,8 +128,9 @@ public class JavaFXStepSequencer  {
         ExclusionQualityStep exclusionQualityStep = new ExclusionQualityStep(sessionInfo);
         ss.appendStep(exclusionQualityStep);
         AnchorPane navigationShellContentPane = (AnchorPane)scene.lookup("#navigationShellContentPane");
-        ExclusionQualityStepController qualityStepController = new ExclusionQualityStepController(exclusionQualityStep, "ExclusionQualityStepTile.fxml", navigationShellContentPane);
+        //ExclusionQualityStepController qualityStepController = new ExclusionQualityStepController(exclusionQualityStep, "ExclusionQualityStepTile.fxml", navigationShellContentPane);
         //ExclusionQualityStepController qualityStepController = new ExclusionQualityStepController(exclusionQualityStep, "ExclusionQualityStep.fxml", navigationShellContentPane);
+        ExclusionQualityStepController qualityStepController = new ExclusionQualityStepController(exclusionQualityStep, "ExclusionQualityStepSimple.fxml", navigationShellContentPane);
         controllerForStep.put(exclusionQualityStep, qualityStepController);
         addLabelForStep(exclusionQualityStep,"Image Quality");
         imagePullStep.setNextAnswerableInSeries(exclusionQualityStep);
@@ -193,7 +194,7 @@ public class JavaFXStepSequencer  {
         addLabelForStep(scoringRunStep,"Run Scoring");
         
         // THIS WAS SINISAS 20151112 DEMO
-        
+        /*
         SegmentationResultsStep segResultsStep = new SegmentationResultsStep();
         ss.appendStep(segResultsStep);
         SegmentationResultsStepController segResultsStepController = new SegmentationResultsStepController(segResultsStep, "SegmentationResultsStep.fxml");
@@ -201,7 +202,7 @@ public class JavaFXStepSequencer  {
         addLabelForStep(segResultsStep,"Demo Segmentation Results");
         segConfigStep.setNextAnswerableInSeries(segResultsStep);
         
-        
+        */
         
         /*
         //Step charQuestionsStep = new CharQuestionsStep(null, sessionData);
@@ -378,6 +379,7 @@ public class JavaFXStepSequencer  {
      * (runs in background thread)
      */
     public void requestNextStep() throws AvatolCVException {
+    	boolean showingResults = false;
     	Step step = ss.getCurrentStep();
     	StepController controller = controllerForStep.get(step);
     	
@@ -394,15 +396,26 @@ public class JavaFXStepSequencer  {
             }
     	    boolean seekingNext = true;
     	    while (seekingNext){
-    	        ss.next();
-    	        if (ss.getCurrentStep().isEnabledByPriorAnswers()){
-    	            seekingNext = false;
-    	        }
+    	    	if (ss.hasMoreScreens()){
+    	    		ss.next();
+        	        if (ss.getCurrentStep().isEnabledByPriorAnswers()){
+        	            seekingNext = false;
+        	        }
+    	    	}
+    	    	else {
+    	    		ResultsReview rr = new ResultsReview();
+                    String runID = sessionInfo.getSessionID();
+                    rr.initOnAppThread(AvatolCVFileSystem.getAvatolCVRootDir(), this.mainScreen, mainWindow, runID);
+                    seekingNext = false;
+                    showingResults = true;
+    	    	}
+    	        
     	    }
-    		
-    		// task of loading UI for next step is put back on the javaFX UI thread
-    		CurrentStepRunner stepRunner = new CurrentStepRunner();
-    		Platform.runLater(stepRunner);
+    		if (!showingResults){
+    			// task of loading UI for next step is put back on the javaFX UI thread
+        		CurrentStepRunner stepRunner = new CurrentStepRunner();
+        		Platform.runLater(stepRunner);
+    		}
     	}
     	else {
     		controller.clearUIFields();

@@ -61,7 +61,7 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
             this.step.generateRunSummaries();
         }
         catch(AvatolCVException ace){
-            AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem generating runSummary");
+            AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem generating runSummary: " + ace.getMessage());
         }
         return true;
     }

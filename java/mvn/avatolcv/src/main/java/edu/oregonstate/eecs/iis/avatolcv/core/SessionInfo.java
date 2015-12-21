@@ -92,6 +92,9 @@ public class SessionInfo{
         this.sessionID = AvatolCVFileSystem.createSessionID();
         AvatolCVFileSystem.setSessionID(this.sessionID);
 	}
+	public String getSessionID(){
+		return this.sessionID;
+	}
 	public List<NormalizedKey> getScoringSortingCandidates() throws AvatolCVException {
 		List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
 		List<NormalizedKey> scorableKeys = normalizedImageInfos.getScorableKeys();
