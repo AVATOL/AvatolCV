@@ -128,8 +128,9 @@ public class JavaFXStepSequencer  {
         ExclusionQualityStep exclusionQualityStep = new ExclusionQualityStep(sessionInfo);
         ss.appendStep(exclusionQualityStep);
         AnchorPane navigationShellContentPane = (AnchorPane)scene.lookup("#navigationShellContentPane");
-        ExclusionQualityStepController qualityStepController = new ExclusionQualityStepController(exclusionQualityStep, "ExclusionQualityStepTile.fxml", navigationShellContentPane);
+        //ExclusionQualityStepController qualityStepController = new ExclusionQualityStepController(exclusionQualityStep, "ExclusionQualityStepTile.fxml", navigationShellContentPane);
         //ExclusionQualityStepController qualityStepController = new ExclusionQualityStepController(exclusionQualityStep, "ExclusionQualityStep.fxml", navigationShellContentPane);
+        ExclusionQualityStepController qualityStepController = new ExclusionQualityStepController(exclusionQualityStep, "ExclusionQualityStepSimple.fxml", navigationShellContentPane);
         controllerForStep.put(exclusionQualityStep, qualityStepController);
         addLabelForStep(exclusionQualityStep,"Image Quality");
         imagePullStep.setNextAnswerableInSeries(exclusionQualityStep);
