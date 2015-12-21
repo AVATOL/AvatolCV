@@ -1,5 +1,5 @@
 launchWith=leafScore.sh
-algName=shapeTextureScoring
+algName=ShapeTextureScoring
 algType=scoring
 description=Scores shape related characters of simple shapes such Monocot leaves.
 

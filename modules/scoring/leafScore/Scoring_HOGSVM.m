@@ -1,4 +1,5 @@
 function [] = Scoring_HOGSVM(trainingData, testImagesFile, scoringOutputDir, apex, outputFileName)
+
 trainingFiles = trainingData{1,1};
 trainingLabels = trainingData{1,2};
 labelCells = repmat(trainingLabels,1,2)';
@@ -154,13 +155,16 @@ end
 % -------------------------------------------------------------------------
 %                          SVM Training and testing
 % -------------------------------------------------------------------------
-disp('Training SVM----------------------------------------------------------')
+disp('Training the SVM for leaf scoring-------------------------------------')
+
 % WE only care if this is a character regarding the apex or base.
 % Because the apex/base is dependent on the orientation output.
 results = cell(length(testlist), 1);
 
 test_label = zeros(length(testlist),1);
 [prob,pred] = Yao_shape_SVM(length(labelMap),train_label,test_label,train_data,test_data);
+display('SVM done.');
+display('Generating Results ----');
 results = horzcat(results, num2cell(pred),num2cell(prob));
 for i=1:1:length(testlist)
     results{i,1} = cell2mat(testlist(i));
@@ -171,7 +175,7 @@ mkdir(scoringOutputDir);
 
 Yao_cell2csv(outputFileName,results,',');
 movefile(outputFileName,scoringOutputDir);
-display('SVM done.');
+display('Results Generated.');
 
 
 end

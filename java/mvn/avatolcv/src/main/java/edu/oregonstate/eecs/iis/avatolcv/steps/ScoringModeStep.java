@@ -41,11 +41,19 @@ public class ScoringModeStep  extends Answerable implements Step {
     }
     @Override
     public boolean isEnabledByPriorAnswers() {
-        return true;
+    	try {
+    		if (isAllImagesLabeled()){
+            	return false;
+            }
+            return true;
+    	}
+    	catch(AvatolCVException ace){
+    		return true;
+    	}
     }
     @Override
 	public boolean shouldRenderIfBackingIntoIt() {
-		return true;
+		return isEnabledByPriorAnswers();
 	}
     
 }

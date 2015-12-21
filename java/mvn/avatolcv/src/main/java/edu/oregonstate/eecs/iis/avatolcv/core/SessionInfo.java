@@ -319,9 +319,11 @@ public class SessionInfo{
         for (NormalizedImageInfo nii : niis){
         	List<NormalizedKey> keys = nii.getKeys();
         	for (NormalizedKey key : keys){
-        		if (!isKeyOneOfTheScoringConcerns(key)){
+        		if (!isKeyOneOfTheScoringConcerns(key) && 
+        			!isKeySameTypeAsOneOfTheScoringConcerns(key) &&
+        			!isKeyTheTrainTestConcern(key)){ // i.e. don't show taxon values for MB
         			NormalizedValue nv = nii.getValueForKey(key);
-        			if (!nv.getName().equals("")){
+        			if (!nv.getName().equals("") && !nv.getName().equals("?")){
         				this.dataFilter.addFilterItem(key, nv, true);
         			}
         		}
@@ -346,6 +348,19 @@ public class SessionInfo{
         */
         return this.dataFilter;
     }
+    public boolean isKeyTheTrainTestConcern(NormalizedKey key){
+    	if (this.getDataSource().getDefaultTrainTestConcern().equals(key.getName())){
+    		return true;
+    	}
+    	if (!this.hasTrainTestConcern()){
+    		return false;
+    	}
+    	NormalizedKey ttKey = this.getTrainTestConcern();
+    	if (key.equals(ttKey)){
+    		return true;
+    	}
+    	return false;
+    }
     public boolean isKeyOneOfTheScoringConcerns(NormalizedKey key){
     	List<ChoiceItem> cis = this.getChosenScoringConcerns();
     	for (ChoiceItem ci : cis){
@@ -357,7 +372,15 @@ public class SessionInfo{
     	return false;
     }
    
-
+    public boolean isKeySameTypeAsOneOfTheScoringConcerns(NormalizedKey key){
+    	List<ChoiceItem> cis = this.getChosenScoringConcerns();
+    	ChoiceItem ci = cis.get(0);
+    	NormalizedKey ciKey = ci.getNormalizedKey();
+    	if (ciKey.getType().equals(key.getType())){
+    			return true;
+    	}
+    	return false;
+    }
     public AlgorithmSequence getAlgorithmSequence() {
         if (this.algorithmSequence == null){
             this.algorithmSequence = new AlgorithmSequence();

@@ -139,11 +139,11 @@ public class ExclusionQualityStepController  implements StepController {
                     iv.setOnMouseEntered(this::showCurrentImageLarge);
                     iv.setOnMouseClicked(this::toggleExclusionForImage);
                     excludeImageGrid.add(iv,curCol, curRow);
-                    curRow += 1;
-                    if (curRow > 2){
-                        curRow = 0;
+              //      curRow += 1;
+              //      if (curRow > 2){
+              //          curRow = 0;
                         curCol++;
-                    }
+              //      }
                 }
             }
             content.autosize();
