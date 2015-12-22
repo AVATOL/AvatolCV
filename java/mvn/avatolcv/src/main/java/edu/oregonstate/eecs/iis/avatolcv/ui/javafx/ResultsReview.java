@@ -2,6 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javafx.application.Platform;
@@ -15,10 +16,12 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -43,12 +46,14 @@ import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJava
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTable;
 import edu.oregonstate.eecs.iis.avatolcv.results.SortableRow;
+import edu.oregonstate.eecs.iis.avatolcv.steps.OrientationConfigurationStep;
+import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.OrientationConfigurationStepController.AlgChangeListener;
 
 public class ResultsReview {
 	public Slider thresholdSlider = null;
-	//private ScoreIndex scoreIndex = null;
     public Accordion runDetailsAccordion = null;
     public ScrollPane runDetailsScrollPane = null;
+    public ChoiceBox<String> runSelectChoiceBox = null;
     public Tab scoredImagesTab = null;
     public Tab trainingImagesTab = null;
     public Label runIDValue = null;
@@ -69,7 +74,7 @@ public class ResultsReview {
     private ResultsTable resultsTable = null;
     public ResultsReview(){
     }
-    public void init(String avatolCVRootDir, AvatolCVJavaFX mainScreen, Stage mainWindow, String runID) throws AvatolCVException {
+    public void init(AvatolCVJavaFX mainScreen, Stage mainWindow, String runID) throws AvatolCVException {
         this.mainWindow = mainWindow;
         this.mainScreen = mainScreen;
         this.runID = runID;
@@ -78,17 +83,15 @@ public class ResultsReview {
         }
         initUI();
     }
-    public void initOnAppThread(String avatolCVRootDir, AvatolCVJavaFX mainScreen, Stage mainWindow, String runID){
-    	ApplicationThreadResultsReviewInit atrri = new ApplicationThreadResultsReviewInit(avatolCVRootDir, mainScreen, mainWindow, runID);
+    public void initOnAppThread(AvatolCVJavaFX mainScreen, Stage mainWindow, String runID){
+    	ApplicationThreadResultsReviewInit atrri = new ApplicationThreadResultsReviewInit(mainScreen, mainWindow, runID);
     	Platform.runLater(atrri);
     }
     public class ApplicationThreadResultsReviewInit implements Runnable {
-    	String avatolCVRootDir = null;
     	AvatolCVJavaFX mainScreen = null;
     	Stage mainWindow = null;
     	String runID = null;
-    	public ApplicationThreadResultsReviewInit(String avatolCVRootDir, AvatolCVJavaFX mainScreen, Stage mainWindow, String runID){
-    		this.avatolCVRootDir = avatolCVRootDir;
+    	public ApplicationThreadResultsReviewInit(AvatolCVJavaFX mainScreen, Stage mainWindow, String runID){
     		this.mainScreen = mainScreen;
     		this.mainWindow = mainWindow;
     		this.runID = runID;
@@ -96,7 +99,7 @@ public class ResultsReview {
 		@Override
 		public void run() {
 			try {
-				init(avatolCVRootDir, mainScreen, mainWindow, runID);
+				init(mainScreen, mainWindow, runID);
 			}
 			catch(AvatolCVException ace){
 				AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem starting ResultsReview: " + ace.getMessage());
@@ -117,6 +120,8 @@ public class ResultsReview {
             for (Node n : runDetailsScrollPane.getChildrenUnmodifiable()) {
                 n.setCache(false);
             }
+            initializePriorRunChoices();
+            runSelectChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new RunChoiceChangeListener(runSelectChoiceBox, this.mainScreen, this.mainWindow));
             setRunDetails(this.runID);
             setScoredImagesInfo(this.runID, scoringConcernValue.getText());
             //runDetailsAccordion.requestLayout();
@@ -127,6 +132,38 @@ public class ResultsReview {
         catch(Exception e){
             throw new AvatolCVException(e.getMessage(),e);
         }
+    }
+    
+    public class RunChoiceChangeListener implements ChangeListener<Number> {
+        private ChoiceBox<String> cb;
+        private AvatolCVJavaFX mainScreen;
+        private Stage mainWindow;
+        public RunChoiceChangeListener(ChoiceBox<String> cb,AvatolCVJavaFX mainScreen, Stage mainWindow){
+            this.cb = cb;
+            this.mainScreen = mainScreen;
+            this.mainWindow = mainWindow;
+        }
+        @Override
+        public void changed(ObservableValue ov, Number value, Number newValue) {
+            String newRunID = "?";
+            try {
+                newRunID =(String)cb.getItems().get((Integer)newValue);
+                init(mainScreen, mainWindow, newRunID);
+            }
+            catch(Exception e){
+                AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem changing to results for runID " + newRunID + " " + e.getMessage());
+            }
+        }
+    }
+    private void initializePriorRunChoices() throws AvatolCVException {
+        List<String> names = AvatolCVFileSystem.getSessionFilenames();
+        Collections.sort(names);
+        Collections.reverse(names);
+        for (String name : names){
+            runSelectChoiceBox.getItems().add(name);
+        }
+        runSelectChoiceBox.setValue(this.runID);
+        runSelectChoiceBox.requestLayout();
     }
     private boolean isEvaluationMode(){
     	if ("evaluationMode".equals(this.scoringMode)){

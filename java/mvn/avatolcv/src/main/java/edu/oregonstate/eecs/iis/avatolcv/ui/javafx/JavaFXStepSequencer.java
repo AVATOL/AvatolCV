@@ -405,7 +405,7 @@ public class JavaFXStepSequencer  {
     	    	else {
     	    		ResultsReview rr = new ResultsReview();
                     String runID = sessionInfo.getSessionID();
-                    rr.initOnAppThread(AvatolCVFileSystem.getAvatolCVRootDir(), this.mainScreen, mainWindow, runID);
+                    rr.initOnAppThread(this.mainScreen, mainWindow, runID);
                     seekingNext = false;
                     showingResults = true;
     	    	}

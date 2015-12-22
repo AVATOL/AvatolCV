@@ -121,7 +121,7 @@ public class AvatolCVJavaFX extends Application {
             else if (radioReviewResults.isSelected()){
                 ResultsReview rr = new ResultsReview();
                 String runChoice = (String)priorSessionSelector.getValue();
-                rr.init(rootDir, this, mainWindow, runChoice);
+                rr.init(this, mainWindow, runChoice);
             }
             else {
                 // must have selected tutorial
