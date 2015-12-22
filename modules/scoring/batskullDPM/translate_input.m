@@ -157,8 +157,7 @@ POINT_COORDS_DELIMITER = '-';
 
 %% parse file name
 [~, fileName, ~] = fileparts(trainingFile);
-fileNameComponents = strsplit(fileName, FILE_NAME_DELIMITER, ...
-    'CollapseDelimiters', false);
+fileNameComponents = strsplit(fileName, FILE_NAME_DELIMITER);
 if length(fileNameComponents) ~= 4
     error('unexpected # of components from parsing file name "%s"', ...
         fileName);
@@ -199,8 +198,7 @@ while 1
     lineNum = lineNum + 1;
     
     %% parse line
-    lineComponents = strsplit(tline, FILE_WITHIN_LINE_DELIMITER, ...
-        'CollapseDelimiters', false);
+    lineComponents = strsplit(tline, FILE_WITHIN_LINE_DELIMITER);
     if length(lineComponents) ~= EXPECTED_NUM_LINE_COMPONENTS
         error('expected %d components from parsing line(%d) in file "%s"', ...
             EXPECTED_NUM_LINE_COMPONENTS, lineNum, fileName);
@@ -268,8 +266,7 @@ EXPECTED_NUM_LINE_COMPONENTS = 4;
 
 %% parse file name
 [~, fileName, ~] = fileparts(scoringFile);
-fileNameComponents = strsplit(fileName, FILE_NAME_DELIMITER, ...
-    'CollapseDelimiters', false);
+fileNameComponents = strsplit(fileName, FILE_NAME_DELIMITER);
 if length(fileNameComponents) ~= 4
     error('unexpected # of components from parsing file name "%s"', ...
         fileName);
@@ -299,8 +296,7 @@ while 1
     lineNum = lineNum + 1;
     
     %% parse line
-    lineComponents = strsplit(tline, FILE_WITHIN_LINE_DELIMITER, ...
-        'CollapseDelimiters', false);
+    lineComponents = strsplit(tline, FILE_WITHIN_LINE_DELIMITER);
     if length(lineComponents) ~= EXPECTED_NUM_LINE_COMPONENTS
         error('expected %d components from parsing line(%d) in file "%s"', ...
             EXPECTED_NUM_LINE_COMPONENTS, lineNum, fileName);

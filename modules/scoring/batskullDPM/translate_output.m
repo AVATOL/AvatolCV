@@ -113,8 +113,7 @@ DETECTION_RESULTS_DELIMITER = ':';
 
 %% parse file name
 [~, fileName, ~] = fileparts(outputFile);
-fileNameComponents = strsplit(fileName, FILE_NAME_DELIMITER, ...
-    'CollapseDelimiters', false);
+fileNameComponents = strsplit(fileName, FILE_NAME_DELIMITER);
 if length(fileNameComponents) ~= 5
     error('unexpected # of components from parsing file name "%s"', ...
         fileName);
@@ -145,8 +144,7 @@ while 1
     end
     
     %% parse line
-    lineComponents = strsplit(tline, FILE_WITHIN_LINE_DELIMITER, ...
-        'CollapseDelimiters', false);
+    lineComponents = strsplit(tline, FILE_WITHIN_LINE_DELIMITER);
     if length(lineComponents) ~= EXPECTED_NUM_LINE_COMPONENTS
         error('expected %d components from parsing line(%d) in file "%s"', ...
             EXPECTED_NUM_LINE_COMPONENTS, scoredCounter+unscoredCounter-1, fileName);
@@ -180,8 +178,7 @@ while 1
         end
         
         %% get line
-        lineComponentsDet = strsplit(det_tline, DETECTION_RESULTS_DELIMITER, ...
-            'CollapseDelimiters', false);
+        lineComponentsDet = strsplit(det_tline, DETECTION_RESULTS_DELIMITER);
         if length(lineComponentsDet) ~= EXPECTED_DET_NUM_LINE_COMPONENTS
             error('expected %d components from parsing file "%s"', ...
             EXPECTED_DET_NUM_LINE_COMPONENTS, detectionResultsPath);
