@@ -7,8 +7,8 @@ testImagesFile=""
 trainingDataDir=""
 scoringOutputDir=""
 filename="$1"
-echo "FILENAME: "
-echo $filename
+echo filename is ${filename}
+echo 
 while read -r line
 do
     IFS='=' read -a lineAsArray <<< "$line"
@@ -44,9 +44,17 @@ fi
 if [ "$missingArg" = 1 ]; then
     exit 1
 fi
-echo testImagesFile is ${testImagesFile}
-echo trainingDataDir is ${trainingDataDir}
-echo scoringOutputDir is ${scoringOutputDir}
+echo "testImagesFile is ${testImagesFile}"
+echo "trainingDataDir is ${trainingDataDir}"
+echo "scoringOutputDir is ${scoringOutputDir}"
+echo
+
+# # remove cache directory
+# cacheDir=$(dirname "${testImagesFile}")
+# cacheDir+=/legacy_format/cache/
+# echo cacheDir is ${cacheDir}
+# echo
+# rm -rf $cacheDir
 
 #
 #  call matlab to translate input
@@ -64,13 +72,21 @@ matlab_func1+="${testImagesFile}"
 matlab_func1+="'"
 matlab_func1+=');catch exception;disp(getReport(exception));exit(1);end;exit'
 
-echo $matlab_func1
+echo "running step Processing Inputs"
+echo "executing: ${matlab_func1}"
+echo
 cd $THIS_DIR
 
 #/Applications/MATLAB_R2012b.app/bin/matlab -nodisplay -r "$matlab_func1"
-/Applications/MATLAB_R2015b.app/bin/matlab -nodisplay -r "$matlab_func1"
+if ! /Applications/MATLAB_R2015b.app/bin/matlab -nodisplay -r "$matlab_func1"; then
+    echo "MATLAB exited with error ${?}. (translate_input)"
+    echo
+    echo "running step Error"
+    exit $?
+fi
 
-echo "matlab exited!!! (translate_input)"
+echo "MATLAB exited successfully. (translate_input)"
+echo
 
 #
 #  call matlab to score
@@ -80,8 +96,8 @@ echo "matlab exited!!! (translate_input)"
 
 summaryFile=$(dirname "${testImagesFile}")
 summaryFile+='/legacy_format/input/summary.txt'
-echo "summaryFile: "
-echo $summaryFile
+echo "summaryFile is ${summaryFile}"
+echo
 
 matlab_func2='try;invoke_batskull_system('
 matlab_func2+="'"${summaryFile}"'"
@@ -89,13 +105,21 @@ matlab_func2+=','
 matlab_func2+="'regime2'"
 matlab_func2+=');catch exception;disp(getReport(exception));exit(1);end;exit'
 
-echo $matlab_func2
+echo "running step Training and Scoring"
+echo "executing: ${matlab_func2}"
+echo
 cd bat/chain_rpm
 
 #/Applications/MATLAB_R2012b.app/bin/matlab -nodisplay -r "$matlab_func2"
-/Applications/MATLAB_R2015b.app/bin/matlab -nodisplay -r "$matlab_func2"
+if ! /Applications/MATLAB_R2015b.app/bin/matlab -nodisplay -r "$matlab_func2"; then
+    echo "MATLAB exited with error ${?}. (invoke_batskull_system)"
+    echo
+    echo "running step Error"
+    exit $?
+fi
 
-echo "matlab exited!!! (invoke_batskull_system)"
+echo "MATLAB exited successfully. (invoke_batskull_system)"
+echo
 
 cd $THIS_DIR
 
@@ -115,13 +139,23 @@ matlab_func3+="${testImagesFile}"
 matlab_func3+="'"
 matlab_func3+=');catch exception;disp(getReport(exception));exit(1);end;exit'
 
-echo $matlab_func3
+echo "running step Processing Outputs"
+echo "executing: ${matlab_func3}"
+echo
 cd $THIS_DIR
 
 #/Applications/MATLAB_R2012b.app/bin/matlab -nodisplay -r "$matlab_func3"
-/Applications/MATLAB_R2015b.app/bin/matlab -nodisplay -r "$matlab_func3"
+if ! /Applications/MATLAB_R2015b.app/bin/matlab -nodisplay -r "$matlab_func3"; then
+    echo "MATLAB exited with error ${?}. (translate_output)"
+    echo
+    echo "running step Error"
+    exit $?
+fi
 
-echo "matlab exited!!! (translate_output)"
+echo "MATLAB exited successfully. (translate_output)"
+echo
+
+echo "run completed"
 
 #hopefully we will be able to resolve the library issue from Invalid MEX-file '/Users/jedirvine/.mcrCache8.0/yaoOri0/modules/3rdParty/vlfeat/vlfeat-0.9.20/toolbox/mex/mexmaci64/vl_hog.mexmaci64': dlopen(/Users/jedirvine/.mcrCache8.0/yaoOri0/modules/3rdParty/vlfeat/vlfeat-0.9.20/toolbox/mex/mexmaci64/vl_hog.mexmaci64, 1): Library not loaded: @loader_path/libvl.dylib. But for now we have decided to go with the direct matlab call
 
