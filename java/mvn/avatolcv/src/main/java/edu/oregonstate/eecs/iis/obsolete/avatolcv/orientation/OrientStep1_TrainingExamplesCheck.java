@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.orientation;
+package edu.oregonstate.eecs.iis.obsolete.avatolcv.orientation;
 
 import java.io.File;
 import java.util.List;
@@ -6,9 +6,9 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ObsoleteImagesForAlgorithmStep;
-import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.View;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation.SegmentationSessionData;
 
 public class OrientStep1_TrainingExamplesCheck implements Step {
 

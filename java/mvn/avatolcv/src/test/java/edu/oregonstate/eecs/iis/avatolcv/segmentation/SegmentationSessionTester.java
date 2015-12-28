@@ -16,6 +16,10 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmRunner;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ImageTransformReviewStep;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation.SegStep1_TrainingExamplesCheck;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation.SegStep2_LabelTrainingExamples;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation.SegStep3_Run;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation.SegmentationSessionData;
 
 public class SegmentationSessionTester extends TestCase {
 

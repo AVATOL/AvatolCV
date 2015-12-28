@@ -27,7 +27,6 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
-import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationStep;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
@@ -47,6 +46,7 @@ import edu.oregonstate.eecs.iis.obsolete.avatolcv.morphobank.javafx.MBTrainingEx
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.morphobank.javafx.MBViewChoiceStepController;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.morphobank.javafx.SessionFocusStepController;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.morphobank.javafx.MBImagePullStepController.ImageDownloadTask;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation.SegmentationStep;
 
 public class MorphobankSessionJavaFX {
 	public Button nextButton;

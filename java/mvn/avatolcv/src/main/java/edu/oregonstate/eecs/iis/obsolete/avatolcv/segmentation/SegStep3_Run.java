@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.segmentation;
+package edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmRunner;

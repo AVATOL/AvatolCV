@@ -10,7 +10,6 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.SystemDependent;
 import edu.oregonstate.eecs.iis.avatolcv.TestProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
-import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationStep;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
@@ -28,6 +27,7 @@ import edu.oregonstate.eecs.iis.obsolete.avatolcv.bisque.BisqueLoginStep;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.bisque.BisqueSessionData;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.questionnaire.QQuestion;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.questionnaire.QuestionSequencer;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation.SegmentationStep;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

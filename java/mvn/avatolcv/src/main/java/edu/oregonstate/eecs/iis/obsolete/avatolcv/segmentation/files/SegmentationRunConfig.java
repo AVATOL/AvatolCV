@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.segmentation.files;
+package edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation.files;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,7 +8,7 @@ import java.io.IOException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ObsoleteImagesForAlgorithmStep;
-import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation.SegmentationSessionData;
 
 public class SegmentationRunConfig {
     private static final String FILESEP = System.getProperty("file.separator");

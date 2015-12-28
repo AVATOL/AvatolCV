@@ -8,7 +8,7 @@ import java.io.IOException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ObsoleteImagesForAlgorithmStep;
-import edu.oregonstate.eecs.iis.avatolcv.orientation.OrientationSessionData;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.orientation.OrientationSessionData;
 
 /*
  * darwinOutputDir,<same as in xml file - points to where segmented files are put>

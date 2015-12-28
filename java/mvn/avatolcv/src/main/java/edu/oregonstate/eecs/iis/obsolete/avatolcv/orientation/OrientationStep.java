@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.orientation;
+package edu.oregonstate.eecs.iis.obsolete.avatolcv.orientation;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -13,11 +13,11 @@ import edu.oregonstate.eecs.iis.avatolcv.TestProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmRunner;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.BogusAlgorithmRunner;
-import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ImageTransformReviewStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.View;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation.SegmentationSessionData;
 
 public class OrientationStep implements Step {
     private static final String FILESEP = System.getProperty("file.separator");

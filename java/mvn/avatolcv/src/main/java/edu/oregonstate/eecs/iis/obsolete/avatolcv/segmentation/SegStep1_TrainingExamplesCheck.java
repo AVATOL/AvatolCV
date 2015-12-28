@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.segmentation;
+package edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation;
 
 import java.io.File;
 import java.util.List;

@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.segmentation;
+package edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
@@ -15,8 +15,8 @@ import edu.oregonstate.eecs.iis.avatolcv.core.FileRootNameList;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageTranformReviewData;
 import edu.oregonstate.eecs.iis.avatolcv.core.ObsoleteImagesForAlgorithmStep;
-import edu.oregonstate.eecs.iis.avatolcv.segmentation.files.DarwinDriverFile;
-import edu.oregonstate.eecs.iis.avatolcv.segmentation.files.SegmentationRunConfig;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation.files.DarwinDriverFile;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation.files.SegmentationRunConfig;
 
 public class SegmentationSessionData implements ImageTranformReviewData {
 	public static final String TYPE_SUFFIX_TRAINING = "groundtruth";

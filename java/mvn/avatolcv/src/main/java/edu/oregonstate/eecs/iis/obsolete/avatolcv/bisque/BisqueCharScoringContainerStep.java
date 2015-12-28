@@ -1,10 +1,10 @@
 package edu.oregonstate.eecs.iis.obsolete.avatolcv.bisque;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.View;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation.SegmentationSessionData;
 
 public class BisqueCharScoringContainerStep implements Step {
     private StepSequence ss = new StepSequence();

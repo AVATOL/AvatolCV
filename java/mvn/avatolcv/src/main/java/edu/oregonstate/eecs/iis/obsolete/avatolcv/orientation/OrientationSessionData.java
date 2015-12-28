@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.orientation;
+package edu.oregonstate.eecs.iis.obsolete.avatolcv.orientation;
 
 
 import java.awt.image.BufferedImage;

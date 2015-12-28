@@ -7,8 +7,6 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
-import edu.oregonstate.eecs.iis.avatolcv.orientation.OrientationSessionData;
-import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationSessionData;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
 //import edu.oregonstate.eecs.iis.avatolcv.segmentation.SegmentationToolHarness;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
@@ -20,6 +18,8 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.FileUtils;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.SessionDataInterface;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.orientation.OrientationSessionData;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation.SegmentationSessionData;
 
 public class BisqueSessionData implements SessionDataInterface{
 	private static final String FILESEP = System.getProperty("file.separator");

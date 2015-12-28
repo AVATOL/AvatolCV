@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.segmentation.files;
+package edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation.files;
 
 public class DarwinDriverFile {
 	private static final String NL = System.getProperty("line.separator");
