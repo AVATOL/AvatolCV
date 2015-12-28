@@ -1,5 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.core;
 
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
+
 public class ModalImageInfo {
 	public enum Mode {
 		TRAIN_WITH,

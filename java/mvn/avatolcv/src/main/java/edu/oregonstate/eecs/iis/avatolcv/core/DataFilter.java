@@ -12,6 +12,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 
 public class DataFilter {
 	private static final String FILTER_FILE_NAME = "filter.txt";

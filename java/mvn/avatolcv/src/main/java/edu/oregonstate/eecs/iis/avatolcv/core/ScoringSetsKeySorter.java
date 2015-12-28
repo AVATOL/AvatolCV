@@ -6,6 +6,9 @@ import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 
 /*
  * Evaluation Sets are handed in, and logic here adjusts the train vs test settings in the ModalImageInfos that belong to the EvaluationSet.

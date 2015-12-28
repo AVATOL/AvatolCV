@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.core;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

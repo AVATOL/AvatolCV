@@ -1,6 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.datasource;
 
-import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedKey;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 
 public class ChoiceItem implements Comparable {
     private String name;

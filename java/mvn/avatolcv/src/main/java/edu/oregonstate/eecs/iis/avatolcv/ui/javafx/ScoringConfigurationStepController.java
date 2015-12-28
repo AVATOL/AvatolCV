@@ -36,14 +36,14 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageWithInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForStep;
 import edu.oregonstate.eecs.iis.avatolcv.core.ModalImageInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedValue;
-import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.core.ScoringSetsKeySorter;
 import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrueScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConfigurationStep;
 
 public class ScoringConfigurationStepController implements StepController {

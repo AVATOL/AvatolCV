@@ -8,6 +8,10 @@ import java.util.Properties;
 import edu.oregonstate.eecs.iis.avatol.algorithm.TestAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfos;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

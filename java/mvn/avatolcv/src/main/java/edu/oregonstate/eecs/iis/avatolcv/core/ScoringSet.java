@@ -3,6 +3,8 @@ package edu.oregonstate.eecs.iis.avatolcv.core;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 
 public interface ScoringSet {
 	List<ModalImageInfo> getImagesToTrainOn() throws AvatolCVException;

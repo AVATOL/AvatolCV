@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.core;
+package edu.oregonstate.eecs.iis.avatolcv.normalized;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,6 +10,8 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.core.ScoreIndex;
+import edu.oregonstate.eecs.iis.avatolcv.core.ValueIDandName;
 
 public class NormalizedImageInfoScored extends NormalizedImageInfo  {
     private static final String KEY_SCORING_CONFIDENCE = PREFIX + "scoringConfidence";
