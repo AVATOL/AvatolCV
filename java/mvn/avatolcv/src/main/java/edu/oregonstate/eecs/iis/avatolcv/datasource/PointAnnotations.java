@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.core;
+package edu.oregonstate.eecs.iis.avatolcv.datasource;
 
 public class PointAnnotations {
     public static final String ANNOTATION_SEQUENCE_DELIMETER = "+";

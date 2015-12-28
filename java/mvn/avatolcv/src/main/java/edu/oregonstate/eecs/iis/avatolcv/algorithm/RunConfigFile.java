@@ -11,8 +11,8 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
-import edu.oregonstate.eecs.iis.avatolcv.core.ModalImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.ModalImageInfo;
 
 /*
  *  segmentationOutputDir=<path of dir where output goes>

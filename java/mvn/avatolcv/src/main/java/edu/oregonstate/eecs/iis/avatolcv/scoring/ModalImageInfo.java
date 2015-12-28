@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.core;
+package edu.oregonstate.eecs.iis.avatolcv.scoring;
 
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 
