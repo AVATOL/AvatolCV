@@ -2,7 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.util;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
-import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 
 public class FileSystemPrimer {
 

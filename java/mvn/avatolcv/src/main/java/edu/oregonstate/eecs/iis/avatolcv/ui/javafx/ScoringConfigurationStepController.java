@@ -31,19 +31,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
-import edu.oregonstate.eecs.iis.avatolcv.core.EvaluationSet;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageWithInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.ImagesForStep;
 import edu.oregonstate.eecs.iis.avatolcv.core.ModalImageInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.ScoringSet;
-import edu.oregonstate.eecs.iis.avatolcv.core.ScoringSetsKeySorter;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
-import edu.oregonstate.eecs.iis.avatolcv.core.TrueScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSet;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSet;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSetsKeySorter;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.TrueScoringSet;
+import edu.oregonstate.eecs.iis.avatolcv.session.ImagesForStep;
+import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConfigurationStep;
 
 public class ScoringConfigurationStepController implements StepController {

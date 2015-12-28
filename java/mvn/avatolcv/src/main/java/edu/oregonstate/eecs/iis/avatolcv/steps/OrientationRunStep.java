@@ -9,7 +9,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OutputMonitor;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.RunConfigFile;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OrientationAlgorithm;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 
 public class OrientationRunStep implements Step {
     private SessionInfo sessionInfo = null;

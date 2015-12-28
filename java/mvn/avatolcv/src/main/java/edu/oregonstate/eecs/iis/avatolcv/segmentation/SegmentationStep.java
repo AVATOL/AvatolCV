@@ -3,7 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv.segmentation;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
+import edu.oregonstate.eecs.iis.avatolcv.session.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.View;

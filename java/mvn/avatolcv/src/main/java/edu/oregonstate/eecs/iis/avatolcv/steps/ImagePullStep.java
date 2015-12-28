@@ -4,9 +4,9 @@ import java.util.Hashtable;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ImagePullStepController;
 
 public class ImagePullStep  extends Answerable implements Step {

@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.core;
+package edu.oregonstate.eecs.iis.avatolcv.scoring;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

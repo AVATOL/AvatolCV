@@ -7,6 +7,8 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSet;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSetsKeySorter;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

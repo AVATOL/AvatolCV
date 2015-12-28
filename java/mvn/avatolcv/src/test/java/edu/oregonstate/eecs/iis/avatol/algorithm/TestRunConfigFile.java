@@ -16,7 +16,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.RunConfigFile;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.SegmentationAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules.AlgType;
-import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

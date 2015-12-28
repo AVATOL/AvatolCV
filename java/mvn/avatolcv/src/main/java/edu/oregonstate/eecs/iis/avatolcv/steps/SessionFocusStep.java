@@ -3,7 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringSessionFocus;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 
 public class SessionFocusStep  extends Answerable implements Step {
     private SessionInfo sessionInfo = null;

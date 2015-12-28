@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.core;
+package edu.oregonstate.eecs.iis.avatolcv.session;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,6 +16,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OrientationAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.SegmentationAlgorithm;
+import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
@@ -23,6 +24,10 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSet;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringConcernDetails;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSet;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.TrueScoringSet;
 
 /*
  * Directory layout:

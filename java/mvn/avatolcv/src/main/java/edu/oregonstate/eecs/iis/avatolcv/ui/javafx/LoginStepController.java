@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.Hashtable;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
+import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.LoginStep;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;

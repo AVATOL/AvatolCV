@@ -13,7 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms;
-import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
+import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.morphobank.MBCharQuestionsStep;
 
 public class MBCharQuestionsController implements StepController {

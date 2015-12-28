@@ -12,7 +12,7 @@ import javafx.scene.control.RadioButton;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithms;
-import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
+import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.morphobank.MBLoginStep;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.morphobank.SessionFocusStep;
 

@@ -16,10 +16,10 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
-import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTable;
 import edu.oregonstate.eecs.iis.avatolcv.results.SortableRow;
+import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationResultsStep;
 
 public class SegmentationResultsStepController implements StepController {

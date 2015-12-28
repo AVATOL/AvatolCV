@@ -3,12 +3,12 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.EvaluationSet;
-import edu.oregonstate.eecs.iis.avatolcv.core.ScoringSet;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.TrueScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSet;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSet;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.TrueScoringSet;
+import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 
 public class ScoringConfigurationStep extends Answerable implements Step {
 	private SessionInfo sessionInfo = null;

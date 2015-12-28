@@ -4,7 +4,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.Platform;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmLauncher;
-import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 
 public class EclipseAlgorithmLauncher {
 
