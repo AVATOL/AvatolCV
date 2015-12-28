@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <deployment-project plugin="plugin.deploytool" plugin-version="1.0">
-  <configuration target="target.standalone" target-name="Standalone Application" name="yaoSegPP" location="/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg" file="/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/yaoSegPP.prj" build-checksum="2880375387">
+  <configuration target="target.standalone" target-name="Standalone Application" name="yaoSegPP" location="/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg" file="/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/yaoSegPP.prj" build-checksum="2896782382">
     <param.project.name>/Users/jedirvine/av/avatol_cv/modules/segmentation/yaoSeg/yaoSegPP.prj</param.project.name>
     <param.target.type>Standalone Application</param.target.type>
     <param.appname>yaoSegPP</param.appname>
@@ -562,8 +562,6 @@
         <directory>${MATLAB_ROOT}/toolbox/wavelet/wmultisig1d</directory>
         <directory>${MATLAB_ROOT}/toolbox/wavelet/wavedemo</directory>
         <directory>${MATLAB_ROOT}/toolbox/wavelet/compression</directory>
-        <directory>${PROJECT_ROOT}/x</directory>
-        <directory>${PROJECT_ROOT}/x/xx</directory>
       </path>
     </matlab>
     <platform>
@@ -575,7 +573,7 @@
       <vista>false</vista>
       <linux>false</linux>
       <solaris>false</solaris>
-      <osver>10.9.3</osver>
+      <osver>10.9.5</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>maci64</arch>
