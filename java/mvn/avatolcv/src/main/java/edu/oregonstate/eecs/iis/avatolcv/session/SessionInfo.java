@@ -461,16 +461,13 @@ public class SessionInfo{
     }
     public void generateRunSummaries() throws AvatolCVException {
         List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
-        String sessionIDRoot = AvatolCVFileSystem.createSessionID();
         if (scoringConcerns.size() == 1){
             ChoiceItem scoringConcern = scoringConcerns.get(0);
-            String runID = sessionIDRoot + "_" + scoringConcern.getNormalizedKey().getName();
-            generateRunSummary(runID, scoringConcern);
+            generateRunSummary(sessionID, scoringConcern);
         }
         else {
             for (ChoiceItem scoringConcern : scoringConcerns){
-                String runID = sessionIDRoot + "_" + scoringConcern.getNormalizedKey().getName();
-                generateRunSummary(runID, scoringConcern);
+                generateRunSummary(sessionID, scoringConcern);
             }
         }
     }

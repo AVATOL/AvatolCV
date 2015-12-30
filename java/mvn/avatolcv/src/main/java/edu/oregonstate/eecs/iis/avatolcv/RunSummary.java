@@ -47,7 +47,7 @@ public class RunSummary {
     
     public void persist() throws AvatolCVException {
         String dir = AvatolCVFileSystem.getSessionSummariesDir();
-        String path = dir + FILESEP + this.runID + ".txt";
+        String path = dir + FILESEP + this.runID + "_" + getScoringConcern() + ".txt";
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(path));
             writer.write(KEY_SCORING_CONCERN + "=" + getScoringConcern() + NL);
