@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.core;
+package edu.oregonstate.eecs.iis.obsolete.avatolcv.orientation;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 /*
  * ImagesForStage is a generic image file handler that each tool can use.  
  * - it starts out with candidate images

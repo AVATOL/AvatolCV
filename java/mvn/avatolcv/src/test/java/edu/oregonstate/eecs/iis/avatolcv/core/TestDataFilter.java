@@ -5,7 +5,8 @@ package edu.oregonstate.eecs.iis.avatolcv.core;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter.FilterItem;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataFilter;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataFilter.FilterItem;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

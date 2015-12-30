@@ -16,7 +16,6 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OrientationAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.SegmentationAlgorithm;
-import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;

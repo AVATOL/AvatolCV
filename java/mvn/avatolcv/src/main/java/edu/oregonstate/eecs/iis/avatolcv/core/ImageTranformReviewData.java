@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.orientation.ObsoleteImagesForAlgorithmStep;
 
 public interface ImageTranformReviewData {
     public ObsoleteImagesForAlgorithmStep getImagesForStage();

@@ -44,7 +44,7 @@ public class AvatolCVJavaFX extends Application {
     //public static AvatolCVExceptionExpresser exceptionExpresser = new AvatolCVExceptionExpresserJavaFX();
     
     Stage mainWindow = null;
-    private static final Logger logger = LogManager.getLogger(AvatolCVJavaFXMB.class);
+    private static final Logger logger = LogManager.getLogger(AvatolCVJavaFX.class);
     public static void main(String[] args){
         String currentDir = System.getProperty("user.dir");
         try {

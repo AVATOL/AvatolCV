@@ -13,7 +13,6 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.FileRootNameList;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageTranformReviewData;
-import edu.oregonstate.eecs.iis.avatolcv.core.ObsoleteImagesForAlgorithmStep;
 import edu.oregonstate.eecs.iis.avatolcv.orientation.files.OrientationRunConfig;
 
 public class OrientationSessionData implements ImageTranformReviewData {

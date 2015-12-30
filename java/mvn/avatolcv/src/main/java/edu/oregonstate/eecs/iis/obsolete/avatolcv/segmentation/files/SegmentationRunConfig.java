@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.ObsoleteImagesForAlgorithmStep;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.orientation.ObsoleteImagesForAlgorithmStep;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation.SegmentationSessionData;
 
 public class SegmentationRunConfig {
