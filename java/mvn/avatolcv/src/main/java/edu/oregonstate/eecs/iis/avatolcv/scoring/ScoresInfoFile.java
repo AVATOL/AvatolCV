@@ -25,7 +25,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
         ...
  */
 public class ScoresInfoFile {
-	public static final String FILE_PREFIX = "scores_";
+	public static final String FILE_PREFIX = "scored_";
 	public static final String FILE_PREFIX_ALTERNATE = "scoring_";
 	public static final String IMAGE_DIR = "imageDir";
 	private static final String SCORING_CONCERN_VALUES = "classNames";

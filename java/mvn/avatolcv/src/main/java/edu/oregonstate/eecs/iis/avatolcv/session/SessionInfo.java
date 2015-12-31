@@ -66,6 +66,7 @@ public class SessionInfo{
     private static final String NL = System.getProperty("line.separator");
     private static final String FILESEP = System.getProperty("file.separator");
     private String sessionID = null;
+    private String sessionName = null;
     private static DataSource dataSource = null;
     private DatasetInfo chosenDataset = null;
     private List<ChoiceItem> chosenScoringConcerns = null;
@@ -295,7 +296,7 @@ public class SessionInfo{
     	return result;
     }
     public NormalizedKey getDefaultTrainTestConcern() throws AvatolCVException {
-		String ttc = this.dataSource.getDefaultTrainTestConcern();
+		String ttc = dataSource.getDefaultTrainTestConcern();
 		if (null == ttc){
 			return null;
 		}
@@ -493,8 +494,11 @@ public class SessionInfo{
             rs.addScoringConcernValue(nv.toString());
         }
         rs.persist();
-        
+        this.sessionName = rs.getSessionName();
         
        
+    }
+    public String getSessionName(){
+    	return this.sessionName;
     }
 }

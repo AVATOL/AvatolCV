@@ -110,5 +110,16 @@ public class NormalizedTypeIDName {
     public String toString(){
 		return this.normalizedValue;
 	}
-    
+    public boolean isNameSpecified(){
+    	if (NAME_UNSPECIFIED.equals(this.name)){
+    		return false;
+    	}
+    	if ("".equals(this.name)){
+    		return false;
+    	}
+    	if (null == this.name){
+    		return false;
+    	}
+    	return true;
+    }
 }

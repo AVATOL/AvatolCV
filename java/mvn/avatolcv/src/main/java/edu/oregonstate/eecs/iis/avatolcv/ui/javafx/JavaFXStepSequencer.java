@@ -401,8 +401,8 @@ public class JavaFXStepSequencer  {
     	    	}
     	    	else {
     	    		ResultsReview rr = new ResultsReview();
-                    String runID = sessionInfo.getSessionID();
-                    rr.initOnAppThread(this.mainScreen, mainWindow, runID);
+                    String runName = sessionInfo.getSessionName();
+                    rr.initOnAppThread(this.mainScreen, mainWindow, runName);
                     seekingNext = false;
                     showingResults = true;
     	    	}

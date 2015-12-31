@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
+
 /**
  * 
  * @author admin-jed
@@ -43,11 +45,21 @@ public class RunSummary {
     public RunSummary(String ID) throws AvatolCVException {
         this.runID = runID;
     }
-    
-    
+    /*
+     * remove the scoring concern from the filename to yield the true runID
+     */
+    public static String getRunIDFromRunSummaryName(String name){
+    	String[] parts = name.split("_");
+    	String result = parts[0] + "_" + parts[1];
+    	return result;
+    }
+    public String getSessionName(){
+    	return this.runID + "_" + getScoringConcern();
+    }
     public void persist() throws AvatolCVException {
         String dir = AvatolCVFileSystem.getSessionSummariesDir();
-        String path = dir + FILESEP + this.runID + "_" + getScoringConcern() + ".txt";
+        String sessionName = getSessionName();
+        String path = dir + FILESEP + getSessionName() + ".txt";
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(path));
             writer.write(KEY_SCORING_CONCERN + "=" + getScoringConcern() + NL);
@@ -63,7 +75,10 @@ public class RunSummary {
             //    writer.write(KEY_COOKING_SHOW + "=" + isCookingShow() + NL);
             //}
             for (String scVal : this.scoringConcernValues){
-                writer.write(KEY_SCORING_CONCERN_VALUE + "=" + scVal + NL);
+            	NormalizedValue nv = new NormalizedValue(scVal);
+            	if (nv.isNameSpecified()){
+            		writer.write(KEY_SCORING_CONCERN_VALUE + "=" + scVal + NL);
+            	}
             }
             writer.close();
         }
@@ -91,7 +106,7 @@ public class RunSummary {
                     String key = parts[0];
                     String value = parts[1];
                     if (key.equals(KEY_SCORING_CONCERN)){
-                        rs.setScoringConcern(value);
+                        rs.setScoringConcern(new NormalizedValue(value).getName());
                     }
                     else if (key.equals(KEY_DATASET)){
                         rs.setDataset(value);
@@ -112,7 +127,10 @@ public class RunSummary {
                         rs.setCookingShow(true);
                     }
                     else if (key.equals(KEY_SCORING_CONCERN_VALUE)){
-                        rs.addScoringConcernValue(value);
+                    	NormalizedValue nv = new NormalizedValue(value);
+                    	if (nv.isNameSpecified()){
+                    		rs.addScoringConcernValue(new NormalizedValue(value).getName());
+                    	}
                     }
                 }
             }
