@@ -192,5 +192,7 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
     public void cancelAlgorithm(){
         System.out.println("heard cancel");
         this.step.cancelScoring();
+        cancelAlgorithmButton.setText("cancelling...");
+        cancelAlgorithmButton.setDisable(true);
     }
 }

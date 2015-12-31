@@ -187,5 +187,7 @@ public class OrientationRunStepController implements StepController, OutputMonit
     public void cancelAlgorithm(){
         System.out.println("heard cancel");
         this.step.cancelOrientation();
+        cancelAlgorithmButton.setText("cancelling...");
+        cancelAlgorithmButton.setDisable(true);
     }
 }
