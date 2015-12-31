@@ -27,6 +27,7 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.ImagePullStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ImagePullStepController.ImageDownloadTask;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ImagePullStepController.MessageUpdater;
+import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ScoringRunStepController.NavButtonDisabler;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.SegmentationConfigurationStepController.AlgChangeListener;
 
 public class SegmentationRunStepController implements StepController, OutputMonitor {
@@ -83,6 +84,7 @@ public class SegmentationRunStepController implements StepController, OutputMoni
                 alert.showAndWait();
                 
             }
+            Platform.runLater(new NavButtonDisabler());
             Task<Boolean> task = new RunSegmentationTask(this, this.step, RUN_SEGMENTATION, useRunConfig);
             /*
              * NOTE - wanted to use javafx properties and binding here but couldn't dovetail it in.  I could not put
@@ -101,7 +103,12 @@ public class SegmentationRunStepController implements StepController, OutputMoni
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName() + " : " + ioe.getMessage());
         } 
     }
-
+    public class NavButtonDisabler implements Runnable {
+        @Override
+        public void run() {
+            fxSession.disableNavButtons();
+        }
+    }
     @Override
     public boolean delayEnableNavButtons() {
         return true;

@@ -98,6 +98,7 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
                 alert.showAndWait();
                 
             }
+            Platform.runLater(new NavButtonDisabler());
             Task<Boolean> task = new RunScoringTask(this, this.step, RUN_SCORING, useRunConfig);
             /*
              * NOTE - wanted to use javafx properties and binding here but couldn't dovetail it in.  I could not put
@@ -115,6 +116,12 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
         catch(IOException ioe){
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName() + " : " + ioe.getMessage());
         } 
+    }
+    public class NavButtonDisabler implements Runnable {
+        @Override
+        public void run() {
+            fxSession.disableNavButtons();
+        }
     }
     public class PostScoringUIAdjustments implements Runnable{
         @Override

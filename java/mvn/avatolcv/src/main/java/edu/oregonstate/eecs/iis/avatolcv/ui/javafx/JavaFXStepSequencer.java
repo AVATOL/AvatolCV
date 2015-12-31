@@ -293,6 +293,10 @@ public class JavaFXStepSequencer  {
     	nextButton.setDisable(false);
     	backButton.setDisable(false);
     }
+    public void disableNavButtons(){
+        nextButton.setDisable(true);
+        backButton.setDisable(true);
+    }
     public void initUI() throws AvatolCVException {
         try {
             FXMLLoader loader = new FXMLLoader(JavaFXStepSequencer.class.getResource("navigationShellNoSplit.fxml"));
@@ -311,8 +315,7 @@ public class JavaFXStepSequencer  {
      * prevStep called from the button on the javaFX ui thread (application thread)
      */
     public void previousStep(){
-    	nextButton.setDisable(true);
-    	backButton.setDisable(true);
+        disableNavButtons();
     	// delegate data consumption to background thread
     	PrevStepTask task = new PrevStepTask();
     	new Thread(task).start();
@@ -321,8 +324,7 @@ public class JavaFXStepSequencer  {
      * nextStep called from the button on the javaFX ui thread (application thread)
      */
     public void nextStep(){
-    	nextButton.setDisable(true);
-    	backButton.setDisable(true);
+        disableNavButtons();
     	
     	Step step = ss.getCurrentStep();
         StepController controller = controllerForStep.get(step);
