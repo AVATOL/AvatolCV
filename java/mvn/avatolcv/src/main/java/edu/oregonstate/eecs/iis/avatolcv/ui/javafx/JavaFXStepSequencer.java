@@ -26,7 +26,6 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
-import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepSequence;
@@ -404,8 +403,8 @@ public class JavaFXStepSequencer  {
     	    	}
     	    	else {
     	    		ResultsReview rr = new ResultsReview();
-                    String runID = sessionInfo.getSessionID();
-                    rr.initOnAppThread(this.mainScreen, mainWindow, runID);
+                    String runName = sessionInfo.getSessionName();
+                    rr.initOnAppThread(this.mainScreen, mainWindow, runName);
                     seekingNext = false;
                     showingResults = true;
     	    	}

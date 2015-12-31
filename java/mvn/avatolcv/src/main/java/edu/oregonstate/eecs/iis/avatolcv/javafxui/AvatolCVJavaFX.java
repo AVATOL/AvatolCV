@@ -9,6 +9,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.JavaFXStepSequencer;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ResultsReview;
@@ -120,8 +121,9 @@ public class AvatolCVJavaFX extends Application {
             }
             else if (radioReviewResults.isSelected()){
                 ResultsReview rr = new ResultsReview();
-                String runChoice = (String)priorSessionSelector.getValue();
-                rr.init(this, mainWindow, runChoice);
+                String runName = (String)priorSessionSelector.getValue();
+                //String runID = RunSummary.getRunIDFromRunSummaryFilename(runChoice);
+                rr.init(this, mainWindow, runName);
             }
             else {
                 // must have selected tutorial

@@ -41,6 +41,7 @@ import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfoScored;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfosToReview;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTable;
 import edu.oregonstate.eecs.iis.avatolcv.results.SortableRow;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoreIndex;
@@ -68,38 +69,40 @@ public class ResultsReview {
     private Stage mainWindow = null;
     private Scene scene = null;
     private String runID = null;
+    private String runName = null;
     private String scoringMode = null;
     private RunSummary runSummary = null;
     private AvatolCVJavaFX mainScreen = null;
     private ResultsTable resultsTable = null;
     public ResultsReview(){
     }
-    public void init(AvatolCVJavaFX mainScreen, Stage mainWindow, String runID) throws AvatolCVException {
+    public void init(AvatolCVJavaFX mainScreen, Stage mainWindow, String runName) throws AvatolCVException {
         this.mainWindow = mainWindow;
         this.mainScreen = mainScreen;
-        this.runID = runID;
+        this.runName = runName;
+        this.runID = RunSummary.getRunIDFromRunSummaryName(runName);
         if (this.runID == null || "".equals(this.runID)){
         	throw new AvatolCVException("null runID cannot be rendered in results viewer");
         }
         initUI();
     }
-    public void initOnAppThread(AvatolCVJavaFX mainScreen, Stage mainWindow, String runID){
-    	ApplicationThreadResultsReviewInit atrri = new ApplicationThreadResultsReviewInit(mainScreen, mainWindow, runID);
+    public void initOnAppThread(AvatolCVJavaFX mainScreen, Stage mainWindow, String runName){
+    	ApplicationThreadResultsReviewInit atrri = new ApplicationThreadResultsReviewInit(mainScreen, mainWindow, runName);
     	Platform.runLater(atrri);
     }
     public class ApplicationThreadResultsReviewInit implements Runnable {
     	AvatolCVJavaFX mainScreen = null;
     	Stage mainWindow = null;
-    	String runID = null;
-    	public ApplicationThreadResultsReviewInit(AvatolCVJavaFX mainScreen, Stage mainWindow, String runID){
+    	String runName = null;
+    	public ApplicationThreadResultsReviewInit(AvatolCVJavaFX mainScreen, Stage mainWindow, String runName){
     		this.mainScreen = mainScreen;
     		this.mainWindow = mainWindow;
-    		this.runID = runID;
+    		this.runName = runName;
     	}
 		@Override
 		public void run() {
 			try {
-				init(mainScreen, mainWindow, runID);
+				init(mainScreen, mainWindow, runName);
 			}
 			catch(AvatolCVException ace){
 				AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem starting ResultsReview: " + ace.getMessage());
@@ -122,7 +125,7 @@ public class ResultsReview {
             }
             initializePriorRunChoices();
             runSelectChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new RunChoiceChangeListener(runSelectChoiceBox, this.mainScreen, this.mainWindow));
-            setRunDetails(this.runID);
+            setRunDetails(this.runName);
             setScoredImagesInfo(this.runID, scoringConcernValue.getText());
             //runDetailsAccordion.requestLayout();
             setupSlider();
@@ -737,8 +740,8 @@ public class ResultsReview {
         gp.add(truthLabel,column,row);
         column++;
     }*/
-    private void setRunDetails(String runID) throws AvatolCVException {
-        RunSummary rs = RunSummary.loadSummary(runID);
+    private void setRunDetails(String runName) throws AvatolCVException {
+        RunSummary rs = RunSummary.loadSummary(runName);
         this.runSummary = rs;
         AvatolCVFileSystem.setDatasourceName(rs.getDataSource());
         AvatolCVFileSystem.setSessionID(rs.getRunID());
