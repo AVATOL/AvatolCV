@@ -198,5 +198,7 @@ public class SegmentationRunStepController implements StepController, OutputMoni
     public void cancelAlgorithm(){
         System.out.println("heard cancel");
         this.step.cancelSegmentation();
+        cancelAlgorithmButton.setText("cancelling...");
+        cancelAlgorithmButton.setDisable(true);
     }
 }
