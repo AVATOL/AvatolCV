@@ -152,10 +152,11 @@ public class AvatolCVFileSystem {
             String number = parts[1];
             numbersForToday.add(number);
         }
-        Collections.sort(numbersForToday);
-        String finalNumberString = numbersForToday.get(numbersForToday.size() - 1);
-        Integer numberAsInteger = new Integer(finalNumberString);
-        int newValue = numberAsInteger.intValue() + 1;
+        Integer highestNumber = getHighestNumber(numbersForToday);
+       // Collections.sort(numbersForToday);
+       // String finalNumberString = numbersForToday.get(numbersForToday.size() - 1);
+       // Integer numberAsInteger = new Integer(finalNumberString);
+        int newValue = highestNumber.intValue() + 1;
         String newValueString = "";
         if (newValue > 999){
         	newValueString = String.format("%04d", newValue);
@@ -168,6 +169,16 @@ public class AvatolCVFileSystem {
         }
         
         return dateString + "_" + newValueString;
+    }
+    public static Integer getHighestNumber(List<String> numStrings){
+    	Integer highest = new Integer(0);
+    	for (String n : numStrings){
+    		Integer cur = new Integer(n);
+    		if (cur.intValue() > highest.intValue()){
+    			highest = cur;
+    		}
+    	}
+    	return highest;
     }
 	public static void setSessionID(String id) throws AvatolCVException {
         sessionID = id; 
