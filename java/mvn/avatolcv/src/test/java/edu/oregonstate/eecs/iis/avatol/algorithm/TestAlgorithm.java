@@ -36,7 +36,7 @@ public class TestAlgorithm extends TestCase {
             String root = getValidRoot();
             String modRoot = root + FILESEP + "modules";
             AlgorithmModules am = new AlgorithmModules(modRoot);
-            String description = am.getAlgDescription("simpleLeafSegmenter", AlgorithmModules.AlgType.SEGMENTATION);
+            String description = am.getAlgDescription("basicSegmenter", AlgorithmModules.AlgType.SEGMENTATION);
             Assert.assertTrue(description != null);
             Assert.assertTrue(!description.equals(""));
             
@@ -58,9 +58,9 @@ public class TestAlgorithm extends TestCase {
             String yaoSegMac = segRoot + FILESEP + "yaoSeg" + FILESEP + "algPropertiesMac.txt";
             List<String> lines = loadAlg(yaoSegMac);
             SegmentationAlgorithm segAlg = new SegmentationAlgorithm(lines, yaoSegMac);
-            Assert.assertEquals(segAlg.getAlgName(),"simpleLeafSegmenter");
-            Assert.assertEquals(segAlg.getAlgType(),"segmentation");
-            Assert.assertEquals(segAlg.getLaunchFile(), "segmentationRunner.sh");
+            Assert.assertEquals("basicSegmenter", segAlg.getAlgName());
+            Assert.assertEquals("segmentation",segAlg.getAlgType());
+            Assert.assertEquals("segmentationRunner.sh",segAlg.getLaunchFile());
             Assert.assertTrue(segAlg.getAlgDescription() != null);
             Assert.assertFalse(segAlg.getAlgDescription().equals(""));
             
@@ -68,9 +68,9 @@ public class TestAlgorithm extends TestCase {
             String yaoOrientMac = orientRoot + FILESEP + "yaoOrient" + FILESEP + "algPropertiesMac.txt";
             lines = loadAlg(yaoOrientMac);
             OrientationAlgorithm orientAlg = new OrientationAlgorithm(lines, yaoSegMac);
-            Assert.assertEquals(orientAlg.getAlgName(),"simpleLeafOrienter");
-            Assert.assertEquals(orientAlg.getAlgType(),"orientation");
-            Assert.assertEquals(orientAlg.getLaunchFile(), "orientationRunner.sh");
+            Assert.assertEquals("basicOrientation",orientAlg.getAlgName());
+            Assert.assertEquals("orientation",orientAlg.getAlgType());
+            Assert.assertEquals( "orientationRunner.sh",orientAlg.getLaunchFile());
             Assert.assertTrue(orientAlg.getAlgDescription() != null);
             Assert.assertFalse(orientAlg.getAlgDescription().equals(""));
             
@@ -78,9 +78,9 @@ public class TestAlgorithm extends TestCase {
             String yaoScoringMac = scoringRoot + FILESEP + "leafScore" + FILESEP + "algPropertiesMac.txt";
             lines = loadAlg(yaoScoringMac);
             ScoringAlgorithm scoringAlg = new ScoringAlgorithm(lines, yaoScoringMac);
-            Assert.assertEquals(scoringAlg.getAlgName(),"simpleLeafScore");
-            Assert.assertEquals(scoringAlg.getAlgType(),"scoring");
-            Assert.assertEquals(scoringAlg.getLaunchFile(), "leafScore.sh");
+            Assert.assertEquals("ShapeTextureScoring",scoringAlg.getAlgName());
+            Assert.assertEquals("scoring",scoringAlg.getAlgType());
+            Assert.assertEquals( "leafScore.sh",scoringAlg.getLaunchFile());
             Assert.assertEquals(scoringAlg.getScoringFocus(), ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT);   
             Assert.assertEquals(scoringAlg.getScoringScope(), ScoringAlgorithm.ScoringScope.SINGLE_ITEM);
             Assert.assertTrue(scoringAlg.getAlgDescription() != null);
@@ -89,9 +89,9 @@ public class TestAlgorithm extends TestCase {
             String batskullScoringWindows = scoringRoot + FILESEP + "batskullDPM" + FILESEP + "algPropertiesWindows.txt";
             lines = loadAlg(batskullScoringWindows);
             ScoringAlgorithm scoringAlgBat = new ScoringAlgorithm(lines, batskullScoringWindows);
-            Assert.assertEquals(scoringAlgBat.getAlgName(),"dpmPresenceAbsenceScoring");
-            Assert.assertEquals(scoringAlgBat.getAlgType(),"scoring");
-            Assert.assertEquals(scoringAlgBat.getLaunchFile(), "batSkullScore.bat");
+            Assert.assertEquals("partsScoring",scoringAlgBat.getAlgName());
+            Assert.assertEquals("scoring",scoringAlgBat.getAlgType());
+            Assert.assertEquals("batSkullScore.bat",scoringAlgBat.getLaunchFile());
             Assert.assertEquals(scoringAlgBat.getScoringFocus(), ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE);   
             Assert.assertEquals(scoringAlgBat.getScoringScope(), ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM);    
             Assert.assertTrue(scoringAlgBat.getAlgDescription() != null);
