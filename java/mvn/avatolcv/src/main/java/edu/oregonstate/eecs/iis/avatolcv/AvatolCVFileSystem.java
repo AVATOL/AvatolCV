@@ -156,7 +156,17 @@ public class AvatolCVFileSystem {
         String finalNumberString = numbersForToday.get(numbersForToday.size() - 1);
         Integer numberAsInteger = new Integer(finalNumberString);
         int newValue = numberAsInteger.intValue() + 1;
-        String newValueString = String.format("%02d", newValue);
+        String newValueString = "";
+        if (newValue > 999){
+        	newValueString = String.format("%04d", newValue);
+        }
+        else if (newValue > 99){
+        	newValueString = String.format("%03d", newValue);
+        }
+        else {
+        	newValueString = String.format("%02d", newValue);
+        }
+        
         return dateString + "_" + newValueString;
     }
 	public static void setSessionID(String id) throws AvatolCVException {
