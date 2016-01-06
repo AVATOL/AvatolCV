@@ -6,12 +6,14 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Accordion;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -20,6 +22,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -62,6 +65,7 @@ public class ScoringConfigurationStepController implements StepController {
     private Hashtable<String, NormalizedKey> normalizedKeyHash = new Hashtable<String, NormalizedKey>();
     private ImagesForStep imageAccessor = null;
     private ScoringSetsKeySorter ssks = null;
+    
     public ScoringConfigurationStepController(ScoringConfigurationStep step, String fxmlDocName) throws AvatolCVException {
         this.step = step;
         this.fxmlDocName = fxmlDocName;
@@ -80,26 +84,63 @@ public class ScoringConfigurationStepController implements StepController {
 	    }
     	return sets;
     }
+    private boolean hasTrainingExamplesSelected(){
+    	if (null != evaluationSets){
+    		for (EvaluationSet es : evaluationSets){
+    			if (es.getImagesToTrainOn().size() != 0){
+    				return true;
+    			}
+    		}
+    		return false;
+    	}
+    	else if (null != trueScoringSets){
+    		for (TrueScoringSet tss : trueScoringSets){
+    			if (tss.getImagesToTrainOn().size() != 0){
+    				return true;
+    			}
+    		}
+    		return false;
+    	}
+    	else {
+    		return true;
+    	}
+    }
 	@Override
 	public boolean consumeUIData() {
-	    if (SessionInfo.isBisqueSession()){
-	        System.out.println("true scoring set for bisque");
-	        consumeTrueScoringSets();
-	    }
-	    else {
-	        System.out.println("evaluation set for morphobank");
-	        consumeEvaluationSets();
-	    }
+		if (!hasTrainingExamplesSelected()){
+			Platform.runLater(new NoTrainingDataAlert());
+			return false;
+		}
+		else {
+			if (SessionInfo.isBisqueSession()){
+		        System.out.println("true scoring set for bisque");
+		        consumeTrueScoringSets();
+		    }
+		    else {
+		        System.out.println("evaluation set for morphobank");
+		        consumeEvaluationSets();
+		    }
+		    
+		    try {
+	            this.step.consumeProvidedData();
+	        }
+	        catch(Exception e){
+	            AvatolCVExceptionExpresserJavaFX.instance.showException(e, "problem trying to consume data at segmentation configuration");
+	        }
+	        return true;
+		}
 	    
-	    try {
-            this.step.consumeProvidedData();
-        }
-        catch(Exception e){
-            AvatolCVExceptionExpresserJavaFX.instance.showException(e, "problem trying to consume data at segmentation configuration");
-        }
-        return true;
 	}
 
+	public class NoTrainingDataAlert implements Runnable {
+		public void run(){
+			Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("Scoring configuration problem");
+            alert.setContentText("training examples need to be selected.");
+            alert.showAndWait();
+		}
+	}
 	private void consumeEvaluationSets(){
 		List<ScoringSet> sSets = new ArrayList<ScoringSet>();
         sSets.addAll(this.evaluationSets);

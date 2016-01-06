@@ -417,6 +417,7 @@ public class JavaFXStepSequencer  {
     		}
     	}
     	else {
+    		enableNavButtons();
     		controller.clearUIFields();
     	}
     }
