@@ -1,0 +1,9 @@
+launchWith=orientationCheatRunner.py
+algName=debugCheatLeafOrienter
+algType=orientation
+description=Algorithm debugCheatLeafOrienter copies pregenerated oriented data for the leafDev project to the orientation output directory.
+
+inputRequired:testImagesFile refsFilesWithSuffix * ofType rawImage
+
+outputGenerated:ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed withSuffix _croppedMask
+outputGenerated:ofType isolatedSpecimenImage withSuffix _croppedOrig

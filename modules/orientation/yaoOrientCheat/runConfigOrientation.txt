@@ -1,0 +1,2 @@
+orientationOutputDir=C:\jed\avatol\git\avatol_cv\modules\orientation\yaoOrientCheat\output
+testImagesFile=foo
