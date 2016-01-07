@@ -291,31 +291,48 @@ POINT_COORDS_DELIM = '-';
 fh = fopen(outputFile, 'wt');
 
 %% write class header
-class1Name = charMeta(1).name;
-class2Name = charMeta(2).name;
-fprintf(fh, 'classNames=%s,%s\n', class1Name, class2Name);
+class1 = [CHARACTER_STATE ':' charMeta(1).id ...
+        '|' charMeta(1).name];
+class2 = [CHARACTER_STATE ':' charMeta(2).id ...
+        '|' charMeta(2).name];
+fprintf(fh, 'classNames=%s,%s\n', class1, class2);
 
 %% write scored data
-for i = 1:length(scoredData)
-    fullpathtoScoredImage = scoredData(i).image;
-    classValue = [CHARACTER_STATE ':' scoredData(i).charStateId ...
-        '|' scoredData(i).charStateName];
-    pointAnnotations = [POINT ':' num2str(scoredData(i).x) ...
-        POINT_COORDS_DELIM num2str(scoredData(i).y)];
-    
-    confClass1 = str2double(scoredData(i).confidence);
-    confClass2 = 1.0-confClass1;
-    
-    fprintf(fh, '%s\n', ...
-        [fullpathtoScoredImage DELIM ...
-        classValue DELIM ...
-        pointAnnotations DELIM ...
-        num2str(confClass1) DELIM ...
-        num2str(confClass2)]);
+if isfield(scoredData, 'image')
+    for i = 1:length(scoredData)
+        fullpathtoUnScoredImage = scoredData(i).image;
+        classValue = [CHARACTER_STATE ':' scoredData(i).charStateId ...
+            '|' scoredData(i).charStateName];
+        pointAnnotations = [POINT ':' num2str(scoredData(i).x) ...
+            POINT_COORDS_DELIM num2str(scoredData(i).y)];
+
+        confClass1 = str2double(scoredData(i).confidence);
+        confClass2 = 1.0-confClass1;
+
+        fprintf(fh, '%s\n', ...
+            [fullpathtoUnScoredImage DELIM ...
+            classValue DELIM ...
+            pointAnnotations DELIM ...
+            num2str(confClass1) DELIM ...
+            num2str(confClass2)]);
+    end
+end
+
+%% write unscored data
+if isfield(unscoredData, 'image')
+    for i = 1:length(unscoredData)
+        fullpathtoUnScoredImage = unscoredData(i).image;
+        classValue = 'NOT_SCORE';
+
+        fprintf(fh, '%s\n', ...
+            [fullpathtoUnScoredImage DELIM ...
+            classValue DELIM ...
+            '?' DELIM ...
+            '?' DELIM ...
+            '?']);
+    end
 end
 
 fclose(fh);
-
-%% write unscored data TODO
 
 end % write_output_file
