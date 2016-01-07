@@ -291,9 +291,11 @@ POINT_COORDS_DELIM = '-';
 fh = fopen(outputFile, 'wt');
 
 %% write class header
-class1Name = charMeta(1).name;
-class2Name = charMeta(2).name;
-fprintf(fh, 'classNames=%s,%s\n', class1Name, class2Name);
+class1 = [CHARACTER_STATE ':' charMeta(1).id ...
+        '|' charMeta(1).name];
+class2 = [CHARACTER_STATE ':' charMeta(2).id ...
+        '|' charMeta(2).name];
+fprintf(fh, 'classNames=%s,%s\n', class1, class2);
 
 %% write scored data
 for i = 1:length(scoredData)
