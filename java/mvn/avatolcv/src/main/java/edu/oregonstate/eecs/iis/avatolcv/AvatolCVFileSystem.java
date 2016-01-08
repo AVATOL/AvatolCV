@@ -11,6 +11,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.Algorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
 
 /**
  * 

@@ -9,7 +9,6 @@ import java.util.Properties;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
-import edu.oregonstate.eecs.iis.avatolcv.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.Algorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;

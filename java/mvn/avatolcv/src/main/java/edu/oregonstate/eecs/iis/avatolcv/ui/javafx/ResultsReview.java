@@ -34,7 +34,6 @@ import javafx.stage.Stage;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
-import edu.oregonstate.eecs.iis.avatolcv.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
@@ -47,6 +46,7 @@ import edu.oregonstate.eecs.iis.avatolcv.results.SortableRow;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoreIndex;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.steps.OrientationConfigurationStep;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.OrientationConfigurationStepController.AlgChangeListener;
 

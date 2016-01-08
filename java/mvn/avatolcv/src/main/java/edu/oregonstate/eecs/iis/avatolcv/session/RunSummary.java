@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv;
+package edu.oregonstate.eecs.iis.avatolcv.session;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 
 /**
