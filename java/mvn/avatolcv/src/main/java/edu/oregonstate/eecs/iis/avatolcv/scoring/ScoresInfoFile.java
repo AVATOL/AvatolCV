@@ -70,6 +70,7 @@ public class ScoresInfoFile {
 		this.imagePaths.add(pathname);
 		this.scoringConcernValueHash.put(pathname, scoringConcernValue);
 		this.pointCoordinatesHash.put(pathname, pointCoordinates);
+		System.out.println(line);
 		for (int j = 0; j < confCount; j++){
 			this.confidenceHash.put(pathname+this.valuesList.get(j), parts[i++]);
 		}

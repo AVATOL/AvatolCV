@@ -1,5 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.normalized;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 
@@ -8,9 +9,9 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 //taxon=773126|Artibeus jamaicensis
 //view=8905|Skull - ventral annotated teeth
 public class NormalizedTypeIDName {
-    public static final String TYPE_UNSPECIFIED = "?";
-    public static final String ID_UNSPECIFIED = "?";
-    public static final String NAME_UNSPECIFIED = "?";
+    public static final String TYPE_UNSPECIFIED = AvatolCVConstants.UNDETERMINED;
+    public static final String ID_UNSPECIFIED = AvatolCVConstants.UNDETERMINED;
+    public static final String NAME_UNSPECIFIED = AvatolCVConstants.UNDETERMINED;
 
     private String type = TYPE_UNSPECIFIED;
     private String ID = ID_UNSPECIFIED;

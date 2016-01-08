@@ -7,6 +7,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
@@ -332,7 +333,7 @@ public class SessionInfo{
         			!isKeySameTypeAsOneOfTheScoringConcerns(key) &&
         			!isKeyTheTrainTestConcern(key)){ // i.e. don't show taxon values for MB
         			NormalizedValue nv = nii.getValueForKey(key);
-        			if (!nv.getName().equals("") && !nv.getName().equals("?")){
+        			if (!nv.getName().equals("") && !nv.getName().equals(AvatolCVConstants.UNDETERMINED)){
         				this.dataFilter.addFilterItem(key, nv, true);
         			}
         		}

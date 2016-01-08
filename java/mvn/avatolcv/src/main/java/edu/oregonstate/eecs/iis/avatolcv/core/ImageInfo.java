@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Hashtable;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 
@@ -135,7 +136,7 @@ public class ImageInfo {
         String ID = rootNameParts[0];
         String nameAsUploaded = rootNameParts[1];
         String imageWidth = rootNameParts[2];
-        String outputType = "?";
+        String outputType = AvatolCVConstants.UNDETERMINED;
         if (rootNameParts.length == 3){
             outputType = "";
         }

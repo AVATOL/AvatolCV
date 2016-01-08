@@ -55,8 +55,9 @@ public class RunSummary {
     	String result = parts[0] + "_" + parts[1];
     	return result;
     }
-    public String getSessionName(){
-    	return this.runID + "_" + getScoringConcern();
+    public String getSessionName() throws AvatolCVException {
+        NormalizedValue nv = new NormalizedValue(getScoringConcern());
+    	return this.runID + "_" + nv.getName();
     }
     public void persist() throws AvatolCVException {
         String dir = AvatolCVFileSystem.getSessionSummariesDir();
