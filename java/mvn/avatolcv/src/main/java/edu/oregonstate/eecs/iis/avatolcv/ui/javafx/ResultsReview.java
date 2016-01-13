@@ -277,13 +277,14 @@ public class ResultsReview {
         nameLabel.getStyleClass().add("columnValue");
         sr.setWidget(ResultsTable.COLNAME_NAME, nameLabel);
      
-        //if (isEvaluationMode()){
+        System.out.println("isEvaluationMode ? " + isEvaluationMode());
+        if (isEvaluationMode()){
         	// get truth
             String truth = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_TRUTH));
             Label truthLabel = new Label(truth);
             truthLabel.getStyleClass().add("columnValue");
             sr.setWidget(ResultsTable.COLNAME_TRUTH, truthLabel);
-        //}
+        }
         
 
         // get score
@@ -293,6 +294,9 @@ public class ResultsReview {
         sr.setWidget(ResultsTable.COLNAME_SCORE, scoreLabel);
         
         // get confidence
+        int targetIndex = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_CONFIDENCE);
+        System.out.println("sr : " + sr);
+        System.out.println("targetIndex : " + targetIndex);
         String scoreConf = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_CONFIDENCE));
         String trimmedScoreConf = limitToTwoDecimalPlaces(scoreConf);
         Label confidenceLabel = new Label(trimmedScoreConf);
@@ -367,8 +371,8 @@ public class ResultsReview {
     	List<String> scoringImagePaths = sif.getImagePaths();
     	int row = 1;
     	for (String path : scoringImagePaths){
-    		//System.out.println("got image " + path);
     		String value = sif.getScoringConcernValueForImagePath(path);
+    		System.out.println("getting confidence for ImageValue path(key) and value: " + path + ";" + value);
     		String conf = sif.getConfidenceForImageValue(path, value);
     		String truth = null;
     		if (isEvaluationMode()){
