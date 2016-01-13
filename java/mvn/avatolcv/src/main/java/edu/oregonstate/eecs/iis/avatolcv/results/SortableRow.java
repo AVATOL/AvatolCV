@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
+
 public class SortableRow implements Comparable {
 	private List<String> values = null;
 	private int index = -1;
@@ -86,7 +88,7 @@ public class SortableRow implements Comparable {
 	}
 	public String getValue(int index){
 		if (index > this.values.size() - 1){
-			return "?";
+			return AvatolCVConstants.UNDETERMINED;
 		}
 		return values.get(index);
 	}

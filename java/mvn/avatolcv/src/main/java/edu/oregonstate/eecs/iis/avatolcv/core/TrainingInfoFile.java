@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
 
@@ -67,7 +68,7 @@ public class TrainingInfoFile {
 		String[] parts = line.split(",");
 		String filepath = parts[0];
 		String scoringConcernValue = parts[1];
-		String pointCoordinates = "?";
+		String pointCoordinates = AvatolCVConstants.UNDETERMINED;
 		if (parts.length == 2){
 			pointCoordinates = "";
 		}

@@ -102,7 +102,12 @@ public class AlgorithmLauncher {
             	commands.add("/C");
             	//commands.add("cd " + algDir);
             	//commands.add("&");
-            	commands.add(launchFilePath + " " + runConfigPath);
+            	if (launchFile.endsWith(".py")){
+            	    commands.add("python " + launchFilePath + " " + runConfigPath);
+            	}
+            	else {
+            	    commands.add(launchFilePath + " " + runConfigPath);
+            	}
             }
             else {
                 
@@ -113,7 +118,12 @@ public class AlgorithmLauncher {
             	//commands.add("./" + launchFile + " " + runConfigPath);
             	String escapedLaunchFilePath = launchFilePath.replaceAll(" ", "\\\\ ");
                 String escapedArgs = runConfigPath.replaceAll(" ", "\\\\ ");
-            	commands.add(escapedLaunchFilePath + " " + escapedArgs);
+                if (launchFile.endsWith(".py")){
+                    commands.add("python " + escapedLaunchFilePath + " " + escapedArgs);
+                }
+                else {
+                    commands.add(escapedLaunchFilePath + " " + escapedArgs);
+                }
             }
             
             this.invoker = new CommandLineInvoker();

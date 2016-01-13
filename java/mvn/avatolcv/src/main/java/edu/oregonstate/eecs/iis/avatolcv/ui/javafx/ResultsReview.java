@@ -31,10 +31,10 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
-import edu.oregonstate.eecs.iis.avatolcv.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
@@ -47,6 +47,7 @@ import edu.oregonstate.eecs.iis.avatolcv.results.SortableRow;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoreIndex;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.steps.OrientationConfigurationStep;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.OrientationConfigurationStepController.AlgChangeListener;
 
@@ -148,7 +149,7 @@ public class ResultsReview {
         }
         @Override
         public void changed(ObservableValue ov, Number value, Number newValue) {
-            String newRunID = "?";
+            String newRunID = AvatolCVConstants.UNDETERMINED;
             try {
                 newRunID =(String)cb.getItems().get((Integer)newValue);
                 init(mainScreen, mainWindow, newRunID);
@@ -550,7 +551,7 @@ public class ResultsReview {
         column++;
         
         // get trainingVsTestConcern if relevant, OR image name
-        Label itemLabel = new Label("?");
+        Label itemLabel = new Label(AvatolCVConstants.UNDETERMINED);
         if (this.runSummary.hasTrainTestConcern()){
         	String trainingVsTestName = si.getTrainingVsTestName();
         	if (null != trainingVsTestName){
@@ -571,7 +572,7 @@ public class ResultsReview {
             truthLabel.setText(truth);
         }
         else {
-        	truthLabel.setText("?");
+        	truthLabel.setText(AvatolCVConstants.UNDETERMINED);
         }
         gp.add(truthLabel,column,row);
         column++;
@@ -582,7 +583,7 @@ public class ResultsReview {
             scoreLabel.setText(score);
         }
         else {
-        	scoreLabel.setText("?");
+        	scoreLabel.setText(AvatolCVConstants.UNDETERMINED);
         }
         gp.add(scoreLabel, column, row);
         column++;
@@ -612,7 +613,7 @@ public class ResultsReview {
     			return trueName;
     		}
     	}
-    	return "?";
+    	return AvatolCVConstants.UNDETERMINED;
     }
 */
     private String getTrueImageNameFromImagePathForCookingShow(String imagePath) throws AvatolCVException {
@@ -699,7 +700,7 @@ public class ResultsReview {
             truthLabel.setText(value);
         }
         else {
-        	truthLabel.setText("?");
+        	truthLabel.setText(AvatolCVConstants.UNDETERMINED);
         }
         gp.add(truthLabel,column,row);
         column++;
@@ -718,7 +719,7 @@ public class ResultsReview {
         column++;
         
         // get trainingVsTestConcern if relevant, OR image name
-        Label itemLabel = new Label("?");
+        Label itemLabel = new Label(AvatolCVConstants.UNDETERMINED);
         if (this.runSummary.hasTrainTestConcern()){
         	String trainingVsTestName = si.getTrainingVsTestName();
         	if (null != trainingVsTestName){
@@ -739,7 +740,7 @@ public class ResultsReview {
             truthLabel.setText(truth);
         }
         else {
-        	truthLabel.setText("?");
+        	truthLabel.setText(AvatolCVConstants.UNDETERMINED);
         }
         gp.add(truthLabel,column,row);
         column++;

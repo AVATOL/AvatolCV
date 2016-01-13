@@ -12,6 +12,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
@@ -117,6 +118,9 @@ public class NormalizedImageInfo {
     	}
     	else if ("".equals(value.getName())){
     		return false;
+    	}
+    	else if (AvatolCVConstants.UNDETERMINED.equals(value.getName())){
+    	    return false;
     	}
     	else {
     		return true;

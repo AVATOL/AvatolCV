@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv;
+package edu.oregonstate.eecs.iis.avatolcv.session;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 
 /**
@@ -53,8 +55,9 @@ public class RunSummary {
     	String result = parts[0] + "_" + parts[1];
     	return result;
     }
-    public String getSessionName(){
-    	return this.runID + "_" + getScoringConcern();
+    public String getSessionName() throws AvatolCVException {
+        NormalizedValue nv = new NormalizedValue(getScoringConcern());
+    	return this.runID + "_" + nv.getName();
     }
     public void persist() throws AvatolCVException {
         String dir = AvatolCVFileSystem.getSessionSummariesDir();
