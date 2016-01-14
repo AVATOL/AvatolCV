@@ -1,7 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +20,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -33,23 +31,16 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
-import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
-import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfoScored;
-import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfosToReview;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTable;
 import edu.oregonstate.eecs.iis.avatolcv.results.SortableRow;
-import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoreIndex;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
-import edu.oregonstate.eecs.iis.avatolcv.steps.OrientationConfigurationStep;
-import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.OrientationConfigurationStepController.AlgChangeListener;
 
 public class ResultsReview {
 	public Slider thresholdSlider = null;
