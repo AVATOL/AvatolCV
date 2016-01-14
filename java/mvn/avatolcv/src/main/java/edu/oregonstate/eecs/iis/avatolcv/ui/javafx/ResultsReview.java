@@ -208,9 +208,9 @@ public class ResultsReview {
             	confLabel.setDisable(true);
             	nameLabel.setDisable(true);
             	scoreLabel.setDisable(true);
-            	//if (isEvaluationMode()){
+            	if (isEvaluationMode()){
             		truthLabel.setDisable(true);
-            	//}
+            	}
             	
             }
             else {
@@ -218,9 +218,9 @@ public class ResultsReview {
             	confLabel.setDisable(false);
             	nameLabel.setDisable(false);
             	scoreLabel.setDisable(false);
-            	//if (isEvaluationMode()){
+            	if (isEvaluationMode()){
             		truthLabel.setDisable(false);
-            	//}
+            	}
             	
             }
         }
@@ -317,13 +317,13 @@ public class ResultsReview {
             System.out.println("col " + column + " row " + offset);
             scoredImagesGridPane.add(iv,column,offset);
             column++;
-            //if (isEvaluationMode()){
+            if (isEvaluationMode()){
             	// get truth
                 Label truthLabel = (Label)row.getWidget(ResultsTable.COLNAME_TRUTH);
                 System.out.println("col " + column + " row " + offset);
                 scoredImagesGridPane.add(truthLabel,column,offset);
                 column++;
-            //}
+            }
             
             // get score
             
