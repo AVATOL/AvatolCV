@@ -31,7 +31,10 @@ public class RunSummary {
     private static final String KEY_SCORING_ALGORITHM = "scoring algorithm";
     private static final String KEY_RUNID = "runID";
     private static final String KEY_SCORING_CONCERN_VALUE = "scoring concern value";
+    private static final String KEY_SCORING_MODE = "scoringMode";
     private static final String NL = System.getProperty("line.separator");
+    public static final String SCORING_MODE_VALUE_EVALUATION_MODE = "evaluateAlgorithm";
+    public static final String SCORING_MODE_VALUE_TRUE_SCORING_MODE = "trueScoring";
     
     private static final String FILESEP = System.getProperty("file.separator");
     private String scoringConcern = null;
@@ -69,6 +72,7 @@ public class RunSummary {
             writer.write(KEY_DATASET + "=" + getDataset() + NL);
             writer.write(KEY_DATA_SOURCE + "=" + getDataSource() + NL);
             writer.write(KEY_SCORING_ALGORITHM + "=" + getScoringAlgorithm() + NL);
+            writer.write(KEY_SCORING_MODE + "=" + this.scoringMode + NL);
             writer.write(KEY_RUNID + "=" + getRunID() + NL);
             if (null != getTrainTestConcern()){
                 writer.write(KEY_TRAIN_TEST_CONCERN + "=" + getTrainTestConcern() + NL);
@@ -134,6 +138,9 @@ public class RunSummary {
                     	if (nv.isNameSpecified()){
                     		rs.addScoringConcernValue(new NormalizedValue(value).getName());
                     	}
+                    }
+                    else if (key.equals(KEY_SCORING_MODE)){
+                    	rs.setScoringMode(value);
                     }
                 }
             }
