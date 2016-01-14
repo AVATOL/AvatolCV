@@ -28,6 +28,7 @@ public class ResultsTable {
     }
     public static int getIndexOfColumn(String colName){
         int answer = colNames.indexOf(colName);
+    	System.out.println("colName: " + colName + " at index " + answer);
         return answer;
     }
     public SortableRow createRow(String thumbnailPathname, String origImageName, String score, String conf, String truth, int index){

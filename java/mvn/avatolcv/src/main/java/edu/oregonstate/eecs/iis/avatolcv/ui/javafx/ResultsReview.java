@@ -161,7 +161,7 @@ public class ResultsReview {
         runSelectChoiceBox.requestLayout();
     }
     private boolean isEvaluationMode(){
-    	if ("evaluationMode".equals(this.scoringMode)){
+    	if (RunSummary.SCORING_MODE_VALUE_EVALUATION_MODE.equals(this.scoringMode)){
     		return true;
     	}
     	return false;
