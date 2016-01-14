@@ -17,6 +17,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ModalImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringConcernDetails;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringInfoFile;
@@ -54,6 +55,15 @@ public class ScoringRunStep implements Step {
     	}
         
         return null;
+    }
+    public String getPathForNii(NormalizedImageInfo nii, AlgorithmSequence algSequence, String suffix){
+        String imageID = nii.getImageID();
+        String pathWhereInputImagesForScoringLive = algSequence.getInputDir();
+        File f = new File(pathWhereInputImagesForScoringLive);
+        File[] files = f.listFiles();
+        //String imagePath = getImagePathWithIDFromFileList(imageID, files, sa.getTrainingLabelImageSuffix());
+        String imagePath = getImagePathWithIDFromFileList(imageID, files, suffix);
+        return imagePath;
     }
     public void runScoring(OutputMonitor controller, String processName, boolean useRunConfig) throws AvatolCVException {
         if (!useRunConfig){
@@ -95,16 +105,12 @@ public class ScoringRunStep implements Step {
             	if (hasTrainTestConcern){
             		trainTestConcernValue = nii.getValueForKey(trainTestConcern);
             	}
+            	String imagePath = getPathForNii(nii, algSequence, sa.getTrainingLabelImageSuffix());
             	NormalizedValue value = nii.getValueForKey(scoringConcernKey);
-            	//String valueName = new NormalizedTypeIDName(value).getName();
-            	String imageID = nii.getImageID();
-            	String pathWhereInputImagesForScoringLive = algSequence.getInputDir();
-            	File f = new File(pathWhereInputImagesForScoringLive);
-            	File[] files = f.listFiles();
-            	String imagePath = getImagePathWithIDFromFileList(imageID, files, sa.getTrainingLabelImageSuffix());
+            	
             	//String imagePath = getImagePathWithIDFromFileList(imageID, files, algSequence.getSuffixOfOutputFromPriorStage());
             	if (null == imagePath){
-            		System.out.println("WARNING - no imageFile found for imageID " + imageID);
+            		System.out.println("WARNING - no imageFile found for imageID " + nii.getImageID());
             		imagePath = "imageFileNotAvailable";
             	    //throw new AvatolCVException("Cannot find file in scoring input dir " + pathWhereInputImagesForScoringLive + " with id " + imageID);
             	}
@@ -141,16 +147,10 @@ public class ScoringRunStep implements Step {
             	if (hasTrainTestConcern){
             		trainTestConcernValue = nii.getValueForKey(trainTestConcern);
             	}
-            	//NormalizedValue value = nii.getValueForKey(scoringConcernKey);
-            	//String valueName = new NormalizedTypeIDName(value).getName();
-            	String imageID = nii.getImageID();
-            	String pathWhereInputImagesForScoringLive = algSequence.getInputDir();
-            	File f = new File(pathWhereInputImagesForScoringLive);
-            	File[] files = f.listFiles();
-            	String imagePath = getImagePathWithIDFromFileList(imageID, files, "*");
-            	//String imagePath = getImagePathWithIDFromFileList(imageID, files, algSequence.getSuffixOfOutputFromPriorStage());
+            	String imagePath = getPathForNii(nii, algSequence,  "*");
+            	
             	if (null == imagePath){
-            		System.out.println("WARNING - no imageFile found for imageID " + imageID);
+            		System.out.println("WARNING - no imageFile found for imageID " + nii.getImageID());
             		imagePath = "imageFileNotAvailable";
             	    //throw new AvatolCVException("Cannot find file in scoring input dir " + pathWhereInputImagesForScoringLive + " with id " + imageID);
             	}
@@ -167,6 +167,18 @@ public class ScoringRunStep implements Step {
             	}
             }
             sif.persist(AvatolCVFileSystem.getTrainingDataDirForScoring());
+            
+            if (this.sessionInfo.isScoringModeEvaluation()){
+                HoldoutInfoFile hif = new HoldoutInfoFile(scoringConcernType, scoringConcernID, scoringConcernName);
+                for (ModalImageInfo mii : scoringImages){
+                    NormalizedImageInfo nii = mii.getNormalizedImageInfo();
+                    NormalizedValue value = nii.getValueForKey(scoringConcernKey);
+                    String imagePath = getPathForNii(nii, algSequence, sa.getTrainingLabelImageSuffix());
+                    hif.addInfo(imagePath, value.toString());
+                }
+                hif.persist(AvatolCVFileSystem.getTrainingDataDirForScoring());
+            }
+            
             List<String> imagesWronglyInBoth = sif.getMatchingImageNames(tif.getImagePaths());
             if (imagesWronglyInBoth.size() != 0){
             	StringBuilder sb = new StringBuilder();

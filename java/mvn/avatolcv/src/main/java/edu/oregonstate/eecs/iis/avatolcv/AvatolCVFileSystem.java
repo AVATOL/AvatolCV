@@ -9,6 +9,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.Algorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
@@ -43,7 +44,7 @@ public class AvatolCVFileSystem {
 
 	private static String avatolCVRootDir = null;
 	private static String sessionsDir = null;
-	private static String currentProjectDir = null;
+	//private static String currentProjectDir = null;
     //private static String currentProjectUserAnswersDir = null;
     private static String sessionSummariesDir = null;
 
@@ -53,7 +54,7 @@ public class AvatolCVFileSystem {
     private static String datasourceName = null;
     
     public static void flushPriorSettings(){
-    	currentProjectDir = null;
+    	//currentProjectDir = null;
         //currentProjectUserAnswersDir = null;
         sessionID = null;
         datasetName = null;
@@ -380,6 +381,19 @@ public class AvatolCVFileSystem {
 		return null;
 	}
 	
+	public static String getHoldoutFilePath(String runID, String scoringConcernName) throws AvatolCVException {
+        String dirToSearch = getDatasetDir() + FILESEP + runID + FILESEP + "trainingDataForScoring";
+        
+        File dir = new File(dirToSearch);
+        File[] files = dir.listFiles();
+        for (File f : files){
+            if (f.getName().contains(scoringConcernName) && f.getName().startsWith(HoldoutInfoFile.FILE_PREFIX)){
+                return f.getAbsolutePath();
+            }
+        }
+        return null;
+    }
+    
 	// IMAGES
 	public static String getDatasetExclusionInfoFilePath(String imageID) throws AvatolCVException {
 		return  AvatolCVFileSystem.getNormalizedExclusionDir() + FILESEP + imageID + ".txt";

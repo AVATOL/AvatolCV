@@ -38,6 +38,7 @@ import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTable;
 import edu.oregonstate.eecs.iis.avatolcv.results.SortableRow;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
@@ -358,7 +359,12 @@ public class ResultsReview {
     	
     	String trainingFilePath = AvatolCVFileSystem.getTrainingFilePath(runID, scoringConcernName);
     	TrainingInfoFile tif = new TrainingInfoFile(trainingFilePath);
-    	
+    	 
+    	HoldoutInfoFile hif = null;
+    	if (isEvaluationMode()){
+    	    String holdoutFilePath = AvatolCVFileSystem.getHoldoutFilePath(runID, scoringConcernName);
+            hif = new HoldoutInfoFile(holdoutFilePath);
+    	}
     	resultsTable = new ResultsTable();
     	List<String> scoringImagePaths = sif.getImagePaths();
     	int row = 1;
@@ -368,7 +374,7 @@ public class ResultsReview {
     		String conf = sif.getConfidenceForImageValue(path, value);
     		String truth = null;
     		if (isEvaluationMode()){
-    			truth = tif.getScoringConcernValueForImagePath(path);
+    			truth = hif.getScoringConcernValueForImagePath(path);
     		}
     		else {
     			truth = "";

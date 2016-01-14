@@ -13,6 +13,7 @@ public class SortableRow implements Comparable {
     private Object largeImageObject = null;
     // widgetHash will store the JavaFX (or whatever) widgets for each item
     private Hashtable<String, Object> widgetHash = new Hashtable<String, Object>();
+    /*
     public static void addSortColumn(int columnIndex){
     	if (sortColumns.size() == 0){
     		sortColumns.add(new Integer(columnIndex));
@@ -28,6 +29,7 @@ public class SortableRow implements Comparable {
     	}
     	sortColumns.add(new Integer(columnIndex));
     }
+    */
     public SortableRow(List<String> values, int index){
     	this.values = values;
     	this.index = index;
