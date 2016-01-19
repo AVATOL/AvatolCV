@@ -347,7 +347,7 @@ public class ResultsReview {
             rc.setVgrow(Priority.NEVER);
         }
     }
-    private void setScoredImagesInfoCookingShow(String runID, String scoringConcernName) throws AvatolCVException {
+    private void setScoredImagesInfo(String runID, String scoringConcernName) throws AvatolCVException {
     	scoredImagesTab.setText(scoringConcernName + " - SCORED images");
     	trainingImagesTab.setText(scoringConcernName + " - TRAINING images");
 
@@ -419,28 +419,7 @@ public class ResultsReview {
     	trainingImagesGridPane.requestLayout();
         scoredImagesGridPane.requestLayout();
     }
-    private void setScoredImagesInfo(String runID, String scoringConcernName) throws AvatolCVException {
-    	//if (this.runSummary.isCookingShow()){
-    		setScoredImagesInfoCookingShow(runID, scoringConcernName);
-    	//}
-    	//else {
-    		/*
-    		addScoredImagesHeader(scoredImagesGridPane);
-            NormalizedImageInfosToReview normalizedImageInfos = new NormalizedImageInfosToReview(runID);
-            List<NormalizedImageInfoScored> scoredImages = normalizedImageInfos.getScoredImages(scoringConcernName);
-            for (int i=0; i < scoredImages.size(); i++){
-            	addScoredImageToGridPaneRow(scoredImages.get(i), scoredImagesGridPane, i+1);
-            }
-            //
-            addTrainingImagesHeader(trainingImagesGridPane);
-            List<NormalizedImageInfoScored> trainingImages = normalizedImageInfos.getTrainingImages(scoringConcernName);
-            for (int i=0; i < trainingImages.size(); i++){
-            	addTrainingImageToGridPaneRow(trainingImages.get(i), trainingImagesGridPane, i+1);
-            }
-            scoredImagesGridPane.requestLayout();
-            */
-    	//}
-    }
+   
     private void addScoredImagesHeader(GridPane gp) throws AvatolCVException {
         int column = 0;
 
@@ -507,20 +486,7 @@ public class ResultsReview {
     	Label truthLabel = new Label("Truth");
     	gp.add(truthLabel, column++, 0);
     }
-    /*
-    private String getThumbailPath(NormalizedImageInfo si) throws AvatolCVException {
-        String id = si.getImageID();
-        String thumbnailDir = AvatolCVFileSystem.getNormalizedImagesThumbnailDir();
-        File thumbnailDirFile = new File(thumbnailDir);
-        File[] files = thumbnailDirFile.listFiles();
-        for (File f : files){
-            if (f.getName().startsWith(id)){
-                return f.getAbsolutePath();
-            }
-        }
-        throw new AvatolCVException("Could not find thumbnail for normalizedImage with ID " + id);
-    }
-    */
+   
     private boolean isImageTallerThanWide(Image image){
     	double h = image.getHeight();
     	double w = image.getWidth();
@@ -537,86 +503,8 @@ public class ResultsReview {
     	}
     	return conf;
     }
-    /*
-    private void addScoredImageToGridPaneRow(NormalizedImageInfoScored si, GridPane gp, int row) throws AvatolCVException {
-        // get the image
-        String thumbnailPath = getThumbailPath(si);
-        Image image = new Image("file:"+thumbnailPath);
-        ImageView iv = new ImageView(image);
-        if (isImageTallerThanWide(image)){
-        	iv.setRotate(90);
-        }
-        
-        int column = 0;
-        gp.add(iv,column,row);
-        column++;
-        
-        // get trainingVsTestConcern if relevant, OR image name
-        Label itemLabel = new Label(AvatolCVConstants.UNDETERMINED);
-        if (this.runSummary.hasTrainTestConcern()){
-        	String trainingVsTestName = si.getTrainingVsTestName();
-        	if (null != trainingVsTestName){
-        		itemLabel.setText(trainingVsTestName);
-        	}
-        }
-        else {
-        	String imageName = si.getImageName();
-        	itemLabel.setText(imageName);
-        }
-        gp.add(itemLabel,column,row);
-        column++;
-     
-        // get truth
-        String truth = si.getTruthValue(this.scoreIndex);
-        Label truthLabel = new Label();
-        if (null != truth){
-            truthLabel.setText(truth);
-        }
-        else {
-        	truthLabel.setText(AvatolCVConstants.UNDETERMINED);
-        }
-        gp.add(truthLabel,column,row);
-        column++;
-        // get score
-        String score = si.getScoreValue(this.scoreIndex);
-        Label scoreLabel = new Label();
-        if (null != score){
-            scoreLabel.setText(score);
-        }
-        else {
-        	scoreLabel.setText(AvatolCVConstants.UNDETERMINED);
-        }
-        gp.add(scoreLabel, column, row);
-        column++;
-        // get confidence
-        String confidence = si.getScoringConfidence();
-        Label confidenceLabel = new Label(" conf? ");
-        if (null != confidence){
-            confidenceLabel.setText(confidence);
-        }
-        gp.add(confidenceLabel,column, row);
-    }
-    */
-    /*
-    private String getTrueImageNameFromImageName(String imageName) throws AvatolCVException {
-    	String thumbnailDirPath = AvatolCVFileSystem.getNormalizedImagesThumbnailDir();
-    	String[] imageNameParts = imageName.split("\\.");
-    	String fileRoot = imageNameParts[0];
-    	String[] fileRootParts = fileRoot.split("_");
-    	String fileRootSansNumberSuffix = fileRootParts[0];
-    	File thumbnailDir = new File(thumbnailDirPath);
-    	File[] files = thumbnailDir.listFiles();
-    	for (File f : files){
-    		if (f.getName().startsWith(fileRootSansNumberSuffix)){
-    			String name = f.getName();
-    			String[] parts = name.split("_");
-    			String trueName = parts[1];
-    			return trueName;
-    		}
-    	}
-    	return AvatolCVConstants.UNDETERMINED;
-    }
-*/
+   
+  
     private String getTrueImageNameFromImagePathForCookingShow(String imagePath) throws AvatolCVException {
     	File f = new File(imagePath);
     	String imageName = f.getName();
@@ -624,23 +512,7 @@ public class ResultsReview {
     	String fileRoot = imageNameParts[0];
     	return fileRoot;
     }
-    /*
-    private String getThumbnailPathWithImageName(String imageName) throws AvatolCVException {
-    	String thumbnailDirPath = AvatolCVFileSystem.getNormalizedImagesThumbnailDir();
-    	String[] imageNameParts = imageName.split("\\.");
-    	String fileRoot = imageNameParts[0];
-    	String[] fileRootParts = fileRoot.split("_");
-    	String fileRootSansNumberSuffix = fileRootParts[0];
-    	File thumbnailDir = new File(thumbnailDirPath);
-    	File[] files = thumbnailDir.listFiles();
-    	for (File f : files){
-    		if (f.getName().startsWith(fileRootSansNumberSuffix)){
-    			return f.getAbsolutePath();
-    		}
-    	}
-    	return null;
-    }
-    */
+  
     private String getThumbnailPathWithImagePathForCookingShow(String imagePath) throws AvatolCVException {
     	File pathFile = new File(imagePath);
     	String imageName = pathFile.getName();
