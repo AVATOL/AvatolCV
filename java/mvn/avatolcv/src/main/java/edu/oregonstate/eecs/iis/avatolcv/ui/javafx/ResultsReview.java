@@ -382,7 +382,11 @@ public class ResultsReview {
     		
         	String origImageName = getTrueImageNameFromImagePathForCookingShow(path);
         	String thumbnailPathname = getThumbnailPathWithImagePathForCookingShow(path);
-        	SortableRow sortableRow = resultsTable.createRow(thumbnailPathname, origImageName, value, conf, truth, row - 1);
+        	String trainTestConcernValue = null;
+        	if (this.runSummary.hasTrainTestConcern()){
+                 trainTestConcernValue = "";
+            }
+        	SortableRow sortableRow = resultsTable.createRow(thumbnailPathname, origImageName, value, conf, truth, row - 1, trainTestConcernValue);
         	generateScoreWidgets(sortableRow);
         	row++;
         	//scoredImagesGridPane.getRowConstraints().get(row).setPrefHeight(imageHeight);
@@ -437,7 +441,7 @@ public class ResultsReview {
             */
     	//}
     }
-    private void addScoredImagesHeader(GridPane gp){
+    private void addScoredImagesHeader(GridPane gp) throws AvatolCVException {
         int column = 0;
 
         Label imageLabel = new Label("Image");
@@ -470,20 +474,20 @@ public class ResultsReview {
         GridPane.setHalignment(confidence, HPos.CENTER);
     	gp.add(confidence, column++, 0);
     	
-    	Label itemLabel = null;
         if (this.runSummary.hasTrainTestConcern()){
-            itemLabel = new Label(this.runSummary.getTrainTestConcern());
-            GridPane.setHalignment(itemLabel, HPos.CENTER);
-            gp.add(itemLabel, column++, 0);
-        }
-        else {
-            itemLabel = new Label("Name");
-            GridPane.setHalignment(itemLabel, HPos.CENTER);
-            gp.add(itemLabel, column++, 0);
+            Label ttcLabel = new Label(new NormalizedValue(this.runSummary.getTrainTestConcern()).getName());
+            GridPane.setHalignment(ttcLabel, HPos.CENTER);
+            gp.add(ttcLabel, column++, 0);
+            ttcLabel.getStyleClass().add("columnHeader");
         }
         
+        Label nameLabel = new Label("Name");
+        GridPane.setHalignment(nameLabel, HPos.CENTER);
+        gp.add(nameLabel, column++, 0);
+        nameLabel.getStyleClass().add("columnHeader");
+        
         //itemLabel.setStyle("-fx-background-color:green;");
-        itemLabel.getStyleClass().add("columnHeader");
+        
     }
 
     private void addTrainingImagesHeader(GridPane gp){
