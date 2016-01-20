@@ -2,6 +2,7 @@
 import argparse
 import os
 import subprocess
+import platform
 
 def remove_cache_directory(cache_dir):
     '''Delete the cache directory'''
@@ -19,11 +20,33 @@ def run_matlab_function(func_string, func_name):
     print "executing: {0}".format(wrapped_func_string)
     print
 
-    # execute MATLAB
-    exit_status = subprocess.call([
+    # check OS and use appropriate command/arguments
+    application = []
+    if platform.system() == 'Darwin': # Mac
+        application = [
         "/Applications/MATLAB_R2015b.app/bin/matlab", 
         "-nodisplay", 
-        '-r "{0}"'.format(wrapped_func_string)])
+        '-r "{0}"'.format(wrapped_func_string)]
+    elif platform.system() == 'Windows': # Windows
+        application = [
+        "C:\\Program Files\\MATLAB\\R2015b\\bin\\matlab.exe",
+        "-nosplash",
+        "-nodesktop",
+        "-minimize", 
+        '-r "{0}"'.format(wrapped_func_string)]
+    elif platform.system() == 'Linux': # Linux
+        print "Linux unsupported at this time."
+        print
+        print "running step Error"
+        exit(1)
+    else:
+        print "Unrecognized OS/Platform: {0}".format(platform.system())
+        print
+        print "running step Error"
+        exit(1)
+
+    # execute MATLAB
+    exit_status = subprocess.call(application)
     if exit_status != 0:
         print "MATLAB exited with error. ({0})".format(func_name)
         print
