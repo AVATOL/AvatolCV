@@ -3,9 +3,14 @@ import argparse
 import os
 import subprocess
 import platform
+import time
 
+# paths to MaATLAB
 MAC_MATLAB_PATH = "/Applications/MATLAB_R2015b.app/bin/matlab"
 WIN_MATLAB_PATH = "C:\\Program Files\\MATLAB\\R2015b\\bin\\matlab.exe"
+
+# whether to log MATLAB runs (for debugging)
+LOG_MATLAB_RUNS = False
 
 def remove_cache_directory(cache_dir):
     '''Delete the cache directory'''
@@ -15,28 +20,42 @@ def remove_cache_directory(cache_dir):
 
     os.remove(cache_dir)
 
-def run_matlab_function(func_string, func_name):
+def run_matlab_function(func_string, func_name, logs_dir):
     '''Wraps function with try-catch to exit MATLAB on errors'''
 
-    wrapped_func_string = "try;{0};catch(exception);disp(getReport(exception));exit(1);end;exit".format(func_string)
+    wrapped_func_string = "try;{0};catch exception;disp(getReport(exception));exit(1);end;exit".format(func_string)
     
     print "executing: {0}".format(wrapped_func_string)
     print
 
     # check OS and use appropriate command/arguments
+    logfile = os.path.join(logs_dir, 
+        'matlab_run_{0}_{1}.txt'.format(
+            int(time.time()), 
+            func_name))
     application = []
     if platform.system() == 'Darwin': # Mac
         application = [
         MAC_MATLAB_PATH, 
         "-nodisplay", 
         '-r "{0}"'.format(wrapped_func_string)]
+        # for Mac, have to separate arguments like this
+
+        if LOG_MATLAB_RUNS:
+            application.append('-logfile "{0}"'.format(logfile))
     elif platform.system() == 'Windows': # Windows
         application = [
-        WIN_MATLAB_PATH,
-        "-nosplash",
-        "-nodesktop",
+        WIN_MATLAB_PATH, 
+        "-nosplash", 
+        "-nodesktop", 
         "-minimize", 
-        '-r "{0}"'.format(wrapped_func_string)]
+        "-r", 
+        '"{0}"'.format(wrapped_func_string)]
+        # for Windows, have to separate arguments like this
+
+        if LOG_MATLAB_RUNS:
+            application.append("-logfile")
+            application.append('"{0}"'.format(logfile))
     elif platform.system() == 'Linux': # Linux
         print "Linux unsupported at this time."
         print
@@ -116,8 +135,14 @@ def main():
 
     # remove cache directory
     cache_dir = os.path.dirname(run_config[TEST_IMAGES_FILE])
-    cache_dir = os.path.join(cache_dir, 'legacy_format/cache/')
+    cache_dir = os.path.join(cache_dir, 'legacy_format', 'cache')
     # remove_cache_directory(cache_dir)
+
+    # logs directory
+    logs_dir = os.path.dirname(run_config[TEST_IMAGES_FILE])
+    logs_dir = os.path.join(logs_dir, 'logs')
+    if not os.path.exists(logs_dir):
+        os.makedirs(logs_dir)
 
     #
     #  call matlab to translate input
@@ -131,14 +156,14 @@ def main():
     print 'running step Processing Inputs'
     os.chdir(THIS_DIR)
 
-    run_matlab_function(matlab_func1, "translate_input")
+    run_matlab_function(matlab_func1, "translate_input", logs_dir)
 
     #
     #  call matlab to score
     #
 
     summary_file = os.path.dirname(run_config[TEST_IMAGES_FILE])
-    summary_file = os.path.join(summary_file, 'legacy_format/input/summary.txt')
+    summary_file = os.path.join(summary_file, 'legacy_format', 'input', 'summary.txt')
     print "summary_file is {0}".format(summary_file)
 
     matlab_func2 = "invoke_batskull_system('{0}','{1}')".format(
@@ -148,7 +173,7 @@ def main():
     print 'running step Training and Scoring'
     os.chdir(os.path.join('bat','chain_rpm'))
 
-    run_matlab_function(matlab_func2, "invoke_batskull_system")
+    run_matlab_function(matlab_func2, "invoke_batskull_system", logs_dir)
 
     os.chdir(THIS_DIR)
 
@@ -164,7 +189,7 @@ def main():
     print 'running step Processing Outputs'
     os.chdir(THIS_DIR)
 
-    run_matlab_function(matlab_func3, "translate_output")
+    run_matlab_function(matlab_func3, "translate_output", logs_dir)
 
     print 'run completed'
 
