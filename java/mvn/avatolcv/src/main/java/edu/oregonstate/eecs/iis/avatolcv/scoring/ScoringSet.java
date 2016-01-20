@@ -13,4 +13,5 @@ public interface ScoringSet {
 	List<NormalizedKey> getAllKeys();
 	NormalizedKey getKeyToScore();
 	String getScoringConcernName();
+	double getTrainingPercentage();
 }

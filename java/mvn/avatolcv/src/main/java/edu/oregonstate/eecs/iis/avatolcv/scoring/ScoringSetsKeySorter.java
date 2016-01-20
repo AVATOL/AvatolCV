@@ -17,7 +17,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
  * The process here is to group the images that have the same value for the key, then split on those
  */
 public class ScoringSetsKeySorter {
-	private List<EvaluationSet> sets = null;
+	private List<ScoringSet> sets = null;
 	private NormalizedKey nKey = null;
 	private List<NormalizedValue> valuesForKey = new ArrayList<NormalizedValue>();
 	private List<ModalImageInfo> allModals = new ArrayList<ModalImageInfo>();
@@ -26,11 +26,10 @@ public class ScoringSetsKeySorter {
 	private Hashtable<NormalizedValue, List<ModalImageInfo>> miisForValueHash = new Hashtable<NormalizedValue, List<ModalImageInfo>>();
 	private double percentageToTrainWith = 0.0;
 	
-	public ScoringSetsKeySorter(List<EvaluationSet> sets, NormalizedKey nKey){
+	public ScoringSetsKeySorter(List<ScoringSet> sets, NormalizedKey nKey) throws AvatolCVException {
 		this.sets = sets;
 		this.nKey = nKey;
-		this.percentageToTrainWith = sets.get(0).getPercentToTrainOn();
-		for (EvaluationSet set : sets){
+		for (ScoringSet set : sets){
 		    List<ModalImageInfo> scoringModals = set.getImagesToScore();
 		    List<ModalImageInfo> trainingModals = set.getImagesToTrainOn();
 		    allModals.addAll(scoringModals);
@@ -38,7 +37,13 @@ public class ScoringSetsKeySorter {
 		}
 		loadValuesForKey();
 		sortByImageValueOfKey();
-		splitByPercentageToTrainWith();
+		if (sets.get(0) instanceof EvaluationSet){
+			splitByPercentageToTrainWith();
+		}
+		else {
+			// just leave the train vs test settings as is for the TrueScoring scenario
+		}
+		
 	}
 	/**
 	 * Go through all the images and look for ones that have values for the key we are worried about, and note those values.
@@ -77,6 +82,7 @@ public class ScoringSetsKeySorter {
 	 * and put the others in scoring.
 	 */
 	private void splitByPercentageToTrainWith(){
+		this.percentageToTrainWith = sets.get(0).getTrainingPercentage();
 	    int totalValueCount = valuesForKey.size();
 	    double numberToTrain = totalValueCount * this.percentageToTrainWith;
 	    int numberToTrainAsInt = (int) numberToTrain;
@@ -112,7 +118,7 @@ public class ScoringSetsKeySorter {
 	
 	public List<String> getScoringConcernNames(){
 		List<String> result = new ArrayList<String>();
-	    for (EvaluationSet set : sets){
+	    for (ScoringSet set : sets){
 		    result.add(set.getScoringConcernName());
 		}
 	    return result;

@@ -110,4 +110,13 @@ public class TrueScoringSet implements ScoringSet {
 		return this.keyToScore.getName();
 	}
 
+	@Override
+	public double getTrainingPercentage() {
+		int trainCount = getImagesToTrainOn().size();
+		int testCount = getImagesToScore().size();
+		double total = trainCount + testCount;
+		double percent = (double)trainCount / total;
+		return percent;
+	}
+
 }
