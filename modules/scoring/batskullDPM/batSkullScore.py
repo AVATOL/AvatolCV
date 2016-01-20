@@ -18,7 +18,7 @@ def remove_cache_directory(cache_dir):
 def run_matlab_function(func_string, func_name):
     '''Wraps function with try-catch to exit MATLAB on errors'''
 
-    wrapped_func_string = "try;{0};catch exception;disp(getReport(exception));exit(1);end;exit".format(func_string)
+    wrapped_func_string = "try;{0};catch(exception);disp(getReport(exception));exit(1);end;exit".format(func_string)
     
     print "executing: {0}".format(wrapped_func_string)
     print
