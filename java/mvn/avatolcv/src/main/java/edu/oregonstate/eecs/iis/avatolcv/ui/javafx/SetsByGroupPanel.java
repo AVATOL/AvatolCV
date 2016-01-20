@@ -6,8 +6,10 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSet;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSetsKeySorter;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.TrueScoringSet;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
@@ -26,8 +28,15 @@ public class SetsByGroupPanel extends VBox {
 	private List<NormalizedValue> trainTestValues = null;
 	private ScoringSetsKeySorter ssks = null;
 	private NumbersUpdater numbersUpdater = null;
+	private boolean isTrueScoring = false;
 	public SetsByGroupPanel(List<ScoringSet> sets, String trainTestConcern, NormalizedKey trainTestConcernKey, List<NormalizedValue> trainTestValues) throws AvatolCVException {
 		this.sets = sets;
+		if (this.sets.get(0) instanceof TrueScoringSet){
+			this.isTrueScoring = true;
+		}
+		else {
+			this.isTrueScoring = false;
+		}
 		this.trainTestConcern = trainTestConcern;
 		this.trainTestConcernKey = trainTestConcernKey;
 		this.trainTestValues = trainTestValues;
@@ -77,6 +86,7 @@ public class SetsByGroupPanel extends VBox {
             gp.add(radioScore, 1,row);
             
             
+            
             // put (ex.) taxon name in grid line
             Label ttValNameLabel = new Label(ttValName);
             gp.add(ttValNameLabel, 2, row);
@@ -92,7 +102,10 @@ public class SetsByGroupPanel extends VBox {
             }
             gp.add(countLabel, 3, row);
             // put count for each character <--- defer this
-            
+            if (this.isTrueScoring){
+            	radioTrain.setDisable(true);
+            	radioScore.setDisable(true);
+            }
             row++;
         }
         ScrollPane sp = new ScrollPane();

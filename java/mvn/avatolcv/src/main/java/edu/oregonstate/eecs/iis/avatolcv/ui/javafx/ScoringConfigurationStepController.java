@@ -61,7 +61,6 @@ public class ScoringConfigurationStepController implements StepController {
     //public HBox percentageExpressionHbox = null;
     private List<EvaluationSet> evaluationSets = null;
     private List<TrueScoringSet> trueScoringSets = null;
-    private boolean activeSetIsEvaluation = true;
     private boolean sortByImage = true;
     private Hashtable<String, NormalizedKey> normalizedKeyHash = new Hashtable<String, NormalizedKey>();
     
@@ -72,7 +71,7 @@ public class ScoringConfigurationStepController implements StepController {
     }
     public List<ScoringSet> getActiveScoringSets(){
     	List<ScoringSet> sets = new ArrayList<ScoringSet>();
-    	if (this.activeSetIsEvaluation){
+    	if (null != evaluationSets){
 	    	for (EvaluationSet es : this.evaluationSets){
 	    		sets.add(es);
 	    	}

@@ -79,7 +79,8 @@ public class ScoringSetsKeySorter {
 	}
 	/**
 	 * Figure out how many images meet the percentageToTrainWith value.  Then gather that many images in the training list
-	 * and put the others in scoring.
+	 * and put the others in scoring.  If any of the values are not represented, and thus can't be set to train or test, 
+	 * the percentage might be off, but the user can just adjust manually if desired
 	 */
 	private void splitByPercentageToTrainWith(){
 		this.percentageToTrainWith = sets.get(0).getTrainingPercentage();
@@ -89,15 +90,19 @@ public class ScoringSetsKeySorter {
 	    for (int i = 0; i < numberToTrainAsInt; i++){
 	        NormalizedValue nv = valuesForKey.get(i);
 	        List<ModalImageInfo> miis = miisForValueHash.get(nv);
-	        for (ModalImageInfo mii : miis){
-	            mii.setAsTraining();
+	        if (null != miis){
+	        	for (ModalImageInfo mii : miis){
+		            mii.setAsTraining();
+		        }
 	        }
 	    }
 	    for (int i = numberToTrainAsInt; i < totalValueCount; i++){
 	        NormalizedValue nv = valuesForKey.get(i);
             List<ModalImageInfo> miis = miisForValueHash.get(nv);
-            for (ModalImageInfo mii : miis){
-                mii.setAsToScore();
+            if (null != miis){
+            	for (ModalImageInfo mii : miis){
+                    mii.setAsToScore();
+                }
             }
 	    }
 	}
@@ -113,6 +118,12 @@ public class ScoringSetsKeySorter {
 	
 	public boolean isValueToTrain(NormalizedValue value) throws AvatolCVException {
 	    List<ModalImageInfo> miis = miisForValueHash.get(value);
+	    if (null == miis){
+	    	return false;
+	    }
+	    if (miis.size() == 0){
+	    	return false;
+	    }
 	    return miis.get(0).isTraining();
 	}
 	
@@ -158,16 +169,20 @@ public class ScoringSetsKeySorter {
 	public void setValueToTrain(NormalizedValue nv) throws AvatolCVException {
 	    System.out.println("setting value to train " + nv.getName());
 		List<ModalImageInfo> miis = miisForValueHash.get(nv);
-		for (ModalImageInfo mii: miis){
-		    mii.setAsTraining();
+		if (null != miis){
+			for (ModalImageInfo mii: miis){
+			    mii.setAsTraining();
+			}
 		}
 	}
 	public void setValueToScore(NormalizedValue nv) throws AvatolCVException {
 	    System.out.println("setting value to score " + nv.getName());
 	    List<ModalImageInfo> miis = miisForValueHash.get(nv);
-        for (ModalImageInfo mii: miis){
-            mii.setAsToScore();
-        }
+	    if (null != miis){
+	    	 for (ModalImageInfo mii: miis){
+	             mii.setAsToScore();
+	         }
+	    }
 	}
 	public int getCountForValue(NormalizedValue nv){
 	    List<ModalImageInfo> miis = miisForValueHash.get(nv);
