@@ -4,6 +4,9 @@ import os
 import subprocess
 import platform
 
+MAC_MATLAB_PATH = "/Applications/MATLAB_R2015b.app/bin/matlab"
+WIN_MATLAB_PATH = "C:\\Program Files\\MATLAB\\R2015b\\bin\\matlab.exe"
+
 def remove_cache_directory(cache_dir):
     '''Delete the cache directory'''
 
@@ -24,12 +27,12 @@ def run_matlab_function(func_string, func_name):
     application = []
     if platform.system() == 'Darwin': # Mac
         application = [
-        "/Applications/MATLAB_R2015b.app/bin/matlab", 
+        MAC_MATLAB_PATH, 
         "-nodisplay", 
         '-r "{0}"'.format(wrapped_func_string)]
     elif platform.system() == 'Windows': # Windows
         application = [
-        "C:\\Program Files\\MATLAB\\R2015b\\bin\\matlab.exe",
+        WIN_MATLAB_PATH,
         "-nosplash",
         "-nodesktop",
         "-minimize", 
@@ -143,7 +146,7 @@ def main():
         "regime2")
 
     print 'running step Training and Scoring'
-    os.chdir('bat/chain_rpm')
+    os.chdir(os.path.join('bat','chain_rpm'))
 
     run_matlab_function(matlab_func2, "invoke_batskull_system")
 
