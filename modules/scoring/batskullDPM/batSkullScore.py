@@ -46,7 +46,8 @@ def run_matlab_function(func_string, func_name, logs_dir):
     elif platform.system() == 'Windows': # Windows
         application = [
         WIN_MATLAB_PATH, 
-        "-nosplash", 
+        "-nosplash",
+        "-wait",
         "-nodesktop", 
         "-minimize", 
         "-r", 
