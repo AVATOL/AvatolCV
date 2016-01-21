@@ -105,6 +105,17 @@ public class NormalizedImageInfos {
 		}
 		return niis;
 	}
+	public boolean isEveryImageScoredForKey(NormalizedKey key){
+	    for (String name : niiSession){
+            NormalizedImageInfo nii = niiHash.get(name);
+            if (nii.hasKey(key)){
+                if (!nii.hasValueForKey(key)){
+                    return false;
+                }
+            }
+	    }
+        return true;        
+	}
 	public void flush(){
 		niiAllPresent.clear();
 		niiSession.clear();

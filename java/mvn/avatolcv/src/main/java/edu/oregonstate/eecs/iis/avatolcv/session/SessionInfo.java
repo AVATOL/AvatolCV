@@ -397,37 +397,51 @@ public class SessionInfo{
         }
         return this.algorithmSequence;
     }
-    
+    public boolean isEvaluationRun() throws AvatolCVException {
+        List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
+        for (ChoiceItem item : scoringConcerns){
+            NormalizedKey keyToScore = getKeyToScore(item);
+            boolean everyImageScoredForKey = this.normalizedImageInfos.isEveryImageScoredForKey(keyToScore);
+            if (!everyImageScoredForKey){
+                return false;
+            }
+        }
+        return true;
+    }
     public List<EvaluationSet> getEvaluationSets() throws AvatolCVException {
         List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
         List<EvaluationSet> esets = new ArrayList<EvaluationSet>();
     	for (ChoiceItem item : scoringConcerns){
-    		NormalizedKey keyToScore = null;
-    		if (item.hasNativeType()){
-    			ScoringConcernDetails scd = (ScoringConcernDetails)item.getBackingObject();
-        	    keyToScore = new NormalizedKey(NormalizedTypeIDName.buildTypeIdName(scd.getType(), scd.getID(), scd.getName())); 
-        	    
-    		}
-    		else{
-    			keyToScore = item.getNormalizedKey();
-    		}
-    		// in bisque case, we want key to just be the name part
+    		NormalizedKey keyToScore = getKeyToScore(item);
             List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSession();
             EvaluationSet es = new EvaluationSet(niis, keyToScore, EvaluationSet.DEFAULT_EVALUATION_SPLIT);
             esets.add(es);
     	}
     	return esets;
     }
+   
     public List<TrueScoringSet> getTrueScoringSets() throws AvatolCVException {
         List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
         List<TrueScoringSet> tssets = new ArrayList<TrueScoringSet>();
         for (ChoiceItem item : scoringConcerns){
-            NormalizedKey keyToScore = item.getNormalizedKey();
+            NormalizedKey keyToScore = getKeyToScore(item);
             List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSession();
             TrueScoringSet tss = new TrueScoringSet(niis, keyToScore);
             tssets.add(tss);
         }
     	return tssets;
+    }
+    private NormalizedKey getKeyToScore(ChoiceItem item) throws AvatolCVException {
+        // in bisque case, we want key to just be the name part
+        NormalizedKey keyToScore = null;
+        if (item.hasNativeType()){
+            ScoringConcernDetails scd = (ScoringConcernDetails)item.getBackingObject();
+            keyToScore = new NormalizedKey(NormalizedTypeIDName.buildTypeIdName(scd.getType(), scd.getID(), scd.getName())); 
+        }
+        else{
+            keyToScore = item.getNormalizedKey();
+        }
+        return keyToScore;
     }
     public List<NormalizedKey> getScoreConfigurationSortingValueOptions(ScoringSet ss){
         List<NormalizedKey> allKeys = ss.getAllKeys();

@@ -164,14 +164,13 @@ public class ScoringConfigurationStepController implements StepController {
             Node content = loader.load();
             //trainTestSettingsPane.setStyle("-fx-border-color: black;");
             this.step.reAssessImagesInPlay();
-            this.evaluationSets = this.step.getEvaluationSets();
-            
-            try {
-            	this.trueScoringSets = this.step.getTrueScoringSets();
-            	
+            if (this.step.isEvaluationRun()){
+                this.evaluationSets = this.step.getEvaluationSets();
+                this.trueScoringSets = null;
             }
-            catch(AvatolCVException ace){
-            	
+            else {
+                this.evaluationSets = null;
+                this.trueScoringSets = this.step.getTrueScoringSets();
             }
             
             populateSortingChoiceBox();
@@ -244,13 +243,7 @@ public class ScoringConfigurationStepController implements StepController {
 		radioViewByGroup.setSelected(true);
 		List<ScoringSet> sets = getActiveScoringSets();
 		this.step.setTrainTestConcern(new NormalizedKey(choiceBoxGroupProperty.getValue()));
-		if (sets.get(0) instanceof EvaluationSet){
-            renderEvalByGroup(sets);
-        }
-        else {
-            renderScoreByGroup(sets);
-        }
-		//configureAsGroupByProperty(sets);
+        renderByGroup(sets);
 	}
 	
 
@@ -264,7 +257,7 @@ public class ScoringConfigurationStepController implements StepController {
         trainTestSettingsAnchorPane.getChildren().add(accordian);
 	}
 	
-	public void renderEvalByGroup(List<ScoringSet> sets) throws AvatolCVException {
+	public void renderByGroup(List<ScoringSet> sets) throws AvatolCVException {
 	    trainTestSettingsAnchorPane.getChildren().clear();
 	    String trainTestConcern = choiceBoxGroupProperty.getValue();
         NormalizedKey trainTestConcernKey = normalizedKeyHash.get(trainTestConcern);
@@ -285,11 +278,6 @@ public class ScoringConfigurationStepController implements StepController {
 				inspect((Region)n);
 			}
 		}
-	}
-	
-	
-	public void renderScoreByGroup(List<ScoringSet> sets) throws AvatolCVException {
-    
 	}
 	
 	

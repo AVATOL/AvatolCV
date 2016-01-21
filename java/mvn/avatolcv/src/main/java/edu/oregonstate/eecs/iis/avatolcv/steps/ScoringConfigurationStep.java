@@ -26,6 +26,9 @@ public class ScoringConfigurationStep extends Answerable implements Step {
 	public void setTrainTestConcern(NormalizedKey trainTestConcern){
 		this.trainTestConcern = trainTestConcern;
 	}
+	public boolean isEvaluationRun() throws AvatolCVException {
+	    return this.sessionInfo.isEvaluationRun();
+	}
 	public List<NormalizedKey> getScoreConfigurationSortingValueOptions(ScoringSet ss){
 		return this.sessionInfo.getScoreConfigurationSortingValueOptions(ss);
 	}
