@@ -142,6 +142,7 @@ def main():
     # logs directory
     logs_dir = os.path.dirname(run_config[TEST_IMAGES_FILE])
     logs_dir = os.path.join(logs_dir, 'logs')
+    logs_dir = os.path.join(logs_dir, 'scoring')
     if not os.path.exists(logs_dir):
         os.makedirs(logs_dir)
 
