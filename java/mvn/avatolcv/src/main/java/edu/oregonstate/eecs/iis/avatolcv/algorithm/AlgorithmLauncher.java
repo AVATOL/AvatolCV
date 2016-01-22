@@ -103,7 +103,7 @@ public class AlgorithmLauncher {
             	//commands.add("cd " + algDir);
             	//commands.add("&");
             	if (launchFile.endsWith(".py")){
-            	    commands.add("python " + launchFilePath + " " + runConfigPath);
+            	    commands.add("python \"" + launchFilePath + "\" \"" + runConfigPath + "\"");
             	}
             	else {
             	    commands.add(launchFilePath + " " + runConfigPath);

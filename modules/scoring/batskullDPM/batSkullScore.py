@@ -10,7 +10,7 @@ MAC_MATLAB_PATH = "/Applications/MATLAB_R2015b.app/bin/matlab"
 WIN_MATLAB_PATH = "C:\\Program Files\\MATLAB\\R2015b\\bin\\matlab.exe"
 
 # whether to log MATLAB runs (for debugging)
-LOG_MATLAB_RUNS = False
+LOG_MATLAB_RUNS = True
 
 def remove_cache_directory(cache_dir):
     '''Delete the cache directory'''

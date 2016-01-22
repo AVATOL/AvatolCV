@@ -52,6 +52,7 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
         @Override
         public void run() {
             outputText.appendText(message + NL);
+            System.out.println("should have written to UI output!");
         }
     }
 
