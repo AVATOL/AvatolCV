@@ -26,11 +26,18 @@
                   <Insets left="6.0" top="6.0" />
                </VBox.margin>
             </TextArea>
-            <Button fx:id="cancelAlgorithmButton" mnemonicParsing="false" onAction="#cancelAlgorithm" stylesheets="@../../css/javafx.css" text="Cancel Algorithm" VBox.vgrow="NEVER">
+            <HBox spacing="10.0" VBox.vgrow="NEVER">
+               <children>
+                  <Button fx:id="cancelAlgorithmButton" mnemonicParsing="false" onAction="#cancelAlgorithm" stylesheets="@../../css/javafx.css" text="Cancel Algorithm" />
+                  <Button fx:id="showLogFilesButton" disable="true" mnemonicParsing="false" onAction="#loadLogsIntoTextWidget" text="Show Log Files" />
+               </children>
                <VBox.margin>
-                  <Insets bottom="6.0" left="6.0" top="6.0" />
+                  <Insets />
                </VBox.margin>
-            </Button>
+               <padding>
+                  <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+               </padding>
+            </HBox>
          </children>
       </VBox>
    </children>

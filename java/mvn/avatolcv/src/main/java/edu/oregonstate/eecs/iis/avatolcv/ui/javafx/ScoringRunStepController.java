@@ -31,6 +31,7 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
     public TextArea outputText = null;
     public Label algName = null;
     public Button cancelAlgorithmButton = null;
+    public Button showLogFilesButton = null;
     private JavaFXStepSequencer fxSession = null;
     public ScoringRunStepController(JavaFXStepSequencer fxSession, ScoringRunStep step, String fxmlDocName){
         this.step = step;
@@ -52,7 +53,6 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
         @Override
         public void run() {
             outputText.appendText(message + NL);
-            System.out.println("should have written to UI output!");
         }
     }
 
@@ -124,10 +124,28 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
             fxSession.disableNavButtons();
         }
     }
+    public void loadLogsIntoTextWidget() {
+        try {
+            String logString = AvatolCVFileSystem.loadScoringLogs();
+            this.outputText.appendText(logString);
+        }
+        catch(AvatolCVException ace){
+            AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem loading logfiley: " + ace.getMessage());
+        }
+        
+    }
     public class PostScoringUIAdjustments implements Runnable{
         @Override
         public void run() {
             fxSession.enableNavButtons();
+            try {
+                if (AvatolCVFileSystem.doScoringLogsExist()){
+                    showLogFilesButton.setDisable(false);
+                }
+            }
+            catch(AvatolCVException ace){
+                AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem counting log files: " + ace.getMessage());
+            }  
         }
         
     }
@@ -148,6 +166,7 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
         @Override
         protected Boolean call() throws Exception {
             try {
+                AvatolCVFileSystem.clearScoringLogs();
                 if (this.useRunConfig){
                     this.step.runScoring(this.controller, processName, true);
                     PostScoringUIAdjustments runner = new PostScoringUIAdjustments();

@@ -1,6 +1,10 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +27,7 @@ import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
  * it would all be handled here.
  */
 public class AvatolCVFileSystem {
+    private static final String NL = System.getProperty("line.separator");
     public static final String ROTATE_VERTICALLY = "rotateVerticaly";
     public static final String ROTATE_HORIZONTALLY = "rotateHorizontally";
     public static final String ROTATION_STATES_DIRNAME = "userRotations";
@@ -475,5 +480,71 @@ public class AvatolCVFileSystem {
         return getSessionDir() + FILESEP + DIR_NAME_SCORING_MANUAL_INPUT;
     }
     
-    
+    public static boolean doScoringLogsExist() throws AvatolCVException {
+        return doSessionLogsExist("scoring");
+    } 
+    public static boolean doOrientationLogsExist() throws AvatolCVException {
+        return doSessionLogsExist("scoring");
+    } 
+    public static boolean doSegmentationLogsExist() throws AvatolCVException {
+        return doSessionLogsExist("scoring");
+    }
+    public static boolean doSessionLogsExist(String logType) throws AvatolCVException {
+        String dir = getSessionDir() + FILESEP + "logs" + FILESEP + logType;
+        File f = new File(dir);
+        if (!f.exists()){
+            return false;
+        }
+        File[] files = f.listFiles();
+        if (files.length > 0){
+            return true;
+        }
+        return false;
+    }
+    public static String loadScoringLogs() throws AvatolCVException {
+        return loadSessionLogs("scoring");
+    }
+    public static String loadSessionLogs(String logType) throws AvatolCVException {
+        String result = "";
+        String dir = getSessionDir() + FILESEP + "logs" + FILESEP + logType;
+        File f = new File(dir);
+        StringBuilder sb = new StringBuilder();
+        if (f.exists()){
+            File[] files = f.listFiles();
+            for (File file : files){
+                String path = file.getAbsolutePath();
+                sb.append(NL);
+                sb.append("===================================================================" + NL);
+                sb.append(" LOGFILE: " + path + NL);
+                sb.append("===================================================================" + NL);
+                try {
+                    BufferedReader reader = new BufferedReader(new FileReader(path));
+                    String line = null;
+                    while (null != (line = reader.readLine())){
+                        sb.append(line + NL);
+                    }
+                    reader.close();
+                }
+                catch(Exception e){
+                    throw new AvatolCVException(e.getMessage());
+                }
+                
+            }
+        }
+        result = "" + sb;
+        return result;
+    }
+    public static void clearScoringLogs() throws AvatolCVException {
+        clearSessionLogs("scoring");
+    }
+    public static void clearSessionLogs(String logType) throws AvatolCVException {
+        String dir = getSessionDir() + FILESEP + "logs" + FILESEP + logType;
+        File f = new File(dir);
+        if (f.exists()){
+            File[] files = f.listFiles();
+            for (File file : files){
+                file.delete();
+            }
+        }
+    }
 }
