@@ -4,7 +4,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 
 public class SegmentationConfigurationStep extends Answerable implements Step {
     private SessionInfo sessionInfo = null;

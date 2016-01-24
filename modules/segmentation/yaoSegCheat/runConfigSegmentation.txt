@@ -1,0 +1,2 @@
+segmentationOutputDir=C:\jed\avatol\git\avatol_cv\modules\segmentation\yaoSegCheat\output
+testImagesFile=foo

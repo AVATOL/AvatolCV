@@ -20,9 +20,10 @@ import javafx.scene.control.Alert.AlertType;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OutputMonitor;
-import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.OrientationRunStep;
+import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ScoringRunStepController.NavButtonDisabler;
 
 public class OrientationRunStepController implements StepController, OutputMonitor {
     public static final String RUN_ORIENTATION = "run orientation";
@@ -77,6 +78,7 @@ public class OrientationRunStepController implements StepController, OutputMonit
                 alert.showAndWait();
                 
             }
+            Platform.runLater(new NavButtonDisabler());
             Task<Boolean> task = new RunOrientationTask(this, this.step, RUN_ORIENTATION, useRunConfig);
             /*
              * NOTE - wanted to use javafx properties and binding here but couldn't dovetail it in.  I could not put
@@ -95,7 +97,12 @@ public class OrientationRunStepController implements StepController, OutputMonit
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName() + " : " + ioe.getMessage());
         } 
     }
-
+    public class NavButtonDisabler implements Runnable {
+        @Override
+        public void run() {
+            fxSession.disableNavButtons();
+        }
+    }
     @Override
     public boolean delayEnableNavButtons() {
         return true;
@@ -187,5 +194,7 @@ public class OrientationRunStepController implements StepController, OutputMonit
     public void cancelAlgorithm(){
         System.out.println("heard cancel");
         this.step.cancelOrientation();
+        cancelAlgorithmButton.setText("cancelling...");
+        cancelAlgorithmButton.setDisable(true);
     }
 }

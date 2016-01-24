@@ -10,6 +10,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
+import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.JavaFXStepSequencer;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ResultsReview;
 import javafx.application.Application;
@@ -44,7 +45,7 @@ public class AvatolCVJavaFX extends Application {
     //public static AvatolCVExceptionExpresser exceptionExpresser = new AvatolCVExceptionExpresserJavaFX();
     
     Stage mainWindow = null;
-    private static final Logger logger = LogManager.getLogger(AvatolCVJavaFXMB.class);
+    private static final Logger logger = LogManager.getLogger(AvatolCVJavaFX.class);
     public static void main(String[] args){
         String currentDir = System.getProperty("user.dir");
         try {
@@ -120,8 +121,9 @@ public class AvatolCVJavaFX extends Application {
             }
             else if (radioReviewResults.isSelected()){
                 ResultsReview rr = new ResultsReview();
-                String runChoice = (String)priorSessionSelector.getValue();
-                rr.init(rootDir, this, mainWindow, runChoice);
+                String runName = (String)priorSessionSelector.getValue();
+                //String runID = RunSummary.getRunIDFromRunSummaryFilename(runChoice);
+                rr.init(this, mainWindow, runName);
             }
             else {
                 // must have selected tutorial

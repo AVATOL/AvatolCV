@@ -1,5 +1,0 @@
-segmentationOutputDir=/Users/jedirvine/av/avatol_cv/sessions/leafDev/20151119_01/segmentedData
-avatolCVStatusFile=/Users/jedirvine/av/avatol_cv/sessions/leafDev/20151119_01/segmentationStatusFile.txt
-testImagesFile=/Users/jedirvine/av/avatol_cv/sessions/leafDev/20151119_01/testImagesFile_segmentation.txt
-userProvidedGroundTruthImagesFile=/Users/jedirvine/av/avatol_cv/sessions/leafDev/20151119_01/userProvidedGroundTruthImagesFile_segmentation.txt
-userProvidedTrainImagesFile=/Users/jedirvine/av/avatol_cv/sessions/leafDev/20151119_01/userProvidedTrainImagesFile_segmentation.txt

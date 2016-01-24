@@ -2,8 +2,8 @@ package edu.oregonstate.eecs.iis.obsolete.avatolcv;
 
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
+import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 
 public class Z_Obsolete_ScoringConcernDataPullStep implements Step {

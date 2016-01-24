@@ -6,9 +6,9 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringScope;
-import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.ChoiceItem;
+import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
+import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 
 public class ScoringConcernStep  extends Answerable implements Step {
     private SessionInfo sessionInfo = null;

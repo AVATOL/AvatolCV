@@ -1,10 +1,10 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.BisqueDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.FileSystemDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.MorphobankDataSource;
+import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 
 public class ScoringModeStep  extends Answerable implements Step {
    
@@ -41,11 +41,19 @@ public class ScoringModeStep  extends Answerable implements Step {
     }
     @Override
     public boolean isEnabledByPriorAnswers() {
-        return true;
+    	try {
+    		if (isAllImagesLabeled()){
+            	return false;
+            }
+            return true;
+    	}
+    	catch(AvatolCVException ace){
+    		return true;
+    	}
     }
     @Override
 	public boolean shouldRenderIfBackingIntoIt() {
-		return true;
+		return isEnabledByPriorAnswers();
 	}
     
 }

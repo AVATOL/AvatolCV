@@ -16,7 +16,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.RunConfigFile;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.SegmentationAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules.AlgType;
-import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -101,7 +101,7 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             String path = AvatolCVFileSystem.getSessionDir() + FILESEP + "runConfig_" + "segmentation" + ".txt";
             File f = new File(path);
             f.delete();
-            RunConfigFile runConfigFile = new RunConfigFile(segAlg, algSequence);
+            RunConfigFile runConfigFile = new RunConfigFile(segAlg, algSequence, null);
             Assert.assertTrue(f.exists());
             Assert.assertTrue(tif.exists());
         }
@@ -136,7 +136,7 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             
             String root = TestAlgorithm.getValidRoot();
             String scoringRoot = root + FILESEP + "modules" + FILESEP + "scoring";
-            String launchTestPath = scoringRoot + FILESEP + "launchTest" + FILESEP + "algPropertiesWindows.txt";
+            String launchTestPath = scoringRoot + FILESEP + "launchTest" + FILESEP + "algPropertiesWindowsSingle.txt";
             List<String> lines = TestAlgorithm.loadAlg(launchTestPath);
             ScoringAlgorithm scoringAlg = new ScoringAlgorithm(lines, launchTestPath);
             
@@ -472,7 +472,7 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             algSequence.enableSegmentation();
             algSequence.enableOrientation();
             
-            RunConfigFile runConfigFile = new RunConfigFile(orientAlg, algSequence);
+            RunConfigFile runConfigFile = new RunConfigFile(orientAlg, algSequence, null);
            
         }
         catch(AvatolCVException ace){
@@ -494,7 +494,7 @@ dependency:testDependency=<modules>\3rdParty\foo\bar\baz
             algSequence.enableSegmentation();
             algSequence.enableOrientation();
             
-            RunConfigFile runConfigFile = new RunConfigFile(orientAlg, algSequence);
+            RunConfigFile runConfigFile = new RunConfigFile(orientAlg, algSequence, null);
            
         }
         catch(AvatolCVException ace){

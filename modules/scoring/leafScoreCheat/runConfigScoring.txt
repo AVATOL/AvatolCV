@@ -1,0 +1,2 @@
+scoringOutputDir=C:\jed\avatol\git\avatol_cv\modules\scoring\leafScoreCheat\output
+testImagesFile=foo

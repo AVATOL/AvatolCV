@@ -3,7 +3,7 @@ package edu.oregonstate.eecs.iis.obsolete.avatolcv.morphobank.javafx;
 import java.io.IOException;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
+import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.morphobank.MBLoginStep;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.morphobank.MorphobankSessionJavaFX;
 import javafx.fxml.FXMLLoader;

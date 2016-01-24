@@ -1,0 +1,9 @@
+launchWith=segmentationCheatRunner.py
+algName=debugCheatLeafSegmenter
+algType=segmentation
+description=Algorithm debugCheatLeafSegmenter copies pregenerated segmented data for the leafDev project to the segmentation output directory.
+
+inputRequired:testImagesFile refsFilesWithSuffix * ofType rawImage
+
+outputGenerated:ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed withSuffix _croppedMask
+outputGenerated:ofType isolatedSpecimenImage withSuffix _croppedOrig

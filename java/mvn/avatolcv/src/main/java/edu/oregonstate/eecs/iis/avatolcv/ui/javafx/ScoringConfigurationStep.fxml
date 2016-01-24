@@ -39,35 +39,6 @@
       <AnchorPane fx:id="trainTestSettingsAnchorPane" maxWidth="1.7976931348623157E308" style="-fx-font-size: 12;">
          <VBox.margin>
             <Insets left="6.0" right="6.0" top="25.0" />
-         </VBox.margin>
-         <children>
-            <Accordion>
-              <panes>
-                <TitledPane animated="false" stylesheets="@../../css/javafx.css" text="untitled 1">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                  </content>
-                </TitledPane>
-                <TitledPane animated="false" text="untitled 2">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                  </content>
-                </TitledPane>
-                <TitledPane animated="false" text="untitled 3">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                  </content>
-                </TitledPane>
-              </panes>
-            </Accordion>
-         </children></AnchorPane>
-      <HBox fx:id="percentageExpressionHbox" spacing="10.0" stylesheets="@../../css/javafx.css" VBox.vgrow="NEVER">
-         <VBox.margin>
-            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-         </VBox.margin>
-         <effect>
-            <InnerShadow />
-         </effect>
-      </HBox>
+         </VBox.margin></AnchorPane>
    </children>
 </VBox>

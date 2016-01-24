@@ -1,6 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.algorithm;
 
-import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
+import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 
 /**
  * 

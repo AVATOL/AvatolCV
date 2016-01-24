@@ -3,14 +3,14 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
-import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter.FilterItem;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
-import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedKey;
-import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedValue;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfos;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataFilter;
+import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataFilter.FilterItem;
 
 public class SummaryFilterStep  extends Answerable implements Step {
     private SessionInfo sessionInfo;
@@ -56,11 +56,11 @@ public class SummaryFilterStep  extends Answerable implements Step {
     }
     @Override
     public boolean isEnabledByPriorAnswers() {
-        return true;
+    	return !SessionInfo.isBisqueSession();
     }
     @Override
 	public boolean shouldRenderIfBackingIntoIt() {
-		return true;
+    	return !SessionInfo.isBisqueSession();
 	}
     
 }

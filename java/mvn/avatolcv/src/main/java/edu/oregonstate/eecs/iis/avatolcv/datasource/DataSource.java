@@ -7,12 +7,12 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringScope;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringSessionFocus;
-import edu.oregonstate.eecs.iis.avatolcv.core.DataFilter;
-import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.NormalizedImageInfos;
-import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
-import edu.oregonstate.eecs.iis.avatolcv.core.ScoreIndex;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionImages;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfos;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoreIndex;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataFilter;
+import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
+import edu.oregonstate.eecs.iis.avatolcv.session.SessionImages;
 
 public interface DataSource {
     String getName();

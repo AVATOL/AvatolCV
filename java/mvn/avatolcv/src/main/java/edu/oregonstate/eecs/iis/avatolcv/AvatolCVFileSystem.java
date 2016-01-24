@@ -1,6 +1,10 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,9 +12,11 @@ import java.util.Date;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.Algorithm;
-import edu.oregonstate.eecs.iis.avatolcv.core.DatasetInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
+import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
 
 /**
  * 
@@ -21,6 +27,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
  * it would all be handled here.
  */
 public class AvatolCVFileSystem {
+    private static final String NL = System.getProperty("line.separator");
     public static final String ROTATE_VERTICALLY = "rotateVerticaly";
     public static final String ROTATE_HORIZONTALLY = "rotateHorizontally";
     public static final String ROTATION_STATES_DIRNAME = "userRotations";
@@ -42,7 +49,7 @@ public class AvatolCVFileSystem {
 
 	private static String avatolCVRootDir = null;
 	private static String sessionsDir = null;
-	private static String currentProjectDir = null;
+	//private static String currentProjectDir = null;
     //private static String currentProjectUserAnswersDir = null;
     private static String sessionSummariesDir = null;
 
@@ -52,7 +59,7 @@ public class AvatolCVFileSystem {
     private static String datasourceName = null;
     
     public static void flushPriorSettings(){
-    	currentProjectDir = null;
+    	//currentProjectDir = null;
         //currentProjectUserAnswersDir = null;
         sessionID = null;
         datasetName = null;
@@ -152,12 +159,33 @@ public class AvatolCVFileSystem {
             String number = parts[1];
             numbersForToday.add(number);
         }
-        Collections.sort(numbersForToday);
-        String finalNumberString = numbersForToday.get(numbersForToday.size() - 1);
-        Integer numberAsInteger = new Integer(finalNumberString);
-        int newValue = numberAsInteger.intValue() + 1;
-        String newValueString = String.format("%02d", newValue);
+        Integer highestNumber = getHighestNumber(numbersForToday);
+       // Collections.sort(numbersForToday);
+       // String finalNumberString = numbersForToday.get(numbersForToday.size() - 1);
+       // Integer numberAsInteger = new Integer(finalNumberString);
+        int newValue = highestNumber.intValue() + 1;
+        String newValueString = "";
+        if (newValue > 999){
+        	newValueString = String.format("%04d", newValue);
+        }
+        else if (newValue > 99){
+        	newValueString = String.format("%03d", newValue);
+        }
+        else {
+        	newValueString = String.format("%02d", newValue);
+        }
+        
         return dateString + "_" + newValueString;
+    }
+    public static Integer getHighestNumber(List<String> numStrings){
+    	Integer highest = new Integer(0);
+    	for (String n : numStrings){
+    		Integer cur = new Integer(n);
+    		if (cur.intValue() > highest.intValue()){
+    			highest = cur;
+    		}
+    	}
+    	return highest;
     }
 	public static void setSessionID(String id) throws AvatolCVException {
         sessionID = id; 
@@ -358,6 +386,19 @@ public class AvatolCVFileSystem {
 		return null;
 	}
 	
+	public static String getHoldoutFilePath(String runID, String scoringConcernName) throws AvatolCVException {
+        String dirToSearch = getDatasetDir() + FILESEP + runID + FILESEP + "trainingDataForScoring";
+        
+        File dir = new File(dirToSearch);
+        File[] files = dir.listFiles();
+        for (File f : files){
+            if (f.getName().contains(scoringConcernName) && f.getName().startsWith(HoldoutInfoFile.FILE_PREFIX)){
+                return f.getAbsolutePath();
+            }
+        }
+        return null;
+    }
+    
 	// IMAGES
 	public static String getDatasetExclusionInfoFilePath(String imageID) throws AvatolCVException {
 		return  AvatolCVFileSystem.getNormalizedExclusionDir() + FILESEP + imageID + ".txt";
@@ -439,5 +480,71 @@ public class AvatolCVFileSystem {
         return getSessionDir() + FILESEP + DIR_NAME_SCORING_MANUAL_INPUT;
     }
     
-    
+    public static boolean doScoringLogsExist() throws AvatolCVException {
+        return doSessionLogsExist("scoring");
+    } 
+    public static boolean doOrientationLogsExist() throws AvatolCVException {
+        return doSessionLogsExist("scoring");
+    } 
+    public static boolean doSegmentationLogsExist() throws AvatolCVException {
+        return doSessionLogsExist("scoring");
+    }
+    public static boolean doSessionLogsExist(String logType) throws AvatolCVException {
+        String dir = getSessionDir() + FILESEP + "logs" + FILESEP + logType;
+        File f = new File(dir);
+        if (!f.exists()){
+            return false;
+        }
+        File[] files = f.listFiles();
+        if (files.length > 0){
+            return true;
+        }
+        return false;
+    }
+    public static String loadScoringLogs() throws AvatolCVException {
+        return loadSessionLogs("scoring");
+    }
+    public static String loadSessionLogs(String logType) throws AvatolCVException {
+        String result = "";
+        String dir = getSessionDir() + FILESEP + "logs" + FILESEP + logType;
+        File f = new File(dir);
+        StringBuilder sb = new StringBuilder();
+        if (f.exists()){
+            File[] files = f.listFiles();
+            for (File file : files){
+                String path = file.getAbsolutePath();
+                sb.append(NL);
+                sb.append("===================================================================" + NL);
+                sb.append(" LOGFILE: " + path + NL);
+                sb.append("===================================================================" + NL);
+                try {
+                    BufferedReader reader = new BufferedReader(new FileReader(path));
+                    String line = null;
+                    while (null != (line = reader.readLine())){
+                        sb.append(line + NL);
+                    }
+                    reader.close();
+                }
+                catch(Exception e){
+                    throw new AvatolCVException(e.getMessage());
+                }
+                
+            }
+        }
+        result = "" + sb;
+        return result;
+    }
+    public static void clearScoringLogs() throws AvatolCVException {
+        clearSessionLogs("scoring");
+    }
+    public static void clearSessionLogs(String logType) throws AvatolCVException {
+        String dir = getSessionDir() + FILESEP + "logs" + FILESEP + logType;
+        File f = new File(dir);
+        if (f.exists()){
+            File[] files = f.listFiles();
+            for (File file : files){
+                file.delete();
+            }
+        }
+    }
 }

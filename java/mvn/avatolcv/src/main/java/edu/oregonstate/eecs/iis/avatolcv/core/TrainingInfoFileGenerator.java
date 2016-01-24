@@ -6,6 +6,8 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfoScored;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoreIndex;
 import edu.oregonstate.eecs.iis.avatolcv.util.FileSystemPrimer;
 
 public class TrainingInfoFileGenerator {

@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
 
 /*
  *     training_<scoringConcernType>_<scoringConcernID>_<scoringConcernName>.txt   // scoring concern info is in the filename
@@ -40,6 +42,8 @@ public class TrainingInfoFile {
 	
 	private Hashtable<String,String> scoringConcernValueHash = new Hashtable<String, String>();
 	private Hashtable<String,String> pointCoordinatesHash = new Hashtable<String, String>();
+	private Hashtable<String,String> trainTestConcernHash = new Hashtable<String, String>();
+	private Hashtable<String,String> trainTestConcernValueHash = new Hashtable<String, String>();
 	//private List<String> imageNames = new ArrayList<String>();
 	private List<String> imagePaths = new ArrayList<String>();
 	public TrainingInfoFile(String scoringConcernType, String scoringConcernID, String scoringConcernName){
@@ -53,6 +57,9 @@ public class TrainingInfoFile {
 	public String getScoringConcernValueForImagePath(String imagePath){
 		return this.scoringConcernValueHash.get(imagePath);
 	}
+	public String getTrainTestConcernValueForImagePath(String imagePath){
+		return this.trainTestConcernValueHash.get(imagePath);
+	}
 	public String getValue(String line){
 		String[] parts = line.split("=");
 		if (parts.length == 1){
@@ -64,18 +71,26 @@ public class TrainingInfoFile {
 	}
 	public void extractImageInfo(String line) throws AvatolCVException {
 		String[] parts = line.split(",");
+		if (parts.length < 5){
+			throw new AvatolCVException("TrainingInfoFile should have five fields in each line - some may be empty: filepath, scoringConcernValue, pointCoordinates, trainTestConcern, trainTestConcernValue");
+		}
 		String filepath = parts[0];
 		String scoringConcernValue = parts[1];
-		String pointCoordinates = "?";
-		if (parts.length == 2){
-			pointCoordinates = "";
-		}
-		else {
+		String pointCoordinates = AvatolCVConstants.UNDETERMINED;
+		//if (parts.length == 2){
+		//	pointCoordinates = "";
+			
+		//}
+		//else {
 			pointCoordinates = parts[2];
-		}
+		//}
+		String trainTestConcern = parts[3];
+		String trainTestConcernValue = parts[4];
 		this.imagePaths.add(filepath);
 		this.scoringConcernValueHash.put(filepath, scoringConcernValue);
 		this.pointCoordinatesHash.put(filepath, pointCoordinates);
+		this.trainTestConcernHash.put(filepath, trainTestConcern);
+		this.trainTestConcernValueHash.put(filepath, trainTestConcernValue);
 	}
 	public TrainingInfoFile(String pathname) throws AvatolCVException {
 		File f = new File(pathname);

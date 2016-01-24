@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import edu.oregonstate.eecs.iis.avatolcv.core.ProgressPresenter;
+import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 
 public class ProgressPresenterImpl implements ProgressPresenter {
     private Hashtable<String,ProgressBar> progressBarForProcessNameHash = new Hashtable<String,ProgressBar>();

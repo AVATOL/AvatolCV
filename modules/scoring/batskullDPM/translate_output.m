@@ -49,25 +49,23 @@ if ~exist(detectionResultsDir, 'dir')
     error('detection_results directory from batskull algorithm does not exist');
 end
 
-%% read and parse output
+%% read and parse summary file for characters and states
 outputDirList = dir([outputDir filesep 'sorted_output_data*.txt']);
 nCharacters = length(outputDirList);
 
+summaryFile = fullfile(inputDir, SUMMARY_FILE);
+[charMetaList, charIdList, charNameList] = parse_summary_file(summaryFile, nCharacters);
+
+%% read and parse output
 scoredDataList = cell(nCharacters, 1);
 unscoredDataList = cell(nCharacters, 1);
-charIdList = cell(nCharacters, 1);
-charNameList = cell(nCharacters, 1);
 
 for i = 1:nCharacters
     logdebug('parsing output file %d', i);
     outputFile = fullfile(outputDir, outputDirList(i).name);
-    [scoredDataList{i}, unscoredDataList{i}, charIdList{i}, ...
-        charNameList{i}] = parse_output_file(outputFile);
+    [scoredDataList{i}, unscoredDataList{i}] = ...
+        parse_output_file(outputFile, charMetaList{i});
 end
-
-%% read and parse summary file for characters and states
-summaryFile = fullfile(inputDir, SUMMARY_FILE);
-[charMetaList, charNameList] = parse_summary_file(summaryFile, charIdList, charNameList);
 
 %% write output
 for i = 1:nCharacters
@@ -93,8 +91,8 @@ end
 
 end % logdebug
 
-function [scoredData, unscoredData, charId, charName] = ...
-    parse_output_file(outputFile)
+function [scoredData, unscoredData] = ...
+    parse_output_file(outputFile, charMeta)
 
 %% constants
 FILE_NAME_DELIMITER = '_';
@@ -113,8 +111,7 @@ DETECTION_RESULTS_DELIMITER = ':';
 
 %% parse file name
 [~, fileName, ~] = fileparts(outputFile);
-fileNameComponents = strsplit(fileName, FILE_NAME_DELIMITER, ...
-    'CollapseDelimiters', false);
+fileNameComponents = strsplit(fileName, FILE_NAME_DELIMITER);
 if length(fileNameComponents) ~= 5
     error('unexpected # of components from parsing file name "%s"', ...
         fileName);
@@ -145,8 +142,7 @@ while 1
     end
     
     %% parse line
-    lineComponents = strsplit(tline, FILE_WITHIN_LINE_DELIMITER, ...
-        'CollapseDelimiters', false);
+    lineComponents = strsplit(tline, FILE_WITHIN_LINE_DELIMITER);
     if length(lineComponents) ~= EXPECTED_NUM_LINE_COMPONENTS
         error('expected %d components from parsing line(%d) in file "%s"', ...
             EXPECTED_NUM_LINE_COMPONENTS, scoredCounter+unscoredCounter-1, fileName);
@@ -164,10 +160,18 @@ while 1
     if strcmp(confidence, COULD_NOT_SCORE) == 1
         unscoredData(unscoredCounter).image = mediaPath;
         unscoredCounter = unscoredCounter + 1;
-    else        
+    else
         scoredData(scoredCounter).image = mediaPath;
         scoredData(scoredCounter).charStateId = charStateId;
-        scoredData(scoredCounter).charStateName = charStateName;
+        scoredData(scoredCounter).charStateName = '???';
+        for i = 1:length(charMeta)
+            if strcmp(charMeta(i).id, charStateId) == 1
+                scoredData(scoredCounter).charStateName = charMeta(i).name;
+            end
+        end
+        if strcmp(scoredData(scoredCounter).charStateName, '???') == 1
+            error('charStateId does not match')
+        end
         scoredData(scoredCounter).taxonId = taxonId;
         scoredData(scoredCounter).confidence = confidence;
         
@@ -180,8 +184,7 @@ while 1
         end
         
         %% get line
-        lineComponentsDet = strsplit(det_tline, DETECTION_RESULTS_DELIMITER, ...
-            'CollapseDelimiters', false);
+        lineComponentsDet = strsplit(det_tline, DETECTION_RESULTS_DELIMITER);
         if length(lineComponentsDet) ~= EXPECTED_DET_NUM_LINE_COMPONENTS
             error('expected %d components from parsing file "%s"', ...
             EXPECTED_DET_NUM_LINE_COMPONENTS, detectionResultsPath);
@@ -221,8 +224,8 @@ fclose(fh);
 
 end % parse_output_file
 
-function [charMeta, charNameList] = ...
-    parse_summary_file(summaryFile, charIdList, charNameList)
+function [charMeta, charIdList, charNameList] = ...
+    parse_summary_file(summaryFile, nCharacters)
 
 %% constants
 DELIMITER = ',';
@@ -230,9 +233,10 @@ DELIMITER = ',';
 %% parse score file
 fh = fopen(summaryFile, 'rt');
 
-% parse each line
-nCharacters = length(charIdList);
-charMeta = cell(nCharacters, 1);
+% parse characters
+charIdList = cell(nCharacters, 1);
+charNameList = cell(nCharacters, 1);
+charIdx = 1;
 while 1
     tline = fgetl(fh);
     if ~ischar(tline)
@@ -242,27 +246,13 @@ while 1
     strs = strsplit(tline, DELIMITER);
 
     if strcmp(strs{1},'character')
-        id = strs{2};
-        name = strs{3};
-        for i = 1:nCharacters % inefficient loop
-            if strcmp(charIdList(i), id) == 1
-                charNameList{i} = name; % use full name
-                break;
-            end
-        end
+        charNameList{charIdx} = strs{3};
+        charIdList{charIdx} = strs{2};
+        charIdx = charIdx + 1;
     elseif strcmp(strs{1},'media')
         continue;
     elseif strcmp(strs{1},'state')
-        stateId = strs{2};
-        stateName = strs{3};
-        charId = strs{4};
-        for i = 1:nCharacters % inefficient loop
-            if strcmp(charIdList(i), charId) == 1
-                charMeta{i}(end+1).id = stateId;
-                charMeta{i}(end).name = stateName;
-                break;
-            end
-        end
+        continue;
     elseif strcmp(strs{1},'taxon')
         continue;
     elseif strcmp(strs{1},'view')
@@ -275,6 +265,35 @@ while 1
         continue
     else
         error('summary.txt: unknown line');
+    end
+end
+
+fclose(fh);
+fh = fopen(summaryFile, 'rt');
+
+%% parse states
+charMeta = cell(nCharacters, 1);
+while 1
+    tline = fgetl(fh);
+    if ~ischar(tline)
+        break
+    end
+
+    strs = strsplit(tline, DELIMITER);
+
+    if strcmp(strs{1},'state')
+        stateId = strs{2};
+        stateName = strs{3};
+        charId = strs{4};
+        for i = 1:nCharacters % inefficient loop
+            if strcmp(charIdList(i), charId) == 1
+                charMeta{i}(end+1).id = stateId;
+                charMeta{i}(end).name = stateName;
+                break;
+            end
+        end
+    else
+        continue;
     end
 end
 
@@ -294,31 +313,48 @@ POINT_COORDS_DELIM = '-';
 fh = fopen(outputFile, 'wt');
 
 %% write class header
-class1Name = charMeta(1).name;
-class2Name = charMeta(2).name;
-fprintf(fh, 'classNames=%s,%s\n', class1Name, class2Name);
+class1 = [CHARACTER_STATE ':' charMeta(1).id ...
+        '|' charMeta(1).name];
+class2 = [CHARACTER_STATE ':' charMeta(2).id ...
+        '|' charMeta(2).name];
+fprintf(fh, 'classNames=%s,%s\n', class1, class2);
 
 %% write scored data
-for i = 1:length(scoredData)
-    fullpathtoScoredImage = scoredData(i).image;
-    classValue = [CHARACTER_STATE ':' scoredData(i).charStateId ...
-        '|' scoredData(i).charStateName];
-    pointAnnotations = [POINT ':' num2str(scoredData(i).x) ...
-        POINT_COORDS_DELIM num2str(scoredData(i).y)];
-    
-    confClass1 = str2double(scoredData(i).confidence);
-    confClass2 = 1.0-confClass1;
-    
-    fprintf(fh, '%s\n', ...
-        [fullpathtoScoredImage DELIM ...
-        classValue DELIM ...
-        pointAnnotations DELIM ...
-        num2str(confClass1) DELIM ...
-        num2str(confClass2)]);
+if isfield(scoredData, 'image')
+    for i = 1:length(scoredData)
+        fullpathtoUnScoredImage = scoredData(i).image;
+        classValue = [CHARACTER_STATE ':' scoredData(i).charStateId ...
+            '|' scoredData(i).charStateName];
+        pointAnnotations = [POINT ':' num2str(scoredData(i).x) ...
+            POINT_COORDS_DELIM num2str(scoredData(i).y)];
+
+        confClass1 = str2double(scoredData(i).confidence);
+        confClass2 = 1.0-confClass1;
+
+        fprintf(fh, '%s%s%s%s%s%s%s%s%s\n', ...
+            fullpathtoUnScoredImage, DELIM, ...
+            classValue, DELIM, ...
+            pointAnnotations, DELIM, ...
+            num2str(confClass1), DELIM, ...
+            num2str(confClass2));
+    end
+end
+
+%% write unscored data
+if isfield(unscoredData, 'image')
+    for i = 1:length(unscoredData)
+        fullpathtoUnScoredImage = unscoredData(i).image;
+        classValue = 'NOT_SCORE';
+
+        fprintf(fh, '%s%s%s%s%s%s%s%s%s\n', ...
+            fullpathtoUnScoredImage, DELIM, ...
+            classValue, DELIM, ...
+            '?', DELIM, ...
+            '?', DELIM, ...
+            '?');
+    end
 end
 
 fclose(fh);
-
-%% write unscored data TODO
 
 end % write_output_file

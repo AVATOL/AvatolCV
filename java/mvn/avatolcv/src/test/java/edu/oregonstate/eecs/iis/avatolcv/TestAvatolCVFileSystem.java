@@ -19,6 +19,17 @@ public class TestAvatolCVFileSystem extends TestCase {
         ids.add("20150831_05");
         Assert.assertEquals("20150831_06", AvatolCVFileSystem.getNextIDForDate(date, ids));
     }
+    public void testGetNextIDForDateThreeDigit(){
+    	List<String> ids = new ArrayList<String>();
+        String date = "20150831";
+        for (int i = 1; i < 100; i++){
+        	String id = "20150831_" + String.format("%02d", i);
+        	ids.add(id);
+        }
+        Assert.assertEquals("20150831_100", AvatolCVFileSystem.getNextIDForDate(date, ids));
+        ids.add("20150831_100");
+        Assert.assertEquals("20150831_101", AvatolCVFileSystem.getNextIDForDate(date, ids));
+    }
     public void  testGetMostRecentIDForDate(){
         String dateString = "20151124";
         List<String> ids = new ArrayList<String>();

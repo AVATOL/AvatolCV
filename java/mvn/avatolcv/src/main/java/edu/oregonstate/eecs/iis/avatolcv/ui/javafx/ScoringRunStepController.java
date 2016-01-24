@@ -18,8 +18,8 @@ import javafx.scene.control.Alert.AlertType;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OutputMonitor;
-import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringRunStep;
 
 public class ScoringRunStepController implements StepController, OutputMonitor{
@@ -31,6 +31,7 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
     public TextArea outputText = null;
     public Label algName = null;
     public Button cancelAlgorithmButton = null;
+    public Button showLogFilesButton = null;
     private JavaFXStepSequencer fxSession = null;
     public ScoringRunStepController(JavaFXStepSequencer fxSession, ScoringRunStep step, String fxmlDocName){
         this.step = step;
@@ -61,7 +62,7 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
             this.step.generateRunSummaries();
         }
         catch(AvatolCVException ace){
-            AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem generating runSummary");
+            AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem generating runSummary: " + ace.getMessage());
         }
         return true;
     }
@@ -98,6 +99,7 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
                 alert.showAndWait();
                 
             }
+            Platform.runLater(new NavButtonDisabler());
             Task<Boolean> task = new RunScoringTask(this, this.step, RUN_SCORING, useRunConfig);
             /*
              * NOTE - wanted to use javafx properties and binding here but couldn't dovetail it in.  I could not put
@@ -116,10 +118,34 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName() + " : " + ioe.getMessage());
         } 
     }
+    public class NavButtonDisabler implements Runnable {
+        @Override
+        public void run() {
+            fxSession.disableNavButtons();
+        }
+    }
+    public void loadLogsIntoTextWidget() {
+        try {
+            String logString = AvatolCVFileSystem.loadScoringLogs();
+            this.outputText.appendText(logString);
+        }
+        catch(AvatolCVException ace){
+            AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem loading logfiley: " + ace.getMessage());
+        }
+        
+    }
     public class PostScoringUIAdjustments implements Runnable{
         @Override
         public void run() {
             fxSession.enableNavButtons();
+            try {
+                if (AvatolCVFileSystem.doScoringLogsExist()){
+                    showLogFilesButton.setDisable(false);
+                }
+            }
+            catch(AvatolCVException ace){
+                AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem counting log files: " + ace.getMessage());
+            }  
         }
         
     }
@@ -140,6 +166,7 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
         @Override
         protected Boolean call() throws Exception {
             try {
+                AvatolCVFileSystem.clearScoringLogs();
                 if (this.useRunConfig){
                     this.step.runScoring(this.controller, processName, true);
                     PostScoringUIAdjustments runner = new PostScoringUIAdjustments();
@@ -192,5 +219,7 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
     public void cancelAlgorithm(){
         System.out.println("heard cancel");
         this.step.cancelScoring();
+        cancelAlgorithmButton.setText("cancelling...");
+        cancelAlgorithmButton.setDisable(true);
     }
 }

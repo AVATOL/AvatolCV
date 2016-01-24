@@ -1,4 +1,4 @@
-launchWith=batSkullScore.sh
+launchWith=batSkullScore.py
 algName=partsScoring
 algType=scoring
 scoringFocus=SPECIMEN_PART_PRESENCE_ABSENCE

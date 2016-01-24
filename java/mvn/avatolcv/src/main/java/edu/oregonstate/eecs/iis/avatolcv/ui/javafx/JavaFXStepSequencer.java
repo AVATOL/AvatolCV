@@ -22,14 +22,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
-import edu.oregonstate.eecs.iis.avatolcv.core.SessionInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
-import edu.oregonstate.eecs.iis.avatolcv.core.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
-import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFXMB;
+import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
+import edu.oregonstate.eecs.iis.avatolcv.session.StepSequence;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DataSourceStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DatasetChoiceStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ExclusionQualityStep;
@@ -41,7 +39,6 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConfigurationStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringModeStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationConfigurationStep;
-import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationResultsStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SummaryFilterStep;
@@ -128,8 +125,9 @@ public class JavaFXStepSequencer  {
         ExclusionQualityStep exclusionQualityStep = new ExclusionQualityStep(sessionInfo);
         ss.appendStep(exclusionQualityStep);
         AnchorPane navigationShellContentPane = (AnchorPane)scene.lookup("#navigationShellContentPane");
-        ExclusionQualityStepController qualityStepController = new ExclusionQualityStepController(exclusionQualityStep, "ExclusionQualityStepTile.fxml", navigationShellContentPane);
+        //ExclusionQualityStepController qualityStepController = new ExclusionQualityStepController(exclusionQualityStep, "ExclusionQualityStepTile.fxml", navigationShellContentPane);
         //ExclusionQualityStepController qualityStepController = new ExclusionQualityStepController(exclusionQualityStep, "ExclusionQualityStep.fxml", navigationShellContentPane);
+        ExclusionQualityStepController qualityStepController = new ExclusionQualityStepController(exclusionQualityStep, "ExclusionQualityStepSimple.fxml", navigationShellContentPane);
         controllerForStep.put(exclusionQualityStep, qualityStepController);
         addLabelForStep(exclusionQualityStep,"Image Quality");
         imagePullStep.setNextAnswerableInSeries(exclusionQualityStep);
@@ -193,7 +191,7 @@ public class JavaFXStepSequencer  {
         addLabelForStep(scoringRunStep,"Run Scoring");
         
         // THIS WAS SINISAS 20151112 DEMO
-        
+        /*
         SegmentationResultsStep segResultsStep = new SegmentationResultsStep();
         ss.appendStep(segResultsStep);
         SegmentationResultsStepController segResultsStepController = new SegmentationResultsStepController(segResultsStep, "SegmentationResultsStep.fxml");
@@ -201,7 +199,7 @@ public class JavaFXStepSequencer  {
         addLabelForStep(segResultsStep,"Demo Segmentation Results");
         segConfigStep.setNextAnswerableInSeries(segResultsStep);
         
-        
+        */
         
         /*
         //Step charQuestionsStep = new CharQuestionsStep(null, sessionData);
@@ -295,6 +293,10 @@ public class JavaFXStepSequencer  {
     	nextButton.setDisable(false);
     	backButton.setDisable(false);
     }
+    public void disableNavButtons(){
+        nextButton.setDisable(true);
+        backButton.setDisable(true);
+    }
     public void initUI() throws AvatolCVException {
         try {
             FXMLLoader loader = new FXMLLoader(JavaFXStepSequencer.class.getResource("navigationShellNoSplit.fxml"));
@@ -313,8 +315,7 @@ public class JavaFXStepSequencer  {
      * prevStep called from the button on the javaFX ui thread (application thread)
      */
     public void previousStep(){
-    	nextButton.setDisable(true);
-    	backButton.setDisable(true);
+        disableNavButtons();
     	// delegate data consumption to background thread
     	PrevStepTask task = new PrevStepTask();
     	new Thread(task).start();
@@ -323,8 +324,7 @@ public class JavaFXStepSequencer  {
      * nextStep called from the button on the javaFX ui thread (application thread)
      */
     public void nextStep(){
-    	nextButton.setDisable(true);
-    	backButton.setDisable(true);
+        disableNavButtons();
     	
     	Step step = ss.getCurrentStep();
         StepController controller = controllerForStep.get(step);
@@ -378,6 +378,7 @@ public class JavaFXStepSequencer  {
      * (runs in background thread)
      */
     public void requestNextStep() throws AvatolCVException {
+    	boolean showingResults = false;
     	Step step = ss.getCurrentStep();
     	StepController controller = controllerForStep.get(step);
     	
@@ -394,17 +395,29 @@ public class JavaFXStepSequencer  {
             }
     	    boolean seekingNext = true;
     	    while (seekingNext){
-    	        ss.next();
-    	        if (ss.getCurrentStep().isEnabledByPriorAnswers()){
-    	            seekingNext = false;
-    	        }
+    	    	if (ss.hasMoreScreens()){
+    	    		ss.next();
+        	        if (ss.getCurrentStep().isEnabledByPriorAnswers()){
+        	            seekingNext = false;
+        	        }
+    	    	}
+    	    	else {
+    	    		ResultsReview rr = new ResultsReview();
+                    String runName = sessionInfo.getSessionName();
+                    rr.initOnAppThread(this.mainScreen, mainWindow, runName);
+                    seekingNext = false;
+                    showingResults = true;
+    	    	}
+    	        
     	    }
-    		
-    		// task of loading UI for next step is put back on the javaFX UI thread
-    		CurrentStepRunner stepRunner = new CurrentStepRunner();
-    		Platform.runLater(stepRunner);
+    		if (!showingResults){
+    			// task of loading UI for next step is put back on the javaFX UI thread
+        		CurrentStepRunner stepRunner = new CurrentStepRunner();
+        		Platform.runLater(stepRunner);
+    		}
     	}
     	else {
+    		enableNavButtons();
     		controller.clearUIFields();
     	}
     }

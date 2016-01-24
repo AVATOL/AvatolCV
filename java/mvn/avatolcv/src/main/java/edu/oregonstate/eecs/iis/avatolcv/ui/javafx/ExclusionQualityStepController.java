@@ -21,8 +21,8 @@ import org.apache.logging.log4j.Logger;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageWithInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ExclusionQualityStep;
 
 public class ExclusionQualityStepController  implements StepController {
@@ -139,11 +139,11 @@ public class ExclusionQualityStepController  implements StepController {
                     iv.setOnMouseEntered(this::showCurrentImageLarge);
                     iv.setOnMouseClicked(this::toggleExclusionForImage);
                     excludeImageGrid.add(iv,curCol, curRow);
-                    curRow += 1;
-                    if (curRow > 2){
-                        curRow = 0;
+              //      curRow += 1;
+              //      if (curRow > 2){
+              //          curRow = 0;
                         curCol++;
-                    }
+              //      }
                 }
             }
             content.autosize();
