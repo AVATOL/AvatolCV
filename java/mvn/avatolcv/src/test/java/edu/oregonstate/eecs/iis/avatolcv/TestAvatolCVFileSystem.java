@@ -8,6 +8,14 @@ import junit.framework.TestCase;
 
 public class TestAvatolCVFileSystem extends TestCase {
 
+    public void testNameIsDatedSession(){
+        Assert.assertTrue(AvatolCVFileSystem.nameIsDatedSession("20160120_01"));
+        Assert.assertTrue(AvatolCVFileSystem.nameIsDatedSession("20160120_100"));
+        Assert.assertFalse(AvatolCVFileSystem.nameIsDatedSession("2016012001"));
+        Assert.assertFalse(AvatolCVFileSystem.nameIsDatedSession("20160120"));
+        Assert.assertFalse(AvatolCVFileSystem.nameIsDatedSession("201K0120_01"));
+        Assert.assertFalse(AvatolCVFileSystem.nameIsDatedSession("2010120_01"));
+    }
     public void testGetNextIDForDate() {
         List<String> ids = new ArrayList<String>();
         String date = "20150831";

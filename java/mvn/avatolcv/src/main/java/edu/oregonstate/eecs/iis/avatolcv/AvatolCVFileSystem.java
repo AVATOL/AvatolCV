@@ -114,14 +114,12 @@ public class AvatolCVFileSystem {
         return dateString;
     }
     public static String createSessionID() throws AvatolCVException {
-        List<String> sessionFilenames = getSessionFilenames();
+        List<String> datedSessionDirs = getDatedSessionDirsForInstallation();
         String date = getSessionFormatDate();
         List<String> idsFromToday = new ArrayList<String>();
-        for (String filename : sessionFilenames){
-            String[] parts = filename.split("\\.");
-            String root = parts[0];
-            if (root.startsWith(date)){
-                idsFromToday.add(root);
+        for (String datedSessionDir : datedSessionDirs){
+            if (datedSessionDir.startsWith(date)){
+                idsFromToday.add(datedSessionDir);
             }
         }
         String reusePreviousSessionPath = getSessionsRoot() + FILESEP + "reusePrevSessionId.txt";
@@ -206,6 +204,8 @@ public class AvatolCVFileSystem {
 	public static List<String> getSessionFilenames() throws AvatolCVException {
         File sessionSummariesDirFile = new File(sessionSummariesDir);
         File[] files = sessionSummariesDirFile.listFiles();
+        
+       
         List<String> names = new ArrayList<String>();
         for (File f : files){
             String name = f.getName();
@@ -219,6 +219,47 @@ public class AvatolCVFileSystem {
         }
         return names;
 	}
+	public static boolean nameIsDatedSession(String name){
+	    if (name.indexOf("_") == -1){
+	        return false;
+	    }
+	    String[] parts = name.split("_");
+        if (!(parts[0].length() == 8)){
+            return false;
+        }
+        try {
+            Integer test = new Integer(parts[0]);
+            int intValue = test.intValue();
+            return true;
+        }
+        catch(Exception e){
+            return false;
+        }
+	}
+	public static List<String> getDatedSessionFilesFromDirFile(File datasetDirFile){
+        File[] datedSessionDirFiles = datasetDirFile.listFiles();
+        List<String> datedSessions = new ArrayList<String>();
+        for (File f : datedSessionDirFiles){
+            String name = f.getName();
+            if (nameIsDatedSession(name)){
+                datedSessions.add(name);
+            }
+        }
+        return datedSessions;
+	}
+	public static List<String> getDatedSessionDirsForInstallation() throws AvatolCVException {
+	    List<String> allFiles = new ArrayList<String>();
+	    File sessionsDirFile = new File(sessionsDir);
+	    File[] datasetDirCandidates = sessionsDirFile.listFiles();
+	    for (File candidate : datasetDirCandidates){
+	        if (candidate.isDirectory()){
+	            List<String> datedSessionFilesForDataset = getDatedSessionFilesFromDirFile(candidate);
+	            allFiles.addAll(datedSessionFilesForDataset);
+	        }
+	    }
+	    Collections.sort(allFiles);
+        return allFiles;
+    }
 	//
 	// datasource
 	//
