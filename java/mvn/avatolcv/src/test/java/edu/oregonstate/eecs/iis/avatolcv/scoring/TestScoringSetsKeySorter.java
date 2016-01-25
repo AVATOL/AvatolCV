@@ -49,7 +49,7 @@ public class TestScoringSetsKeySorter extends TestCase {
             niis.add(nii8);
             niis.add(nii9);
             EvaluationSet eset = new EvaluationSet(niis, new NormalizedKey("scoringConcern1"), 0.25);
-            List<EvaluationSet> esets = new ArrayList<EvaluationSet>();
+            List<ScoringSet> esets = new ArrayList<ScoringSet>();
             esets.add(eset);
             ScoringSetsKeySorter ssks = new ScoringSetsKeySorter(esets, new NormalizedKey("key1"));
             List<String> values = ssks.getValuesPresentForKey();
@@ -167,7 +167,7 @@ public class TestScoringSetsKeySorter extends TestCase {
             niisB.add(nii9);
             EvaluationSet esetA = new EvaluationSet(niisA, new NormalizedKey("scoringConcern1"), 0.25);
             EvaluationSet esetB = new EvaluationSet(niisB, new NormalizedKey("scoringConcern2"), 0.25);
-            List<EvaluationSet> esets = new ArrayList<EvaluationSet>();
+            List<ScoringSet> esets = new ArrayList<ScoringSet>();
             esets.add(esetA);
             esets.add(esetB);
             ScoringSetsKeySorter ssks = new ScoringSetsKeySorter(esets, new NormalizedKey("key1"));

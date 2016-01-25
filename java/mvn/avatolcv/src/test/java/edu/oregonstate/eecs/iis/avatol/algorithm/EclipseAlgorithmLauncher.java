@@ -32,12 +32,13 @@ public class EclipseAlgorithmLauncher {
             AvatolCVFileSystem.setDatasourceName("local");
             AvatolCVFileSystem.setSessionID("testSession");
             AvatolCVFileSystem.setChosenDataset(di);
+            AlgorithmLauncher launcher = new AlgorithmLauncher(algPropertiesPath, runConfigPath);
+            launcher.launch(null);
         }
         catch(AvatolCVException ace){
             System.out.println("ERROR - could not find valid avatol_cv root for test");
         }
-        AlgorithmLauncher launcher = new AlgorithmLauncher(algPropertiesPath, runConfigPath);
-        launcher.launch(null);
+        
     }
 
 }

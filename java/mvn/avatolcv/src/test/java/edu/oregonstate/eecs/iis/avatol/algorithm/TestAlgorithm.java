@@ -91,7 +91,7 @@ public class TestAlgorithm extends TestCase {
             ScoringAlgorithm scoringAlgBat = new ScoringAlgorithm(lines, batskullScoringWindows);
             Assert.assertEquals("partsScoring",scoringAlgBat.getAlgName());
             Assert.assertEquals("scoring",scoringAlgBat.getAlgType());
-            Assert.assertEquals("batSkullScore.bat",scoringAlgBat.getLaunchFile());
+            Assert.assertEquals("batSkullScore.py",scoringAlgBat.getLaunchFile());
             Assert.assertEquals(scoringAlgBat.getScoringFocus(), ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE);   
             Assert.assertEquals(scoringAlgBat.getScoringScope(), ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM);    
             Assert.assertTrue(scoringAlgBat.getAlgDescription() != null);

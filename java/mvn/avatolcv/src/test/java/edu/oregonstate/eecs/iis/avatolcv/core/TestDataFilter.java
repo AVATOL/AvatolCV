@@ -5,6 +5,8 @@ package edu.oregonstate.eecs.iis.avatolcv.core;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.session.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.session.DataFilter.FilterItem;
 import junit.framework.Assert;
@@ -17,9 +19,9 @@ public class TestDataFilter extends TestCase {
         String curDir = System.getProperty("user.dir");
         DataFilter df = new DataFilter(curDir);
         try {
-            df.addPropertyValue("propC", "c", "someID", true);
-            df.addPropertyValue("propA", "a", "someID",true);
-            df.addPropertyValue("propB", "b", "someID",true);
+            df.addFilterItem(new NormalizedKey("propC"), new NormalizedValue("c"),true);
+            df.addFilterItem(new NormalizedKey("propA"), new NormalizedValue("a"),true);
+            df.addFilterItem(new NormalizedKey("propB"), new NormalizedValue("b"),true);
             List<FilterItem> pairs = df.getItems();
             
             assertEquals("a", pairs.get(0).getValue());
@@ -35,9 +37,9 @@ public class TestDataFilter extends TestCase {
         String curDir = System.getProperty("user.dir");
         DataFilter df = new DataFilter(curDir);
         try {
-            df.addPropertyValue("propC", "c", "someID",true);
-            df.addPropertyValue("propA", "a", "someID",true);
-            df.addPropertyValue("propA", "a", "someID",true);
+            df.addFilterItem(new NormalizedKey("propC"), new NormalizedValue("c"),true);
+            df.addFilterItem(new NormalizedKey("propA"), new NormalizedValue("a"),true);
+            df.addFilterItem(new NormalizedKey("propA"), new NormalizedValue("a"),true);
             List<FilterItem> pairs = df.getItems();
             Assert.fail("should not thrown exception on redundant value");
         }
@@ -49,9 +51,9 @@ public class TestDataFilter extends TestCase {
         String curDir = System.getProperty("user.dir");
         DataFilter df = new DataFilter(curDir);
         try {
-            df.addPropertyValue("propC", "c", "someID",false);
-            df.addPropertyValue("propA", "a", "someID",true);
-            df.addPropertyValue("propB", "b", "someID",true);
+            df.addFilterItem(new NormalizedKey("propC"), new NormalizedValue("c"),false);
+            df.addFilterItem(new NormalizedKey("propA"), new NormalizedValue("a"),true);
+            df.addFilterItem(new NormalizedKey("propB"), new NormalizedValue("b"),true);
             List<FilterItem> pairs = df.getItems();
             
             assertEquals("a", pairs.get(0).getValue());
@@ -66,13 +68,12 @@ public class TestDataFilter extends TestCase {
             assertEquals("a", pairs2.get(0).getValue());
             assertEquals("b", pairs2.get(1).getValue());
             assertEquals("c", pairs2.get(2).getValue());
-            assertEquals("propA", pairs2.get(0).getName());
-            assertEquals("propB", pairs2.get(1).getName());
-            assertEquals("propC", pairs2.get(2).getName());
+            assertEquals("propA", pairs2.get(0).getKey());
+            assertEquals("propB", pairs2.get(1).getKey());
+            assertEquals("propC", pairs2.get(2).getKey());
             assertEquals(true,pairs2.get(0).isEditable());
             assertEquals(true,pairs2.get(1).isEditable());
             assertEquals(false,pairs2.get(2).isEditable());
-            assertEquals("propC_c", pairs2.get(2).getID());
             assertEquals(true, pairs2.get(0).isSelected());
             assertEquals(false, pairs2.get(1).isSelected());
             assertEquals(true, pairs2.get(2).isSelected());
