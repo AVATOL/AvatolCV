@@ -50,6 +50,16 @@ public class OrientationRunStepController implements StepController, OutputMonit
         // TODO Auto-generated method stub
 
     }
+    public void loadLogsIntoTextWidget() {
+        try {
+            String logString = AvatolCVFileSystem.loadScoringLogs();
+            this.outputText.appendText(logString);
+        }
+        catch(AvatolCVException ace){
+            AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem loading logfiley: " + ace.getMessage());
+        }
+        
+    }
     public boolean useRunConfig() throws AvatolCVException {
         String path = AvatolCVFileSystem.getDatasetDir() + FILESEP + "skipRunConfigForOrientationON.txt";
         File f = new File(path);
