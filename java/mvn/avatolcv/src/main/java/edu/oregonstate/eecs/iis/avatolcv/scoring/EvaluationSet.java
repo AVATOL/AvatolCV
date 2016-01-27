@@ -24,9 +24,7 @@ public class EvaluationSet implements ScoringSet {
 		// isolate the ones that have values for the scoring key
 		System.out.println("EVALUATION SET " + keyToScore + " GIVEN this many niis " + niis.size());
 		for (NormalizedImageInfo nii : this.niis){
-		    //LEFT OFF HERE
 			if (nii.hasKey(keyToScore)){
-				//LEFT OFF HERE - WHY MB CASE NO MATCH?
 				if (nii.hasValueForKey(keyToScore)){
 					niisWithValueForKey.add(nii);
 				}
