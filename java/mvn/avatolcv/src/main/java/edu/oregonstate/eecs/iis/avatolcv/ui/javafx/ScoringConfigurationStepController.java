@@ -35,6 +35,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageWithInfo;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
@@ -172,9 +173,18 @@ public class ScoringConfigurationStepController implements StepController {
                 this.evaluationSets = null;
                 this.trueScoringSets = this.step.getTrueScoringSets();
             }
-            
             populateSortingChoiceBox();
-            configureAsSortByImage();
+            ScoringAlgorithm sa = this.step.getSessionInfo().getSelectedScoringAlgorithm();
+            if (sa.isTrainTestConcernRequired()){
+            	radioViewByGroup.setSelected(true);
+            	radioViewByImage.setDisable(true);
+            	configureAsGroupByProperty();
+            }
+            else {
+            	configureAsSortByImage();
+            }
+            
+            
             NormalizedKey trainTestKey = this.step.getDefaultTrainTestConcern();
             this.step.setTrainTestConcern(trainTestKey);
             return content;

@@ -8,6 +8,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 public class ScoringAlgorithm extends Algorithm {
     public static final String PROPERTY_SCORING_FOCUS = "scoringFocus";
     public static final String PROPERTY_SCORING_SCOPE = "scoringScope";
+    public static final String PROPERTY_TRAIN_TEST_CONCERN_REQUIRED = "trainTestConcernRequired";
     private static final String PROPERTY_INCLUDE_POINT_ANNOTATIONS_IN_SCORING_FILE = "includePointAnnotationsInScoringFile";
     public enum ScoringSessionFocus { 
         SPECIMEN_PART_PRESENCE_ABSENCE, 
@@ -33,6 +34,7 @@ public class ScoringAlgorithm extends Algorithm {
     
     private ScoringSessionFocus thisAlgorithmFocus = null;
     private ScoringScope thisAlgorithmScope = null;
+    private boolean trainTestConcernRequired = false;
     public ScoringAlgorithm(List<String> propsLines, String path) throws AvatolCVException {
         super(propsLines, path);
         loadScoringAlgorithmSpecificProperties(algPropsEntriesNotYetConsumed);
@@ -55,6 +57,14 @@ public class ScoringAlgorithm extends Algorithm {
                 else if (key.equals(PROPERTY_SCORING_SCOPE)){
                     setScopeValue(val);
                 }
+                else if (key.equals(PROPERTY_TRAIN_TEST_CONCERN_REQUIRED)){
+                	if ("true".equals(val)){
+                		trainTestConcernRequired = true;
+                	}
+                	else {
+                		trainTestConcernRequired = false;
+                	}
+                }
                 else if (key.equalsIgnoreCase(PROPERTY_INCLUDE_POINT_ANNOTATIONS_IN_SCORING_FILE)){
                 	if (val.equals("true")){
                 		includePointAnnotationsInScoringFile = true;
@@ -65,6 +75,9 @@ public class ScoringAlgorithm extends Algorithm {
                 }
             }
         }
+    }
+    public boolean isTrainTestConcernRequired(){
+    	return trainTestConcernRequired;
     }
     public boolean shouldIncludePointAnnotationsInScoringFile(){
     	return includePointAnnotationsInScoringFile;

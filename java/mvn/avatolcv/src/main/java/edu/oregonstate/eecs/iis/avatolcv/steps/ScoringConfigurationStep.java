@@ -17,6 +17,9 @@ public class ScoringConfigurationStep extends Answerable implements Step {
 	public ScoringConfigurationStep(SessionInfo sessionInfo){
 		this.sessionInfo = sessionInfo;
 	}
+	public SessionInfo getSessionInfo(){
+		return this.sessionInfo;
+	}
 	public void setScoringSets(List<ScoringSet> scoringSets){
 	    this.scoringSets = scoringSets;
 	}
