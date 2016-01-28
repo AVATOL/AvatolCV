@@ -22,7 +22,7 @@ public class EvaluationSet implements ScoringSet {
 		this.percentToTrainOn = percentToTrainOn;
 		this.keyToScore = keyToScore;
 		// isolate the ones that have values for the scoring key
-		System.out.println("EVALUATION SET " + keyToScore + " GIVEN this many niis " + niis.size());
+		//System.out.println("EVALUATION SET " + keyToScore + " GIVEN this many niis " + niis.size());
 		for (NormalizedImageInfo nii : this.niis){
 			if (nii.hasKey(keyToScore)){
 				if (nii.hasValueForKey(keyToScore)){
@@ -30,7 +30,7 @@ public class EvaluationSet implements ScoringSet {
 				}
 			}
 		}
-		System.out.println("EVALUATION SET for " + keyToScore + " has this many niisWithValueForKey " + niisWithValueForKey.size());
+		//System.out.println("EVALUATION SET for " + keyToScore + " has this many niisWithValueForKey " + niisWithValueForKey.size());
 		// get integer number to hold out
 		int holdoutCount = getHoldoutCount(niisWithValueForKey.size(), this.percentToTrainOn);
 		NormalizedImageInfo nii = null;

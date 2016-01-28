@@ -280,7 +280,7 @@ public class ScoringConfigurationStepController implements StepController {
         AnchorPane.setRightAnchor(sbgp, 0.0);
         AnchorPane.setBottomAnchor(sbgp, 0.0);
         trainTestSettingsAnchorPane.getChildren().add(sbgp);
-        inspect(trainTestSettingsAnchorPane);
+        //inspect(trainTestSettingsAnchorPane);
 	}
 	public void inspect(Region region){
 		System.out.println(region.getClass().getName() + " " + region.getMaxHeight());

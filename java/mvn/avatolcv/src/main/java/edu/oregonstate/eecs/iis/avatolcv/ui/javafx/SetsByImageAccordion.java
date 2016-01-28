@@ -47,7 +47,7 @@ public class SetsByImageAccordion extends Accordion {
         int row = 0;
         int column = 0;
         for (ModalImageInfo mii : trainingImages){
-            System.out.println("training " + mii.getNormalizedImageInfo().getNiiString());
+            //System.out.println("training " + mii.getNormalizedImageInfo().getNiiString());
             String imageId = mii.getNormalizedImageInfo().getImageID();
             ImageView iv = getImageViewForImageID(imageId);
             Label label = new Label();
@@ -60,7 +60,7 @@ public class SetsByImageAccordion extends Accordion {
             }
         }
         for (ModalImageInfo mii : scoringImages){
-            System.out.println("test " + mii.getNormalizedImageInfo().getNiiString());
+            //System.out.println("test " + mii.getNormalizedImageInfo().getNiiString());
             String imageId = mii.getNormalizedImageInfo().getImageID();
             ImageView iv = getImageViewForImageID(imageId);
             Label label = new Label();

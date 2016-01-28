@@ -167,7 +167,7 @@ public class ScoringSetsKeySorter {
 	    throw new AvatolCVException("no NormalizedValue matching name " + name  + " in ScoringSetsKeySorter.");
 	}
 	public void setValueToTrain(NormalizedValue nv) throws AvatolCVException {
-	    System.out.println("setting value to train " + nv.getName());
+	    //System.out.println("setting value to train " + nv.getName());
 		List<ModalImageInfo> miis = miisForValueHash.get(nv);
 		if (null != miis){
 			for (ModalImageInfo mii: miis){
@@ -176,7 +176,7 @@ public class ScoringSetsKeySorter {
 		}
 	}
 	public void setValueToScore(NormalizedValue nv) throws AvatolCVException {
-	    System.out.println("setting value to score " + nv.getName());
+	    //System.out.println("setting value to score " + nv.getName());
 	    List<ModalImageInfo> miis = miisForValueHash.get(nv);
 	    if (null != miis){
 	    	 for (ModalImageInfo mii: miis){

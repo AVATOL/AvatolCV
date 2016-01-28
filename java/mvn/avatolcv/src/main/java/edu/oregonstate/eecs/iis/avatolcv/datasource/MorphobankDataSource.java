@@ -387,7 +387,7 @@ public class MorphobankDataSource implements DataSource {
         String mediaID = mi.getMediaID();
     	String characterKey = NormalizedTypeIDName.buildTypeIdName("character",character.getCharID() ,character.getCharName());
     	String characterValue = "";
-    	System.out.println("charStateCount " + charStatesForCell.size() + " for key " + characterKey);
+    	//System.out.println("charStateCount " + charStatesForCell.size() + " for key " + characterKey);
     	/*for (int i = 0; i < charStatesForCell.size(); i++){
     		MBCharStateValue csv = charStatesForCell.get(i);
     		String charStateID = csv.getCharStateID();
@@ -406,7 +406,7 @@ public class MorphobankDataSource implements DataSource {
     	List<String> lines = new ArrayList<String>();
     	lines.add(characterKey + "=" + characterValue);
     	lines.add("taxon=" + taxon.getTaxonID() + "|" + taxon.getTaxonName());
-    	System.out.println("taxon " + taxon.getTaxonName());
+    	//System.out.println("taxon " + taxon.getTaxonName());
     	String viewValue = mi.getViewID() + "|" + getViewNameForID(mi.getViewID());
     	lines.add("view=" + viewValue);
     	String annotationsValueString = getAnnotationsValueString(annotationsForCell);
