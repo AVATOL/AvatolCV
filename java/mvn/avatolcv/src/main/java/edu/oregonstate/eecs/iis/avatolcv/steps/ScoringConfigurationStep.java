@@ -23,38 +23,17 @@ public class ScoringConfigurationStep extends Answerable implements Step {
 	public void setScoringSets(List<ScoringSet> scoringSets){
 	    this.scoringSets = scoringSets;
 	}
-	public NormalizedKey getDefaultTrainTestConcern() throws AvatolCVException {
-		return this.sessionInfo.getDefaultTrainTestConcern();
-	}
 	public void setTrainTestConcern(NormalizedKey trainTestConcern){
 		this.trainTestConcern = trainTestConcern;
 	}
-	public boolean isEvaluationRun() throws AvatolCVException {
-	    return this.sessionInfo.isEvaluationRun();
-	}
-	public List<NormalizedKey> getScoreConfigurationSortingValueOptions(ScoringSet ss){
-		return this.sessionInfo.getScoreConfigurationSortingValueOptions(ss);
-	}
-	public List<EvaluationSet> getEvaluationSets() throws AvatolCVException {
-		return this.sessionInfo.getEvaluationSets();
-	}
-	public List<TrueScoringSet> getTrueScoringSets() throws AvatolCVException {
-		return this.sessionInfo.getTrueScoringSets();
-	}
-	public List<NormalizedKey> getScoringSortingCandidates() throws AvatolCVException {
-		return this.sessionInfo.getScoringSortingCandidates();
-	}
+	
 	@Override
 	public void init() throws AvatolCVException {
 		// TODO Auto-generated method stub
 		
 	}
-	public List<NormalizedValue> getValuesForTrainTestConcern(NormalizedKey trainTestConcern) throws AvatolCVException {
-		return this.sessionInfo.getValuesForTrainTestConcern(trainTestConcern);
-	}
-	public void reAssessImagesInPlay() throws AvatolCVException {
-		this.sessionInfo.reAssessImagesInPlay();
-	}
+	
+	
 	@Override
 	public void consumeProvidedData() throws AvatolCVException {
 		for (ScoringSet ss : this.scoringSets){

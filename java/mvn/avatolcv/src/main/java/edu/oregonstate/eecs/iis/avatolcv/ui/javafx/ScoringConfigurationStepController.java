@@ -164,17 +164,19 @@ public class ScoringConfigurationStepController implements StepController {
             loader.setController(this);
             Node content = loader.load();
             //trainTestSettingsPane.setStyle("-fx-border-color: black;");
-            this.step.reAssessImagesInPlay();
-            if (this.step.isEvaluationRun()){
-                this.evaluationSets = this.step.getEvaluationSets();
+            SessionInfo sessionInfo = this.step.getSessionInfo();
+            sessionInfo.reAssessImagesInPlay();
+            
+            if (sessionInfo.isEvaluationRun()){
+                this.evaluationSets = sessionInfo.getEvaluationSets();
                 this.trueScoringSets = null;
             }
             else {
                 this.evaluationSets = null;
-                this.trueScoringSets = this.step.getTrueScoringSets();
+                this.trueScoringSets = sessionInfo.getTrueScoringSets();
             }
             populateSortingChoiceBox();
-            ScoringAlgorithm sa = this.step.getSessionInfo().getSelectedScoringAlgorithm();
+            ScoringAlgorithm sa = sessionInfo.getSelectedScoringAlgorithm();
             if (sa.isTrainTestConcernRequired()){
             	radioViewByGroup.setSelected(true);
             	radioViewByImage.setDisable(true);
@@ -185,7 +187,7 @@ public class ScoringConfigurationStepController implements StepController {
             }
             
             
-            NormalizedKey trainTestKey = this.step.getDefaultTrainTestConcern();
+            NormalizedKey trainTestKey = sessionInfo.getDefaultTrainTestConcern();
             this.step.setTrainTestConcern(trainTestKey);
             return content;
         }
@@ -194,7 +196,7 @@ public class ScoringConfigurationStepController implements StepController {
         } 
     }
 	private void populateSortingChoiceBox() throws AvatolCVException {
-		List<NormalizedKey> sortCandidates = this.step.getScoringSortingCandidates();
+		List<NormalizedKey> sortCandidates = this.step.getSessionInfo().getScoringSortingCandidates();
 		List<String> sortCandidateStrings = new ArrayList<String>();
 		for (NormalizedKey nk : sortCandidates){
 			String keyName = nk.getName();
@@ -271,7 +273,7 @@ public class ScoringConfigurationStepController implements StepController {
 	    trainTestSettingsAnchorPane.getChildren().clear();
 	    String trainTestConcern = choiceBoxGroupProperty.getValue();
         NormalizedKey trainTestConcernKey = normalizedKeyHash.get(trainTestConcern);
-        List<NormalizedValue> trainTestValues = this.step.getValuesForTrainTestConcern(trainTestConcernKey);
+        List<NormalizedValue> trainTestValues = this.step.getSessionInfo().getValuesForTrainTestConcern(trainTestConcernKey);
 	    SetsByGroupPanel sbgp = new SetsByGroupPanel(sets, trainTestConcern, trainTestConcernKey, trainTestValues);
 	    AnchorPane.setTopAnchor(sbgp, 0.0);
         AnchorPane.setLeftAnchor(sbgp, 0.0);
