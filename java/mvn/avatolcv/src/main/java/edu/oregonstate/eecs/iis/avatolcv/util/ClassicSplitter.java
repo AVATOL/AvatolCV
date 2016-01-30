@@ -3,6 +3,13 @@ package edu.oregonstate.eecs.iis.avatolcv.util;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created this class when Java8 changed the way String.split worked.  This is the behavior I wanted to preserve:
+ * splitting the string "1,,2" should result in "1", "", "2"  rather than (as in Java8 )  "1", "2"
+ * splitting the string "1,2," should reslut in "1", "2", "" rather than "1", "2"
+ * @author IrvineJ
+ *
+ */
 public class ClassicSplitter {
 	public static String[] splitt(String s, char c){
 		int len = s.length();

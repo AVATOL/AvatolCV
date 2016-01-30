@@ -8,7 +8,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSet;
-import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSetsKeySorter;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSetsKeySorter;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -51,7 +51,7 @@ public class TestScoringSetsKeySorter extends TestCase {
             EvaluationSet eset = new EvaluationSet(niis, new NormalizedKey("scoringConcern1"), 0.25);
             List<ScoringSet> esets = new ArrayList<ScoringSet>();
             esets.add(eset);
-            ScoringSetsKeySorter ssks = new ScoringSetsKeySorter(esets, new NormalizedKey("key1"));
+            EvaluationSetsKeySorter ssks = new EvaluationSetsKeySorter(esets, new NormalizedKey("key1"));
             List<String> values = ssks.getValuesPresentForKey();
             Assert.assertEquals(ssks.getValuesPresentForKey().get(0),"val1");
             Assert.assertEquals(ssks.getValuesPresentForKey().get(1),"val2");
@@ -170,7 +170,7 @@ public class TestScoringSetsKeySorter extends TestCase {
             List<ScoringSet> esets = new ArrayList<ScoringSet>();
             esets.add(esetA);
             esets.add(esetB);
-            ScoringSetsKeySorter ssks = new ScoringSetsKeySorter(esets, new NormalizedKey("key1"));
+            EvaluationSetsKeySorter ssks = new EvaluationSetsKeySorter(esets, new NormalizedKey("key1"));
             List<String> values = ssks.getValuesPresentForKey();
             System.out.println("ssks.getValuesPresentForKey().get(2) " + ssks.getValuesPresentForKey().get(2));
             Assert.assertEquals(ssks.getValuesPresentForKey().get(0),"val1");

@@ -44,7 +44,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSet;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ModalImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSet;
-import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSetsKeySorter;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSetsKeySorter;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.TrueScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.session.ImagesForStep;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;

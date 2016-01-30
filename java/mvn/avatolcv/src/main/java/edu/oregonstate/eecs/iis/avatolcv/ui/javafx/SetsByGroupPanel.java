@@ -8,7 +8,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSet;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSet;
-import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSetsKeySorter;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSetsKeySorter;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.TrueScoringSet;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -20,13 +20,31 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-
+/*
+ * For eval mode, user is in control of what to select for train and test
+ * For true scoring more, we just show what is already labeled as training data and the remainder as test
+ * True scoring cases:
+ *     - show by property group (i.e. by taxon)
+ *     		==> TrueScoringDataSorter organizes by taxon but has a train list and test list for each, supports "make them all test" or "omit testing, just use training ones"
+ *     		- well behaved in that all taxon x either training or test
+ *     			show usual group view with selections disabled as per TrueScoringDataSorter
+ *     		- sloppy in that taxon x has some training and some test
+ *              ==> show two entries for the taxon, one with train chosen, one with test chosen,
+ *     			trainTestConcern required by alg
+ *     				highlight to the user that they need to choose to either : make them all test, or just use the training samples and omit testing the ones that aren't labeled
+ *     				 below the two entries, add a choice box for the two options 
+ *     			trainTestConcern not required by alg
+ *     				no choice box needed
+ *     				
+ *     - show by image
+ * 
+ */
 public class SetsByGroupPanel extends VBox {
 	private List<ScoringSet> sets = null;
 	private String trainTestConcern = null;
 	private NormalizedKey trainTestConcernKey = null;
 	private List<NormalizedValue> trainTestValues = null;
-	private ScoringSetsKeySorter ssks = null;
+	private EvaluationSetsKeySorter ssks = null;
 	private NumbersUpdater numbersUpdater = null;
 	private boolean isTrueScoring = false;
 	public SetsByGroupPanel(List<ScoringSet> sets, String trainTestConcern, NormalizedKey trainTestConcernKey, List<NormalizedValue> trainTestValues) throws AvatolCVException {
@@ -41,7 +59,7 @@ public class SetsByGroupPanel extends VBox {
 		this.trainTestConcernKey = trainTestConcernKey;
 		this.trainTestValues = trainTestValues;
 		if (null == ssks){
-        	 ssks = new ScoringSetsKeySorter(sets,trainTestConcernKey);
+        	 ssks = new EvaluationSetsKeySorter(sets,trainTestConcernKey);
         }
 		HBox hbox = createStatusPanel();
 		hbox.setPrefHeight(USE_COMPUTED_SIZE);
@@ -145,8 +163,8 @@ public class SetsByGroupPanel extends VBox {
 		private Label percentToTrain;
 		private Label percentToScore;
 		private Label ratioCount;
-		private ScoringSetsKeySorter ssks;
-		public NumbersUpdater(ScoringSetsKeySorter ssks, Label totalImages, Label percentToTrain, Label percentToScore, Label ratioCount){
+		private EvaluationSetsKeySorter ssks;
+		public NumbersUpdater(EvaluationSetsKeySorter ssks, Label totalImages, Label percentToTrain, Label percentToScore, Label ratioCount){
 			this.totalImages = totalImages;
 			this.percentToTrain = percentToTrain;
 			this.percentToScore = percentToScore;
@@ -169,10 +187,10 @@ public class SetsByGroupPanel extends VBox {
 	}
 	public class RadioChangeListener implements ChangeListener<Boolean> {
 	    private NormalizedValue nv = null;
-	    private ScoringSetsKeySorter ssks = null;
+	    private EvaluationSetsKeySorter ssks = null;
 	    private boolean isTraining = false;
 	    private NumbersUpdater nu = null;
-	    public RadioChangeListener(NormalizedValue nv, ScoringSetsKeySorter ssks, boolean isTraining, NumbersUpdater nu){
+	    public RadioChangeListener(NormalizedValue nv, EvaluationSetsKeySorter ssks, boolean isTraining, NumbersUpdater nu){
 	        this.nv = nv;
 	        this.ssks = ssks;
 	        this.isTraining = isTraining;

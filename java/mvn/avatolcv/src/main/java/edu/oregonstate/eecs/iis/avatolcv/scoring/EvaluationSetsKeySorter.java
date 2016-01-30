@@ -16,7 +16,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
  * 
  * The process here is to group the images that have the same value for the key, then split on those
  */
-public class ScoringSetsKeySorter {
+public class EvaluationSetsKeySorter {
 	private List<ScoringSet> sets = null;
 	private NormalizedKey nKey = null;
 	private List<NormalizedValue> valuesForKey = new ArrayList<NormalizedValue>();
@@ -26,7 +26,7 @@ public class ScoringSetsKeySorter {
 	private Hashtable<NormalizedValue, List<ModalImageInfo>> miisForValueHash = new Hashtable<NormalizedValue, List<ModalImageInfo>>();
 	private double percentageToTrainWith = 0.0;
 	
-	public ScoringSetsKeySorter(List<ScoringSet> sets, NormalizedKey nKey) throws AvatolCVException {
+	public EvaluationSetsKeySorter(List<ScoringSet> sets, NormalizedKey nKey) throws AvatolCVException {
 		this.sets = sets;
 		this.nKey = nKey;
 		for (ScoringSet set : sets){
@@ -35,7 +35,7 @@ public class ScoringSetsKeySorter {
 		    allModals.addAll(scoringModals);
 		    allModals.addAll(trainingModals);
 		}
-		loadValuesForKey();
+		loadValuesForKey(this.allModals, this.nKey, this.valuesForKey);
 		sortByImageValueOfKey();
 		if (sets.get(0) instanceof EvaluationSet){
 			splitByPercentageToTrainWith();
@@ -49,7 +49,7 @@ public class ScoringSetsKeySorter {
 	 * Go through all the images and look for ones that have values for the key we are worried about, and note those values.
 	 * So for example, if taxon is the key , then taxonX, taxonY, etc are the values.
 	 */
-	private void loadValuesForKey(){
+	public static void loadValuesForKey(List<ModalImageInfo> allModals, NormalizedKey nKey, List<NormalizedValue> valuesForKey){
 	    for (ModalImageInfo mii : allModals){
             NormalizedImageInfo nii = mii.getNormalizedImageInfo();
             if (nii.hasKey(nKey)){
