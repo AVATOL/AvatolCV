@@ -5,6 +5,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
+
 @SuppressWarnings("restriction")
 @XmlRootElement(name="tag")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -89,7 +91,8 @@ public class BisqueAnnotation {
 		return this.uri;
 	}
 	public String getAnnotationID(){
-	    String[] parts = this.type.split("/");
+	    //String[] parts = this.type.split("/");
+	    String[] parts = ClassicSplitter.splitt(this.type,'/');
 	    String annotationID = parts[parts.length - 1];
 	    return annotationID;
 	}
@@ -97,7 +100,7 @@ public class BisqueAnnotation {
 	    if (null == type) {
 	        return false;
 	    }
-	    String[] parts = this.type.split("/");
+	    String[] parts = ClassicSplitter.splitt(this.type,'/');
 	    if (!(parts.length == 5)){
 	        return false;
 	    }

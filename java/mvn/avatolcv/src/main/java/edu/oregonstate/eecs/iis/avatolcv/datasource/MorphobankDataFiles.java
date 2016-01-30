@@ -13,6 +13,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotationPoint;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CellMediaInfo.MBMediaInfo;
@@ -72,11 +73,11 @@ public class MorphobankDataFiles  extends AvatolCVDataFiles{
                         String line = null;
                         while (null != (line = reader.readLine())){
                             if (!line.startsWith("#")){
-                                String[] parts = line.split(",");
+                                String[] parts = ClassicSplitter.splitt(line,',');
                                 String cellIdInfo = parts[0];
                                 String charStateInfo = parts[1];
-                                String[] cellIdInfoParts = cellIdInfo.split("=");
-                                String[] charStateInfoParts = charStateInfo.split("=");
+                                String[] cellIdInfoParts = ClassicSplitter.splitt(cellIdInfo,'=');
+                                String[] charStateInfoParts = ClassicSplitter.splitt(charStateInfo,'=');
                                 String cellId = cellIdInfoParts[1];
                                 String charStateId = charStateInfoParts[1];
                                 MBCharStateValue csv = new MBCharStateValue();
@@ -171,11 +172,11 @@ public class MorphobankDataFiles  extends AvatolCVDataFiles{
                         String line = null;
                         while (null != (line = reader.readLine())){
                             if (!line.startsWith("#")){
-                                String[] parts = line.split(",");
+                                String[] parts = ClassicSplitter.splitt(line,',');
                                 String imageIdInfo = parts[0];
                                 String viewIdInfo = parts[1];
-                                String[] imageIdInfoParts = imageIdInfo.split("=");
-                                String[] viewIdInfoParts = viewIdInfo.split("=");
+                                String[] imageIdInfoParts = ClassicSplitter.splitt(imageIdInfo,'=');
+                                String[] viewIdInfoParts = ClassicSplitter.splitt(viewIdInfo,'=');
                                 String imageId = imageIdInfoParts[1];
                                 String viewId = viewIdInfoParts[1];
                                 MBMediaInfo mi = new MBMediaInfo();
@@ -221,13 +222,13 @@ public class MorphobankDataFiles  extends AvatolCVDataFiles{
     		while (null != (line = reader.readLine())){
     			MBAnnotation a = new MBAnnotation();
     			//point:73.33903133903134,45.8670465337132
-    			String[] parts = line.split(":");
+    			String[] parts = ClassicSplitter.splitt(line,':');
     			String type = parts[0];
     			String pointsInfo = parts[1];
-    			String[] points = pointsInfo.split(";");
+    			String[] points = ClassicSplitter.splitt(pointsInfo,';');
     			List<MBAnnotationPoint> pointList = new ArrayList<MBAnnotationPoint>();
     			for (String point : points){
-    				String[] pointParts = point.split(",");
+    				String[] pointParts = ClassicSplitter.splitt(point,',');
     				String x = pointParts[0];
     				String y = pointParts[1];
     				MBAnnotationPoint p = new MBAnnotationPoint();

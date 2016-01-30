@@ -14,6 +14,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class DataFilter {
 	private static final String FILTER_FILE_NAME = "filter.txt";
@@ -127,7 +128,7 @@ public class DataFilter {
 			BufferedReader reader = new BufferedReader(new FileReader(path));
 			String line = null;
 			while (null != (line = reader.readLine())){
-				String[] parts = line.split(",");
+				String[] parts = ClassicSplitter.splitt(line,',');
 				String key = parts[0];
 				String value = parts[1];
 				String isSelectedString = parts[2];

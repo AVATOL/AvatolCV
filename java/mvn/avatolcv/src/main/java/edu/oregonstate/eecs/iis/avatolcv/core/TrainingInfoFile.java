@@ -13,6 +13,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 /*
  *     training_<scoringConcernType>_<scoringConcernID>_<scoringConcernName>.txt   // scoring concern info is in the filename
@@ -61,7 +62,7 @@ public class TrainingInfoFile {
 		return this.trainTestConcernValueHash.get(imagePath);
 	}
 	public String getValue(String line){
-		String[] parts = line.split("=");
+		String[] parts = ClassicSplitter.splitt(line,'=');
 		if (parts.length == 1){
 			return  "";
 		}
@@ -70,7 +71,7 @@ public class TrainingInfoFile {
 		}
 	}
 	public void extractImageInfo(String line) throws AvatolCVException {
-		String[] parts = line.split(",");
+		String[] parts = ClassicSplitter.splitt(line,',');
 		if (parts.length < 5){
 			throw new AvatolCVException("TrainingInfoFile should have five fields in each line - some may be empty: filepath, scoringConcernValue, pointCoordinates, trainTestConcern, trainTestConcernValue");
 		}
@@ -95,9 +96,9 @@ public class TrainingInfoFile {
 	public TrainingInfoFile(String pathname) throws AvatolCVException {
 		File f = new File(pathname);
 		String filename = f.getName();
-		String[] parts = filename.split("\\.");
+		String[] parts = ClassicSplitter.splitt(filename,'.');
 		String root = parts[0];
-		String[] rootParts = root.split("_");
+		String[] rootParts = ClassicSplitter.splitt(root,'_');
 		this.scoringConcernType = rootParts[1];
 		this.scoringConcernID   = rootParts[2];
 		this.scoringConcernName = rootParts[3];

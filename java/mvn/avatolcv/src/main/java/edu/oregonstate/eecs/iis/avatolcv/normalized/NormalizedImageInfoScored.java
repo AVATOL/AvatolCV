@@ -12,6 +12,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.ValueIDandName;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoreIndex;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class NormalizedImageInfoScored extends NormalizedImageInfo  {
     private static final String KEY_SCORING_CONFIDENCE = PREFIX + "scoringConfidence";
@@ -72,7 +73,7 @@ public class NormalizedImageInfoScored extends NormalizedImageInfo  {
     }
 	// copied this temporarily until figure out how whether need normalizedKey and Value in results
 	private void loadAvatolCVKeyedLine(String line) throws AvatolCVException {
-        String[] parts = line.split("=");
+        String[] parts = ClassicSplitter.splitt(line,'=');
         String key = parts[0];
         String value = "";
         if (parts.length > 1){
@@ -105,7 +106,7 @@ public class NormalizedImageInfoScored extends NormalizedImageInfo  {
                     loadAvatolCVKeyedLine(line);
                 }
                 else {
-                    String[] parts = line.split("=");
+                    String[] parts = ClassicSplitter.splitt(line,'=');
                     String key = parts[0];
                     String value = "";
                     if (parts.length > 1){

@@ -7,6 +7,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class NormalizedImageInfos {
 	private static final String FILESEP = System.getProperty("file.separator");
@@ -149,9 +150,9 @@ public class NormalizedImageInfos {
 		File[] files = dirFile.listFiles();
 		for (File f : files){
 			String fName = f.getName();
-			String[] parts = fName.split("\\.");
+			String[] parts = ClassicSplitter.splitt(fName,'.');
 			String rootName = parts[0];
-			String[] rootParts = rootName.split("_");
+			String[] rootParts = ClassicSplitter.splitt(rootName,'_');
 			if (rootParts[0].equals(mediaID)){
 				//System.out.println(mediaID + " found potential match");
 				//media ID matches, note number suffix

@@ -12,6 +12,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 /*
  *     training_<scoringConcernType>_<scoringConcernID>_<scoringConcernName>.txt   // scoring concern info is in the filename
@@ -65,7 +66,7 @@ public class ScoringInfoFile {
 	//	return this.scoringConcernValueHash.get(imageName);
 	//}
 	public String getValue(String line){
-		String[] parts = line.split("=");
+		String[] parts = ClassicSplitter.splitt(line,'=');
 		if (parts.length == 1){
 			return  "";
 		}

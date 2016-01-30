@@ -10,6 +10,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSException;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueImage;
@@ -150,7 +151,7 @@ public class BisqueImages {
     
     public static void generateImageInfoForSize(List<ImageInfo> listToFill, List<BisqueImage> bisqueImages, String width, String dir) throws AvatolCVException {
         for (BisqueImage bi : bisqueImages){
-            String[] nameParts = bi.getName().split("\\.");
+            String[] nameParts = ClassicSplitter.splitt(bi.getName(),'.');
             String name = nameParts[0];
             // we use underscore as delimiter so can't have them in filename
             String normalizedName = name.replaceAll("_", "-");

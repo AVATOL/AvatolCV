@@ -18,6 +18,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.Platform;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringScope;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringSessionFocus;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 /**
  * 
@@ -144,9 +145,9 @@ public class AlgorithmModules {
 				String configFilePath = f.getAbsolutePath();
 				List<String> lines = loadProps(configFilePath);
 				Algorithm algProps = new Algorithm(lines,configFilePath);
-				//String[] nameParts = name.split("\\.");
+				//String[] nameParts = ClassicSplitter.splitt(name,'.');
 				//String nameRoot = nameParts[0];
-				//String[] nameRootParts = nameRoot.split("_");
+				//String[] nameRootParts = ClassicSplitter.splitt(nameRoot,'_');
 				//String algName = nameRootParts[1];
 				//algProps.setAlgName(algName);
 				String algName = algProps.getAlgName();
@@ -228,7 +229,7 @@ public class AlgorithmModules {
 	public static String getAlgTypeFromProps(List<String> strings){
 	    for (String s : strings){
 	        if (s.startsWith(Algorithm.PROPERTY_ALG_TYPE)){
-	            String[] parts = s.split("=");
+	            String[] parts = ClassicSplitter.splitt(s,'=');
 	            String algType = parts[1];
 	            return algType;
 	        }

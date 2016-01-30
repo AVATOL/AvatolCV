@@ -12,6 +12,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
+
 /**
  * 
  * @author admin-jed
@@ -62,7 +64,7 @@ public class AvatolCVDataFiles {
     		BufferedReader reader = new BufferedReader(new FileReader(path));
     		String line = null;
     		while (null != (line = reader.readLine())){
-    			String[] parts = line.split("=");
+    			String[] parts = ClassicSplitter.splitt(line,'=');
     			String key = parts[0];
     			String val = "";
     			if (parts.length > 1){

@@ -11,6 +11,7 @@ import java.util.Hashtable;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class ImageInfo {
     public static final String IMAGE_THUMBNAIL_WIDTH = "80";
@@ -129,10 +130,10 @@ public class ImageInfo {
 	 * challenge - what if nameAsUploaded has underscores - need to translate underscores to dashes upone initial download
 	 */
 	public static ImageInfo loadImageInfoFromFilename(String filename, String parentDir) throws AvatolCVException {
-	    String[] filenameParts = filename.split("\\.");
+	    String[] filenameParts = ClassicSplitter.splitt(filename,'.');
         String rootName = filenameParts[0];
         String extension = filenameParts[1];
-        String[] rootNameParts = rootName.split("_");
+        String[] rootNameParts = ClassicSplitter.splitt(rootName,'_');
         String ID = rootNameParts[0];
         String nameAsUploaded = rootNameParts[1];
         String imageWidth = rootNameParts[2];

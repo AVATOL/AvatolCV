@@ -16,6 +16,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class NormalizedImageInfo {
     //avcv_annotation=point:21.2571225071225,55.3632478632479+point:21.84729344729345,40.810256410256414
@@ -132,9 +133,9 @@ public class NormalizedImageInfo {
         return getImageIDFromFilename(filename);
     }
     public static String getImageIDFromFilename(String fname){
-        String[] parts = fname.split("\\.");
+        String[] parts = ClassicSplitter.splitt(fname,'.');
         String root = parts[0];
-        String[] rootParts = root.split("_");
+        String[] rootParts = ClassicSplitter.splitt(root,'_');
         String id = rootParts[0];
         return id;
     }
@@ -175,7 +176,7 @@ public class NormalizedImageInfo {
     	Collections.sort(lines);
     	StringBuilder sb = new StringBuilder();
     	for (String line : lines){
-    		String[] parts = line.split("=");
+    		String[] parts = ClassicSplitter.splitt(line,'=');
     		String key = parts[0];
     		String val = "";
     	    if (parts.length > 1){
@@ -207,7 +208,7 @@ public class NormalizedImageInfo {
                     loadAvatolCVKeyedLine(line);
                 }
                 else {
-                    String[] parts = line.split("=");
+                    String[] parts = ClassicSplitter.splitt(line,'=');
                     String key = parts[0];
                     String value = "";
                     if (parts.length > 1){
@@ -229,7 +230,7 @@ public class NormalizedImageInfo {
         return this.annotationString;
     }
     private void loadAvatolCVKeyedLine(String line) throws AvatolCVException {
-        String[] parts = line.split("=");
+        String[] parts = ClassicSplitter.splitt(line,'=');
         String key = parts[0];
         String value = "";
         if (parts.length > 1){

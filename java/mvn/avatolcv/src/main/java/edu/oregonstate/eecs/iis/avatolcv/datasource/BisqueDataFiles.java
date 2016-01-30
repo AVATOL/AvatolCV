@@ -12,6 +12,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
 
 public class BisqueDataFiles extends AvatolCVDataFiles {
@@ -63,7 +64,7 @@ public class BisqueDataFiles extends AvatolCVDataFiles {
                 String line = null;
                 while (null != (line = reader.readLine())){
                     if (!line.startsWith("#")){
-                        String[] parts = line.split(",");
+                        String[] parts = ClassicSplitter.splitt(line,',');
                         String nameInfo = parts[0];
                         String valueInfo = parts[1];
                         String typeInfo = parts[2];
@@ -104,7 +105,7 @@ public class BisqueDataFiles extends AvatolCVDataFiles {
     }
     public String getValueFromKeyValueString(String s){
         String value = "";
-        String[] parts = s.split("=");
+        String[] parts = ClassicSplitter.splitt(s,'=');
         if (parts.length > 1){
             value = parts[1];
         }
@@ -122,7 +123,7 @@ public class BisqueDataFiles extends AvatolCVDataFiles {
                 String line = null;
                 while (null != (line = reader.readLine())){
                     if (!line.startsWith("#")){
-                        String[] parts = line.split("=");
+                        String[] parts = ClassicSplitter.splitt(line,'=');
                         String value = parts[1];
                         values.add(value);
                     }

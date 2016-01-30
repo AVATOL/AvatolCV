@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.algorithm;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 //inputRequired:testImagesFile refsFilesWithSuffix _orientedOrig ofType isolatedSpecimenImage
 //inputOptional:userProvidedTrainImagesFile refsFilesWithSuffix * ofType rawImage
@@ -16,7 +17,7 @@ public class AlgorithmInput {
         if ("".equals(args)){
             expressUsageError(args);
         }
-        String[] parts = args.split(" ");
+        String[] parts = ClassicSplitter.splitt(args.trim(),' ');
         if (parts.length != 5){
             expressUsageError(args);
         }

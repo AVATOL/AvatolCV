@@ -11,6 +11,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 /*
  *    scores_<scoringConcernType>_<scoringConcernID>_<scoringConcernName>.txt contains 
@@ -51,7 +52,7 @@ public class ScoresInfoFile {
 		return this.scoringConcernValueHash.get(imagePath);
 	}
 	public String getValue(String line){
-		String[] parts = line.split("=");
+		String[] parts = ClassicSplitter.splitt(line,'=');
 		if (parts.length == 1){
 			return  "";
 		}
@@ -63,7 +64,7 @@ public class ScoresInfoFile {
         //#imageName,scoringConcernValue,pointCoordinates,confVal1,confVal2,confVal3...
 		int confCount = this.valuesList.size();
 		int i = 0;
-		String[] parts = line.split(",");
+		String[] parts = ClassicSplitter.splitt(line,',');
 		String pathname = parts[i++];
 		String scoringConcernValue = parts[i++];
 		String pointCoordinates = parts[i++];
@@ -93,9 +94,9 @@ public class ScoresInfoFile {
 	public ScoresInfoFile(String pathname) throws AvatolCVException {
 		File f = new File(pathname);
 		String filename = f.getName();
-		String[] parts = filename.split("\\.");
+		String[] parts = ClassicSplitter.splitt(filename,'.');
 		String root = parts[0];
-		String[] rootParts = root.split("_");
+		String[] rootParts = ClassicSplitter.splitt(root,'_');
 		this.scoringConcernType = rootParts[1];
 		this.scoringConcernID   = rootParts[2];
 		this.scoringConcernName = rootParts[3];
@@ -105,7 +106,7 @@ public class ScoresInfoFile {
 			while (null != (line = reader.readLine())){
 				if (line.startsWith(SCORING_CONCERN_VALUES)){
 					String valuesString = getValue(line);
-					String[] values = valuesString.split(",");
+					String[] values = ClassicSplitter.splitt(valuesString,',');
 					for (String v : values){
 						valuesList.add(v);
 					}

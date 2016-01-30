@@ -54,8 +54,10 @@ import javax.xml.bind.Unmarshaller;
 
 
 
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.AnnotationComboBox;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.AnnotationComboBoxProperty;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.AnnotationComboBoxTemplate;
@@ -329,7 +331,7 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 			BufferedReader reader = new BufferedReader(new FileReader(path));
 			String line = null;
 			while (null != (line = reader.readLine())){
-				String[] parts = line.split("=");
+				String[] parts = ClassicSplitter.splitt(line,'=');
 				if (parts.length != 2){
 					reader.close();
 					return null;
@@ -729,7 +731,7 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 				String name = property.getName();
 				if (name.equals("select")){
 					selectChoices = property.getValue();
-					String[] parts = selectChoices.split(",");
+					String[] parts = ClassicSplitter.splitt(selectChoices,',');
 					for (String part: parts){
 						annotationValues.add(part.trim());
 					}

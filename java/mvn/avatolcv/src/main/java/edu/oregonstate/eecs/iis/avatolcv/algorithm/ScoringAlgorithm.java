@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class ScoringAlgorithm extends Algorithm {
     public static final String PROPERTY_SCORING_FOCUS = "scoringFocus";
@@ -45,7 +46,7 @@ public class ScoringAlgorithm extends Algorithm {
                 // ignore
             }
             else {
-                String[] parts = line.split("=");
+                String[] parts = ClassicSplitter.splitt(line,'=');
                 String key = parts[0];
                 String val = "";
                 if (parts.length > 1){

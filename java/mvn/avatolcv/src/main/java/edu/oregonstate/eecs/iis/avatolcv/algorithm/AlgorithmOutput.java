@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.algorithm;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 /*
  *  outputGenerated:ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed withSuffix _croppedMask
@@ -22,7 +23,7 @@ public class AlgorithmOutput {
         if ("".equals(args)){
             expressUsageError(args);
         }
-        String[] parts = args.split(" ");
+        String[] parts = ClassicSplitter.splitt(args,' ');
         if (parts.length != 4){
             expressUsageError(args);
         }

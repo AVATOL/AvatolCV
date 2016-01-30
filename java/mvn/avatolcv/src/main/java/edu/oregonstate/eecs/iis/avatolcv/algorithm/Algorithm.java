@@ -10,6 +10,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 /**
  * 
@@ -105,7 +106,7 @@ public class Algorithm {
 	    if (!line.contains("=")){
 	        expressPropertyDeclarationError(line);
 	    }
-	    String[] propPair = line.split("=");
+	    String[] propPair = ClassicSplitter.splitt(line, '=');
 	    if (propPair.length < 2){
 	        expressPropertyDeclarationError(line);
 	    }

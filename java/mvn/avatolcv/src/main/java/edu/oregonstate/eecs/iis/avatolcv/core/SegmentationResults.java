@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class SegmentationResults {
 	public static final String FILESEP = System.getProperty("file.separator");
@@ -54,7 +55,7 @@ public class SegmentationResults {
 		}
 	}
 	private String getFileType(String s){
-		String[] parts = s.split("\\.");
+		String[] parts = ClassicSplitter.splitt(s,'.');
 		int partsCount = parts.length;
 		String type = parts[partsCount - 1];
 		return type;

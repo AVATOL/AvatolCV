@@ -12,6 +12,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 /**
  * 
@@ -54,7 +55,7 @@ public class RunSummary {
      * remove the scoring concern from the filename to yield the true runID
      */
     public static String getRunIDFromRunSummaryName(String name){
-    	String[] parts = name.split("_");
+    	String[] parts = ClassicSplitter.splitt(name,'_');
     	String result = parts[0] + "_" + parts[1];
     	return result;
     }
@@ -109,7 +110,7 @@ public class RunSummary {
                     // ignore
                 }
                 else {
-                    String[] parts = line.split("=");
+                    String[] parts = ClassicSplitter.splitt(line,'=');
                     String key = parts[0];
                     String value = parts[1];
                     if (key.equals(KEY_SCORING_CONCERN)){

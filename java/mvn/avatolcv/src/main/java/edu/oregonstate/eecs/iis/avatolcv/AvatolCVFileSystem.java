@@ -17,6 +17,7 @@ import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 /**
  * 
@@ -139,7 +140,7 @@ public class AvatolCVFileSystem {
         }
         List<String> numbersForToday = new ArrayList<String>();
         for (String s : ids){
-            String[] parts = s.split("_");
+            String[] parts = ClassicSplitter.splitt(s,'_');
             String number = parts[1];
             numbersForToday.add(number);
         }
@@ -153,7 +154,7 @@ public class AvatolCVFileSystem {
         }
         List<String> numbersForToday = new ArrayList<String>();
         for (String s : ids){
-            String[] parts = s.split("_");
+            String[] parts = ClassicSplitter.splitt(s,'_');
             String number = parts[1];
             numbersForToday.add(number);
         }
@@ -223,7 +224,7 @@ public class AvatolCVFileSystem {
 	    if (name.indexOf("_") == -1){
 	        return false;
 	    }
-	    String[] parts = name.split("_");
+	    String[] parts = ClassicSplitter.splitt(name,'_');
         if (!(parts[0].length() == 8)){
             return false;
         }
@@ -390,9 +391,9 @@ public class AvatolCVFileSystem {
         int count = 0;
         for (File existingMediaFile : files){
             String filename = existingMediaFile.getName();
-            String[] parts = filename.split("\\.");
+            String[] parts = ClassicSplitter.splitt(filename,'.');
             String root = parts[0];
-            String[] rootParts = root.split("_");
+            String[] rootParts = ClassicSplitter.splitt(root,'_');
             String curMediaID = rootParts[0];
             if (mediaID.equals(curMediaID)){
                 count++;
@@ -462,7 +463,7 @@ public class AvatolCVFileSystem {
 	    // get the fileRootName (sans _80)
 	    File thumbnailFile = new File(thumbnailPath);
 	    String filename = thumbnailFile.getName();
-	    String[] parts = filename.split("_");
+	    String[] parts = ClassicSplitter.splitt(filename,'_');
 	    String fileRoot = parts[0];
 	    // get the large image dir
 	    File thumbnailDirFile = thumbnailFile.getParentFile();

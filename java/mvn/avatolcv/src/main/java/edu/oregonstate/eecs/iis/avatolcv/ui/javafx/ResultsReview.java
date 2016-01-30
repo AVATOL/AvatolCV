@@ -42,6 +42,7 @@ import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class ResultsReview {
 	public Slider thresholdSlider = null;
@@ -508,7 +509,7 @@ public class ResultsReview {
     private String getTrueImageNameFromImagePathForCookingShow(String imagePath) throws AvatolCVException {
     	File f = new File(imagePath);
     	String imageName = f.getName();
-    	String[] imageNameParts = imageName.split("\\.");
+    	String[] imageNameParts = ClassicSplitter.splitt(imageName,'.');
     	String fileRoot = imageNameParts[0];
     	return fileRoot;
     }
@@ -517,9 +518,9 @@ public class ResultsReview {
     	File pathFile = new File(imagePath);
     	String imageName = pathFile.getName();
     	String thumbnailDirPath = AvatolCVFileSystem.getNormalizedImagesThumbnailDir();
-    	String[] imageNameParts = imageName.split("\\.");
+    	String[] imageNameParts = ClassicSplitter.splitt(imageName,'.');
     	String fileRoot = imageNameParts[0];
-    	String[] fileRootParts = fileRoot.split("_");
+    	String[] fileRootParts = ClassicSplitter.splitt(fileRoot,'_');
     	String imageID = fileRootParts[0];
     	File thumbnailDir = new File(thumbnailDirPath);
     	File[] files = thumbnailDir.listFiles();

@@ -12,6 +12,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class HoldoutInfoFile {
     private static final String NL= System.getProperty("line.separator");
@@ -49,9 +50,9 @@ public class HoldoutInfoFile {
     public HoldoutInfoFile(String pathname) throws AvatolCVException {
         File f = new File(pathname);
         String filename = f.getName();
-        String[] parts = filename.split("\\.");
+        String[] parts = ClassicSplitter.splitt(filename,'.');
         String root = parts[0];
-        String[] rootParts = root.split("_");
+        String[] rootParts = ClassicSplitter.splitt(root,'_');
         this.scoringConcernType = rootParts[1];
         this.scoringConcernID   = rootParts[2];
         this.scoringConcernName = rootParts[3];
@@ -74,7 +75,7 @@ public class HoldoutInfoFile {
         }
     }
     public void extractInfo(String line) throws AvatolCVException {
-        String[] parts = line.split(",");
+        String[] parts = ClassicSplitter.splitt(line,',');
         String filepath = parts[0];
         String scoringConcernValue = parts[1];
         this.imagePaths.add(filepath);

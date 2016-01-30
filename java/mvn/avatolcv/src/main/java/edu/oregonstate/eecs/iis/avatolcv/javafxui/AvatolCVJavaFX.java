@@ -13,6 +13,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.JavaFXStepSequencer;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ResultsReview;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -135,15 +136,15 @@ public class AvatolCVJavaFX extends Application {
     }
     public static String findRoot(String currentDir) throws AvatolCVException {
         String origCurrentDir = currentDir;
-        String splitDelim = "/";
+        char splitDelim = '/';
         String OS = System.getProperty("os.name").toLowerCase();
         if (OS.indexOf("win") >= 0){
-            splitDelim = "\\\\";
+            splitDelim = '\\';
         }
         
         boolean searching = true;
         while (searching && currentDir.length() > 0){
-            String[] parts = currentDir.split(splitDelim);
+            String[] parts = ClassicSplitter.splitt(currentDir,splitDelim);
             int count = parts.length;
             String trailingString = parts[count -1];
             if (trailingString.equals("avatol_cv")){

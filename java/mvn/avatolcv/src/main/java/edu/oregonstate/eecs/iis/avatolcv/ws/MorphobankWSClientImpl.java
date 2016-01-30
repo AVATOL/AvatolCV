@@ -20,6 +20,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfoForSinglePoint;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.Authentication;
@@ -494,9 +495,9 @@ http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_med
             MediaUrlInfo mui = mapper.readValue(jsonString, MediaUrlInfo.class);
             String mediaUrl = mui.getMedia();
             //http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_media_284045_thumbnail.jpg
-            String[] parts = mediaUrl.split("/");
+            String[] parts = ClassicSplitter.splitt(mediaUrl,'/');
             String filenameAtMB = parts[parts.length - 1];
-            String[] filenameParts = filenameAtMB.split("\\.");
+            String[] filenameParts = ClassicSplitter.splitt(filenameAtMB,'.');
             String imageFileExtension = filenameParts[1].toLowerCase();
             
             //Now use the retrieved url to download the image

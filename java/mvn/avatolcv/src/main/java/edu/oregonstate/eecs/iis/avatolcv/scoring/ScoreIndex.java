@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 /**
  * 
@@ -45,12 +46,12 @@ public class ScoreIndex {
     	}
     }
     public void setScoringConcernLocationInfo(String line) throws AvatolCVException {
-        String[] parts = line.split("=");
+        String[] parts = ClassicSplitter.splitt(line,'=');
         if (parts.length != 2){
             throw new AvatolCVException("malformed scoringConcernLocation line " + line);
         }
         String value = parts[1];
-        String[] scoringConcernLocationParts = value.split(":");
+        String[] scoringConcernLocationParts = ClassicSplitter.splitt(value,':');
         if (scoringConcernLocationParts.length != 2){
             throw new AvatolCVException("malformed scoringConcernLocation info " + value + " should be <name>:<key|value>");
         }
@@ -60,12 +61,12 @@ public class ScoreIndex {
         int bar = foo;
     }
     public void setScoringConcernValueInfo(String line)  throws AvatolCVException {
-        String[] parts = line.split("=");
+        String[] parts = ClassicSplitter.splitt(line,'=');
         if (parts.length != 2){
             throw new AvatolCVException("malformed scoringConcernValue line " + line);
         }
         String value = parts[1];
-        String[] scoringConcernValueParts = value.split(":");
+        String[] scoringConcernValueParts = ClassicSplitter.splitt(value,':');
         if (scoringConcernValueParts.length != 2){
             throw new AvatolCVException("malformed scoringConcernValue info " + value + " should be <name>:<key|value>");
         }

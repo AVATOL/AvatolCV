@@ -3,6 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv.normalized;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 // keys or values can have name, id and name, or type + id + name
 //character:1824350|Diastema between I2 and C=characterState:4884329|Diastema present
@@ -56,7 +57,7 @@ public class NormalizedTypeIDName {
                 throw new AvatolCVException("malformed NormalizedTypeIDName construct - no id or value follows colon :  " + s);
             }
             else {
-                String[] parts = s.split(":");
+                String[] parts = ClassicSplitter.splitt(s,':');
                 this.type = parts[0];
                 parseAsIDName(parts[1]);
             } 
@@ -88,7 +89,7 @@ public class NormalizedTypeIDName {
             this.ID = ID_UNSPECIFIED;
         }
         else {
-            String[] valueParts = s.split("\\|");
+            String[] valueParts = ClassicSplitter.splitt(s,'|');
             this.ID = valueParts[0];
             this.name = valueParts[1];
         }

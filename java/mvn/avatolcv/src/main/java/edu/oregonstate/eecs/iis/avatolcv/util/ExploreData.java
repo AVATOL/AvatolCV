@@ -64,7 +64,7 @@ public class ExploreData {
             BufferedReader reader = new BufferedReader(new FileReader(path));
             String line = null;
             while (null != (line = reader.readLine())){
-                String[] parts = line.split("=");
+                String[] parts = ClassicSplitter.splitt(line,'=');
                 if (parts.length == 1){
                     p.setProperty(parts[0], "");
                 }

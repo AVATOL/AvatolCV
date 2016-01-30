@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSClientImpl;
 import edu.oregonstate.eecs.iis.avatolcv.ws.BisqueWSException;
@@ -31,7 +32,7 @@ public class SegTrainingExampleNameConverter {
 			}
 			List<BisqueImage> images = client.getImagesForDataset(dsID);
 			for (BisqueImage image : images){
-				String name = image.getName().split("\\.")[0];
+				String name = ClassicSplitter.splitt(image.getName(),'.')[0];
 				String id = image.getResourceUniq();
 				System.out.println("registering name and id : " + id + "  " + name );
 				imageIdHash.put(name, id);
@@ -43,7 +44,7 @@ public class SegTrainingExampleNameConverter {
 			File[] files = dir1.listFiles();
 			for (File f : files){
 				String name = f.getName();
-				String[] parts = name.split("\\.");
+				String[] parts = ClassicSplitter.splitt(name,'.');
 				String root = parts[0];
 				String pureRoot = root.replace("_resize_GT", "");
 				String idForName = imageIdHash.get(pureRoot);

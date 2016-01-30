@@ -2,6 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.algorithm;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 /*
  * 
@@ -22,7 +23,7 @@ public class AlgorithmDependency {
         if (!dependencyInfo.contains("=")){
             expressUsageError(line);
         }
-        String[] depInfoParts = dependencyInfo.split("=");
+        String[] depInfoParts = ClassicSplitter.splitt(dependencyInfo,'=');
         if (depInfoParts.length < 2){
             expressUsageError(line);
         }

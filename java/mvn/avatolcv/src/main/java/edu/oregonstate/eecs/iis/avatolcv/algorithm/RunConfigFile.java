@@ -13,6 +13,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ModalImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 /*
  *  segmentationOutputDir=<path of dir where output goes>
@@ -267,7 +268,7 @@ public class RunConfigFile {
         }
     }
     public static boolean pathHasSuffix(String path, String suffix){
-        String[] parts = path.split("\\.");
+        String[] parts = ClassicSplitter.splitt(path,'.');
         String fileDescriptor = parts[parts.length - 1];
         String root = path.replace("." + fileDescriptor, "");
         return root.endsWith(suffix);
