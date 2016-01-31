@@ -44,7 +44,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSet;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ModalImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSet;
-import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSetsKeySorter;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.KeySorterEvaluation;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.TrueScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.session.ImagesForStep;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
@@ -84,51 +84,44 @@ public class ScoringConfigurationStepController implements StepController {
 	    }
     	return sets;
     }
-    private boolean hasTrainingExamplesSelected(){
-    	if (null != evaluationSets){
-    		for (EvaluationSet es : evaluationSets){
-    			if (es.getImagesToTrainOn().size() != 0){
-    				return true;
-    			}
-    		}
-    		return false;
-    	}
-    	else if (null != trueScoringSets){
-    		for (TrueScoringSet tss : trueScoringSets){
-    			if (tss.getImagesToTrainOn().size() != 0){
-    				return true;
-    			}
-    		}
-    		return false;
-    	}
-    	else {
-    		return true;
-    	}
+    private boolean hasTrainingExamplesSelected() throws AvatolCVException {
+    	List<ScoringSet> sets = getActiveScoringSets();
+    	for (ScoringSet set : sets){
+			if (set.getImagesToTrainOn().size() != 0){
+				return true;
+			}
+		}
+		return false;
     }
 	@Override
 	public boolean consumeUIData() {
-		if (!hasTrainingExamplesSelected()){
-			Platform.runLater(new NoTrainingDataAlert());
-			return false;
+		try {
+			if (!hasTrainingExamplesSelected()){
+				Platform.runLater(new NoTrainingDataAlert());
+				return false;
+			}
+			else {
+				if (isEvaluation()){
+					consumeEvaluationSets();
+			    }
+			    else {
+			    	consumeTrueScoringSets();
+			    }
+				if (this.sortByImage){
+					this.step.setTrainTestConcern(null);
+				}
+				else {
+					this.step.setTrainTestConcern(normalizedKeyHash.get(this.choiceBoxGroupProperty.getValue()));
+				}
+				
+		        this.step.consumeProvidedData();
+		        return true;
+			}
 		}
-		else {
-			if (SessionInfo.isBisqueSession()){
-		        System.out.println("true scoring set for bisque");
-		        consumeTrueScoringSets();
-		    }
-		    else {
-		        System.out.println("evaluation set for morphobank");
-		        consumeEvaluationSets();
-		    }
-		    
-		    try {
-	            this.step.consumeProvidedData();
-	        }
-	        catch(Exception e){
-	            AvatolCVExceptionExpresserJavaFX.instance.showException(e, "problem trying to consume data at segmentation configuration");
-	        }
-	        return true;
-		}
+		catch(Exception e){
+            AvatolCVExceptionExpresserJavaFX.instance.showException(e, "problem trying to consume data at scoring configuration");
+            return false;
+        }
 	    
 	}
 
@@ -221,6 +214,7 @@ public class ScoringConfigurationStepController implements StepController {
         public void changed(ObservableValue ov, Number value, Number newValue) {
             try {
                 //System.out.println("new Value " + newValue);
+                radioViewByGroup.setSelected(true);
                 configureAsGroupByProperty();
             }
             catch(Exception e){
@@ -268,18 +262,36 @@ public class ScoringConfigurationStepController implements StepController {
         AnchorPane.setBottomAnchor(accordian, 0.0);
         trainTestSettingsAnchorPane.getChildren().add(accordian);
 	}
-	
+	public boolean isEvaluation(){
+		if (this.evaluationSets.size() > 0){
+			return true;
+		}
+		return false;
+	}
 	public void renderByGroup(List<ScoringSet> sets) throws AvatolCVException {
 	    trainTestSettingsAnchorPane.getChildren().clear();
-	    String trainTestConcern = choiceBoxGroupProperty.getValue();
-        NormalizedKey trainTestConcernKey = normalizedKeyHash.get(trainTestConcern);
-        List<NormalizedValue> trainTestValues = this.step.getSessionInfo().getValuesForTrainTestConcern(trainTestConcernKey);
-	    SetsByGroupPanel sbgp = new SetsByGroupPanel(sets, trainTestConcern, trainTestConcernKey, trainTestValues);
-	    AnchorPane.setTopAnchor(sbgp, 0.0);
-        AnchorPane.setLeftAnchor(sbgp, 0.0);
-        AnchorPane.setRightAnchor(sbgp, 0.0);
-        AnchorPane.setBottomAnchor(sbgp, 0.0);
-        trainTestSettingsAnchorPane.getChildren().add(sbgp);
+	    String selectedTrainTestConcern = choiceBoxGroupProperty.getValue();
+        NormalizedKey selectedTrainTestConcernKey = normalizedKeyHash.get(selectedTrainTestConcern);
+        List<NormalizedValue> trainTestValues = this.step.getSessionInfo().getValuesForTrainTestConcern(selectedTrainTestConcernKey);
+        
+        if (isEvaluation()){
+        	GroupedPanelEvaluation panel = new GroupedPanelEvaluation(sets, selectedTrainTestConcern, selectedTrainTestConcernKey, trainTestValues);
+    	    AnchorPane.setTopAnchor(panel, 0.0);
+            AnchorPane.setLeftAnchor(panel, 0.0);
+            AnchorPane.setRightAnchor(panel, 0.0);
+            AnchorPane.setBottomAnchor(panel, 0.0);
+            trainTestSettingsAnchorPane.getChildren().add(panel);
+        }
+        else {
+        	boolean trainTestSplitRequiredByAlg = this.step.getSessionInfo().getSelectedScoringAlgorithm().isTrainTestConcernRequired();
+        	GroupedPanelTrueScoring panel = new GroupedPanelTrueScoring(sets, selectedTrainTestConcern, selectedTrainTestConcernKey, trainTestValues, trainTestSplitRequiredByAlg);
+    	    AnchorPane.setTopAnchor(panel, 0.0);
+            AnchorPane.setLeftAnchor(panel, 0.0);
+            AnchorPane.setRightAnchor(panel, 0.0);
+            AnchorPane.setBottomAnchor(panel, 0.0);
+            trainTestSettingsAnchorPane.getChildren().add(panel);
+        }
+	    
         //inspect(trainTestSettingsAnchorPane);
 	}
 	public void inspect(Region region){
@@ -316,26 +328,4 @@ public class ScoringConfigurationStepController implements StepController {
 	}
 	
 }
-/*
- * private void setSortSelector(ComboBox<String> choiceBox, RadioButton radioButton, ObservableList<String> oList, String key){
-        choiceBox.setItems(oList);
-        if (oList.size() > 0){
-            if (this.step.hasPriorAnswers()){
-                String paAlg = this.step.getPriorAnswers().get(key);
-                if(null == paAlg){
-                    // alg was not selected prior
-                    choiceBox.setValue(oList.get(0));
-                }
-                else {
-                    // alg was selected prior, use that value
-                    choiceBox.setValue(paAlg);
-                    radioButton.setSelected(true);
-                }
-            }
-            else {
-                choiceBox.setValue(oList.get(0));
-            }
-            choiceBox.requestLayout();
-        }
-    }
-    */
+

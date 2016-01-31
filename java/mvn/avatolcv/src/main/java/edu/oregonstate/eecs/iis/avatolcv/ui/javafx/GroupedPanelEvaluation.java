@@ -8,7 +8,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSet;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSet;
-import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSetsKeySorter;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.KeySorterEvaluation;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.TrueScoringSet;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -39,27 +39,20 @@ import javafx.scene.layout.VBox;
  *     - show by image
  * 
  */
-public class SetsByGroupPanel extends VBox {
+public class GroupedPanelEvaluation extends VBox {
 	private List<ScoringSet> sets = null;
 	private String trainTestConcern = null;
 	private NormalizedKey trainTestConcernKey = null;
 	private List<NormalizedValue> trainTestValues = null;
-	private EvaluationSetsKeySorter ssks = null;
+	private KeySorterEvaluation keySorter = null;
 	private NumbersUpdater numbersUpdater = null;
-	private boolean isTrueScoring = false;
-	public SetsByGroupPanel(List<ScoringSet> sets, String trainTestConcern, NormalizedKey trainTestConcernKey, List<NormalizedValue> trainTestValues) throws AvatolCVException {
+	public GroupedPanelEvaluation(List<ScoringSet> sets, String trainTestConcern, NormalizedKey trainTestConcernKey, List<NormalizedValue> trainTestValues) throws AvatolCVException {
 		this.sets = sets;
-		if (this.sets.get(0) instanceof TrueScoringSet){
-			this.isTrueScoring = true;
-		}
-		else {
-			this.isTrueScoring = false;
-		}
 		this.trainTestConcern = trainTestConcern;
 		this.trainTestConcernKey = trainTestConcernKey;
 		this.trainTestValues = trainTestValues;
-		if (null == ssks){
-        	 ssks = new EvaluationSetsKeySorter(sets,trainTestConcernKey);
+		if (null == keySorter){
+        	 keySorter = new KeySorterEvaluation(sets,trainTestConcernKey);
         }
 		HBox hbox = createStatusPanel();
 		hbox.setPrefHeight(USE_COMPUTED_SIZE);
@@ -98,8 +91,8 @@ public class SetsByGroupPanel extends VBox {
             radioTrain.setStyle("styleClass:indentedFirstColumn");
             radioScore.setToggleGroup(tg);
             radioTrain.setSelected(true);
-            radioTrain.selectedProperty().addListener(new RadioChangeListener(ttValue, ssks, true, numbersUpdater));
-            radioScore.selectedProperty().addListener(new RadioChangeListener(ttValue, ssks, false, numbersUpdater));
+            radioTrain.selectedProperty().addListener(new RadioChangeListener(ttValue, keySorter, true, numbersUpdater));
+            radioScore.selectedProperty().addListener(new RadioChangeListener(ttValue, keySorter, false, numbersUpdater));
             gp.add(radioTrain, 0,row);
             gp.add(radioScore, 1,row);
             
@@ -110,20 +103,15 @@ public class SetsByGroupPanel extends VBox {
             gp.add(ttValNameLabel, 2, row);
             // put total count for that taxa
             Label countLabel = new Label();
-            if (ssks.isValueToTrain(ttValue)){
+            if (keySorter.isValueToTrain(ttValue)){
                 radioTrain.setSelected(true);
-                countLabel.setText("" + ssks.getCountForValue(ttValue));
+                countLabel.setText("" + keySorter.getCountForValue(ttValue));
             }
             else {
                 radioScore.setSelected(true);
-                countLabel.setText("" + ssks.getCountForValue(ttValue));
+                countLabel.setText("" + keySorter.getCountForValue(ttValue));
             }
             gp.add(countLabel, 3, row);
-            // put count for each character <--- defer this
-            if (this.isTrueScoring){
-            	radioTrain.setDisable(true);
-            	radioScore.setDisable(true);
-            }
             row++;
         }
         ScrollPane sp = new ScrollPane();
@@ -154,7 +142,7 @@ public class SetsByGroupPanel extends VBox {
 		percentageExpressionHbox.getChildren().add(percentToScoreLabel);
 		percentageExpressionHbox.getChildren().add(percentToScoreValueLabel);
 		percentageExpressionHbox.getChildren().add(ratioCountLabel);
-		this.numbersUpdater = new NumbersUpdater(ssks, totalImagesValueLabel, percentToTainValueLabel, percentToScoreValueLabel,ratioCountLabel);
+		this.numbersUpdater = new NumbersUpdater(keySorter, totalImagesValueLabel, percentToTainValueLabel, percentToScoreValueLabel,ratioCountLabel);
 		return percentageExpressionHbox;
 	}
 	
@@ -163,8 +151,8 @@ public class SetsByGroupPanel extends VBox {
 		private Label percentToTrain;
 		private Label percentToScore;
 		private Label ratioCount;
-		private EvaluationSetsKeySorter ssks;
-		public NumbersUpdater(EvaluationSetsKeySorter ssks, Label totalImages, Label percentToTrain, Label percentToScore, Label ratioCount){
+		private KeySorterEvaluation ssks;
+		public NumbersUpdater(KeySorterEvaluation ssks, Label totalImages, Label percentToTrain, Label percentToScore, Label ratioCount){
 			this.totalImages = totalImages;
 			this.percentToTrain = percentToTrain;
 			this.percentToScore = percentToScore;
@@ -187,10 +175,10 @@ public class SetsByGroupPanel extends VBox {
 	}
 	public class RadioChangeListener implements ChangeListener<Boolean> {
 	    private NormalizedValue nv = null;
-	    private EvaluationSetsKeySorter ssks = null;
+	    private KeySorterEvaluation ssks = null;
 	    private boolean isTraining = false;
 	    private NumbersUpdater nu = null;
-	    public RadioChangeListener(NormalizedValue nv, EvaluationSetsKeySorter ssks, boolean isTraining, NumbersUpdater nu){
+	    public RadioChangeListener(NormalizedValue nv, KeySorterEvaluation ssks, boolean isTraining, NumbersUpdater nu){
 	        this.nv = nv;
 	        this.ssks = ssks;
 	        this.isTraining = isTraining;

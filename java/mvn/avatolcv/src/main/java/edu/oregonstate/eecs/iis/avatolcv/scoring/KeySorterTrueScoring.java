@@ -11,7 +11,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 /*
  * TrueScoringDataSorter organizes by taxon but has a train list and test list for each, supports "make them all test" or "omit testing, just use training ones"
  */
-public class TrueScoringDataSorter {
+public class KeySorterTrueScoring {
 	private List<ScoringSet> sets = null;
 	private NormalizedKey nKey = null;
 	private List<NormalizedValue> valuesForKey = new ArrayList<NormalizedValue>();
@@ -19,7 +19,7 @@ public class TrueScoringDataSorter {
 	private Hashtable<NormalizedValue, List<ModalImageInfo>> miisForValueHashTraining = new Hashtable<NormalizedValue, List<ModalImageInfo>>();
 	private Hashtable<NormalizedValue, List<ModalImageInfo>> miisForValueHashScoring = new Hashtable<NormalizedValue, List<ModalImageInfo>>();
 
-	public TrueScoringDataSorter(List<ScoringSet> sets, NormalizedKey nKey) throws AvatolCVException {
+	public KeySorterTrueScoring(List<ScoringSet> sets, NormalizedKey nKey) throws AvatolCVException {
 		this.sets = sets;
 		this.nKey = nKey;
 		for (ScoringSet set : sets){
@@ -28,7 +28,7 @@ public class TrueScoringDataSorter {
 		    allModals.addAll(scoringModals);
 		    allModals.addAll(trainingModals);
 		}
-		EvaluationSetsKeySorter.loadValuesForKey(this.allModals, this.nKey, this.valuesForKey);
+		KeySorterEvaluation.loadValuesForKey(this.allModals, this.nKey, this.valuesForKey);
 		sortByImageValueOfKeyAndMode();
 	}
 	/**
@@ -59,11 +59,28 @@ public class TrueScoringDataSorter {
 	        }
 	    }
 	}
+	public boolean hasTrainingImagesForKey(NormalizedValue nv){
+    	if (getTrainingImagesForKey(nv).size() == 0){
+    		return false;
+    	}
+    	return true;
+    }
 	public List<ModalImageInfo> getTrainingImagesForKey(NormalizedValue nv){
 		List<ModalImageInfo> miisForValue = miisForValueHashTraining.get(nv);
 		return miisForValue;
 	}
-
+    public boolean hasScoringImagesForKey(NormalizedValue nv){
+    	if (getScoringImagesForKey(nv).size() == 0){
+    		return false;
+    	}
+    	return true;
+    }
+    public int getScoringImageCount(NormalizedValue nv){
+    	return getScoringImagesForKey(nv).size();
+    }
+    public int getTrainingImageCount(NormalizedValue nv){
+    	return getTrainingImagesForKey(nv).size();
+    }
 	public List<ModalImageInfo> getScoringImagesForKey(NormalizedValue nv){
 		List<ModalImageInfo> miisForValue = miisForValueHashScoring.get(nv);
 		return miisForValue;

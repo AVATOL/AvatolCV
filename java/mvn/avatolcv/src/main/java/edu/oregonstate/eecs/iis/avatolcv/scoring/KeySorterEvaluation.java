@@ -16,7 +16,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
  * 
  * The process here is to group the images that have the same value for the key, then split on those
  */
-public class EvaluationSetsKeySorter {
+public class KeySorterEvaluation {
 	private List<ScoringSet> sets = null;
 	private NormalizedKey nKey = null;
 	private List<NormalizedValue> valuesForKey = new ArrayList<NormalizedValue>();
@@ -26,7 +26,7 @@ public class EvaluationSetsKeySorter {
 	private Hashtable<NormalizedValue, List<ModalImageInfo>> miisForValueHash = new Hashtable<NormalizedValue, List<ModalImageInfo>>();
 	private double percentageToTrainWith = 0.0;
 	
-	public EvaluationSetsKeySorter(List<ScoringSet> sets, NormalizedKey nKey) throws AvatolCVException {
+	public KeySorterEvaluation(List<ScoringSet> sets, NormalizedKey nKey) throws AvatolCVException {
 		this.sets = sets;
 		this.nKey = nKey;
 		for (ScoringSet set : sets){
