@@ -169,20 +169,20 @@ public class JavaFXStepSequencer  {
         addLabelForStep(orientRunStep,"Run Orientation");
         
         //segConfigStep.setNextAnswerableInSeries(segRunStep);
-        
+        /*
         ScoringModeStep scoringModeStep = new ScoringModeStep(sessionInfo);
         ss.appendStep(scoringModeStep);
         ScoringModeStepController scoringModeStepController = new ScoringModeStepController(scoringModeStep, "ScoringModeStep.fxml");
         controllerForStep.put(scoringModeStep, scoringModeStepController);
         addLabelForStep(scoringModeStep,"Eval/Score");
         orientConfigStep.setNextAnswerableInSeries(scoringModeStep);
-        
+        */
         ScoringConfigurationStep scoringConfigStep = new ScoringConfigurationStep(sessionInfo);
         ss.appendStep(scoringConfigStep);
         ScoringConfigurationStepController scoringConfigStepController = new ScoringConfigurationStepController(scoringConfigStep, "ScoringConfigurationStep.fxml");
         controllerForStep.put(scoringConfigStep, scoringConfigStepController);
         addLabelForStep(scoringConfigStep,"Configure Scoring");
-        scoringModeStep.setNextAnswerableInSeries(scoringConfigStep);
+        orientConfigStep.setNextAnswerableInSeries(scoringConfigStep);
         
         ScoringRunStep scoringRunStep = new ScoringRunStep(sessionInfo);
         ss.appendStep(scoringRunStep);

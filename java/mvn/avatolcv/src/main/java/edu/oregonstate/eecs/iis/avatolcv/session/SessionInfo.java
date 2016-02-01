@@ -302,21 +302,7 @@ public class SessionInfo{
 		}
 		return new NormalizedKey(ttc);
 	}
-    public boolean isAllImagesLabeled() throws AvatolCVException {
-        List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSession();
-        List<ChoiceItem> scoringConcerns = this.getChosenScoringConcerns();
-        for (ChoiceItem ci : scoringConcerns){
-            NormalizedKey nKey = ci.getNormalizedKey();
-            for (NormalizedImageInfo nii : niis){
-                if (nii.hasKey(nKey)){
-                    if (!nii.hasValueForKey(nKey)){
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
+    
     /*
      * FILTER
      */
@@ -397,6 +383,23 @@ public class SessionInfo{
         }
         return this.algorithmSequence;
     }
+    /*
+    public boolean isAllImagesLabeled() throws AvatolCVException {
+        List<NormalizedImageInfo> niis = this.normalizedImageInfos.getNormalizedImageInfosForSession();
+        List<ChoiceItem> scoringConcerns = this.getChosenScoringConcerns();
+        for (ChoiceItem ci : scoringConcerns){
+            NormalizedKey nKey = ci.getNormalizedKey();
+            for (NormalizedImageInfo nii : niis){
+                if (nii.hasKey(nKey)){
+                    if (!nii.hasValueForKey(nKey)){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    */
     public boolean isEvaluationRun() throws AvatolCVException {
         List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
         for (ChoiceItem item : scoringConcerns){

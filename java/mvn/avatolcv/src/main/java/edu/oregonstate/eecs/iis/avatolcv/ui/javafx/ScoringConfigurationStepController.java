@@ -101,7 +101,7 @@ public class ScoringConfigurationStepController implements StepController {
 				return false;
 			}
 			else {
-				if (isEvaluation()){
+				if (this.step.getSessionInfo().isEvaluationRun()){
 					consumeEvaluationSets();
 			    }
 			    else {
@@ -262,19 +262,19 @@ public class ScoringConfigurationStepController implements StepController {
         AnchorPane.setBottomAnchor(accordian, 0.0);
         trainTestSettingsAnchorPane.getChildren().add(accordian);
 	}
-	public boolean isEvaluation(){
-		if (this.evaluationSets.size() > 0){
-			return true;
-		}
-		return false;
-	}
+	//public boolean isEvaluation(){
+	//	if (){
+	//		return true;
+	//	}
+	//	return false;
+	//}
 	public void renderByGroup(List<ScoringSet> sets) throws AvatolCVException {
 	    trainTestSettingsAnchorPane.getChildren().clear();
 	    String selectedTrainTestConcern = choiceBoxGroupProperty.getValue();
         NormalizedKey selectedTrainTestConcernKey = normalizedKeyHash.get(selectedTrainTestConcern);
         List<NormalizedValue> trainTestValues = this.step.getSessionInfo().getValuesForTrainTestConcern(selectedTrainTestConcernKey);
         
-        if (isEvaluation()){
+        if (this.step.getSessionInfo().isEvaluationRun()){
         	GroupedPanelEvaluation panel = new GroupedPanelEvaluation(sets, selectedTrainTestConcern, selectedTrainTestConcernKey, trainTestValues);
     	    AnchorPane.setTopAnchor(panel, 0.0);
             AnchorPane.setLeftAnchor(panel, 0.0);
