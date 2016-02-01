@@ -2,13 +2,9 @@ package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -26,19 +22,15 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
-import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
-import edu.oregonstate.eecs.iis.avatolcv.steps.DatasetChoiceStep;
-import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.DatasetChoiceStepController.ScoringMetadataDownloadTask;
-import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ScoringConcernStepController.RemainingMetadataDownloadTask;
+import edu.oregonstate.eecs.iis.avatolcv.tools.CopyDatasetTab;
+import edu.oregonstate.eecs.iis.avatolcv.tools.CopyDatasetTask;
 
-public class ToolsPanel {
+public class ToolsPanel implements CopyDatasetTab {
 	private static FXMLLoader loader = null;
 	private static Scene toolsScene = null;
 	private Stage mainWindow = null;
     private Scene originScene = null;
     private AvatolCVJavaFX mainScreen = null;
-    private static final String NL = System.getProperty("line.separator");
-    private static final String FILESEP = System.getProperty("file.separator");
     public ChoiceBox<String> existingDatasetsChoiceBox = null;
     public TextField newDatasetTextField = null;
     public TextArea copyTextArea = null;
@@ -67,22 +59,13 @@ public class ToolsPanel {
 	public void hideToolsPanel(){
 		this.mainWindow.setScene(this.originScene);
 	}
-	private boolean isFileAValidSessionDir(File candidateSessionDir){
-		String imageInfoPath  = candidateSessionDir + FILESEP + "normalized" + FILESEP + "imageInfo";
-		String imagesPath     = candidateSessionDir + FILESEP + "normalized" + FILESEP + "images";
-		File f1 = new File(imageInfoPath);
-		File f2 = new File(imagesPath);
-		if (f1.isDirectory() && f2.isDirectory()){
-			return true;
-		}
-		return false;
-	}
+	
 	private void loadCopyDatasetTab() throws AvatolCVException {
 		String sessionDirPath = AvatolCVFileSystem.getSessionsRoot();
 		File sessionsDirFile = new File(sessionDirPath);
 		File[] files = sessionsDirFile.listFiles();
 		for (File file : files){
-			if (isFileAValidSessionDir(file)){
+			if (CopyDatasetTask.isValidCopySource(file)){
 				existingDatasetsChoiceBox.getItems().add(file.getName());
 			}
 		}
@@ -99,68 +82,30 @@ public class ToolsPanel {
 	
 	public void doCopy() throws AvatolCVException {
 		String newDataset = newDatasetTextField.getText();
+		String sourceDatasetName = existingDatasetsChoiceBox.getValue();
 		if ("".equals(newDatasetTextField)){
 			dialog("Please specify a new dataset name");
 			return;
 		}
-		String newDatasetPath = AvatolCVFileSystem.getSessionsRoot() + FILESEP + newDataset;
-		File newDatasetDirFile = new File(newDatasetPath);
-		if (newDatasetDirFile.exists()){
+		if (CopyDatasetTask.isNewDatasetAlreadyExist(newDataset)){
 			dialog("Dataset "+ newDataset + " already exists.  Specify a different name");
 			return;
 		}
-		newDatasetDirFile.mkdir();
-		String sourceDatasetName = existingDatasetsChoiceBox.getValue();
-		String sourceDatasetDir = AvatolCVFileSystem.getSessionsRoot() + FILESEP + sourceDatasetName;
-		String sourceNormalizedDir = sourceDatasetDir + FILESEP + "normalized";
-		String destNormalizedDir = newDatasetPath + FILESEP + "normalized";
-		Task<Boolean> task = new CopyDatasetTask(sourceNormalizedDir, destNormalizedDir, copyTextArea);
+		Task<Boolean> task = new CopyDatasetTask( sourceDatasetName,  newDataset, this);
         new Thread(task).start();
-		
 	}
-	public void recursiveCopyDir(String sourceNormalizedDir, String destNormalizedDir) throws AvatolCVException {
-		//File newNormalizedDir = new File(destNormalizedDir);
-		Path destNormalizedPath = Paths.get(destNormalizedDir);
-		Path sourceNormalizedPath = Paths.get(sourceNormalizedDir);
-		try {
-            Platform.runLater(() -> copyButton.setDisable(true));
-            Files.walk(sourceNormalizedPath).forEach(path ->{
-                    try {
-                    	Platform.runLater(() -> copyTextArea.appendText("copying " + path + NL));
-                        Files.copy(path, Paths.get(path.toString().replace(
-                        		sourceNormalizedPath.toString(),
-                        		destNormalizedPath.toString())));
-                    } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-            });
-            Platform.runLater(() -> copyTextArea.appendText("copy complete! " + NL));
-            Platform.runLater(() -> copyButton.setDisable(false));
-        } catch (IOException e1) {
-            throw new AvatolCVException("problem copying dataset: " + e1.getMessage());
-        }
+	@Override
+	public void disableCopyButton() {
+		Platform.runLater(() -> copyButton.setDisable(true));
 	}
-    public class CopyDatasetTask extends Task<Boolean> {
-        private String sourceNormalizedDir;
-        private String destNormalizedDir;
-        private TextArea textArea;
-        
-        public CopyDatasetTask(String sourceNormalizedDir, String destNormalizedDir, TextArea textArea){
-            this.sourceNormalizedDir = sourceNormalizedDir;
-            this.destNormalizedDir = destNormalizedDir;
-            this.textArea = textArea;
-        }
-        @Override
-        protected Boolean call() throws Exception {
-            try {
-            	recursiveCopyDir(sourceNormalizedDir,destNormalizedDir);
-                return new Boolean(true);
-            }
-            catch(AvatolCVException ace){
-                AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "AvatolCV error copying dataset");
-                return new Boolean(false);
-            }
-        }
-    }
+	@Override
+	public void enableCopyButton() {
+		Platform.runLater(() -> copyButton.setDisable(false));
+	}
+	@Override
+	public void appendText(String s) {
+		Platform.runLater(() -> copyTextArea.appendText(s));
+	}
+	
+    
 }
