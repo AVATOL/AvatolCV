@@ -62,7 +62,8 @@
       <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
       <HBox layoutY="138.0" spacing="10.0" VBox.vgrow="NEVER">
          <children>
-            <Region HBox.hgrow="ALWAYS" />
+            <Label onMouseClicked="#showToolsPanel" text="tools" />
+            <Region fx:id="toolsLabel" HBox.hgrow="ALWAYS" />
             <Button mnemonicParsing="false" onAction="#launchSession" styleClass="control-text" text="Start" HBox.hgrow="NEVER" />
          </children>
          <padding>

@@ -13,6 +13,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.JavaFXStepSequencer;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ResultsReview;
+import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ToolsPanel;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -97,7 +98,14 @@ public class AvatolCVJavaFX extends Application {
             AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem during launch");
         }
     }
-    
+    public void showToolsPanel(){
+    	try {
+    		ToolsPanel toolsPanel = new ToolsPanel(this, mainWindow);
+    	}
+    	catch(AvatolCVException ace){
+    		AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "Problem showing ToolsPanel");
+    	}
+    }
     private void initializePriorRunChoices(Scene scene) throws AvatolCVException {
         List<String> names = AvatolCVFileSystem.getSessionFilenames();
         Collections.sort(names);
