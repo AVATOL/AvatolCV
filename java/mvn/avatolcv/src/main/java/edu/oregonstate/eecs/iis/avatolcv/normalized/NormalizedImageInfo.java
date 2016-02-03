@@ -86,6 +86,14 @@ public class NormalizedImageInfo {
     		throw new AvatolCVException("problem persisting NormalizedImageInfo file " + path + " : " + ioe.getMessage());
     	}
     }
+    public String getNiiFilename(){
+    	File f = new File(this.path);
+    	String filename = f.getName();
+    	return filename;
+    }
+    public String getPath(){
+    	return this.path;
+    }
     public List<NormalizedKey> getKeys(){
     	List<NormalizedKey> result = new ArrayList<NormalizedKey>();
     	Enumeration<NormalizedKey> keysEnum = keyValueHash.keys();
@@ -240,7 +248,7 @@ public class NormalizedImageInfo {
             this.annotationString = value;
         }
         else if (key.equals(KEY_IMAGE_NAME)){
-        	this.imageName = value;
+        	this.imageName = new NormalizedValue(value).getName();
         }
         else if (key.equals(KEY_TIMESTAMP)){
         	this.timestamp = value;

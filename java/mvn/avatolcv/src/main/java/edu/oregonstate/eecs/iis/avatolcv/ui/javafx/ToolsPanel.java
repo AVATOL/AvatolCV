@@ -1,29 +1,39 @@
 package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.tools.CopyDatasetTab;
 import edu.oregonstate.eecs.iis.avatolcv.tools.CopyDatasetTask;
+import edu.oregonstate.eecs.iis.avatolcv.tools.DatasetEditor;
 
 public class ToolsPanel implements CopyDatasetTab {
 	private static FXMLLoader loader = null;
@@ -31,10 +41,22 @@ public class ToolsPanel implements CopyDatasetTab {
 	private Stage mainWindow = null;
     private Scene originScene = null;
     private AvatolCVJavaFX mainScreen = null;
-    public ChoiceBox<String> existingDatasetsChoiceBox = null;
+    // dataset copy
+    public ChoiceBox<String> copyDatasetChoiceBox = null;
     public TextField newDatasetTextField = null;
     public TextArea copyTextArea = null;
     public Button copyButton = null;
+    // dataset edit
+    public ChoiceBox<String> editDatasetChoiceBox = null;
+    public GridPane editDatasetGridPane = null;
+    private DatasetEditor datasetEditor = new DatasetEditor();
+    private Hashtable<String, List<Label>> propLabelsForImageHashForEditor = null;
+    private ArrayList<String>              imageNamesForEditor             = null;
+    private List<Label>                    imageNameLabelsForEditor        = null;
+    private String currentDatasetForEdit = null;
+	//private Hashtable<String, String>      niiPathnameForImageNameHash     = null;
+
+    //
 	public ToolsPanel(AvatolCVJavaFX mainScreen, Stage mainWindow) throws AvatolCVException {
         this.mainWindow = mainWindow;
         this.mainScreen = mainScreen;
@@ -48,6 +70,7 @@ public class ToolsPanel implements CopyDatasetTab {
                 Parent p = loader.load();
                 toolsScene = new Scene(p, AvatolCVJavaFX.MAIN_WINDOW_WIDTH, AvatolCVJavaFX.MAIN_WINDOW_HEIGHT);
                 loadCopyDatasetTab();
+                loadEditDatasetTab();
         	}
             this.originScene = this.mainWindow.getScene();
             this.mainWindow.setScene(toolsScene);
@@ -66,11 +89,187 @@ public class ToolsPanel implements CopyDatasetTab {
 		File[] files = sessionsDirFile.listFiles();
 		for (File file : files){
 			if (CopyDatasetTask.isValidCopySource(file)){
-				existingDatasetsChoiceBox.getItems().add(file.getName());
+				copyDatasetChoiceBox.getItems().add(file.getName());
 			}
 		}
-		existingDatasetsChoiceBox.setValue(existingDatasetsChoiceBox.getItems().get(0));
-		existingDatasetsChoiceBox.requestLayout();
+		copyDatasetChoiceBox.setValue(copyDatasetChoiceBox.getItems().get(0));
+		copyDatasetChoiceBox.requestLayout();
+	}
+	private void loadEditDatasetTab() throws AvatolCVException {
+		String sessionDirPath = AvatolCVFileSystem.getSessionsRoot();
+		File sessionsDirFile = new File(sessionDirPath);
+		File[] files = sessionsDirFile.listFiles();
+		editDatasetChoiceBox.getItems().add(" ");
+		for (File file : files){
+			if (DatasetEditor.isLocalDataset(file)){
+				editDatasetChoiceBox.getItems().add(file.getName());
+			}
+		}
+		editDatasetChoiceBox.setValue(" ");
+		editDatasetChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new DatasetEditChangeListener(editDatasetChoiceBox, this.datasetEditor));
+
+		editDatasetChoiceBox.requestLayout();
+	}
+	public class DatasetEditChangeListener implements ChangeListener<Number> {
+        private ChoiceBox<String> cb;
+        private DatasetEditor editor = null;
+        public DatasetEditChangeListener(ChoiceBox<String> cb, DatasetEditor editor){
+            this.cb = cb;
+            this.editor = editor;
+        }
+        @Override
+        public void changed(ObservableValue ov, Number value, Number newValue) {
+        	String datasetName = null;
+             try {
+                datasetName = (String)cb.getItems().get((Integer)newValue);
+                if (" ".equals(datasetName)){
+                	clearEditor();
+                }
+                else {
+                	loadEditor(datasetName);
+                }
+                
+            }
+            catch(Exception e){
+                AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem loading editor with dataset " + datasetName + " " + e.getMessage());
+            }
+        }
+    }
+	private void decorateHeaderLabel(Label l){
+		l.getStyleClass().add("columnHeader");
+		GridPane.setHalignment(l, HPos.CENTER);
+		l.setMaxWidth(Double.MAX_VALUE);
+	}
+	public void saveDatasetEdits() {
+		try {
+			datasetEditor.saveEdits();
+			loadEditor(currentDatasetForEdit);
+		}
+		catch(AvatolCVException ace){
+			AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "Problem saving dataset edits " + ace.getMessage());
+		}
+	}
+	public void clearDatasetEdits(){
+		datasetEditor.clearEdits();
+		for (String imageName : imageNamesForEditor){
+			List<Label> propLabels = propLabelsForImageHashForEditor.get(imageName);
+			for (Label l : propLabels){
+				clearLabel(l);
+			}
+		}
+		for (Label l : imageNameLabelsForEditor){
+			clearLabel(l);
+		}
+	}
+	private void clearLabel(Label l){
+		l.setStyle("-fx-background-color:white;");
+	}
+	private void selectLabel(Label l){
+		l.setStyle("-fx-background-color:red;");
+	}
+	public void loadEditor(String datasetName) throws AvatolCVException {
+		propLabelsForImageHashForEditor = new Hashtable<String, List<Label>>();
+    	imageNamesForEditor             = new ArrayList<String>();
+    	imageNameLabelsForEditor        = new ArrayList<Label>();
+    	currentDatasetForEdit = datasetName;
+    	//niiPathnameForImageNameHash     = new Hashtable<String, String>();
+		GridPane gp = editDatasetGridPane;
+		gp.getChildren().clear();
+		datasetEditor.loadDataset(datasetName);
+		List<NormalizedKey> propKeys = datasetEditor.getPropKeys();
+		List<String> niiNames = datasetEditor.getNiiNames();
+		int row = 0;
+		Label imageColumnLabel = new Label("image name");
+		decorateHeaderLabel(imageColumnLabel);
+		gp.add(imageColumnLabel, 0, row);
+		int propNameColumnIndex = 1;
+		for (NormalizedKey key : propKeys){
+			Label propNameLabel = new Label(key.getName());
+			decorateHeaderLabel(propNameLabel);
+			gp.add(propNameLabel, propNameColumnIndex++, row);
+		}
+		row++;
+		for (String niiName : niiNames){
+			int column = 0;
+			String imageName = datasetEditor.getImageNameForNiiName(niiName);
+			String niiPathname = datasetEditor.getNiiPathnameForNiiName(niiName);
+			//niiPathnameForImageNameHash.put(imageName, niiPathname);
+			List<Label> propLabelList = new ArrayList<Label>();
+			propLabelsForImageHashForEditor.put(imageName, propLabelList);
+			Label label = new Label(imageName);
+			imageNameLabelsForEditor.add(label);
+			imageNamesForEditor.add(imageName);
+			label.setOnMouseClicked(new ImageLabelToggle(imageName));
+			//imageNameforLabelHash.put(label, imageName);
+			clearLabel(label);
+			label.setPadding(new Insets(4,4,4,10));
+			label.setMaxWidth(Double.MAX_VALUE);
+			gp.add(label, column++, row);
+			for (NormalizedKey propKey : propKeys){
+				String propValue = datasetEditor.getValueForProperty(niiName,propKey);
+				if (propValue.equals("")){
+					propValue = "?";
+				}
+				Label propLabel = new Label(propValue);
+				propLabelList.add(propLabel);
+				clearLabel(propLabel);
+				propLabel.setMaxWidth(Double.MAX_VALUE);
+				propLabel.setPadding(new Insets(4,4,4,10));
+				propLabel.setOnMouseClicked(new PropLabelToggle(imageName, propKey));
+				gp.add(propLabel, column++, row);
+			}
+			row++;
+		}
+	}
+	public class PropLabelToggle implements EventHandler<MouseEvent> {
+		private String imageName = null;
+		private NormalizedKey propKey = null;
+		public PropLabelToggle(String imageName, NormalizedKey propKey){
+			this.imageName = imageName;
+			this.propKey = propKey;
+		}
+		@Override
+		public void handle(MouseEvent mouseEvent) {
+			if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+	            datasetEditor.toggleEditForPropkey(imageName, propKey);
+	            Label source = (Label)mouseEvent.getSource();
+	            if (datasetEditor.isPropertyMarkedForDelete(imageName, propKey)){
+	            	selectLabel(source);
+	            }
+	            else {
+	            	clearLabel(source);
+	            }
+	        }
+		}
+	}
+	public class ImageLabelToggle implements EventHandler<MouseEvent> {
+		private String imageName = null;
+		public ImageLabelToggle(String imageName){
+			this.imageName = imageName;
+		}
+		@Override
+		public void handle(MouseEvent mouseEvent) {
+			if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+	            datasetEditor.toggleEditForImageName(imageName);
+	            Label source = (Label)mouseEvent.getSource();
+	            List<Label> propLabels = propLabelsForImageHashForEditor.get(imageName);
+	            if (datasetEditor.isImageNameMarkedForDelete(imageName)){
+	            	selectLabel(source);
+	            	for (Label l : propLabels){
+	            		selectLabel(l);
+	            	}
+	            }
+	            else {
+	            	source.setStyle("-fx-background-color:white;");
+	            	for (Label l : propLabels){
+	            		clearLabel(l);
+	            	}
+	            }
+	        }
+		}
+	}
+	public void clearEditor(){
+		editDatasetGridPane.getChildren().clear();
 	}
 	private void dialog(String text){
 		Alert alert = new Alert(AlertType.ERROR);
@@ -82,7 +281,7 @@ public class ToolsPanel implements CopyDatasetTab {
 	
 	public void doCopy() throws AvatolCVException {
 		String newDataset = newDatasetTextField.getText();
-		String sourceDatasetName = existingDatasetsChoiceBox.getValue();
+		String sourceDatasetName = copyDatasetChoiceBox.getValue();
 		if ("".equals(newDatasetTextField)){
 			dialog("Please specify a new dataset name");
 			return;
@@ -106,6 +305,4 @@ public class ToolsPanel implements CopyDatasetTab {
 	public void appendText(String s) {
 		Platform.runLater(() -> copyTextArea.appendText(s));
 	}
-	
-    
 }
