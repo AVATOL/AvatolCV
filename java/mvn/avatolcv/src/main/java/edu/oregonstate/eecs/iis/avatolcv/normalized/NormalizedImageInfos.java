@@ -75,7 +75,14 @@ public class NormalizedImageInfos {
 		}
 		return scorableKeys;
 	}
-	
+	public List<NormalizedImageInfo> getNormalizedImageInfosForDataset() throws AvatolCVException {
+		List<NormalizedImageInfo> result = new ArrayList<NormalizedImageInfo>();
+		for (String name: niiAllPresent){
+			NormalizedImageInfo nii = niiHash.get(name);
+			result.add(nii);
+		}
+		return result;
+	}
 	public List<NormalizedImageInfo> getNormalizedImageInfosForSession() throws AvatolCVException {
 		List<NormalizedImageInfo> result = new ArrayList<NormalizedImageInfo>();
 		for (String s : niiSession){
