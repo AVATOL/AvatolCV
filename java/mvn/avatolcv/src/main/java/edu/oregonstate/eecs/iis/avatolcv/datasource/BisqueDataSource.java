@@ -205,6 +205,17 @@ public class BisqueDataSource implements DataSource {
     }
     @Override
     public String getInstructionsForScoringConcernScreen(ScoringAlgorithm.ScoringScope scoringScope, ScoringAlgorithm.ScoringSessionFocus scoringFocus) {
+        if (scoringScope == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM){
+            return "Place a check mark next to the characters to score";
+        }
+        else {
+            return "Select the character to score";
+        }
+        
+    }
+
+    /*@Override
+    public String getInstructionsForScoringConcernScreenOld(ScoringAlgorithm.ScoringScope scoringScope, ScoringAlgorithm.ScoringSessionFocus scoringFocus) {
         if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
                 scoringScope == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM){
                 return "Place a check mark next to the characters to score " +
@@ -232,7 +243,7 @@ public class BisqueDataSource implements DataSource {
                   //  sa.getScoringScope() == ScoringAlgorithms.ScoringScope.SINGLE_ITEM) {
                 return "Select the character to score.";
             }
-    }
+    }*/
     @Override
     public void setChosenScoringConcerns(List<ChoiceItem> items) {
         this.scoringConcernAnnotations = new ArrayList<NormalizedKey>();
