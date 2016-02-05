@@ -166,47 +166,13 @@ public class MorphobankDataSource implements DataSource {
         Collections.sort(result);
         return result;
     }
-    public List<ChoiceItem> getShapeScoringConcernItems()  throws AvatolCVException{
-        List<ChoiceItem> result = new ArrayList<ChoiceItem>();
-        for (MBCharacter character : this.charactersForMatrix){
-            boolean isShapeAspect = character.isShapeAspect();
-            String normalizedString = NormalizedTypeIDName.buildTypeIdName("character", character.getCharID(), character.getCharName());
-        	NormalizedKey nKey = new NormalizedKey(normalizedString);
-            ChoiceItem ci = new ChoiceItem(nKey, isShapeAspect, true, character);
-            result.add(ci);
-        }
-        Collections.sort(result);
-        return result;
-    }
-    public List<ChoiceItem> getTextureScoringConcernItems()  throws AvatolCVException{
-        List<ChoiceItem> result = new ArrayList<ChoiceItem>();
-        for (MBCharacter character : this.charactersForMatrix){
-            boolean isTextureAspect = character.isTextureAspect();
-            String normalizedString = NormalizedTypeIDName.buildTypeIdName("character", character.getCharID(), character.getCharName());
-        	NormalizedKey nKey = new NormalizedKey(normalizedString);
-            ChoiceItem ci = new ChoiceItem(nKey, isTextureAspect, true, character);
-            result.add(ci);
-        }
-        Collections.sort(result);
-        return result;
-    }
+   
     @Override
     public List<ChoiceItem> getScoringConcernOptions(ScoringAlgorithm.ScoringScope scoringScope, ScoringAlgorithm.ScoringSessionFocus scoringFocus) throws AvatolCVException{
-        if (scoringScope == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM){
-            // select all appropriate for case
-            if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE){
-                return getPresenceAbsenceScoringConcernItems();
-            }
-            else if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT){
-                return getShapeScoringConcernItems();
-            }
-            else {
-                // must be ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT
-                return getTextureScoringConcernItems();
-            }
+        if (scoringScope == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM && scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE){
+            return getPresenceAbsenceScoringConcernItems();
         }
         else {
-            // must be single item choice screen - don't select any - first in list will appear as default selection
             return getScoringConcernItemsNoneSelected();
             
         }
@@ -220,38 +186,7 @@ public class MorphobankDataSource implements DataSource {
             return "Select the character to score";
         }
     }
-    //@Override
-    /*
-    public String getInstructionsForScoringConcernScreenOld(ScoringAlgorithm.ScoringScope scoringScope, ScoringAlgorithm.ScoringSessionFocus scoringFocus) {
-        if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
-            scoringScope == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM){
-            return "Place a check mark next to characters to score" +
-                    "(AvatolCV has tried to deduce this from metadata)";
-        }
-        else if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE &&
-                scoringScope == ScoringAlgorithm.ScoringScope.SINGLE_ITEM){
-            return "Select the character to score";
-        }
-        else if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
-                scoringScope == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM) {
-            return "Place a check mark next to the characters to score";
-        }
-
-        else if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT &&
-                scoringScope == ScoringAlgorithm.ScoringScope.SINGLE_ITEM) {
-            return "Select the character to score";
-        }
-
-        else if (scoringFocus == ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT &&
-                scoringScope == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM) {
-            return "Place a check mark next to the characters to score";
-        }
-
-        else {// (sa.getSessionScoringFocus() == ScoringAlgorithms.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT &&
-              //  sa.getScoringScope() == ScoringAlgorithms.ScoringScope.SINGLE_ITEM) {
-            return "Select the character to score";
-        }
-    }*/
+   
     @Override
     public void setChosenScoringConcerns(List<ChoiceItem> items) {
         this.chosenCharacters = new ArrayList<MBCharacter>();

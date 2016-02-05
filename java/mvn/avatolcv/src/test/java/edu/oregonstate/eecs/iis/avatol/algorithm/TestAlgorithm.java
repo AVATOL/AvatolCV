@@ -81,7 +81,7 @@ public class TestAlgorithm extends TestCase {
             Assert.assertEquals("ShapeTextureScoring",scoringAlg.getAlgName());
             Assert.assertEquals("scoring",scoringAlg.getAlgType());
             Assert.assertEquals( "leafScore.sh",scoringAlg.getLaunchFile());
-            Assert.assertEquals(scoringAlg.getScoringFocus(), ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT);   
+            Assert.assertEquals(scoringAlg.getScoringFocus(), ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_OR_TEXTURE_ASPECT);   
             Assert.assertEquals(scoringAlg.getScoringScope(), ScoringAlgorithm.ScoringScope.SINGLE_ITEM);
             Assert.assertTrue(scoringAlg.getAlgDescription() != null);
             Assert.assertFalse(scoringAlg.getAlgDescription().equals(""));

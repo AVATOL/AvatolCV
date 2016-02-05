@@ -74,26 +74,21 @@ public class SessionFocusStepController implements StepController {
     @Override
     public Node getContentNode() throws AvatolCVException {
         try {
-            //System.out.println("trying to load" +  this.fxmlDocName);
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
             
             radioPresenceAbsence.setText(ScoringAlgorithm.getRadioButtonTextForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE));
-            radioShape.setText(          ScoringAlgorithm.getRadioButtonTextForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT));
-            //radioTexture.setText(        ScoringAlgorithm.getRadioButtonTextForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT));
+            radioShape.setText(          ScoringAlgorithm.getRadioButtonTextForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_OR_TEXTURE_ASPECT));
 
             AlgorithmModules am = AlgorithmModules.instance;
             List<String> presenceAbsenceAlgNames = am.getAlgNamesForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE);
-            List<String> shapeAlgNames           = am.getAlgNamesForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT);
-            //List<String> textureAlgNames         = am.getAlgNamesForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT);
+            List<String> shapeAlgNames           = am.getAlgNamesForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_OR_TEXTURE_ASPECT);
             ObservableList<String> paList        = FXCollections.observableList(presenceAbsenceAlgNames);
             ObservableList<String> shapeList     = FXCollections.observableList(shapeAlgNames);
-            //ObservableList<String> textureList   = FXCollections.observableList(textureAlgNames);
             
             setAlgSelector(presenceAbsenceAlgChoice, radioPresenceAbsence, paList,      KEY_PRESENCE_ABSENCE);
             setAlgSelector(shapeAlgChoice,           radioShape,           shapeList,   KEY_SHAPE_ASPECT);
-            //setAlgSelector(textureAlgChoice,         radioTexture, 		   textureList, KEY_TEXTURE_ASPECT);
             return content;
         }
         catch(IOException ioe){

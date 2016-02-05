@@ -13,8 +13,7 @@ public class ScoringAlgorithm extends Algorithm {
     private static final String PROPERTY_INCLUDE_POINT_ANNOTATIONS_IN_SCORING_FILE = "includePointAnnotationsInScoringFile";
     public enum ScoringSessionFocus { 
         SPECIMEN_PART_PRESENCE_ABSENCE, 
-        SPECIMEN_SHAPE_ASPECT, 
-        SPECIMEN_TEXTURE_ASPECT };
+        SPECIMEN_SHAPE_OR_TEXTURE_ASPECT};
     // DPM needs to score all presenceAbsence chars at same time, other might just want one char    
     public enum ScoringScope {
         SINGLE_ITEM,
@@ -22,17 +21,12 @@ public class ScoringAlgorithm extends Algorithm {
     }
     private boolean includePointAnnotationsInScoringFile = false;
     private static Hashtable<ScoringSessionFocus, String> radioButtonTextForFocusHash = new Hashtable<ScoringSessionFocus, String>();
-    private static Hashtable<String, ScoringSessionFocus> scoringFocusForName = new Hashtable<String,ScoringSessionFocus>();
-    private static Hashtable<ScoringSessionFocus, List<String>> namesForScoringFocus = new Hashtable<ScoringSessionFocus,List<String>>();
     
     static {
         radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE, "character = part");
-        radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_SHAPE_ASPECT, "character = shape or texture");
-        //radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_TEXTURE_ASPECT, "Score texture aspects a specimen");
+        radioButtonTextForFocusHash.put(ScoringSessionFocus.SPECIMEN_SHAPE_OR_TEXTURE_ASPECT, "character = shape or texture");
     }
-    //private static ScoringSessionFocus focusChosenForSession = null;
-    //private static ScoringScope scopeChosenForSession = null;
-    
+
     private ScoringSessionFocus thisAlgorithmFocus = null;
     private ScoringScope thisAlgorithmScope = null;
     private boolean trainTestConcernRequired = false;
@@ -93,21 +87,7 @@ public class ScoringAlgorithm extends Algorithm {
     /*
      * SESSION LEVEL SCOPE AND FOCUS
      */
-    /*
-    public static ScoringSessionFocus getFocusChosenForSession(){
-        return focusChosenForSession;
-    }
-    public static void setFocusChosenForSession(ScoringSessionFocus focus){
-        focusChosenForSession = focus;
-    }
-    public static ScoringScope getScopeChosenForSession(){
-        return scopeChosenForSession;
-    }
-    public static void setScopeChosenForSession(ScoringScope scope){
-        scopeChosenForSession = scope;
-    }
-    */
-    
+  
     public static ScoringScope getScopeForScopePropertiesValue(String val){
         if (ScoringScope.SINGLE_ITEM.name().equals(val)){
             return ScoringScope.SINGLE_ITEM;
