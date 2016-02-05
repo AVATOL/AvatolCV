@@ -3,7 +3,7 @@ algName=debugCheatLeafScore
 algType=scoring
 description=Algorithm debugCheatLeafScore copies pregenerated scored data for the leafDev project to the scoring output directory.
 
-scoringFocus=SPECIMEN_SHAPE_ASPECT
+scoringFocus=SPECIMEN_SHAPE_OR_TEXTURE_ASPECT
 scoringScope=SINGLE_ITEM
 
 trainingLabelImageSuffix=_orientedOrig

@@ -3,7 +3,7 @@ algName=shapeTextureScoring
 algType=scoring
 description=Scores shape related characters of simple shapes such Monocot leaves.
 
-scoringFocus=SPECIMEN_SHAPE_ASPECT
+scoringFocus=SPECIMEN_SHAPE_OR_TEXTURE_ASPECT
 scoringScope=SINGLE_ITEM
 
 trainingLabelImageSuffix=_orientedOrig

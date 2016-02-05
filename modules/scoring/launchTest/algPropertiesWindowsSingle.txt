@@ -1,7 +1,7 @@
 launchWith=launchTest.bat
 algName=uiDebugScoringSingleChar
 algType=scoring
-scoringFocus=SPECIMEN_SHAPE_ASPECT
+scoringFocus=SPECIMEN_SHAPE_OR_TEXTURE_ASPECT
 scoringScope=SINGLE_ITEM
 description=This is a dummy algorithm used to test AvatolCV's module system.
 

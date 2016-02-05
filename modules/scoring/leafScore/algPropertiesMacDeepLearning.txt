@@ -3,7 +3,7 @@ algName=(coming soon) deepLearning
 algType=scoring
 description=Applying deep learning techniques to character scoring.
 
-scoringFocus=SPECIMEN_SHAPE_ASPECT
+scoringFocus=SPECIMEN_SHAPE_OR_TEXTURE_ASPECT
 scoringScope=SINGLE_ITEM
 
 trainingLabelImageSuffix=_orientedOrig
