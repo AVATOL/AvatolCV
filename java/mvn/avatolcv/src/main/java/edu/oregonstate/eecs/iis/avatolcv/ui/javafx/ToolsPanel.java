@@ -101,9 +101,11 @@ public class ToolsPanel implements CopyDatasetTab {
 		File[] files = sessionsDirFile.listFiles();
 		editDatasetChoiceBox.getItems().add(" ");
 		for (File file : files){
-			if (DatasetEditor.isLocalDataset(file)){
-				editDatasetChoiceBox.getItems().add(file.getName());
-			}
+		    if (file.isDirectory()){
+		        if (DatasetEditor.isLocalDataset(file)){
+	                editDatasetChoiceBox.getItems().add(file.getName());
+	            }
+		    }
 		}
 		editDatasetChoiceBox.setValue(" ");
 		editDatasetChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new DatasetEditChangeListener(editDatasetChoiceBox, this.datasetEditor));

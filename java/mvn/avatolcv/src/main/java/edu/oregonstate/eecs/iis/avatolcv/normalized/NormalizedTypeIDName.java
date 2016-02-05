@@ -3,13 +3,14 @@ package edu.oregonstate.eecs.iis.avatolcv.normalized;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringConcernDetails;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 // keys or values can have name, id and name, or type + id + name
 //character:1824350|Diastema between I2 and C=characterState:4884329|Diastema present
 //taxon=773126|Artibeus jamaicensis
 //view=8905|Skull - ventral annotated teeth
-public class NormalizedTypeIDName {
+public class NormalizedTypeIDName implements ScoringConcernDetails{
     public static final String TYPE_UNSPECIFIED = AvatolCVConstants.UNDETERMINED;
     public static final String ID_UNSPECIFIED = AvatolCVConstants.UNDETERMINED;
     public static final String NAME_UNSPECIFIED = AvatolCVConstants.UNDETERMINED;

@@ -2,7 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.normalized;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
-public class NormalizedKey extends NormalizedTypeIDName implements Comparable  {
+public class NormalizedKey extends NormalizedTypeIDName implements Comparable {
 	public NormalizedKey(String s) throws AvatolCVException {
 		super(s);
 	}

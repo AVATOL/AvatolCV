@@ -27,6 +27,8 @@ public class FileSystemDataSource implements DataSource {
 	private DatasetInfo chosenDataset = null;
 	private NormalizedImageInfos imageInfos = null;
 	private List<NormalizedKey> scoringConcerns = null;
+    private SessionImages sessionImages = null;
+
     public FileSystemDataSource(){
         
     }
@@ -54,13 +56,15 @@ public class FileSystemDataSource implements DataSource {
 		File sessionsFile = new File(sessionsRoot);
 		File[] datasetDirFiles = sessionsFile.listFiles();
 		for (File datasetDirFile: datasetDirFiles){
-			if (AvatolCVFileSystem.isDatasetLocal(datasetDirFile)){
-				DatasetInfo di = new DatasetInfo();
-				di.setName(datasetDirFile.getName());
-				di.setProjectID("Project_"+datasetDirFile.getName());
-				di.setID("ID_"+datasetDirFile.getName());
-				result.add(di);
-			}
+		    if (!datasetDirFile.getName().equals("unitTest") && datasetDirFile.isDirectory()){ // avoid files laid down by unitTesting
+		        if (AvatolCVFileSystem.isDatasetLocal(datasetDirFile)){
+	                DatasetInfo di = new DatasetInfo();
+	                di.setName(datasetDirFile.getName());
+	                di.setProjectID("Project_"+datasetDirFile.getName());
+	                di.setID("ID_"+datasetDirFile.getName());
+	                result.add(di);
+	            }
+		    }
 		}
 		return result;
 	}
@@ -90,9 +94,6 @@ public class FileSystemDataSource implements DataSource {
 	@Override
 	public void setChosenDataset(DatasetInfo di) throws AvatolCVException  {
 		this.chosenDataset = di;
-		//String datasetPath = AvatolCVFileSystem.getSessionsRoot() + FILESEP + di.getName();
-		//String imageInfoPath = datasetPath + FILESEP + "normalized" + FILESEP + "imageInfo";
-		//imageInfos = new NormalizedImageInfos(imageInfoPath);
 	}
     
     /**
@@ -104,7 +105,7 @@ public class FileSystemDataSource implements DataSource {
         List<ChoiceItem> result = new ArrayList<ChoiceItem>();
 		List<NormalizedKey> scorableKeys = imageInfos.getScorableKeys();
 	    for (NormalizedKey key : scorableKeys){
-	    	ChoiceItem ci = new ChoiceItem(key, false, true, key.getName());
+	    	ChoiceItem ci = new ChoiceItem(key, false, true, key);
 	    	result.add(ci);
 	    }
 	    return result;
@@ -122,18 +123,59 @@ public class FileSystemDataSource implements DataSource {
 	}
 
 	@Override
-	public void setChosenScoringConcerns(List<ChoiceItem> items) {
+	public void setChosenScoringConcerns(List<ChoiceItem> items) throws AvatolCVException {
 	    this.scoringConcerns = new ArrayList<NormalizedKey>();
 	    for (ChoiceItem item : items){
 	        this.scoringConcerns.add(item.getNormalizedKey());
 	    }
+	    narrowNormalizedImageInfos(this.scoringConcerns);
 	}
 	@Override
-	public void setChosenScoringConcern(ChoiceItem item) {
+	public void setChosenScoringConcern(ChoiceItem item)  throws AvatolCVException {
 	    this.scoringConcerns = new ArrayList<NormalizedKey>();
 	    this.scoringConcerns.add(item.getNormalizedKey());
+	    narrowNormalizedImageInfos(this.scoringConcerns);
 	}
-
+    
+	private void narrowNormalizedImageInfos(List<NormalizedKey> scoringConcernKeys) throws AvatolCVException {
+	    /*
+	     * what I found was that 
+                    a. Stemona image (ex) has no keys in Bisque DB
+                    b. imageInfo file has no keys
+                    c. scoredOutput file does - that is the file is scored regardless of lack of keys 
+                    where are they added?
+                    
+                    this.niis.ensureAllKeysPresentInAllImageInfos(); is called in BisqueDS
+                    
+        Bisque downloads all images in the dataset
+        MB loads images for just the chosen characters, and makes in-memory nii's just for those
+        but if there is another session where different chars are chosen then additional images downloaded
+        the only ramification for local copies is that character choices will cover the aggregate of what has been downloaded, so not a problem
+        
+        So, for copies of Bisque datasets, it will always have all the images from the original , which don't change from session to session
+        AND, for copies of MB datasets, we may have images from combined sessions in play.  Since in MB we don't automatically add keys if 
+        they aren't present in imageInfo, we MUST revise sessionImages to  only those containing keys corresponding to the chosen scoringConcers,
+        Further, since this will be a noop for Bisque datasets, safe to do it there, too, nd thus for all local datasets - copies and orig's
+        
+        Seems like the most efficient thing to do is amend the NormalizedImageInfos after the scoringCOncerns are chosen, and at the same time adjust the sessionImages
+            KEY FINDING -> thus sessionImages reduction only needs to happen for local datasets
+        
+         */ 
+	    List<NormalizedImageInfo> niis = this.imageInfos.getNormalizedImageInfosForDataset();
+	    List<String> niiFilenamesContainingScoringConcernKeys = new ArrayList<String>();
+	    for (NormalizedImageInfo nii : niis){
+	        for (NormalizedKey scoringConcern : this.scoringConcerns){
+	            if (nii.hasKey(scoringConcern)){
+	                if (!niiFilenamesContainingScoringConcernKeys.contains(nii.getNiiFilename())){
+	                    niiFilenamesContainingScoringConcernKeys.add(nii.getNiiFilename());
+	                }
+	            }
+	        }
+	    }
+	    this.imageInfos.focusToSession(niiFilenamesContainingScoringConcernKeys);
+	    this.sessionImages.clear();
+	    this.sessionImages.addAll(niiFilenamesContainingScoringConcernKeys);
+	}
 	@Override
 	public String getDatasetSummaryText() {
 		return "not yet implemented";
@@ -146,6 +188,7 @@ public class FileSystemDataSource implements DataSource {
 
 	@Override
 	public void setSessionImages(SessionImages sessionImages) {
+	    this.sessionImages = sessionImages;
 	}
 
 	@Override
@@ -166,8 +209,11 @@ public class FileSystemDataSource implements DataSource {
 	}
 
 	@Override
-	public void setNormalizedImageInfos(NormalizedImageInfos niis) {
+	public void setNormalizedImageInfos(NormalizedImageInfos niis) throws AvatolCVException {
 		this.imageInfos = niis;
+		if (isCurrentDatasetCopyOfBisqueDataset()){
+		    this.imageInfos.ensureAllKeysPresentInAllImageInfos();
+		}
 	}
 
 	@Override
@@ -184,16 +230,25 @@ public class FileSystemDataSource implements DataSource {
 		}
 		
 	}
-	private boolean isCurrentDatasetCopyOfMorphobankDataset() throws AvatolCVException  {
+	private boolean isCurrentDatasetCopyOfBisqueDataset() throws AvatolCVException  {
 		String currentDatasetName = chosenDataset.getName();
 		String currentDatasetPath = AvatolCVFileSystem.getSessionsRoot() + FILESEP + currentDatasetName;
 		File datasetFile = new File(currentDatasetPath);
-		if (AvatolCVFileSystem.isMorphobankDatasetCopy(datasetFile)){
+		if (AvatolCVFileSystem.isBisqueDatasetCopy(datasetFile)){
 			return true;
 		}
 		return false;
 	}
 
+    private boolean isCurrentDatasetCopyOfMorphobankDataset() throws AvatolCVException  {
+        String currentDatasetName = chosenDataset.getName();
+        String currentDatasetPath = AvatolCVFileSystem.getSessionsRoot() + FILESEP + currentDatasetName;
+        File datasetFile = new File(currentDatasetPath);
+        if (AvatolCVFileSystem.isMorphobankDatasetCopy(datasetFile)){
+            return true;
+        }
+        return false;
+    }
 
 
 }

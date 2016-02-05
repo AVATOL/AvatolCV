@@ -28,8 +28,8 @@ public interface DataSource {
     List<ChoiceItem> getScoringConcernOptions(ScoringAlgorithm.ScoringScope scope, ScoringAlgorithm.ScoringSessionFocus focus) throws AvatolCVException;
     String getInstructionsForScoringConcernScreen(ScoringAlgorithm.ScoringScope scope, ScoringAlgorithm.ScoringSessionFocus focus);
     
-    void setChosenScoringConcerns(List<ChoiceItem> items);
-    void setChosenScoringConcern(ChoiceItem item);
+    void setChosenScoringConcerns(List<ChoiceItem> items) throws AvatolCVException;
+    void setChosenScoringConcern(ChoiceItem item)  throws AvatolCVException;
     
     String getDatasetSummaryText();
     AvatolCVDataFiles getAvatolCVDataFiles();
@@ -40,6 +40,6 @@ public interface DataSource {
     void downloadImages(ProgressPresenter pp, String processName)  throws AvatolCVException;
     //void setStandard
     String getDatasetTitleText();
-    void setNormalizedImageInfos(NormalizedImageInfos niis);
+    void setNormalizedImageInfos(NormalizedImageInfos niis) throws AvatolCVException ;
     String getDefaultTrainTestConcern();
 }

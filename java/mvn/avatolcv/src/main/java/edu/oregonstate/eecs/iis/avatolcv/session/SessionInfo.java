@@ -175,11 +175,11 @@ public class SessionInfo{
 	    }
 	    return result;
 	}
-	public void setScoringConcerns(List<ChoiceItem> chosenItems){
+	public void setScoringConcerns(List<ChoiceItem> chosenItems) throws AvatolCVException {
 	    chosenScoringConcerns = chosenItems;
 	    this.dataSource.setChosenScoringConcerns(chosenItems);
 	}
-	public void setScoringConcern(ChoiceItem chosenItem){
+	public void setScoringConcern(ChoiceItem chosenItem) throws AvatolCVException {
 	    chosenScoringConcern = chosenItem;
 	    this.dataSource.setChosenScoringConcern(chosenItem);
 	}
