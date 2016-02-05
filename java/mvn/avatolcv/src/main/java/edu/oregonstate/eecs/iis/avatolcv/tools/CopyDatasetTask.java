@@ -31,12 +31,25 @@ public class CopyDatasetTask extends Task<Boolean> {
     protected Boolean call() throws Exception {
         try {
         	recursiveCopyDir(sourceNormalizedDir,destNormalizedDir);
+        	copyProvenanceMarker(sourceNormalizedDir,destNormalizedDir);
             return new Boolean(true);
         }
         catch(AvatolCVException ace){
             AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "AvatolCV error copying dataset");
             return new Boolean(false);
         }
+    }
+    private void copyProvenanceMarker(String sourceNormalizedDir, String destNormalizedDir) throws AvatolCVException {
+    	File sourceNormalizedDirFile = new File(sourceNormalizedDir);
+    	File destNormalizedDirFile = new File(destNormalizedDir);
+    	File sourceDatasetDir = sourceNormalizedDirFile.getParentFile();
+    	File destDatasetDir = destNormalizedDirFile.getParentFile();
+    	if (AvatolCVFileSystem.isBisqueDataset(sourceDatasetDir) || AvatolCVFileSystem.isBisqueDatasetCopy(sourceDatasetDir)){
+    		AvatolCVFileSystem.createProvenanceMarkerForBisqueCopy(destDatasetDir, sourceDatasetDir);
+    	}
+    	else if (AvatolCVFileSystem.isMorphobankDataset(sourceDatasetDir) || AvatolCVFileSystem.isMorphobankDatasetCopy(sourceDatasetDir)){
+    		AvatolCVFileSystem.createProvenanceMarkerForMorphobankCopy(destDatasetDir, sourceDatasetDir);
+    	}
     }
     private void recursiveCopyDir(String sourceNormalizedDir, String destNormalizedDir) throws AvatolCVException {
 		//File newNormalizedDir = new File(destNormalizedDir);

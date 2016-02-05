@@ -18,7 +18,7 @@
                </toggleGroup>
             </RadioButton>
             <RadioButton fx:id="radioBisque" mnemonicParsing="false" selected="true" text="Bisque" toggleGroup="$dataSourceToggle" />
-            <RadioButton fx:id="radioFileSystem" disable="true" mnemonicParsing="false" text="local file system" toggleGroup="$dataSourceToggle" />
+            <RadioButton fx:id="radioFileSystem" mnemonicParsing="false" text="local file system" toggleGroup="$dataSourceToggle" />
             <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
