@@ -1,8 +1,11 @@
 package edu.oregonstate.eecs.iis.avatolcv;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
@@ -28,6 +31,8 @@ import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
  * it would all be handled here.
  */
 public class AvatolCVFileSystem {
+	private static final String COPY_MARKER_BISQUE = "datasetCopyOfBisqueDataset.txt";
+	private static final String COPY_MARKER_MORPHOBANK = "datasetCopyOfMorphobankDataset.txt";
     private static final String NL = System.getProperty("line.separator");
     public static final String ROTATE_VERTICALLY = "rotateVerticaly";
     public static final String ROTATE_HORIZONTALLY = "rotateHorizontally";
@@ -271,6 +276,69 @@ public class AvatolCVFileSystem {
 	//
 	// dataset
 	//
+	public static boolean isBisqueDataset(File datasetDirFile){
+		String bisqueDir     = datasetDirFile.getAbsolutePath() + FILESEP + "bisque";
+		File bisqueFile = new File(bisqueDir);
+		if (bisqueFile.exists()){
+			return true;
+		}
+		return false;
+	}
+	public static boolean isMorphobankDataset(File datasetDirFile){
+		String bisqueDir     = datasetDirFile.getAbsolutePath() + FILESEP + "morphobank";
+		File bisqueFile = new File(bisqueDir);
+		if (bisqueFile.exists()){
+			return true;
+		}
+		return false;
+	}
+	public static boolean isBisqueDatasetCopy(File datasetFile){
+		String path = datasetFile.getAbsolutePath() + FILESEP + COPY_MARKER_BISQUE;
+		File f = new File(path);
+		if (f.exists()){
+			return true;
+		}
+		return false;
+	}
+	public static boolean isMorphobankDatasetCopy(File datasetFile){
+		String path = datasetFile.getAbsolutePath() + FILESEP + COPY_MARKER_MORPHOBANK;
+		File f = new File(path);
+		if (f.exists()){
+			return true;
+		}
+		return false;
+	}
+	public static void createProvenanceMarkerForBisqueCopy(File datasetFile, File sourceDatasetFile) throws AvatolCVException {
+		String path = datasetFile.getAbsolutePath() + FILESEP + COPY_MARKER_BISQUE;
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(path)); 
+			writer.write("bisque dataset copied from " + sourceDatasetFile.getAbsolutePath() + NL);
+			writer.close();
+		}
+		catch(IOException ioe){
+			throw new AvatolCVException("problem writing dataset copy provenance marker for Bisque dataset");
+		}
+	}
+	public static void createProvenanceMarkerForMorphobankCopy(File datasetFile, File sourceDatasetFile) throws AvatolCVException {
+		String path = datasetFile.getAbsolutePath() + FILESEP + COPY_MARKER_MORPHOBANK;
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(path)); 
+			writer.write("morphobank dataset copied from " + sourceDatasetFile.getAbsolutePath() + NL);
+			writer.close();
+		}
+		catch(IOException ioe){
+			throw new AvatolCVException("problem writing dataset copy provenance marker for Bisque dataset");
+		}
+	}
+	public static boolean isDatasetLocal(File datasetDirFile){
+		if (isBisqueDataset(datasetDirFile)){
+			return false;
+		}
+		else if (isMorphobankDataset(datasetDirFile)){
+			return false;	
+		}
+		return true;
+	}
 	public static void setChosenDataset(DatasetInfo di) throws AvatolCVException {
 	    datasetName = di.getName();
 	    ensureDir(getSessionDir());
