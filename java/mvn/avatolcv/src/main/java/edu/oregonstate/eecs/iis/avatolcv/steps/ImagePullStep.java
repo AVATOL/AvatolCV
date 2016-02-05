@@ -16,10 +16,12 @@ public class ImagePullStep  extends Answerable implements Step {
     }
     @Override
     public void init() throws AvatolCVException {
-        // Tnothing to do
+        // nothing to do
 
     }
-
+    public SessionInfo getSessionInfo(){
+        return this.sessionInfo;
+    }
     @Override
     public void consumeProvidedData() throws AvatolCVException {
         // no input provided, just loading images

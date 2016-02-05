@@ -2,6 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,8 +13,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.VBox;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.FileSystemDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ImagePullStep;
@@ -26,6 +31,7 @@ public class ImagePullStepController implements StepController, ProgressPresente
     private JavaFXStepSequencer fxSession;
     public ProgressBar imageFileDownloadProgress;
     public Label imageFileDownloadMessage;
+    public VBox imageLoadVBox = null;
     
     public ImagePullStepController(JavaFXStepSequencer fxSession, ImagePullStep step, String fxmlDocName){
         this.step = step;
@@ -66,26 +72,38 @@ public class ImagePullStepController implements StepController, ProgressPresente
             loader.setController(this);
             Node content = loader.load();
             
+            if (this.step.getSessionInfo().getDataSource() instanceof FileSystemDataSource){
+                FileSystemDataSource fsds = (FileSystemDataSource)this.step.getSessionInfo().getDataSource();
+                imageLoadVBox.getChildren().remove(3);
+                imageLoadVBox.getChildren().remove(2);
+                imageLoadVBox.getChildren().remove(1);
+                
+                
+                Label label = new Label(fsds.getImageStatusSummary(this.step.getSessionInfo().getNormalizedImageInfos()));
+                imageLoadVBox.getChildren().add(1, label);
+                new Thread(new NavButtonEnablerRunner()).start();
+            }
+            else {
+                imageFileDownloadProgress.setProgress(0.0);
+                imageFileDownloadMessage.setText("");
+                
+                Task<Boolean> task = new ImageDownloadTask(this, this.step, IMAGE_FILE_DOWNLOAD);
+                /*
+                 * NOTE - wanted to use javafx properties and binding here but couldn't dovetail it in.  I could not put
+                 * the loops that do work in the call method of the Task (which manages updating on the JavaFX APp Thread), 
+                 * I had to manage this myself the old school way, to update the progress bar, by using Platform.runLater
+                 * 
+                 */
+                //imageFileDownloadProgress.progressProperty().bind(fileDownloadPercentProperty);
+                //imageInfoDownloadProgress.progressProperty().bind(infoDownloadPercentProperty);
+                //imageFileDownloadMessage.textProperty().bind(fileMessageProperty);
+                //imageInfoDownloadMessage.textProperty().bind(infoMessageProperty);
+                new Thread(task).start();
+               
+            }
             
             
-            //imageInfoDownloadProgress.setProgress(0.0);
-            //imageInfoDownloadMessage.setText("");
             
-            imageFileDownloadProgress.setProgress(0.0);
-            imageFileDownloadMessage.setText("");
-            
-            Task<Boolean> task = new ImageDownloadTask(this, this.step, IMAGE_FILE_DOWNLOAD);
-            /*
-             * NOTE - wanted to use javafx properties and binding here but couldn't dovetail it in.  I could not put
-             * the loops that do work in the call method of the Task (which manages updating on the JavaFX APp Thread), 
-             * I had to manage this myself the old school way, to update the progress bar, by using Platform.runLater
-             * 
-             */
-            //imageFileDownloadProgress.progressProperty().bind(fileDownloadPercentProperty);
-            //imageInfoDownloadProgress.progressProperty().bind(infoDownloadPercentProperty);
-            //imageFileDownloadMessage.textProperty().bind(fileMessageProperty);
-            //imageInfoDownloadMessage.textProperty().bind(infoMessageProperty);
-            new Thread(task).start();
             return content;
         }
         catch(IOException ioe){

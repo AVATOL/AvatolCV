@@ -249,6 +249,16 @@ public class FileSystemDataSource implements DataSource {
         }
         return false;
     }
-
-
+    
+    public String getImageStatusSummary(NormalizedImageInfos imageInfos) throws AvatolCVException {
+        int imageCount = imageInfos.getDistinctImageCountForSession();
+        List<NormalizedImageInfo> niis = imageInfos.getNormalizedImageInfosForSession();
+        int scorableItemCount = niis.size();
+        if (isCurrentDatasetCopyOfMorphobankDataset()){
+            return scorableItemCount + " cells represented in this dataset for this session involving " + imageCount + " images";
+        }
+        else {
+            return imageCount + " images present in dataset for this session";
+        }
+    }
 }

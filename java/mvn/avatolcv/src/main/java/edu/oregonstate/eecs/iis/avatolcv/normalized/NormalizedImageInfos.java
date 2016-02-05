@@ -222,4 +222,16 @@ public class NormalizedImageInfos {
 			}
 		}
 	}
+	
+	public int getDistinctImageCountForSession() throws AvatolCVException {
+	    List<NormalizedImageInfo> niis =  getNormalizedImageInfosForSession();
+	    List<String> imageIDs = new ArrayList<String>();
+	    for (NormalizedImageInfo nii : niis){
+	        String ID = nii.getImageID();
+	        if (!imageIDs.contains(ID)){
+	            imageIDs.add(ID);
+	        }
+	    }
+	    return imageIDs.size();
+	}
 }
