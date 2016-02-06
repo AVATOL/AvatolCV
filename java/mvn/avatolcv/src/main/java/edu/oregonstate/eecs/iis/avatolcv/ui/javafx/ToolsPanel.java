@@ -50,9 +50,9 @@ public class ToolsPanel implements CopyDatasetTab {
     public ChoiceBox<String> editDatasetChoiceBox = null;
     public GridPane editDatasetGridPane = null;
     private DatasetEditor datasetEditor = new DatasetEditor();
-    private Hashtable<String, List<Label>> propLabelsForImageHashForEditor = null;
-    private ArrayList<String>              imageNamesForEditor             = null;
-    private List<Label>                    imageNameLabelsForEditor        = null;
+    private Hashtable<String, List<Label>> propLabelsForNiiFilenameHashForEditor = null;
+    private ArrayList<String>              niiFilenamesForEditor             = null;
+    private List<Label>                    niiFilenameLabelsForEditor        = null;
     private String currentDatasetForEdit = null;
 	//private Hashtable<String, String>      niiPathnameForImageNameHash     = null;
 
@@ -153,13 +153,13 @@ public class ToolsPanel implements CopyDatasetTab {
 	}
 	public void clearDatasetEdits(){
 		datasetEditor.clearEdits();
-		for (String imageName : imageNamesForEditor){
-			List<Label> propLabels = propLabelsForImageHashForEditor.get(imageName);
+		for (String imageName : niiFilenamesForEditor){
+			List<Label> propLabels = propLabelsForNiiFilenameHashForEditor.get(imageName);
 			for (Label l : propLabels){
 				clearLabel(l);
 			}
 		}
-		for (Label l : imageNameLabelsForEditor){
+		for (Label l : niiFilenameLabelsForEditor){
 			clearLabel(l);
 		}
 	}
@@ -170,16 +170,16 @@ public class ToolsPanel implements CopyDatasetTab {
 		l.setStyle("-fx-background-color:red;");
 	}
 	public void loadEditor(String datasetName) throws AvatolCVException {
-		propLabelsForImageHashForEditor = new Hashtable<String, List<Label>>();
-    	imageNamesForEditor             = new ArrayList<String>();
-    	imageNameLabelsForEditor        = new ArrayList<Label>();
+		propLabelsForNiiFilenameHashForEditor = new Hashtable<String, List<Label>>();
+    	niiFilenamesForEditor             = new ArrayList<String>();
+    	niiFilenameLabelsForEditor        = new ArrayList<Label>();
     	currentDatasetForEdit = datasetName;
     	//niiPathnameForImageNameHash     = new Hashtable<String, String>();
 		GridPane gp = editDatasetGridPane;
 		gp.getChildren().clear();
 		datasetEditor.loadDataset(datasetName);
 		List<NormalizedKey> propKeys = datasetEditor.getPropKeys();
-		List<String> niiNames = datasetEditor.getNiiNames();
+		List<String> niiFilenames = datasetEditor.getNiiFilenames();
 		int row = 0;
 		Label imageColumnLabel = new Label("image name");
 		decorateHeaderLabel(imageColumnLabel);
@@ -191,24 +191,24 @@ public class ToolsPanel implements CopyDatasetTab {
 			gp.add(propNameLabel, propNameColumnIndex++, row);
 		}
 		row++;
-		for (String niiName : niiNames){
+		for (String niiFilename : niiFilenames){
 			int column = 0;
-			String imageName = datasetEditor.getImageNameForNiiName(niiName);
-			String niiPathname = datasetEditor.getNiiPathnameForNiiName(niiName);
+			String imageName = datasetEditor.getImageNameForNiiFilename(niiFilename);
 			//niiPathnameForImageNameHash.put(imageName, niiPathname);
 			List<Label> propLabelList = new ArrayList<Label>();
-			propLabelsForImageHashForEditor.put(imageName, propLabelList);
+			propLabelsForNiiFilenameHashForEditor.put(niiFilename, propLabelList);
 			Label label = new Label(imageName);
-			imageNameLabelsForEditor.add(label);
-			imageNamesForEditor.add(imageName);
-			label.setOnMouseClicked(new ImageLabelToggle(imageName));
+			niiFilenameLabelsForEditor.add(label);
+			niiFilenamesForEditor.add(niiFilename);
+			label.setOnMouseClicked(new ImageLabelToggle(niiFilename));
 			//imageNameforLabelHash.put(label, imageName);
 			clearLabel(label);
 			label.setPadding(new Insets(4,4,4,10));
 			label.setMaxWidth(Double.MAX_VALUE);
 			gp.add(label, column++, row);
 			for (NormalizedKey propKey : propKeys){
-				String propValue = datasetEditor.getValueForProperty(niiName,propKey);
+				String propValue = datasetEditor.getValueForProperty(niiFilename,propKey);
+				System.out.println(" niiName + " + niiFilename + " propKey " + propKey + " propValue " + propValue);
 				if (propValue.equals("")){
 					propValue = "?";
 				}
@@ -217,7 +217,7 @@ public class ToolsPanel implements CopyDatasetTab {
 				clearLabel(propLabel);
 				propLabel.setMaxWidth(Double.MAX_VALUE);
 				propLabel.setPadding(new Insets(4,4,4,10));
-				propLabel.setOnMouseClicked(new PropLabelToggle(imageName, propKey));
+				propLabel.setOnMouseClicked(new PropLabelToggle(niiFilename, propKey));
 				gp.add(propLabel, column++, row);
 			}
 			row++;
@@ -245,17 +245,17 @@ public class ToolsPanel implements CopyDatasetTab {
 		}
 	}
 	public class ImageLabelToggle implements EventHandler<MouseEvent> {
-		private String imageName = null;
-		public ImageLabelToggle(String imageName){
-			this.imageName = imageName;
+		private String niiFilename = null;
+		public ImageLabelToggle(String niiFilename){
+			this.niiFilename = niiFilename;
 		}
 		@Override
 		public void handle(MouseEvent mouseEvent) {
 			if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-	            datasetEditor.toggleEditForImageName(imageName);
+	            datasetEditor.toggleEditForNiiFilename(niiFilename);
 	            Label source = (Label)mouseEvent.getSource();
-	            List<Label> propLabels = propLabelsForImageHashForEditor.get(imageName);
-	            if (datasetEditor.isImageNameMarkedForDelete(imageName)){
+	            List<Label> propLabels = propLabelsForNiiFilenameHashForEditor.get(niiFilename);
+	            if (datasetEditor.isNiiFilenameMarkedForDelete(niiFilename)){
 	            	selectLabel(source);
 	            	for (Label l : propLabels){
 	            		selectLabel(l);
