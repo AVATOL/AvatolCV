@@ -7,6 +7,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -48,6 +49,7 @@ public class GroupedPanelTrueScoring extends VBox {
 	private KeySorterTrueScoring keySorter = null;
 	private NumbersUpdater numbersUpdater = null;
 	private boolean trainTestSplitRequiredByAlgorithm = false;
+	private boolean showDisqualificationExplanation = false;
 	public GroupedPanelTrueScoring(List<ScoringSet> sets, String trainTestConcern, NormalizedKey trainTestConcernKey, List<NormalizedValue> trainTestValues, boolean trainTestSplitRequiredByAlgorithm) throws AvatolCVException {
 		this.sets = sets;
 		this.trainTestSplitRequiredByAlgorithm = true;
@@ -57,12 +59,26 @@ public class GroupedPanelTrueScoring extends VBox {
 		if (null == keySorter){
         	 keySorter = new KeySorterTrueScoring(sets,trainTestConcernKey);
         }
-		HBox hbox = createStatusPanel();
-		hbox.setPrefHeight(USE_COMPUTED_SIZE);
 		ScrollPane mainPane = createTrainTestPanel();
 		mainPane.setPrefHeight(USE_COMPUTED_SIZE);
 		this.getChildren().add(mainPane);
+		
+		
+        double totalImages = keySorter.getTotalScoringCount() + keySorter.getTotalTrainingCount();
+        double pTrain = 100 * keySorter.getTotalTrainingCount() / totalImages;
+        String percentToTrain = String.format( "%.2f", pTrain );
+        double pScore = 100 * keySorter.getTotalScoringCount() / totalImages;
+        String percentToScore = String.format( "%.2f", pScore );
+        String ratioCount = ("    (" + keySorter.getTotalTrainingCount() + " vs " + keySorter.getTotalScoringCount() + ")");
+		
+		
+		HBox hbox = createStatusPanel((int)totalImages, percentToTrain, percentToScore, ratioCount);
+        hbox.setPrefHeight(USE_COMPUTED_SIZE);
 		this.getChildren().add(hbox);
+		if (showDisqualificationExplanation){
+		    TextArea expl = new TextArea("* Training examples disqualified because for this algorithm, " + trainTestConcern + " values must be for either scoring or training, not both");
+		    this.getChildren().add(expl);
+		}
 		this.setPrefHeight(USE_COMPUTED_SIZE);
 	}
 	public ScrollPane createTrainTestPanel() throws AvatolCVException {
@@ -105,7 +121,10 @@ public class GroupedPanelTrueScoring extends VBox {
             }
             if (hasScoring){
             	if (onlyShowScoring){
-            		showScoringLineWithTrainingExclusion(gp, row++, ttValName, scoringImageCount, trainingImageCount);
+            	    if (trainingImageCount > 0){
+            	        showScoringLineWithTrainingExclusion(gp, row++, ttValName, scoringImageCount, trainingImageCount);
+            	        this.showDisqualificationExplanation = true;
+            	    }
             	}
             	else {
             		showScoringLine(gp, row++, ttValName, scoringImageCount);
@@ -136,18 +155,18 @@ public class GroupedPanelTrueScoring extends VBox {
 		gp.add(new Label("score"), 1,row);
 		gp.add(new Label(name), 2, row);
 		gp.add(new Label("" + countScoring), 3, row);
-		gp.add(new Label("* " + countTraining + " training examples ignored"), 4, row);
+		gp.add(new Label("(* " + countTraining + " training examples disqualified)"), 4, row);
 	}
-	public HBox createStatusPanel(){
+	public HBox createStatusPanel(int totalImages, String percentToTrain, String percentToScore, String ratioCount){
 		HBox percentageExpressionHbox = new HBox();
 		percentageExpressionHbox.getChildren().clear();
 		Label totalImagesLabel =         new Label("Total images in play: ");
-		Label totalImagesValueLabel =    new Label();
+		Label totalImagesValueLabel =    new Label("" + totalImages);
 		Label percentToTrainLabel =      new Label("    % to train: ");
-		Label percentToTainValueLabel =  new Label();
+		Label percentToTainValueLabel =  new Label(percentToTrain);
 		Label percentToScoreLabel =      new Label("    % to score: ");
-		Label percentToScoreValueLabel = new Label();
-		Label ratioCountLabel =          new Label();
+		Label percentToScoreValueLabel = new Label(percentToScore);
+		Label ratioCountLabel =          new Label(ratioCount);
 		
 		percentageExpressionHbox.getChildren().add(totalImagesLabel);
 		percentageExpressionHbox.getChildren().add(totalImagesValueLabel);

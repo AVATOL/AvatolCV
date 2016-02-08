@@ -16,13 +16,13 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 public class DatasetEditor {
     private static final String FILESEP = System.getProperty("file.separator");
     // normalized image info names
-    private List<String> niiNames = null;
+    private List<String> niiFilenames = null;
     private NormalizedImageInfos imageInfos = null;
     List<NormalizedKey> allKeys = null;
-    private Hashtable<String, NormalizedImageInfo> niiForImagenameHash = null;
-    private Hashtable<String, List<NormalizedKey>> keysToDeleteValuesForPerImageHash = null;
-    private List<String> imagesToDeleteList = null;
-	private Hashtable<String, String> niiPathnameForImageNameHash = null;
+    private Hashtable<String, NormalizedImageInfo> niiForNiiFilenameHash = null;
+    private Hashtable<String, List<NormalizedKey>> keysToDeleteValuesForPerNiiFilenameHash = null;
+    private List<String> niiFilenamesToDeleteList = null;
+	private Hashtable<String, String> niiPathnameForNiiFilenameHash = null;
 
 	public void clear(){
 		
@@ -35,27 +35,25 @@ public class DatasetEditor {
 	}
 	
 	public void loadDataset(String datasetName) throws AvatolCVException {
-		niiForImagenameHash = new Hashtable<String, NormalizedImageInfo>();
-		keysToDeleteValuesForPerImageHash = new Hashtable<String, List<NormalizedKey>>();
-    	niiPathnameForImageNameHash     = new Hashtable<String, String>();
-		imagesToDeleteList = new ArrayList<String>();
-		niiNames = new ArrayList<String>();
+		niiForNiiFilenameHash = new Hashtable<String, NormalizedImageInfo>();
+		keysToDeleteValuesForPerNiiFilenameHash = new Hashtable<String, List<NormalizedKey>>();
+    	niiPathnameForNiiFilenameHash     = new Hashtable<String, String>();
+		niiFilenamesToDeleteList = new ArrayList<String>();
+		niiFilenames = new ArrayList<String>();
 		imageInfos = getNormalizedImageInfosForDataset(datasetName);
 		allKeys = getAllKeys(imageInfos);
 		List<NormalizedImageInfo> niis = imageInfos.getNormalizedImageInfosForDataset();
 		for (NormalizedImageInfo nii : niis){
-			//String imageName = nii.getNiiFilename();
-			String imageName = nii.getImageName();
-			niiNames.add(imageName);
-			niiForImagenameHash.put(imageName,  nii);
-	    	niiPathnameForImageNameHash.put(imageName, nii.getPath());
+			String niiFilename = nii.getNiiFilename();  
+			niiFilenames.add(niiFilename);
+			niiForNiiFilenameHash.put(niiFilename,  nii);
+	    	niiPathnameForNiiFilenameHash.put(niiFilename, nii.getPath());
 		}
 	}
 	public List<NormalizedKey> getAllKeys(NormalizedImageInfos imageInfos) throws AvatolCVException {
 		List<NormalizedKey> result = new ArrayList<NormalizedKey>();
 		List<NormalizedImageInfo> niis = imageInfos.getNormalizedImageInfosForDataset();
 		for (NormalizedImageInfo nii : niis){
-			String imageName = nii.getImageName();
 			List<NormalizedKey> keys = nii.getKeys();
 			for (NormalizedKey key : keys){
 				if (!result.contains(key)){
@@ -84,15 +82,15 @@ public class DatasetEditor {
 		result.addAll(allKeys);
 		return result;
 	}
-	public List<String> getNiiNames(){
+	public List<String> getNiiFilenames(){
 		List<String> result = new ArrayList<String>();
-		result.addAll(niiNames);
+		result.addAll(niiFilenames);
 		return result;
 	}
-	public String getValueForProperty(String niiName, NormalizedKey propKey) throws AvatolCVException {
-		NormalizedImageInfo nii = niiForImagenameHash.get(niiName);
+	public String getValueForProperty(String niiFilename, NormalizedKey propKey) throws AvatolCVException {
+		NormalizedImageInfo nii = niiForNiiFilenameHash.get(niiFilename);
 		if (null == nii){
-			throw new AvatolCVException("no NormalizedImageInfo found with filename " + niiName);
+			throw new AvatolCVException("no NormalizedImageInfo found with filename " + niiFilename);
 		}
 		NormalizedValue nv = nii.getValueForKey(propKey);
 		if (null == nv){
@@ -100,74 +98,74 @@ public class DatasetEditor {
 		}
 		return nv.getName();
 	}
-	public String getImageNameForNiiName(String niiName)  throws AvatolCVException {
-		NormalizedImageInfo nii = niiForImagenameHash.get(niiName);
+	public String getImageNameForNiiFilename(String niiFilename)  throws AvatolCVException {
+		NormalizedImageInfo nii = niiForNiiFilenameHash.get(niiFilename);
 		if (null == nii){
-			throw new AvatolCVException("no NormalizedImageInfo found with filename " + niiName);
+			throw new AvatolCVException("no NormalizedImageInfo found with filename " + niiFilename);
 		}
 		String imageName = nii.getImageName();
 		return imageName;
 	}
 	
-	public String getNiiPathnameForNiiName(String niiName)  throws AvatolCVException {
-		NormalizedImageInfo nii = niiForImagenameHash.get(niiName);
+	public String getNiiPathnameForNiiFilename(String niiFilename)  throws AvatolCVException {
+		NormalizedImageInfo nii = niiForNiiFilenameHash.get(niiFilename);
 		if (null == nii){
-			throw new AvatolCVException("no NormalizedImageInfo found with filename " + niiName);
+			throw new AvatolCVException("no NormalizedImageInfo found with filename " + niiFilename);
 		}
 		return nii.getPath();
 	}
-	public boolean isImageNameMarkedForDelete(String imageName){
-		if (imagesToDeleteList.contains(imageName)){
+	public boolean isNiiFilenameMarkedForDelete(String niiFilename){
+		if (niiFilenamesToDeleteList.contains(niiFilename)){
 			return true;
 		}
 		return false;
 	}
-	public boolean isPropertyMarkedForDelete(String imageName, NormalizedKey propKey){
-		List<NormalizedKey> keysForImage = keysToDeleteValuesForPerImageHash.get(imageName);
-		if (null == keysForImage){
+	public boolean isPropertyMarkedForDelete(String niiFilename, NormalizedKey propKey){
+		List<NormalizedKey> keysForNiiFilename = keysToDeleteValuesForPerNiiFilenameHash.get(niiFilename);
+		if (null == keysForNiiFilename){
 			return false;
 		}
-		if (keysForImage.contains(propKey)){
+		if (keysForNiiFilename.contains(propKey)){
 			return true;
 		}
 		return false;
 	}
-	public void toggleEditForPropkey(String imageName, NormalizedKey propKey){
-		List<NormalizedKey> keysForImage = keysToDeleteValuesForPerImageHash.get(imageName);
+	public void toggleEditForPropkey(String niiFilename, NormalizedKey propKey){
+		List<NormalizedKey> keysForImage = keysToDeleteValuesForPerNiiFilenameHash.get(niiFilename);
 		if (null == keysForImage){
 			keysForImage = new ArrayList<NormalizedKey>();
-			keysToDeleteValuesForPerImageHash.put(imageName, keysForImage);
+			keysToDeleteValuesForPerNiiFilenameHash.put(niiFilename, keysForImage);
 		}
 		if (keysForImage.contains(propKey)){
 			keysForImage.remove(propKey);
-			System.out.println("cancel delete for " + imageName + " " + propKey.getName());
+			System.out.println("cancel delete for " + niiFilename + " " + propKey.getName());
 		}
 		else {
 			keysForImage.add(propKey);
-			System.out.println("DELETE for " + imageName + " " + propKey.getName());
+			System.out.println("DELETE for " + niiFilename + " " + propKey.getName());
 		}
 	}
 	
-	public void toggleEditForImageName(String imageName){
-		if (imagesToDeleteList.contains(imageName)){
-			imagesToDeleteList.remove(imageName);
-			System.out.println("cancel delete for " + imageName);
+	public void toggleEditForNiiFilename(String niiFilename){
+		if (niiFilenamesToDeleteList.contains(niiFilename)){
+			niiFilenamesToDeleteList.remove(niiFilename);
+			System.out.println("cancel delete for " + niiFilename);
 		}
 		else {
-			imagesToDeleteList.add(imageName);
-			System.out.println("DELETE for " + imageName );
-			List<NormalizedKey> keysToDelete = keysToDeleteValuesForPerImageHash.get(imageName);
+			niiFilenamesToDeleteList.add(niiFilename);
+			System.out.println("DELETE for " + niiFilename );
+			List<NormalizedKey> keysToDelete = keysToDeleteValuesForPerNiiFilenameHash.get(niiFilename);
 			if (null != keysToDelete){
 				keysToDelete.clear();
 			}
 		}
 	}
 	public void clearEdits(){
-		imagesToDeleteList.clear();
-		Enumeration<String> imageNameEnum = keysToDeleteValuesForPerImageHash.keys();
-		while (imageNameEnum.hasMoreElements()){
-			String imageName = imageNameEnum.nextElement();
-			List<NormalizedKey> keysForImage = keysToDeleteValuesForPerImageHash.get(imageName);
+		niiFilenamesToDeleteList.clear();
+		Enumeration<String> niiFilenameEnum = keysToDeleteValuesForPerNiiFilenameHash.keys();
+		while (niiFilenameEnum.hasMoreElements()){
+			String niiFilename = niiFilenameEnum.nextElement();
+			List<NormalizedKey> keysForImage = keysToDeleteValuesForPerNiiFilenameHash.get(niiFilename);
 			if (null != keysForImage){
 				keysForImage.clear();
 			}
@@ -179,20 +177,20 @@ public class DatasetEditor {
 		f.delete();
 	}
 	public void saveEdits() throws AvatolCVException {
-		Enumeration<String> imageNamesEnum = niiForImagenameHash.keys();
-		while (imageNamesEnum.hasMoreElements()){
-			String imageName = imageNamesEnum.nextElement();
-			if (imageName.endsWith("5EA_1.txt")){
+		Enumeration<String> niiFilenamesEnum = niiForNiiFilenameHash.keys();
+		while (niiFilenamesEnum.hasMoreElements()){
+			String niiFilename = niiFilenamesEnum.nextElement();
+			if (niiFilename.endsWith("5EA_1.txt")){
 				int foo = 3;
 				int bar = foo;
 			//	problem is that imageName is the name of the original image, not the name of the niiFilename - need another lookup for that.
 			}
-			NormalizedImageInfo nii = niiForImagenameHash.get(imageName);
-			if (imagesToDeleteList.contains(imageName)){
+			NormalizedImageInfo nii = niiForNiiFilenameHash.get(niiFilename);
+			if (niiFilenamesToDeleteList.contains(niiFilename)){
 				deleteNiiFile(nii);
 			}
 			else {
-				List<NormalizedKey> keysForImage = keysToDeleteValuesForPerImageHash.get(imageName);
+				List<NormalizedKey> keysForImage = keysToDeleteValuesForPerNiiFilenameHash.get(niiFilename);
 				boolean madeEdit = false;
 				if (null != keysForImage){
 					for (NormalizedKey key : keysForImage){

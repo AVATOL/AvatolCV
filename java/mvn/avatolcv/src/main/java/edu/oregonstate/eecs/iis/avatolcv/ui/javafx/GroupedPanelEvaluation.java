@@ -151,25 +151,25 @@ public class GroupedPanelEvaluation extends VBox {
 		private Label percentToTrain;
 		private Label percentToScore;
 		private Label ratioCount;
-		private KeySorterEvaluation ssks;
-		public NumbersUpdater(KeySorterEvaluation ssks, Label totalImages, Label percentToTrain, Label percentToScore, Label ratioCount){
+		private KeySorterEvaluation kse;
+		public NumbersUpdater(KeySorterEvaluation kse, Label totalImages, Label percentToTrain, Label percentToScore, Label ratioCount){
 			this.totalImages = totalImages;
 			this.percentToTrain = percentToTrain;
 			this.percentToScore = percentToScore;
 			this.ratioCount = ratioCount;
-			this.ssks = ssks;
+			this.kse = kse;
 			update();
 		}
 		public void update(){
-			double imageCount = ssks.getTotalScoringCount() + ssks.getTotalTrainingCount();
+			double imageCount = kse.getTotalScoringCount() + kse.getTotalTrainingCount();
 			totalImages.setText("" + (int)imageCount);
-			double pTrain = 100 * ssks.getTotalTrainingCount() / imageCount;
+			double pTrain = 100 * kse.getTotalTrainingCount() / imageCount;
 			String pTrainString = String.format( "%.2f", pTrain );
 			percentToTrain.setText("" + pTrainString);
-			double pScore = 100 * ssks.getTotalScoringCount() / imageCount;
+			double pScore = 100 * kse.getTotalScoringCount() / imageCount;
 			String pScoreString = String.format( "%.2f", pScore );
 			percentToScore.setText("" + pScoreString);
-			ratioCount.setText("    (" + ssks.getTotalTrainingCount() + " vs " + ssks.getTotalScoringCount() + ")");
+			ratioCount.setText("    (" + kse.getTotalTrainingCount() + " vs " + kse.getTotalScoringCount() + ")");
 		}
 		
 	}

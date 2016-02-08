@@ -36,6 +36,7 @@ public class KeySorterTrueScoring {
 	 */
 	private void sortByImageValueOfKeyAndMode(){
 	    for (NormalizedValue nv : valuesForKey){
+	        System.out.println("sortByImageValueOfKeyAndMode  -  for NV " + nv);
 	        for (ModalImageInfo mii : allModals ){
 	            if (mii.getNormalizedImageInfo().getValueForKey(nKey).equals(nv)){
 	            	if (mii.isTraining()){
@@ -60,7 +61,11 @@ public class KeySorterTrueScoring {
 	    }
 	}
 	public boolean hasTrainingImagesForKey(NormalizedValue nv){
-    	if (getTrainingImagesForKey(nv).size() == 0){
+	    List<ModalImageInfo> miis = getTrainingImagesForKey(nv);
+	    if (null == miis){
+	        return false;
+	    }
+    	if (miis.size() == 0){
     		return false;
     	}
     	return true;
@@ -70,16 +75,28 @@ public class KeySorterTrueScoring {
 		return miisForValue;
 	}
     public boolean hasScoringImagesForKey(NormalizedValue nv){
-    	if (getScoringImagesForKey(nv).size() == 0){
+        List<ModalImageInfo> miis = getScoringImagesForKey(nv);
+        if (null == miis){
+            return false;
+        }
+    	if (miis.size() == 0){
     		return false;
     	}
     	return true;
     }
     public int getScoringImageCount(NormalizedValue nv){
-    	return getScoringImagesForKey(nv).size();
+        List<ModalImageInfo> miis = getScoringImagesForKey(nv);
+        if (null == miis){
+            return 0;
+        }
+    	return miis.size();
     }
     public int getTrainingImageCount(NormalizedValue nv){
-    	return getTrainingImagesForKey(nv).size();
+        List<ModalImageInfo> miis = getTrainingImagesForKey(nv);
+        if (null == miis){
+            return 0;
+        }
+    	return miis.size();
     }
 	public List<ModalImageInfo> getScoringImagesForKey(NormalizedValue nv){
 		List<ModalImageInfo> miisForValue = miisForValueHashScoring.get(nv);
@@ -97,4 +114,23 @@ public class KeySorterTrueScoring {
 			mii.getNormalizedImageInfo().excludeForSession("userRemovedDueToTrainingTestConflict");
 		}
 	}
+   public int getTotalTrainingCount(){
+        int count = 0;
+        for (ModalImageInfo mii : allModals){
+            if (mii.isTraining()){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int getTotalScoringCount(){
+        int count = 0;
+        for (ModalImageInfo mii : allModals){
+            if (mii.isScoring()){
+                count++;
+            }
+        }
+        return count;
+    }
 }
