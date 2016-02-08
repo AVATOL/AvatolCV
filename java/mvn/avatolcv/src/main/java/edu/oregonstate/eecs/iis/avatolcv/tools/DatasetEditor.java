@@ -44,7 +44,6 @@ public class DatasetEditor {
 		allKeys = getAllKeys(imageInfos);
 		List<NormalizedImageInfo> niis = imageInfos.getNormalizedImageInfosForDataset();
 		for (NormalizedImageInfo nii : niis){
-			//String imageName = nii.getNiiFilename();
 			String niiFilename = nii.getNiiFilename();  
 			niiFilenames.add(niiFilename);
 			niiForNiiFilenameHash.put(niiFilename,  nii);

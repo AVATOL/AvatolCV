@@ -164,10 +164,10 @@ public class ToolsPanel implements CopyDatasetTab {
 		}
 	}
 	private void clearLabel(Label l){
-		l.setStyle("-fx-background-color:white;");
+	    l.setStyle("-fx-background-color:white;");
 	}
 	private void selectLabel(Label l){
-		l.setStyle("-fx-background-color:red;");
+	    l.setStyle("-fx-background-color:red;");
 	}
 	public void loadEditor(String datasetName) throws AvatolCVException {
 		propLabelsForNiiFilenameHashForEditor = new Hashtable<String, List<Label>>();
