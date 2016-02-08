@@ -159,7 +159,13 @@ public class ResultsReview {
         for (String name : names){
             runSelectChoiceBox.getItems().add(name);
         }
-        runSelectChoiceBox.setValue(this.runID);
+        String currentRunName = "";
+        for (String name : names){
+            if (name.startsWith(this.runID)){
+                currentRunName = name;
+            }
+        }
+        runSelectChoiceBox.setValue(currentRunName);
         runSelectChoiceBox.requestLayout();
     }
     private boolean isEvaluationMode(){
