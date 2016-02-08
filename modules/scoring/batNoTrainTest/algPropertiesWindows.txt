@@ -1,0 +1,14 @@
+launchWith=batSkullScoreTrainTestNotNecessary.py
+algName=debug_partsScoringNoTT
+algType=scoring
+scoringFocus=SPECIMEN_PART_PRESENCE_ABSENCE
+scoringScope=MULTIPLE_ITEM
+trainTestConcernRequired=false
+description=Scores presence/absence of simple parts, for example, types of teeth.
+
+includePointAnnotationsInScoringFile=true
+
+inputRequired:testImagesFile refsFilesWithSuffix * ofType rawImage
+
+outputGenerated:ofType isolatedSpecimenImage withSuffix _scored
+trainingLabelImageSuffix=*
