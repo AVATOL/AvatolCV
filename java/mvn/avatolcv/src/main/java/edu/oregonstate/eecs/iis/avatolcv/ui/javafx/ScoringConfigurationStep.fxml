@@ -14,7 +14,7 @@
             <Insets left="6.0" top="6.0" />
          </VBox.margin>
       </Label>
-      <RadioButton fx:id="radioViewByImage" maxWidth="1.7976931348623157E308" minHeight="30.0" mnemonicParsing="false" onAction="#configureAsSortByImage" text="view by image" VBox.vgrow="NEVER">
+      <RadioButton fx:id="radioViewByImage" maxWidth="1.7976931348623157E308" minHeight="30.0" mnemonicParsing="false" onAction="#configureAsSortByImage" text="divide by image" VBox.vgrow="NEVER">
          <VBox.margin>
             <Insets left="6.0" top="6.0" />
          </VBox.margin>
@@ -24,7 +24,7 @@
       </RadioButton>
       <HBox minHeight="30.0" VBox.vgrow="NEVER">
          <children>
-            <RadioButton fx:id="radioViewByGroup" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#configureAsGroupByProperty" text="view by value of " toggleGroup="$TrainVsScoring" VBox.vgrow="NEVER">
+            <RadioButton fx:id="radioViewByGroup" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#configureAsGroupByProperty" text="divide by value of " toggleGroup="$TrainVsScoring" VBox.vgrow="NEVER">
                <HBox.margin>
                   <Insets left="6.0" top="6.0" />
                </HBox.margin>
