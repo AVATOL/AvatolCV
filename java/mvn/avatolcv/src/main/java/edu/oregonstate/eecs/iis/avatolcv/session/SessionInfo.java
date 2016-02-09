@@ -377,9 +377,16 @@ public class SessionInfo{
     	}
     	return false;
     }
-    public AlgorithmSequence getAlgorithmSequence() {
+    public AlgorithmSequence getAlgorithmSequence() throws AvatolCVException  {
         if (this.algorithmSequence == null){
             this.algorithmSequence = new AlgorithmSequence();
+            this.algorithmSequence.setRawDataDir(                           AvatolCVFileSystem.getNormalizedImagesLargeDir());
+            this.algorithmSequence.setSegmentedDataDir(                     AvatolCVFileSystem.getSegmentedDataDir());
+            this.algorithmSequence.setScoredDataDir(                        AvatolCVFileSystem.getScoredDataDir());
+            this.algorithmSequence.setOrientedDataDir(                      AvatolCVFileSystem.getOrientedDataDir());
+            this.algorithmSequence.setManuallyProvidedSegmentationLabelsDir(AvatolCVFileSystem.getManuallyProvidedSegmentationLabelsDir());
+            this.algorithmSequence.setManuallyProvidedOrientationLabelsDir( AvatolCVFileSystem.getManuallyProvidedOrientationLabelsDir());
+            this.algorithmSequence.setManuallyProvidedScoringLabelsDir(     AvatolCVFileSystem.getManuallyProvidedScoringLabelsDir());
         }
         return this.algorithmSequence;
     }

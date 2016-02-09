@@ -23,59 +23,124 @@ public class TestAlgorithmSequence extends TestCase {
             Assert.fail("Proplem initializing AvatolCVFileSystem " + ace.getMessage());
         }
     }
-    public void testSegOrientScoreCase(){
+    
+    
+    public void testSegOrientScore(){
         try {
             AlgorithmSequence as = new AlgorithmSequence();
+            as.setRawDataDir(                           "rawData");
+            as.setSegmentedDataDir(                     "segOut");
+            as.setScoredDataDir(                        "scoredOut");
+            as.setOrientedDataDir(                      "oriented");
+            as.setManuallyProvidedSegmentationLabelsDir("manSeg");
+            as.setManuallyProvidedOrientationLabelsDir( "manOrient");
+            as.setManuallyProvidedScoringLabelsDir(     "manScored");
             as.enableSegmentation();
-            Assert.assertEquals(as.getInputDir(),             AvatolCVFileSystem.getNormalizedImagesLargeDir());
-            Assert.assertEquals(as.getOutputDir(),            AvatolCVFileSystem.getSegmentedDataDir());
-            Assert.assertEquals(as.getSupplementalInputDir(), AvatolCVFileSystem.getManuallyProvidedSegmentationLabelsDir());
+            Assert.assertEquals(as.getInputDir(),             "rawData");
+            Assert.assertEquals(as.getOutputDir(),            "segOut");
+            Assert.assertEquals(as.getSupplementalInputDir(), "manSeg");
             
             as.enableOrientation();
-            Assert.assertEquals(as.getInputDir(),             AvatolCVFileSystem.getSegmentedDataDir());
-            Assert.assertEquals(as.getOutputDir(),            AvatolCVFileSystem.getOrientedDataDir());
-            Assert.assertEquals(as.getSupplementalInputDir(), AvatolCVFileSystem.getManuallyProvidedOrientationLabelsDir());
+            Assert.assertEquals(as.getInputDir(),             "segOut");
+            Assert.assertEquals(as.getOutputDir(),            "oriented");
+            Assert.assertEquals(as.getSupplementalInputDir(), "manOrient");
             
             as.enableScoring();
-            Assert.assertEquals(as.getInputDir(),             AvatolCVFileSystem.getOrientedDataDir());
-            Assert.assertEquals(as.getOutputDir(),            AvatolCVFileSystem.getScoredDataDir());
-            Assert.assertEquals(as.getSupplementalInputDir(), AvatolCVFileSystem.getManuallyProvidedScoringLabelsDir());
+            Assert.assertEquals(as.getInputDir(),             "oriented");
+            Assert.assertEquals(as.getOutputDir(),            "scoredOut");
+            Assert.assertEquals(as.getSupplementalInputDir(), "manScored");
+            
+            // backup
+            
+            as.enableScoring();
+            Assert.assertEquals(as.getInputDir(),             "oriented");
+            Assert.assertEquals(as.getOutputDir(),            "scoredOut");
+            Assert.assertEquals(as.getSupplementalInputDir(), "manScored");
+            
+            as.enableOrientation();
+            Assert.assertEquals(as.getInputDir(),             "segOut");
+            Assert.assertEquals(as.getOutputDir(),            "oriented");
+            Assert.assertEquals(as.getSupplementalInputDir(), "manOrient");
+            
+            as.enableSegmentation();
+            Assert.assertEquals(as.getInputDir(),             "rawData");
+            Assert.assertEquals(as.getOutputDir(),            "segOut");
+            Assert.assertEquals(as.getSupplementalInputDir(), "manSeg");
         }
         catch(AvatolCVException ace){
             Assert.fail(ace.getMessage());
         }
     }
+    
+   
     
     public void testSegScoreCase(){
         try {
             AlgorithmSequence as = new AlgorithmSequence();
+            as.setRawDataDir(                           "rawData");
+            as.setSegmentedDataDir(                     "segOut");
+            as.setScoredDataDir(                        "scoredOut");
+            as.setOrientedDataDir(                      "oriented");
+            as.setManuallyProvidedSegmentationLabelsDir("manSeg");
+            as.setManuallyProvidedOrientationLabelsDir( "manOrient");
+            as.setManuallyProvidedScoringLabelsDir(     "manScored");
             as.enableSegmentation();
-            Assert.assertEquals(as.getInputDir(),             AvatolCVFileSystem.getNormalizedImagesLargeDir());
-            Assert.assertEquals(as.getOutputDir(),            AvatolCVFileSystem.getSegmentedDataDir());
-            Assert.assertEquals(as.getSupplementalInputDir(), AvatolCVFileSystem.getManuallyProvidedSegmentationLabelsDir());
+            Assert.assertEquals(as.getInputDir(),             "rawData");
+            Assert.assertEquals(as.getOutputDir(),            "segOut");
+            Assert.assertEquals(as.getSupplementalInputDir(), "manSeg");
             
             as.enableScoring();
-            Assert.assertEquals(as.getInputDir(),             AvatolCVFileSystem.getSegmentedDataDir());
-            Assert.assertEquals(as.getOutputDir(),            AvatolCVFileSystem.getScoredDataDir());
-            Assert.assertEquals(as.getSupplementalInputDir(), AvatolCVFileSystem.getManuallyProvidedScoringLabelsDir());
+            Assert.assertEquals(as.getInputDir(),             "segOut");
+            Assert.assertEquals(as.getOutputDir(),            "scoredOut");
+            Assert.assertEquals(as.getSupplementalInputDir(), "manScored");
+
+            // backup
+            
+            as.enableScoring();
+            Assert.assertEquals(as.getInputDir(),             "segOut");
+            Assert.assertEquals(as.getOutputDir(),            "scoredOut");
+            Assert.assertEquals(as.getSupplementalInputDir(), "manScored");
+            
+            as.enableSegmentation();
+            Assert.assertEquals(as.getInputDir(),             "rawData");
+            Assert.assertEquals(as.getOutputDir(),            "segOut");
+            Assert.assertEquals(as.getSupplementalInputDir(), "manSeg");
         }
         catch(AvatolCVException ace){
             Assert.fail(ace.getMessage());
         }
     }
-    
     public void testOrientScoreCase(){
         try {
             AlgorithmSequence as = new AlgorithmSequence();
+            as.setRawDataDir(                           "rawData");
+            as.setSegmentedDataDir(                     "segOut");
+            as.setScoredDataDir(                        "scoredOut");
+            as.setOrientedDataDir(                      "oriented");
+            as.setManuallyProvidedSegmentationLabelsDir("manSeg");
+            as.setManuallyProvidedOrientationLabelsDir( "manOrient");
+            as.setManuallyProvidedScoringLabelsDir(     "manScored");
             as.enableOrientation();
-            Assert.assertEquals(as.getInputDir(),             AvatolCVFileSystem.getNormalizedImagesLargeDir());
-            Assert.assertEquals(as.getOutputDir(),            AvatolCVFileSystem.getOrientedDataDir());
-            Assert.assertEquals(as.getSupplementalInputDir(), AvatolCVFileSystem.getManuallyProvidedOrientationLabelsDir());
+            Assert.assertEquals(as.getInputDir(),             "rawData");
+            Assert.assertEquals(as.getOutputDir(),            "oriented");
+            Assert.assertEquals(as.getSupplementalInputDir(), "manOrient");
             
             as.enableScoring();
-            Assert.assertEquals(as.getInputDir(),             AvatolCVFileSystem.getOrientedDataDir());
-            Assert.assertEquals(as.getOutputDir(),            AvatolCVFileSystem.getScoredDataDir());
-            Assert.assertEquals(as.getSupplementalInputDir(), AvatolCVFileSystem.getManuallyProvidedScoringLabelsDir());
+            Assert.assertEquals(as.getInputDir(),             "oriented");
+            Assert.assertEquals(as.getOutputDir(),            "scoredOut");
+            Assert.assertEquals(as.getSupplementalInputDir(), "manScored");
+            
+            // backup 
+            
+            as.enableScoring();
+            Assert.assertEquals(as.getInputDir(),             "oriented");
+            Assert.assertEquals(as.getOutputDir(),            "scoredOut");
+            Assert.assertEquals(as.getSupplementalInputDir(), "manScored");
+            
+            as.enableOrientation();
+            Assert.assertEquals(as.getInputDir(),             "rawData");
+            Assert.assertEquals(as.getOutputDir(),            "oriented");
+            Assert.assertEquals(as.getSupplementalInputDir(), "manOrient");
         }
         catch(AvatolCVException ace){
             Assert.fail(ace.getMessage());
@@ -84,11 +149,24 @@ public class TestAlgorithmSequence extends TestCase {
     public void testScoreCase(){
         try {
             AlgorithmSequence as = new AlgorithmSequence();
+            as.setRawDataDir(                           "rawData");
+            as.setSegmentedDataDir(                     "segOut");
+            as.setScoredDataDir(                        "scoredOut");
+            as.setOrientedDataDir(                      "oriented");
+            as.setManuallyProvidedSegmentationLabelsDir("manSeg");
+            as.setManuallyProvidedOrientationLabelsDir( "manOrient");
+            as.setManuallyProvidedScoringLabelsDir(     "manScored");
+            as.enableScoring();
+            Assert.assertEquals(as.getInputDir(),             "rawData");
+            Assert.assertEquals(as.getOutputDir(),            "scoredOut");
+            Assert.assertEquals(as.getSupplementalInputDir(), "manScored");
+            
+            //backup
             
             as.enableScoring();
-            Assert.assertEquals(as.getInputDir(),             AvatolCVFileSystem.getNormalizedImagesLargeDir());
-            Assert.assertEquals(as.getOutputDir(),            AvatolCVFileSystem.getScoredDataDir());
-            Assert.assertEquals(as.getSupplementalInputDir(), AvatolCVFileSystem.getManuallyProvidedScoringLabelsDir());
+            Assert.assertEquals(as.getInputDir(),             "rawData");
+            Assert.assertEquals(as.getOutputDir(),            "scoredOut");
+            Assert.assertEquals(as.getSupplementalInputDir(), "manScored");
         }
         catch(AvatolCVException ace){
             Assert.fail(ace.getMessage());
