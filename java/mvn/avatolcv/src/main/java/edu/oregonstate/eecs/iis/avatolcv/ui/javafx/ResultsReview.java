@@ -197,7 +197,8 @@ public class ResultsReview {
             int index = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_CONFIDENCE);
             Label confLabel = (Label)row.getWidget(ResultsTable.COLNAME_CONFIDENCE);
             Label nameLabel = (Label)row.getWidget(ResultsTable.COLNAME_NAME);
-            Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
+            //Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
+            ChoiceBox<String> scoreChoice = (ChoiceBox<String>)row.getWidget(ResultsTable.COLNAME_SCORE);
            
             truthLabel = (Label)row.getWidget(ResultsTable.COLNAME_TRUTH);
             
@@ -206,7 +207,8 @@ public class ResultsReview {
             	//confLabel.setStyle("-fx-background-color:#CC0000;");
             	confLabel.setDisable(true);
             	nameLabel.setDisable(true);
-            	scoreLabel.setDisable(true);
+            	//scoreChoice.setDisable(true);
+            	//scoreLabel.setDisable(true);
             	if (isEvaluationMode()){
             		truthLabel.setDisable(true);
             	}
@@ -216,7 +218,7 @@ public class ResultsReview {
             	//confLabel.setStyle("-fx-background-color:#00CC00;");
             	confLabel.setDisable(false);
             	nameLabel.setDisable(false);
-            	scoreLabel.setDisable(false);
+            	//scoreLabel.setDisable(false);
             	if (isEvaluationMode()){
             		truthLabel.setDisable(false);
             	}
@@ -289,9 +291,17 @@ public class ResultsReview {
 
         // get score
         String score = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_SCORE));
-        Label scoreLabel = new Label(score);
-        scoreLabel.getStyleClass().add("columnValue");
-        sr.setWidget(ResultsTable.COLNAME_SCORE, scoreLabel);
+        //Label scoreLabel = new Label(score);
+        ChoiceBox<String> cb = new ChoiceBox<String>();
+        List<String> values = this.runSummary.getScoringConcernValues();
+        for (String value : values){
+        	cb.getItems().add(value);
+        }
+        cb.setValue(score);
+        //scoreLabel.getStyleClass().add("columnValue");
+        cb.getStyleClass().add("columnValue");
+        //sr.setWidget(ResultsTable.COLNAME_SCORE, scoreLabel);
+        sr.setWidget(ResultsTable.COLNAME_SCORE, cb);
         
         // get confidence
         int targetIndex = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_CONFIDENCE);
@@ -326,9 +336,10 @@ public class ResultsReview {
             
             // get score
             
-            Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
+            //Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
+            ChoiceBox<String> scoreChoice = (ChoiceBox<String>)row.getWidget(ResultsTable.COLNAME_SCORE);
             System.out.println("col " + column + " row " + offset);
-            scoredImagesGridPane.add(scoreLabel, column, offset);
+            scoredImagesGridPane.add(scoreChoice, column, offset);
             column++;
             // get confidence
             Label confidenceLabel = (Label)row.getWidget(ResultsTable.COLNAME_CONFIDENCE);
