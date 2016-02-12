@@ -10,13 +10,9 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmLauncher;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.CommandLineInvoker;
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.OutputMonitor;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.RunConfigFile;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.SegmentationAlgorithm;
-import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.SegmentationRunStepController;
 
@@ -25,18 +21,19 @@ public class SegmentationRunStep implements Step {
     private static final String FILESEP = System.getProperty("file.separator");
     private SessionInfo sessionInfo = null;
     private AlgorithmLauncher launcher = null;
+    private RunConfigFile runConfigFile = null;
     public SegmentationRunStep(SessionInfo sessionInfo){
         this.sessionInfo = sessionInfo;
     }
-    public String getSelectedSegmentationAlgorithm(){
-        return this.sessionInfo.getSegmentationAlgName();
-    }
+   
     @Override
     public void init() throws AvatolCVException {
         // TODO Auto-generated method stub
         
     }
-
+    public SessionInfo getSessionInfo(){
+        return this.sessionInfo;
+    }
     @Override
     public void consumeProvidedData() throws AvatolCVException {
         // TODO Auto-generated method stub
@@ -49,6 +46,15 @@ public class SegmentationRunStep implements Step {
         return false;
     }
     
+    public String getTestImagesFilePath() throws AvatolCVException {
+        return  AvatolCVFileSystem.getSessionDir() + FILESEP + "testImagesFile_segmentation.txt";
+    }
+    public String getScoredImagesDirPath() throws AvatolCVException{
+        return AvatolCVFileSystem.getSessionDir() + FILESEP + "segmentedData";
+    }
+    public RunConfigFile getRunConfigFile(){
+        return this.runConfigFile;
+    }
     public void runSegmentation(SegmentationRunStepController controller, String processName, boolean useRunConfig) throws AvatolCVException {
         SegmentationAlgorithm sa  = sessionInfo.getSelectedSegmentationAlgorithm();
         AlgorithmSequence algSequence = sessionInfo.getAlgorithmSequence();
@@ -56,8 +62,8 @@ public class SegmentationRunStep implements Step {
         String runConfigPath = null;
         
         if (useRunConfig) {
-            RunConfigFile rcf = new RunConfigFile(sa, algSequence, null);
-            runConfigPath = rcf.getRunConfigPath();
+            this.runConfigFile = new RunConfigFile(sa, algSequence, null);
+            runConfigPath = this.runConfigFile.getRunConfigPath();
             File runConfigFile = new File(runConfigPath);
             if (!runConfigFile.exists()){
                 throw new AvatolCVException("runConfigFile path does not exist."); 
@@ -102,17 +108,7 @@ public class SegmentationRunStep implements Step {
         }
     }
     */
-    private String getStatus(String path) {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(path));
-            String line = reader.readLine();
-            reader.close();
-            return line;
-        }
-        catch(IOException ioe){
-            return "algorithm run status unavailable";
-        }
-    }
+   
     @Override
     public boolean isEnabledByPriorAnswers() {
         if (this.sessionInfo.isSegmentationAlgChosen()){

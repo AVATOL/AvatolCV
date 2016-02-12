@@ -1,7 +1,10 @@
 package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,25 +13,29 @@ import org.apache.logging.log4j.Logger;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OutputMonitor;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.RunConfigFile;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
-import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
+import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTable;
+import edu.oregonstate.eecs.iis.avatolcv.results.SortableRow;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
-import edu.oregonstate.eecs.iis.avatolcv.steps.ImagePullStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationRunStep;
-import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ImagePullStepController.ImageDownloadTask;
-import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ImagePullStepController.MessageUpdater;
-import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ScoringRunStepController.NavButtonDisabler;
-import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.SegmentationConfigurationStepController.AlgChangeListener;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class SegmentationRunStepController implements StepController, OutputMonitor {
     public static final String RUN_SEGMENTATION = "run segmentation";
@@ -40,7 +47,10 @@ public class SegmentationRunStepController implements StepController, OutputMoni
     public Label algName = null;
     public Button cancelAlgorithmButton = null;
     public Label algRunStatus = null;
+    public GridPane resultsGridPane = null;
+    public TabPane algRunTabPane = null;
     private JavaFXStepSequencer fxSession = null;
+    private List<ResultsImageRow> resultsImageRows = new ArrayList<ResultsImageRow>();
     public SegmentationRunStepController(JavaFXStepSequencer fxSession, SegmentationRunStep step, String fxmlDocName){
         this.step = step;
         this.fxmlDocName = fxmlDocName;
@@ -82,7 +92,8 @@ public class SegmentationRunStepController implements StepController, OutputMoni
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
-            String algName = this.step.getSelectedSegmentationAlgorithm();
+            
+            String algName = this.step.getSessionInfo().getSegmentationAlgName();
             this.algName.setText(algName);
             this.outputText.setText("Starting...");
             boolean useRunConfig = useRunConfig();
@@ -112,6 +123,37 @@ public class SegmentationRunStepController implements StepController, OutputMoni
         catch(IOException ioe){
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName() + " : " + ioe.getMessage());
         } 
+    }
+    private ImageView getOutputImage(String scoredImagesDirPath, String imageID){
+        File f = new File(scoredImagesDirPath);
+        File[] files = f.listFiles();
+        for (File file : files){
+            String name = file.getName();
+            if (name.startsWith(imageID)){
+                Image image = new Image("file:"+file.getAbsolutePath());
+                ImageView iv = new ImageView(image);
+                return iv;
+            }
+        }
+        return null;
+    }
+   
+   
+    public void populateResults() throws AvatolCVException {
+        RunConfigFile rcf = this.step.getRunConfigFile();
+        if (null == rcf){
+            System.out.println("no runConfigFile in play - can't load input and result images");
+        }
+        List<String> inputImageIDs = rcf.getInputImageIDs();
+        Collections.sort(inputImageIDs);
+        int row = 0;
+        for (String imageID : inputImageIDs){
+            List<String> inputImagePathnames = rcf.getInputImagePathnamesForImageID(imageID);
+            List<String> outputImagePathnames = rcf.getOutputImagePathnamesForImageID(imageID);
+            ResultsImageRow ir = new ResultsImageRow(inputImagePathnames, outputImagePathnames, row, resultsGridPane);
+            resultsImageRows.add(ir);
+            row += 2;
+        }
     }
     public class NavButtonDisabler implements Runnable {
         @Override
@@ -144,6 +186,13 @@ public class SegmentationRunStepController implements StepController, OutputMoni
     public class PostSegmentationUIAdjustments implements Runnable{
         @Override
         public void run() {
+            try {
+                populateResults();
+                algRunTabPane.getSelectionModel().select(1);
+            }
+            catch(AvatolCVException ace){
+                AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem loading result images: " + ace.getMessage());
+            }
             fxSession.enableNavButtons();
         }
         

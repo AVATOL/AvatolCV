@@ -1,7 +1,9 @@
 package edu.oregonstate.eecs.iis.avatolcv.algorithm;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -343,4 +345,47 @@ public class RunConfigFile {
         }
         
     }
+    private List<String> getImageIdsFromFile(String path) throws AvatolCVException {
+        List<String> imageIDs = new ArrayList<String>();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(path));
+            String line = null;
+            while (null != (line = reader.readLine())){
+                String[] parts = ClassicSplitter.splitt(line,  '_');
+                String imageID = parts[0];
+                if (!imageIDs.contains(imageID)){
+                    imageIDs.add(imageID);
+                }
+            }
+            reader.close();
+            return imageIDs;
+        }
+        catch(IOException ioe){
+            throw new AvatolCVException("problem loading path " + path + " to extract imageIDs");
+        }
+    }
+    public List<String> getInputImageIDs() throws AvatolCVException {
+        List<AlgorithmInputRequired> airs = alg.getRequiredInputs();
+        List<String> imageIDs = new ArrayList<String>();
+        for (AlgorithmInputRequired air : airs){
+            String path = getFileListPathnameForKey(air.getKey(), this.algSequence);
+            List<String> imageIDsFromFile = getImageIdsFromFile(path);
+            for (String imageID : imageIDsFromFile){
+                if (!imageIDs.contains(imageID)){
+                    imageIDs.add(imageID);
+                }
+            }
+        }
+        return imageIDs;
+    }
+    public List<String> getInputImagePathnamesForImageID(String imageID){
+        return new ArrayList<String>();
+    }
+    public List<String> getOutputImagePathnamesForImageID(String imageID){
+        return new ArrayList<String>();
+    }
+    //public static List<String> getListOfImageIDs(List<String> inputFileListPathnames){
+     //   List<String> result = new ArrayList<String>();
+    //    return result;
+    //}
 }

@@ -118,25 +118,25 @@
 .label.columnHeader {
 	-fx-background-color:#EEEEEE;
 	-fx-font-size:14px;
-	-fx-font-style:bold;
+	font-style:bold;
 	-fx-font-name:arial;
 	-fx-padding:2px 8px 2px 8px;
 }
 .label.columnValue {
 	/*-fx-background-color:#CCCCCC;*/
 	-fx-font-size:13px;
-	-fx-font-style:plain;
+	font-style:plain;
 	-fx-font-name:arial;
 	-fx-padding:2px 8px 2px 8px;
 }
 .label.summaryHeader {
 	-fx-font-size:14px;
-	-fx-font-style:italic;
+	font-style:italic;
 	-fx-font-name:arial;
 }
 .label.summaryValue {
 	-fx-font-size:14px;
-	-fx-font-style:plain;
+	font-style:plain;
 	-fx-font-name:arial;
 }
 .indentedFirstColumn {
