@@ -682,4 +682,7 @@ public class AvatolCVFileSystem {
             }
         }
     }
+    public static String getImagesDir(){
+    	return avatolCVRootDir + FILESEP + "images";
+    }
 }

@@ -14,6 +14,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.results.OutputImageSorter;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ModalImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
@@ -41,6 +42,10 @@ public class RunConfigFile {
     private AlgorithmSequence algSequence = null;
     private String algStatusPath = null;
     private List<ModalImageInfo> scoringImages = null;
+    private List<String> inputImageIDs = new ArrayList<String>();
+    private OutputImageSorter sorter = null;
+    private boolean sorterLoaded = false;
+    
     public RunConfigFile(Algorithm alg, AlgorithmSequence algSequence, List<ModalImageInfo> scoringImages) throws AvatolCVException {
         this.alg = alg;
         this.algSequence = algSequence;
@@ -59,6 +64,63 @@ public class RunConfigFile {
         }
         this.pathOfUserProvidedFiles = algSequence.getSupplementalInputDir();
         persist();
+    }
+    private List<String> getPathnamesFromFile(String path) throws AvatolCVException {
+    	List<String> pathnames = new ArrayList<String>();
+    	try {
+        	BufferedReader reader = new BufferedReader(new FileReader(path));
+        	String line = null;
+        	while (null != (line = reader.readLine())){
+        		pathnames.add(line);
+        	}
+        	reader.close();
+        	return pathnames;
+        }
+        catch(IOException ioe){
+        	throw new AvatolCVException("problem reading pathnames from file requiredInputs file " + path);
+        }
+    }
+    
+    public void loadAndSortInputandOutputImagePaths() throws AvatolCVException {
+    	sorter = new OutputImageSorter();
+    	List<AlgorithmInputRequired> airs = alg.getRequiredInputs();
+        for (AlgorithmInputRequired air : airs){
+        	String suffix = air.getSuffix();
+            String path = getFileListPathnameForKey(air.getKey(), this.algSequence);
+            List<String> pathnames = getPathnamesFromFile(path);
+            sorter.addInputSuffixAndPaths(suffix, pathnames);
+        }
+        List<AlgorithmOutput> aos = alg.getOutputs();
+        String outputDir = this.algSequence.getOutputDir();
+        for (AlgorithmOutput ao : aos){
+        	String suffix = ao.getSuffix();
+            List<String> pathnames = getPathnamesFromDirWithSuffix(outputDir, suffix);
+            sorter.addOutputSuffixAndPaths(suffix, pathnames);
+        }
+        sorter.sort();
+    }
+    public List<String> getPathnamesFromDirWithSuffix(String dir, String suffix) throws AvatolCVException {
+    	List<String> result = new ArrayList<String>();
+    	File f = new File(dir);
+    	if (!f.isDirectory()){
+    		throw new AvatolCVException("given algorithm output directory does not exist: " + dir);
+    	}
+    	File[] files = f.listFiles();
+    	for (File file : files){
+    		String name = file.getName();
+    		String[] parts = ClassicSplitter.splitt(name, '.');
+    		String namePart = parts[0];
+    		String[] fragments = ClassicSplitter.splitt(namePart, '_');
+    		int count = fragments.length;
+    		String suffixCandidate = fragments[count -1];
+    		if (suffix.startsWith("_")){
+    			suffixCandidate = "_" + suffixCandidate;
+    		}
+    		if (suffixCandidate.equals(suffix)){
+    			result.add(file.getAbsolutePath());
+    		}
+    	}
+    	return result;
     }
     public String getAlgorithmStatusPath(){
         return this.algStatusPath;
@@ -351,7 +413,9 @@ public class RunConfigFile {
             BufferedReader reader = new BufferedReader(new FileReader(path));
             String line = null;
             while (null != (line = reader.readLine())){
-                String[] parts = ClassicSplitter.splitt(line,  '_');
+            	File f = new File(line);
+            	String filename = f.getName();
+                String[] parts = ClassicSplitter.splitt(filename,  '_');
                 String imageID = parts[0];
                 if (!imageIDs.contains(imageID)){
                     imageIDs.add(imageID);
@@ -378,11 +442,33 @@ public class RunConfigFile {
         }
         return imageIDs;
     }
-    public List<String> getInputImagePathnamesForImageID(String imageID){
-        return new ArrayList<String>();
+    public List<String> getInputImagePathnamesForImageID(String imageID) throws AvatolCVException {
+    	if (!sorterLoaded){
+    		loadAndSortInputandOutputImagePaths();
+    		sorterLoaded = true;
+    	}
+        return sorter.getInputPathsForImageID(imageID);
     }
-    public List<String> getOutputImagePathnamesForImageID(String imageID){
-        return new ArrayList<String>();
+    public List<String> getOutputImagePathnamesForImageID(String imageID) throws AvatolCVException{
+    	if (!sorterLoaded){
+    		loadAndSortInputandOutputImagePaths();
+    		sorterLoaded = true;
+    	}
+    	return sorter.getOutputPathsForImageID(imageID);
+    }
+    public List<String> getInputSuffixList()  throws AvatolCVException{
+    	if (!sorterLoaded){
+    		loadAndSortInputandOutputImagePaths();
+    		sorterLoaded = true;
+    	}
+    	return sorter.getInputSuffixList();
+    }
+    public List<String> getOutputSuffixList()  throws AvatolCVException{
+    	if (!sorterLoaded){
+    		loadAndSortInputandOutputImagePaths();
+    		sorterLoaded = true;
+    	}
+    	return sorter.getOutputSuffixList();
     }
     //public static List<String> getListOfImageIDs(List<String> inputFileListPathnames){
      //   List<String> result = new ArrayList<String>();
