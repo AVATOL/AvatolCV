@@ -554,6 +554,9 @@ public class AvatolCVFileSystem {
          * images/thumbnail/00-2cNgRYKCyKB6MWSBa4Y5EA_MonocostusUniflorus-mcl30-mod_80.jpg
          */
         // get the fileRootName (sans _80)
+		if (largeImagePath.contains(DIR_NAME_SEGMENTATION_OUTPUT) || largeImagePath.contains(DIR_NAME_ORIENTATION_OUTPUT)){
+			return null;
+		}
         File largeImageFile = new File(largeImagePath);
         String filename = largeImageFile.getName();
         String[] parts = ClassicSplitter.splitt(filename,'_');

@@ -3,7 +3,8 @@ algName=debugCheatLeafOrienter
 algType=orientation
 description=Algorithm debugCheatLeafOrienter copies pregenerated opriented data for the leafDev project to the orientation output directory.
 
-inputRequired:testImagesFile refsFilesWithSuffix * ofType rawImage
+inputRequired:testImagesMaskFile refsFilesWithSuffix _croppedMask ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed
+inputRequired:testImagesFile refsFilesWithSuffix _croppedOrig ofType isolatedSpecimenImage
 
-outputGenerated:ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed withSuffix _croppedMask
-outputGenerated:ofType isolatedSpecimenImage withSuffix _croppedOrig
+outputGenerated:ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed withSuffix _orientedMask
+outputGenerated:ofType isolatedSpecimenImage withSuffix _orientedOrig

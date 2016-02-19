@@ -55,9 +55,7 @@ public class ResultsImageRow {
         findSmallOutputImages(outputImagePathnames);
         
         int column = 0;
-        CheckBox filterCheckbox = new CheckBox("exclude");
-        engageCheckboxFunction(filterCheckbox, imageID);
-        gp.add(filterCheckbox, column++, row);
+        
         for (ImageView iv : smallInputImages){
             gp.add(iv, column++, row);
         }
@@ -71,7 +69,9 @@ public class ResultsImageRow {
         for (Node n : smallOutputImages){
             gp.add(n, column++, row);
         }   
-        
+        CheckBox filterCheckbox = new CheckBox("exclude");
+        engageCheckboxFunction(filterCheckbox, imageID);
+        gp.add(filterCheckbox, column++, row);
     }
     private void greyOutImage(String imageID){
     	for (ImageView iv : smallInputImages){
@@ -155,13 +155,20 @@ public class ResultsImageRow {
             ImageView iv;
             try {
                 String thumbnailPath = AvatolCVFileSystem.getThumbnailPathForLargeImagePath(imagePath);
-                Image image = new Image("file:"+thumbnailPath);
-                iv = new ImageView(image);
+                if (null == thumbnailPath){
+                	iv = null;
+                }
+                else {
+                	Image image = new Image("file:"+thumbnailPath);
+                    iv = new ImageView(image);
+                }
             }
             catch (AvatolCVException ace){
                 iv = null;
             }
-            thumbnailForImagePathHash.put(imagePath, iv);
+            if (null != iv){
+            	thumbnailForImagePathHash.put(imagePath, iv);
+            }
         }
     }
     public int getRow(){

@@ -53,7 +53,7 @@ public class SegmentationRunStepController implements StepController, OutputMoni
     public GridPane resultsGridPane = null;
     public TabPane algRunTabPane = null;
     private JavaFXStepSequencer fxSession = null;
-    private List<ResultsImageRow> resultsImageRows = new ArrayList<ResultsImageRow>();
+   
     public SegmentationRunStepController(JavaFXStepSequencer fxSession, SegmentationRunStep step, String fxmlDocName){
         this.step = step;
         this.fxmlDocName = fxmlDocName;
@@ -75,7 +75,7 @@ public class SegmentationRunStepController implements StepController, OutputMoni
             this.outputText.appendText(logString);
         }
         catch(AvatolCVException ace){
-            AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem loading logfiley: " + ace.getMessage());
+            AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem loading logfile: " + ace.getMessage());
         }
         
     }
@@ -143,66 +143,7 @@ public class SegmentationRunStepController implements StepController, OutputMoni
    
    
     public void populateResults() throws AvatolCVException {
-        RunConfigFile rcf = this.step.getRunConfigFile();
-        if (null == rcf){
-            System.out.println("no runConfigFile in play - can't load input and result images");
-        }
-        List<String> inputImageIDs = rcf.getInputImageIDs();
-        Collections.sort(inputImageIDs);
-        int row = 0;
-        int column = 0;
-        resultsGridPane.getColumnConstraints().clear();
-        Label filterHeader = new Label("filter");
-        ColumnConstraints filterCol = new ColumnConstraints();
-        filterCol.setHgrow(Priority.NEVER);
-    	resultsGridPane.getColumnConstraints().add(filterCol);
-    	resultsGridPane.add(filterHeader, column++, row);
-    	
-        List<String> inSuffixes = rcf.getInputSuffixList();
-        for (String inSuffix : inSuffixes){
-        	Label headerLabel = null;
-        	if (inSuffix.equals(AlgorithmInput.NO_SUFFIX)){
-        		headerLabel = new Label("raw image");
-        	}
-        	else {
-        		headerLabel = new Label(inSuffix);
-        	}
-        	ColumnConstraints col = new ColumnConstraints();
-        	//col.setMaxWidth(iv);
-        	col.setHgrow(Priority.NEVER);
-        	resultsGridPane.getColumnConstraints().add(col);
-        	resultsGridPane.add(headerLabel, column++, row);
-        }
-        Label emptyLabel = new Label(" arrow column ");
-        ColumnConstraints arrowCol = new ColumnConstraints();
-        arrowCol.setHgrow(Priority.NEVER);
-        //arrowCol.setPrefWidth(iv.getFitWidth());
-        resultsGridPane.getColumnConstraints().add(arrowCol);
-        resultsGridPane.add(emptyLabel, column++, row);
         
-        List<String> outSuffixes = rcf.getOutputSuffixList();
-        for (String outSuffix : outSuffixes){
-        	Label headerLabel = new Label(outSuffix);
-        	ColumnConstraints col = new ColumnConstraints();
-        	col.setHgrow(Priority.NEVER);
-        	resultsGridPane.getColumnConstraints().add(col);
-        	resultsGridPane.add(headerLabel, column++, row);
-        }
-        Label expandingSpacerLabel = new Label(" spacer ");
-        ColumnConstraints col = new ColumnConstraints();
-    	//col.setPrefWidth(Double.MAX_VALUE);
-        col.setHgrow(Priority.ALWAYS);
-        resultsGridPane.getColumnConstraints().add(col);
-        resultsGridPane.add(expandingSpacerLabel, column++, row);
-        row++;
-        
-        for (String imageID : inputImageIDs){
-            List<String> inputImagePathnames = rcf.getInputImagePathnamesForImageID(imageID);
-            List<String> outputImagePathnames = rcf.getOutputImagePathnamesForImageID(imageID);
-            ResultsImageRow ir = new ResultsImageRow(inputImagePathnames, outputImagePathnames, row, resultsGridPane, imageID);
-            resultsImageRows.add(ir);
-            row += 2;
-        }
     }
     public class NavButtonDisabler implements Runnable {
         @Override
@@ -236,8 +177,14 @@ public class SegmentationRunStepController implements StepController, OutputMoni
         @Override
         public void run() {
             try {
-                populateResults();
-                algRunTabPane.getSelectionModel().select(1);
+            	RunConfigFile rcf = step.getRunConfigFile();
+                if (null == rcf){
+                    System.out.println("no runConfigFile in play - can't load input and result images");
+                }
+                else {
+                	EarlyStageResultsPopulator esrp = new EarlyStageResultsPopulator(resultsGridPane, rcf);
+                	algRunTabPane.getSelectionModel().select(1);
+                }
             }
             catch(AvatolCVException ace){
                 AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem loading result images: " + ace.getMessage());

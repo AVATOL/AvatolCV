@@ -15,11 +15,14 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.GridPane;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OutputMonitor;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.RunConfigFile;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.OrientationRunStep;
@@ -35,6 +38,8 @@ public class OrientationRunStepController implements StepController, OutputMonit
     public Label algName = null;
     public Button cancelAlgorithmButton = null;
     private JavaFXStepSequencer fxSession = null;
+    public GridPane resultsGridPane = null;
+    public TabPane algRunTabPane = null;
     public OrientationRunStepController(JavaFXStepSequencer fxSession, OrientationRunStep step, String fxmlDocName){
         this.step = step;
         this.fxmlDocName = fxmlDocName;
@@ -136,6 +141,19 @@ public class OrientationRunStepController implements StepController, OutputMonit
     public class PostOrientationUIAdjustments implements Runnable{
         @Override
         public void run() {
+        	try {
+            	RunConfigFile rcf = step.getRunConfigFile();
+                if (null == rcf){
+                    System.out.println("no runConfigFile in play - can't load input and result images");
+                }
+                else {
+                	EarlyStageResultsPopulator esrp = new EarlyStageResultsPopulator(resultsGridPane, rcf);
+                	algRunTabPane.getSelectionModel().select(1);
+                }
+            }
+            catch(AvatolCVException ace){
+                AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem loading result images: " + ace.getMessage());
+            }
             fxSession.enableNavButtons();
         }
         
