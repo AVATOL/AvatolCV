@@ -17,8 +17,8 @@ public interface BisqueWSClient {
 
 	public boolean downloadImageOfWidth(String imageResource_uniq, int width, String dirToSaveTo, String imageNameRoot) throws BisqueWSException ;
 	
-	public boolean addNewAnnotation(String imageResource_uniq, String key, String value);
-	public boolean reviseAnnotation(String imageResource_uniq, String key, String value);
+	public boolean addNewAnnotation(String imageResource_uniq, String key, String value) throws BisqueWSException;
+	public boolean reviseAnnotation(String imageResource_uniq, String key, String value) throws BisqueWSException;
 }
 
 

@@ -747,8 +747,37 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 		}
         return annotationValues;
 	}
-	public boolean addNewAnnotation(String imageResource_uniq, String key, String value){
-		return false;
+	public boolean addNewAnnotation(String imageResource_uniq, String key, String value) throws BisqueWSException   {
+	    /*
+	     * POST /data_service/00-LJTH5L79oY5zdS6PFaYbcS/
+            <request>
+            <tag name="featureX" value="featureXValue" />
+            </request>
+
+	     */
+	    try {
+	        StringBuilder sb = new StringBuilder();
+	        sb.append("/data_service/" + imageResource_uniq + "/ ");
+	        sb.append("<request>");
+	        sb.append("<tag name=\"" + key + "\" value=\"" + value + "\" />");
+	        sb.append("</request>");
+	        String postString = "" + sb;
+	        System.out.println("trying to post this: " + postString);
+	        Client client = ClientBuilder.newClient();
+	        WebTarget webTarget = client.target("http://bisque.iplantcollaborative.org");// for some reason, we need to use redirectionLocation2
+	        Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_XML);
+	        addAuthCookie(invocationBuilder);
+	        Response postResponse =
+	                invocationBuilder
+	                        .post(Entity.xml(postString));
+	        //org.glassfish.jersey.client.HttpUrlConnector responseString = (org.glassfish.jersey.client.HttpUrlConnector)postResponse.getEntity();
+	        //System.out.println(responseString);
+	        dumpResponse("postResponse",postResponse);
+	        return true;
+	    }
+	    catch(Exception e){
+	        throw new BisqueWSException("Problem posting annoation",e);
+	    }
 	}
 	public boolean reviseAnnotation(String imageResource_uniq, String key, String value){
 		return false;
