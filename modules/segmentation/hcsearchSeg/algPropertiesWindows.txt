@@ -1,11 +1,11 @@
-launchWith=hcsearchSegRunner.bat
+launchWith=hcsearchSegRunner.py
 algName=highClutterSegmenter
 algType=segmentation
-description=Algorithm nematocystSegmenter will isolate foreground objects from heavy background clutter, such as nematocysts.
+description=Algorithm highClutterSegmenter will isolate foreground objects from heavy background clutter, such as nematocysts.
 
 inputRequired:testImagesFile refsFilesWithSuffix * ofType rawImage
 
-inputOptional:userProvidedGroundTruthImagesFile refsFilesWithSuffix _GT ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed 
+inputOptional:userProvidedGroundTruthImagesFile refsFilesWithSuffix _GT ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed
 inputOptional:userProvidedTrainImagesFile refsFilesWithSuffix * ofType rawImage
 
 outputGenerated:ofType mask_SpecimenGreen_BackgroundBlue_ClutterRed withSuffix _croppedMask
