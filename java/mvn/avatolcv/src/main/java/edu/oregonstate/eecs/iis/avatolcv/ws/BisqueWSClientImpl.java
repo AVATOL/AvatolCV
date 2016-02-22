@@ -509,7 +509,8 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 		System.out.println("======================================================================");
 		 System.out.println(context);
 		System.out.println("======================================================================");
-		 System.out.println("response.getStatus() yields " + response.getStatus());
+		//System.out.println("response.readEntity(String.class) yields " + response.readEntity(String.class));
+		System.out.println("response.getStatus() yields " + response.getStatus());
 	     System.out.println("response.toString() yields " + response.toString());
 	     System.out.println("response.getLocation() yields " + response.getLocation());
 	     //System.out.println("response.getMediaType() yields " + response.getMediaType());
@@ -528,7 +529,8 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 	     //System.out.println("response.getHeaderString('Content-Type') yields " + response.getHeaderString("Content-Type"));
 	     //System.out.println("response.getHeaderString('Server') yields " + response.getHeaderString("Server"));
 	     System.out.println("");
-	     //System.out.println("response.readEntity(String.class) yields " + response.readEntity(String.class));
+	     Object obj = response.getEntity();
+	     int foo = 3;
 	}
 	public boolean isLoginFieldPresent(String fieldName, Document doc){
 		Element e = doc.getElementById(fieldName);
@@ -747,6 +749,7 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 		}
         return annotationValues;
 	}
+	
 	public boolean addNewAnnotation(String imageResource_uniq, String key, String value) throws BisqueWSException   {
 	    /*
 	     * POST /data_service/00-LJTH5L79oY5zdS6PFaYbcS/
@@ -757,21 +760,18 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 	     */
 	    try {
 	        StringBuilder sb = new StringBuilder();
-	        sb.append("/data_service/" + imageResource_uniq + "/ ");
 	        sb.append("<request>");
 	        sb.append("<tag name=\"" + key + "\" value=\"" + value + "\" />");
 	        sb.append("</request>");
 	        String postString = "" + sb;
 	        System.out.println("trying to post this: " + postString);
 	        Client client = ClientBuilder.newClient();
-	        WebTarget webTarget = client.target("http://bisque.iplantcollaborative.org");// for some reason, we need to use redirectionLocation2
+	        WebTarget webTarget = client.target("http://bisque.iplantcollaborative.org/data_service/" + imageResource_uniq + "?view=deep");// for some reason, we need to use redirectionLocation2
 	        Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_XML);
 	        addAuthCookie(invocationBuilder);
 	        Response postResponse =
 	                invocationBuilder
 	                        .post(Entity.xml(postString));
-	        //org.glassfish.jersey.client.HttpUrlConnector responseString = (org.glassfish.jersey.client.HttpUrlConnector)postResponse.getEntity();
-	        //System.out.println(responseString);
 	        dumpResponse("postResponse",postResponse);
 	        return true;
 	    }
