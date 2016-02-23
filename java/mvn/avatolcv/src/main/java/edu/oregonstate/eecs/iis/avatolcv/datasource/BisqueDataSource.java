@@ -44,7 +44,7 @@ public class BisqueDataSource implements DataSource {
     private BisqueImages bisqueImages = null;
     private NormalizedImageInfos niis = null;
     private SessionImages sessionImages = null;
-    public BisqueDataSource(String sessionsRoot){
+    public BisqueDataSource(){
         
         wsClient = new BisqueWSClientImpl();
         bisqueDataFiles = new BisqueDataFiles();
