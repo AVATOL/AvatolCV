@@ -41,10 +41,10 @@ public class TrainingInfoFile {
 	//private String imageDir;
 	private List<String> trainingLines = new ArrayList<String>();
 	
-	private Hashtable<String,String> scoringConcernValueHash = new Hashtable<String, String>();
-	private Hashtable<String,String> pointCoordinatesHash = new Hashtable<String, String>();
-	private Hashtable<String,String> trainTestConcernHash = new Hashtable<String, String>();
-	private Hashtable<String,String> trainTestConcernValueHash = new Hashtable<String, String>();
+	private Hashtable<String,String> scoringConcernValueForPathHash = new Hashtable<String, String>();
+	private Hashtable<String,String> pointCoordinatesForPathHash = new Hashtable<String, String>();
+	private Hashtable<String,String> trainTestConcernForPathHash = new Hashtable<String, String>();
+	private Hashtable<String,String> trainTestConcernValuePathHash = new Hashtable<String, String>();
 	//private List<String> imageNames = new ArrayList<String>();
 	private List<String> imagePaths = new ArrayList<String>();
 	public TrainingInfoFile(String scoringConcernType, String scoringConcernID, String scoringConcernName){
@@ -56,10 +56,10 @@ public class TrainingInfoFile {
 		return this.imagePaths;
 	}
 	public String getScoringConcernValueForImagePath(String imagePath){
-		return this.scoringConcernValueHash.get(imagePath);
+		return this.scoringConcernValueForPathHash.get(imagePath);
 	}
 	public String getTrainTestConcernValueForImagePath(String imagePath){
-		return this.trainTestConcernValueHash.get(imagePath);
+		return this.trainTestConcernValuePathHash.get(imagePath);
 	}
 	public String getValue(String line){
 		String[] parts = ClassicSplitter.splitt(line,'=');
@@ -88,10 +88,11 @@ public class TrainingInfoFile {
 		String trainTestConcern = parts[3];
 		String trainTestConcernValue = parts[4];
 		this.imagePaths.add(filepath);
-		this.scoringConcernValueHash.put(filepath, scoringConcernValue);
-		this.pointCoordinatesHash.put(filepath, pointCoordinates);
-		this.trainTestConcernHash.put(filepath, trainTestConcern);
-		this.trainTestConcernValueHash.put(filepath, trainTestConcernValue);
+		String imageID = ImageInfo.getImageIDFromPath(filepath);
+		this.scoringConcernValueForPathHash.put(filepath, scoringConcernValue);
+		this.pointCoordinatesForPathHash.put(filepath, pointCoordinates);
+		this.trainTestConcernForPathHash.put(filepath, trainTestConcern);
+		this.trainTestConcernValuePathHash.put(filepath, trainTestConcernValue);
 	}
 	public TrainingInfoFile(String pathname) throws AvatolCVException {
 		File f = new File(pathname);
@@ -120,7 +121,9 @@ public class TrainingInfoFile {
 			throw new AvatolCVException("could not load trainingInfoFile " + pathname);
 		}
 	}
-	
+	public String getImagePathForImageID(String imageID){
+	    return null;
+	}
 	//public void setImageDir(String imageDir){
 	//	this.imageDir = imageDir;
 	//}

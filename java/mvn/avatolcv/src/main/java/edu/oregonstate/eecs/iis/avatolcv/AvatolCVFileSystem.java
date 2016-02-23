@@ -285,9 +285,9 @@ public class AvatolCVFileSystem {
 		return false;
 	}
 	public static boolean isMorphobankDataset(File datasetDirFile){
-		String bisqueDir     = datasetDirFile.getAbsolutePath() + FILESEP + "morphobank";
-		File bisqueFile = new File(bisqueDir);
-		if (bisqueFile.exists()){
+		String mbDir     = datasetDirFile.getAbsolutePath() + FILESEP + "morphobank";
+		File mbFile = new File(mbDir);
+		if (mbFile.exists()){
 			return true;
 		}
 		return false;

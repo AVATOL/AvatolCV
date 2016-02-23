@@ -15,8 +15,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
@@ -32,9 +34,15 @@ import javafx.stage.Stage;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.BisqueDataSource;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.FileSystemDataSource;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.MorphobankDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTable;
 import edu.oregonstate.eecs.iis.avatolcv.results.SortableRow;
@@ -60,6 +68,8 @@ public class ResultsReview {
     public GridPane scoredImagesGridPane = null;
     public GridPane trainingImagesGridPane = null;
     public VBox trainingImagesVBox = null;
+    public Button saveResultsButton = null;
+    public ProgressBar uploadProgress = null;
     private Stage mainWindow = null;
     private Scene scene = null;
     private String runID = null;
@@ -68,6 +78,9 @@ public class ResultsReview {
     private RunSummary runSummary = null;
     private AvatolCVJavaFX mainScreen = null;
     private ResultsTable resultsTable = null;
+    private String currentThresholdString  = "?";
+    private TrainingInfoFile tif = null;
+    private ScoresInfoFile sif = null;
     public ResultsReview(){
     }
     public void init(AvatolCVJavaFX mainScreen, Stage mainWindow, String runName) throws AvatolCVException {
@@ -191,6 +204,7 @@ public class ResultsReview {
 	    disableAllUnderThreshold(twoDecimalString);
     }
     private void disableAllUnderThreshold(String threshold){
+        currentThresholdString = threshold;
     	Label truthLabel = null;
     	List<SortableRow> rows = resultsTable.getRows();
         for (SortableRow row : rows){
@@ -373,11 +387,11 @@ public class ResultsReview {
     	addScoredImagesHeader(scoredImagesGridPane);
     	
     	String scoreFilePath = AvatolCVFileSystem.getScoreFilePath(runID, scoringConcernName);
-    	ScoresInfoFile sif = new ScoresInfoFile(scoreFilePath);
+    	sif = new ScoresInfoFile(scoreFilePath);
     	
     	String trainingFilePath = AvatolCVFileSystem.getTrainingFilePath(runID, scoringConcernName);
-    	TrainingInfoFile tif = new TrainingInfoFile(trainingFilePath);
-    	 
+    	tif = new TrainingInfoFile(trainingFilePath);
+    	
     	HoldoutInfoFile hif = null;
     	if (isEvaluationMode()){
     	    String holdoutFilePath = AvatolCVFileSystem.getHoldoutFilePath(runID, scoringConcernName);
@@ -524,21 +538,23 @@ public class ResultsReview {
    
   
     private String getTrueImageNameFromImagePathForCookingShow(String imagePath) throws AvatolCVException {
-    	File f = new File(imagePath);
-    	String imageName = f.getName();
-    	String[] imageNameParts = ClassicSplitter.splitt(imageName,'.');
-    	String fileRoot = imageNameParts[0];
-    	return fileRoot;
+        String imageDirPath = AvatolCVFileSystem.getNormalizedImagesLargeDir();
+        String imageID = ImageInfo.getImageIDFromPath(imagePath);
+        File imageDir = new File(imageDirPath);
+        File[] files = imageDir.listFiles();
+        for (File f : files){
+            String fname = f.getName();
+            if (fname.contains(imageID)){
+                return fname;
+            }
+        }
+        return null;
     }
   
+    
     private String getThumbnailPathWithImagePathForCookingShow(String imagePath) throws AvatolCVException {
-    	File pathFile = new File(imagePath);
-    	String imageName = pathFile.getName();
     	String thumbnailDirPath = AvatolCVFileSystem.getNormalizedImagesThumbnailDir();
-    	String[] imageNameParts = ClassicSplitter.splitt(imageName,'.');
-    	String fileRoot = imageNameParts[0];
-    	String[] fileRootParts = ClassicSplitter.splitt(fileRoot,'_');
-    	String imageID = fileRootParts[0];
+        String imageID = ImageInfo.getImageIDFromPath(imagePath);
     	File thumbnailDir = new File(thumbnailDirPath);
     	File[] files = thumbnailDir.listFiles();
     	for (File f : files){
@@ -666,6 +682,63 @@ public class ResultsReview {
     }
     public void doneWithResultsReview(){
     	this.mainScreen.start(this.mainWindow);
+    }
+    private DataSource getDataSourceForRun(){
+        DataSource ds = null;
+        String dataSourceName = this.runSummary.getDataSource();
+        if ("bisque".equals(dataSourceName)){
+            ds = new BisqueDataSource(); 
+        } 
+        else if ("morphobank".equals(dataSourceName)){
+            ds = new MorphobankDataSource();
+        }
+        else {
+            ds = new FileSystemDataSource();
+        }
+        return ds;
+    }
+    public void saveResults(){
+        try {
+            DataSource dataSource = getDataSourceForRun();
+            NormalizedImageInfos normImageInfos = new NormalizedImageInfos(AvatolCVFileSystem.getNormalizedImageInfoDir());
+            int imageNameIndex = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_NAME);
+            // list all the answers above threshold
+            List<SortableRow> rows = resultsTable.getRows();
+            for (SortableRow row : rows){
+                int index = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_CONFIDENCE);
+                Label confLabel = (Label)row.getWidget(ResultsTable.COLNAME_CONFIDENCE);
+                Label nameLabel = (Label)row.getWidget(ResultsTable.COLNAME_NAME);
+                //Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
+                ChoiceBox<String> scoreChoice = (ChoiceBox<String>)row.getWidget(ResultsTable.COLNAME_SCORE);
+                if (!row.hasDoubleValueLessThanThisAtIndex(currentThresholdString, index)){
+                    String value = scoreChoice.getValue();
+                    String name = row.getValue(imageNameIndex);
+                    String[] parts = ClassicSplitter.splitt(name,  '_');
+                    String imageID = parts[0];
+                    System.out.println(name + "  -  " + value);
+                    
+                    tif.getTrainTestConcernValueForImagePath(tif.getImagePathForImageID(imageID));
+                    /*
+                    String normKey = tif.getNormalizedCharacter();
+                    String trainTestConcern = tif.getTrainTestConcernForImageID(imageID);
+                    String trainTestConcernValue = tif.getTainTestConcernValueForImageID(imageID);
+                    String normValue = sif.getScoreValueForImageID(imageID);
+                    //Need to pass the normalized key and value for this row to Data source and ask if key exists for this image
+                    if (dataSource.isKeyPresentForImage(normKey, imageID, trainTestConcern, trainTestConcernValue)){
+                        // revise score
+                    }
+                    else {
+                        //add score
+                    }
+                    */
+                    
+                }
+                
+            }
+        }
+        catch(AvatolCVException ace){
+            AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem trying to save results");
+        }
     }
 }
 

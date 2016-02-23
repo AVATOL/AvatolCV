@@ -291,5 +291,11 @@ public class ImageInfo {
 		}
 		
 	}
-	
+	public static String getImageIDFromPath(String imagePath){
+        File pathFile = new File(imagePath);
+        String imageName = pathFile.getName();
+        String[] fileParts = ClassicSplitter.splitt(imageName,'_');
+        String imageID = fileParts[0];
+        return imageID;
+    }
 }

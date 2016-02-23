@@ -53,7 +53,7 @@ public class MorphobankDataSource implements DataSource {
     private MorphobankImages morphobankImages = null;
     private NormalizedImageInfos niis = null;
     private SessionImages sessionImages = null;
-    public MorphobankDataSource(String sessionsRoot){
+    public MorphobankDataSource(){
         wsClient = new MorphobankWSClientImpl();
         mbDataFiles = new MorphobankDataFiles();
     }

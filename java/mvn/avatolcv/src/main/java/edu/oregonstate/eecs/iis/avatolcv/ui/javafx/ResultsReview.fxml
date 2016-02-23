@@ -152,6 +152,16 @@
       <HBox>
          <children>
             <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="saveResultsButton" mnemonicParsing="false" onAction="#saveResults" text="Save Results">
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </Button>
+            <ProgressBar fx:id="uploadProgress" prefWidth="300.0" progress="0.0">
+               <HBox.margin>
+                  <Insets left="20.0" right="120.0" top="6.0" />
+               </HBox.margin>
+            </ProgressBar>
             <Button mnemonicParsing="false" onAction="#doneWithResultsReview" text="Done" />
          </children>
          <VBox.margin>
