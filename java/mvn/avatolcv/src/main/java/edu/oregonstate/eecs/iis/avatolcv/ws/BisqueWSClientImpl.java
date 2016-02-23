@@ -766,7 +766,7 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 	        String postString = "" + sb;
 	        System.out.println("trying to post this: " + postString);
 	        Client client = ClientBuilder.newClient();
-	        WebTarget webTarget = client.target("http://bisque.iplantcollaborative.org/data_service/" + imageResource_uniq + "?view=deep");// for some reason, we need to use redirectionLocation2
+	        WebTarget webTarget = client.target("http://bisque.iplantcollaborative.org/data_service/" + imageResource_uniq + "?view=deep");
 	        Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_XML);
 	        addAuthCookie(invocationBuilder);
 	        Response postResponse =
