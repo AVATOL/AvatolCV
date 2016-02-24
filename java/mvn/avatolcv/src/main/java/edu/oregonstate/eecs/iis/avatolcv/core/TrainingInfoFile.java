@@ -12,7 +12,9 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 /*
@@ -45,6 +47,13 @@ public class TrainingInfoFile {
 	private Hashtable<String,String> pointCoordinatesForPathHash = new Hashtable<String, String>();
 	private Hashtable<String,String> trainTestConcernForPathHash = new Hashtable<String, String>();
 	private Hashtable<String,String> trainTestConcernValuePathHash = new Hashtable<String, String>();
+	
+    private Hashtable<String,String> scoringConcernValueForImageIDHash = new Hashtable<String, String>();
+    private Hashtable<String,String> pointCoordinatesForImageIDHash = new Hashtable<String, String>();
+    private Hashtable<String,String> trainTestConcernForImageIDHash = new Hashtable<String, String>();
+    private Hashtable<String,String> trainTestConcernValueImageIDHash = new Hashtable<String, String>();
+    
+    private Hashtable<String,String> imagePathForImageIDHash = new Hashtable<String, String>();
 	//private List<String> imageNames = new ArrayList<String>();
 	private List<String> imagePaths = new ArrayList<String>();
 	public TrainingInfoFile(String scoringConcernType, String scoringConcernID, String scoringConcernName){
@@ -93,6 +102,13 @@ public class TrainingInfoFile {
 		this.pointCoordinatesForPathHash.put(filepath, pointCoordinates);
 		this.trainTestConcernForPathHash.put(filepath, trainTestConcern);
 		this.trainTestConcernValuePathHash.put(filepath, trainTestConcernValue);
+		
+		this.scoringConcernValueForImageIDHash.put(imageID, scoringConcernValue);
+        this.pointCoordinatesForImageIDHash.put(imageID, pointCoordinates);
+        this.trainTestConcernForImageIDHash.put(imageID, trainTestConcern);
+        this.trainTestConcernValueImageIDHash.put(imageID, trainTestConcernValue);
+        
+        this.imagePathForImageIDHash.put(imageID, filepath);
 	}
 	public TrainingInfoFile(String pathname) throws AvatolCVException {
 		File f = new File(pathname);
@@ -122,8 +138,20 @@ public class TrainingInfoFile {
 		}
 	}
 	public String getImagePathForImageID(String imageID){
-	    return null;
+	    return imagePathForImageIDHash.get(imageID);
 	}
+	public NormalizedKey getNormalizedCharacter() throws AvatolCVException {
+	    String s = NormalizedTypeIDName.buildTypeIdName(this.scoringConcernType, this.scoringConcernID, this.scoringConcernName);
+	    return new NormalizedKey(s);
+	}
+	public NormalizedKey getTrainTestConcernForImageID(String imageID) throws AvatolCVException {
+	    String s = trainTestConcernForImageIDHash.get(imageID);
+	    return new NormalizedKey(s);
+	}
+	public NormalizedValue getTrainTestConcernValueForImageID(String imageID) throws AvatolCVException {
+	    String s = trainTestConcernValueImageIDHash.get(imageID);
+        return new NormalizedValue(s);
+    }
 	//public void setImageDir(String imageDir){
 	//	this.imageDir = imageDir;
 	//}

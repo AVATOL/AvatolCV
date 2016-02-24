@@ -11,6 +11,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 /*
@@ -32,7 +34,8 @@ public class ScoresInfoFile {
 	private String imageDir;
 	private List<String> scoringLines = new ArrayList<String>();
 	private List<String> valuesList = new ArrayList<String>();
-	private Hashtable<String,String> scoringConcernValueHash = new Hashtable<String, String>();
+	private Hashtable<String,String> scoringConcernValueForPathHash = new Hashtable<String, String>();
+    private Hashtable<String,String> scoringConcernValueForImageIDHash = new Hashtable<String, String>();
 	private Hashtable<String,String> pointCoordinatesHash = new Hashtable<String, String>();
 	//private List<String> imageNames = new ArrayList<String>();
 	private List<String> imagePaths = new ArrayList<String>();
@@ -49,7 +52,7 @@ public class ScoresInfoFile {
 		return imagePaths.contains(path);
 	}
 	public String getScoringConcernValueForImagePath(String imagePath){
-		return this.scoringConcernValueHash.get(imagePath);
+		return this.scoringConcernValueForPathHash.get(imagePath);
 	}
 	public String getValue(String line){
 		String[] parts = ClassicSplitter.splitt(line,'=');
@@ -69,7 +72,10 @@ public class ScoresInfoFile {
 		String scoringConcernValue = parts[i++];
 		String pointCoordinates = parts[i++];
 		this.imagePaths.add(pathname);
-		this.scoringConcernValueHash.put(pathname, scoringConcernValue);
+		String imageID = ImageInfo.getImageIDFromPath(pathname);
+		
+		this.scoringConcernValueForPathHash.put(pathname, scoringConcernValue);
+		this.scoringConcernValueForImageIDHash.put(imageID, scoringConcernValue);
 		this.pointCoordinatesHash.put(pathname, pointCoordinates);
 		System.out.println("line : " + line);
 		for (int j = 0; j < confCount; j++){
@@ -78,6 +84,11 @@ public class ScoresInfoFile {
 			System.out.println("key " + key + "   val " + val);
 			this.confidenceHash.put(key, val);
 		}
+	}
+	
+	public NormalizedValue getScoreValueForImageID(String imageID) throws AvatolCVException {
+	    String val = this.scoringConcernValueForImageIDHash.get(imageID);
+	    return new NormalizedValue(val);
 	}
 	/*
 	 *    scores_<scoringConcernType>_<scoringConcernID>_<scoringConcernName>.txt contains 

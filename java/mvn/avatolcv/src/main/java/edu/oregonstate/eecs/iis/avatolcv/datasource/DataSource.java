@@ -8,6 +8,8 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringScope;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringSessionFocus;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfos;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoreIndex;
 import edu.oregonstate.eecs.iis.avatolcv.session.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
@@ -42,4 +44,7 @@ public interface DataSource {
     String getDatasetTitleText();
     void setNormalizedImageInfos(NormalizedImageInfos niis) throws AvatolCVException ;
     String getDefaultTrainTestConcern();
+    NormalizedValue getValueForKeyAtDatasourceForImage(NormalizedKey normCharKey, String imageID, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException ;
+    void reviseValueForKey(String imageID, NormalizedKey key, NormalizedValue value) throws AvatolCVException ;
+    void addKeyValue(String imageID, NormalizedKey key, NormalizedValue value) throws AvatolCVException ;
 }

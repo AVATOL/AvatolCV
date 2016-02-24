@@ -55,8 +55,10 @@ import javax.xml.bind.Unmarshaller;
 
 
 
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.AnnotationComboBox;
 import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.AnnotationComboBoxProperty;
@@ -776,10 +778,36 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 	        return true;
 	    }
 	    catch(Exception e){
-	        throw new BisqueWSException("Problem posting annoation",e);
+	        throw new BisqueWSException("Problem posting annotation",e);
 	    }
 	}
-	public boolean reviseAnnotation(String imageResource_uniq, String key, String value){
+	public boolean reviseAnnotation(String imageResource_uniq, String key, String value) throws BisqueWSException {
+	    try {
+            List<BisqueAnnotation> annotations = this.getAnnotationsForImage(imageResource_uniq);
+            for (BisqueAnnotation annotation : annotations){
+                String curKeyName = annotation.getName();
+                if (curKeyName.equals(key)){
+                    String uri = annotation.getUri();
+                    StringBuilder sb = new StringBuilder();
+                    
+                    sb.append("<tag uri='" + uri + "' name=\"" + key + "\" value=\"" + value + "\" />");
+                    String postString = "" + sb;
+                    System.out.println("trying to post this: " + postString);
+                    Client client = ClientBuilder.newClient();
+                    WebTarget webTarget = client.target(uri);
+                    Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_XML);
+                    addAuthCookie(invocationBuilder);
+                    Response postResponse =
+                            invocationBuilder
+                                    .post(Entity.xml(postString));
+                    dumpResponse("postResponse",postResponse);
+                    return true;
+                }
+            }
+        }
+        catch(Exception e){
+            throw new BisqueWSException("problem revising annotation.", e);
+        }
 		return false;
 	}
 	//ssl :   https://jersey.java.net/nonav/documentation/2.0/client.html  - Securing a client
