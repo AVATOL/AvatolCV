@@ -353,4 +353,44 @@ public class BisqueDataSource implements DataSource {
 	public String getDefaultTrainTestConcern() {
 		return null;
 	}
+    @Override
+    public NormalizedValue getValueForKeyAtDatasourceForImage(NormalizedKey normCharKey,
+            String imageID, NormalizedKey trainTestConcern,
+            NormalizedValue trainTestConcernValue) throws AvatolCVException {
+        try {
+            List<BisqueAnnotation> annotations = this.wsClient.getAnnotationsForImage(imageID);
+            for (BisqueAnnotation annotation : annotations){
+                String curKeyName = annotation.getName();
+                if (curKeyName.equals(normCharKey.getName())){
+                    return new NormalizedValue(annotation.getValue());
+                }
+            }
+            return null;
+        }
+        catch(BisqueWSException e){
+            throw new AvatolCVException("problem finding if key is present on image.", e);
+        }
+    }
+    @Override
+    public void reviseValueForKey(String imageID, NormalizedKey key,
+            NormalizedValue value) throws AvatolCVException {
+        try {
+            this.wsClient.reviseAnnotation(imageID, key.getName(), value.getName());
+        }
+        catch(BisqueWSException e){
+            throw new AvatolCVException("problem revising value for key " + key.getName() + " " + value.getName(), e);
+        }
+        
+    }
+    @Override
+    public void addKeyValue(String imageID, NormalizedKey key,
+            NormalizedValue value) throws AvatolCVException {
+        try {
+            this.wsClient.addNewAnnotation(imageID, key.getName(), value.getName());
+        }
+        catch(BisqueWSException e){
+            throw new AvatolCVException("problem adding new key/value " + key.getName() + " " + value.getName(), e);
+        }
+        
+    }
 }

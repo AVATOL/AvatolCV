@@ -14,6 +14,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.session.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
@@ -484,4 +485,11 @@ public class MorphobankDataSource implements DataSource {
 	public String getDefaultTrainTestConcern() {
 		return "taxon";
 	}
+    @Override
+    public boolean isKeyPresentAtDatasourceForImage(NormalizedKey normCharKey,
+            String imageID, NormalizedKey trainTestConcern,
+            NormalizedValue trainTestConcernValue) {
+        // Any character asked about here will be present because in the MB session the user specified and requested it explicitly
+        return true;
+    }
 }

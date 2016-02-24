@@ -40,9 +40,12 @@ import edu.oregonstate.eecs.iis.avatolcv.datasource.BisqueDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.FileSystemDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.MorphobankDataSource;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.UploadSession;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.UploadSession.UploadEvent;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfos;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTable;
 import edu.oregonstate.eecs.iis.avatolcv.results.SortableRow;
@@ -81,6 +84,8 @@ public class ResultsReview {
     private String currentThresholdString  = "?";
     private TrainingInfoFile tif = null;
     private ScoresInfoFile sif = null;
+    private UploadSession uploadSession = null;
+    private DataSource dataSource = null;
     public ResultsReview(){
     }
     public void init(AvatolCVJavaFX mainScreen, Stage mainWindow, String runName) throws AvatolCVException {
@@ -697,9 +702,29 @@ public class ResultsReview {
         }
         return ds;
     }
+    public void undoUpload(){
+        try {
+            List<UploadEvent> events = this.uploadSession.getEventsForUndo();
+            for (UploadEvent event : events){
+                if (event.wasNewKey()){
+                    // for now, since there's no web service to remove a key (true?), just do the revise
+                    this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue());
+                }
+                else {
+                    this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue());
+                }
+            }
+            this.uploadSession.forgetEvents(events);
+        }
+        catch(AvatolCVException ace){
+            AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem trying to undo save results");
+        }
+        
+    }
     public void saveResults(){
         try {
-            DataSource dataSource = getDataSourceForRun();
+            this.uploadSession = new UploadSession();
+            this.dataSource = getDataSourceForRun();
             NormalizedImageInfos normImageInfos = new NormalizedImageInfos(AvatolCVFileSystem.getNormalizedImageInfoDir());
             int imageNameIndex = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_NAME);
             // list all the answers above threshold
@@ -718,23 +743,26 @@ public class ResultsReview {
                     System.out.println(name + "  -  " + value);
                     
                     tif.getTrainTestConcernValueForImagePath(tif.getImagePathForImageID(imageID));
-                    /*
-                    String normKey = tif.getNormalizedCharacter();
-                    String trainTestConcern = tif.getTrainTestConcernForImageID(imageID);
-                    String trainTestConcernValue = tif.getTainTestConcernValueForImageID(imageID);
-                    String normValue = sif.getScoreValueForImageID(imageID);
+                    
+                    NormalizedKey normCharKey = tif.getNormalizedCharacter();
+                    NormalizedKey trainTestConcern = tif.getTrainTestConcernForImageID(imageID);
+                    NormalizedValue trainTestConcernValue = tif.getTrainTestConcernValueForImageID(imageID);
+                    NormalizedValue newValue = sif.getScoreValueForImageID(imageID);
                     //Need to pass the normalized key and value for this row to Data source and ask if key exists for this image
-                    if (dataSource.isKeyPresentForImage(normKey, imageID, trainTestConcern, trainTestConcernValue)){
-                        // revise score
+                    NormalizedValue existingValueForKey = dataSource.getValueForKeyAtDatasourceForImage(normCharKey, imageID, trainTestConcern, trainTestConcernValue);
+                    if (null == existingValueForKey){
+                        //add score
+                        dataSource.addKeyValue(imageID, normCharKey, newValue);
+                        this.uploadSession.addNewKeyValue(imageID, normCharKey, newValue);
                     }
                     else {
-                        //add score
+                        // revise score
+                        dataSource.reviseValueForKey(imageID, normCharKey, newValue);
+                        this.uploadSession.reviseValueForKey(imageID, normCharKey, newValue, existingValueForKey);
                     }
-                    */
-                    
                 }
-                
             }
+            this.uploadSession.persist();
         }
         catch(AvatolCVException ace){
             AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem trying to save results");

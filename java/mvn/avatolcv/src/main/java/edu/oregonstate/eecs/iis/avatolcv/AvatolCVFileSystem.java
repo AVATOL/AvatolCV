@@ -242,6 +242,11 @@ public class AvatolCVFileSystem {
             return false;
         }
 	}
+	public static String getPathForUploadSessionFile() throws AvatolCVException {
+	    String sessionDir = getSessionDir();
+	    String path = sessionDir + FILESEP + "uploadLog.txt";
+	    return path;
+	}
 	public static List<String> getDatedSessionFilesFromDirFile(File datasetDirFile){
         File[] datedSessionDirFiles = datasetDirFile.listFiles();
         List<String> datedSessions = new ArrayList<String>();
