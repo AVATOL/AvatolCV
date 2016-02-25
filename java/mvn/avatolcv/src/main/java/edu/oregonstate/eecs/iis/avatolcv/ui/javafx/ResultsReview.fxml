@@ -152,14 +152,15 @@
       <HBox>
          <children>
             <Region HBox.hgrow="ALWAYS" />
-            <Button fx:id="saveResultsButton" mnemonicParsing="false" onAction="#saveResults" text="Save Results">
+            <Button fx:id="saveResultsButton" mnemonicParsing="false" onAction="#doSaveResults" text="Save Results">
                <HBox.margin>
                   <Insets right="20.0" />
                </HBox.margin>
             </Button>
+            <Button fx:id="undoSaveButton" mnemonicParsing="false" onAction="#doUndoSaveResults" text="Undo Save" />
             <ProgressBar fx:id="uploadProgress" prefWidth="300.0" progress="0.0">
                <HBox.margin>
-                  <Insets left="20.0" right="120.0" top="6.0" />
+                  <Insets left="20.0" right="20.0" top="6.0" />
                </HBox.margin>
             </ProgressBar>
             <Button mnemonicParsing="false" onAction="#doneWithResultsReview" text="Done" />

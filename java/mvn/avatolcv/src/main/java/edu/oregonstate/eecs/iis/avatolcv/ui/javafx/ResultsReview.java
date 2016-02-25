@@ -22,6 +22,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -44,7 +45,6 @@ import edu.oregonstate.eecs.iis.avatolcv.datasource.UploadSession;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.UploadSession.UploadEvent;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
-import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTable;
@@ -72,6 +72,7 @@ public class ResultsReview {
     public GridPane trainingImagesGridPane = null;
     public VBox trainingImagesVBox = null;
     public Button saveResultsButton = null;
+    public Button undoSaveButton = null;
     public ProgressBar uploadProgress = null;
     private Stage mainWindow = null;
     private Scene scene = null;
@@ -89,6 +90,7 @@ public class ResultsReview {
     public ResultsReview(){
     }
     public void init(AvatolCVJavaFX mainScreen, Stage mainWindow, String runName) throws AvatolCVException {
+        
         this.mainWindow = mainWindow;
         this.mainScreen = mainScreen;
         this.runName = runName;
@@ -97,6 +99,19 @@ public class ResultsReview {
         	throw new AvatolCVException("null runID cannot be rendered in results viewer");
         }
         initUI();
+        this.uploadSession = new UploadSession();
+        enableUndoUploadButtonIfAppropriate();
+    }
+    private void enableUndoUploadButtonIfAppropriate(){
+        int uploadSessionNumber = this.uploadSession.getUploadSessionNumber();
+        if (uploadSessionNumber == 0){
+            this.undoSaveButton.setDisable(true);
+            this.undoSaveButton.setText("Undo Upload");
+        }
+        else {
+            this.undoSaveButton.setDisable(false);
+            this.undoSaveButton.setText("Undo Upload " + uploadSessionNumber);
+        }
     }
     public void initOnAppThread(AvatolCVJavaFX mainScreen, Stage mainWindow, String runName){
     	ApplicationThreadResultsReviewInit atrri = new ApplicationThreadResultsReviewInit(mainScreen, mainWindow, runName);
@@ -330,6 +345,9 @@ public class ResultsReview {
         String trimmedScoreConf = limitToTwoDecimalPlaces(scoreConf);
         Label confidenceLabel = new Label(trimmedScoreConf);
         confidenceLabel.getStyleClass().add("columnValue");
+        //if (this.uploadSession.isImageUploaded(sr.getImageID())){
+        //    confidenceLabel.getStyleClass().add("uploadedScore");
+        //}
         sr.setWidget(ResultsTable.COLNAME_CONFIDENCE, confidenceLabel);
     }
     private void renderResultsTable(ResultsTable rt){
@@ -702,10 +720,32 @@ public class ResultsReview {
         }
         return ds;
     }
-    public void undoUpload(){
+    public void doUndoSaveResults(){
+        Thread t = new Thread(() -> undoSaveResults());
+        t.start();
+    }
+    public void undoSaveResults(){
         try {
+            if (null == this.dataSource){
+                this.dataSource = getDataSourceForRun();
+            }
+            boolean authenticated = false;
+            if (this.dataSource.isAuthenticated()){
+                authenticated = true;
+            }
+            else {
+                authenticated = authenticate();
+            }
+            if (!authenticated){
+                return;
+            }
+            Platform.runLater(() -> uploadProgress.setProgress(0.0));
             List<UploadEvent> events = this.uploadSession.getEventsForUndo();
+            double count = events.size();
+            double percentProgressPerEvent = 1 / count;
+            int curEvent = 0;
             for (UploadEvent event : events){
+                curEvent++;
                 if (event.wasNewKey()){
                     // for now, since there's no web service to remove a key (true?), just do the revise
                     this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue());
@@ -713,27 +753,60 @@ public class ResultsReview {
                 else {
                     this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue());
                 }
+                double percentDone = percentProgressPerEvent * curEvent;
+                Platform.runLater(() -> uploadProgress.setProgress(percentDone));
             }
             this.uploadSession.forgetEvents(events);
+            Platform.runLater(() -> enableUndoUploadButtonIfAppropriate());
         }
         catch(AvatolCVException ace){
             AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem trying to undo save results");
         }
         
     }
+    private boolean authenticate() throws AvatolCVException {
+        LoginDialog dialog = new LoginDialog();
+        dialog.display(this.dataSource.getName());
+        String username = dialog.getLogin();
+        String password = dialog.getPword();
+        return this.dataSource.authenticate(username, password);
+    }
+    public void doSaveResults(){
+        Thread t = new Thread(() -> saveResults());
+        t.start();
+    }
     public void saveResults(){
         try {
-            this.uploadSession = new UploadSession();
-            this.dataSource = getDataSourceForRun();
-            NormalizedImageInfos normImageInfos = new NormalizedImageInfos(AvatolCVFileSystem.getNormalizedImageInfoDir());
+            if (null == this.dataSource){
+                this.dataSource = getDataSourceForRun();
+            }
+            boolean authenticated = false;
+            if (this.dataSource.isAuthenticated()){
+                authenticated = true;
+            }
+            else {
+                authenticated = authenticate();
+            }
+            if (!authenticated){
+                return;
+            }
+            
             int imageNameIndex = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_NAME);
             // list all the answers above threshold
             List<SortableRow> rows = resultsTable.getRows();
+            int index = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_CONFIDENCE);
+            double rowToUploadCount = 0;
             for (SortableRow row : rows){
-                int index = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_CONFIDENCE);
-                Label confLabel = (Label)row.getWidget(ResultsTable.COLNAME_CONFIDENCE);
-                Label nameLabel = (Label)row.getWidget(ResultsTable.COLNAME_NAME);
-                //Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
+                if (!row.hasDoubleValueLessThanThisAtIndex(currentThresholdString, index)){
+                    rowToUploadCount++;
+                }
+            }
+            Platform.runLater(() -> uploadProgress.setProgress(0.0));
+            double percentProgressPerRow = 1 / rowToUploadCount;
+            int rowCount = 0;
+            uploadSession.nextSession();
+            for (SortableRow row : rows){
+                rowCount++;
                 ChoiceBox<String> scoreChoice = (ChoiceBox<String>)row.getWidget(ResultsTable.COLNAME_SCORE);
                 if (!row.hasDoubleValueLessThanThisAtIndex(currentThresholdString, index)){
                     String value = scoreChoice.getValue();
@@ -741,9 +814,7 @@ public class ResultsReview {
                     String[] parts = ClassicSplitter.splitt(name,  '_');
                     String imageID = parts[0];
                     System.out.println(name + "  -  " + value);
-                    
-                    tif.getTrainTestConcernValueForImagePath(tif.getImagePathForImageID(imageID));
-                    
+       
                     NormalizedKey normCharKey = tif.getNormalizedCharacter();
                     NormalizedKey trainTestConcern = tif.getTrainTestConcernForImageID(imageID);
                     NormalizedValue trainTestConcernValue = tif.getTrainTestConcernValueForImageID(imageID);
@@ -760,9 +831,12 @@ public class ResultsReview {
                         dataSource.reviseValueForKey(imageID, normCharKey, newValue);
                         this.uploadSession.reviseValueForKey(imageID, normCharKey, newValue, existingValueForKey);
                     }
+                    double percentDone = percentProgressPerRow * rowCount;
+                    Platform.runLater(() -> uploadProgress.setProgress(percentDone));
                 }
             }
             this.uploadSession.persist();
+            Platform.runLater(() -> enableUndoUploadButtonIfAppropriate());
         }
         catch(AvatolCVException ace){
             AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem trying to save results");

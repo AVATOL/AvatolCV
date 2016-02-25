@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 
 public class ResultsTable {
@@ -48,7 +49,8 @@ public class ResultsTable {
         	values.add(trainTestConcernValue);
         }
         values.add(origImageName);
-        SortableRow row = new SortableRow(values, index);
+        String imageID = ImageInfo.getImageIDFromPath(thumbnailPathname);
+        SortableRow row = new SortableRow(imageID, values, index);
         rows.add(row);
         return row;
     }

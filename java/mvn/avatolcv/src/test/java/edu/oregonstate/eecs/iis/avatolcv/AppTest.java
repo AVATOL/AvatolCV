@@ -10,6 +10,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.TestDataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.core.TestEvaluationSet;
 import edu.oregonstate.eecs.iis.avatolcv.core.TestNormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.core.TestTrueScoringSet;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.UploadSessionTest;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.TestHomeWindow;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.TestScoringSetsKeySorter;
 import junit.framework.Test;
@@ -50,6 +51,7 @@ public class AppTest extends TestCase
         suite.addTestSuite(TestEvaluationSet.class);
         suite.addTestSuite(TestTrueScoringSet.class);
         suite.addTestSuite(TestScoringSetsKeySorter.class);
+        suite.addTestSuite(UploadSessionTest.class);
         
         //suite.addTestSuite(TestMorphobankWS.class);
         //suite.addTestSuite(TestBisqueWS.class);

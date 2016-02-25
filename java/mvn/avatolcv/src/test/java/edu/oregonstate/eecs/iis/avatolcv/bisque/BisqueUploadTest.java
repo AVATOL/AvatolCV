@@ -25,13 +25,13 @@ public class BisqueUploadTest extends TestCase {
         }
     }
     */
-    
+    /*
     public void testUploadRevise(){
         BisqueWSClientImpl bisque = new BisqueWSClientImpl();
         try {
             AvatolCVFileSystem.setRootDir("C:\\jed\\avatol\\git\\avatol_cv");
             bisque.authenticate("jedirv","Neton3plants**");
-            bisque.reviseAnnotation("00-b7itcHVfYEEaBiMXFsibVS", "cuteness", "quiasi-infinite");
+            bisque.reviseAnnotation("00-b7itcHVfYEEaBiMXFsibVS", "cuteness", "quasi-infinite");
         }
         catch(AvatolCVException ace){
             ace.printStackTrace();
@@ -42,4 +42,6 @@ public class BisqueUploadTest extends TestCase {
             System.out.println(ex.getMessage());
         }
     }
+    */
+   
 }

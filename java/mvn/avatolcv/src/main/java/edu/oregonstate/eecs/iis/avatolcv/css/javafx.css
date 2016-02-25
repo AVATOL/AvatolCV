@@ -129,6 +129,9 @@
 	-fx-font-name:arial;
 	-fx-padding:2px 8px 2px 8px;
 }
+.label.uploadedScore {
+	-fx-background-color:#CCCCFF;
+}
 .label.summaryHeader {
 	-fx-font-size:14px;
 	font-style:italic;

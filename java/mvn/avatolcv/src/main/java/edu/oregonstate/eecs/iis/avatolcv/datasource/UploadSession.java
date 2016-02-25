@@ -1,6 +1,9 @@
 package edu.oregonstate.eecs.iis.avatolcv.datasource;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,31 +13,97 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class UploadSession {
-    private static final String NL = System.getProperty("file.separator");
+    private static final String NL = System.getProperty("line.separator");
     private List<UploadEvent> events = new ArrayList<UploadEvent>();
-    private int nextUploadSessionNumber = 1;
-    private int prevUploadSessionNumber = -1;
+    private int uploadSessionNumber = 0;
+    
+    public UploadSession() throws AvatolCVException {
+        String path = AvatolCVFileSystem.getPathForUploadSessionFile();
+        File f = new File(path);
+        
+        if (f.exists()){
+            // load it
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader(path));
+                String line = null;
+                while (null != (line = reader.readLine())){
+                    String[] parts = ClassicSplitter.splitt(line, ',');
+                    String sessionNumber = parts[0];
+                    String imageID = parts[1];
+                    String key = parts[2];
+                    String val = parts[3];
+                    String origVal = parts[4];
+                    Integer sessionNumInteger = new Integer(sessionNumber);
+                    uploadSessionNumber = sessionNumInteger.intValue();
+                    if ("null".equals(origVal)){
+                        addNewKeyValue(uploadSessionNumber, imageID, new NormalizedKey(key), new NormalizedValue(val));
+                    }
+                    else {
+                        reviseValueForKey(uploadSessionNumber, imageID, new NormalizedKey(key), new NormalizedValue(val), new NormalizedValue(origVal));
+                    }
+                }
+                reader.close();
+            }
+            catch(NumberFormatException nfe){
+                throw new AvatolCVException("bad integer found when loading session number for upload log file " + path, nfe);
+            }
+            catch(IOException ioe){
+                throw new AvatolCVException("problem  loading upload log for session", ioe);
+            }
+        }
+    }
+    public boolean isImageUploaded(String imageID){
+        for (UploadEvent event : this.events){
+            if (event.getImageID().equals(imageID)){
+                return true;
+            }
+        }
+        return false;
+    }
+    public void nextSession(){
+        uploadSessionNumber += 1;
+    }
+    public int getUploadSessionNumber(){
+        return uploadSessionNumber;
+    }
+    public void addNewKeyValue(int sessionNumber, String imageID, NormalizedKey key, NormalizedValue val){
+        events.add(new UploadEvent(sessionNumber, imageID, key, val, true, null));
+    }
     public void addNewKeyValue(String imageID, NormalizedKey key, NormalizedValue val){
-        events.add(new UploadEvent(nextUploadSessionNumber, imageID, key, val, true, null));
+        addNewKeyValue(uploadSessionNumber, imageID, key, val);
+    }
+
+    public void reviseValueForKey(int sessionNumber, String imageID, NormalizedKey key, NormalizedValue val, NormalizedValue origValue){
+        events.add(new UploadEvent(sessionNumber, imageID, key, val, false, origValue));
     }
     public void reviseValueForKey(String imageID, NormalizedKey key, NormalizedValue val, NormalizedValue origValue){
-        events.add(new UploadEvent(nextUploadSessionNumber, imageID, key, val, false, origValue));
+        reviseValueForKey(uploadSessionNumber,  imageID,  key,  val,  origValue);
     }
     
     public void persist() throws AvatolCVException {
         String path = AvatolCVFileSystem.getPathForUploadSessionFile();
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(path));
-            for (UploadEvent event : events){
-                writer.write(event.getImageID() + "," + event.getKey() + "," + event.getVal() + "," + event.getOrigValue() + NL);
+        if (events.size() == 0){
+            File f = new File(path);
+            if (f.exists()){
+                f.delete();
             }
-            writer.close();
         }
-        catch(IOException ioe){
-            throw new AvatolCVException("problem persisting upload session info.", ioe);
+        else {
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+                for (UploadEvent event : events){
+                    writer.write(uploadSessionNumber + "," + event.getImageID() + "," + event.getKey() + "," + event.getVal() + "," + event.getOrigValue() + NL);
+                }
+                writer.close();
+            }
+            catch(IOException ioe){
+                throw new AvatolCVException("problem persisting upload session info.", ioe);
+            }
         }
+        
     }
     public class UploadEvent {
         private String imageID = null;
@@ -63,7 +132,10 @@ public class UploadSession {
         public boolean wasNewKey(){
             return this.newKey;
         }
-        public NormalizedValue getOrigValue(){
+        public NormalizedValue getOrigValue() throws AvatolCVException {
+            if (null == this.oldValue){
+                return new NormalizedValue("");
+            }
             return this.oldValue;
         }
         public int getUploadSessionNumber(){
@@ -72,7 +144,7 @@ public class UploadSession {
     }
     
     public List<UploadEvent> getEventsForUndo(){
-        int relevantUploadNum = prevUploadSessionNumber;
+        int relevantUploadNum = uploadSessionNumber;
         List<UploadEvent> relevantEvents = new ArrayList<UploadEvent>();
         for (UploadEvent event : this.events){
             if (event.getUploadSessionNumber() == relevantUploadNum){
@@ -86,6 +158,7 @@ public class UploadSession {
         for (UploadEvent event : events){
             this.events.remove(event);
         }
+        uploadSessionNumber -= 1;
         persist();
     }
 }
