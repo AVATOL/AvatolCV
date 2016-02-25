@@ -2,6 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 
 import javafx.application.Platform;
@@ -15,6 +16,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -23,6 +25,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -87,6 +90,7 @@ public class ResultsReview {
     private ScoresInfoFile sif = null;
     private UploadSession uploadSession = null;
     private DataSource dataSource = null;
+    private Hashtable<String,Label> scoreLabelForImageIDHash = null;
     public ResultsReview(){
     }
     public void init(AvatolCVJavaFX mainScreen, Stage mainWindow, String runName) throws AvatolCVException {
@@ -98,8 +102,8 @@ public class ResultsReview {
         if (this.runID == null || "".equals(this.runID)){
         	throw new AvatolCVException("null runID cannot be rendered in results viewer");
         }
+        
         initUI();
-        this.uploadSession = new UploadSession();
         enableUndoUploadButtonIfAppropriate();
     }
     private void enableUndoUploadButtonIfAppropriate(){
@@ -153,6 +157,7 @@ public class ResultsReview {
             initializePriorRunChoices();
             runSelectChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new RunChoiceChangeListener(runSelectChoiceBox, this.mainScreen, this.mainWindow));
             setRunDetails(this.runName);
+            this.uploadSession = new UploadSession();
             setScoredImagesInfo(this.runID, scoringConcernValue.getText());
             //runDetailsAccordion.requestLayout();
             setupSlider();
@@ -231,8 +236,8 @@ public class ResultsReview {
             int index = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_CONFIDENCE);
             Label confLabel = (Label)row.getWidget(ResultsTable.COLNAME_CONFIDENCE);
             Label nameLabel = (Label)row.getWidget(ResultsTable.COLNAME_NAME);
-            //Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
-            ChoiceBox<String> scoreChoice = (ChoiceBox<String>)row.getWidget(ResultsTable.COLNAME_SCORE);
+            Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
+            //ChoiceBox<String> scoreChoice = (ChoiceBox<String>)row.getWidget(ResultsTable.COLNAME_SCORE);
            
             truthLabel = (Label)row.getWidget(ResultsTable.COLNAME_TRUTH);
             
@@ -242,7 +247,7 @@ public class ResultsReview {
             	confLabel.setDisable(true);
             	nameLabel.setDisable(true);
             	//scoreChoice.setDisable(true);
-            	//scoreLabel.setDisable(true);
+            	scoreLabel.setDisable(true);
             	if (isEvaluationMode()){
             		truthLabel.setDisable(true);
             	}
@@ -252,7 +257,7 @@ public class ResultsReview {
             	//confLabel.setStyle("-fx-background-color:#00CC00;");
             	confLabel.setDisable(false);
             	nameLabel.setDisable(false);
-            	//scoreLabel.setDisable(false);
+            	scoreLabel.setDisable(false);
             	if (isEvaluationMode()){
             		truthLabel.setDisable(false);
             	}
@@ -325,17 +330,19 @@ public class ResultsReview {
 
         // get score
         String score = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_SCORE));
-        //Label scoreLabel = new Label(score);
-        ChoiceBox<String> cb = new ChoiceBox<String>();
-        List<String> values = this.runSummary.getScoringConcernValues();
-        for (String value : values){
-        	cb.getItems().add(value);
-        }
-        cb.setValue(score);
-        //scoreLabel.getStyleClass().add("columnValue");
-        cb.getStyleClass().add("columnValue");
-        //sr.setWidget(ResultsTable.COLNAME_SCORE, scoreLabel);
-        sr.setWidget(ResultsTable.COLNAME_SCORE, cb);
+        Label scoreLabel = new Label(score);
+        String imageID = sr.getImageID();
+        scoreLabelForImageIDHash.put(imageID, scoreLabel);
+        //ChoiceBox<String> cb = new ChoiceBox<String>();
+        //List<String> values = this.runSummary.getScoringConcernValues();
+        //for (String value : values){
+        //	cb.getItems().add(value);
+        //}
+        //cb.setValue(score);
+        scoreLabel.getStyleClass().add("columnValue");
+        //cb.getStyleClass().add("columnValue");
+        sr.setWidget(ResultsTable.COLNAME_SCORE, scoreLabel);
+        //sr.setWidget(ResultsTable.COLNAME_SCORE, cb);
         
         // get confidence
         int targetIndex = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_CONFIDENCE);
@@ -373,10 +380,16 @@ public class ResultsReview {
             
             // get score
             
-            //Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
-            ChoiceBox<String> scoreChoice = (ChoiceBox<String>)row.getWidget(ResultsTable.COLNAME_SCORE);
-            System.out.println("col " + column + " row " + offset);
-            scoredImagesGridPane.add(scoreChoice, column, offset);
+            Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
+            String imageID = row.getImageID();
+            if (uploadSession.isImageUploaded(imageID)){
+            	scoreLabel.getStyleClass().add("uploaded");
+            }
+            //ChoiceBox<String> scoreChoice = (ChoiceBox<String>)row.getWidget(ResultsTable.COLNAME_SCORE);
+            
+            //scoreChoice.getStyleClass().add("short");
+            //System.out.println("col " + column + " row " + offset);
+            scoredImagesGridPane.add(scoreLabel, column, offset);
             column++;
             // get confidence
             Label confidenceLabel = (Label)row.getWidget(ResultsTable.COLNAME_CONFIDENCE);
@@ -403,6 +416,7 @@ public class ResultsReview {
         }
     }
     private void setScoredImagesInfo(String runID, String scoringConcernName) throws AvatolCVException {
+    	scoreLabelForImageIDHash = new Hashtable<String, Label>();
     	scoredImagesTab.setText(scoringConcernName + " - SCORED images");
     	trainingImagesTab.setText(scoringConcernName + " - TRAINING images");
 
@@ -757,6 +771,19 @@ public class ResultsReview {
                 Platform.runLater(() -> uploadProgress.setProgress(percentDone));
             }
             this.uploadSession.forgetEvents(events);
+            // check to see if scoreLabel should still reflect being uploaded or not
+            for (UploadEvent event : events){
+            	String imageID = event.getImageID();
+            	Label scoreLabel = scoreLabelForImageIDHash.get(imageID);
+            	if (null != scoreLabel){
+            		if (uploadSession.isImageUploaded(imageID)){
+            			// no need to change - should already be highlighted
+            		}
+            		else {
+            			Platform.runLater(() -> scoreLabel.getStyleClass().remove("uploaded"));
+            		}
+            	}
+            }
             Platform.runLater(() -> enableUndoUploadButtonIfAppropriate());
         }
         catch(AvatolCVException ace){
@@ -806,10 +833,13 @@ public class ResultsReview {
             int rowCount = 0;
             uploadSession.nextSession();
             for (SortableRow row : rows){
-                rowCount++;
-                ChoiceBox<String> scoreChoice = (ChoiceBox<String>)row.getWidget(ResultsTable.COLNAME_SCORE);
+                
+                //ChoiceBox<String> scoreChoice = (ChoiceBox<String>)row.getWidget(ResultsTable.COLNAME_SCORE);
+                Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
                 if (!row.hasDoubleValueLessThanThisAtIndex(currentThresholdString, index)){
-                    String value = scoreChoice.getValue();
+                	rowCount++;
+                    //String value = scoreChoice.getValue();
+                    String value = scoreLabel.getText();
                     String name = row.getValue(imageNameIndex);
                     String[] parts = ClassicSplitter.splitt(name,  '_');
                     String imageID = parts[0];
@@ -823,15 +853,30 @@ public class ResultsReview {
                     NormalizedValue existingValueForKey = dataSource.getValueForKeyAtDatasourceForImage(normCharKey, imageID, trainTestConcern, trainTestConcernValue);
                     if (null == existingValueForKey){
                         //add score
-                        dataSource.addKeyValue(imageID, normCharKey, newValue);
-                        this.uploadSession.addNewKeyValue(imageID, normCharKey, newValue);
+                        boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue);
+                        if (result){
+                        	this.uploadSession.addNewKeyValue(imageID, normCharKey, newValue);
+                        	Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
+                        }
+                        else {
+                        	Platform.runLater(() -> dialog("cannot upload to add score for image " + name));
+                        }
+                        
                     }
                     else {
                         // revise score
-                        dataSource.reviseValueForKey(imageID, normCharKey, newValue);
-                        this.uploadSession.reviseValueForKey(imageID, normCharKey, newValue, existingValueForKey);
+                        boolean result = dataSource.reviseValueForKey(imageID, normCharKey, newValue);
+                        if (result){
+                        	this.uploadSession.reviseValueForKey(imageID, normCharKey, newValue, existingValueForKey);
+                        	Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
+                        }
+                        else {
+                        	Platform.runLater(() -> dialog("cannot upload to revise score for image " + name));
+                        }
                     }
                     double percentDone = percentProgressPerRow * rowCount;
+                    
+                    
                     Platform.runLater(() -> uploadProgress.setProgress(percentDone));
                 }
             }
@@ -842,5 +887,12 @@ public class ResultsReview {
             AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem trying to save results");
         }
     }
+    private void dialog(String text){
+		Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error Dialog");
+        alert.setHeaderText("AvatolCV error");
+        alert.setContentText(text);
+        alert.showAndWait();
+	}
 }
 

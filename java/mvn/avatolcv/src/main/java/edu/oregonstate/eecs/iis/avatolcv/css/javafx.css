@@ -69,7 +69,12 @@
 .password-field {
 	-fx-font-size: 15px;
 }
-
+.uploaded {
+	-fx-background-color:#C0FFC0;
+}
+.choice-box.short {
+	-fx-font-size: 12px;
+}
 .short-choice-box {
 	-fx-font-size: 12px;
 }

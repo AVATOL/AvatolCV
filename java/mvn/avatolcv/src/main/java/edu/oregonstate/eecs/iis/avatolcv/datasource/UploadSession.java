@@ -95,7 +95,7 @@ public class UploadSession {
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(path));
                 for (UploadEvent event : events){
-                    writer.write(uploadSessionNumber + "," + event.getImageID() + "," + event.getKey() + "," + event.getVal() + "," + event.getOrigValue() + NL);
+                    writer.write(event.getUploadSessionNumber() + "," + event.getImageID() + "," + event.getKey() + "," + event.getVal() + "," + event.getOrigValue() + NL);
                 }
                 writer.close();
             }

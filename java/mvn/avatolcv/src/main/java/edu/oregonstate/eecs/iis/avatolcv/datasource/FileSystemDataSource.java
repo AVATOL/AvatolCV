@@ -15,6 +15,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.session.DataFilter;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
@@ -261,4 +262,24 @@ public class FileSystemDataSource implements DataSource {
             return imageCount + " images present in dataset for this session";
         }
     }
+	@Override
+	public NormalizedValue getValueForKeyAtDatasourceForImage(
+			NormalizedKey normCharKey, String imageID,
+			NormalizedKey trainTestConcern,
+			NormalizedValue trainTestConcernValue) throws AvatolCVException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public boolean reviseValueForKey(String imageID, NormalizedKey key,
+			NormalizedValue value) throws AvatolCVException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean addKeyValue(String imageID, NormalizedKey key,
+			NormalizedValue value) throws AvatolCVException {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

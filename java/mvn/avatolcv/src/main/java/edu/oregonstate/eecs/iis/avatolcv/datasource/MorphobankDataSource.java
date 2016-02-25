@@ -486,10 +486,22 @@ public class MorphobankDataSource implements DataSource {
 		return "taxon";
 	}
     @Override
-    public boolean isKeyPresentAtDatasourceForImage(NormalizedKey normCharKey,
+    public NormalizedValue getValueForKeyAtDatasourceForImage(NormalizedKey normCharKey,
             String imageID, NormalizedKey trainTestConcern,
             NormalizedValue trainTestConcernValue) {
         // Any character asked about here will be present because in the MB session the user specified and requested it explicitly
-        return true;
+        return null;
     }
+	@Override
+	public boolean reviseValueForKey(String imageID, NormalizedKey key,
+			NormalizedValue value) throws AvatolCVException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean addKeyValue(String imageID, NormalizedKey key,
+			NormalizedValue value) throws AvatolCVException {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

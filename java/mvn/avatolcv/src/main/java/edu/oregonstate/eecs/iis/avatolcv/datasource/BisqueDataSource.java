@@ -372,10 +372,11 @@ public class BisqueDataSource implements DataSource {
         }
     }
     @Override
-    public void reviseValueForKey(String imageID, NormalizedKey key,
+    public boolean reviseValueForKey(String imageID, NormalizedKey key,
             NormalizedValue value) throws AvatolCVException {
         try {
-            this.wsClient.reviseAnnotation(imageID, key.getName(), value.getName());
+            boolean result = this.wsClient.reviseAnnotation(imageID, key.getName(), value.getName());
+            return result;
         }
         catch(BisqueWSException e){
             throw new AvatolCVException("problem revising value for key " + key.getName() + " " + value.getName(), e);
@@ -383,10 +384,11 @@ public class BisqueDataSource implements DataSource {
         
     }
     @Override
-    public void addKeyValue(String imageID, NormalizedKey key,
+    public boolean addKeyValue(String imageID, NormalizedKey key,
             NormalizedValue value) throws AvatolCVException {
         try {
-            this.wsClient.addNewAnnotation(imageID, key.getName(), value.getName());
+            boolean result = this.wsClient.addNewAnnotation(imageID, key.getName(), value.getName());
+            return result;
         }
         catch(BisqueWSException e){
             throw new AvatolCVException("problem adding new key/value " + key.getName() + " " + value.getName(), e);

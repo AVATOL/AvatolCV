@@ -774,8 +774,14 @@ public class BisqueWSClientImpl implements BisqueWSClient {
 	        Response postResponse =
 	                invocationBuilder
 	                        .post(Entity.xml(postString));
-	        dumpResponse("postResponse",postResponse);
-	        return true;
+	        
+	        if (postResponse.getStatus() == 200){
+	        	return true;
+	        }
+	        else {
+	        	dumpResponse("postResponse",postResponse);
+	        	return false;
+	        }
 	    }
 	    catch(Exception e){
 	        throw new BisqueWSException("Problem posting annotation",e);
@@ -800,8 +806,13 @@ public class BisqueWSClientImpl implements BisqueWSClient {
                     Response postResponse =
                             invocationBuilder
                                     .post(Entity.xml(postString));
-                    dumpResponse("postResponse",postResponse);
-                    return true;
+                    if (postResponse.getStatus() == 200){
+        	        	return true;
+        	        }
+        	        else {
+        	        	dumpResponse("postResponse",postResponse);
+        	        	return false;
+        	        }
                 }
             }
         }
