@@ -48,8 +48,10 @@ public class ImagesForStep {
 		File dirFile = new File(dirPath);
 		File[] files = dirFile.listFiles();
 		for (File f : files){
-			ImageInfo ii = ImageInfo.loadImageInfoFromFilename(f.getName(), f.getParent());
-			iis.add(ii);
+			if (!f.getName().startsWith(".")){
+				ImageInfo ii = ImageInfo.loadImageInfoFromFilename(f.getName(), f.getParent());
+				iis.add(ii);
+			}
 		}
 		return iis;
 	}

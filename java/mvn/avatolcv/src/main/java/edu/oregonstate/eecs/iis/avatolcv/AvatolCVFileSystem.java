@@ -215,7 +215,7 @@ public class AvatolCVFileSystem {
         List<String> names = new ArrayList<String>();
         for (File f : files){
             String name = f.getName();
-            if (name.equals(".") || name.equals("..")){
+            if (name.startsWith(".")){
                 // skip these
             }
             else {

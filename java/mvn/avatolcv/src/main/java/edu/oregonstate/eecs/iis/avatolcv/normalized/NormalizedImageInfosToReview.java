@@ -30,7 +30,7 @@ public class NormalizedImageInfosToReview {
         File[] files = dir.listFiles();
         List<NormalizedImageInfoScored> normIIs = new ArrayList<NormalizedImageInfoScored>();
         for (File f : files){
-            if (f.getName().equals(".") || f.getName().equals("..")){
+            if (f.getName().startsWith(".")){
                 // skip
             }
             else {

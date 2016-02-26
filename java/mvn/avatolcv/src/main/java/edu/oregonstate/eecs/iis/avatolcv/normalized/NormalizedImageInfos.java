@@ -22,10 +22,12 @@ public class NormalizedImageInfos {
 		// load the existing files
 		File[] files = dirFile.listFiles();
 		for (File f : files){
-			NormalizedImageInfo nii = new NormalizedImageInfo(f.getAbsolutePath());
-			niiHash.put(f.getName(), nii);
-			//System.out.println("+ adding " + f.getName());
-			niiAllPresent.add(f.getName());
+			if (!f.getName().startsWith(".")){
+				NormalizedImageInfo nii = new NormalizedImageInfo(f.getAbsolutePath());
+				niiHash.put(f.getName(), nii);
+				//System.out.println("+ adding " + f.getName());
+				niiAllPresent.add(f.getName());
+			}
 		}
 	}
 	public boolean arePointCoordinatesRelavent() throws AvatolCVException {
@@ -157,21 +159,24 @@ public class NormalizedImageInfos {
 		File[] files = dirFile.listFiles();
 		for (File f : files){
 			String fName = f.getName();
-			String[] parts = ClassicSplitter.splitt(fName,'.');
-			String rootName = parts[0];
-			String[] rootParts = ClassicSplitter.splitt(rootName,'_');
-			if (rootParts[0].equals(mediaID)){
-				//System.out.println(mediaID + " found potential match");
-				//media ID matches, note number suffix
-				matchingNumbersForMediaID.add(rootParts[1]);
-				if (doesMatchingNormalizedImageFileExistAtPath(lines, mediaID, f.getAbsolutePath())){
-					//System.out.println(mediaID + " found match");
-					return f.getAbsolutePath();
-				}
-				else {
-					//System.out.println(mediaID + " did not find match");
+			if (!f.getName().startsWith(".")){
+				String[] parts = ClassicSplitter.splitt(fName,'.');
+				String rootName = parts[0];
+				String[] rootParts = ClassicSplitter.splitt(rootName,'_');
+				if (rootParts[0].equals(mediaID)){
+					//System.out.println(mediaID + " found potential match");
+					//media ID matches, note number suffix
+					matchingNumbersForMediaID.add(rootParts[1]);
+					if (doesMatchingNormalizedImageFileExistAtPath(lines, mediaID, f.getAbsolutePath())){
+						//System.out.println(mediaID + " found match");
+						return f.getAbsolutePath();
+					}
+					else {
+						//System.out.println(mediaID + " did not find match");
+					}
 				}
 			}
+			
 		}
 		//System.out.println(mediaID + "# making new nii");
 		//none of the files matched, check for the first unused number suffix and store with that

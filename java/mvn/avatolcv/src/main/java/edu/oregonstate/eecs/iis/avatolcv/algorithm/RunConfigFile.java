@@ -203,7 +203,9 @@ public class RunConfigFile {
         File[] files = dir.listFiles();
         List<String> allPathsFromDir = new ArrayList<String>();
         for (File f : files){
-            allPathsFromDir.add(f.getAbsolutePath());
+        	if (!f.getName().startsWith(".")){
+        		allPathsFromDir.add(f.getAbsolutePath());
+        	}
         }
         
         suffixFileSort(inputs, pathListHash, allPathsFromDir, this.pathOfSessionInputFiles);
@@ -367,7 +369,9 @@ public class RunConfigFile {
         List<String> allPathsFromDir = new ArrayList<String>();
         if (files.length > 0){
             for (File f : files){
-                allPathsFromDir.add(f.getAbsolutePath());
+            	if (f.getName().startsWith(".")){
+            		allPathsFromDir.add(f.getAbsolutePath());
+            	}
             }
         }
         
