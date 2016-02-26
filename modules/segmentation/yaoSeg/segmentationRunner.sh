@@ -105,6 +105,9 @@ done < "$testImagesFile"
 # copy the session-provided testing images to the allImages dir
 # (we will not be testing the shipped test images so don't copy those)
 #
+
+DATA_DIR=${THIS_DIR}/data
+mkdir ${DATA_DIR}
 RELATIVE_ALL_IMAGES_DIR=data/allImages
 ALL_IMAGES_DIR=${THIS_DIR}/${RELATIVE_ALL_IMAGES_DIR}
 mkdir ${ALL_IMAGES_DIR}
@@ -123,7 +126,9 @@ done < "$testImagesFile"
 # copy the shipped training images to allImages
 #
 #
-
+#create dir in case its not there yet
+SHIPPED_TRAINING_IMAGES_DIR=data/training_imgs
+mkdir ${SHIPPED_TRAINING_IMAGES_DIR}
 cp ${THIS_DIR}/data/training_imgs/* ${ALL_IMAGES_DIR}
 
 
