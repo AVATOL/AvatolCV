@@ -107,6 +107,8 @@ done < "$testImagesFile"
 #
 DATA_DIR=${THIS_DIR}/data
 mkdir ${DATA_DIR}
+OUTPUT_DIR=${THIS_DIR}/output
+mkdir ${OUTPUT_DIR}
 RELATIVE_ALL_IMAGES_DIR=data/allImages
 ALL_IMAGES_DIR=${THIS_DIR}/${RELATIVE_ALL_IMAGES_DIR}
 mkdir ${ALL_IMAGES_DIR}
