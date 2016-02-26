@@ -2,6 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -771,19 +772,29 @@ public class ResultsReview {
                 Platform.runLater(() -> uploadProgress.setProgress(percentDone));
             }
             this.uploadSession.forgetEvents(events);
-            // check to see if scoreLabel should still reflect being uploaded or not
+            
+            // check to see if any scoreLabels should still reflect being uploaded
             for (UploadEvent event : events){
-            	String imageID = event.getImageID();
-            	Label scoreLabel = scoreLabelForImageIDHash.get(imageID);
-            	if (null != scoreLabel){
-            		if (uploadSession.isImageUploaded(imageID)){
-            			// no need to change - should already be highlighted
-            		}
-            		else {
-            			Platform.runLater(() -> scoreLabel.getStyleClass().remove("uploaded"));
-            		}
-            	}
+                String imageID = event.getImageID();
+                Label scoreLabel = scoreLabelForImageIDHash.get(imageID);
+                Platform.runLater(() -> scoreLabel.getStyleClass().remove("uploaded"));
             }
+            /*
+            
+            Enumeration<String> imageIDEnum = scoreLabelForImageIDHash.keys();
+            while (imageIDEnum.hasMoreElements()){
+                String imageID = imageIDEnum.nextElement();
+                Label scoreLabel = scoreLabelForImageIDHash.get(imageID);
+                if (null != scoreLabel){
+                    if (uploadSession.isImageUploaded(imageID)){
+                        // no need to change - should already be highlighted
+                    }
+                    else {
+                        Platform.runLater(() -> scoreLabel.getStyleClass().remove("uploaded"));
+                    }
+                }
+            }
+            */
             Platform.runLater(() -> enableUndoUploadButtonIfAppropriate());
         }
         catch(AvatolCVException ace){

@@ -25,13 +25,14 @@ public class BisqueUploadTest extends TestCase {
         }
     }
     */
-    /*
+    
     public void testUploadRevise(){
         BisqueWSClientImpl bisque = new BisqueWSClientImpl();
         try {
             AvatolCVFileSystem.setRootDir("C:\\jed\\avatol\\git\\avatol_cv");
             bisque.authenticate("jedirv","Neton3plants**");
-            bisque.reviseAnnotation("00-b7itcHVfYEEaBiMXFsibVS", "cuteness", "quasi-infinite");
+            //bisque.reviseAnnotation("00-XUMRpWGerqJMpvZndSQfpR", "leaf apex angle", "acute"); <- won't work cause Ramona owns that tag
+            bisque.reviseAnnotation("00-b7itcHVfYEEaBiMXFsibVS", "cuteness", "infinite");
         }
         catch(AvatolCVException ace){
             ace.printStackTrace();
@@ -42,6 +43,6 @@ public class BisqueUploadTest extends TestCase {
             System.out.println(ex.getMessage());
         }
     }
-    */
+    
    
 }
