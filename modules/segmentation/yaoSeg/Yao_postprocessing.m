@@ -1,4 +1,4 @@
-function [] = Yao_postprocessing(segmentationOutputDir, testingImagesFile, croppedOrigImageSuffix, croppedMaskImageSuffix) 
+function  Yao_postprocessing(segmentationOutputDir, testingImagesFile, croppedOrigImageSuffix, croppedMaskImageSuffix) 
 %   1. Generate the fullsize mask images:  
 %   2. Find the largest connected component of mask and then fit a
 %   rectangle on it
@@ -44,16 +44,21 @@ for i = 1:1:length(testlist)
     
     % find maximum CC of Mask, then generate the MaskCC(only the mask of 1 leaf)
     CC = bwconncomp(Mask);
+    if CC.NumObjects == 0
+        display('Skipping because the mask is all balck');
+        continue;
+    end
+    display('connected components found');
     numPixels = cellfun(@numel,CC.PixelIdxList);
     [biggest,CCidx] = max(numPixels);
     MaskCC = im2bw(zeros(size(Mask)));
     MaskCC(CC.PixelIdxList{CCidx}) = 1;
     % find minimum BB that bound this mask and crop it on mask and raw image
     stats = regionprops(MaskCC,'BoundingBox');
-    display(size(stats, 1))
     if size(stats, 1) == 0
         continue;
     end
+    display('connected components found2');
     BB = num2cell(stats.BoundingBox);
     [x, y, l, h] = BB{:};
     x = floor(x); y = floor(y);
@@ -65,10 +70,11 @@ for i = 1:1:length(testlist)
         h = h -1;
         y = 1;
     end
+     display('connected components found3');
     Mask_crop = Mask(y:y+h,x:x+l);
     Image = imread(fullpath);
     Image_crop = Image(y:y+h,x:x+l,:);
-    
+     display('connected components found4');
     % write the Mask_crop and Image_crop to folder 'segmentationOutputDir'
 %     mkdir(segmentationOutputDir, 'test'); % talk with Jed ?!!!!
     imwrite(Mask_crop,[segmentationOutputDir '/' name croppedMaskImageSuffix ext]);
@@ -77,5 +83,6 @@ end
 
 %% removethe 'output' folder into path to get access to segmentation results
 rmpath([currentPath '/output'])
+quit 
 
 end

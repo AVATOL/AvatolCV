@@ -83,7 +83,7 @@ matlab_func+=')'
 echo $matlab_func
 cd $THIS_DIR
 
-/Applications/MATLAB_R2012b.app/bin/matlab -nodisplay -r $matlab_func
+/Applications/MATLAB_R2015b.app/bin/matlab -nodisplay -r $matlab_func quit
 
 echo "matlab exited!!!"
 

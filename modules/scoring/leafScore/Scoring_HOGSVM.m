@@ -165,9 +165,7 @@ test_label = zeros(length(testlist),1);
 [prob,pred] = Yao_shape_SVM(length(labelMap),train_label,test_label,train_data,test_data);
 display('SVM done.');
 display('Generating Results ----');
-blank_string = blanks(length(testlist))
-
-results = horzcat(results, num2cell(pred), cellstr(blank_string),num2cell(prob));
+results = horzcat(results, num2cell(pred), cell(length(testlist), 1),num2cell(prob));
 for i=1:1:length(testlist)
     results{i,1} = cell2mat(testlist(i));
     results{i,2} =  labelMap2(cell2mat(results(i,2)));

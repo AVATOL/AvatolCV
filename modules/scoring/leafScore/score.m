@@ -35,5 +35,6 @@ fclose(fileID);
    
     Scoring_HOGSVM(trainingData, testImagesFile, scoringOutputDir, apex, outputFileName);
     display('running completed for scoring');
+    quit()
 end
 

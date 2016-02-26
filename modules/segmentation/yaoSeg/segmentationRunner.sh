@@ -196,8 +196,25 @@ ${DARWIN_BIN_DIR}/inferPixelLabels -config ${DARWIN_CONFIG_XML} -outLabels .pair
 #  call matlab to crop the leaf on both raw and mask images
 #
 echo running step 7 of 7 - cropping images
-cd ${THIS_DIR}
-echo ${THIS_DIR}/yaoSegPP_via_runtime.sh ${segmentationOutputDir} ${testImagesFile} ${croppedOrigImageSuffix} ${croppedMaskImageSuffix}
-${THIS_DIR}/yaoSegPP_via_runtime.sh ${segmentationOutputDir} ${testImagesFile} ${croppedOrigImageSuffix} ${croppedMaskImageSuffix}
-echo done with segmentation
-echo done with segmentation > ${avatolCVStatusFile}
+#direct matlabe call
+matlab_func='Yao_postprocessing('
+matlab_func+="'"${segmentationOutputDir}"'"
+matlab_func+=','
+matlab_func+="'"${testImagesFile}"'"
+matlab_func+=','
+matlab_func+="'"${croppedOrigImageSuffix}"'"
+matlab_func+=','
+matlab_func+="'"${croppedMaskImageSuffix}"'"
+matlab_func+=')'
+
+echo $matlab_func
+cd $THIS_DIR
+
+/Applications/MATLAB_R2015b.app/bin/matlab -nodisplay -r $matlab_func quit
+
+echo "matlab exited!!!"
+# this is the compiled version
+#cd ${THIS_DIR}
+#echo ${THIS_DIR}/yaoSegPP_via_runtime.sh ${segmentationOutputDir} ${testImagesFile} ${croppedOrigImageSuffix} ${croppedMaskImageSuffix}
+#${THIS_DIR}/yaoSegPP_via_runtime.sh ${segmentationOutputDir} ${testImagesFile} ${croppedOrigImageSuffix} ${croppedMaskImageSuffix}
+
