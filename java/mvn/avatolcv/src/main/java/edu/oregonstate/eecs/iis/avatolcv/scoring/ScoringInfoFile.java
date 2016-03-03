@@ -11,6 +11,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
@@ -91,20 +93,27 @@ public class ScoringInfoFile {
 		}
 		return FILE_PREFIX + typeString + "_" + idString + "_" + scoringConcernName + ".txt";
 	}
-	public void addImageInfo(String imageName, String trainTestConcern, String trainTestConcernValue){
-		String scoringLine = imageName+","+ trainTestConcern + "," + trainTestConcernValue +NL;
-		scoringLines.add(scoringLine);
+	public void addImageInfo(String imagePath, String trainTestConcern, String trainTestConcernValue) throws AvatolCVException{
+		String imageID = NormalizedImageInfo.getImageIDFromPath(imagePath);
+		if (!ImageInfo.isExcluded(imageID)){
+			String scoringLine = imagePath+","+ trainTestConcern + "," + trainTestConcernValue +NL;
+			scoringLines.add(scoringLine);
+		}
 	}
 	/**
 	 * this one is for helping Michael with debugging Shell's alg
-	 * @param imageName
+	 * @param imagePath
 	 * @param trainTestConcern
 	 * @param trainTestConcernValue
 	 * @param pointCoordinates
+	 * @throws AvatolCVException 
 	 */
-	public void addImageInfo(String imageName, String trainTestConcern, String trainTestConcernValue, String pointCoordinates){
-		String scoringLine = imageName+","+ trainTestConcern + "," + trainTestConcernValue  + "," + pointCoordinates+NL;
-		scoringLines.add(scoringLine);
+	public void addImageInfo(String imagePath, String trainTestConcern, String trainTestConcernValue, String pointCoordinates) throws AvatolCVException{
+		String imageID = NormalizedImageInfo.getImageIDFromPath(imagePath);
+		if (!ImageInfo.isExcluded(imageID)){
+			String scoringLine = imagePath+","+ trainTestConcern + "," + trainTestConcernValue  + "," + pointCoordinates+NL;
+			scoringLines.add(scoringLine);
+		}
 	}
 	public void persist(String parentDir) throws AvatolCVException {
 		String path = parentDir + FILESEP + getFilename();

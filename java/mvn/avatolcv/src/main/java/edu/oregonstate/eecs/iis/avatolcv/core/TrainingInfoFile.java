@@ -12,6 +12,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
@@ -98,17 +99,20 @@ public class TrainingInfoFile {
 		String trainTestConcernValue = parts[4];
 		this.imagePaths.add(filepath);
 		String imageID = ImageInfo.getImageIDFromPath(filepath);
-		this.scoringConcernValueForPathHash.put(filepath, scoringConcernValue);
-		this.pointCoordinatesForPathHash.put(filepath, pointCoordinates);
-		this.trainTestConcernForPathHash.put(filepath, trainTestConcern);
-		this.trainTestConcernValuePathHash.put(filepath, trainTestConcernValue);
-		
-		this.scoringConcernValueForImageIDHash.put(imageID, scoringConcernValue);
-        this.pointCoordinatesForImageIDHash.put(imageID, pointCoordinates);
-        this.trainTestConcernForImageIDHash.put(imageID, trainTestConcern);
-        this.trainTestConcernValueImageIDHash.put(imageID, trainTestConcernValue);
-        
-        this.imagePathForImageIDHash.put(imageID, filepath);
+		if (!ImageInfo.isExcluded(imageID)){
+			trainingLines.add(line);
+			this.scoringConcernValueForPathHash.put(filepath, scoringConcernValue);
+			this.pointCoordinatesForPathHash.put(filepath, pointCoordinates);
+			this.trainTestConcernForPathHash.put(filepath, trainTestConcern);
+			this.trainTestConcernValuePathHash.put(filepath, trainTestConcernValue);
+			
+			this.scoringConcernValueForImageIDHash.put(imageID, scoringConcernValue);
+	        this.pointCoordinatesForImageIDHash.put(imageID, pointCoordinates);
+	        this.trainTestConcernForImageIDHash.put(imageID, trainTestConcern);
+	        this.trainTestConcernValueImageIDHash.put(imageID, trainTestConcernValue);
+	        
+	        this.imagePathForImageIDHash.put(imageID, filepath);
+		}
 	}
 	public TrainingInfoFile(String pathname) throws AvatolCVException {
 		File f = new File(pathname);
@@ -127,7 +131,6 @@ public class TrainingInfoFile {
 					// ignore
 				}
 				else {
-					trainingLines.add(line);
 					extractImageInfo(line);
 				}
 			}
@@ -167,9 +170,12 @@ public class TrainingInfoFile {
 		}
 		return FILE_PREFIX + typeString + "_" + idString + "_" + scoringConcernName + ".txt";
 	}
-	public void addImageInfo(String imagePath, String scoringConcernValue, String pointCoordinates, String trainTestConcern, String trainTestConcernValue){
-		String trainingLine = imagePath+","+scoringConcernValue+","+pointCoordinates + "," + trainTestConcern + "," + trainTestConcernValue +NL;
-		trainingLines.add(trainingLine);
+	public void addImageInfo(String imagePath, String scoringConcernValue, String pointCoordinates, String trainTestConcern, String trainTestConcernValue) throws AvatolCVException {
+		String imageID = NormalizedImageInfo.getImageIDFromPath(imagePath);
+		if (!ImageInfo.isExcluded(imageID)){
+			String trainingLine = imagePath+","+scoringConcernValue+","+pointCoordinates + "," + trainTestConcern + "," + trainTestConcernValue +NL;
+			trainingLines.add(trainingLine);
+		}
 	}
 	public void persist(String parentDir) throws AvatolCVException {
 		String path = parentDir + FILESEP + getFilename();

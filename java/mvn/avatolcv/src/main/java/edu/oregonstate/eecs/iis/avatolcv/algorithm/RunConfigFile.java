@@ -13,6 +13,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.results.OutputImageSorter;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ModalImageInfo;
@@ -223,15 +224,16 @@ public class RunConfigFile {
         	for (AlgorithmInput air : requiredInputs){
             	List<String> desiredFiles = new ArrayList<String>();
             	List<String> candidatesWithMatchedSuffix = pathListHash.get(air);
-            	int count = 0;
             	for (ModalImageInfo mii : scoringList){
                 	String imageID = mii.getNormalizedImageInfo().getImageID();
-                	String pathWithMatchingImageID = getPathWithMatchingImageID(candidatesWithMatchedSuffix, imageID);
-                	if (null == pathWithMatchingImageID){
-                		System.out.println("WARNING - Cannot find file to score with imageID " + imageID + " and reqiured suffix " + air.getSuffix() + " in "  + this.pathOfSessionInputFiles);
-                	}
-                	else {
-                		desiredFiles.add(pathWithMatchingImageID);
+                	if (!ImageInfo.isExcluded(imageID)){
+                		String pathWithMatchingImageID = getPathWithMatchingImageID(candidatesWithMatchedSuffix, imageID);
+                    	if (null == pathWithMatchingImageID){
+                    		System.out.println("WARNING - Cannot find file to score with imageID " + imageID + " and reqiured suffix " + air.getSuffix() + " in "  + this.pathOfSessionInputFiles);
+                    	}
+                    	else {
+                    		desiredFiles.add(pathWithMatchingImageID);
+                    	}
                 	}
                 }
             	// replace the candidate list with the desired list
@@ -369,8 +371,11 @@ public class RunConfigFile {
         List<String> allPathsFromDir = new ArrayList<String>();
         if (files.length > 0){
             for (File f : files){
-            	if (f.getName().startsWith(".")){
-            		allPathsFromDir.add(f.getAbsolutePath());
+            	if (!f.getName().startsWith(".")){
+            		String imageID = NormalizedImageInfo.getImageIDFromFilename(f.getName());
+                	if (!ImageInfo.isExcluded(imageID)){
+                		allPathsFromDir.add(f.getAbsolutePath());
+                	}
             	}
             }
         }
