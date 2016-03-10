@@ -405,7 +405,10 @@ public class RunConfigFile {
             if (null != paths){
                 if (!paths.isEmpty()){
                     for (String path : paths){
-                        writer.write(path + NL);
+                    	String imageID = NormalizedImageInfo.getImageIDFromPath(path);
+                    	if (!ImageInfo.isExcluded(imageID)){
+                            writer.write(path + NL);
+                    	}
                     }
                 }
             }
