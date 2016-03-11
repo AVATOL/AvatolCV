@@ -102,9 +102,10 @@ public class ImageInfo {
 	public String getImageWidth(){
 		return this.imageWidth;
 	}
-	public String getExtension(){
-		return this.extension;
-	}
+	// DEAD CODE
+	//public String getExtension(){
+	//	return this.extension;
+	//}
 	public void setNameAsUploadedOriginalForm(String originalName){
 		this.nameAsUploadedOriginal = originalName;
 	}
