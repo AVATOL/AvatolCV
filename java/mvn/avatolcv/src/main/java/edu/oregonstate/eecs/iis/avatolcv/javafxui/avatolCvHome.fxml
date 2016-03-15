@@ -20,7 +20,7 @@
       <HBox layoutY="28.0" VBox.vgrow="ALWAYS">
          <children>
             <Region minWidth="50.0" HBox.hgrow="ALWAYS" />
-            <GridPane alignment="CENTER" hgap="10.0" vgap="25.0">
+            <GridPane fx:id="frontPageGridPane" alignment="CENTER" hgap="10.0" vgap="25.0">
               <columnConstraints>
                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" />
                   <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" />
@@ -37,20 +37,12 @@
               </rowConstraints>
                <children>
                   <Label minWidth="-Infinity" styleClass="heading-text" text="Select from the choices below and click Start" GridPane.columnSpan="2" GridPane.vgrow="NEVER" />
-                  <HBox alignment="CENTER_LEFT" fillHeight="false" spacing="10.0" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2" GridPane.vgrow="NEVER">
-                     <children>
-                        <RadioButton fx:id="radioResumeSession" disable="true" minWidth="-Infinity" mnemonicParsing="false" styleClass="control-text" text="Resume session in progress">
-                           <toggleGroup>
-                              <ToggleGroup fx:id="sessionChoice" />
-                           </toggleGroup>
-                        </RadioButton>
-                     </children>
-                  </HBox>
-                  <Region minHeight="50.0" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="5" GridPane.vgrow="ALWAYS" />
-                  <ChoiceBox fx:id="sessionResumeChooser" disable="true" maxWidth="1.7976931348623157E308" styleClass="control-text" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
-                  <RadioButton fx:id="radioReviewResults" mnemonicParsing="false" text="Review results of prior session" toggleGroup="$sessionChoice" GridPane.rowIndex="3" />
+                  <RadioButton fx:id="radioReviewResults" mnemonicParsing="false" text="Review results of prior session" GridPane.rowIndex="2">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="sessionChoice" />
+                     </toggleGroup></RadioButton>
                   <RadioButton fx:id="radioNewSession" mnemonicParsing="false" selected="true" text="Start a new scoring session" toggleGroup="$sessionChoice" GridPane.rowIndex="1" />
-                  <ChoiceBox fx:id="priorSessionSelector" maxWidth="1.7976931348623157E308" styleClass="control-text" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
+                  <ChoiceBox fx:id="priorSessionSelector" maxWidth="1.7976931348623157E308" styleClass="control-text" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
                </children>
                <opaqueInsets>
                   <Insets />

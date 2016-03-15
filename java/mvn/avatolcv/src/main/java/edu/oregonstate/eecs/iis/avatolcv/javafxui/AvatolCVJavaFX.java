@@ -25,6 +25,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import org.apache.logging.log4j.Logger;
@@ -40,10 +41,12 @@ public class AvatolCVJavaFX extends Application {
     private static String rootDir = null;
     private static String startError = "";
     public RadioButton radioNewSession;
-    public RadioButton radioResumeSession;
+    //public RadioButton radioResumeSession;
     public RadioButton radioReviewResults;
     public RadioButton radioTutorial;
     public ChoiceBox<String> priorSessionSelector;
+    //public ChoiceBox<String> sessionResumeChooser;
+    public GridPane frontPageGridPane;
     //public static AvatolCVExceptionExpresser exceptionExpresser = new AvatolCVExceptionExpresserJavaFX();
     
     Stage mainWindow = null;
@@ -78,7 +81,13 @@ public class AvatolCVJavaFX extends Application {
                 loader.setController(this);
                 Parent root = loader.load();
                 stage.setTitle("AvatolCV");
+                
+               
                 scene = new Scene(root, MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT);
+                // hide these two for now
+                //frontPageGridPane.getChildren().remove(radioResumeSession);
+                //frontPageGridPane.getChildren().remove(sessionResumeChooser);
+                
                 initializePriorRunChoices(scene);
                 stage.setScene(scene);
                 stage.show();
@@ -125,9 +134,9 @@ public class AvatolCVJavaFX extends Application {
                 session.init(rootDir, mainWindow);
                 
             }
-            else if (radioResumeSession.isSelected()){
-                
-            }
+            //else if (radioResumeSession.isSelected()){
+            //    
+            //}
             else if (radioReviewResults.isSelected()){
                 ResultsReview rr = new ResultsReview();
                 String runName = (String)priorSessionSelector.getValue();
