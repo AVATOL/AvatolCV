@@ -18,6 +18,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.Algorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
@@ -483,6 +484,19 @@ public class AvatolCVFileSystem {
 		for (File f : files){
 			String fname = f.getName();
 			if (fname.contains(scoringConcernName) && (fname.startsWith(ScoresInfoFile.FILE_PREFIX) || fname.startsWith(ScoresInfoFile.FILE_PREFIX_ALTERNATE))){
+				return f.getAbsolutePath();
+			}
+		}
+		return null;
+	}
+	public static String getScoringFilePath(String runID, String scoringConcernName) throws AvatolCVException {
+		String dirToSearch = getDatasetDir() + FILESEP + runID + FILESEP + "trainingDataForScoring";
+		
+		File dir = new File(dirToSearch);
+		File[] files = dir.listFiles();
+		for (File f : files){
+			String fname = f.getName();
+			if (fname.contains(scoringConcernName) && (fname.startsWith(ScoringInfoFile.FILE_PREFIX))){
 				return f.getAbsolutePath();
 			}
 		}

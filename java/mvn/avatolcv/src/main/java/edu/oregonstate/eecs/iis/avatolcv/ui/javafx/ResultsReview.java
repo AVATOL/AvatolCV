@@ -55,6 +55,7 @@ import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTable;
 import edu.oregonstate.eecs.iis.avatolcv.results.SortableRow;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
@@ -423,6 +424,8 @@ public class ResultsReview {
 
     	scoredImagesGridPane.getChildren().clear();
     	addScoredImagesHeader(scoredImagesGridPane);
+    	String scoringFilePath = AvatolCVFileSystem.getScoringFilePath(runID, scoringConcernName);
+    	ScoringInfoFile scoringInfoFile = new ScoringInfoFile(scoringFilePath);
     	
     	String scoreFilePath = AvatolCVFileSystem.getScoreFilePath(runID, scoringConcernName);
     	sif = new ScoresInfoFile(scoreFilePath);
@@ -452,11 +455,11 @@ public class ResultsReview {
     		
         	String origImageName = getTrueImageNameFromImagePathForCookingShow(path);
         	String thumbnailPathname = getThumbnailPathWithImagePathForCookingShow(path);
-        	String trainTestConcernValue = null;
+        	NormalizedValue trainTestConcernValue = null;
         	if (this.runSummary.hasTrainTestConcern()){
-                 trainTestConcernValue = "";
+                 trainTestConcernValue = scoringInfoFile.getTrainTestConcernValueForImageID(ImageInfo.getImageIDFromPath(path));
             }
-        	SortableRow sortableRow = resultsTable.createRow(thumbnailPathname, origImageName, value, conf, truth, row - 1, trainTestConcernValue);
+        	SortableRow sortableRow = resultsTable.createRow(thumbnailPathname, origImageName, value, conf, truth, row - 1, trainTestConcernValue.getName());
         	generateScoreWidgets(sortableRow);
         	row++;
         	//scoredImagesGridPane.getRowConstraints().get(row).setPrefHeight(imageHeight);

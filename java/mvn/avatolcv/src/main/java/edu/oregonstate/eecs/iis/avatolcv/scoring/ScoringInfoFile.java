@@ -10,10 +10,12 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 /*
@@ -41,6 +43,9 @@ public class ScoringInfoFile {
 	private String scoringConcernName;
 	private String imageDir;
 	private List<String> scoringLines = new ArrayList<String>();
+    private Hashtable<String,String> pointCoordinatesForImageIDHash = new Hashtable<String, String>();
+    private Hashtable<String,String> trainTestConcernForImageIDHash = new Hashtable<String, String>();
+    private Hashtable<String,String> trainTestConcernValueImageIDHash = new Hashtable<String, String>();
 	
 	//private Hashtable<String,String> scoringConcernValueHash = new Hashtable<String, String>();
 	//private Hashtable<String,String> pointCoordinatesHash = new Hashtable<String, String>();
@@ -49,6 +54,53 @@ public class ScoringInfoFile {
 		this.scoringConcernType = scoringConcernType;
 		this.scoringConcernID   = scoringConcernID;
 		this.scoringConcernName = scoringConcernName;
+	}
+	public NormalizedValue getTrainTestConcernValueForImageID(String imageID) throws AvatolCVException {
+	    String s = trainTestConcernValueImageIDHash.get(imageID);
+        return new NormalizedValue(s);
+    }
+	public ScoringInfoFile(String pathname) throws AvatolCVException {
+		File f = new File(pathname);
+		String filename = f.getName();
+		String[] parts = ClassicSplitter.splitt(filename,'.');
+		String root = parts[0];
+		String[] rootParts = ClassicSplitter.splitt(root,'_');
+		this.scoringConcernType = rootParts[1];
+		this.scoringConcernID   = rootParts[2];
+		this.scoringConcernName = rootParts[3];
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(pathname));
+			String line = null;
+			while (null != (line = reader.readLine())){
+				if (line.startsWith("#")){
+					// ignore
+				}
+				else {
+					extractImageInfo(line);
+				}
+			}
+			reader.close();
+		}
+		catch(IOException e){
+			throw new AvatolCVException("could not load trainingInfoFile " + pathname);
+		}
+	}
+	public void extractImageInfo(String line) throws AvatolCVException {
+		String[] parts = ClassicSplitter.splitt(line,',');
+		if (parts.length < 4){
+			throw new AvatolCVException("ScoringInfoFile should have four fields in each line - some may be empty: filepath, trainTestConcern, trainTestConcernValue, pointCoordinates");
+		}
+		String filepath = parts[0];
+		String trainTestConcern = parts[1];
+		String trainTestConcernValue = parts[2];
+		String pointCoordinates = AvatolCVConstants.UNDETERMINED;
+		pointCoordinates = parts[3];
+		//this.imagePaths.add(filepath);
+		String imageID = ImageInfo.getImageIDFromPath(filepath);
+		this.pointCoordinatesForImageIDHash.put(imageID, pointCoordinates);
+	    this.trainTestConcernForImageIDHash.put(imageID, trainTestConcern);
+	    this.trainTestConcernValueImageIDHash.put(imageID, trainTestConcernValue); 
+		
 	}
 	public List<String> getImageNames(){
 		return this.imageNames;
