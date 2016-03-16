@@ -148,7 +148,7 @@ public class ScoringInfoFile {
 	public void addImageInfo(String imagePath, String trainTestConcern, String trainTestConcernValue) throws AvatolCVException{
 		String imageID = NormalizedImageInfo.getImageIDFromPath(imagePath);
 		if (!ImageInfo.isExcluded(imageID)){
-			String scoringLine = imagePath+","+ trainTestConcern + "," + trainTestConcernValue +NL;
+			String scoringLine = imagePath+","+ trainTestConcern + "," + trainTestConcernValue  + "," +NL;
 			scoringLines.add(scoringLine);
 		}
 	}
