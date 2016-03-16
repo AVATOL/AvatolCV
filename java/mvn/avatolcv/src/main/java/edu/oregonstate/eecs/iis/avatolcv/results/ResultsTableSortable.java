@@ -8,7 +8,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 
-public class ResultsTable2 {
+public class ResultsTableSortable {
     private Hashtable<String, String> valueForColumnNameHash = new Hashtable<String, String>();
     private Hashtable<String, Object> widgetforIdColumnNameHash = new Hashtable<String, Object>();
     

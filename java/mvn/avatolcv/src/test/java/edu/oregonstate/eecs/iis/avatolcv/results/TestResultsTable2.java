@@ -12,7 +12,7 @@ public class TestResultsTable2 extends TestCase {
        
         
         try {
-            ResultsTable2 rt = new ResultsTable2();
+            ResultsTableSortable rt = new ResultsTableSortable();
             // column A
             rt.addValueForColumn("image1","colA","valA1");
             rt.addValueForColumn("image2","colA","valA2");

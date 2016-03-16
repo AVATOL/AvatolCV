@@ -50,14 +50,14 @@ import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJava
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
-import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTable2;
+import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTableSortable;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
 
-public class ResultsReview2 {
+public class ResultsReviewSortable {
     public static final String COLNAME_IMAGE = "image";
     public static final String COLNAME_TRUTH = "truth";
     public static final String COLNAME_SCORE = "score";
@@ -89,15 +89,15 @@ public class ResultsReview2 {
     private String scoringMode = null;
     private RunSummary runSummary = null;
     private AvatolCVJavaFX mainScreen = null;
-    private ResultsTable2 resultsTable2 = null;
-    private ResultsTable2 trainingTable = null;
+    private ResultsTableSortable resultsTable2 = null;
+    private ResultsTableSortable trainingTable = null;
     private String currentThresholdString  = "?";
     private TrainingInfoFile tif = null;
     private ScoresInfoFile sif = null;
     private UploadSession uploadSession = null;
     private DataSource dataSource = null;
     private Hashtable<String,Label> scoreLabelForImageIDHash = null;
-    public ResultsReview2(){
+    public ResultsReviewSortable(){
     }
     public void init(AvatolCVJavaFX mainScreen, Stage mainWindow, String runName) throws AvatolCVException {
         
@@ -273,7 +273,7 @@ public class ResultsReview2 {
             }
     	}
     }
-    private void addEventhandlerForImageClick(ImageView iv, ResultsTable2 rt, String imageID, GridPane gp){
+    private void addEventhandlerForImageClick(ImageView iv, ResultsTableSortable rt, String imageID, GridPane gp){
         iv.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -308,7 +308,7 @@ public class ResultsReview2 {
        });
     }
    
-    private void addEventhandlerForColumnSort(Label columnHeader, ResultsTable2 rt, GridPane gp, List<String> colNames){
+    private void addEventhandlerForColumnSort(Label columnHeader, ResultsTableSortable rt, GridPane gp, List<String> colNames){
         columnHeader.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -346,7 +346,7 @@ public class ResultsReview2 {
         return result;
     }
     
-    private void renderTable(ResultsTable2 rt, GridPane gp, List<String> colNames){
+    private void renderTable(ResultsTableSortable rt, GridPane gp, List<String> colNames){
         gp.getChildren().clear();
         int headerColumnIndex = 0;
         for (String colName : colNames){
@@ -401,7 +401,7 @@ public class ResultsReview2 {
     	    String holdoutFilePath = AvatolCVFileSystem.getHoldoutFilePath(runID, scoringConcernName);
             hif = new HoldoutInfoFile(holdoutFilePath);
     	}
-    	resultsTable2 = new ResultsTable2();
+    	resultsTable2 = new ResultsTableSortable();
     	//rt.addValueForColumn("image1","colA","valA1");
     	//rt.addWidgetForColumn("image1","colA",objA1);
     	//rt.getImageIDsInCurrentOrder()
@@ -464,7 +464,7 @@ public class ResultsReview2 {
     	resultsTable2.sortOnColumn(COLNAME_IMAGE);
     	renderTable(resultsTable2, scoredImagesGridPane, getActiveScoreColumns());
 
-    	trainingTable = new ResultsTable2();
+    	trainingTable = new ResultsTableSortable();
     	//addTrainingImagesHeader(trainingImagesGridPane);
     	List<String> imagePaths = tif.getImagePaths();
     	

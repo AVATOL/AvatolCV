@@ -402,7 +402,7 @@ public class JavaFXStepSequencer  {
         	        }
     	    	}
     	    	else {
-    	    		ResultsReview2 rr = new ResultsReview2();
+    	    		ResultsReviewSortable rr = new ResultsReviewSortable();
                     String runName = sessionInfo.getSessionName();
                     rr.initOnAppThread(this.mainScreen, mainWindow, runName);
                     seekingNext = false;
