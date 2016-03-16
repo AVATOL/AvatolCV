@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -52,14 +53,22 @@ import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTable;
+import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTable2;
 import edu.oregonstate.eecs.iis.avatolcv.results.SortableRow;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class ResultsReview2 {
+    public static final String COLNAME_IMAGE = "image";
+    public static final String COLNAME_TRUTH = "truth";
+    public static final String COLNAME_SCORE = "score";
+    public static final String COLNAME_CONFIDENCE = "confidence";
+    public static final String COLNAME_NAME = "name";
+    public static final String COLNAME_TRAIN_TEST = "";
 	public Slider thresholdSlider = null;
     public Accordion runDetailsAccordion = null;
     public ScrollPane runDetailsScrollPane = null;
@@ -85,7 +94,8 @@ public class ResultsReview2 {
     private String scoringMode = null;
     private RunSummary runSummary = null;
     private AvatolCVJavaFX mainScreen = null;
-    private ResultsTable resultsTable = null;
+    private ResultsTable2 resultsTable2 = null;
+    private ResultsTable2 trainingTable = null;
     private String currentThresholdString  = "?";
     private TrainingInfoFile tif = null;
     private ScoresInfoFile sif = null;
@@ -229,44 +239,80 @@ public class ResultsReview2 {
         String twoDecimalString = limitToTwoDecimalPlaces(newValString);
 	    disableAllUnderThreshold(twoDecimalString);
     }
-    private void disableAllUnderThreshold(String threshold){
-        currentThresholdString = threshold;
-    	Label truthLabel = null;
-    	List<SortableRow> rows = resultsTable.getRows();
-        for (SortableRow row : rows){
-            int index = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_CONFIDENCE);
-            Label confLabel = (Label)row.getWidget(ResultsTable.COLNAME_CONFIDENCE);
-            Label nameLabel = (Label)row.getWidget(ResultsTable.COLNAME_NAME);
-            Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
-            //ChoiceBox<String> scoreChoice = (ChoiceBox<String>)row.getWidget(ResultsTable.COLNAME_SCORE);
-           
-            truthLabel = (Label)row.getWidget(ResultsTable.COLNAME_TRUTH);
-            
-            
-            if (row.hasDoubleValueLessThanThisAtIndex(threshold, index)){
-            	//confLabel.setStyle("-fx-background-color:#CC0000;");
-            	confLabel.setDisable(true);
-            	nameLabel.setDisable(true);
-            	//scoreChoice.setDisable(true);
-            	scoreLabel.setDisable(true);
-            	if (isEvaluationMode()){
-            		truthLabel.setDisable(true);
-            	}
-            	
-            }
-            else {
-            	//confLabel.setStyle("-fx-background-color:#00CC00;");
-            	confLabel.setDisable(false);
-            	nameLabel.setDisable(false);
-            	scoreLabel.setDisable(false);
-            	if (isEvaluationMode()){
-            		truthLabel.setDisable(false);
-            	}
-            	
+    public void disableNodes(List<Node> nodes, boolean disable){
+        for (Node n : nodes){
+            if (null != n){
+                n.setDisable(disable);
             }
         }
-        
     }
+    private void disableAllUnderThreshold(String threshold){
+        currentThresholdString = threshold;
+    	List<String> imageIDs = resultsTable2.getImageIDsInCurrentOrder();
+    	
+    	for (String imageID : imageIDs){
+    	    List<Node> nodesInRow = new ArrayList<Node>();
+    	    Node confNode = resultsTable2.getWidget(imageID, COLNAME_CONFIDENCE);
+    	    nodesInRow.add(confNode);
+            Node nameNode = resultsTable2.getWidget(imageID, COLNAME_NAME);
+            nodesInRow.add(nameNode);
+            Node scoreNode = resultsTable2.getWidget(imageID, COLNAME_SCORE);
+            nodesInRow.add(scoreNode);
+    	    if (isEvaluationMode()){
+    	        Node truthNode = resultsTable2.getWidget(imageID, COLNAME_TRUTH);
+                nodesInRow.add(truthNode);
+    	    }
+    	    if (this.runSummary.hasTrainTestConcern()){
+    	        Node ttNode = resultsTable2.getWidget(imageID, COLNAME_TRAIN_TEST);
+                nodesInRow.add(ttNode);
+    	    }
+    	    String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
+    	    
+    	    Double confDouble = new Double(confString);
+            Double threshDouble = new Double(threshold);
+            if (confDouble.doubleValue() < threshDouble.doubleValue()){
+                disableNodes(nodesInRow, true);
+            }
+            else {
+                disableNodes(nodesInRow, false);
+            }
+    	}
+    }
+    private void addEventhandlerForImageClick(ImageView iv, ResultsTable2 rt, String imageID, GridPane gp){
+        iv.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (rt.isLargeImageShown(imageID)){
+                    hideLargeImage(imageID);
+                }
+                else {
+                    int targetRowIndex = rt.getTargetRowForLargeImage(imageID);
+                    showLargeImage(rt.getValue(imageID, COLNAME_IMAGE),targetRowIndex);
+                }
+                event.consume();
+            }
+            private void showLargeImage(String thumbnailPath, int targetRowIndex){
+                try {
+                    String largeImagePath = AvatolCVFileSystem.getLargeImagePathForThumbnailPath(thumbnailPath);
+                    //System.out.println("put big image " + largeImagePath + " at index " + targetIndex);
+                    Image image = new Image("file:"+largeImagePath);
+                    ImageView iv = new ImageView(image);
+                    iv.setPreserveRatio(true);
+                    iv.setFitWidth(600);
+                    rt.addLargeImage(imageID, iv);
+                    gp.add(iv, 0, targetRowIndex, 5, 1);
+                }
+                catch(Exception e){
+                    AvatolCVExceptionExpresserJavaFX.instance.showException(e, "problem trying to show image");
+                }
+            }
+            private void hideLargeImage(String imageID){
+                ImageView iv = (ImageView)rt.forgetLargeImageObject(imageID);
+                gp.getChildren().remove(iv);
+            }
+       });
+    }
+    /*
     private void addEventhandlerForImageClick(ImageView iv, SortableRow sr){
         iv.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
@@ -301,7 +347,8 @@ public class ResultsReview2 {
                 scoredImagesGridPane.getChildren().remove(iv);
             }
        });
-    }
+    }*/
+    /*
     private void generateScoreWidgets(SortableRow sr){
         String thumbnailPathname = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_IMAGE));
         Image image = new Image("file:"+thumbnailPathname);
@@ -317,6 +364,7 @@ public class ResultsReview2 {
         String name = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_NAME));
         Label nameLabel = new Label(name);
         nameLabel.getStyleClass().add("columnValue");
+        
         sr.setWidget(ResultsTable.COLNAME_NAME, nameLabel);
      
         System.out.println("isEvaluationMode ? " + isEvaluationMode());
@@ -358,58 +406,55 @@ public class ResultsReview2 {
         //}
         sr.setWidget(ResultsTable.COLNAME_CONFIDENCE, confidenceLabel);
     }
-    private void renderResultsTable(ResultsTable rt){
-        List<SortableRow> rows = rt.getRows();
-        //scoredImagesGridPane.setGridLinesVisible(true);
-        for(int i = 0; i < rows.size(); i++){
-            int offset = (2*i)+1;
-            // get the image
-            SortableRow row = rows.get(i);
-            ImageView iv = (ImageView)row.getWidget(ResultsTable.COLNAME_IMAGE);
-           
-            int column = 0;
-            System.out.println("col " + column + " row " + offset);
-            scoredImagesGridPane.add(iv,column,offset);
-            column++;
-            if (isEvaluationMode()){
-            	// get truth
-                Label truthLabel = (Label)row.getWidget(ResultsTable.COLNAME_TRUTH);
-                System.out.println("col " + column + " row " + offset);
-                scoredImagesGridPane.add(truthLabel,column,offset);
-                column++;
+    */
+    public List<String> getActiveScoreColumns(){
+        List<String> result = new ArrayList<String>();
+        result.add(COLNAME_IMAGE);
+        if (isEvaluationMode()){
+            result.add(COLNAME_TRUTH); 
+        }
+        result.add(COLNAME_SCORE);
+        result.add(COLNAME_CONFIDENCE);
+        if (this.runSummary.hasTrainTestConcern()){
+            result.add(COLNAME_TRAIN_TEST);
+        }
+        result.add(COLNAME_NAME);
+        return result;
+    }
+    public List<String> getTrainingColumns(){
+        List<String> result = new ArrayList<String>();
+        result.add(COLNAME_IMAGE);
+        result.add(COLNAME_SCORE);
+        result.add(COLNAME_NAME);
+        return result;
+    }
+    
+    private void renderTable(ResultsTable2 rt, GridPane gp, List<String> colNames){
+        gp.getChildren().clear();
+        int headerColumnIndex = 0;
+        for (String colName : colNames){
+            Label label = new Label(colName);
+            label.getStyleClass().add("columnHeader");
+            GridPane.setHalignment(label, HPos.CENTER);
+            gp.add(label, headerColumnIndex++, 0);
+        }
+        List<String> imageIDs = rt.getImageIDsInCurrentOrder();
+        int rowIndex = 1;
+        for (String imageID: imageIDs){
+            int columnIndex = 0;
+            for (String colName : colNames){
+                Node widget = rt.getWidget(imageID, colName);
+                gp.add(widget, columnIndex++, rowIndex);
             }
-            
-            // get score
-            
-            Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
-            String imageID = row.getImageID();
-            if (uploadSession.isImageUploaded(imageID)){
-            	scoreLabel.getStyleClass().add("uploaded");
-            }
-            //ChoiceBox<String> scoreChoice = (ChoiceBox<String>)row.getWidget(ResultsTable.COLNAME_SCORE);
-            
-            //scoreChoice.getStyleClass().add("short");
-            //System.out.println("col " + column + " row " + offset);
-            scoredImagesGridPane.add(scoreLabel, column, offset);
-            column++;
-            // get confidence
-            Label confidenceLabel = (Label)row.getWidget(ResultsTable.COLNAME_CONFIDENCE);
-            System.out.println("col " + column + " row " + offset);
-            scoredImagesGridPane.add(confidenceLabel,column, offset);
-            column++;
-
-            // get trainingVsTestConcern if relevant, OR image name
-            Label nameLabel = (Label)row.getWidget(ResultsTable.COLNAME_NAME);
-            System.out.println("col " + column + " row " + offset);
-            scoredImagesGridPane.add(nameLabel,column,offset);
+            rowIndex+=2;
         }
         //scoredImagesGridPane.setGridLinesVisible(true);
-        ensureConstraintsForGridPane(scoredImagesGridPane);
+        ensureConstraintsForGridPane(gp);
     }
     private void ensureConstraintsForGridPane(GridPane gp){
         ObservableList<ColumnConstraints> colConstraints = gp.getColumnConstraints();
         for (ColumnConstraints cc : colConstraints){
-            cc.setHgrow(Priority.NEVER);
+            cc.setHgrow(Priority.SOMETIMES);
         }
         ObservableList<RowConstraints> rowConstraints = gp.getRowConstraints();
         for (RowConstraints rc : rowConstraints){
@@ -421,9 +466,12 @@ public class ResultsReview2 {
     	scoredImagesTab.setText(scoringConcernName + " - SCORED images");
     	trainingImagesTab.setText(scoringConcernName + " - TRAINING images");
 
-    	scoredImagesGridPane.getChildren().clear();
-    	addScoredImagesHeader(scoredImagesGridPane);
+    	//scoredImagesGridPane.getChildren().clear();
+    	//addScoredImagesHeader(scoredImagesGridPane);
     	
+    	String scoringFilePath = AvatolCVFileSystem.getScoringFilePath(runID, scoringConcernName);
+        ScoringInfoFile scoringInfoFile = new ScoringInfoFile(scoringFilePath);
+        
     	String scoreFilePath = AvatolCVFileSystem.getScoreFilePath(runID, scoringConcernName);
     	sif = new ScoresInfoFile(scoreFilePath);
     	
@@ -435,61 +483,107 @@ public class ResultsReview2 {
     	    String holdoutFilePath = AvatolCVFileSystem.getHoldoutFilePath(runID, scoringConcernName);
             hif = new HoldoutInfoFile(holdoutFilePath);
     	}
-    	resultsTable = new ResultsTable();
+    	resultsTable2 = new ResultsTable2();
+    	//rt.addValueForColumn("image1","colA","valA1");
+    	//rt.addWidgetForColumn("image1","colA",objA1);
+    	//rt.getImageIDsInCurrentOrder()
+    	//rt.getValue("image1","colB")
+    	//rt.getWidget("image1","colB")
     	List<String> scoringImagePaths = sif.getImagePaths();
-    	int row = 1;
+    	//int row = 1;
     	for (String path : scoringImagePaths){
-    		String value = sif.getScoringConcernValueForImagePath(path);
-    		System.out.println("getting confidence for ImageValue path(key) and value: " + path + ";" + value);
-    		String conf = sif.getConfidenceForImageValue(path, value);
+    		String normalizedScoringConcernValue = sif.getScoringConcernValueForImagePath(path);
+    		String imageID = ImageInfo.getImageIDFromPath(path);
+    		
+    		resultsTable2.addValueForColumn(imageID, COLNAME_SCORE, normalizedScoringConcernValue);
+    		String scoringConcernValue = new NormalizedValue(normalizedScoringConcernValue).getName();
+    		Label scoreLabel = new Label(scoringConcernValue);
+    		scoreLabel.getStyleClass().add("columnValue");
+    		scoreLabelForImageIDHash.put(imageID, scoreLabel);
+    		resultsTable2.addWidgetForColumn(imageID, COLNAME_SCORE, scoreLabel);
+    		
+    		System.out.println("getting confidence for ImageValue path(key) and value: " + path + ";" + scoringConcernValue);
+    		String conf = sif.getConfidenceForImageValue(path, normalizedScoringConcernValue);
+    		String trimmedScoreConf = limitToTwoDecimalPlaces(conf);
+    		resultsTable2.addValueForColumn(imageID, COLNAME_CONFIDENCE, trimmedScoreConf);
+    		Label confLabel = new Label(trimmedScoreConf);
+    		confLabel.getStyleClass().add("columnValue");
+            resultsTable2.addWidgetForColumn(imageID, COLNAME_CONFIDENCE, confLabel);
+            
     		String truth = null;
     		if (isEvaluationMode()){
     			truth = hif.getScoringConcernValueForImagePath(path);
-    		}
-    		else {
-    			truth = "";
+    			resultsTable2.addValueForColumn(imageID, COLNAME_TRUTH, truth);
+    			Label truthLabel = new Label(truth);
+    			truthLabel.getStyleClass().add("columnValue");
+                resultsTable2.addWidgetForColumn(imageID, COLNAME_TRUTH, truthLabel);
     		}
     		
         	String origImageName = getTrueImageNameFromImagePathForCookingShow(path);
+        	resultsTable2.addValueForColumn(imageID, COLNAME_NAME, origImageName);
+        	Label nameLabel = new Label(origImageName);
+        	nameLabel.getStyleClass().add("columnValue");
+            resultsTable2.addWidgetForColumn(imageID, COLNAME_NAME, nameLabel);
+            
         	String thumbnailPathname = getThumbnailPathWithImagePathForCookingShow(path);
-        	String trainTestConcernValue = null;
+        	resultsTable2.addValueForColumn(imageID, COLNAME_IMAGE, thumbnailPathname);
+        	Image image = new Image("file:"+thumbnailPathname);
+            ImageView iv = new ImageView(image);
+            //addEventhandlerForImageClick(iv, sr);
+            resultsTable2.addWidgetForColumn(imageID, COLNAME_IMAGE, iv);
+            addEventhandlerForImageClick(iv, resultsTable2, imageID,scoredImagesGridPane);
+        	
         	if (this.runSummary.hasTrainTestConcern()){
-                 trainTestConcernValue = "";
+        	    String trainTestConcernValue = scoringInfoFile.getTrainTestConcernValueForImageID(ImageInfo.getImageIDFromPath(path)).getName();
+        	    resultsTable2.addValueForColumn(imageID, COLNAME_TRAIN_TEST, trainTestConcernValue);
+        	    Label trainTestLabel = new Label(trainTestConcernValue);
+        	    trainTestLabel.getStyleClass().add("columnValue");
+                resultsTable2.addWidgetForColumn(imageID, COLNAME_TRAIN_TEST, trainTestLabel);
             }
-        	SortableRow sortableRow = resultsTable.createRow(thumbnailPathname, origImageName, value, conf, truth, row - 1, trainTestConcernValue);
-        	generateScoreWidgets(sortableRow);
-        	row++;
-        	//scoredImagesGridPane.getRowConstraints().get(row).setPrefHeight(imageHeight);
-        	//System.out.println("rc count : " + scoredImagesGridPane.getRowConstraints().size());
     	}
-    	renderResultsTable(resultsTable);
-       // NormalizedImageInfosToReview normalizedImageInfos = new NormalizedImageInfosToReview(runID);
-       // List<NormalizedImageInfo> scoredImages = normalizedImageInfos.getScoredImages(scoringConcernValue);
-       // for (int i=0; i < scoredImages.size(); i++){
-       // 	addScoredImageToGridPaneRow(scoredImages.get(i), scoredImagesGridPane, i+1);
-       // }
-        //
-    	addTrainingImagesHeader(trainingImagesGridPane);
+    	resultsTable2.sortOnColumn(COLNAME_IMAGE);
+    	renderTable(resultsTable2, scoredImagesGridPane, getActiveScoreColumns());
+
+    	trainingTable = new ResultsTable2();
+    	//addTrainingImagesHeader(trainingImagesGridPane);
     	List<String> imagePaths = tif.getImagePaths();
-    	row = 1;
+    	
     	for (String path : imagePaths){
     		//System.out.println("got image " + name);
     		if (!sif.hasImage(path)){
-    			String value = tif.getScoringConcernValueForImagePath(path);
+    		    String imageID = ImageInfo.getImageIDFromPath(path);
+    		    
+    			String normalizedScoringConcernValue = tif.getScoringConcernValueForImagePath(path);
+                String value = new NormalizedValue(normalizedScoringConcernValue).getName();
+    			trainingTable.addValueForColumn(imageID, COLNAME_SCORE, value);
+    			Label valueLabel = new Label(value);
+    			valueLabel.getStyleClass().add("columnValue");
+    			trainingTable.addWidgetForColumn(imageID, COLNAME_SCORE, valueLabel);
+    			
         		String trueName = getTrueImageNameFromImagePathForCookingShow(path);
-        		addTrainingImageToGridPaneRowForCookingShow(path, trueName, value, trainingImagesGridPane, row++);
+        		trainingTable.addValueForColumn(imageID, COLNAME_NAME, trueName);
+        		Label nameLabel = new Label(trueName);
+                nameLabel.getStyleClass().add("columnValue");
+                trainingTable.addWidgetForColumn(imageID, COLNAME_NAME, nameLabel);
+                
+                String thumbnailPathname = AvatolCVFileSystem.getThumbnailPathForImagePath(path);
+                trainingTable.addValueForColumn(imageID, COLNAME_IMAGE, thumbnailPathname);
+                Image image = new Image("file:"+thumbnailPathname);
+                ImageView iv = new ImageView(image);
+                //addEventhandlerForImageClick(iv, sr);
+                trainingTable.addWidgetForColumn(imageID, COLNAME_IMAGE, iv);
+                addEventhandlerForImageClick(iv, trainingTable, imageID, trainingImagesGridPane);
+                
+        		//addTrainingImageToGridPaneRowForCookingShow(path, trueName, value, trainingImagesGridPane, row++);
     		}
     	}
+    	trainingTable.sortOnColumn(COLNAME_IMAGE);
+    	renderTable(trainingTable, trainingImagesGridPane, getTrainingColumns());
         
-        
-       // List<NormalizedImageInfo> trainingImages = normalizedImageInfos.getTrainingImages(scoringConcernValue);
-       // for (int i=0; i < trainingImages.size(); i++){
-       // 	addTrainingImageToGridPaneRow(trainingImages.get(i), trainingImagesGridPane, i+1);
-       // }
     	trainingImagesGridPane.requestLayout();
         scoredImagesGridPane.requestLayout();
     }
-   
+   /*
     private void addScoredImagesHeader(GridPane gp) throws AvatolCVException {
         int column = 0;
 
@@ -538,7 +632,8 @@ public class ResultsReview2 {
         //itemLabel.setStyle("-fx-background-color:green;");
         
     }
-
+*/
+    /*
     private void addTrainingImagesHeader(GridPane gp){
     	Label imageLabel = new Label("    ");
     	int column = 0;
@@ -556,7 +651,7 @@ public class ResultsReview2 {
     	Label truthLabel = new Label("Truth");
     	gp.add(truthLabel, column++, 0);
     }
-   
+   */
     private boolean isImageTallerThanWide(Image image){
     	double h = image.getHeight();
     	double w = image.getWidth();
@@ -567,11 +662,8 @@ public class ResultsReview2 {
     }
 
     public static String limitToTwoDecimalPlaces(String conf){
-    	//assume it's always going to be 0.xyz, so just take the first four chars
-    	if (conf.length() > 4){
-    		return conf.substring(0, 4);
-    	}
-    	return conf;
+        Double confDouble = new Double(conf);
+        return String.format("%.2f", confDouble);
     }
    
   
@@ -603,6 +695,7 @@ public class ResultsReview2 {
     	}
     	return null;
     }
+    /*
     private void addTrainingImageToGridPaneRowForCookingShow(String imagePath, String trueName, String value, GridPane gp, int row) throws AvatolCVException {
         // get the image
         //String thumbnailPath = getThumbailPath(si);
@@ -650,6 +743,7 @@ public class ResultsReview2 {
         gp.add(truthLabel,column,row);
         column++;
     }
+    */
 /*
     private void addTrainingImageToGridPaneRow(NormalizedImageInfoScored si, GridPane gp, int row) throws AvatolCVException {
         // get the image
@@ -779,22 +873,7 @@ public class ResultsReview2 {
                 Label scoreLabel = scoreLabelForImageIDHash.get(imageID);
                 Platform.runLater(() -> scoreLabel.getStyleClass().remove("uploaded"));
             }
-            /*
             
-            Enumeration<String> imageIDEnum = scoreLabelForImageIDHash.keys();
-            while (imageIDEnum.hasMoreElements()){
-                String imageID = imageIDEnum.nextElement();
-                Label scoreLabel = scoreLabelForImageIDHash.get(imageID);
-                if (null != scoreLabel){
-                    if (uploadSession.isImageUploaded(imageID)){
-                        // no need to change - should already be highlighted
-                    }
-                    else {
-                        Platform.runLater(() -> scoreLabel.getStyleClass().remove("uploaded"));
-                    }
-                }
-            }
-            */
             Platform.runLater(() -> enableUndoUploadButtonIfAppropriate());
         }
         catch(AvatolCVException ace){
@@ -812,6 +891,14 @@ public class ResultsReview2 {
     public void doSaveResults(){
         Thread t = new Thread(() -> saveResults());
         t.start();
+    }
+    public boolean isConfidenceStringLessThanThreshold(String confString){
+        Double confDouble = new Double(confString);
+        Double threshDouble = new Double(currentThresholdString);
+        if (confDouble.doubleValue() < threshDouble.doubleValue()){
+            return true;
+        }
+        return false;
     }
     public void saveResults(){
         try {
@@ -831,29 +918,28 @@ public class ResultsReview2 {
             
             int imageNameIndex = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_NAME);
             // list all the answers above threshold
-            List<SortableRow> rows = resultsTable.getRows();
-            int index = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_CONFIDENCE);
+            List<String> imageIDs = resultsTable2.getImageIDsInCurrentOrder();
             double rowToUploadCount = 0;
-            for (SortableRow row : rows){
-                if (!row.hasDoubleValueLessThanThisAtIndex(currentThresholdString, index)){
+            for (String imageID : imageIDs){
+                String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
+                if (isConfidenceStringLessThanThreshold(confString)){
                     rowToUploadCount++;
                 }
             }
+           
             Platform.runLater(() -> uploadProgress.setProgress(0.0));
             double percentProgressPerRow = 1 / rowToUploadCount;
             int rowCount = 0;
             uploadSession.nextSession();
-            for (SortableRow row : rows){
+            for (String imageID : imageIDs){
+                String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
                 
-                //ChoiceBox<String> scoreChoice = (ChoiceBox<String>)row.getWidget(ResultsTable.COLNAME_SCORE);
-                Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
-                if (!row.hasDoubleValueLessThanThisAtIndex(currentThresholdString, index)){
+                //Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
+                if (isConfidenceStringLessThanThreshold(confString)){
                 	rowCount++;
                     //String value = scoreChoice.getValue();
-                    String value = scoreLabel.getText();
-                    String name = row.getValue(imageNameIndex);
-                    String[] parts = ClassicSplitter.splitt(name,  '_');
-                    String imageID = parts[0];
+                    String value = resultsTable2.getValue(imageID, COLNAME_SCORE);
+                    String name = resultsTable2.getValue(imageID, COLNAME_NAME);
                     System.out.println(name + "  -  " + value);
        
                     NormalizedKey normCharKey = tif.getNormalizedCharacter();
@@ -862,6 +948,7 @@ public class ResultsReview2 {
                     NormalizedValue newValue = sif.getScoreValueForImageID(imageID);
                     //Need to pass the normalized key and value for this row to Data source and ask if key exists for this image
                     NormalizedValue existingValueForKey = dataSource.getValueForKeyAtDatasourceForImage(normCharKey, imageID, trainTestConcern, trainTestConcernValue);
+                    Node scoreLabel = resultsTable2.getWidget(imageID, COLNAME_SCORE);
                     if (null == existingValueForKey){
                         //add score
                         boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue);

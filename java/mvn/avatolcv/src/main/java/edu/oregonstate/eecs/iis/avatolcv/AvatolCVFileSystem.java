@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.Algorithm;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
@@ -566,33 +567,24 @@ public class AvatolCVFileSystem {
 	    }
 	    throw new AvatolCVException("Could not find large image corresponding to thumbnail " + thumbnailPath);
 	}
-	public static String getThumbnailPathForLargeImagePath(String largeImagePath) throws AvatolCVException {
+	public static String getThumbnailPathForImagePath(String path) throws AvatolCVException {
         /*
          * thumbnail and large paths end with:
          * images/large/00-2cNgRYKCyKB6MWSBa4Y5EA_MonocostusUniflorus-mcl30-mod_1000.jpg  
          * images/thumbnail/00-2cNgRYKCyKB6MWSBa4Y5EA_MonocostusUniflorus-mcl30-mod_80.jpg
          */
-        // get the fileRootName (sans _80)
-		if (largeImagePath.contains(DIR_NAME_SEGMENTATION_OUTPUT) || largeImagePath.contains(DIR_NAME_ORIENTATION_OUTPUT)){
-			return null;
-		}
-        File largeImageFile = new File(largeImagePath);
-        String filename = largeImageFile.getName();
-        String[] parts = ClassicSplitter.splitt(filename,'_');
-        String fileRoot = parts[0];
-        // get the large image dir
-        File largeImageDirFile = largeImageFile.getParentFile();
-        File imagesDirFile = largeImageDirFile.getParentFile();
-        String thumbnailDirFilePath = imagesDirFile + FILESEP + DIR_NAME_THUMBNAIL;
+	    // just look in the thumbnails dir for matching imageID
+	    String imageID = ImageInfo.getImageIDFromPath(path);
+	    String thumbnailDirFilePath = getNormalizedImagesThumbnailDir();
         File thumbnailDirFile = new File(thumbnailDirFilePath);
         // find a file with matching fileRoot
         File[] files = thumbnailDirFile.listFiles();
         for (File f : files){
-            if (f.getName().startsWith(fileRoot)){
+            if (f.getName().startsWith(imageID)){
                 return f.getAbsolutePath();
             }
         }
-        throw new AvatolCVException("Could not find thumbnail image corresponding to large image " + largeImagePath);
+        throw new AvatolCVException("Could not find thumbnail image corresponding to path " + path);
     }
 	public static String getRotateVerticallyPath(String imageID) throws AvatolCVException {
         return  getImageRotationStateDir() + FILESEP + imageID + "_" + ROTATE_VERTICALLY + ".txt";

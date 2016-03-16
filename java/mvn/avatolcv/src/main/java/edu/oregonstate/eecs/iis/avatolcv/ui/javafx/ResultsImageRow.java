@@ -154,7 +154,7 @@ public class ResultsImageRow {
         for (String imagePath : inputImagePathnames){
             ImageView iv;
             try {
-                String thumbnailPath = AvatolCVFileSystem.getThumbnailPathForLargeImagePath(imagePath);
+                String thumbnailPath = AvatolCVFileSystem.getThumbnailPathForImagePath(imagePath);
                 if (null == thumbnailPath){
                 	iv = null;
                 }

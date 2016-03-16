@@ -89,7 +89,7 @@ public class SessionInfo{
     private SessionImages sessionImages = null;
     private Hashtable<String, ScoringSet> scoringSetForScoringConcernHash = new Hashtable<String, ScoringSet>();
     private NormalizedKey trainTestConcern = null;
-    private boolean scoringModeIsEvaluation = true;
+    private boolean scoringModeIsEvaluation = false;
 	public SessionInfo() throws AvatolCVException {
 		File f = new File(AvatolCVFileSystem.getAvatolCVRootDir());
         if (!f.isDirectory()){

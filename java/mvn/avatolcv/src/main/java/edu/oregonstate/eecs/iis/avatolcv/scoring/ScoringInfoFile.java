@@ -87,14 +87,17 @@ public class ScoringInfoFile {
 	}
 	public void extractImageInfo(String line) throws AvatolCVException {
 		String[] parts = ClassicSplitter.splitt(line,',');
-		if (parts.length < 4){
+		//if (parts.length < 4){
+		if (parts.length < 3){
 			throw new AvatolCVException("ScoringInfoFile should have four fields in each line - some may be empty: filepath, trainTestConcern, trainTestConcernValue, pointCoordinates");
 		}
 		String filepath = parts[0];
 		String trainTestConcern = parts[1];
 		String trainTestConcernValue = parts[2];
 		String pointCoordinates = AvatolCVConstants.UNDETERMINED;
-		pointCoordinates = parts[3];
+		if (parts.length == 4){
+		    pointCoordinates = parts[3];
+		}
 		//this.imagePaths.add(filepath);
 		String imageID = ImageInfo.getImageIDFromPath(filepath);
 		this.pointCoordinatesForImageIDHash.put(imageID, pointCoordinates);

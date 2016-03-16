@@ -13,6 +13,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.JavaFXStepSequencer;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ResultsReview;
+import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ResultsReview2;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ToolsPanel;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 import javafx.application.Application;
@@ -138,7 +139,7 @@ public class AvatolCVJavaFX extends Application {
             //    
             //}
             else if (radioReviewResults.isSelected()){
-                ResultsReview rr = new ResultsReview();
+                ResultsReview2 rr = new ResultsReview2();
                 String runName = (String)priorSessionSelector.getValue();
                 //String runID = RunSummary.getRunIDFromRunSummaryFilename(runChoice);
                 rr.init(this, mainWindow, runName);
