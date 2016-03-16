@@ -16,7 +16,9 @@ public class ResultsTable2 {
     private List<String> currentImageIDsInOrder = new ArrayList<String>();
     private List<String> colNames = new ArrayList<String>();
     private Hashtable<String, Object> largeImagesForIDHash = new Hashtable<String, Object>();
-    public class ImageIDColumnValue implements Comparable {
+    private String previousSortColumn = "";
+    private int repeatSortClickCount = 0;
+    public class ImageIDColumnValue implements Comparable<Object> {
         private String imageID = null;
         private String value = null;
         public ImageIDColumnValue(String imageID, String value){
@@ -68,8 +70,24 @@ public class ResultsTable2 {
         }
         List<ImageIDColumnValue> colVals = valuesListForColumnNameHash.get(colName);
         Collections.sort(colVals);
+        if (colName.equals(this.previousSortColumn)){
+            repeatSortClickCount++;
+            if (repeatSortClickCount %2 == 1){
+                Collections.reverse(colVals);
+            }
+            valuesListForColumnNameHash.put(colName, colVals);
+        }
+        else {
+            repeatSortClickCount=0;
+        }
+        this.previousSortColumn = colName;
+       
+       
+
+        System.out.println("sort result");
         currentImageIDsInOrder = new ArrayList<String>();
         for (ImageIDColumnValue v : colVals){
+            System.out.println(v.getValue() + " " + v.getImageID());
             currentImageIDsInOrder.add(v.getImageID());
         }
     }
