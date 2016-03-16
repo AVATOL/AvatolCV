@@ -221,16 +221,7 @@ public class BogusBisqueWSClient implements BisqueWSClient {
 		return annotationHash.get(imageResource_uniq);
 	}
 
-	@Override
-	public List<String> getAnnotationValueOptions(String annotationTypeValue)
-			throws BisqueWSException {
-		throw new BisqueWSException("haven't implemented getAnnotationValueOptions in bogus WS client");
-		//List<String> values = new ArrayList<String>();
-		//values.add("a1Value");
-		//values.add("a2Value");
-		//return values;
-	}
-
+	
 	@Override
 	public boolean addNewAnnotation(String imageResource_uniq, String key,
 			String value) {
@@ -256,5 +247,11 @@ public class BogusBisqueWSClient implements BisqueWSClient {
 		}
 		return false;
 	}
+    @Override
+    public List<String> getAnnotationValueOptions(String annotationName,
+            String annotationTypeValue) throws BisqueWSException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

@@ -3,7 +3,6 @@ package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -26,7 +25,6 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -52,15 +50,12 @@ import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJava
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
-import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTable;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTable2;
-import edu.oregonstate.eecs.iis.avatolcv.results.SortableRow;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
-import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class ResultsReview2 {
     public static final String COLNAME_IMAGE = "image";
@@ -252,18 +247,18 @@ public class ResultsReview2 {
     	
     	for (String imageID : imageIDs){
     	    List<Node> nodesInRow = new ArrayList<Node>();
-    	    Node confNode = resultsTable2.getWidget(imageID, COLNAME_CONFIDENCE);
+    	    Node confNode = (Node)resultsTable2.getWidget(imageID, COLNAME_CONFIDENCE);
     	    nodesInRow.add(confNode);
-            Node nameNode = resultsTable2.getWidget(imageID, COLNAME_NAME);
+            Node nameNode = (Node)resultsTable2.getWidget(imageID, COLNAME_NAME);
             nodesInRow.add(nameNode);
-            Node scoreNode = resultsTable2.getWidget(imageID, COLNAME_SCORE);
+            Node scoreNode = (Node)resultsTable2.getWidget(imageID, COLNAME_SCORE);
             nodesInRow.add(scoreNode);
     	    if (isEvaluationMode()){
-    	        Node truthNode = resultsTable2.getWidget(imageID, COLNAME_TRUTH);
+    	        Node truthNode = (Node)resultsTable2.getWidget(imageID, COLNAME_TRUTH);
                 nodesInRow.add(truthNode);
     	    }
     	    if (this.runSummary.hasTrainTestConcern()){
-    	        Node ttNode = resultsTable2.getWidget(imageID, COLNAME_TRAIN_TEST);
+    	        Node ttNode = (Node)resultsTable2.getWidget(imageID, COLNAME_TRAIN_TEST);
                 nodesInRow.add(ttNode);
     	    }
     	    String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
@@ -366,7 +361,7 @@ public class ResultsReview2 {
         for (String imageID: imageIDs){
             int columnIndex = 0;
             for (String colName : colNames){
-                Node widget = rt.getWidget(imageID, colName);
+                Node widget = (Node)rt.getWidget(imageID, colName);
                 gp.add(widget, columnIndex++, rowIndex);
             }
             rowIndex+=2;
@@ -509,15 +504,6 @@ public class ResultsReview2 {
         scoredImagesGridPane.requestLayout();
     }
   
-    private boolean isImageTallerThanWide(Image image){
-    	double h = image.getHeight();
-    	double w = image.getWidth();
-    	if (h > w){
-    		return true;
-    	}
-    	return false;
-    }
-
     public static String limitToTwoDecimalPlaces(String conf){
         Double confDouble = new Double(conf);
         return String.format("%.2f", confDouble);
@@ -686,7 +672,6 @@ public class ResultsReview2 {
                 return;
             }
             
-            int imageNameIndex = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_NAME);
             // list all the answers above threshold
             List<String> imageIDs = resultsTable2.getImageIDsInCurrentOrder();
             double rowToUploadCount = 0;
@@ -718,7 +703,7 @@ public class ResultsReview2 {
                     NormalizedValue newValue = sif.getScoreValueForImageID(imageID);
                     //Need to pass the normalized key and value for this row to Data source and ask if key exists for this image
                     NormalizedValue existingValueForKey = dataSource.getValueForKeyAtDatasourceForImage(normCharKey, imageID, trainTestConcern, trainTestConcernValue);
-                    Node scoreLabel = resultsTable2.getWidget(imageID, COLNAME_SCORE);
+                    Node scoreLabel = (Node)resultsTable2.getWidget(imageID, COLNAME_SCORE);
                     if (null == existingValueForKey){
                         //add score
                         boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue);

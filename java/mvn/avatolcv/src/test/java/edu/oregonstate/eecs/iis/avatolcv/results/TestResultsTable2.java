@@ -9,44 +9,45 @@ import junit.framework.TestCase;
 public class TestResultsTable2 extends TestCase {
 
     public void testTable(){
-        ResultsTable2 rt = new ResultsTable2();
-        // column A
-        rt.addValueForColumn("image1","colA","valA1");
-        rt.addValueForColumn("image2","colA","valA2");
-        rt.addValueForColumn("image3","colA","valA3");
-        
-        Node objA1 = new Label();
-        Node objA2 = new Label();
-        Node objA3 = new Label();
-        rt.addWidgetForColumn("image1","colA",objA1);
-        rt.addWidgetForColumn("image2","colA",objA2);
-        rt.addWidgetForColumn("image3","colA",objA3);
-        
-        // column B
-        rt.addValueForColumn("image1","colB","valBz");
-        rt.addValueForColumn("image2","colB","valBy");
-        rt.addValueForColumn("image3","colB","valBx");
-        
-        Node objBz = new Label();
-        Node objBy = new Label();
-        Node objBx = new Label();
-        rt.addWidgetForColumn("image1","colB",objBz);
-        rt.addWidgetForColumn("image2","colB",objBy);
-        rt.addWidgetForColumn("image3","colB",objBx);
-        
-        // column C
-        rt.addValueForColumn("image1","colC","valCaa");
-        rt.addValueForColumn("image2","colC","valCcc");
-        rt.addValueForColumn("image3","colC","valCbb");
-        
-        Node objCaa = new Label();
-        Node objCcc = new Label();
-        Node objCbb = new Label();
-        rt.addWidgetForColumn("image1","colC",objCaa);
-        rt.addWidgetForColumn("image2","colC",objCcc);
-        rt.addWidgetForColumn("image3","colC",objCbb);
+       
         
         try {
+            ResultsTable2 rt = new ResultsTable2();
+            // column A
+            rt.addValueForColumn("image1","colA","valA1");
+            rt.addValueForColumn("image2","colA","valA2");
+            rt.addValueForColumn("image3","colA","valA3");
+            
+            Node objA1 = new Label();
+            Node objA2 = new Label();
+            Node objA3 = new Label();
+            rt.addWidgetForColumn("image1","colA",objA1);
+            rt.addWidgetForColumn("image2","colA",objA2);
+            rt.addWidgetForColumn("image3","colA",objA3);
+            
+            // column B
+            rt.addValueForColumn("image1","colB","valBz");
+            rt.addValueForColumn("image2","colB","valBy");
+            rt.addValueForColumn("image3","colB","valBx");
+            
+            Node objBz = new Label();
+            Node objBy = new Label();
+            Node objBx = new Label();
+            rt.addWidgetForColumn("image1","colB",objBz);
+            rt.addWidgetForColumn("image2","colB",objBy);
+            rt.addWidgetForColumn("image3","colB",objBx);
+            
+            // column C
+            rt.addValueForColumn("image1","colC","valCaa");
+            rt.addValueForColumn("image2","colC","valCcc");
+            rt.addValueForColumn("image3","colC","valCbb");
+            
+            Node objCaa = new Label();
+            Node objCcc = new Label();
+            Node objCbb = new Label();
+            rt.addWidgetForColumn("image1","colC",objCaa);
+            rt.addWidgetForColumn("image2","colC",objCcc);
+            rt.addWidgetForColumn("image3","colC",objCbb);
             rt.sortOnColumn("colB");
             Assert.assertEquals("image3", rt.getImageIDsInCurrentOrder().get(0));
             Assert.assertEquals("image2", rt.getImageIDsInCurrentOrder().get(1));

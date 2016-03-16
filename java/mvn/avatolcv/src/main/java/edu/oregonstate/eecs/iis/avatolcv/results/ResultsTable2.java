@@ -5,13 +5,12 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
-import javafx.scene.Node;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 
 public class ResultsTable2 {
     private Hashtable<String, String> valueForColumnNameHash = new Hashtable<String, String>();
-    private Hashtable<String, Node> widgetforIdColumnNameHash = new Hashtable<String, Node>();
+    private Hashtable<String, Object> widgetforIdColumnNameHash = new Hashtable<String, Object>();
     
     private Hashtable<String, List<ImageIDColumnValue>> valuesListForColumnNameHash = new Hashtable<String, List<ImageIDColumnValue>>();
     private List<String> currentImageIDsInOrder = new ArrayList<String>();
@@ -114,11 +113,11 @@ public class ResultsTable2 {
         String key = getKey(imageID, colName);
         valueForColumnNameHash.put(key, value);
     }
-    public void addWidgetForColumn(String imageID, String colName, Node widget){
+    public void addWidgetForColumn(String imageID, String colName, Object widget){
         String key = getKey(imageID, colName);
         widgetforIdColumnNameHash.put(key, widget);
     }
-    public Node getWidget(String imageID, String colName){
+    public Object getWidget(String imageID, String colName){
         String key = getKey(imageID, colName);
         return widgetforIdColumnNameHash.get(key);
     }

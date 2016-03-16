@@ -22,7 +22,7 @@ public class ScoringModeStep  extends Answerable implements Step {
     	return this.sessionInfo.getScoringAlgName();
     }
     public boolean isAllImagesLabeled() throws AvatolCVException {
-        return this.sessionInfo.isAllImagesLabeled();
+        return this.sessionInfo.isEvaluationRun();
     }
     public void setModeToEvaluation(){
         this.isEvaluation = true;
