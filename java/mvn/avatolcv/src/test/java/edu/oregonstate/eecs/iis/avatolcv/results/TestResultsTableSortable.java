@@ -1,12 +1,11 @@
 package edu.oregonstate.eecs.iis.avatolcv.results;
 
-import javafx.scene.Node;
-import javafx.scene.control.Label;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-public class TestResultsTable2 extends TestCase {
+public class TestResultsTableSortable extends TestCase {
 
     public void testTable(){
        
@@ -18,9 +17,9 @@ public class TestResultsTable2 extends TestCase {
             rt.addValueForColumn("image2","colA","valA2");
             rt.addValueForColumn("image3","colA","valA3");
             
-            Node objA1 = new Label();
-            Node objA2 = new Label();
-            Node objA3 = new Label();
+            Object objA1 = new Object();
+            Object objA2 = new Object();
+            Object objA3 = new Object();
             rt.addWidgetForColumn("image1","colA",objA1);
             rt.addWidgetForColumn("image2","colA",objA2);
             rt.addWidgetForColumn("image3","colA",objA3);
@@ -30,9 +29,9 @@ public class TestResultsTable2 extends TestCase {
             rt.addValueForColumn("image2","colB","valBy");
             rt.addValueForColumn("image3","colB","valBx");
             
-            Node objBz = new Label();
-            Node objBy = new Label();
-            Node objBx = new Label();
+            Object objBz = new Object();
+            Object objBy = new Object();
+            Object objBx = new Object();
             rt.addWidgetForColumn("image1","colB",objBz);
             rt.addWidgetForColumn("image2","colB",objBy);
             rt.addWidgetForColumn("image3","colB",objBx);
@@ -42,9 +41,9 @@ public class TestResultsTable2 extends TestCase {
             rt.addValueForColumn("image2","colC","valCcc");
             rt.addValueForColumn("image3","colC","valCbb");
             
-            Node objCaa = new Label();
-            Node objCcc = new Label();
-            Node objCbb = new Label();
+            Object objCaa = new Object();
+            Object objCcc = new Object();
+            Object objCbb = new Object();
             rt.addWidgetForColumn("image1","colC",objCaa);
             rt.addWidgetForColumn("image2","colC",objCcc);
             rt.addWidgetForColumn("image3","colC",objCbb);

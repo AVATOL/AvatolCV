@@ -3,9 +3,8 @@ package edu.oregonstate.eecs.iis.avatolcv.core;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
-import edu.oregonstate.eecs.iis.avatol.algorithm.TestAlgorithm;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.TestAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;

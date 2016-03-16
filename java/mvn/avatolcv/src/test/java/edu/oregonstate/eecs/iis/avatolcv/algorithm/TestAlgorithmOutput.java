@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatol.algorithm;
+package edu.oregonstate.eecs.iis.avatolcv.algorithm;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmInputRequired;

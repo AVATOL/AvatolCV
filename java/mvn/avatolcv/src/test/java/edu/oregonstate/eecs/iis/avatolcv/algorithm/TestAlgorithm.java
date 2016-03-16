@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatol.algorithm;
+package edu.oregonstate.eecs.iis.avatolcv.algorithm;
 
 import java.io.File;
 import java.io.IOException;

@@ -3,7 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv.datasource;
 import java.io.File;
 import java.util.List;
 
-import edu.oregonstate.eecs.iis.avatol.algorithm.TestAlgorithm;
+import edu.oregonstate.eecs.iis.avatolcv.algorithm.TestAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.UploadSession.UploadEvent;
