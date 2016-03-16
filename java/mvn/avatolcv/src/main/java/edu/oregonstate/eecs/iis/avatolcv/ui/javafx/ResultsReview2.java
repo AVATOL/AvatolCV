@@ -705,7 +705,7 @@ public class ResultsReview2 {
                 String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
                 
                 //Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
-                if (isConfidenceStringLessThanThreshold(confString)){
+                if (!isConfidenceStringLessThanThreshold(confString)){
                 	rowCount++;
                     //String value = scoreChoice.getValue();
                     String value = resultsTable2.getValue(imageID, COLNAME_SCORE);

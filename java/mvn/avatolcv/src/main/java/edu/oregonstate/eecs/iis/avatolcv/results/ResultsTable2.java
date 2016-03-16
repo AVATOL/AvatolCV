@@ -7,6 +7,7 @@ import java.util.List;
 
 import javafx.scene.Node;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 
 public class ResultsTable2 {
     private Hashtable<String, String> valueForColumnNameHash = new Hashtable<String, String>();
@@ -21,9 +22,9 @@ public class ResultsTable2 {
     public class ImageIDColumnValue implements Comparable<Object> {
         private String imageID = null;
         private String value = null;
-        public ImageIDColumnValue(String imageID, String value){
+        public ImageIDColumnValue(String imageID, String value) throws AvatolCVException {
             this.imageID = imageID;
-            this.value = value;
+            this.value = new NormalizedValue(value).getName();
         }
         public String getImageID(){
             return this.imageID;
@@ -99,7 +100,7 @@ public class ResultsTable2 {
     public String getKey(String imageID, String colName){
         return imageID + "_" + colName;
     }
-    public void addValueForColumn(String imageID, String colName, String value){
+    public void addValueForColumn(String imageID, String colName, String value) throws AvatolCVException {
         if (!colNames.contains(colName)){
             colNames.add(colName);
         }
