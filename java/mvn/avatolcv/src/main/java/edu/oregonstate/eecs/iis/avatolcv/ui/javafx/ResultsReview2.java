@@ -442,7 +442,9 @@ public class ResultsReview2 {
                 resultsTable2.addWidgetForColumn(imageID, COLNAME_TRUTH, truthLabel);
     		}
     		
-        	String origImageName = getTrueImageNameFromImagePathForCookingShow(path);
+        	String origImageNameWithID = getTrueImageNameFromImagePathForCookingShow(path);
+        	String idPrefix = imageID + "_";
+        	String origImageName = origImageNameWithID.replaceAll(idPrefix, "");
         	resultsTable2.addValueForColumn(imageID, COLNAME_NAME, origImageName);
         	Label nameLabel = new Label(origImageName);
         	nameLabel.getStyleClass().add("columnValue");
