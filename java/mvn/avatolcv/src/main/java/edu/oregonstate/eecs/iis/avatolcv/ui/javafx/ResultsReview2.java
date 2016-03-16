@@ -312,101 +312,23 @@ public class ResultsReview2 {
             }
        });
     }
-    /*
-    private void addEventhandlerForImageClick(ImageView iv, SortableRow sr){
-        iv.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+   
+    private void addEventhandlerForColumnSort(Label columnHeader, ResultsTable2 rt, GridPane gp, List<String> colNames){
+        columnHeader.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if (sr.isLargeImageShown()){
-                    hideLargeImage(sr);
+                String colName = columnHeader.getText();
+                try {
+                    rt.sortOnColumn(colName);
+                    renderTable(rt, gp, colNames);
                 }
-                else {
-                    showLargeImage(sr);
+                catch(AvatolCVException ace){
+                    System.out.println("could not sort column " + ace.getMessage());
                 }
                 event.consume();
             }
-            private void showLargeImage(SortableRow sr){
-                int targetRowIndex = (sr.getIndex()*2) + 2;
-                String thumbnailPath = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_IMAGE));
-                try {
-                    String largeImagePath = AvatolCVFileSystem.getLargeImagePathForThumbnailPath(thumbnailPath);
-                    //System.out.println("put big image " + largeImagePath + " at index " + targetIndex);
-                    Image image = new Image("file:"+largeImagePath);
-                    ImageView iv = new ImageView(image);
-                    iv.setPreserveRatio(true);
-                    iv.setFitWidth(600);
-                    sr.rememberReferenceToLargeImage(iv);
-                    scoredImagesGridPane.add(iv, 0, targetRowIndex, 5, 1);
-                }
-                catch(Exception e){
-                    AvatolCVExceptionExpresserJavaFX.instance.showException(e, "problem trying to show image");
-                }
-            }
-            private void hideLargeImage(SortableRow sr){
-                ImageView iv = (ImageView)sr.forgetLargeImageObject();
-                scoredImagesGridPane.getChildren().remove(iv);
-            }
        });
-    }*/
-    /*
-    private void generateScoreWidgets(SortableRow sr){
-        String thumbnailPathname = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_IMAGE));
-        Image image = new Image("file:"+thumbnailPathname);
-        ImageView iv = new ImageView(image);
-        addEventhandlerForImageClick(iv, sr);
-        //if (isImageTallerThanWide(image)){
-        //    iv.setRotate(90);
-        //}
-        
-        sr.setWidget(ResultsTable.COLNAME_IMAGE, iv);
-        
-        // get trainingVsTestConcern if relevant, OR image name
-        String name = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_NAME));
-        Label nameLabel = new Label(name);
-        nameLabel.getStyleClass().add("columnValue");
-        
-        sr.setWidget(ResultsTable.COLNAME_NAME, nameLabel);
-     
-        System.out.println("isEvaluationMode ? " + isEvaluationMode());
-        if (isEvaluationMode()){
-        	// get truth
-            String truth = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_TRUTH));
-            Label truthLabel = new Label(truth);
-            truthLabel.getStyleClass().add("columnValue");
-            sr.setWidget(ResultsTable.COLNAME_TRUTH, truthLabel);
-        }
-        
-
-        // get score
-        String score = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_SCORE));
-        Label scoreLabel = new Label(score);
-        String imageID = sr.getImageID();
-        scoreLabelForImageIDHash.put(imageID, scoreLabel);
-        //ChoiceBox<String> cb = new ChoiceBox<String>();
-        //List<String> values = this.runSummary.getScoringConcernValues();
-        //for (String value : values){
-        //	cb.getItems().add(value);
-        //}
-        //cb.setValue(score);
-        scoreLabel.getStyleClass().add("columnValue");
-        //cb.getStyleClass().add("columnValue");
-        sr.setWidget(ResultsTable.COLNAME_SCORE, scoreLabel);
-        //sr.setWidget(ResultsTable.COLNAME_SCORE, cb);
-        
-        // get confidence
-        int targetIndex = ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_CONFIDENCE);
-        System.out.println("sr : " + sr);
-        System.out.println("targetIndex : " + targetIndex);
-        String scoreConf = sr.getValue(ResultsTable.getIndexOfColumn(ResultsTable.COLNAME_CONFIDENCE));
-        String trimmedScoreConf = limitToTwoDecimalPlaces(scoreConf);
-        Label confidenceLabel = new Label(trimmedScoreConf);
-        confidenceLabel.getStyleClass().add("columnValue");
-        //if (this.uploadSession.isImageUploaded(sr.getImageID())){
-        //    confidenceLabel.getStyleClass().add("uploadedScore");
-        //}
-        sr.setWidget(ResultsTable.COLNAME_CONFIDENCE, confidenceLabel);
     }
-    */
     public List<String> getActiveScoreColumns(){
         List<String> result = new ArrayList<String>();
         result.add(COLNAME_IMAGE);
@@ -437,6 +359,7 @@ public class ResultsReview2 {
             label.getStyleClass().add("columnHeader");
             GridPane.setHalignment(label, HPos.CENTER);
             gp.add(label, headerColumnIndex++, 0);
+            addEventhandlerForColumnSort(label, rt, gp, colNames);
         }
         List<String> imageIDs = rt.getImageIDsInCurrentOrder();
         int rowIndex = 1;
@@ -583,75 +506,7 @@ public class ResultsReview2 {
     	trainingImagesGridPane.requestLayout();
         scoredImagesGridPane.requestLayout();
     }
-   /*
-    private void addScoredImagesHeader(GridPane gp) throws AvatolCVException {
-        int column = 0;
-
-        Label imageLabel = new Label("Image");
-        
-        imageLabel.getStyleClass().add("columnHeader");
-        GridPane.setHalignment(imageLabel, HPos.CENTER);
-        gp.add(imageLabel, column++, 0);
-    	
-        Label truthLabel = null;
-        if (isEvaluationMode()){
-        	truthLabel = new Label("Truth");
-        	truthLabel.getStyleClass().add("columnHeader");
-            GridPane.setHalignment(truthLabel, HPos.CENTER);
-        	gp.add(truthLabel, column++, 0);
-        }
-        else {
-        	column++; 
-        }
-        	
-        
-    	
-    	
-    	Label scoreLabel = new Label("Score");
-    	scoreLabel.getStyleClass().add("columnHeader");
-        GridPane.setHalignment(scoreLabel, HPos.CENTER);
-    	gp.add(scoreLabel, column++, 0);
-    	
-    	Label confidence = new Label("Confidence");
-    	confidence.getStyleClass().add("columnHeader");
-        GridPane.setHalignment(confidence, HPos.CENTER);
-    	gp.add(confidence, column++, 0);
-    	
-        if (this.runSummary.hasTrainTestConcern()){
-            Label ttcLabel = new Label(new NormalizedValue(this.runSummary.getTrainTestConcern()).getName());
-            GridPane.setHalignment(ttcLabel, HPos.CENTER);
-            gp.add(ttcLabel, column++, 0);
-            ttcLabel.getStyleClass().add("columnHeader");
-        }
-        
-        Label nameLabel = new Label("Name");
-        GridPane.setHalignment(nameLabel, HPos.CENTER);
-        gp.add(nameLabel, column++, 0);
-        nameLabel.getStyleClass().add("columnHeader");
-        
-        //itemLabel.setStyle("-fx-background-color:green;");
-        
-    }
-*/
-    /*
-    private void addTrainingImagesHeader(GridPane gp){
-    	Label imageLabel = new Label("    ");
-    	int column = 0;
-    	gp.add(imageLabel, column++, 0);
-    	Label itemLabel = null;
-    	if (this.runSummary.hasTrainTestConcern()){
-    		itemLabel = new Label(this.runSummary.getTrainTestConcern());
-        	gp.add(itemLabel, column++, 0);
-    	}
-    	else {
-    		itemLabel = new Label("Name");
-    		gp.add(itemLabel, column++, 0);
-    	}
-    	
-    	Label truthLabel = new Label("Truth");
-    	gp.add(truthLabel, column++, 0);
-    }
-   */
+  
     private boolean isImageTallerThanWide(Image image){
     	double h = image.getHeight();
     	double w = image.getWidth();
@@ -695,95 +550,8 @@ public class ResultsReview2 {
     	}
     	return null;
     }
-    /*
-    private void addTrainingImageToGridPaneRowForCookingShow(String imagePath, String trueName, String value, GridPane gp, int row) throws AvatolCVException {
-        // get the image
-        //String thumbnailPath = getThumbailPath(si);
-    	int column = 0;
-        String thumbnailPathname = getThumbnailPathWithImagePathForCookingShow(imagePath);
-        if (null != thumbnailPathname){
-        	Image image = new Image("file:"+thumbnailPathname);
-            ImageView iv = new ImageView(image);
-            if (isImageTallerThanWide(image)){
-            	iv.setRotate(90);
-            }
-            
-            gp.add(iv,column,row);
-        }
-        
-        column++;
-        
-        // get trainingVsTestConcern if relevant, OR image name
-        Label itemLabel = new Label(trueName);
-    	itemLabel.getStyleClass().add("columnValue");
-        
-        //if (this.runSummary.hasTrainTestConcern()){
-        //	String trainingVsTestName = si.getTrainingVsTestName();
-        //	if (null != trainingVsTestName){
-        //		itemLabel.setText(trainingVsTestName);
-        //	}
-        //}
-        //else {
-        	//String imageName = si.getImageName();
-        //	itemLabel.setText(trueName);
-        //}
-        gp.add(itemLabel,column,row);
-        column++;
-     
-        // get truth
-        //String truth = si.getTruthValue(this.scoreIndex);
-        Label truthLabel = new Label();
-    	truthLabel.getStyleClass().add("columnValue");
-        if (null != value){
-            truthLabel.setText(value);
-        }
-        else {
-        	truthLabel.setText(AvatolCVConstants.UNDETERMINED);
-        }
-        gp.add(truthLabel,column,row);
-        column++;
-    }
-    */
-/*
-    private void addTrainingImageToGridPaneRow(NormalizedImageInfoScored si, GridPane gp, int row) throws AvatolCVException {
-        // get the image
-        String thumbnailPath = getThumbailPath(si);
-        Image image = new Image("file:"+thumbnailPath);
-        ImageView iv = new ImageView(image);
-        if (isImageTallerThanWide(image)){
-        	iv.setRotate(90);
-        }
-        int column = 0;
-        gp.add(iv,column,row);
-        column++;
-        
-        // get trainingVsTestConcern if relevant, OR image name
-        Label itemLabel = new Label(AvatolCVConstants.UNDETERMINED);
-        if (this.runSummary.hasTrainTestConcern()){
-        	String trainingVsTestName = si.getTrainingVsTestName();
-        	if (null != trainingVsTestName){
-        		itemLabel.setText(trainingVsTestName);
-        	}
-        }
-        else {
-        	String imageName = si.getImageName();
-        	itemLabel.setText(imageName);
-        }
-        gp.add(itemLabel,column,row);
-        column++;
-     
-        // get truth
-        String truth = si.getTruthValue(this.scoreIndex);
-        Label truthLabel = new Label();
-        if (null != truth){
-            truthLabel.setText(truth);
-        }
-        else {
-        	truthLabel.setText(AvatolCVConstants.UNDETERMINED);
-        }
-        gp.add(truthLabel,column,row);
-        column++;
-    }*/
+   
+
     private void setRunDetails(String runName) throws AvatolCVException {
         RunSummary rs = RunSummary.loadSummary(runName);
         this.runSummary = rs;
