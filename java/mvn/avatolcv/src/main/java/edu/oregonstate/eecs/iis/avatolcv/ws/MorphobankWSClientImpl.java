@@ -548,6 +548,58 @@ http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_med
     public boolean isAuthenticated() {
         return this.isAuthenticated;
     }
+    @Override
+    public boolean addNewScore(String matrixID, String charID, String taxonID, String charStateID)
+            throws MorphobankWSException {
+
+        // http://morphobank.org/service.php/AVATOLCv/recordScore/username/irvine@eecs.oregonstate.edu/password/***/matrixID/23331/characterID/1820895/taxonID/770536/stateID/4876140
+        Client client = ClientBuilder.newClient();
+        String url = "http://morphobank.org/service.php/AVATOLCv/recordScore/username/" + username + "/password/" + password + "/matrixID/" + matrixID + "/characterID/" + charID + "/taxonID/" + taxonID  + "/stateID/" + charStateID;
+        WebTarget webTarget = client.target(url);
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+        
+        Response response = invocationBuilder.get();
+        int status = response.getStatus();
+        if (status!= 200){
+            String reason = response.getStatusInfo().getReasonPhrase();
+            throw new MorphobankWSException("error code " + status + " returned by recordScore... " + reason);
+        }
+        String jsonString = response.readEntity(String.class);
+
+        ErrorCheck ea = new ErrorCheck(jsonString);
+        if (ea.isError()){
+            throw new MorphobankWSException("Error during recordScore : " + ea.getErrorMessage());
+        }
+        
+        System.out.println(jsonString);
+        return true;
+       
+    }
+    @Override
+    public boolean reviseScore(String matrixID, String cellID, String charStateID) throws MorphobankWSException {
+        // http://morphobank.org/service.php/AVATOLCv/recordScore/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/23331/cellID/58835485/stateID/4876140
+        
+        Client client = ClientBuilder.newClient();
+        String url = "http://morphobank.org/service.php/AVATOLCv/recordScore/username/" + username + "/password/" + password + "/matrixID/" + matrixID + "/cellID/" + cellID + "/stateID/" + charStateID;
+        WebTarget webTarget = client.target(url);
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+        
+        Response response = invocationBuilder.get();
+        int status = response.getStatus();
+        if (status!= 200){
+            String reason = response.getStatusInfo().getReasonPhrase();
+            throw new MorphobankWSException("error code " + status + " returned by recordScore... " + reason);
+        }
+        String jsonString = response.readEntity(String.class);
+
+        ErrorCheck ea = new ErrorCheck(jsonString);
+        if (ea.isError()){
+            throw new MorphobankWSException("Error during recordScore : " + ea.getErrorMessage());
+        }
+        
+        System.out.println(jsonString);
+        return true;
+    }
 }
 /*
 

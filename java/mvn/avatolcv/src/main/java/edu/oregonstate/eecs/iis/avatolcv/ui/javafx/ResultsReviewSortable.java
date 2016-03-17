@@ -618,10 +618,10 @@ public class ResultsReviewSortable {
                 curEvent++;
                 if (event.wasNewKey()){
                     // for now, since there's no web service to remove a key (true?), just do the revise
-                    this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue());
+                    this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
                 }
                 else {
-                    this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue());
+                    this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
                 }
                 double percentDone = percentProgressPerEvent * curEvent;
                 Platform.runLater(() -> uploadProgress.setProgress(percentDone));
@@ -711,9 +711,9 @@ public class ResultsReviewSortable {
                     Node scoreLabel = (Node)resultsTable2.getWidget(imageID, COLNAME_SCORE);
                     if (null == existingValueForKey){
                         //add score
-                        boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue);
+                        boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
                         if (result){
-                        	this.uploadSession.addNewKeyValue(imageID, normCharKey, newValue);
+                        	this.uploadSession.addNewKeyValue(imageID, normCharKey, newValue, trainTestConcern, trainTestConcernValue);
                         	Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
                         }
                         else {
@@ -723,9 +723,9 @@ public class ResultsReviewSortable {
                     }
                     else {
                         // revise score
-                        boolean result = dataSource.reviseValueForKey(imageID, normCharKey, newValue);
+                        boolean result = dataSource.reviseValueForKey(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
                         if (result){
-                        	this.uploadSession.reviseValueForKey(imageID, normCharKey, newValue, existingValueForKey);
+                        	this.uploadSession.reviseValueForKey(imageID, normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
                         	Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
                         }
                         else {

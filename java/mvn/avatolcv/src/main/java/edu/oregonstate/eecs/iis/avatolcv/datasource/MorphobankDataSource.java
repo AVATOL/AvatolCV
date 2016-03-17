@@ -54,6 +54,7 @@ public class MorphobankDataSource implements DataSource {
     private MorphobankImages morphobankImages = null;
     private NormalizedImageInfos niis = null;
     private SessionImages sessionImages = null;
+    private Hashtable<String, String> cellIDsForCellKeyHash = new Hashtable<String, String>();
     public MorphobankDataSource(){
         wsClient = new MorphobankWSClientImpl();
         mbDataFiles = new MorphobankDataFiles();
@@ -488,20 +489,81 @@ public class MorphobankDataSource implements DataSource {
     @Override
     public NormalizedValue getValueForKeyAtDatasourceForImage(NormalizedKey normCharKey,
             String imageID, NormalizedKey trainTestConcern,
-            NormalizedValue trainTestConcernValue) {
+            NormalizedValue trainTestConcernValue) throws AvatolCVException {
         // Any character asked about here will be present because in the MB session the user specified and requested it explicitly
-        return null;
+        try {
+            List<MBCharStateValue> charStateValues = wsClient.getCharStatesForCell(this.chosenDataset.getID(), normCharKey.getID(), trainTestConcernValue.getID());
+            // really only need to determine if there is at least one
+            if (null == charStateValues){
+                return null;
+            }
+            if (charStateValues.size() == 0){
+                return null;
+            }
+            MBCharStateValue csv = charStateValues.get(0);
+            String cellID = csv.getCellID();
+            if (null == cellID){
+                return null;
+            }
+            if ("".equals(cellID)){
+                return null;
+            }
+            String charID = normCharKey.getID();
+            String taxonID = trainTestConcernValue.getID();
+            cellIDsForCellKeyHash.put(getKeyForCell(charID, taxonID), cellID);
+            String charStateID = csv.getCharStateID();
+            String charStateName = null;
+            for (MBCharacter mbChar : this.charactersForMatrix){
+                List<MBCharState> charStates = mbChar.getCharStates();
+                for (MBCharState charState : charStates){
+                    if (charStateID.equals(charState.getCharStateID())){
+                        charStateName = charState.getCharStateName();
+                    }
+                }
+            }
+            if (null == charStateName){
+                return new NormalizedValue(charStateID);
+            }
+            else {
+                return new NormalizedValue("charState:" + charStateID + "|" + charStateName);
+            }
+        }
+        catch(MorphobankWSException e){
+            throw new AvatolCVException("problem determining existing value of score for image " + imageID + " character " + normCharKey.getName() + " taxon " + trainTestConcernValue.getName());
+        }
     }
 	@Override
 	public boolean reviseValueForKey(String imageID, NormalizedKey key,
-			NormalizedValue value) throws AvatolCVException {
-		// TODO Auto-generated method stub
-		return false;
+			NormalizedValue value, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException {
+		// http://morphobank.org/service.php/AVATOLCv/recordScore/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/23331/cellID/58835485/stateID/4876140
+	    try {
+	        String matrixID = this.chosenDataset.getID();
+	        String charStateID = value.getID();
+	        String charID = key.getID();
+	        String taxonID = trainTestConcernValue.getID();
+	        String cellID = cellIDsForCellKeyHash.get(getKeyForCell(charID, taxonID));
+	        wsClient.reviseScore(matrixID, cellID, charStateID);
+	        return true;
+	    }
+	    catch(MorphobankWSException e){
+	        throw new AvatolCVException ("problem revising score " + e.getMessage());
+	    }
 	}
 	@Override
 	public boolean addKeyValue(String imageID, NormalizedKey key,
-			NormalizedValue value) throws AvatolCVException {
-		// TODO Auto-generated method stub
-		return false;
+			NormalizedValue value, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException {
+		// http://morphobank.org/service.php/AVATOLCv/recordScore/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/23331/characterID/1820895/taxonID/770536/stateID/4876140
+	    try {
+	        String matrixID = this.chosenDataset.getID();
+	        String taxonID = trainTestConcernValue.getID();
+	        String charStateID = value.getID();
+	        String charID = key.getID();
+	        wsClient.addNewScore(matrixID, charID, taxonID, charStateID);
+	        return true;
+	    }
+	    catch(MorphobankWSException e){
+	        throw new AvatolCVException ("problem adding new score " + e.getMessage());
+	    }
+		
 	}
 }

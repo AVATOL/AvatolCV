@@ -45,6 +45,6 @@ public interface DataSource {
     void setNormalizedImageInfos(NormalizedImageInfos niis) throws AvatolCVException ;
     String getDefaultTrainTestConcern();
     NormalizedValue getValueForKeyAtDatasourceForImage(NormalizedKey normCharKey, String imageID, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException ;
-    boolean reviseValueForKey(String imageID, NormalizedKey key, NormalizedValue value) throws AvatolCVException ;
-    boolean addKeyValue(String imageID, NormalizedKey key, NormalizedValue value) throws AvatolCVException ;
+    boolean reviseValueForKey(String imageID, NormalizedKey key, NormalizedValue value, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException ;
+    boolean addKeyValue(String imageID, NormalizedKey key, NormalizedValue value, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException ;
 }

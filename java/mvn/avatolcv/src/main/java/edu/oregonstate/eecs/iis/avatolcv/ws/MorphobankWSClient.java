@@ -26,5 +26,6 @@ public interface MorphobankWSClient {
 	
 	public boolean downloadImageForMediaId(String dirToSaveTo, String mediaID, String mediaFileName, String type, String imageWidth)  throws MorphobankWSException ;
 	
-	// haven't yet coded in the results upload methods.
+	public boolean addNewScore(String matrixID, String charID, String taxonID, String charStateID) throws MorphobankWSException;
+    public boolean reviseScore(String matrixID, String cellID, String charStateID) throws MorphobankWSException;
 }
