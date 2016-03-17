@@ -34,6 +34,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
@@ -352,6 +353,8 @@ public class ResultsReviewSortable {
         for (String colName : colNames){
             Label label = new Label(colName);
             label.getStyleClass().add("columnHeader");
+            label.setMaxWidth(Double.MAX_VALUE);
+            label.setTextAlignment(TextAlignment.CENTER);
             GridPane.setHalignment(label, HPos.CENTER);
             gp.add(label, headerColumnIndex++, 0);
             addEventhandlerForColumnSort(label, rt, gp, colNames);
@@ -372,7 +375,7 @@ public class ResultsReviewSortable {
     private void ensureConstraintsForGridPane(GridPane gp){
         ObservableList<ColumnConstraints> colConstraints = gp.getColumnConstraints();
         for (ColumnConstraints cc : colConstraints){
-            cc.setHgrow(Priority.SOMETIMES);
+            cc.setHgrow(Priority.NEVER);
         }
         ObservableList<RowConstraints> rowConstraints = gp.getRowConstraints();
         for (RowConstraints rc : rowConstraints){
@@ -480,7 +483,9 @@ public class ResultsReviewSortable {
     			valueLabel.getStyleClass().add("columnValue");
     			trainingTable.addWidgetForColumn(imageID, COLNAME_SCORE, valueLabel);
     			
-        		String trueName = getTrueImageNameFromImagePathForCookingShow(path);
+        		String trueNameWithSuffix = getTrueImageNameFromImagePathForCookingShow(path);
+        		String idPrefix = imageID + "_";
+                String trueName = trueNameWithSuffix.replaceAll(idPrefix, "");
         		trainingTable.addValueForColumn(imageID, COLNAME_NAME, trueName);
         		Label nameLabel = new Label(trueName);
                 nameLabel.getStyleClass().add("columnValue");
