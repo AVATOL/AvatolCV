@@ -431,9 +431,10 @@ public class ResultsReviewSortable {
     		confLabel.getStyleClass().add("columnValue");
             resultsTable2.addWidgetForColumn(imageID, COLNAME_CONFIDENCE, confLabel);
             
-    		String truth = null;
+    		String normalizedTruthString = null;
     		if (isEvaluationMode()){
-    			truth = hif.getScoringConcernValueForImagePath(path);
+    		    normalizedTruthString = hif.getScoringConcernValueForImagePath(path);
+    			String truth = new NormalizedValue(normalizedTruthString).getName();
     			resultsTable2.addValueForColumn(imageID, COLNAME_TRUTH, truth);
     			Label truthLabel = new Label(truth);
     			truthLabel.getStyleClass().add("columnValue");
