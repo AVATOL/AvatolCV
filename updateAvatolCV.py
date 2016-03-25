@@ -4,6 +4,7 @@ import sys, os, os.path, shutil, urllib
 import platform
 import glob
 import tarfile
+import pdb
 
 def main():
     if (len(sys.argv) < 2):
@@ -27,68 +28,126 @@ def main():
     new_manifest_filename = download_manifest_rootname + "_new.txt"
     print "...manifest to download is {0} and will be named {1}".format(manifest_truename, new_manifest_filename)
     
-    new_manifest_path = downloadFile(avatolcv_root, new_manifest_filename, manifest_truename)
+    new_manifest_pathname = downloadFile(avatolcv_root, new_manifest_filename, manifest_truename)
     
+    
+    old_manifest_pathname = getOldManifestPath(avatolcv_root, download_manifest_rootname)
+    show_manifest(old_manifest_pathname, "old manifest")
+    show_manifest(new_manifest_pathname, "new manifest")
     # are we up to date?
-    up_to_date = isUpToDate(avatolcv_root, download_manifest_rootname, new_manifest_path)
-    if (up_to_date):
+    bundles_to_download = getBundlesToDownload(old_manifest_pathname, new_manifest_pathname)
+    if (len(bundles_to_download) == 0):
         print "...installed code is up to date... exiting!"
+        deleteFile(new_manifest_pathname)
         exit()
         
-    print "...installed code needs updating."
-    uninstallIfNecessary(avatolcv_root, download_manifest_rootname)
+    print "...the following bundles need updating {0}".format(bundles_to_download)
+    uninstall_bundles(avatolcv_root, bundles_to_download)
     
     # delete old manifest , rename manifest_new to manifest
     old_manifest_pathname = getOldManifestPath(avatolcv_root, download_manifest_rootname)
     if (os.path.isfile(old_manifest_pathname)):
         print "...deleting prior manifest file {0}".format(old_manifest_pathname)
         deleteFile(old_manifest_pathname)
-    print "...renaming new manifest {0} to old manifest {1}".format(new_manifest_path, old_manifest_pathname)
-    os.rename(new_manifest_path, old_manifest_pathname)
+    print "...renaming new manifest {0} to old manifest {1}".format(new_manifest_pathname, old_manifest_pathname)
+    os.rename(new_manifest_pathname, old_manifest_pathname)
     
     #
-    installFilesInManifest(avatolcv_root, old_manifest_pathname)
+    installBundles(avatolcv_root, old_manifest_pathname, bundles_to_download)
+
+def show_manifest(path, description):
+    print "========================================================="
+    if (not(os.path.isfile(path))):
+        print "{0} - no manifest present".format(description)
+        print "========================================================="
+        return
+    f = open(path, "r")
+    lines = sorted(f.readlines())
+    f.close()
+    print "{0}".format(description)
+    for line in lines:
+        line = line.rstrip()
+        print "{0}".format(line)
+    print "========================================================="
     
+def installBundles(avatolcv_root, manifest_path, bundles_to_download):
+    bundles_dict = getBundlesDict(manifest_path)
+    for bundle in bundles_to_download:
+        print "...installing bundle {0}".format(bundle)
+        filename_to_download = bundles_dict[bundle]
+        downloaded_file = downloadFile(avatolcv_root, filename_to_download, filename_to_download)     
+        unwrapFile(avatolcv_root, downloaded_file)
+                
 def getOldManifestPath(avatolcv_root, download_manifest_rootname):
     old_manifest_filename = download_manifest_rootname + "_old.txt"
     old_manifest_pathname = os.path.join(avatolcv_root, old_manifest_filename)
     return old_manifest_pathname
     
-def isUpToDate(avatolcv_root, download_manifest_rootname, new_manifest_path):
-    old_manifest_pathname = getOldManifestPath(avatolcv_root, download_manifest_rootname)
-    if (os.path.isfile(old_manifest_pathname)):
-        # check if they are equal
-        f_old = open(old_manifest_pathname, "r")
-        old_lines = sorted(f_old.readlines());
-        f_old.close()
-        f_new = open(new_manifest_path, "r")
-        new_lines = sorted(f_new.readlines())
-        f_new.close()
-        if (len(new_lines) != len(old_lines)):
-            print "manifests are different lengths - update required"
-            return false;
-        for i in range(0, len(new_lines)):
-            if (new_lines[i] != old_lines[i]):
-                print "manifest entries do not match - old: {0} - new: {1}".format(old_lines[i], new_lines[i])
-                return false
-        return true
-    else:
-        print "existing manifest not found, install needs updating"
-        return false
-    
-def installFilesInManifest(avatolcv_root, manifest_path):
-    with open(manifest_path) as manifest:
-        for line in manifest:
-            line = line.rstrip()
-            if (line.startswith("#")):
-                print "installer skipping manifest comment: {0}".format(line)
-                continue
-            elif (line.endswith(".tgz")):
-                downloaded_file = downloadFile(avatolcv_root, line, line)     
-                unwrapFile(avatolcv_root, downloaded_file)
-            else :
-                print "skipping manifest line : {0}".format(line)
+def getVersionsDict(path):
+    version_dict = {}
+    if (not(os.path.isfile(path))):
+        return version_dict
+    f = open(path, "r")
+    lines = sorted(f.readlines())
+    f.close()
+    for line in lines:
+        line = line.rstrip()
+        if (len(line) == 0):
+            continue
+        if (line.startswith("#")):
+            continue
+        name_parts = line.split('.')
+        file_root = name_parts[0]
+        parts = file_root.split('_')
+        if (len(parts) < 4):
+            print "...ERROR - manifest line is malformed : {0}".format(line)
+        else:
+            key = parts[1]
+            version = parts[3]
+            print "adding key and version to version_dict : {0} {1}".format(key, version)
+            version_dict[key] = version
+    return version_dict
 
+def getBundlesDict(path):
+    bundles_dict = {}
+    if (not(os.path.isfile(path))):
+        return version_dict
+    f = open(path, "r")
+    lines = sorted(f.readlines())
+    f.close()
+    for line in lines:
+        line = line.rstrip()
+        if (len(line) == 0):
+            continue
+        if (line.startswith("#")):
+            continue
+        name_parts = line.split('.')
+        file_root = name_parts[0]
+        parts = file_root.split('_')
+        if (len(parts) < 4):
+            print "...ERROR - manifest line is malformed : {0}".format(line)
+        else:
+            key = parts[1]
+            print "adding key and line to modules dict : {0} {1}".format(key, line)
+            bundles_dict[key] = line
+    return bundles_dict    
+    
+def getBundlesToDownload(old_manifest_pathname, new_manifest_pathname):
+    #pdb.set_trace()
+    old_versions_dict = getVersionsDict(old_manifest_pathname)
+    new_versions_dict = getVersionsDict(new_manifest_pathname)
+    bundles_to_download = []
+    new_keys = new_versions_dict.keys()
+    for new_key in new_keys:
+        if (not(old_versions_dict.has_key(new_key))):
+            bundles_to_download.append(new_key)
+        else:
+            new_version_for_key = new_versions_dict[new_key]
+            old_version_for_key = old_versions_dict[new_key]
+            if (not(new_version_for_key == old_version_for_key)):
+                bundles_to_download.append(new_key)
+    return bundles_to_download;
+  
 def unwrapFile(avatolcv_root, tgzFilePath):
     cur_dir = os.getcwd()
     os.chdir(avatolcv_root)
@@ -105,46 +164,30 @@ def downloadFile(avatolcv_root, manifest_filename, truename):
     foo.retrieve(url, target_path)
     return target_path
 
-def uninstallIfNecessary(avatolcv_root, download_manifest_rootname):
-    present_download_manifest_name = getPresentDownloadManifest(avatolcv_root, download_manifest_rootname)
-    # look for existing downloadManifest
-    if (present_download_manifest_name != None):
-        uninstall_files_in_manifest(avatolcv_root, present_download_manifest_name)
-        
-def uninstall_files_in_manifest(avatolcv_root, present_download_manifest_name):
-    with open(present_download_manifest_name) as manifest:
-        for line in manifest:
-            line = line.rstrip()
-            if (line.startswith("#")):
-                print "...skipping manifest comment: {0}".format(line)
-                continue
-            else:
-                # get bundlename from entry
-                parts = line.split("_")
-                if (len(parts) < 4):
-                    print "...PROBLEM: entry in manifest malformed, should be downloadBundle_<name>_<platform_code>_<version>.tgz, but is {0}".format(line)
-                    exit()
-                bundle_name = parts[1]
-                print "...looking for allFiles_{0}.txt".format(bundle_name)
-                # look for allFiles_bundleName.txt
-                all_files_path = os.path.join(avatolcv_root, 'allFiles_' + bundle_name + '.txt')
-                if (os.path.isfile(all_files_path)):
-                    # open it and delete each file found
-                    print "...uninstalling bundle {0}".format(bundle_name)
-                    delete_from_all_files(all_files_path)
-                else :
-                    print "...PROBLEM - could not uninstall bundle {0}".format(bundle_name)
- 
-def delete_from_all_files(all_files_path):
-    with open(all_files_path) as paths:
-        for path in paths:
-            path = path.rstrip()
+def uninstall_bundles(avatolcv_root, bundles_to_uninstall):
+    for bundle in bundles_to_uninstall:
+        print "...looking for allFiles_{0}.txt".format(bundle)
+        # look for allFiles_bundleName.txt
+        all_files_path = os.path.join(avatolcv_root, 'allFiles_' + bundle + '.txt')
+        if (os.path.isfile(all_files_path)):
+            # open it and delete each file found
+            print "...uninstalling bundle {0}".format(bundle)
+            delete_from_all_files(avatolcv_root, all_files_path)
+            deleteFile(all_files_path)
+        else :
+            print "...WARNING - could not find bundle {0} to uninstall".format(bundle)
+                
+def delete_from_all_files(avatolcv_root, all_files_path):
+    with open(all_files_path) as rel_paths:
+        for rel_path in rel_paths:
+            rel_path = rel_path.rstrip()
+            path = os.path.join(avatolcv_root, rel_path)
             deleteFile(path)
             
 def deleteFile(path):
     try:
         if os.path.isfile(path):
-            print "... uninstall path {0}".format(path)
+            print "... deleting {0}".format(path)
             os.unlink(path)
     except Exception, e:
         print e     
@@ -180,7 +223,6 @@ def getPlatformCode():
         platform_code = 'mac'
     else:
         platform_code = 'unsupported'
-    print "platform is {0}".format(platform_code)
     return platform_code
     
 if __name__ == "__main__":
