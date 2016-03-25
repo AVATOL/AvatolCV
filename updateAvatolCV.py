@@ -219,7 +219,7 @@ def getPlatformCode():
     platform_name = platform.system()
     if (platform_name.startswith('Win')):
         platform_code = 'win'
-    elif (platform_name.startswith('Mac')):
+    elif (platform_name.startswith('Darwin')):
         platform_code = 'mac'
     else:
         platform_code = 'unsupported'
