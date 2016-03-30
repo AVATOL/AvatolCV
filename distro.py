@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys, os, os.path, shutil
-import pysftp
+import pysftp, datetime
 
 def main():
     # find the root path of avatol_cv
@@ -18,7 +18,7 @@ def main():
     
     bundle_list = sys.argv[2]
     bundles = bundle_list.split(",")
-    manifest_dict = []
+    manifest_dict = {}
     for bundle in bundles:
         print "...finding manifest file for bundle
         manifests_dir = os.path.join(avatol_cv_root.join(avatol_cv_root,"manifests")
@@ -39,24 +39,14 @@ def main():
     
     existing_filenames = sftp_connection.listdir()
     for bundle_name in bundles:
-        print "working bundle {0}".format(bundle)
-        #downloadBundle_dummy1_win_1.00.tgz
-        bundle_full_name_root = 'downloadBundle_' + bundle_name + '_' + platform_code
-        print "...bundle root    : {0}".format(bundle_full_name_root)
-        distro_dir = getBundleDistroDir(avatol_cv_root, bundle_name)
-        print "...distro_dir     : {0}".format(distro_dir)
-        print ""
-        ensureDirExists(distro_dir)
-        cleanDirectory(distro_dir)
-        print ""
-    
-        
+        bundle_full_name_root = getBundleManifestRoot(bundle_name,platform_code)
+        distro_dir = prepareDistroDir(avatol_cv_root, bundle_name)
         manifest_path = manifest_dict[bundle_name]
         with open(manifest_path) as manifest:
             copyAsPerManifest(manifest, distro_dir)
             
             
-    
+		version = getVersionForBundle(bundle_full_name_root, existing_filenames)
         # get version for this bundle
         # list the filenames in the public_html/AvatolCV area on flip
     
@@ -65,7 +55,50 @@ def main():
     
     
     sftp_connection.close()
+	
+def getVersionForBundle(bundle_name_root, existing_filenames):
+	prior_versions_of_bundle = []
+	todays_datestamp = getTodaysDatestamp()
+	for name in existing_filenames:
+		if name.startswith(bundle_name_root):
+			prior_versions_of_bundle.append(name)
+	if len(prior_versions_of_bundle) == 0:
+	
+	else:
+	    prior_versions_of_bundle.sort();
+		most_recent_version = prior_versions_of_bundle[len(prior_versions_of_bundle)-1]
+		date_of_most_recent_version = getDateFromBundleName(name)
     
+def getDateFromBundleName(name):
+	#downloadBundle_dummy1_win_20160304a.tgz
+    major_parts = name.split('.')
+	parts = major_parts[0].split('_')
+	version = parts[3]
+	datestamp = version.substring(0,8)
+	return datestamp
+	
+
+def getTodaysDatestamp():
+	now = datetime.datetime.now()
+	datestamp = now.strftime("%Y%m%d")
+	return datestamp
+	
+def prepareDistroDir(avatol_cv_root, bundle_name):
+	distro_dir = getBundleDistroDir(avatol_cv_root, bundle_name)
+    print "...distro_dir     : {0}".format(distro_dir)
+    print ""
+    ensureDirExists(distro_dir)
+    cleanDirectory(distro_dir)
+    print ""
+	return distro_dir
+
+def getBundleManifestRoot(bundle_name, platform_code):
+	print "working bundle {0}".format(bundle_name)
+    #downloadBundle_dummy1_win_20160304a.tgz
+    bundle_full_name_root = 'downloadBundle_' + bundle_name + '_' + platform_code
+	print "...bundle root    : {0}".format(bundle_full_name_root)
+	return bundle_full_name_root
+   
 def copyAsPerManifest(manifest, distro_dir):
     all_files = []
     for line in manifest:
