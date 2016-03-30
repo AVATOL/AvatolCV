@@ -1,94 +1,150 @@
 #!/usr/bin/python
 
 import sys, os, os.path, shutil
+import pysftp
 
 def main():
-    if (len(sys.argv) < 2):
-        usage()
-        exit()
-    manifest_path = sys.argv[1]
-    if (not(os.path.isfile(manifest_path))):
-        print "{0} does not exist".format(manifest_path)
-        exit()
-    
     # find the root path of avatol_cv
     path_of_this_script = os.path.realpath(__file__)
-    print "path of this script : {0}".format(path_of_this_script)
     avatol_cv_root = os.path.dirname(path_of_this_script)
+    print "...avatol_cv_root : {0}".format(avatol_cv_root)
     
-    distroDir = getDistroDir(avatol_cv_root)
-    ensureDirExists(distroDir)
-    cleanDirectory(distroDir)
+    # verify argument count
+    if (len(sys.argv) != 4):
+        usage()
+        exit()
+    platform_code = sys.argv[1]
+    print "...platform code  : {0}".format(platform_code)
     
-    with open(manifest_path) as manifest:
-        for line in manifest:
-            if (line.startswith("#")):
-                print "skipping comment: {0}".format(line)
-                continue
-            line = line.replace("/",os.path.sep)    
-            relPath = line.rstrip()
-            fullPath = os.path.join(avatol_cv_root, relPath)
-            print "fullPath {0}".format(fullPath)
+    bundle_list = sys.argv[2]
+    bundles = bundle_list.split(",")
+    manifest_dict = []
+    for bundle in bundles:
+        print "...finding manifest file for bundle
+        manifests_dir = os.path.join(avatol_cv_root.join(avatol_cv_root,"manifests")
+        manifest_filename = 'manifest_' + bundle + '.txt
+        manifest_path = os.path.join(manifests_dir, manifest_filename)
+        if (not(os.path.isfile(manifest_path))):
+            print "...manifest {0} does not exist".format(manifest_path)
+            exit()
+        manifest_dict[bundle] = manifest_path
+        
+    credentials_path = sys.argv[3]
+    if (not(os.path.isfile(credentials_path))):
+        print "...credentials file {0} does not exist".format(credentials_path)
+        exit()
+    # get this connection first as its the weak link - if this is going to fail, lets not burn time generating distros that we can't determine versions for 
+    #sftp_connection = getSftpConnectionToPullSite(credentials_path)
+    print "skipping connection until ready"
+    
+    existing_filenames = sftp_connection.listdir()
+    for bundle_name in bundles:
+        print "working bundle {0}".format(bundle)
+        #downloadBundle_dummy1_win_1.00.tgz
+        bundle_full_name_root = 'downloadBundle_' + bundle_name + '_' + platform_code
+        print "...bundle root    : {0}".format(bundle_full_name_root)
+        distro_dir = getBundleDistroDir(avatol_cv_root, bundle_name)
+        print "...distro_dir     : {0}".format(distro_dir)
+        print ""
+        ensureDirExists(distro_dir)
+        cleanDirectory(distro_dir)
+        print ""
+    
+        
+        manifest_path = manifest_dict[bundle_name]
+        with open(manifest_path) as manifest:
+            copyAsPerManifest(manifest, distro_dir)
             
-            targetPath = getTargetPath(avatol_cv_root,relPath) 
-            print "targetPath {0}".format(targetPath)
-            if (os.path.isfile(fullPath)):
-                #print "copyFile {0} -> {1}".format(fullPath, targetPath)
-                copyFile(fullPath, targetPath)
             
-            elif (os.path.isdir(fullPath)):
-                #print "copyFiles {0} -> {1}".format(fullPath, targetPath)
-                copyFiles(fullPath, targetPath)
+    
+        # get version for this bundle
+        # list the filenames in the public_html/AvatolCV area on flip
+    
+    
+    
+    
+    
+    sftp_connection.close()
+    
+def copyAsPerManifest(manifest, distro_dir):
+    all_files = []
+    for line in manifest:
+        if (line.startswith("#")):
+            #print "...skipping comment: {0}".format(line)
+            continue
+        line = line.replace("/",os.path.sep)    
+        rel_path = line.rstrip()
+        full_path = os.path.join(avatol_cv_root, rel_path)
+        #print "...full_path   {0}".format(full_path)
                 
-            else :
-                print "skipping manifest entry: {0}".format(fullPath)
+        target_path = os.path.join(distro_dir, rel_path)
+        #print "...target_path {0}".format(target_path)
+        if (os.path.isfile(full_path)):
+            print "......copyFile {0} -> {1}".format(full_path, target_path)
+            copyFile(full_path, target_path)
+            rel_path = rel_path.replace('\\', '/')
+            all_files.append(rel_path)
+        elif (os.path.isdir(full_path)):
+            #print "copyFiles {0} -> {1}".format(full_path, target_path)
+            files_copied = copyFiles(avatol_cv_root, full_path, target_path)
+            all_files.extend(files_copied)
+        else :
+            print "...skipping manifest entry: {0}".format(full_path)
+        all_files_path = os.path.join(distro_dir, 'allFiles_'+bundle_name+'.txt')
+        f = open(all_files_path, "w")
+        for copied_file in all_files:
+            f.write("%s\n" % copied_file)
+        f.close()
 
-def getDistroDir(root):
+def getSftpConnectionToPullSite(credentials_path):
+    dict = getCredentialsDict(credentials_path)
+    hostname = dict['host']
+    user     = dict['username']
+    pw       = dict['password']
+    parentdir= dict['parentdir']
+    print "credentials read as:"
+    print "    host      : {0}".format(hostname)
+    print "    username  : {0}".format(user)
+    print "    password  : {0}".format(pw)
+    print "    parentdir : {0}".format(parentdir)
+    conn = pysftp.Connection(host=hostname, username=user, password=pw)
+    conn.chdir(parentdir)
+    return conn
+
+def getBundleDistroDir(root, bundle_name):
     distro_dir =  os.path.join(root, 'distro')
+    distro_dir = os.path.join(distro_dir, bundle_name)
+    distro_dir = os.path.join(distro_dir, 'avatol_cv')
     return distro_dir
+
+def getCredentialsDict(path):
+    dict = {}
+    if (not(os.path.isfile(path))):
+        return dict
+    f = open(path, "r")
+    lines = sorted(f.readlines())
+    f.close()
+    for line in lines:
+        line = line.rstrip()
+        if (len(line) == 0):
+            continue
+        if (line.startswith("#")):
+            continue
+        key, val = line.split('=')
+        dict[key] = val
+    return dict 
     
 def ensureDirExists(dir):
     if (not(os.path.isdir(dir))):
         os.makedirs(dir)    
     
-def getTargetPath(root, relPath):
-    result = os.path.join(root, 'distro')
-    result = os.path.join(result, 'avatol_cv')
-    result = os.path.join(result, relPath)
-    return result
-    
 def usage():
-    print "usage:  python distro.py  <path of manifest>"
+    print "usage:  python distro.py  <platform_code> <bundle list> <path of credentials file>"
+    print "...where platform_code == win | mac"
+    print "...credentials file has host, username and password for site to push to" 
+    print "...bundle list is a comma separated list of bundle names from this set:   docs,modules_3rdparty, modules_osu,java"
     print ""
-
-   
-def cheatcopy(run_config_path, path_of_pregen_data, output_dir_key):
-    
-    if (not(os.path.isdir(path_of_pregen_data))):
-        print "{0} is not a valid directory to copy from".format(path_of_pregen_data)
-        exit()
-        
-    files_to_copy = os.listdir(path_of_pregen_data)
-    if (len(files_to_copy) == 0):
-        print "{0} is an empty source directory - cannot copy pregenerated data".format(path_of_pregen_data)
-        exit()
-        
-    #print "path of parentDir : {0}".format(path_of_parent)
-    #print "path of preGenDir : {0}".format(path_of_pregen_data)
-    print "run_config_path is {0}".format(run_config_path)
-    with open(run_config_path) as runConfig:
-        for line in runConfig:
-            line = line.rstrip()
-            key, val = line.split("=")
-            if (key == output_dir_key):
-                target_dir = val
-                if (os.path.isdir(target_dir)):
-                    print "copying files from {0} to {1}".format(path_of_pregen_data, target_dir)
-                    cleanDirectory(target_dir)
-                    copyFiles(path_of_pregen_data,target_dir)
-                else: 
-                    print "target dir {0} is not a valid directory".format(target_dir)
-
+ 
 def copyFile(src_file_path, dest_file_path):
     try:
         dest_dir = os.path.dirname(dest_file_path)
@@ -97,17 +153,25 @@ def copyFile(src_file_path, dest_file_path):
     except Exception, e:
         print e
                     
-def copyFiles(src_dir,target_dir):
+def copyFiles(avatol_cv_root, src_dir, target_dir):
+    files_copied = []
     for the_file in os.listdir(src_dir):
         src_file_path = os.path.join(src_dir, the_file)
         dest_file_path = os.path.join(target_dir, the_file)
-        print "copying file {0} to {1}".format(src_file_path, dest_file_path)
+        print "......copy {0} to {1}".format(src_file_path, dest_file_path)
         copyFile(src_file_path, dest_file_path)
-        
+        root_len = len(avatol_cv_root)
+        root_len_plus_1 = root_len + 1
+        rel_path = src_file_path[root_len_plus_1:]
+        rel_path = rel_path.replace('\\', '/')
+        #print "...rel_path determined as {0}".format(rel_path)
+        files_copied.append(rel_path)
+    return files_copied
+    
 def cleanDirectory(target_dir):
     for the_file in os.listdir(target_dir):
         file_path = os.path.join(target_dir, the_file)
-        print "deleting file {0}".format(file_path)
+        print "......deleting file {0}".format(file_path)
         try:
             if os.path.isfile(file_path):
                 os.unlink(file_path)

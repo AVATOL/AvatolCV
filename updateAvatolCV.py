@@ -111,7 +111,7 @@ def getVersionsDict(path):
 def getBundlesDict(path):
     bundles_dict = {}
     if (not(os.path.isfile(path))):
-        return version_dict
+        return bundles_dict
     f = open(path, "r")
     lines = sorted(f.readlines())
     f.close()
