@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# python distro.py win docs,java C:\jed\avatol\git\avatol_cv\distro\cred.txt
 
 import sys, os, os.path, shutil
 import pysftp, datetime, tarfile
