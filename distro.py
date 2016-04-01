@@ -35,13 +35,14 @@ def main():
         print "...credentials file {0} does not exist".format(credentials_path)
         exit()
     # get this connection first as its the weak link - if this is going to fail, lets not burn time generating distros that we can't determine versions for 
-    #sftp_connection = getSftpConnectionToPullSite(credentials_path)
-    print "skipping connection until ready"
+    sftp_connection = getSftpConnectionToPullSite(credentials_path)
+    #print "skipping connection until ready"
     
     # list the filenames in the public_html/AvatolCV area on flip
-    #existing_filenames = sftp_connection.listdir()
+    existing_filenames = sftp_connection.listdir()
+    print "existing files : {0}".format(existing_filenames)
     #existing_filenames = [ ]
-    existing_filenames = [ 'downloadBundle_docs_win_20160330a.tgz','downloadBundle_java_win_20160330x.tgz' ]
+    #existing_filenames = [ 'downloadBundle_docs_win_20160330a.tgz','downloadBundle_java_win_20160330x.tgz' ]
     #existing_filenames = [ 'downloadBundle_docs_win_20160331a.tgz','downloadBundle_java_win_20160331x.tgz' ]
     #existing_filenames = [ 'downloadBundle_docs_win_20160331a.tgz', 'downloadBundle_docs_win_20160331b.tgz' ]
     #existing_filenames = [ 'downloadBundle_docs_win_20160331a.tgz', 'downloadBundle_docs_win_20160331b.tgz', 'downloadBundle_docs_win_20160331c.tgz' ]
@@ -55,31 +56,48 @@ def main():
         # get version for this bundle    
         version = getVersionForBundle(bundle_full_name_root, existing_filenames)
         print "version for bundle {0} is {1}".format(bundle_name, version)
-        createGzippedTarFile(bundle_name, platform_code, version, distro_dir)
-    
-    #sftp_connection.close()
+        bundle_zip_path = createGzippedTarFile(bundle_name, platform_code, version, distro_dir)
+        sftp_connection.put(bundle_zip_path, preserve_mtime=True)
+        
+    sftp_connection.close()
     
 def createGzippedTarFile(bundle_name, platform_code, version, distro_dir):
     cur_dir = os.getcwd()
     print "distro_dir is {0}".format(distro_dir)
     
     os.chdir(distro_dir)
-    all_files_filename = os.path.join(distro_dir,'allFiles_' + bundle_name + '.txt')
-    f = open(all_files_filename, 'r')
+    all_files_filename = 'allFiles_' + bundle_name + '.txt'
+    all_files_pathname = os.path.join(distro_dir,all_files_filename)
+    f = open(all_files_pathname, 'r')
     files = f.readlines()
     f.close()
     #downloadBundle_docs_win_20160304a.tgz
     tarfile_name = 'downloadBundle_' + bundle_name + '_' + platform_code + '_' + version + '.tgz'
     parent = os.path.dirname(distro_dir)
-    tarfile_path = os.path.join(parent, tarfile_name)
+    print "parent is {0}".format(parent)
+    #tarfile_path = os.path.join(parent, tarfile_name)
+    tarfile_path = tarfile_name
     print "...tarfile path is {0}".format(tarfile_path)
+    # NOTE using the |gz compression on the stream resulted in wierdness where a second shell of a .tgz file was created around the first one (?!)
+    # so, doing gzip as separate step.
     tar = tarfile.open(tarfile_path, "w|gz")
+    
     for file_rel_path in files:
         file_rel_path = file_rel_path.rstrip()
         print "adding to {0} : {1}".format(tarfile_name, file_rel_path)
         tar.add(file_rel_path)
+    tar.add(all_files_filename)
     tar.close()
+    
+    bundle_root = os.path.dirname(distro_dir)
+    distro_root = os.path.dirname(bundle_root)
+    final_tgz_path = os.path.join(distro_root, tarfile_name)
+    if (os.path.isfile(final_tgz_path)):
+        deleteFile(final_tgz_path)
+    print "moving file {0} to {1}".format(tarfile_path, distro_root)
+    shutil.move(tarfile_path, final_tgz_path)
     os.chdir(cur_dir)
+    return final_tgz_path
     
 def getVersionForBundle(bundle_name_root, existing_filenames):
     prior_versions_of_bundle = []
@@ -206,17 +224,17 @@ def copyAsPerManifest(avatol_cv_root, bundle_name, manifest, distro_dir):
 
 def getSftpConnectionToPullSite(credentials_path):
     dict = getCredentialsDict(credentials_path)
-    hostname = dict['host']
-    user     = dict['username']
-    pw       = dict['password']
-    parentdir= dict['parentdir']
+    hostname  = dict['host']
+    user      = dict['username']
+    pw        = dict['password']
+    releasedir= dict['releasedir']
     print "credentials read as:"
     print "    host      : {0}".format(hostname)
     print "    username  : {0}".format(user)
     print "    password  : {0}".format(pw)
-    print "    parentdir : {0}".format(parentdir)
+    print "    releasedir : {0}".format(releasedir)
     conn = pysftp.Connection(host=hostname, username=user, password=pw)
-    conn.chdir(parentdir)
+    conn.chdir(releasedir)
     return conn
 
 def getBundleDistroDir(root, bundle_name):
@@ -276,15 +294,17 @@ def copyFiles(avatol_cv_root, src_dir, target_dir):
         files_copied.append(rel_path)
     return files_copied
     
+def deleteFile(path):
+    try:
+        if os.path.isfile(path):
+            os.unlink(path)
+    except Exception, e:
+        print e
 def cleanDirectory(target_dir):
     for the_file in os.listdir(target_dir):
         file_path = os.path.join(target_dir, the_file)
         print "......deleting file {0}".format(file_path)
-        try:
-            if os.path.isfile(file_path):
-                os.unlink(file_path)
-        except Exception, e:
-            print e
+        deleteFile(file_path)
 
 if __name__ == "__main__":
    main()      
