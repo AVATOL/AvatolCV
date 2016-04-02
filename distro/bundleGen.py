@@ -7,7 +7,8 @@ import pysftp, datetime, tarfile
 def main():
     # find the root path of avatol_cv
     path_of_this_script = os.path.realpath(__file__)
-    avatol_cv_root = os.path.dirname(path_of_this_script)
+    distro_root_dir = os.path.dirname(path_of_this_script)
+    avatol_cv_root = os.path.dirname(distro_root_dir)
     print "...avatol_cv_root : {0}".format(avatol_cv_root)
     
     # verify argument count
@@ -20,7 +21,7 @@ def main():
     bundle_list = sys.argv[2]
     bundles = bundle_list.split(",")
     manifest_dict = {}
-    distro_root_dir = os.path.join(avatol_cv_root, 'distro')
+    
     manifests_dir = os.path.join(distro_root_dir,"manifests")
     for bundle in bundles:
         print "...finding manifest file for bundle {0}".format(bundle)
@@ -285,14 +286,20 @@ def copyFiles(avatol_cv_root, src_dir, target_dir):
     for the_file in os.listdir(src_dir):
         src_file_path = os.path.join(src_dir, the_file)
         dest_file_path = os.path.join(target_dir, the_file)
-        print "......copy {0} to {1}".format(src_file_path, dest_file_path)
-        copyFile(src_file_path, dest_file_path)
-        root_len = len(avatol_cv_root)
-        root_len_plus_1 = root_len + 1
-        rel_path = src_file_path[root_len_plus_1:]
-        rel_path = rel_path.replace('\\', '/')
-        #print "...rel_path determined as {0}".format(rel_path)
-        files_copied.append(rel_path)
+        if (os.path.isdir(src_file_path)):
+            
+        elif (os.path.isfile(src_file_path)) :
+            print "......copy {0} to {1}".format(src_file_path, dest_file_path)
+            copyFile(src_file_path, dest_file_path)
+            root_len = len(avatol_cv_root)
+            root_len_plus_1 = root_len + 1
+            rel_path = src_file_path[root_len_plus_1:]
+            rel_path = rel_path.replace('\\', '/')
+            #print "...rel_path determined as {0}".format(rel_path)
+            files_copied.append(rel_path)
+        else :
+        
+        
     return files_copied
     
 def deleteFile(path):
