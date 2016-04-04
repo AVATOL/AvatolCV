@@ -1,0 +1,9 @@
+# primary jar file
+java/lib/avatol_cv.jar
+java/lib/launch_algorithm.jar
+java/lib/slf4j-api-1.7.7.jar
+java/lib/slf4j-log4j12-1.7.7.jar
+java/lib/log4j-1.2.17.jar
+java/lib/log4j.properties
+# image used in UI
+images

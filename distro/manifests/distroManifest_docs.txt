@@ -1,0 +1,8 @@
+# modules documentation
+modules/runConfigSpecForOrientation.txt
+modules/runConfigSpecForScoring.txt
+modules/runConfigSpecForSegmentation.txt
+modules/scoredDataSpec.txt
+modules/Darwin_Library_Installation_Instructions_MACOS.pdf
+modules/hcSearch_Installation_Instructions.txt
+license
