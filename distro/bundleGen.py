@@ -73,14 +73,31 @@ def main():
     if (len(download_manifest_entries) == 0):
         print "ERROR - download_manifest_entries is EMPTY, cannot generate new manifest!"
         exit()
+        
+    
+    
+
+    # 
     most_recent_download_manifest_for_platform = getMostRecentDownloadManifestForPlatform(platform_code,existing_filenames)
     name_for_next_download_manifest_for_platform = getNextDownloadManifestName(most_recent_download_manifest_for_platform, platform_code)
     new_download_manifest_path = os.path.join(distro_root_dir,name_for_next_download_manifest_for_platform)
+    
     f = open(new_download_manifest_path, 'w')
+    f.write('# ' + name_for_next_download_manifest_for_platform + '\n')
     for entry in download_manifest_entries:
         f.write(entry + '\n')
     f.close()
     sftp_connection.put(new_download_manifest_path, preserve_mtime=True)
+    
+    # remove prior symlink
+    download_manifest_symlink_for_platform = 'downloadManifest_' + platform_code + '.txt'
+    try:
+        sftp_connection.remove(download_manifest_symlink_for_platform)
+    except Exception, e:
+        print 'WARNING problem deleting prior symlink to downloadManifest'
+        
+    # make new syymlink pointing to latest
+    sftp_connection.symlink(name_for_next_download_manifest_for_platform,download_manifest_symlink_for_platform)
     sftp_connection.close()
  
 def getNextDownloadManifestName(most_recent_download_manifest_for_platform, platform_code):
