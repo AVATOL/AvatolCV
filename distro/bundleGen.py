@@ -56,12 +56,92 @@ def main():
             copyAsPerManifest(avatol_cv_root, bundle_name, manifest, distro_dir)
             
         # get version for this bundle    
-        version = getVersionForBundle(bundle_full_name_root, existing_filenames)
+        version = getVersionForNewBundle(bundle_full_name_root, existing_filenames)
         print "version for bundle {0} is {1}".format(bundle_name, version)
         bundle_zip_path = createGzippedTarFile(bundle_name, platform_code, version, distro_dir)
         sftp_connection.put(bundle_zip_path, preserve_mtime=True)
         
+    # create the downloadManifest
+    existing_filenames = sftp_connection.listdir()
+    bundle_names = getAllBundlenames(distro_root_dir)
+    download_manifest_entries = []
+    for bundle_name in bundle_names :
+        latest_entry_for_bundlename = getLatestDownloadBundleForName(bundle_name, platform_code, existing_filenames)
+        if (None != latest_entry_for_bundlename):
+            download_manifest_entries.append(latest_entry_for_bundlename)
+    
+    if (len(download_manifest_entries) == 0):
+        print "ERROR - download_manifest_entries is EMPTY, cannot generate new manifest!"
+        exit()
+    most_recent_download_manifest_for_platform = getMostRecentDownloadManifestForPlatform(platform_code,existing_filenames)
+    name_for_next_download_manifest_for_platform = getNextDownloadManifestName(most_recent_download_manifest_for_platform, platform_code)
+    new_download_manifest_path = os.path.join(distro_root_dir,name_for_next_download_manifest_for_platform)
+    f = open(new_download_manifest_path, 'w')
+    for entry in download_manifest_entries:
+        f.write(entry + '\n')
+    f.close()
+    sftp_connection.put(new_download_manifest_path, preserve_mtime=True)
     sftp_connection.close()
+ 
+def getNextDownloadManifestName(most_recent_download_manifest_for_platform, platform_code):
+    new_version = ''
+    if (None == most_recent_download_manifest_for_platform):
+        # we're making the first one
+        new_version = getTodaysDatestamp() + 'a'
+    else :
+        # we need to determine the next version
+        version = getVersionFromDownloadManifest(most_recent_download_manifest_for_platform)
+        new_version = getNextVersion(version)
+    return 'downloadManifest_' + platform_code + '_' + new_version + '.txt'
+        
+        
+        
+        
+def getMostRecentDownloadManifestForPlatform(platform_code,existing_filenames):
+    platform_matches = []
+    for filename in existing_filenames:
+        if (filename.startswith('downloadManifest')):
+            cur_platform = getPlatformCodeFromDownloadManifest(filename)
+            if (platform_code == cur_platform):
+                platform_matches.append(filename)
+    
+    if len(platform_matches) == 0:
+        print " ===> fount most recent version for {0} to be None".format(platform_code)
+        return None
+    else :
+        platform_matches.sort()
+        most_recent = platform_matches[len(platform_matches) - 1]
+        print " ===> fount most recent version for {0} to be {1}".format(platform_code, most_recent)
+        return most_recent    
+            
+def getLatestDownloadBundleForName(bundle_name, platform_code, existing_filenames):
+    bundle_name_platform_matches = []
+    for filename in existing_filenames:
+        if (filename.startswith('downloadBundle')):
+            cur_name = getBundleNameFromBundleFileName(filename)
+            cur_platform = getPlatformCodeFromBundleFileName(filename)
+            if (bundle_name == cur_name) and (platform_code == cur_platform):
+                bundle_name_platform_matches.append(filename)
+            
+    if len(bundle_name_platform_matches) == 0:
+        print " ===> fount most recent version for {0} {1} to be None".format(bundle_name, platform_code)
+        return None
+    else :
+        bundle_name_platform_matches.sort()
+        most_recent = bundle_name_platform_matches[len(bundle_name_platform_matches) - 1]
+        print " ===> fount most recent version for {0} {1} to be {2}".format(bundle_name, platform_code, most_recent)
+        return most_recent
+        
+def getAllBundlenames(distro_root_dir):
+    result = []
+    bundle_names_file_path = os.path.join(distro_root_dir, 'allBundleNames.txt')
+    f = open(bundle_names_file_path, 'r')
+    lines = f.readlines()
+    for line in lines:
+        name = line.rstrip()
+        result.append(name)
+    f.close()
+    return result
     
 def createGzippedTarFile(bundle_name, platform_code, version, distro_dir):
     cur_dir = os.getcwd()
@@ -101,7 +181,7 @@ def createGzippedTarFile(bundle_name, platform_code, version, distro_dir):
     os.chdir(cur_dir)
     return final_tgz_path
     
-def getVersionForBundle(bundle_name_root, existing_filenames):
+def getVersionForNewBundle(bundle_name_root, existing_filenames):
     prior_versions_of_bundle = []
     todays_datestamp = getTodaysDatestamp()
     for bundle_filename in existing_filenames:
@@ -116,15 +196,20 @@ def getVersionForBundle(bundle_name_root, existing_filenames):
         print "......{0}".format(prior_versions_of_bundle)
         most_recent_bundle = prior_versions_of_bundle[len(prior_versions_of_bundle)-1]
         print "......most recent bundle {0}".format(most_recent_bundle)
-        date_of_most_recent_version = getDateFromBundleName(most_recent_bundle)
-        print "......date_of_most_recent_version {0}".format(date_of_most_recent_version)
-        if date_of_most_recent_version == todays_datestamp:
-            suffix = getVersionSuffixFromBundleName(most_recent_bundle)
-            new_suffix = getNextSuffix(suffix)
-            print "......new suffix : {0}".format(new_suffix)
-            return todays_datestamp + new_suffix
-        else:
-            return todays_datestamp + 'a'
+        most_recent_version = getVersionFromDownloadBundle(most_recent_bundle)
+        next_version = getNextVersion(most_recent_version)
+        return next_version
+
+def getNextVersion(latest_prior_version):
+    prior_date = getDateFromVersion(latest_prior_version)
+    prior_suffix = getSuffixFromVersion(latest_prior_version)
+    todays_datestamp = getTodaysDatestamp()
+    if prior_date == todays_datestamp:
+        new_suffix = getNextSuffix(prior_suffix)
+        print "......new suffix : {0}".format(new_suffix)
+        return todays_datestamp + new_suffix
+    else:
+        return todays_datestamp + 'a'
 
 def getNextSuffix(suffix_letter):
     dict = {}
@@ -156,23 +241,49 @@ def getNextSuffix(suffix_letter):
     dict['z'] = '?'
     return dict[suffix_letter]
     
-def getVersionSuffixFromBundleName(name):
+def getVersionFromDownloadBundle(name):
     #downloadBundle_docs_win_20160304a.tgz
+    return getVersionFromName(name,3);    
+    
+def getVersionFromDownloadManifest(name):
+    #downloadManifest_win_20160325a.txt
+    return getVersionFromName(name,2);
+    
+def getVersionFromName(name, indexOfVersionField):
     major_parts = name.split('.')
     parts = major_parts[0].split('_')
-    version = parts[3]
-    suffix = version[8:]
-    return suffix
-	            
-def getDateFromBundleName(name):
+    version = parts[indexOfVersionField]
+    return version
+ 
+def getSuffixFromVersion(version):
+    return version[8:]
+    
+def getDateFromVersion(version):
+    return version[:8]
+
+def getBundleNameFromBundleFileName(name):
     #downloadBundle_dummy1_win_20160304a.tgz
     major_parts = name.split('.')
     parts = major_parts[0].split('_')
-    version = parts[3]
-    datestamp = version[:8]
-    return datestamp
-	
-
+    name = parts[1]
+    return name
+		
+	            
+def getPlatformCodeFromBundleFileName(name):
+    #downloadBundle_dummy1_win_20160304a.tgz
+    major_parts = name.split('.')
+    parts = major_parts[0].split('_')
+    platform = parts[2]
+    return platform
+    
+def getPlatformCodeFromDownloadManifest(name):
+    #downloadManifest_win_20160304a.txt
+    major_parts = name.split('.')
+    parts = major_parts[0].split('_')
+    platform = parts[1]
+    return platform
+		    
+        
 def getTodaysDatestamp():
     now = datetime.datetime.now()
     datestamp = now.strftime("%Y%m%d")
@@ -233,7 +344,7 @@ def getSftpConnectionToPullSite(credentials_path):
     print "credentials read as:"
     print "    host      : {0}".format(hostname)
     print "    username  : {0}".format(user)
-    print "    password  : {0}".format(pw)
+    print "    password  : xxxxxxx"
     print "    releasedir : {0}".format(releasedir)
     conn = pysftp.Connection(host=hostname, username=user, password=pw)
     conn.chdir(releasedir)
@@ -287,8 +398,13 @@ def copyFiles(avatol_cv_root, src_dir, target_dir):
         src_file_path = os.path.join(src_dir, the_file)
         dest_file_path = os.path.join(target_dir, the_file)
         if (os.path.isdir(src_file_path)):
-            
-        elif (os.path.isfile(src_file_path)) :
+            source_sub_dir = os.path.join(src_dir, the_file)
+            print "....prepping for subdir copy"
+            dest_sub_dir = os.path.join(target_dir, the_file)
+            print "...... copy subdir {0} to {1}".format(source_sub_dir, dest_sub_dir)
+            files_copied_from_sub_dir = copyFiles(avatol_cv_root, source_sub_dir, dest_sub_dir)
+            files_copied.extend(files_copied_from_sub_dir)
+        else :
             print "......copy {0} to {1}".format(src_file_path, dest_file_path)
             copyFile(src_file_path, dest_file_path)
             root_len = len(avatol_cv_root)
@@ -297,9 +413,6 @@ def copyFiles(avatol_cv_root, src_dir, target_dir):
             rel_path = rel_path.replace('\\', '/')
             #print "...rel_path determined as {0}".format(rel_path)
             files_copied.append(rel_path)
-        else :
-        
-        
     return files_copied
     
 def deleteFile(path):
