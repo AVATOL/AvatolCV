@@ -119,6 +119,7 @@ public class BisqueDataSource implements DataSource {
                 pp.setMessage(processName, "loading metadata for image: " + bi.getName());
                 String imageResource_uniq = bi.getResourceUniq();
                 List<BisqueAnnotation> annotations = this.bisqueDataFiles.loadAnnotationsForImage(imageResource_uniq);
+             
                 if (null == annotations){
                     annotations = this.wsClient.getAnnotationsForImage(imageResource_uniq);
                     this.bisqueDataFiles.persistAnnotationsForImage(annotations, imageResource_uniq);
@@ -139,6 +140,10 @@ public class BisqueDataSource implements DataSource {
             e.printStackTrace();
             throw new AvatolCVException("problem loading primary metadata from Bisque: " + e.getMessage(), e);
         }
+        catch(Exception e){
+            e.printStackTrace();
+            throw new AvatolCVException("problem loading primary metadata from Bisque: " + e.getMessage(), e);
+        }
     }
     @Override
     public void setChosenDataset(DatasetInfo di) {
@@ -155,10 +160,7 @@ public class BisqueDataSource implements DataSource {
             String imageID = bi.getResourceUniq();
             System.out.println(imageID);
             List<BisqueAnnotation> annotations = annotationsForImageIdHash.get(imageID);
-            if (null == annotations){
-            	int foo = 3;
-            	int bar = foo;
-            }
+            
             for (BisqueAnnotation a : annotations){
                 String annotationName = a.getName();
                 String annotationId = a.getAnnotationID();

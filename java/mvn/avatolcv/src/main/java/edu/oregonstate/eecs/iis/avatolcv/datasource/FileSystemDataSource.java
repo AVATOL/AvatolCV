@@ -270,16 +270,19 @@ public class FileSystemDataSource implements DataSource {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	@Override
-	public boolean reviseValueForKey(String imageID, NormalizedKey key,
-			NormalizedValue value) throws AvatolCVException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	@Override
-	public boolean addKeyValue(String imageID, NormalizedKey key,
-			NormalizedValue value) throws AvatolCVException {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean reviseValueForKey(String imageID, NormalizedKey key,
+            NormalizedValue value, NormalizedKey trainTestConcern,
+            NormalizedValue trainTestConcernValue) throws AvatolCVException {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    @Override
+    public boolean addKeyValue(String imageID, NormalizedKey key,
+            NormalizedValue value, NormalizedKey trainTestConcern,
+            NormalizedValue trainTestConcernValue) throws AvatolCVException {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }

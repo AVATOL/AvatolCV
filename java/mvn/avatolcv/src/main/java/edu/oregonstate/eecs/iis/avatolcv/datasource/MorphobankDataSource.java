@@ -492,7 +492,10 @@ public class MorphobankDataSource implements DataSource {
             NormalizedValue trainTestConcernValue) throws AvatolCVException {
         // Any character asked about here will be present because in the MB session the user specified and requested it explicitly
         try {
-            List<MBCharStateValue> charStateValues = wsClient.getCharStatesForCell(this.chosenDataset.getID(), normCharKey.getID(), trainTestConcernValue.getID());
+            String matrixID = this.chosenDataset.getID();
+            String charID = normCharKey.getID();
+            String ttConcernValueID = trainTestConcernValue.getID();
+            List<MBCharStateValue> charStateValues = wsClient.getCharStatesForCell(matrixID, charID, ttConcernValueID);
             // really only need to determine if there is at least one
             if (null == charStateValues){
                 return null;
@@ -508,11 +511,13 @@ public class MorphobankDataSource implements DataSource {
             if ("".equals(cellID)){
                 return null;
             }
-            String charID = normCharKey.getID();
             String taxonID = trainTestConcernValue.getID();
             cellIDsForCellKeyHash.put(getKeyForCell(charID, taxonID), cellID);
             String charStateID = csv.getCharStateID();
             String charStateName = null;
+            if (null == this.charactersForMatrix){
+                this.charactersForMatrix = this.wsClient.getCharactersForMatrix(matrixID);
+            }
             for (MBCharacter mbChar : this.charactersForMatrix){
                 List<MBCharState> charStates = mbChar.getCharStates();
                 for (MBCharState charState : charStates){
