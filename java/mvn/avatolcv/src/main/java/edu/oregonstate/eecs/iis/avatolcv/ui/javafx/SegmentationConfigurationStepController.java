@@ -70,7 +70,9 @@ public class SegmentationConfigurationStepController implements StepController {
             List<String> segAlgNames = this.step.getSegmentationAlgNames();
             Collections.sort(segAlgNames);
             this.segAlgChoiceBox.getItems().addAll(segAlgNames);
-            this.segAlgChoiceBox.setValue(this.segAlgChoiceBox.getItems().get(0));
+            if (segAlgNames.size() > 0){
+                this.segAlgChoiceBox.setValue(this.segAlgChoiceBox.getItems().get(0));
+            }
             this.segAlgChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new AlgChangeListener(this.segAlgChoiceBox, this.segAlgNotes, this.step));
             
             if (radioSegSkip.isSelected()){
