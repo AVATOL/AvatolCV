@@ -4,6 +4,7 @@ import os
 import subprocess
 import platform
 import time
+import traceback
 
 # paths to MaATLAB
 MAC_MATLAB_PATH = "/Applications/MATLAB_R2015b.app/bin/matlab"
@@ -24,20 +25,20 @@ def run_matlab_function(func_string, func_name, logs_dir):
     '''Wraps function with try-catch to exit MATLAB on errors'''
 
     wrapped_func_string = "try;{0};catch exception;disp(getReport(exception));exit(1);end;exit".format(func_string)
-    
+
     print "executing: {0}".format(wrapped_func_string)
     print
 
     # check OS and use appropriate command/arguments
-    logfile = os.path.join(logs_dir, 
+    logfile = os.path.join(logs_dir,
         'matlab_run_{0}_{1}.txt'.format(
-            int(time.time()), 
+            int(time.time()),
             func_name))
     application = []
     if platform.system() == 'Darwin': # Mac
         application = [
-        MAC_MATLAB_PATH, 
-        "-nodisplay", 
+        MAC_MATLAB_PATH,
+        "-nodisplay",
         '-r "{0}"'.format(wrapped_func_string)]
         # for Mac, have to separate arguments like this
 
@@ -45,12 +46,12 @@ def run_matlab_function(func_string, func_name, logs_dir):
             application.append('-logfile "{0}"'.format(logfile))
     elif platform.system() == 'Windows': # Windows
         application = [
-        WIN_MATLAB_PATH, 
+        WIN_MATLAB_PATH,
         "-nosplash",
         "-wait",
-        "-nodesktop", 
-        "-minimize", 
-        "-r", 
+        "-nodesktop",
+        "-minimize",
+        "-r",
         '"{0}"'.format(wrapped_func_string)]
         # for Windows, have to separate arguments like this
 
@@ -69,7 +70,19 @@ def run_matlab_function(func_string, func_name, logs_dir):
         exit(1)
 
     # execute MATLAB
-    exit_status = subprocess.call(application)
+    try:
+        exit_status = subprocess.call(application)
+    except:
+        print "Could not successfully open MATLAB. Is this the correct path: "
+        if platform.system() == 'Windows'
+            print WIN_MATLAB_PATH
+        elif platform.system() == 'Darwin':
+            print MAC_MATLAB_PATH
+        else:
+            print "(unknown os)"
+        traceback.print_exc()
+        exit(1)
+
     if exit_status != 0:
         print "MATLAB exited with error. ({0})".format(func_name)
         print
@@ -124,13 +137,13 @@ def main():
         exit(1)
 
     print "run_config['{1}'] is {0}".format(
-        run_config[TEST_IMAGES_FILE], 
+        run_config[TEST_IMAGES_FILE],
         TEST_IMAGES_FILE)
     print "run_config['{1}'] is {0}".format(
-        run_config[TRAINING_DATA_DIR], 
+        run_config[TRAINING_DATA_DIR],
         TRAINING_DATA_DIR)
     print "run_config['{1}'] is {0}".format(
-        run_config[SCORING_OUTPUT_DIR], 
+        run_config[SCORING_OUTPUT_DIR],
         SCORING_OUTPUT_DIR)
     print
 
@@ -151,8 +164,8 @@ def main():
     #
 
     matlab_func1 = "translate_input('{0}', '{1}', '{2}')".format(
-        run_config[SCORING_OUTPUT_DIR], 
-        run_config[TRAINING_DATA_DIR], 
+        run_config[SCORING_OUTPUT_DIR],
+        run_config[TRAINING_DATA_DIR],
         run_config[TEST_IMAGES_FILE])
 
     print 'running step Processing Inputs'
@@ -169,7 +182,7 @@ def main():
     print "summary_file is {0}".format(summary_file)
 
     matlab_func2 = "invoke_batskull_system('{0}','{1}')".format(
-        summary_file, 
+        summary_file,
         "regime2")
 
     print 'running step Training and Scoring'
@@ -184,8 +197,8 @@ def main():
     #
 
     matlab_func3 = "translate_output('{0}', '{1}', '{2}')".format(
-        run_config[SCORING_OUTPUT_DIR], 
-        run_config[TRAINING_DATA_DIR], 
+        run_config[SCORING_OUTPUT_DIR],
+        run_config[TRAINING_DATA_DIR],
         run_config[TEST_IMAGES_FILE])
 
     print 'running step Processing Outputs'
