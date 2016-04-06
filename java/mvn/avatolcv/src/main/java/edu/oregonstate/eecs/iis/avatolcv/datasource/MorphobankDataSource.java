@@ -348,7 +348,15 @@ public class MorphobankDataSource implements DataSource {
     	}*/
     	MBCharStateValue csv = charStatesForCell.get(0);
 		String charStateID = csv.getCharStateID();
-		String charStateName = getCharStateNameForID(character, charStateID);
+		String charStateName = "";
+		if (charStateID.equals("unscored")){
+			charStateName = ""; // for now, leave it as empty string
+		}   
+		else {
+			charStateName = getCharStateNameForID(character, charStateID);
+		}
+		//System.out.println("charStateID : " + charStateID + " char : " + character.getCharName() + " taxon " + taxon.getTaxonName());
+		
 		characterValue = characterValue + NormalizedTypeIDName.buildTypeIdName("characterState",charStateID,charStateName);
     	List<String> lines = new ArrayList<String>();
     	lines.add(characterKey + "=" + characterValue);

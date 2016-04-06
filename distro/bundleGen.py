@@ -328,8 +328,11 @@ def copyAsPerManifest(avatol_cv_root, bundle_name, manifest, distro_dir):
         if (line.startswith("#")):
             #print "...skipping comment: {0}".format(line)
             continue
+	    
         line = line.replace("/",os.path.sep)    
         rel_path = line.rstrip()
+        if (rel_path == ''):
+            continue
         full_path = os.path.join(avatol_cv_root, rel_path)
         #print "...full_path   {0}".format(full_path)
                 
@@ -395,10 +398,10 @@ def ensureDirExists(dir):
         os.makedirs(dir)    
     
 def usage():
-    print "usage:  python distro.py  <platform_code> <bundle list> <path of credentials file>"
+    print "usage:  python bundleGen.py  <platform_code> <bundle list> <path of credentials file>"
     print "...where platform_code == win | mac"
     print "...credentials file has host, username and password for site to push to" 
-    print "...bundle list is a comma separated list of bundle names from this set:   docs,modules_3rdparty, modules_osu,java"
+    print "...bundle list is a comma separated list of bundle names from this set:   docs,modules3rdParty, modulesOSU,java"
     print ""
  
 def copyFile(src_file_path, dest_file_path):
