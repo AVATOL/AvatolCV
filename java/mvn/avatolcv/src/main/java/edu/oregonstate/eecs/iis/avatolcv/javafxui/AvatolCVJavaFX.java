@@ -122,7 +122,9 @@ public class AvatolCVJavaFX extends Application {
         for (String name : names){
             priorSessionSelector.getItems().add(name);
         }
-        priorSessionSelector.setValue(names.get(0));
+        if (names.size() > 0){
+        	priorSessionSelector.setValue(names.get(0));
+        }
         priorSessionSelector.requestLayout();
     }
     public void launchSession(){
