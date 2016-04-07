@@ -74,7 +74,7 @@ def run_matlab_function(func_string, func_name, logs_dir):
         exit_status = subprocess.call(application)
     except:
         print "Could not successfully open MATLAB. Is this the correct path: "
-        if platform.system() == 'Windows'
+        if platform.system() == 'Windows':
             print WIN_MATLAB_PATH
         elif platform.system() == 'Darwin':
             print MAC_MATLAB_PATH
