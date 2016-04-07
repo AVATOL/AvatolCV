@@ -96,13 +96,13 @@ def main():
 
     # parse arguments
     parser = argparse.ArgumentParser(description="Launch bat scoring algorithm")
-    parser.add_argument("runConfigFileName", help="path to the runConfig_scoring.txt ile that is generated from the avatol_cv program.")
+    parser.add_argument("runConfigFileName", help="path to the runConfig_scoring.txt file that is generated from the avatol_cv program.")
     args = parser.parse_args()
     run_config_file_name = args.runConfigFileName
 
     # constants: paths
     THIS_DIR = os.path.dirname(os.path.realpath(__file__))
-    # THID_PARTY_DIR = os.path.join(THIS_DIR, '..', '..', '3rdParty')
+    # THIRD_PARTY_DIR = os.path.join(THIS_DIR, '..', '..', '3rdParty')
 
     # constants: keys in run_config_file_name
     TEST_IMAGES_FILE = "testImagesFile"
