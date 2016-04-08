@@ -16,6 +16,7 @@ public class TrueScoringSet implements ScoringSet {
 	public TrueScoringSet(List<NormalizedImageInfo> niis, NormalizedKey keyToScore) throws AvatolCVException {
 		this.niis = niis;
 		this.keyToScore = keyToScore;
+		System.out.println("keyToScore " + keyToScore);
 		// isolate the ones that have values for the scoring key
 		for (NormalizedImageInfo nii : this.niis){
 			if (nii.hasKey(keyToScore)){

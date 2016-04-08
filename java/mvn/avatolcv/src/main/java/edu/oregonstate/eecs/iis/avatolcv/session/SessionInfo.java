@@ -390,16 +390,45 @@ public class SessionInfo{
         }
         return this.algorithmSequence;
     }
-   
+    public void alignLabelsAcrossCharacters() throws AvatolCVException {
+    	if (!this.hasTrainTestConcern()){
+    		// with no trainTestConcern (ex. taxon) in play, no need to do the alignment
+    		return;
+    	}
+    	if (this.chosenScoringAlgorithm.getScoringScope() != ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM){
+    		// no need to align if we're only doing one character
+    		return;
+    	}
+    	// go through all the niis for each character and find all taxa that do not have labels
+    	List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
+    	List<String> trainTestConcernValuesFromAllUnscoredNiis = new ArrayList<String>();
+    	for (ChoiceItem item : scoringConcerns){
+    		 NormalizedKey keyToScore = getKeyToScore(item);
+             List<String> trainTestConcernValuesFromUnscoredNiis= this.normalizedImageInfos.getTrainTestConcernValuesFromUnscoredNiisWithKey(keyToScore, this.trainTestConcern);
+             // add these together in a list
+             for (String s : trainTestConcernValuesFromUnscoredNiis){
+            	 if (!trainTestConcernValuesFromAllUnscoredNiis.contains(s)){
+            		 trainTestConcernValuesFromAllUnscoredNiis.add(s);
+            	 }
+             }
+    	}
+    	// go through all the niis for each character and for each taxon in list, if that taxon is scored, unscore it
+    	for (ChoiceItem item : scoringConcerns){
+   		 	NormalizedKey keyToScore = getKeyToScore(item);
+   		 	this.normalizedImageInfos.unscoreNiisWithTrainTestConcernValues(keyToScore, this.trainTestConcern, trainTestConcernValuesFromAllUnscoredNiis);
+    	}
+    }
     public boolean isEvaluationRun() throws AvatolCVException {
         List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
         for (ChoiceItem item : scoringConcerns){
             NormalizedKey keyToScore = getKeyToScore(item);
             boolean everyImageScoredForKey = this.normalizedImageInfos.isEveryImageScoredForKey(keyToScore);
             if (!everyImageScoredForKey){
+            	this.scoringModeIsEvaluation = false;
                 return false;
             }
         }
+        this.scoringModeIsEvaluation = true;
         return true;
     }
     public List<EvaluationSet> getEvaluationSets() throws AvatolCVException {
