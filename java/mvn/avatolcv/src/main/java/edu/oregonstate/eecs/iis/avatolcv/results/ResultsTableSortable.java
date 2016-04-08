@@ -87,7 +87,7 @@ public class ResultsTableSortable {
         System.out.println("sort result");
         currentImageIDsInOrder = new ArrayList<String>();
         for (ImageIDColumnValue v : colVals){
-            System.out.println(v.getValue() + " " + v.getImageID());
+            //System.out.println(v.getValue() + " " + v.getImageID());
             currentImageIDsInOrder.add(v.getImageID());
         }
     }

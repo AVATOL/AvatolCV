@@ -77,7 +77,7 @@ public class ScoresInfoFile {
 		this.scoringConcernValueForPathHash.put(pathname, scoringConcernValue);
 		this.scoringConcernValueForImageIDHash.put(imageID, scoringConcernValue);
 		this.pointCoordinatesHash.put(pathname, pointCoordinates);
-		System.out.println("line : " + line);
+		//System.out.println("line : " + line);
 		for (int j = 0; j < confCount; j++){
 			String key = pathname+this.valuesList.get(j);
 			String val = parts[i++];
@@ -137,7 +137,7 @@ public class ScoresInfoFile {
 		}
 	}
 	public String getConfidenceForImageValue(String path, String value){
-		System.out.println("confidenceHashKey " + path+value);
+		//System.out.println("confidenceHashKey " + path+value);
 		return this.confidenceHash.get(path+value);
 	}
 	//public void setImageDir(String imageDir){
