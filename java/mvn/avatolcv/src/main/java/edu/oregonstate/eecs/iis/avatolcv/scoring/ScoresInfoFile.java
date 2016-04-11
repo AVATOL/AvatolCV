@@ -12,6 +12,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.AnnotationCoordinates;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
@@ -85,7 +86,11 @@ public class ScoresInfoFile {
 			this.confidenceHash.put(key, val);
 		}
 	}
-	
+	public AnnotationCoordinates getAnnotationCoordinates(String imagePath){
+		String coordinateString = this.pointCoordinatesHash.get(imagePath);
+		AnnotationCoordinates coords = new AnnotationCoordinates(coordinateString);
+		return coords;
+	}
 	public NormalizedValue getScoreValueForImageID(String imageID) throws AvatolCVException {
 	    String val = this.scoringConcernValueForImageIDHash.get(imageID);
 	    return new NormalizedValue(val);
