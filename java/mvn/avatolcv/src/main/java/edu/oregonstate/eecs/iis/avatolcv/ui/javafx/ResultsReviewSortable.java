@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -49,6 +50,7 @@ import edu.oregonstate.eecs.iis.avatolcv.datasource.UploadSession;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.UploadSession.UploadEvent;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.javafxui.FXUtilities;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTableSortable;
@@ -57,6 +59,7 @@ import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
+import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class ResultsReviewSortable {
     public static final String COLNAME_IMAGE = "image";
@@ -98,6 +101,9 @@ public class ResultsReviewSortable {
     private UploadSession uploadSession = null;
     private DataSource dataSource = null;
     private Hashtable<String,Label> scoreLabelForImageIDHash = null;
+    private String username = null;
+    private String password = null;
+    ScoringInfoFile scoringInfoFile = null;
     public ResultsReviewSortable(){
     }
     public void init(AvatolCVJavaFX mainScreen, Stage mainWindow, String runName) throws AvatolCVException {
@@ -391,8 +397,7 @@ public class ResultsReviewSortable {
     	//addScoredImagesHeader(scoredImagesGridPane);
     	
     	String scoringFilePath = AvatolCVFileSystem.getScoringFilePath(runID, scoringConcernName);
-        ScoringInfoFile scoringInfoFile = new ScoringInfoFile(scoringFilePath);
-        
+        scoringInfoFile = new ScoringInfoFile(scoringFilePath);
     	String scoreFilePath = AvatolCVFileSystem.getScoreFilePath(runID, scoringConcernName);
     	sif = new ScoresInfoFile(scoreFilePath);
     	
@@ -442,8 +447,13 @@ public class ResultsReviewSortable {
     		}
     		
         	String origImageNameWithID = getTrueImageNameFromImagePathForCookingShow(path);
-        	String idPrefix = imageID + "_";
-        	String origImageName = origImageNameWithID.replaceAll(idPrefix, "");
+        	String[] parts = ClassicSplitter.splitt(origImageNameWithID,'_');
+        	String origImageName = parts[1];
+        	if ("".equals(origImageName)){
+        	    origImageName = parts[0];
+        	}
+        	//String idPrefix = imageID + "_";
+        	//String origImageName = origImageNameWithID.replaceAll(idPrefix, "");
         	resultsTable2.addValueForColumn(imageID, COLNAME_NAME, origImageName);
         	Label nameLabel = new Label(origImageName);
         	nameLabel.getStyleClass().add("columnValue");
@@ -485,10 +495,15 @@ public class ResultsReviewSortable {
     			trainingTable.addWidgetForColumn(imageID, COLNAME_SCORE, valueLabel);
     			
         		String trueNameWithSuffix = getTrueImageNameFromImagePathForCookingShow(path);
-        		String idPrefix = imageID + "_";
-                String trueName = trueNameWithSuffix.replaceAll(idPrefix, "");
-        		trainingTable.addValueForColumn(imageID, COLNAME_NAME, trueName);
-        		Label nameLabel = new Label(trueName);
+        		String[] parts = ClassicSplitter.splitt(trueNameWithSuffix,'_');
+                String origImageName = parts[1];
+                if ("".equals(origImageName)){
+                    origImageName = parts[0];
+                }
+                //String idPrefix = imageID + "_";
+                //String origImageName = origImageNameWithID.replaceAll(idPrefix, "");
+        		trainingTable.addValueForColumn(imageID, COLNAME_NAME, origImageName);
+        		Label nameLabel = new Label(origImageName);
                 nameLabel.getStyleClass().add("columnValue");
                 trainingTable.addWidgetForColumn(imageID, COLNAME_NAME, nameLabel);
                 
@@ -597,9 +612,7 @@ public class ResultsReviewSortable {
     }
     public void undoSaveResults(){
         try {
-            if (null == this.dataSource){
-                this.dataSource = getDataSourceForRun();
-            }
+            setDataSource();
             boolean authenticated = false;
             if (this.dataSource.isAuthenticated()){
                 authenticated = true;
@@ -643,11 +656,26 @@ public class ResultsReviewSortable {
         }
         
     }
+    public class AuthenticateRunnable implements Runnable {
+        @Override
+        public void run() {
+            LoginDialog dialog = new LoginDialog();
+            dialog.display(dataSource.getName());
+            username = dialog.getLogin();
+            password = dialog.getPword();
+        }
+    }
     private boolean authenticate() throws AvatolCVException {
-        LoginDialog dialog = new LoginDialog();
-        dialog.display(this.dataSource.getName());
-        String username = dialog.getLogin();
-        String password = dialog.getPword();
+        AuthenticateRunnable ar = new AuthenticateRunnable();
+        try {
+            FXUtilities.runAndWait(ar);
+        }
+        catch(ExecutionException e){
+            e.printStackTrace();
+        } 
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return this.dataSource.authenticate(username, password);
     }
     public void doSaveResults(){
@@ -662,11 +690,18 @@ public class ResultsReviewSortable {
         }
         return false;
     }
+    public void setDataSource() throws AvatolCVException {
+        if (null == this.dataSource){
+            this.dataSource = getDataSourceForRun();
+            DatasetInfo di = new DatasetInfo();
+            di.setName(this.runSummary.getDataset());
+            di.setID(this.runSummary.getDatasetID());
+            this.dataSource.setChosenDataset(di);
+        }
+    }
     public void saveResults(){
         try {
-            if (null == this.dataSource){
-                this.dataSource = getDataSourceForRun();
-            }
+            setDataSource();
             boolean authenticated = false;
             if (this.dataSource.isAuthenticated()){
                 authenticated = true;
@@ -704,8 +739,8 @@ public class ResultsReviewSortable {
                     System.out.println(name + "  -  " + value);
        
                     NormalizedKey normCharKey = tif.getNormalizedCharacter();
-                    NormalizedKey trainTestConcern = tif.getTrainTestConcernForImageID(imageID);
-                    NormalizedValue trainTestConcernValue = tif.getTrainTestConcernValueForImageID(imageID);
+                    NormalizedKey trainTestConcern = scoringInfoFile.getTrainTestConcernForImageID(imageID);
+                    NormalizedValue trainTestConcernValue = scoringInfoFile.getTrainTestConcernValueForImageID(imageID);
                     NormalizedValue newValue = sif.getScoreValueForImageID(imageID);
                     //Need to pass the normalized key and value for this row to Data source and ask if key exists for this image
                     NormalizedValue existingValueForKey = dataSource.getValueForKeyAtDatasourceForImage(normCharKey, imageID, trainTestConcern, trainTestConcernValue);
@@ -754,4 +789,11 @@ public class ResultsReviewSortable {
         alert.showAndWait();
 	}
 }
+/*
+ * private void runAndWait(Runnable runnable) throws InterruptedException, ExecutionException {
+FutureTask future = new FutureTask(runnable, null);
+Platform.runLater(future);
+future.get();
+}
+ */
 

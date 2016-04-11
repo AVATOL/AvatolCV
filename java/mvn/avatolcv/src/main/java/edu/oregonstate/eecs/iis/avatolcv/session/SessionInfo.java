@@ -491,6 +491,7 @@ public class SessionInfo{
         
         rs.setScoringConcern(scoringConcern.getNormalizedKey().toString());
         rs.setDataset(this.chosenDataset.getName());
+        rs.setDatasetID(this.chosenDataset.getID());
         rs.setDataSource(dataSource.getName());
         rs.setScoringAlgorithm(this.getScoringAlgName());
         rs.setRunID(runID);

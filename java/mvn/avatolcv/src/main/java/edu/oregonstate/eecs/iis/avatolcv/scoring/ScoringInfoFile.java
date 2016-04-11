@@ -14,6 +14,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
@@ -55,8 +56,12 @@ public class ScoringInfoFile {
 		this.scoringConcernID   = scoringConcernID;
 		this.scoringConcernName = scoringConcernName;
 	}
+	public NormalizedKey getTrainTestConcernForImageID(String imageID) throws AvatolCVException {
+	    String s = trainTestConcernForImageIDHash.get(imageID);
+        return new NormalizedKey(s);
+    }
 	public NormalizedValue getTrainTestConcernValueForImageID(String imageID) throws AvatolCVException {
-	    String s = trainTestConcernValueImageIDHash.get(imageID);
+        String s = trainTestConcernValueImageIDHash.get(imageID);
         return new NormalizedValue(s);
     }
 	public ScoringInfoFile(String pathname) throws AvatolCVException {

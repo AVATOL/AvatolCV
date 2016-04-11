@@ -28,6 +28,7 @@ public class RunSummary {
     private static final String KEY_SCORING_CONCERN = "scoring concern";
     private static final String KEY_TRAIN_TEST_CONCERN = "train test concern";
     private static final String KEY_DATASET = "dataset";
+    private static final String KEY_DATASET_ID = "datasetID";
     private static final String KEY_DATA_SOURCE = "data source";
     private static final String KEY_SCORING_ALGORITHM = "scoring algorithm";
     private static final String KEY_RUNID = "runID";
@@ -41,6 +42,7 @@ public class RunSummary {
     private String scoringConcern = null;
     
     private String dataset = null;
+    private String datasetID = null;
     private String dataSource = null;
     private String scoringAlgorithm = null;
     private String runID = null;
@@ -71,6 +73,7 @@ public class RunSummary {
             BufferedWriter writer = new BufferedWriter(new FileWriter(path));
             writer.write(KEY_SCORING_CONCERN + "=" + getScoringConcern() + NL);
             writer.write(KEY_DATASET + "=" + getDataset() + NL);
+            writer.write(KEY_DATASET_ID + "=" + getDatasetID() + NL);
             writer.write(KEY_DATA_SOURCE + "=" + getDataSource() + NL);
             writer.write(KEY_SCORING_ALGORITHM + "=" + getScoringAlgorithm() + NL);
             writer.write(KEY_SCORING_MODE + "=" + this.scoringMode + NL);
@@ -118,6 +121,9 @@ public class RunSummary {
                     }
                     else if (key.equals(KEY_DATASET)){
                         rs.setDataset(value);
+                    }
+                    else if (key.equals(KEY_DATASET_ID)){
+                        rs.setDatasetID(value);
                     }
                     else if (key.equals(KEY_DATA_SOURCE)){
                         rs.setDataSource(value);
@@ -175,6 +181,9 @@ public class RunSummary {
     public void setDataset(String dataset) {
         this.dataset = dataset;
     }
+    public void setDatasetID(String datasetID) {
+        this.datasetID = datasetID;
+    }
     public void setDataSource(String dataSource) {
         this.dataSource = dataSource;
     }
@@ -196,6 +205,9 @@ public class RunSummary {
     }
     public String getDataset(){
         return this.dataset;
+    }
+    public String getDatasetID(){
+        return this.datasetID;
     }
     public String getScoringAlgorithm(){
         return this.scoringAlgorithm;
