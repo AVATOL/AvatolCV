@@ -18,6 +18,8 @@ public class ImageInfo {
     public static final String IMAGE_THUMBNAIL_STRING = "thumbnail";
     public static final String IMAGE_LARGE_WIDTH = "1000";
     public static final String IMAGE_LARGE_STRING = "large";
+    public static final int IMAGE_THUMBNAIL_WIDTH_AS_INT = new Integer(IMAGE_THUMBNAIL_WIDTH).intValue();
+    public static final int IMAGE_LARGE_WIDTH_AS_INT = new Integer(IMAGE_LARGE_WIDTH).intValue();
     
     public static final String STANDARD_IMAGE_FILE_EXTENSION = "jpg";
     

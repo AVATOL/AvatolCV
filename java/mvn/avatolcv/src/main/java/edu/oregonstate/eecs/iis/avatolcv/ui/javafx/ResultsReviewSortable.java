@@ -30,11 +30,14 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
@@ -51,8 +54,10 @@ import edu.oregonstate.eecs.iis.avatolcv.datasource.UploadSession.UploadEvent;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.FXUtilities;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.AnnotationCoordinates;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.PointAsPercent;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTableSortable;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
@@ -68,6 +73,8 @@ public class ResultsReviewSortable {
     public static final String COLNAME_CONFIDENCE = "confidence";
     public static final String COLNAME_NAME = "name";
     public static final String COLNAME_TRAIN_TEST = "";
+    private static final int CROSSHAIR_RADIUS_THUMBNAIL = 4;
+    private static final int CROSSHAIR_RADIUS_LARGE = 20;
 	public Slider thresholdSlider = null;
     public Accordion runDetailsAccordion = null;
     public ScrollPane runDetailsScrollPane = null;
@@ -280,7 +287,7 @@ public class ResultsReviewSortable {
             }
     	}
     }
-    private void addEventhandlerForImageClick(ImageView iv, ResultsTableSortable rt, String imageID, GridPane gp){
+    private void addEventhandlerForImageClick(ImageView iv, ResultsTableSortable rt, String imageID, GridPane gp, AnnotationCoordinates coords){
         iv.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -299,20 +306,93 @@ public class ResultsReviewSortable {
                     //System.out.println("put big image " + largeImagePath + " at index " + targetIndex);
                     Image image = new Image("file:"+largeImagePath);
                     ImageView iv = new ImageView(image);
+                    
                     iv.setPreserveRatio(true);
                     iv.setFitWidth(600);
-                    rt.addLargeImage(imageID, iv);
-                    gp.add(iv, 0, targetRowIndex, 5, 1);
+                    AnchorPane ap = new AnchorPane();
+                    ap.getChildren().add(iv);
+                    drawCoordinates(ap, coords, ImageInfo.IMAGE_LARGE_WIDTH_AS_INT);
+                    gp.add(ap, 0, targetRowIndex, 5, 1);
+                    rt.addLargeImage(imageID, ap);
                 }
                 catch(Exception e){
                     AvatolCVExceptionExpresserJavaFX.instance.showException(e, "problem trying to show image");
                 }
             }
             private void hideLargeImage(String imageID){
-                ImageView iv = (ImageView)rt.forgetLargeImageObject(imageID);
-                gp.getChildren().remove(iv);
+                AnchorPane ap = (AnchorPane)rt.forgetLargeImageObject(imageID);
+                gp.getChildren().remove(ap);
             }
        });
+    }
+    public void drawCoordinates(AnchorPane ap, AnnotationCoordinates ac, int imageWidthInPixels){
+    	if (ac == null){
+    		// ignore
+    	}
+    	else if (ac.getType() == AnnotationCoordinates.AnnotationType.NONE){
+    		// ignore
+    	}
+    	else if (ac.getType() == AnnotationCoordinates.AnnotationType.POINT){
+    		drawPointAnnotation(ap, ac, imageWidthInPixels);
+    	}
+    	else if (ac.getType() == AnnotationCoordinates.AnnotationType.BOX){
+    		System.out.println("ERROR - BOX annotation rendering not yet implemented");
+    	}
+    	else if (ac.getType() == AnnotationCoordinates.AnnotationType.POLYGON) {
+    		System.out.println("ERROR - POLYGON annotation rendering not yet implemented");
+    	}
+    	else {
+    		System.out.println("ERROR Unknown AnnotationCoordinates.AnnotationType encountered - expected BOX, POINT, or POLYGON");
+    	}
+    }
+    public void drawPointAnnotation(AnchorPane ap, AnnotationCoordinates ac, int imageWidthInPixels){
+    	List<PointAsPercent> pointsAsPercent = ac.getPoints();
+    	PointAsPercent pap = pointsAsPercent.get(0);
+    	List<Line> lines = null;
+    	if (imageWidthInPixels == ImageInfo.IMAGE_THUMBNAIL_WIDTH_AS_INT){
+    		lines = getCrosshairs(pap,ImageInfo.IMAGE_THUMBNAIL_WIDTH_AS_INT, CROSSHAIR_RADIUS_THUMBNAIL);
+    	}
+    	else {
+    		lines = getCrosshairs(pap,ImageInfo.IMAGE_LARGE_WIDTH_AS_INT, CROSSHAIR_RADIUS_LARGE);
+    	}
+    	for (Line line : lines){
+    		ap.getChildren().add(line);
+    	}
+    }
+    public static List<Line> getCrosshairs(PointAsPercent pap,int imageWidthInPixels, int crosshairRadius){
+    	List<Line> lines = new ArrayList<Line>();
+    	int x = pap.getXPixel(imageWidthInPixels);
+    	int y = pap.getYPixel(imageWidthInPixels);
+    	// horizontal line
+    	int x1a = x - crosshairRadius;
+    	if (x1a < 0){
+    		x1a = 0;
+    	}
+    	int x1b = x + crosshairRadius;
+    	int y1a = y;
+    	int y1b = y;
+    	Line line1 = new Line(x1a,y1a,x1b,y1b);
+    	styleCrosshairLine(line1);
+    	lines.add(line1);
+    	// vertical line
+    	int x2a = x;
+    	int x2b = x;
+    	int y2a = y - crosshairRadius;
+    	if (y2a < 0){
+    		y2a = 0;
+    	}
+    	int y2b = y + crosshairRadius;
+    	Line line2 = new Line(x2a, y2a, x2b, y2b);
+    	styleCrosshairLine(line2);
+    	lines.add(line2);
+    	return lines;
+    	
+    }
+    public static void styleCrosshairLine(Line line){
+    	line.setFill(null);
+        line.setStroke(Color.YELLOW);
+        line.setStrokeWidth(1);
+    	
     }
    
     private void addEventhandlerForColumnSort(Label columnHeader, ResultsTableSortable rt, GridPane gp, List<String> colNames){
@@ -463,9 +543,13 @@ public class ResultsReviewSortable {
         	resultsTable2.addValueForColumn(imageID, COLNAME_IMAGE, thumbnailPathname);
         	Image image = new Image("file:"+thumbnailPathname);
             ImageView iv = new ImageView(image);
+            AnchorPane apForThumbnail = new AnchorPane();
+            apForThumbnail.getChildren().add(iv);
+            AnnotationCoordinates coords = sif.getAnnotationCoordinates(path);
+            drawCoordinates(apForThumbnail, coords, ImageInfo.IMAGE_THUMBNAIL_WIDTH_AS_INT);
             //addEventhandlerForImageClick(iv, sr);
-            resultsTable2.addWidgetForColumn(imageID, COLNAME_IMAGE, iv);
-            addEventhandlerForImageClick(iv, resultsTable2, imageID,scoredImagesGridPane);
+            resultsTable2.addWidgetForColumn(imageID, COLNAME_IMAGE, apForThumbnail);
+            addEventhandlerForImageClick(iv, resultsTable2, imageID,scoredImagesGridPane, coords);
         	
         	if (this.runSummary.hasTrainTestConcern()){
         	    String trainTestConcernValue = scoringInfoFile.getTrainTestConcernValueForImageID(ImageInfo.getImageIDFromPath(path)).getName();
@@ -511,9 +595,13 @@ public class ResultsReviewSortable {
                 trainingTable.addValueForColumn(imageID, COLNAME_IMAGE, thumbnailPathname);
                 Image image = new Image("file:"+thumbnailPathname);
                 ImageView iv = new ImageView(image);
+                AnchorPane apForThumbnail = new AnchorPane();
+                apForThumbnail.getChildren().add(iv);
                 //addEventhandlerForImageClick(iv, sr);
-                trainingTable.addWidgetForColumn(imageID, COLNAME_IMAGE, iv);
-                addEventhandlerForImageClick(iv, trainingTable, imageID, trainingImagesGridPane);
+                AnnotationCoordinates trainingCoords = tif.getAnnotationCoordinates(path);
+                drawCoordinates(apForThumbnail, trainingCoords, ImageInfo.IMAGE_THUMBNAIL_WIDTH_AS_INT);
+                trainingTable.addWidgetForColumn(imageID, COLNAME_IMAGE, apForThumbnail);
+                addEventhandlerForImageClick(iv, trainingTable, imageID, trainingImagesGridPane, trainingCoords);
                 
         		//addTrainingImageToGridPaneRowForCookingShow(path, trueName, value, trainingImagesGridPane, row++);
     		}

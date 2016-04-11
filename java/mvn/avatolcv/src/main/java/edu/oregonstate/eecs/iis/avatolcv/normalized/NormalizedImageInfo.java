@@ -24,6 +24,7 @@ public class NormalizedImageInfo {
     //taxon=773126|Artibeus jamaicensis
     //view=8905|Skull - ventral annotated teeth
     protected Hashtable<NormalizedKey, NormalizedValue> keyValueHash = new Hashtable<NormalizedKey, NormalizedValue>();
+    protected Hashtable<NormalizedKey, NormalizedValue> forgottenValuesHash = new Hashtable<NormalizedKey, NormalizedValue>();
     public static final String NL = System.getProperty("line.separator");
     public static final String PREFIX = AvatolCVFileSystem.RESERVED_PREFIX;
     public static final String KEY_ANNOTATION         = PREFIX + "annotation";
@@ -122,6 +123,7 @@ public class NormalizedImageInfo {
     }
     public boolean hasValueForKey(NormalizedKey key){
     	NormalizedValue value = getValueForKey(key);
+    	System.out.println("value for key " + value);
     	if (null == value){
     		return false;
     	}
@@ -130,6 +132,10 @@ public class NormalizedImageInfo {
     	}
     	else if (AvatolCVConstants.UNDETERMINED.equals(value.getName())){
     	    return false;
+    	}
+    	else if (AvatolCVConstants.MORPHOBANK_UNSCORED_ID.equals(value.getID())){
+    		System.out.println("found MORPHOBANK_UNSCORED_ID");
+    		return false;
     	}
     	else {
     		return true;
@@ -171,7 +177,14 @@ public class NormalizedImageInfo {
     }
     // to support tests
     public void forgetValue(NormalizedKey key) throws AvatolCVException {
+    	forgottenValuesHash.put(key, keyValueHash.get(key));
     	keyValueHash.put(key, new NormalizedValue(""));
+    }
+    public void unForgetValue(NormalizedKey key) throws AvatolCVException {
+    	NormalizedValue value = forgottenValuesHash.get(key);
+    	if (null != value){
+    		keyValueHash.put(key, value);
+    	}
     }
     public boolean hasKey(NormalizedKey key){
     	Object val = keyValueHash.get(key);

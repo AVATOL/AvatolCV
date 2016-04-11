@@ -5,6 +5,7 @@ import subprocess
 import platform
 import time
 import traceback
+import shutil
 
 # paths to MaATLAB
 MAC_MATLAB_PATH = "/Applications/MATLAB_R2015b.app/bin/matlab"
@@ -12,14 +13,6 @@ WIN_MATLAB_PATH = "C:\\Program Files\\MATLAB\\R2015b\\bin\\matlab.exe"
 
 # whether to log MATLAB runs (for debugging)
 LOG_MATLAB_RUNS = True
-
-def remove_cache_directory(cache_dir):
-    '''Delete the cache directory'''
-
-    print "cache_dir is {0}".format(cache_dir)
-    print
-
-    os.remove(cache_dir)
 
 def run_matlab_function(func_string, func_name, logs_dir):
     '''Wraps function with try-catch to exit MATLAB on errors'''
@@ -95,19 +88,20 @@ def main():
     '''Main loop'''
 
     # parse arguments
-    parser = argparse.ArgumentParser(description="Launch bat scoring algorithm")
-    parser.add_argument("runConfigFileName", help="path to the runConfig_scoring.txt file that is generated from the avatol_cv program.")
+    parser = argparse.ArgumentParser(description="Launch HC-Search segmentation algorithm")
+    parser.add_argument("runConfigFileName", help="path to the runConfig_segmentation.txt file that is generated from the avatol_cv program.")
     args = parser.parse_args()
     run_config_file_name = args.runConfigFileName
 
     # constants: paths
     THIS_DIR = os.path.dirname(os.path.realpath(__file__))
-    # THIRD_PARTY_DIR = os.path.join(THIS_DIR, '..', '..', '3rdParty')
+    THIRD_PARTY_DIR = os.path.join(THIS_DIR, '..', '..', '3rdParty')
 
     # constants: keys in run_config_file_name
     TEST_IMAGES_FILE = "testImagesFile"
-    TRAINING_DATA_DIR = "trainingDataDir"
-    SCORING_OUTPUT_DIR = "scoringOutputDir"
+    SEGMENTATION_OUTPUT_DIR = "segmentationOutputDir"
+    TRAIN_IMAGES_FILE = "userProvidedGroundTruthImagesFile"
+    GT_IMAGES_FILE = "userProvidedTrainImagesFile"
 
     #
     # parse run config file
@@ -124,87 +118,64 @@ def main():
             run_config[key.strip()] = value.strip()
 
     # check that run config file has all the expected key-value pairs
-    # expecting: testImagesFile, trainingDataDir, scoringOutputDir
+    # expecting: testImagesFile, segmentationOutputDir
 
     if TEST_IMAGES_FILE not in run_config:
-        print "scoringRunConfig file missing entry for {0}".format(TEST_IMAGES_FILE)
+        print "segmentationRunConfig file missing entry for {0}".format(TEST_IMAGES_FILE)
         exit(1)
-    if TRAINING_DATA_DIR not in run_config:
-        print "scoringRunConfig file missing entry for {0}".format(TRAINING_DATA_DIR)
+    if SEGMENTATION_OUTPUT_DIR not in run_config:
+        print "segmentationRunConfig file missing entry for {0}".format(SEGMENTATION_OUTPUT_DIR)
         exit(1)
-    if SCORING_OUTPUT_DIR not in run_config:
-        print "scoringRunConfig file missing entry for {0}".format(SCORING_OUTPUT_DIR)
-        exit(1)
+    if TRAIN_IMAGES_FILE not in run_config:
+        print "segmentationRunConfig file missing optional entry for {0}".format(TRAIN_IMAGES_FILE)
+    if GT_IMAGES_FILE not in run_config:
+        print "segmentationRunConfig file missing optional entry for {0}".format(GT_IMAGES_FILE)
 
     print "run_config['{1}'] is {0}".format(
         run_config[TEST_IMAGES_FILE],
         TEST_IMAGES_FILE)
     print "run_config['{1}'] is {0}".format(
-        run_config[TRAINING_DATA_DIR],
-        TRAINING_DATA_DIR)
-    print "run_config['{1}'] is {0}".format(
-        run_config[SCORING_OUTPUT_DIR],
-        SCORING_OUTPUT_DIR)
+        run_config[SEGMENTATION_OUTPUT_DIR],
+        SEGMENTATION_OUTPUT_DIR)
+    if TRAIN_IMAGES_FILE in run_config:
+        print "run_config['{1}'] is {0}".format(
+            run_config[TRAIN_IMAGES_FILE],
+            TRAIN_IMAGES_FILE)
+    if GT_IMAGES_FILE in run_config:
+        print "run_config['{1}'] is {0}".format(
+            run_config[GT_IMAGES_FILE],
+            GT_IMAGES_FILE)
     print
-
-    # remove cache directory
-    cache_dir = os.path.dirname(run_config[TEST_IMAGES_FILE])
-    cache_dir = os.path.join(cache_dir, 'legacy_format', 'cache')
-    # remove_cache_directory(cache_dir)
 
     # logs directory
     logs_dir = os.path.dirname(run_config[TEST_IMAGES_FILE])
     logs_dir = os.path.join(logs_dir, 'logs')
-    logs_dir = os.path.join(logs_dir, 'scoring')
+    logs_dir = os.path.join(logs_dir, 'segmentation')
     if not os.path.exists(logs_dir):
         os.makedirs(logs_dir)
 
+    # copy original images to segmentedData/*_orig.jpg
+    print "copying original images"
+    with open(run_config[TEST_IMAGES_FILE], 'r') as f:
+        for line in f:
+            orig_image_path = line.strip()
+            old_file_name_base = os.path.splitext(os.path.basename(orig_image_path))[0]
+            new_file_name = '{}_orig.jpg'.format(old_file_name_base)
+            dest = os.path.join(run_config[SEGMENTATION_OUTPUT_DIR], new_file_name)
+            shutil.copyfile(orig_image_path, dest)
+
     #
-    #  call matlab to translate input
+    #  call matlab...
     #
 
-    matlab_func1 = "translate_input('{0}', '{1}', '{2}')".format(
-        run_config[SCORING_OUTPUT_DIR],
-        run_config[TRAINING_DATA_DIR],
+    matlab_func1 = "invoke_hcsearchseg_system('{0}', '{1}')".format(
+        run_config[SEGMENTATION_OUTPUT_DIR],
         run_config[TEST_IMAGES_FILE])
 
-    print 'running step Processing Inputs'
+    print 'running step Segmenting'
     os.chdir(THIS_DIR)
 
     run_matlab_function(matlab_func1, "translate_input", logs_dir)
-
-    #
-    #  call matlab to score
-    #
-
-    summary_file = os.path.dirname(run_config[TEST_IMAGES_FILE])
-    summary_file = os.path.join(summary_file, 'legacy_format', 'input', 'summary.txt')
-    print "summary_file is {0}".format(summary_file)
-
-    matlab_func2 = "invoke_batskull_system('{0}','{1}')".format(
-        summary_file,
-        "regime2")
-
-    print 'running step Training and Scoring'
-    os.chdir(os.path.join('bat','chain_rpm'))
-
-    run_matlab_function(matlab_func2, "invoke_batskull_system", logs_dir)
-
-    os.chdir(THIS_DIR)
-
-    #
-    #  call matlab to translate output
-    #
-
-    matlab_func3 = "translate_output('{0}', '{1}', '{2}')".format(
-        run_config[SCORING_OUTPUT_DIR],
-        run_config[TRAINING_DATA_DIR],
-        run_config[TEST_IMAGES_FILE])
-
-    print 'running step Processing Outputs'
-    os.chdir(THIS_DIR)
-
-    run_matlab_function(matlab_func3, "translate_output", logs_dir)
 
     print 'run completed'
 

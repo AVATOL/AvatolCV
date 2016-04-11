@@ -12,6 +12,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.AnnotationCoordinates;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
@@ -77,7 +78,7 @@ public class ScoresInfoFile {
 		this.scoringConcernValueForPathHash.put(pathname, scoringConcernValue);
 		this.scoringConcernValueForImageIDHash.put(imageID, scoringConcernValue);
 		this.pointCoordinatesHash.put(pathname, pointCoordinates);
-		System.out.println("line : " + line);
+		//System.out.println("line : " + line);
 		for (int j = 0; j < confCount; j++){
 			String key = pathname+this.valuesList.get(j);
 			String val = parts[i++];
@@ -85,7 +86,11 @@ public class ScoresInfoFile {
 			this.confidenceHash.put(key, val);
 		}
 	}
-	
+	public AnnotationCoordinates getAnnotationCoordinates(String imagePath){
+		String coordinateString = this.pointCoordinatesHash.get(imagePath);
+		AnnotationCoordinates coords = new AnnotationCoordinates(coordinateString);
+		return coords;
+	}
 	public NormalizedValue getScoreValueForImageID(String imageID) throws AvatolCVException {
 	    String val = this.scoringConcernValueForImageIDHash.get(imageID);
 	    return new NormalizedValue(val);
@@ -137,7 +142,7 @@ public class ScoresInfoFile {
 		}
 	}
 	public String getConfidenceForImageValue(String path, String value){
-		System.out.println("confidenceHashKey " + path+value);
+		//System.out.println("confidenceHashKey " + path+value);
 		return this.confidenceHash.get(path+value);
 	}
 	//public void setImageDir(String imageDir){

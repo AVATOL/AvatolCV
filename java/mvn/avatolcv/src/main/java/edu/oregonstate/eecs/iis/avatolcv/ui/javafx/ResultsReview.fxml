@@ -117,9 +117,9 @@
                                                 <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" minWidth="10.0" />
                                             </columnConstraints>
                                             <rowConstraints>
-                                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                              <RowConstraints fillHeight="false" minHeight="10.0" vgrow="NEVER" />
+                                              <RowConstraints fillHeight="false" minHeight="10.0" vgrow="NEVER" />
+                                              <RowConstraints fillHeight="false" minHeight="10.0" vgrow="NEVER" />
                                             </rowConstraints>
                                              <padding>
                                                 <Insets left="4.0" right="4.0" />

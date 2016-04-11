@@ -160,6 +160,10 @@ public class ScoringConfigurationStepController implements StepController {
             SessionInfo sessionInfo = this.step.getSessionInfo();
             sessionInfo.reAssessImagesInPlay();
             
+            NormalizedKey trainTestKey = sessionInfo.getDefaultTrainTestConcern();
+            this.step.setTrainTestConcern(trainTestKey);
+            
+            sessionInfo.alignLabelsAcrossCharacters();
             if (sessionInfo.isEvaluationRun()){
                 this.evaluationSets = sessionInfo.getEvaluationSets();
                 this.trueScoringSets = null;
@@ -178,10 +182,6 @@ public class ScoringConfigurationStepController implements StepController {
             else {
             	configureAsSortByImage();
             }
-            
-            
-            NormalizedKey trainTestKey = sessionInfo.getDefaultTrainTestConcern();
-            this.step.setTrainTestConcern(trainTestKey);
             return content;
         }
         catch(IOException ioe){

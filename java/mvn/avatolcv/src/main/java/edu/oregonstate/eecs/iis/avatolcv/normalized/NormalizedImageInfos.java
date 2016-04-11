@@ -30,6 +30,36 @@ public class NormalizedImageInfos {
 			}
 		}
 	}
+	public List<String> getTrainTestConcernValuesFromUnscoredNiisWithKey(NormalizedKey charKey, NormalizedKey trainTestConcern){
+		List<String> result = new ArrayList<String>();
+		for (String name : niiSession){
+			NormalizedImageInfo nii = niiHash.get(name);
+			if (nii.hasKey(charKey)){
+				if (!nii.hasValueForKey(charKey)){
+					if (nii.hasValueForKey(trainTestConcern)){
+						NormalizedValue ttcValue = nii.getValueForKey(trainTestConcern);
+						result.add(ttcValue.getName());
+					}
+				}
+			}
+		}
+		return result;
+	}
+	public void unscoreNiisWithTrainTestConcernValues(NormalizedKey keyToUnscore, NormalizedKey trainTestConcern, List<String> trainTestConcernValues) throws AvatolCVException {
+		for (String name : niiSession){
+			NormalizedImageInfo nii = niiHash.get(name);
+			if (nii.hasKey(keyToUnscore)){
+				if (nii.hasKey(trainTestConcern)){
+					for (String ttcValue : trainTestConcernValues){
+						if (nii.getValueForKey(trainTestConcern).getName().equals(ttcValue)){
+							System.out.println("forgetting score for " + keyToUnscore + " for ttConcern " + ttcValue);
+							nii.forgetValue(keyToUnscore);
+						}
+					}
+				}
+			}
+		}
+	}
 	public boolean arePointCoordinatesRelavent() throws AvatolCVException {
 		for (String s : niiAllPresent){
 			NormalizedImageInfo nii = niiHash.get(s);

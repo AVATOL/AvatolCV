@@ -25,6 +25,8 @@ public class ScoringConfigurationStep extends Answerable implements Step {
 	}
 	public void setTrainTestConcern(NormalizedKey trainTestConcern){
 		this.trainTestConcern = trainTestConcern;
+		// need to clue in sessionInfo because we consult it right away
+		this.sessionInfo.setTrainTestConcern(this.trainTestConcern);
 	}
 	
 	@Override
