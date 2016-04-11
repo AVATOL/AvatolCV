@@ -12,6 +12,7 @@ import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.PointAnnotations;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.AnnotationCoordinates;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
@@ -66,11 +67,12 @@ public class TrainingInfoFile {
 	public List<String> getImagePaths(){
 		return this.imagePaths;
 	}
-	public AnnotationCoordinates getAnnotationCoordinates(String imagePath){
-		String coordinateString = this.pointCoordinatesForPathHash.get(imagePath);
-		AnnotationCoordinates coords = new AnnotationCoordinates(coordinateString);
-		return coords;
-	}
+	public PointAnnotations getAnnotationCoordinates(String imagePath){
+        String coordinateString = this.pointCoordinatesForPathHash.get(imagePath);
+        PointAnnotations pas = new PointAnnotations(coordinateString);
+        return pas;
+    }
+	
 	public String getScoringConcernValueForImagePath(String imagePath){
 		return this.scoringConcernValueForPathHash.get(imagePath);
 	}

@@ -10,6 +10,7 @@ public class ScoringAlgorithm extends Algorithm {
     public static final String PROPERTY_SCORING_FOCUS = "scoringFocus";
     public static final String PROPERTY_SCORING_SCOPE = "scoringScope";
     public static final String PROPERTY_TRAIN_TEST_CONCERN_REQUIRED = "trainTestConcernRequired";
+    public static final String PROPERTY_CAN_TRAIN_ON_MULTIPLE_ANNOTATIONS_PER_IMAGE = "canTrainOnMultipleAnnotationsPerImage";
     private static final String PROPERTY_INCLUDE_POINT_ANNOTATIONS_IN_SCORING_FILE = "includePointAnnotationsInScoringFile";
     public enum ScoringSessionFocus { 
         SPECIMEN_PART_PRESENCE_ABSENCE, 
@@ -30,6 +31,7 @@ public class ScoringAlgorithm extends Algorithm {
     private ScoringSessionFocus thisAlgorithmFocus = null;
     private ScoringScope thisAlgorithmScope = null;
     private boolean trainTestConcernRequired = false;
+    private boolean canTrainOnMultipleAnnotationsPerImage = false;
     public ScoringAlgorithm(List<String> propsLines, String path) throws AvatolCVException {
         super(propsLines, path);
         loadScoringAlgorithmSpecificProperties(algPropsEntriesNotYetConsumed);
@@ -48,6 +50,11 @@ public class ScoringAlgorithm extends Algorithm {
                 } 
                 if (key.equals(PROPERTY_SCORING_FOCUS)){
                     setFocusValue(val);
+                }
+                else if (key.equals(PROPERTY_CAN_TRAIN_ON_MULTIPLE_ANNOTATIONS_PER_IMAGE)){
+                    if ("true".equals(val)){
+                        canTrainOnMultipleAnnotationsPerImage = true;
+                    }
                 }
                 else if (key.equals(PROPERTY_SCORING_SCOPE)){
                     setScopeValue(val);
@@ -70,6 +77,9 @@ public class ScoringAlgorithm extends Algorithm {
                 }
             }
         }
+    }
+    public boolean canTrainOnMultipleAnnotationsPerImage(){
+        return canTrainOnMultipleAnnotationsPerImage;
     }
     public boolean isTrainTestConcernRequired(){
     	return trainTestConcernRequired;

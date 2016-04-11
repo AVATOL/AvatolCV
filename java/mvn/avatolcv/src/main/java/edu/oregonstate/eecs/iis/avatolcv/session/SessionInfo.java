@@ -192,7 +192,9 @@ public class SessionInfo{
     public ScoringAlgorithm.ScoringSessionFocus getScoringFocus(){
         return this.chosenScoringAlgorithm.getScoringFocus();
     }
-    
+    public ScoringAlgorithm getChosenScoringAlgorithm(){
+        return this.chosenScoringAlgorithm;
+    }
     public void reAssessImagesInPlay() throws AvatolCVException {
     	this.normalizedImageInfos.focusToSession(this.sessionImages);
     }

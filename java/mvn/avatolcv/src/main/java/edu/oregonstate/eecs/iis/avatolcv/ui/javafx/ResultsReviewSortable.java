@@ -49,6 +49,8 @@ import edu.oregonstate.eecs.iis.avatolcv.datasource.BisqueDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.FileSystemDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.MorphobankDataSource;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.PointAnnotations;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.PointAnnotations.Annotation;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.UploadSession;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.UploadSession.UploadEvent;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
@@ -75,6 +77,7 @@ public class ResultsReviewSortable {
     public static final String COLNAME_TRAIN_TEST = "";
     private static final int CROSSHAIR_RADIUS_THUMBNAIL = 4;
     private static final int CROSSHAIR_RADIUS_LARGE = 20;
+    private static final int LARGE_IMAGE_FIT_WIDTH = 600;
 	public Slider thresholdSlider = null;
     public Accordion runDetailsAccordion = null;
     public ScrollPane runDetailsScrollPane = null;
@@ -287,7 +290,7 @@ public class ResultsReviewSortable {
             }
     	}
     }
-    private void addEventhandlerForImageClick(ImageView iv, ResultsTableSortable rt, String imageID, GridPane gp, AnnotationCoordinates coords){
+    private void addEventhandlerForImageClick(ImageView iv, ResultsTableSortable rt, String imageID, GridPane gp, PointAnnotations pointAnnotations){
         iv.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -308,10 +311,13 @@ public class ResultsReviewSortable {
                     ImageView iv = new ImageView(image);
                     
                     iv.setPreserveRatio(true);
-                    iv.setFitWidth(600);
+                    iv.setFitWidth(LARGE_IMAGE_FIT_WIDTH);
+                    int boundWidth = (int)iv.getBoundsInParent().getWidth();
+                    int boundHeight = (int)iv.getBoundsInParent().getHeight();
+                    System.out.println("boundWidth " + boundWidth + " boundHeight " + boundHeight);
                     AnchorPane ap = new AnchorPane();
                     ap.getChildren().add(iv);
-                    drawCoordinates(ap, coords, ImageInfo.IMAGE_LARGE_WIDTH_AS_INT);
+                    drawCoordinates(ap, pointAnnotations, boundWidth, boundHeight);
                     gp.add(ap, 0, targetRowIndex, 5, 1);
                     rt.addLargeImage(imageID, ap);
                 }
@@ -325,45 +331,44 @@ public class ResultsReviewSortable {
             }
        });
     }
-    public void drawCoordinates(AnchorPane ap, AnnotationCoordinates ac, int imageWidthInPixels){
-    	if (ac == null){
+    public void drawCoordinates(AnchorPane ap, PointAnnotations pointAnnotations, int imageWidthInPixels, int imageHeightInPixels){
+    	if (pointAnnotations == null){
     		// ignore
     	}
-    	else if (ac.getType() == AnnotationCoordinates.AnnotationType.NONE){
-    		// ignore
-    	}
-    	else if (ac.getType() == AnnotationCoordinates.AnnotationType.POINT){
-    		drawPointAnnotation(ap, ac, imageWidthInPixels);
-    	}
-    	else if (ac.getType() == AnnotationCoordinates.AnnotationType.BOX){
-    		System.out.println("ERROR - BOX annotation rendering not yet implemented");
-    	}
-    	else if (ac.getType() == AnnotationCoordinates.AnnotationType.POLYGON) {
-    		System.out.println("ERROR - POLYGON annotation rendering not yet implemented");
-    	}
-    	else {
-    		System.out.println("ERROR Unknown AnnotationCoordinates.AnnotationType encountered - expected BOX, POINT, or POLYGON");
-    	}
+    	List<Annotation> annotations = pointAnnotations.getAnnotations();
+    	for (Annotation annotation : annotations){
+    	    if (annotation.getType() == PointAnnotations.AnnotationType.NONE){
+                // ignore
+            }
+            else if (annotation.getType() == PointAnnotations.AnnotationType.POINT){
+                drawPointAnnotation(ap, annotation, imageWidthInPixels, imageHeightInPixels);
+            }
+            else if (annotation.getType() == PointAnnotations.AnnotationType.BOX){
+                System.out.println("ERROR - BOX annotation rendering not yet implemented");
+            }
+            else if (annotation.getType() == PointAnnotations.AnnotationType.POLYGON) {
+                System.out.println("ERROR - POLYGON annotation rendering not yet implemented");
+            }
+            else {
+                System.out.println("ERROR Unknown AnnotationCoordinates.AnnotationType encountered - expected BOX, POINT, or POLYGON");
+            }
+    	} 
     }
-    public void drawPointAnnotation(AnchorPane ap, AnnotationCoordinates ac, int imageWidthInPixels){
-    	List<PointAsPercent> pointsAsPercent = ac.getPoints();
+    public void drawPointAnnotation(AnchorPane ap, Annotation annotation, int imageWidthInPixels, int imageHeightInPixels){
+    	List<PointAsPercent> pointsAsPercent = annotation.getPoints();
     	PointAsPercent pap = pointsAsPercent.get(0);
-    	List<Line> lines = null;
-    	if (imageWidthInPixels == ImageInfo.IMAGE_THUMBNAIL_WIDTH_AS_INT){
-    		lines = getCrosshairs(pap,ImageInfo.IMAGE_THUMBNAIL_WIDTH_AS_INT, CROSSHAIR_RADIUS_THUMBNAIL);
-    	}
-    	else {
-    		lines = getCrosshairs(pap,ImageInfo.IMAGE_LARGE_WIDTH_AS_INT, CROSSHAIR_RADIUS_LARGE);
-    	}
+    	//System.out.println("x " + " y " + " xPixel " + " yPixel " + pap.getYPixel(imageHeightInPixels)
+    	List<Line> lines = getCrosshairs(pap, imageWidthInPixels, imageHeightInPixels);
     	for (Line line : lines){
     		ap.getChildren().add(line);
     	}
     }
-    public static List<Line> getCrosshairs(PointAsPercent pap,int imageWidthInPixels, int crosshairRadius){
+    public static List<Line> getCrosshairs(PointAsPercent pap,int imageWidthInPixels, int imageHeightInPixels){
     	List<Line> lines = new ArrayList<Line>();
     	int x = pap.getXPixel(imageWidthInPixels);
-    	int y = pap.getYPixel(imageWidthInPixels);
+    	int y = pap.getYPixel(imageHeightInPixels);
     	// horizontal line
+    	int crosshairRadius = (int)((double)(imageWidthInPixels/20.0));
     	int x1a = x - crosshairRadius;
     	if (x1a < 0){
     		x1a = 0;
@@ -543,13 +548,16 @@ public class ResultsReviewSortable {
         	resultsTable2.addValueForColumn(imageID, COLNAME_IMAGE, thumbnailPathname);
         	Image image = new Image("file:"+thumbnailPathname);
             ImageView iv = new ImageView(image);
+            int boundWidth = (int)iv.getBoundsInParent().getWidth();
+            int boundHeight = (int)iv.getBoundsInParent().getHeight();
+            System.out.println("boundWidth " + boundWidth + " boundHeight " + boundHeight);
             AnchorPane apForThumbnail = new AnchorPane();
             apForThumbnail.getChildren().add(iv);
-            AnnotationCoordinates coords = sif.getAnnotationCoordinates(path);
-            drawCoordinates(apForThumbnail, coords, ImageInfo.IMAGE_THUMBNAIL_WIDTH_AS_INT);
+            PointAnnotations pointAnnotations = sif.getAnnotationCoordinates(path);
+            drawCoordinates(apForThumbnail, pointAnnotations, boundWidth, boundHeight);
             //addEventhandlerForImageClick(iv, sr);
             resultsTable2.addWidgetForColumn(imageID, COLNAME_IMAGE, apForThumbnail);
-            addEventhandlerForImageClick(iv, resultsTable2, imageID,scoredImagesGridPane, coords);
+            addEventhandlerForImageClick(iv, resultsTable2, imageID,scoredImagesGridPane, pointAnnotations);
         	
         	if (this.runSummary.hasTrainTestConcern()){
         	    String trainTestConcernValue = scoringInfoFile.getTrainTestConcernValueForImageID(ImageInfo.getImageIDFromPath(path)).getName();
@@ -595,13 +603,16 @@ public class ResultsReviewSortable {
                 trainingTable.addValueForColumn(imageID, COLNAME_IMAGE, thumbnailPathname);
                 Image image = new Image("file:"+thumbnailPathname);
                 ImageView iv = new ImageView(image);
+                int boundWidth = (int)iv.getBoundsInParent().getWidth();
+                int boundHeight = (int)iv.getBoundsInParent().getHeight();
+                System.out.println("boundWidth " + boundWidth + " boundHeight " + boundHeight);
                 AnchorPane apForThumbnail = new AnchorPane();
                 apForThumbnail.getChildren().add(iv);
                 //addEventhandlerForImageClick(iv, sr);
-                AnnotationCoordinates trainingCoords = tif.getAnnotationCoordinates(path);
-                drawCoordinates(apForThumbnail, trainingCoords, ImageInfo.IMAGE_THUMBNAIL_WIDTH_AS_INT);
+                PointAnnotations pointAnnotations = tif.getAnnotationCoordinates(path);
+                drawCoordinates(apForThumbnail, pointAnnotations, boundWidth, boundHeight);
                 trainingTable.addWidgetForColumn(imageID, COLNAME_IMAGE, apForThumbnail);
-                addEventhandlerForImageClick(iv, trainingTable, imageID, trainingImagesGridPane, trainingCoords);
+                addEventhandlerForImageClick(iv, trainingTable, imageID, trainingImagesGridPane, pointAnnotations);
                 
         		//addTrainingImageToGridPaneRowForCookingShow(path, trueName, value, trainingImagesGridPane, row++);
     		}
