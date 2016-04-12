@@ -1,11 +1,9 @@
 import pysftp
 
 def main():
-    conn = pysftp.Connection(host='flip.engr.oregonstate.edu', username='irvineje', password='Netonthis()')
-    foo = conn.listdir()
-    print foo
+    conn = pysftp.Connection(host='flip.engr.oregonstate.edu', username='irvineje', password='????')
     #sftp.put('/my/local/filename')  # upload file to public/ on remote
-    conn.chdir('/nfs/stak/students/i/irvineje/public_html/AvatolCV/')
+    conn.chdir('/nfs/stak/faculty/i/irvineje/public_html/AvatolCV/')
     foo = conn.listdir()
     print ""
     print ""
