@@ -74,7 +74,7 @@ public class ResultsReviewSortable {
     public static final String COLNAME_SCORE = "score";
     public static final String COLNAME_CONFIDENCE = "confidence";
     public static final String COLNAME_NAME = "name";
-    public static final String COLNAME_TRAIN_TEST = "";
+    //public static final String COLNAME_TRAIN_TEST = "";
     private static final int CROSSHAIR_RADIUS_THUMBNAIL = 4;
     private static final int CROSSHAIR_RADIUS_LARGE = 20;
     private static final int LARGE_IMAGE_FIT_WIDTH = 600;
@@ -235,17 +235,22 @@ public class ResultsReviewSortable {
     	}
     	return false;
     }
-    private void setupSlider(){
+    private void setupSlider() throws AvatolCVException{
     	double initValue = thresholdSlider.getValue();
     	adjustConfidencesToThreshold(initValue);
     	thresholdSlider.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov,
                 Number old_val, Number new_val) {
-            	    adjustConfidencesToThreshold(new_val.doubleValue());
+                    try {
+                        adjustConfidencesToThreshold(new_val.doubleValue());
+                    }
+            	    catch(AvatolCVException ace){
+            	        System.out.println("could not setup slider " + ace.getMessage());
+            	    }
             }
         });
     }
-    public void adjustConfidencesToThreshold(double value){
+    public void adjustConfidencesToThreshold(double value) throws AvatolCVException{
 	    double newValPercent = value/100;
         String newValString = "" + newValPercent;
         String twoDecimalString = limitToTwoDecimalPlaces(newValString);
@@ -258,7 +263,7 @@ public class ResultsReviewSortable {
             }
         }
     }
-    private void disableAllUnderThreshold(String threshold){
+    private void disableAllUnderThreshold(String threshold) throws AvatolCVException {
         currentThresholdString = threshold;
     	List<String> imageIDs = resultsTable2.getImageIDsInCurrentOrder();
     	
@@ -275,7 +280,7 @@ public class ResultsReviewSortable {
                 nodesInRow.add(truthNode);
     	    }
     	    if (this.runSummary.hasTrainTestConcern()){
-    	        Node ttNode = (Node)resultsTable2.getWidget(imageID, COLNAME_TRAIN_TEST);
+    	        Node ttNode = (Node)resultsTable2.getWidget(imageID, getTrainTestHeader());
                 nodesInRow.add(ttNode);
     	    }
     	    String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
@@ -416,7 +421,7 @@ public class ResultsReviewSortable {
             }
        });
     }
-    public List<String> getActiveScoreColumns(){
+    public List<String> getActiveScoreColumns() throws AvatolCVException {
         List<String> result = new ArrayList<String>();
         result.add(COLNAME_IMAGE);
         if (isEvaluationMode()){
@@ -425,7 +430,7 @@ public class ResultsReviewSortable {
         result.add(COLNAME_SCORE);
         result.add(COLNAME_CONFIDENCE);
         if (this.runSummary.hasTrainTestConcern()){
-            result.add(COLNAME_TRAIN_TEST);
+            result.add(getTrainTestHeader());
         }
         result.add(COLNAME_NAME);
         return result;
@@ -561,10 +566,10 @@ public class ResultsReviewSortable {
         	
         	if (this.runSummary.hasTrainTestConcern()){
         	    String trainTestConcernValue = scoringInfoFile.getTrainTestConcernValueForImageID(ImageInfo.getImageIDFromPath(path)).getName();
-        	    resultsTable2.addValueForColumn(imageID, COLNAME_TRAIN_TEST, trainTestConcernValue);
+        	    resultsTable2.addValueForColumn(imageID, getTrainTestHeader(), trainTestConcernValue);
         	    Label trainTestLabel = new Label(trainTestConcernValue);
         	    trainTestLabel.getStyleClass().add("columnValue");
-                resultsTable2.addWidgetForColumn(imageID, COLNAME_TRAIN_TEST, trainTestLabel);
+                resultsTable2.addWidgetForColumn(imageID, getTrainTestHeader(), trainTestLabel);
             }
     	}
     	resultsTable2.sortOnColumn(COLNAME_IMAGE);
@@ -624,6 +629,11 @@ public class ResultsReviewSortable {
         scoredImagesGridPane.requestLayout();
     }
   
+    public String getTrainTestHeader() throws AvatolCVException {
+        String ttKeyString = this.runSummary.getTrainTestConcern();
+        String ttHeaderString = new NormalizedKey(ttKeyString).getName();
+        return ttHeaderString;
+    }
     public static String limitToTwoDecimalPlaces(String conf){
         Double confDouble = new Double(conf);
         return String.format("%.2f", confDouble);
