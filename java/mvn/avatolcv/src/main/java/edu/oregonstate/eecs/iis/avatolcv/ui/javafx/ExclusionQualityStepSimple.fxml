@@ -6,28 +6,13 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" spacing="8.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox spacing="8.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label alignment="CENTER" text="Excluding poor quality images">
+      <Label text="Exclude poor quality images" VBox.vgrow="NEVER">
          <VBox.margin>
-            <Insets top="20.0" />
+            <Insets left="10.0" top="20.0" />
          </VBox.margin></Label>
-      <HBox alignment="CENTER" fillHeight="false" spacing="20.0" VBox.vgrow="NEVER">
-         <children>
-            <Label alignment="CENTER" text="Images that have quality problems can degrade scoring accuracy." wrapText="true" HBox.hgrow="NEVER">
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin></Label>
-            <Button minWidth="150.0" mnemonicParsing="false" text="See examples" HBox.hgrow="NEVER" />
-         </children>
-         <VBox.margin>
-            <Insets left="6.0" right="6.0" top="15.0" />
-         </VBox.margin>
-      </HBox>
-      <Label alignment="CENTER" text="Click on a thumbnail to exclude it from consideration">
-         <VBox.margin>
-            <Insets top="10.0" />
-         </VBox.margin></Label>
+      <TextArea prefHeight="50.0" text="Images that have quality problems can degrade scoring accuracy.   Click on a thumbnail to exclude it from consideration." VBox.vgrow="NEVER" />
       <AnchorPane VBox.vgrow="ALWAYS">
          <children>
             <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
