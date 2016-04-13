@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<TabPane fx:id="algRunTabPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <tabs>
+      <Tab text="Algorithm Run">
+         <content>
+            <VBox>
+               <children>
+                  <Label fx:id="algName" maxWidth="1.7976931348623157E308" text="(AlgName)">
+                     <VBox.margin>
+                        <Insets left="6.0" top="6.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label fx:id="algRunStatus" maxWidth="1.7976931348623157E308" style="-fx-background-color: #E0E0E0;" text="Run status...">
+                     <VBox.margin>
+                        <Insets left="6.0" right="6.0" top="6.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets left="6.0" right="6.0" />
+                     </padding>
+                  </Label>
+                  <TextArea fx:id="outputText" wrapText="true" VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets left="6.0" top="6.0" />
+                     </VBox.margin>
+                  </TextArea>
+                  <HBox spacing="10.0" VBox.vgrow="NEVER">
+                     <children>
+                        <Button fx:id="cancelAlgorithmButton" mnemonicParsing="false" onAction="#cancelAlgorithm" stylesheets="@../../css/javafx.css" text="Cancel Algorithm" />
+                        <Button fx:id="showLogFilesButton" disable="true" mnemonicParsing="false" onAction="#loadLogsIntoTextWidget" text="Show Log Files" />
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+               </children>
+            </VBox>
+         </content>
+      </Tab>
+   </tabs>
+</TabPane>

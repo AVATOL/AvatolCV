@@ -186,7 +186,7 @@ public class JavaFXStepSequencer  {
         
         ScoringRunStep scoringRunStep = new ScoringRunStep(sessionInfo);
         ss.appendStep(scoringRunStep);
-        ScoringRunStepController scoringRunStepController = new ScoringRunStepController(this, scoringRunStep, "SegmentationRunStep.fxml");
+        ScoringRunStepController scoringRunStepController = new ScoringRunStepController(this, scoringRunStep, "ScoringRunStep.fxml");
         controllerForStep.put(scoringRunStep, scoringRunStepController);
         addLabelForStep(scoringRunStep,"Run Scoring");
         
