@@ -397,4 +397,8 @@ public class BisqueDataSource implements DataSource {
         }
         
     }
+    @Override
+    public List<String> filterBadSortCandidates(List<String> list) {
+        return list;
+    }
 }

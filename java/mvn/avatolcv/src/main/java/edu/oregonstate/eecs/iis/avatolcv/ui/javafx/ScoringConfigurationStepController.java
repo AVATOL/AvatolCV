@@ -196,6 +196,7 @@ public class ScoringConfigurationStepController implements StepController {
 			normalizedKeyHash.put(keyName, nk);
 			sortCandidateStrings.add(keyName);
 		}
+		sortCandidateStrings = this.step.getSessionInfo().getDataSource().filterBadSortCandidates(sortCandidateStrings);
 		Collections.sort(sortCandidateStrings);
         this.choiceBoxGroupProperty.getItems().addAll(sortCandidateStrings);
         this.choiceBoxGroupProperty.setValue(this.choiceBoxGroupProperty.getItems().get(0));

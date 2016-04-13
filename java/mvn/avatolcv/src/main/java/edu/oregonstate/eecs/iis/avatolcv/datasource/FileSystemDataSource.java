@@ -284,5 +284,9 @@ public class FileSystemDataSource implements DataSource {
         // TODO Auto-generated method stub
         return false;
     }
+    @Override
+    public List<String> filterBadSortCandidates(List<String> list) {
+        return list;
+    }
 
 }

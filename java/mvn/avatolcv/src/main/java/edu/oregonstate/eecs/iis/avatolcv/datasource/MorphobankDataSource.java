@@ -579,4 +579,14 @@ public class MorphobankDataSource implements DataSource {
 	    }
 		
 	}
+    @Override
+    public List<String> filterBadSortCandidates(List<String> list) {
+        List<String> result = new ArrayList<String>();
+        for (String s : list){
+            if (!s.equals("view")){
+                result.add(s);
+            }
+        }
+        return result;
+    }
 }
