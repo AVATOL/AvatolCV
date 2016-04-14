@@ -81,12 +81,14 @@ public class ImagePullStepController implements StepController, ProgressPresente
                 
                 Label label = new Label(fsds.getImageStatusSummary(this.step.getSessionInfo().getNormalizedImageInfos()));
                 imageLoadVBox.getChildren().add(1, label);
-                new Thread(new NavButtonEnablerRunner()).start();
+                Platform.runLater(() -> fxSession.enableNavButtons());
             }
             else {
                 imageFileDownloadProgress.setProgress(0.0);
                 imageFileDownloadMessage.setText("");
-                
+                Platform.runLater(() -> fxSession.disableNavButtons());
+                System.out.println("Just requested disableNavButtons, about to start imageDownloadTask");
+
                 Task<Boolean> task = new ImageDownloadTask(this, this.step, IMAGE_FILE_DOWNLOAD);
                 /*
                  * NOTE - wanted to use javafx properties and binding here but couldn't dovetail it in.  I could not put
@@ -111,13 +113,6 @@ public class ImagePullStepController implements StepController, ProgressPresente
         } 
     }
 
-    public class NavButtonEnablerRunner implements Runnable{
-        @Override
-        public void run() {
-            fxSession.enableNavButtons();
-        }
-        
-    }
     @Override
     public boolean delayEnableNavButtons() {
         return true;
@@ -181,9 +176,11 @@ public class ImagePullStepController implements StepController, ProgressPresente
         @Override
         protected Boolean call() throws Exception {
             try {
+                System.out.println("Starting image download");
                 this.step.downloadImages(this.controller, processName);
-                NavButtonEnablerRunner runner = new NavButtonEnablerRunner();
-                Platform.runLater(runner);
+                System.out.println("Done image download");
+
+                Platform.runLater(() -> fxSession.enableNavButtons());
                 return new Boolean(true);
             }
             catch(Exception e){
