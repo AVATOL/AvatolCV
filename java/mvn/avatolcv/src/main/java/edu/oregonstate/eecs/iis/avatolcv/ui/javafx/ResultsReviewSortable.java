@@ -178,6 +178,7 @@ public class ResultsReviewSortable {
                 n.setCache(false);
             }
             initializePriorRunChoices();
+            runSelectChoiceBox.getSelectionModel().select(this.runName);
             runSelectChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new RunChoiceChangeListener(runSelectChoiceBox, this.mainScreen, this.mainWindow));
             setRunDetails(this.runName);
             this.uploadSession = new UploadSession();
@@ -206,7 +207,9 @@ public class ResultsReviewSortable {
             String newRunID = AvatolCVConstants.UNDETERMINED;
             try {
                 newRunID =(String)cb.getItems().get((Integer)newValue);
+                cb.getSelectionModel().select(newRunID);
                 init(mainScreen, mainWindow, newRunID);
+                
             }
             catch(Exception e){
                 AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem changing to results for runID " + newRunID + " " + e.getMessage());
