@@ -58,6 +58,8 @@ public class JavaFXStepSequencer  {
     private Hashtable<Step,Label> labelForStepHash = new Hashtable<Step,Label>();
     private AvatolCVJavaFX mainScreen = null;
     private Hashtable<Step,StepController> controllerForStep = new Hashtable<Step,StepController>();
+    private static final Logger logger = LogManager.getLogger(JavaFXStepSequencer.class);
+
     public JavaFXStepSequencer(AvatolCVJavaFX mainScreen){
         this.mainScreen = mainScreen;
         AvatolCVFileSystem.flushPriorSettings();
@@ -315,6 +317,8 @@ public class JavaFXStepSequencer  {
      * prevStep called from the button on the javaFX ui thread (application thread)
      */
     public void previousStep(){
+        logger.info("");
+        logger.info("BUTTON - BACK");
         disableNavButtons();
     	// delegate data consumption to background thread
     	PrevStepTask task = new PrevStepTask();
@@ -324,6 +328,8 @@ public class JavaFXStepSequencer  {
      * nextStep called from the button on the javaFX ui thread (application thread)
      */
     public void nextStep(){
+        logger.info("");
+        logger.info("BUTTON - NEXT");
         disableNavButtons();
     	
     	Step step = ss.getCurrentStep();

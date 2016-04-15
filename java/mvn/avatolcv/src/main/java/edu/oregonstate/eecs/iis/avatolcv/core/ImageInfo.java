@@ -206,7 +206,7 @@ public class ImageInfo {
 	public static void undoExcludeForDataset(String reason, String id) throws AvatolCVException {
 		if (isExcludedForDataset(id)){
 			String path =  AvatolCVFileSystem.getDatasetExclusionInfoFilePath(id);
-			logger.info("unexclude image for dataset : " + id);
+			logger.info("unexclude image for dataset : " + id  + " reason " + reason);
 			deleteExclusionAtPathForReason(path, reason, id);
 		}
 	}
@@ -221,7 +221,7 @@ public class ImageInfo {
 	public static void undoExcludeForSession(String reason, String id) throws AvatolCVException {
 		if (isExcludedForSession(id)){
 			String path =  AvatolCVFileSystem.getSessionExclusionInfoFilePath(id);
-			
+			logger.info("unexclude image for session : " + id  + " reason " + reason);
 			deleteExclusionAtPathForReason(path, reason, id);
 		}
 	}
@@ -254,11 +254,11 @@ public class ImageInfo {
 	}
 	 
 	public void excludeForSession(String reason) throws AvatolCVException {
-        logger.info("exclude image for session : " + this.ID);
 		excludeForSession(reason, this.ID);
 	}
 	public static void excludeForSession(String reason, String ID) throws AvatolCVException {
 		String path = AvatolCVFileSystem.getSessionExclusionInfoFilePath(ID);
+        logger.info("exclude image for session : " + ID + " reason " + reason);
 	    excludeAtPath(path, reason);
 	}
    

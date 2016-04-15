@@ -1,11 +1,9 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
@@ -17,11 +15,12 @@ import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.SegmentationRunStepController;
 
 public class SegmentationRunStep implements Step {
-    private static final String NL = System.getProperty("line.separator");
     private static final String FILESEP = System.getProperty("file.separator");
     private SessionInfo sessionInfo = null;
     private AlgorithmLauncher launcher = null;
-    private RunConfigFile runConfigFile = null;
+    private RunConfigFile segRunConfig = null;
+    private static final Logger logger = LogManager.getLogger(SegmentationRunStep.class);
+
     public SegmentationRunStep(SessionInfo sessionInfo){
         this.sessionInfo = sessionInfo;
     }
@@ -53,7 +52,7 @@ public class SegmentationRunStep implements Step {
         return AvatolCVFileSystem.getSessionDir() + FILESEP + "segmentedData";
     }
     public RunConfigFile getRunConfigFile(){
-        return this.runConfigFile;
+        return this.segRunConfig;
     }
     public void runSegmentation(SegmentationRunStepController controller, String processName, boolean useRunConfig) throws AvatolCVException {
         SegmentationAlgorithm sa  = sessionInfo.getSelectedSegmentationAlgorithm();
@@ -62,52 +61,27 @@ public class SegmentationRunStep implements Step {
         String runConfigPath = null;
         
         if (useRunConfig) {
-            this.runConfigFile = new RunConfigFile(sa, algSequence, null);
-            runConfigPath = this.runConfigFile.getRunConfigPath();
+            this.segRunConfig = new RunConfigFile(sa, algSequence, null);
+            runConfigPath = this.segRunConfig.getRunConfigPath();
             File runConfigFile = new File(runConfigPath);
             if (!runConfigFile.exists()){
                 throw new AvatolCVException("runConfigFile path does not exist."); 
             }
+            logger.info("created runConfigFile " + runConfigPath);
+            logger.info("runConfigFile has: " + segRunConfig.getPropertiesAsString());
             this.launcher = new AlgorithmLauncher(sa, runConfigPath, true);
         }
         else {
             this.launcher = new AlgorithmLauncher(sa, runConfigPath, false);
         }
-        //String statusPath = rcf.getAlgorithmStatusPath();
-        //ProcessMonitor monitor = new ProcessMonitor(launcher, controller, statusPath);
-        //Thread t = new Thread(monitor);
-        //t.run();
+        
+        logger.info("launching " + sessionInfo.getSelectedSegmentationAlgorithm().getAlgName());
         this.launcher.launch(controller);
     }
     public void cancelSegmentation(){
         this.launcher.cancel();
+        logger.info("cancelled segmentation algorithm run");
     }
-    /*
-    public class ProcessMonitor implements Runnable {
-        private AlgorithmLauncher launcher = null;
-        private String statusPath = null;
-        private OutputMonitor om = null;
-        public ProcessMonitor(AlgorithmLauncher launcher, OutputMonitor om, String statusPath){
-            this.launcher = launcher;
-            this.statusPath = statusPath;
-            this.om = om;
-        }
-        @Override
-        public void run() {
-            while (launcher.isProcessRunning()){
-                try {
-                    Thread.sleep(1000);
-                }
-                catch(Exception e){
-                    
-                }
-                String status = getStatus(statusPath);
-                //System.out.println(NL + "========================" + NL + "STATUS is " + status + NL + "========================" + NL);
-                this.pp.setMessage("", status);
-            }
-        }
-    }
-    */
    
     @Override
     public boolean isEnabledByPriorAnswers() {

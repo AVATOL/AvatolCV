@@ -199,6 +199,7 @@ public class ScoringRunStep implements Step {
     
     public void cancelScoring(){
         this.launcher.cancel();
+        logger.info("cancelled scoring algorithm run");
     }
     @Override
     public void init() throws AvatolCVException {

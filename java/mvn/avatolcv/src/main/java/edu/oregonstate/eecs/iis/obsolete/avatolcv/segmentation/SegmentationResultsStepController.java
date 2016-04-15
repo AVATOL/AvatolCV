@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
+package edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation;
 
 import java.io.IOException;
 
@@ -9,7 +9,6 @@ import javafx.scene.image.ImageView;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
-import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationResultsStep;
 
 public class SegmentationResultsStepController implements StepController {
 	private static final String FILESEP = System.getProperty("file.separator");

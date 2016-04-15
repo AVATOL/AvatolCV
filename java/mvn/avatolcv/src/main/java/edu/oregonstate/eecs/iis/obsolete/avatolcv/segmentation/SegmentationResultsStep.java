@@ -1,6 +1,8 @@
-package edu.oregonstate.eecs.iis.avatolcv.steps;
+package edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.steps.Answerable;
+import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 
 public class SegmentationResultsStep extends Answerable implements Step {
 

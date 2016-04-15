@@ -125,14 +125,14 @@ public class EvaluationSet implements ScoringSet {
 		for (ModalImageInfo mii : modals){
 			if (mii.isTraining()){
 				NormalizedImageInfo nii = mii.getNormalizedImageInfo();
-				sb.append("    ID: " + nii.getImageID() + "   NAME: " + nii.getImageName() + "    COORDS: " + nii.getAnnotationString());
+				sb.append("    ID: " + nii.getImageID() + "   NAME: " + nii.getImageName() + "    VALUE: " + nii.getValueForKey(this.keyToScore) + "    COORDS: " + nii.getAnnotationString() + NL);
 			}
 		}
 		sb.append(NL + "images to score    : " + NL);
 		for (ModalImageInfo mii : modals){
 			if (mii.isScoring()){
 				NormalizedImageInfo nii = mii.getNormalizedImageInfo();
-				sb.append("    ID: " + nii.getImageID() + "   NAME: " + nii.getImageName() + "    COORDS: " + nii.getAnnotationString());
+				sb.append("    ID: " + nii.getImageID() + "   NAME: " + nii.getImageName() + "    COORDS: " + nii.getAnnotationString() + NL);
 			}
 		}
 		return "" + sb;

@@ -2,6 +2,9 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
@@ -14,6 +17,8 @@ import edu.oregonstate.eecs.iis.avatolcv.session.DataFilter.FilterItem;
 
 public class SummaryFilterStep  extends Answerable implements Step {
     private SessionInfo sessionInfo;
+    private static final Logger logger = LogManager.getLogger(SummaryFilterStep.class);
+
     public SummaryFilterStep(SessionInfo sessionInfo){
         this.sessionInfo = sessionInfo;
     }
@@ -28,6 +33,7 @@ public class SummaryFilterStep  extends Answerable implements Step {
     }
     @Override
     public void consumeProvidedData() throws AvatolCVException {
+        logger.info("consuming filter settings");
     	DataFilter df = this.sessionInfo.getDataFilter();
     	List<FilterItem> items = df.getItems();
     	for (FilterItem item : items){

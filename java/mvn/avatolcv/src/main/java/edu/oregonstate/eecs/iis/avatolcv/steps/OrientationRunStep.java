@@ -17,7 +17,7 @@ import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 public class OrientationRunStep implements Step {
     private SessionInfo sessionInfo = null;
     private AlgorithmLauncher launcher = null;
-    private RunConfigFile runConfigFile = null;
+    private RunConfigFile orientRunConfig = null;
     private static final Logger logger = LogManager.getLogger(OrientationRunStep.class);
 
     public OrientationRunStep(SessionInfo sessionInfo){
@@ -54,7 +54,7 @@ public class OrientationRunStep implements Step {
         return false;
     }
     public RunConfigFile getRunConfigFile(){
-        return this.runConfigFile;
+        return this.orientRunConfig;
     }
     public void runOrientation(OutputMonitor controller, String processName, boolean useRunConfig) throws AvatolCVException {
         OrientationAlgorithm sa  = sessionInfo.getSelectedOrientationAlgorithm();
@@ -63,13 +63,14 @@ public class OrientationRunStep implements Step {
         String runConfigPath = null;
         logger.info("running orientation algorithm ");
         if (useRunConfig) {
-        	this.runConfigFile = new RunConfigFile(sa, algSequence, null);
-            runConfigPath = this.runConfigFile.getRunConfigPath();
+        	this.orientRunConfig = new RunConfigFile(sa, algSequence, null);
+            runConfigPath = this.orientRunConfig.getRunConfigPath();
             File runConfigFile = new File(runConfigPath);
             if (!runConfigFile.exists()){
                 throw new AvatolCVException("runConfigFile path does not exist."); 
             }
             logger.info("using runConfig file " + runConfigPath);
+            logger.info("runConfigFile has: " + orientRunConfig.getPropertiesAsString());
             this.launcher = new AlgorithmLauncher(sa, runConfigPath, true);
         }
         else {
