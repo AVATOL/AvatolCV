@@ -11,6 +11,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
+import edu.oregonstate.eecs.iis.avatolcv.core.Defaults;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfos;
@@ -93,11 +94,11 @@ public class BisqueDataSource implements DataSource {
    
     @Override
     public String getDefaultUsername() {
-        return "jedirv";
+        return Defaults.instance.getBisqueLogin();
     }
     @Override
     public String getDefaultPassword() {
-        return "Neton3plants**";
+        return Defaults.instance.getBisquePassword();
     }
     @Override
     public void loadPrimaryMetadataForChosenDataset(ProgressPresenter pp,

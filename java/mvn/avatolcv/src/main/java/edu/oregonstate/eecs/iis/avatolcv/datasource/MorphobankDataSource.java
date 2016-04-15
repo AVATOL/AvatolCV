@@ -10,6 +10,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
+import edu.oregonstate.eecs.iis.avatolcv.core.Defaults;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
@@ -101,13 +102,13 @@ public class MorphobankDataSource implements DataSource {
     
     @Override
     public String getDefaultUsername() {
-        return "irvine@eecs.oregonstate.edu";
-        //return "jedirv@gmail.com";
+        return Defaults.instance.getMorphobankLogin();
     }
     @Override
     public String getDefaultPassword() {
-        return "squonkmb";
+        return Defaults.instance.getMorphobankPassword();
     }
+    
     @Override
     public void loadPrimaryMetadataForChosenDataset(ProgressPresenter pp,
             String processName) throws AvatolCVException {

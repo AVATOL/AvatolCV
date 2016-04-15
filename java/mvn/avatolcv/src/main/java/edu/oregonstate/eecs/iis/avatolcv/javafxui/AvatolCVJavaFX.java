@@ -7,10 +7,9 @@ import java.util.Collections;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
-import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
+import edu.oregonstate.eecs.iis.avatolcv.core.Defaults;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.JavaFXStepSequencer;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ResultsReviewSortable;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ToolsPanel;
@@ -24,7 +23,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -38,7 +36,7 @@ public class AvatolCVJavaFX extends Application {
     public static final String FILESEP = System.getProperty("file.separator");
     public ComboBox<String> presenceAbsenceAlgChooser = null;
     private static Scene scene;
-    private static String rootDir = null;
+    private static String avatolCVRootDir = null;
     private static String startError = "";
     public RadioButton radioNewSession;
     //public RadioButton radioResumeSession;
@@ -54,11 +52,18 @@ public class AvatolCVJavaFX extends Application {
     public static void main(String[] args){
         String currentDir = System.getProperty("user.dir");
         try {
-            rootDir = findRoot(currentDir);
-            AvatolCVFileSystem.setRootDir(rootDir);
+            avatolCVRootDir = findAvatolCVRoot(currentDir);
+            AvatolCVFileSystem.setRootDir(avatolCVRootDir);
         }
         catch(AvatolCVException e){
             startError = "Error running avatolCV - could not locate avatol_cv directory under installation area: " + e.getMessage();
+        }
+        try {
+            Defaults.init(avatolCVRootDir);
+        }
+        catch(AvatolCVException e){
+            startError = "Problem loading defaults: " + e.getMessage();
+            logger.fatal("Problem loading defaults: " + e.getMessage());
         }
         if ("".equals(startError)){
             try {
@@ -133,7 +138,7 @@ public class AvatolCVJavaFX extends Application {
            
             if (radioNewSession.isSelected()){
                 JavaFXStepSequencer session = new JavaFXStepSequencer(this);
-                session.init(rootDir, mainWindow);
+                session.init(avatolCVRootDir, mainWindow);
                 
             }
             //else if (radioResumeSession.isSelected()){
@@ -153,7 +158,7 @@ public class AvatolCVJavaFX extends Application {
             AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem initializing session");
         }
     }
-    public static String findRoot(String currentDir) throws AvatolCVException {
+    public static String findAvatolCVRoot(String currentDir) throws AvatolCVException {
         String origCurrentDir = currentDir;
         char splitDelim = '/';
         String OS = System.getProperty("os.name").toLowerCase();
