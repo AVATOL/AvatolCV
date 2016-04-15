@@ -131,32 +131,37 @@ public class RunConfigFile {
     public String getAlgorithmStatusPath(){
         return this.algStatusPath;
     }
-    
+    public String getPropertiesAsString() throws AvatolCVException {
+    	String algType = this.alg.getAlgType();
+    	StringBuilder sb = new StringBuilder();
+    	String outputDirKey = this.alg.getAlgType() + "OutputDir";
+		String outputDirPath = this.algSequence.getOutputDir();
+		sb.append(outputDirKey + "=" + outputDirPath + NL);
+		String algTypeScoringName = AlgorithmModules.AlgType.SCORING.name().toLowerCase();
+		if (algType.equals(algTypeScoringName)){
+			sb.append("trainingDataDir=" + AvatolCVFileSystem.getTrainingDataDirForScoring() + NL);
+		}
+		for (String dependency : dependencyEntries){
+			sb.append(dependency + NL);
+		}
+		for (String required : inputRequiredEntries){
+			sb.append(required + NL);
+		}
+		for (String optional : inputOptionalEntries){
+			sb.append(optional + NL);
+        }
+		return "" + sb;
+    }
     private void persist() throws AvatolCVException {
     	String algType = this.alg.getAlgType();
     	//String sessionDir = AvatolCVFileSystem.getSessionDir();
     	this.path = AvatolCVFileSystem.getSessionDir() + FILESEP + "runConfig_" + algType + ".txt";
-    	
+    	String outputDirPath = this.algSequence.getOutputDir();
+		File outputDirFile = new File(outputDirPath);
+		outputDirFile.mkdirs();
     	try {
     		BufferedWriter writer = new BufferedWriter(new FileWriter(this.path));
-    		String outputDirKey = this.alg.getAlgType() + "OutputDir";
-    		String outputDirPath = this.algSequence.getOutputDir();
-    		File outputDirFile = new File(outputDirPath);
-    		outputDirFile.mkdirs();
-    		writer.write(outputDirKey + "=" + outputDirPath + NL);
-    		String algTypeScoringName = AlgorithmModules.AlgType.SCORING.name().toLowerCase();
-    		if (algType.equals(algTypeScoringName)){
-    		    writer.write("trainingDataDir=" + AvatolCVFileSystem.getTrainingDataDirForScoring() + NL);
-    		}
-    		for (String dependency : dependencyEntries){
-    			writer.write(dependency + NL);
-    		}
-    		for (String required : inputRequiredEntries){
-    			writer.write(required + NL);
-    		}
-    		for (String optional : inputOptionalEntries){
-                writer.write(optional + NL);
-            }
+    		writer.write(getPropertiesAsString());
     		writer.close();
     	}
     	catch(IOException ioe){

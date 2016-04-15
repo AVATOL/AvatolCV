@@ -3,6 +3,9 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 import java.io.File;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmLauncher;
@@ -30,7 +33,9 @@ public class ScoringRunStep implements Step {
 	private static final String NL = System.getProperty("file.separator");
     private SessionInfo sessionInfo = null;
     private AlgorithmLauncher launcher = null;
-    private RunConfigFile runConfigFile = null;
+    private RunConfigFile runConfig = null;
+    private static final Logger logger = LogManager.getLogger(ScoringRunStep.class);
+
     public ScoringRunStep(SessionInfo sessionInfo){
         this.sessionInfo = sessionInfo;
     }
@@ -66,43 +71,7 @@ public class ScoringRunStep implements Step {
         String imagePath = getImagePathWithIDFromFileList(imageID, files, suffix);
         return imagePath;
     }
-    /*
-    public void addImageToTrainingInfoFile(ModalImageInfo mii, NormalizedKey scoringConcernKey,TrainingInfoFile tif) throws AvatolCVException {
-        NormalizedKey trainTestConcern = new NormalizedKey(null);
-        NormalizedValue trainTestConcernValue = new NormalizedValue(null);
-        ScoringAlgorithm sa  = sessionInfo.getSelectedScoringAlgorithm();
-        AlgorithmSequence algSequence = sessionInfo.getAlgorithmSequence();
-        NormalizedImageInfo nii = mii.getNormalizedImageInfo();
-        
-        if (this.sessionInfo.hasTrainTestConcern()){
-            trainTestConcern = this.sessionInfo.getTrainTestConcern();
-            trainTestConcernValue = nii.getValueForKey(trainTestConcern);
-        }
-        
-        String imagePath = getPathForNii(nii, algSequence, sa.getTrainingLabelImageSuffix());
-        NormalizedValue value = nii.getValueForKey(scoringConcernKey);
-        
-        if (null == imagePath){
-            System.out.println("WARNING - no imageFile found for imageID " + nii.getImageID());
-            imagePath = "imageFileNotAvailable";
-        }
-        String pointCoordinates = nii.getAnnotationCoordinates();
-        if (!trainTestConcern.getName().equals("")){
-            trainTestConcernValue = nii.getValueForKey(trainTestConcern);
-        }
-        
-        if (this.sessionInfo.arePointCoordinatesRelavent()){
-            if (null == pointCoordinates){
-                ImageInfo.excludeForSession(ImageInfo.EXCLUSION_REASON_MISSING_ANNOTATION, nii.getImageID());
-            }
-            else {
-                tif.addImageInfo(imagePath, value.toString(),  pointCoordinates, trainTestConcern.toString(), trainTestConcernValue.toString());
-            }
-        }
-        else {
-            tif.addImageInfo(imagePath, value.toString(),  "", trainTestConcern.toString(), trainTestConcernValue.toString());
-        }
-    }*/
+   
     public void addImageToTrainingInfoFile(ModalImageInfo mii, NormalizedKey scoringConcernKey,TrainingInfoFile tif, ScoringProfile sp) throws AvatolCVException {
         NormalizedImageInfo nii = mii.getNormalizedImageInfo();
         String imagePath = getPathForNii(nii, sessionInfo.getAlgorithmSequence(), sessionInfo.getSelectedScoringAlgorithm().getTrainingLabelImageSuffix());
@@ -145,37 +114,10 @@ public class ScoringRunStep implements Step {
             sif.addImageInfo(imagePath, "" + sp.getTrainTestConcern(), "" + sp.getTrainTestConcernValue(mii));
         }
     }
-   /* public void addImageToScoringInfoFile(ModalImageInfo mii, ScoringInfoFile sif) throws AvatolCVException {
-        NormalizedKey trainTestConcern = new NormalizedKey(null);
-        NormalizedValue trainTestConcernValue = new NormalizedValue(null);
-        NormalizedImageInfo nii = mii.getNormalizedImageInfo();
-        ScoringAlgorithm sa  = sessionInfo.getSelectedScoringAlgorithm();
-        AlgorithmSequence algSequence = sessionInfo.getAlgorithmSequence();
-        if (this.sessionInfo.hasTrainTestConcern()){
-            trainTestConcern = this.sessionInfo.getTrainTestConcern();
-            trainTestConcernValue = nii.getValueForKey(trainTestConcern);
-        }
-        
-        String imagePath = getPathForNii(nii, algSequence,  "*");
-        
-        if (null == imagePath){
-            System.out.println("WARNING - no imageFile found for imageID " + nii.getImageID());
-            imagePath = "imageFileNotAvailable";
-        }
-        
-        if (!trainTestConcern.getName().equals("")){
-            trainTestConcernValue = nii.getValueForKey(trainTestConcern);
-        }
-        if (sa.shouldIncludePointAnnotationsInScoringFile()){
-            String pointCoordinates = nii.getAnnotationCoordinates();
-            sif.addImageInfo(imagePath, trainTestConcern.toString(), trainTestConcernValue.toString(), pointCoordinates);
-        }
-        else {
-            sif.addImageInfo(imagePath, trainTestConcern.toString(), trainTestConcernValue.toString());
-        }
-    }*/
+  
     public void runScoring(OutputMonitor controller, String processName, boolean useRunConfig) throws AvatolCVException {
         if (!useRunConfig){
+        	logger.info("Scoring run skipping runConfigFile");
             String runConfigPath = null;
             ScoringAlgorithm sa  = sessionInfo.getSelectedScoringAlgorithm();
             this.launcher = new AlgorithmLauncher(sa, runConfigPath, false);
@@ -187,6 +129,7 @@ public class ScoringRunStep implements Step {
         
         List<ChoiceItem> scoringConcerns = this.sessionInfo.getChosenScoringConcerns();
         for (ChoiceItem scoringConcern : scoringConcerns){
+        	logger.info("creating TrainingInfoFile and ScoringInfoFile for " + scoringConcern.getNormalizedKey());
             Object backingObject = scoringConcern.getBackingObject();
             ScoringConcernDetails scd = (ScoringConcernDetails)backingObject;
             String scoringConcernType = scd.getType();
@@ -218,6 +161,7 @@ public class ScoringRunStep implements Step {
             sif.persist(AvatolCVFileSystem.getTrainingDataDirForScoring());
             
             if (this.sessionInfo.isScoringModeEvaluation()){
+            	logger.info("creating HoldoutInfoFile");
                 HoldoutInfoFile hif = new HoldoutInfoFile(scoringConcernType, scoringConcernID, scoringConcernName);
                 for (ModalImageInfo mii : scoringImages){
                     NormalizedImageInfo nii = mii.getNormalizedImageInfo();
@@ -227,7 +171,7 @@ public class ScoringRunStep implements Step {
                 }
                 hif.persist(AvatolCVFileSystem.getTrainingDataDirForScoring());
             }
-            
+            logger.info("verifying there are no images that are both in the training and scoring set...");
             List<String> imagesWronglyInBoth = sif.getMatchingImageNames(tif.getImagePaths());
             if (imagesWronglyInBoth.size() != 0){
             	StringBuilder sb = new StringBuilder();
@@ -237,17 +181,19 @@ public class ScoringRunStep implements Step {
             	}
             	throw new AvatolCVException("" + sb);
             }
-            runConfigFile = new RunConfigFile(sessionInfo.getSelectedScoringAlgorithm(), algSequence, scoringImages);
-            String runConfigPath = runConfigFile.getRunConfigPath();
+            runConfig = new RunConfigFile(sessionInfo.getSelectedScoringAlgorithm(), algSequence, scoringImages);
+            String runConfigPath = runConfig.getRunConfigPath();
             File runConfigFile = new File(runConfigPath);
             if (!runConfigFile.exists()){
                 throw new AvatolCVException("runConfigFile path does not exist."); 
             }
+            logger.info("created runConfigFile " + runConfigPath);
+            logger.info("runConfigFile has: " + runConfig.getPropertiesAsString());
         }
         
        
-       
-        this.launcher = new AlgorithmLauncher(sessionInfo.getSelectedScoringAlgorithm(), runConfigFile.getRunConfigPath(), true);
+        logger.info("launching " + sessionInfo.getSelectedScoringAlgorithm().getAlgName());
+        this.launcher = new AlgorithmLauncher(sessionInfo.getSelectedScoringAlgorithm(), runConfig.getRunConfigPath(), true);
         this.launcher.launch(controller);
     }
     

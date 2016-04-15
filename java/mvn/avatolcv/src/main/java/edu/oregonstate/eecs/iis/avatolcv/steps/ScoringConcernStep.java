@@ -3,6 +3,9 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringScope;
@@ -14,7 +17,8 @@ public class ScoringConcernStep  extends Answerable implements Step {
     private SessionInfo sessionInfo = null;
     private ChoiceItem chosenItem = null;
     private List<ChoiceItem> chosenItems = null;
-            
+    private static final Logger logger = LogManager.getLogger(ScoringConcernStep.class);
+           
             
     public ScoringConcernStep(SessionInfo sessionInfo){
         this.sessionInfo = sessionInfo;
@@ -46,11 +50,16 @@ public class ScoringConcernStep  extends Answerable implements Step {
     @Override
     public void consumeProvidedData() throws AvatolCVException {
         ScoringAlgorithm.ScoringScope scope = this.sessionInfo.getScoringScope();
+        logger.info("scoring scope set to " + scope);
         if (scope == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM){
             sessionInfo.setScoringConcerns(chosenItems);
+            for (ChoiceItem item : chosenItems){
+            	logger.info("selected scoring concern : " + item.getNormalizedKey());
+            }
         }
         else {
             sessionInfo.setScoringConcern(chosenItem);
+            logger.info("selected scoring concern : " + chosenItem.getNormalizedKey());
         }
         
     }

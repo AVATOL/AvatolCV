@@ -9,6 +9,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 
 public class EvaluationSet implements ScoringSet {
+	public static final String NL = System.getProperty("line.separator");
 	public static double DEFAULT_EVALUATION_SPLIT = 0.7;
 	private List<NormalizedImageInfo> niis = null;
 	private List<NormalizedImageInfo> niisWithValueForKey = new ArrayList<NormalizedImageInfo>();
@@ -112,5 +113,28 @@ public class EvaluationSet implements ScoringSet {
 	}
 	public double getTrainingPercentage(){
 	    return this.percentToTrainOn;
+	}
+	@Override
+	public String getSummaryString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(NL);
+		sb.append("    EVALUATION SET" + NL);
+		sb.append("key to score       : " + this.keyToScore + NL);
+		sb.append("percent to train on: " + this.percentToTrainOn + NL);
+		sb.append(NL + "training images    : " + NL);
+		for (ModalImageInfo mii : modals){
+			if (mii.isTraining()){
+				NormalizedImageInfo nii = mii.getNormalizedImageInfo();
+				sb.append("    ID: " + nii.getImageID() + "   NAME: " + nii.getImageName() + "    COORDS: " + nii.getAnnotationString());
+			}
+		}
+		sb.append(NL + "images to score    : " + NL);
+		for (ModalImageInfo mii : modals){
+			if (mii.isScoring()){
+				NormalizedImageInfo nii = mii.getNormalizedImageInfo();
+				sb.append("    ID: " + nii.getImageID() + "   NAME: " + nii.getImageName() + "    COORDS: " + nii.getAnnotationString());
+			}
+		}
+		return "" + sb;
 	}
 }
