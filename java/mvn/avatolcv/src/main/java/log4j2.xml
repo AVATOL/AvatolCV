@@ -4,9 +4,15 @@
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{3} - %msg%n"/>
 		</Console>
-		<File name="mainLog" fileName="../../../logs/avatolCV.log" append="false" bufferedIO="true" immediateFlush="true" bufferSize="1024">
+		<!-- HAD TO TURN append to "true" to get the rolling appender to work -->
+		<RollingFile name="mainLog" fileName="../../../logs/acvlog.txt" filePattern="../../../logs/acvlog-%d{yyyyMMdd}-%i.txt" append="true" bufferedIO="true" immediateFlush="true" bufferSize="1024">
 				<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{3} - %msg%n"/>
-		</File>
+				<DefaultRolloverStrategy max="40" fileIndex="max"/>
+				<Policies>
+					<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+      				<OnStartupTriggeringPolicy />
+      			</Policies>
+		</RollingFile>
 	</Appenders>
 	<Loggers>
 		<Root level="INFO">
