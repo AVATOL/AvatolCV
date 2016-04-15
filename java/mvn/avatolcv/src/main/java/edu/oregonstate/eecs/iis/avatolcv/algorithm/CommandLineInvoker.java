@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.Platform;
 
 /**
@@ -19,15 +22,16 @@ public class CommandLineInvoker {
 	private static final String NL = System.getProperty("line.separator");
 	private Process process = null;
 	private boolean processHasStarted = false;
+	private static final Logger logger = LogManager.getLogger(CommandLineInvoker.class);
     public CommandLineInvoker(){
     }
     public void printEnvironment(Map<String, String> env){
-        System.out.println("...ENVIRONMENT...");
+        logger.info("...ENVIRONMENT...");
         Set<String> keySet = env.keySet();
         Iterator<String> iter = keySet.iterator();
         while (iter.hasNext()){
             String k = iter.next();
-            System.out.println("key : " + k  + "   ,    value : " + env.get(k));
+            logger.info("key : " + k  + "   ,    value : " + env.get(k));
         }
     }
     public boolean isProcessRunning(){
@@ -39,16 +43,16 @@ public class CommandLineInvoker {
     public boolean runCommandLine(List<String> commands, String stdoutPath){
        // ddh preOperation();
      boolean result = false;
-     System.out.println("Execute Command: " + commands);
+     logger.info("Execute Command: " + commands);
     
      StringBuilder sb = new StringBuilder();
-     System.out.println("command array given as : " + NL);
+     logger.info("command array given as : " + NL);
      for (String s : commands){
-    	 System.out.println("  " + s);
+    	 logger.info("  " + s);
     	 sb.append(s + " ");
      }
-     System.out.println("...or, as a single string...");
-     System.out.println("" + sb);
+     logger.info("...or, as a single string...");
+     logger.info("" + sb);
      ProcessBuilder builder = null;
      builder = new ProcessBuilder(commands);
      Map<String, String> env = builder.environment();
@@ -60,7 +64,7 @@ public class CommandLineInvoker {
      try {
          BufferedWriter writer = null;
          if (stdoutPath != null) {
-             System.out.println("Stdout filename: " + stdoutPath);
+             logger.info("Stdout filename: " + stdoutPath);
              writer = new BufferedWriter(new FileWriter(stdoutPath));
          }
          this.process = builder.start();
@@ -69,7 +73,7 @@ public class CommandLineInvoker {
              process.getInputStream()));
          String line;
          while ((line = reader.readLine()) != null) {
-             System.out.println(line);
+             logger.info(line);
              if (writer != null) {
                  writer.write(line + "\n");
              }
@@ -80,7 +84,7 @@ public class CommandLineInvoker {
          }
 
          int status = process.waitFor();
-         System.out.println("process status: " + status);
+         logger.info("process status: " + status);
 
          if (status == 0) {
              result = true;
@@ -90,7 +94,7 @@ public class CommandLineInvoker {
          }
 
      } catch (Exception e) {
-         System.out.println("OsuCommandRunner tried to run : " + sb.toString() + ": " + e.getMessage());
+         logger.info("OsuCommandRunner tried to run : " + sb.toString() + ": " + e.getMessage());
          e.printStackTrace();
          Throwable t = e.getCause();
          logNestedException(t);
@@ -107,16 +111,16 @@ public class CommandLineInvoker {
     public boolean runCommandLine(List<String> commands, OutputMonitor outputMonitor){
         // ddh preOperation();
       boolean result = false;
-      System.out.println("Execute Command: " + commands);
+      logger.info("Execute Command: " + commands);
      
       StringBuilder sb = new StringBuilder();
-      System.out.println("command array given as : " + NL);
+      logger.info("command array given as : " + NL);
       for (String s : commands){
-          System.out.println("  " + s);
+          logger.info("  " + s);
           sb.append(s + " ");
       }
-      System.out.println("...or, as a single string...");
-      System.out.println("" + sb);
+      logger.info("...or, as a single string...");
+      logger.info("" + sb);
       ProcessBuilder builder = null;
       builder = new ProcessBuilder(commands);
       Map<String, String> env = builder.environment();
@@ -133,13 +137,13 @@ public class CommandLineInvoker {
               process.getInputStream()));
           String line;
           while ((line = reader.readLine()) != null) {
-              //System.out.println(line);
+              //logger.info(line);
               outputMonitor.acceptOutput(line);
           }
           
 
           int status = process.waitFor();
-          System.out.println("process status: " + status);
+          logger.info("process status: " + status);
 
           if (status == 0) {
               result = true;
@@ -149,7 +153,7 @@ public class CommandLineInvoker {
           }
 
       } catch (Exception e) {
-          System.out.println("OsuCommandRunner tried to run : " + sb.toString() + ": " + e.getMessage());
+          logger.info("OsuCommandRunner tried to run : " + sb.toString() + ": " + e.getMessage());
           e.printStackTrace();
           Throwable t = e.getCause();
           logNestedException(t);
@@ -158,7 +162,7 @@ public class CommandLineInvoker {
   }
  public void logNestedException(Throwable t){
      if (null != t){
-        System.out.println("nestedException was " + t.getMessage());
+        logger.info("nestedException was " + t.getMessage());
         t.printStackTrace();
         Throwable t2 = t.getCause();
         logNestedException(t2);

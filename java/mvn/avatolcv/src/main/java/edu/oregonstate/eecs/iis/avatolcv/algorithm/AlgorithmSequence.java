@@ -3,6 +3,9 @@ package edu.oregonstate.eecs.iis.avatolcv.algorithm;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 
@@ -29,7 +32,7 @@ public class AlgorithmSequence {
     private String manuallyProvidedSegmentationLabelsDir = null;
     private String manuallyProvidedOrientationLabelsDir = null;
     private String manuallyProvidedScoringLabelsDir = null;
-    
+    private static final Logger logger = LogManager.getLogger(AlgorithmSequence.class);
     public AlgorithmSequence(){
         
     }
@@ -63,9 +66,9 @@ public class AlgorithmSequence {
         currentStage = seg;
     }
     public void enableOrientation() throws AvatolCVException {
-        System.out.println("enabling orientation... the following should match:");
-        System.out.println("seg:          " + seg);
-        System.out.println("currentStage: " + currentStage);
+        logger.info("enabling orientation... the following should match:");
+        logger.info("seg:          " + seg);
+        logger.info("currentStage: " + currentStage);
         if (scoring.equals(currentStage)){
         	// backed up , need to 
         	if (stages.contains(seg)){
@@ -83,12 +86,12 @@ public class AlgorithmSequence {
     	else if (seg.equals(currentStage)){
             // need to work off output of segmentation
             inputDir = this.segmentedDataDir;
-            System.out.println("matched");
+            logger.info("matched");
         }
         else {
             // need to work off raw data
             inputDir = this.rawDataDir;
-            System.out.println("didn't match");
+            logger.info("didn't match");
         }
         supplementatlInputDir = this.manuallyProvidedOrientationLabelsDir;
         outputDir = this.orientedDataDir;

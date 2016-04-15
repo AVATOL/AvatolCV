@@ -158,7 +158,7 @@ public class BisqueDataSource implements DataSource {
         Hashtable<String, String> annotationIDforNameHash = new Hashtable<String, String>();
         for (BisqueImage bi : this.bisqueImagesForCurrentDataset){
             String imageID = bi.getResourceUniq();
-            System.out.println(imageID);
+            //System.out.println(imageID);
             List<BisqueAnnotation> annotations = annotationsForImageIdHash.get(imageID);
             
             for (BisqueAnnotation a : annotations){

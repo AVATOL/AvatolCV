@@ -34,9 +34,9 @@ public class UploadSessionTest extends TestCase {
             UploadSession us = new UploadSession();
             us.nextSession();
             Assert.assertEquals(1, us.getUploadSessionNumber());
-            us.addNewKeyValue("image1", new NormalizedKey("charx"), new NormalizedValue("val1"));
-            us.addNewKeyValue("image2", new NormalizedKey("charx"), new NormalizedValue("val2"));
-            us.reviseValueForKey("image3", new NormalizedKey("charx"), new NormalizedValue("val3"), new NormalizedValue("val1"));
+            us.addNewKeyValue("image1", new NormalizedKey("charx"), new NormalizedValue("val1"), null, null);
+            us.addNewKeyValue("image2", new NormalizedKey("charx"), new NormalizedValue("val2"), null, null);
+            us.reviseValueForKey("image3", new NormalizedKey("charx"), new NormalizedValue("val3"), new NormalizedValue("val1"), null, null);
             us.persist();
             List<UploadEvent> undoEvents = us.getEventsForUndo();
             Assert.assertEquals(3, undoEvents.size());
@@ -59,17 +59,17 @@ public class UploadSessionTest extends TestCase {
             UploadSession us = new UploadSession();
             us.nextSession(); 
             Assert.assertEquals(1, us.getUploadSessionNumber());
-            us.addNewKeyValue("image1", new NormalizedKey("charx"), new NormalizedValue("val1"));
-            us.addNewKeyValue("image2", new NormalizedKey("charx"), new NormalizedValue("val2"));
-            us.reviseValueForKey("image3", new NormalizedKey("charx"), new NormalizedValue("val3"), new NormalizedValue("val1"));
+            us.addNewKeyValue("image1", new NormalizedKey("charx"), new NormalizedValue("val1"), null, null);
+            us.addNewKeyValue("image2", new NormalizedKey("charx"), new NormalizedValue("val2"), null, null);
+            us.reviseValueForKey("image3", new NormalizedKey("charx"), new NormalizedValue("val3"), new NormalizedValue("val1"), null, null);
             us.persist();
             
             us.nextSession();
             Assert.assertEquals(2, us.getUploadSessionNumber());
-            us.addNewKeyValue("image1", new NormalizedKey("charx"), new NormalizedValue("val1"));
-            us.addNewKeyValue("image2", new NormalizedKey("charx"), new NormalizedValue("val2"));
-            us.reviseValueForKey("image3", new NormalizedKey("charx"), new NormalizedValue("val1"), new NormalizedValue("val3"));
-            us.addNewKeyValue("image4", new NormalizedKey("charx"), new NormalizedValue("val4"));
+            us.addNewKeyValue("image1", new NormalizedKey("charx"), new NormalizedValue("val1"), null, null);
+            us.addNewKeyValue("image2", new NormalizedKey("charx"), new NormalizedValue("val2"), null, null);
+            us.reviseValueForKey("image3", new NormalizedKey("charx"), new NormalizedValue("val1"), new NormalizedValue("val3"), null, null);
+            us.addNewKeyValue("image4", new NormalizedKey("charx"), new NormalizedValue("val4"), null, null);
             us.persist();
             
             List<UploadEvent> undoEvents = us.getEventsForUndo();

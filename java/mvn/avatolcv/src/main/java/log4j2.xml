@@ -2,10 +2,10 @@
 <Configuration status="WARN">
 	<Appenders>
 		<Console name="Console" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{3} - %msg%n"/>
 		</Console>
-		<File name="mainLog" fileName="logs/avatolCV.log" append="false" bufferedIO="true" immediateFlush="true" bufferSize="1024">
-				<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+		<File name="mainLog" fileName="../../../logs/avatolCV.log" append="false" bufferedIO="true" immediateFlush="true" bufferSize="1024">
+				<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{3} - %msg%n"/>
 		</File>
 	</Appenders>
 	<Loggers>
@@ -13,8 +13,45 @@
 			<AppenderRef ref="Console"/>
 			<AppenderRef ref="mainLog"/>
 		</Root>
-		<!-- <Logger name="edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX" level="debug" additivity="false">
+		<Logger name="edu.oregonstate.eecs.iis.avatolcv.javafxui" level="info" additivity="false">
+			<AppenderRef ref="mainLog"/>
+		</Logger>
+		<Logger name="edu.oregonstate.eecs.iis.avatolcv.algorithm" level="info" additivity="false">
+			<AppenderRef ref="mainLog"/>
 			<AppenderRef ref="Console"/>
-		</Logger> -->
+		</Logger>
+		<Logger name="edu.oregonstate.eecs.iis.avatolcv.core" level="info" additivity="false">
+			<AppenderRef ref="mainLog"/>
+		</Logger>
+		<Logger name="edu.oregonstate.eecs.iis.avatolcv.dataSource" level="info" additivity="false">
+			<AppenderRef ref="mainLog"/>
+		</Logger>
+		<Logger name="edu.oregonstate.eecs.iis.avatolcv.normalized" level="info" additivity="false">
+			<AppenderRef ref="mainLog"/>
+		</Logger>
+		<Logger name="edu.oregonstate.eecs.iis.avatolcv.results" level="info" additivity="false">
+			<AppenderRef ref="mainLog"/>
+		</Logger>
+		<Logger name="edu.oregonstate.eecs.iis.avatolcv.scoring" level="info" additivity="false">
+			<AppenderRef ref="mainLog"/>
+		</Logger>
+		<Logger name="edu.oregonstate.eecs.iis.avatolcv.session" level="info" additivity="false">
+			<AppenderRef ref="mainLog"/>
+		</Logger>
+		<Logger name="edu.oregonstate.eecs.iis.avatolcv.steps" level="info" additivity="false">
+			<AppenderRef ref="mainLog"/>
+		</Logger>
+		<Logger name="edu.oregonstate.eecs.iis.avatolcv.ui.javafx" level="info" additivity="false">
+			<AppenderRef ref="mainLog"/>
+		</Logger>
+		<Logger name="edu.oregonstate.eecs.iis.avatolcv.ws" level="info" additivity="false">
+			<AppenderRef ref="mainLog"/>
+		</Logger>
+		<Logger name="edu.oregonstate.eecs.iis.avatolcv.ws.bisque" level="info" additivity="false">
+			<AppenderRef ref="mainLog"/>
+		</Logger>
+		<Logger name="edu.oregonstate.eecs.iis.avatolcv.ws.morphobank" level="info" additivity="false">
+			<AppenderRef ref="mainLog"/>
+		</Logger>
 	</Loggers>
 </Configuration>

@@ -1,13 +1,15 @@
 package edu.oregonstate.eecs.iis.avatolcv.algorithm;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.Platform;
@@ -24,6 +26,7 @@ public class AlgorithmLauncher {
     private Algorithm algorithm = null;
     private String runConfigPath = null;
     private CommandLineInvoker invoker = null;
+    private static final Logger logger = LogManager.getLogger(AlgorithmLauncher.class);
 	public static void main(String[] args){
 	    if (args.length < 2){
 	        usage();
@@ -37,7 +40,7 @@ public class AlgorithmLauncher {
 	    }
 	    catch(AvatolCVException ace){
 	        ace.printStackTrace();
-	        System.out.println(ace.getMessage());
+	        logger.info(ace.getMessage());
 	        System.exit(1);
 	    }
 	    launcher.launch(null);
@@ -46,7 +49,7 @@ public class AlgorithmLauncher {
 
         @Override
         public void acceptOutput(String s) {
-           System.out.println(s);
+           logger.info(s);
         }
 	    
 	}
@@ -73,8 +76,8 @@ public class AlgorithmLauncher {
 	        this.algorithm = new Algorithm(lines,algPropertiesPath);
 	    }
 	    catch(Exception ex){
-	        System.out.println(ex.getMessage() + NL);
-	        System.out.println("problem : " + algPropertiesPath + " is not a valid algProperties file"+ NL);
+	        logger.info(ex.getMessage() + NL);
+	        logger.info("problem : " + algPropertiesPath + " is not a valid algProperties file"+ NL);
 	        System.exit(0);
 	    }
 		verifyRunConfigPath(runConfigPath);
@@ -86,6 +89,7 @@ public class AlgorithmLauncher {
 	    return this.invoker.isProcessRunning();
 	}
 	public void launch(OutputMonitor outputMonitor){
+	    
 	    if (null == outputMonitor){
 	        outputMonitor = new MyOutputMonitor();
 	    }
@@ -94,7 +98,7 @@ public class AlgorithmLauncher {
             String launchFile = this.algorithm.getLaunchFile();
             String algDir = this.algorithm.getParentDir();
             String launchFilePath = algDir + FILESEP + launchFile;
-
+            logger.info("launching algorithm with " + launchFilePath);
 
             List<String> commands = new ArrayList<String>();
             if (Platform.isWindows()){
@@ -103,10 +107,14 @@ public class AlgorithmLauncher {
             	//commands.add("cd " + algDir);
             	//commands.add("&");
             	if (launchFile.endsWith(".py")){
-            	    commands.add("python \"" + launchFilePath + "\" \"" + runConfigPath + "\"");
+            	    String command = "python \"" + launchFilePath + "\" \"" + runConfigPath + "\"";
+            	    commands.add(command);
+            	    logger.info("queued command: " + command);
             	}
             	else {
-            	    commands.add(launchFilePath + " " + runConfigPath);
+            	    String command = launchFilePath + " " + runConfigPath;
+            	    commands.add(command);
+            	    logger.info("queued command: " + command);
             	}
             }
             else {
@@ -119,10 +127,14 @@ public class AlgorithmLauncher {
             	String escapedLaunchFilePath = launchFilePath.replaceAll(" ", "\\\\ ");
                 String escapedArgs = runConfigPath.replaceAll(" ", "\\\\ ");
                 if (launchFile.endsWith(".py")){
-                    commands.add("python " + escapedLaunchFilePath + " " + escapedArgs);
+                    String command = "python " + escapedLaunchFilePath + " " + escapedArgs;
+                    commands.add(command);
+                    logger.info("queued command: " + command);
                 }
                 else {
-                    commands.add(escapedLaunchFilePath + " " + escapedArgs);
+                    String command = escapedLaunchFilePath + " " + escapedArgs;
+                    commands.add(command);
+                    logger.info("queued command: " + command);
                 }
             }
             
@@ -134,7 +146,7 @@ public class AlgorithmLauncher {
 	   
 	    catch(Exception e){
 	        e.printStackTrace();
-            System.out.println(NL + NL + e.getMessage());
+            logger.info(NL + NL + e.getMessage());
 	    }
 		
 	}

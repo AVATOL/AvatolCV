@@ -29,7 +29,7 @@ public class MBTestMBDataSource extends TestCase {
         points.add(p);
         a.setPoints(points);
         String result =  MorphobankDataSource.getAnnotationValueStringForAnnotation(a);
-        Assert.assertEquals("point:0.0,1.0",result);
+        Assert.assertEquals("point:0.0-1.0",result);
     }
 
     public void testGetAnnotationsValueString2Point() {
@@ -46,7 +46,7 @@ public class MBTestMBDataSource extends TestCase {
         points.add(p2);
         a.setPoints(points);
         String result =  MorphobankDataSource.getAnnotationValueStringForAnnotation(a);
-        Assert.assertEquals("point:0.0,1.0;3.3,4.4",result);
+        Assert.assertEquals("point:0.0-1.0;3.3-4.4",result);
     }
     public void testGetAnnotationsValueString() {
         MBAnnotation a = new MBAnnotation();
@@ -74,7 +74,7 @@ public class MBTestMBDataSource extends TestCase {
         annotations.add(a);
         annotations.add(a2);
         String result =  MorphobankDataSource.getAnnotationsValueString(annotations);
-        Assert.assertEquals("rectangle:0.0,1.0;3.3,4.4+point:5.5,6.6",result);
+        Assert.assertEquals("rectangle:0.0-1.0;3.3-4.4+point:5.5-6.6",result);
     }
     public void testGetAnnotationsValueStringNoAnnotations() {
         

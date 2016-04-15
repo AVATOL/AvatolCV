@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.Platform;
@@ -36,6 +39,7 @@ public class AlgorithmModules {
 	private List<Algorithm> segAlgs = new ArrayList<Algorithm>();
     private List<Algorithm> orientAlgs = new ArrayList<Algorithm>();
     private List<Algorithm> scoringAlgs = new ArrayList<Algorithm>();
+    private static final Logger logger = LogManager.getLogger(AlgorithmModules.class);
     public static AlgorithmModules instance = null;
     
     public static void init() throws AvatolCVException {
@@ -216,7 +220,7 @@ public class AlgorithmModules {
 		    }
 		}
 		else {
-		    System.out.println("no properties file exists in algorithm dir " + algDir.getName() + " for this platform.");
+		    logger.info("no properties file exists in algorithm dir " + algDir.getName() + " for this platform.");
 		}
 		
 	}

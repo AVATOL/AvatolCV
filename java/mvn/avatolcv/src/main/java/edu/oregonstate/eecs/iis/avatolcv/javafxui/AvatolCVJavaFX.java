@@ -73,7 +73,6 @@ public class AvatolCVJavaFX extends Application {
     @Override
     public void start(Stage stage)  {
         logger.info("Starting AvatolCV.");
-        
         try {
             if (startError.equals("")){
                 this.mainWindow = stage;
@@ -93,6 +92,7 @@ public class AvatolCVJavaFX extends Application {
                 stage.show();
             }
             else {
+                logger.info("Error :" + startError);
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error Dialog");
                 alert.setHeaderText("AvatolCV error on launch");

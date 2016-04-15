@@ -13,7 +13,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.ChoiceItem;
-import edu.oregonstate.eecs.iis.avatolcv.normalized.AnnotationCoordinates;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.PointAnnotations;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
@@ -118,7 +118,7 @@ public class ScoringRunStep implements Step {
             }
             else {
                 if (!this.sessionInfo.getChosenScoringAlgorithm().canTrainOnMultipleAnnotationsPerImage()){
-                    pointCoordinates = AnnotationCoordinates.getFirstAnnotation(pointCoordinates);
+                    pointCoordinates = PointAnnotations.getFirstAnnotation(pointCoordinates);
                 }
                 tif.addImageInfo(imagePath, value.toString(),  pointCoordinates, "" + sp.getTrainTestConcern(), "" + sp.getTrainTestConcernValue(mii));
             }

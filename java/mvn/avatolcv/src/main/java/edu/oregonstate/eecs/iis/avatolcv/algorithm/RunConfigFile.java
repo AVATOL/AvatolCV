@@ -11,9 +11,13 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.results.OutputImageSorter;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ModalImageInfo;
@@ -31,6 +35,7 @@ AvatolCV generates this line and the associated files entries(if any) due to inp
     userProvidedTrainImagesFile=<someAbsolutePath>/userProvidedTrainImagesFile.txt   
  */
 public class RunConfigFile {
+    private static final Logger logger = LogManager.getLogger(RunConfigFile.class);
     private static final String FILESEP = System.getProperty("file.separator");
     private static final String NL = System.getProperty("line.separator");
     private String pathOfSessionInputFiles = null;
@@ -52,7 +57,7 @@ public class RunConfigFile {
         this.algSequence = algSequence;
         this.scoringImages = scoringImages;
         this.pathOfSessionInputFiles = algSequence.getInputDir();
-        System.out.println("RunConfigFile sets pathOfSessionInputFiles as " + this.pathOfSessionInputFiles);
+        logger.info("RunConfigFile sets pathOfSessionInputFiles as " + this.pathOfSessionInputFiles);
         handleDependencies(alg);
         handleOptionalInputs(alg);
         
@@ -186,7 +191,7 @@ public class RunConfigFile {
    
     public void handleRequiredInputs(Algorithm alg, List<ModalImageInfo> scoringList) throws AvatolCVException {
         String algType = alg.getAlgType();
-        System.out.println("algType chosen is " + algType);
+        logger.info("algType chosen is " + algType);
         List<AlgorithmInputRequired> requiredInputs = alg.getRequiredInputs();
         // first create the entries for the file
         for (AlgorithmInputRequired air : requiredInputs){
@@ -229,7 +234,7 @@ public class RunConfigFile {
                 	if (!ImageInfo.isExcluded(imageID)){
                 		String pathWithMatchingImageID = getPathWithMatchingImageID(candidatesWithMatchedSuffix, imageID);
                     	if (null == pathWithMatchingImageID){
-                    		System.out.println("WARNING - Cannot find file to score with imageID " + imageID + " and reqiured suffix " + air.getSuffix() + " in "  + this.pathOfSessionInputFiles);
+                    		logger.warn("WARNING - Cannot find file to score with imageID " + imageID + " and reqiured suffix " + air.getSuffix() + " in "  + this.pathOfSessionInputFiles);
                     	}
                     	else {
                     		desiredFiles.add(pathWithMatchingImageID);
@@ -270,7 +275,7 @@ public class RunConfigFile {
     }
     
     public static void suffixFileSort(List<AlgorithmInput> inputs,  Hashtable<AlgorithmInput, List<String>> pathListHash, List<String> allPathsFromDir, String pathOfInputFiles) throws AvatolCVException {
-        System.out.println("suffixFileSort called with pathOfInputFiles as " + pathOfInputFiles);
+        logger.info("suffixFileSort called with pathOfInputFiles as " + pathOfInputFiles);
         if (allPathsFromDir.isEmpty()){
             throw new AvatolCVException("No input data present at " + pathOfInputFiles);
         }
@@ -366,24 +371,34 @@ public class RunConfigFile {
         inputs.addAll(optionalInputs);
         verifyUniqueSuffixes(inputs);
         
-        File dir = new File(algSequence.getSupplementalInputDir());
-        File[] files = dir.listFiles();
-        List<String> allPathsFromDir = new ArrayList<String>();
-        if (files.length > 0){
-            for (File f : files){
-            	if (!f.getName().startsWith(".")){
-            		String imageID = NormalizedImageInfo.getImageIDFromFilename(f.getName());
-                	if (!ImageInfo.isExcluded(imageID)){
-                		allPathsFromDir.add(f.getAbsolutePath());
-                	}
-            	}
+        String suppDir = algSequence.getSupplementalInputDir();
+        if (null == suppDir){
+            logger.error("optionalInput directory for " + alg.getAlgName() + " is null!");
+        }
+        else {
+            File dirFile = new File(suppDir);
+            if (!dirFile.isDirectory()){
+                logger.error("optionalInput directory for " + alg.getAlgName() + " does not exist!");
+            }
+            else {
+                File[] files = dirFile.listFiles();
+                List<String> allPathsFromDir = new ArrayList<String>();
+                if (files.length > 0){
+                    for (File f : files){
+                        if (!f.getName().startsWith(".")){
+                            String imageID = NormalizedImageInfo.getImageIDFromFilename(f.getName());
+                            if (!ImageInfo.isExcluded(imageID)){
+                                allPathsFromDir.add(f.getAbsolutePath());
+                            }
+                        }
+                    }
+                }
+                if (!allPathsFromDir.isEmpty()){
+                    suffixFileSort(inputs, pathListHash, allPathsFromDir, algSequence.getSupplementalInputDir());
+                }
             }
         }
-        
-        if (!allPathsFromDir.isEmpty()){
-            suffixFileSort(inputs, pathListHash, allPathsFromDir, algSequence.getSupplementalInputDir());
-        }
-        
+
         // generate a file list for each requiredInput
         for (AlgorithmInput air : optionalInputs){
             String path = getFileListPathnameForKey(air.getKey(), this.algSequence);

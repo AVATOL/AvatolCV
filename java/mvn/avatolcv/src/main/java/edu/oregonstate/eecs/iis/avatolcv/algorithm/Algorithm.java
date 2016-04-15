@@ -9,7 +9,11 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 /**
@@ -49,6 +53,7 @@ public class Algorithm {
 	protected List<String> algPropsEntriesNotYetConsumed = new ArrayList<String>();
 	private String path = null;
 	private String trainingLabelImageSuffix = "";
+	private static final Logger logger = LogManager.getLogger(Algorithm.class);
 	public Algorithm(List<String> lines, String path) throws AvatolCVException {
 	    this.path = path;
 	    File f = new File(path);
@@ -99,6 +104,7 @@ public class Algorithm {
         // try to access the key properties to make sure they are present.
         String launchFile = getLaunchFile();
         String algName = getAlgName();
+        logger.info("Algorithm present : " + algName + " with launch file " + launchFile);
         String algDescription = getAlgDescription();
         String algType = getAlgType();
 	}

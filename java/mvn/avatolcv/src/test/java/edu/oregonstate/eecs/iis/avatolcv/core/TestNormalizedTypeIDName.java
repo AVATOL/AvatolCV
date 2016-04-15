@@ -40,7 +40,7 @@ public class TestNormalizedTypeIDName extends TestCase {
         try {
             NormalizedTypeIDName tin = new NormalizedTypeIDName("type:|name");
             Assert.assertEquals("type", tin.getType());
-            Assert.assertEquals("ID_name", tin.getID());
+            Assert.assertEquals(NormalizedTypeIDName.ID_UNSPECIFIED, tin.getID());
             Assert.assertEquals("name", tin.getName());
         }
         catch(AvatolCVException ace){
@@ -53,7 +53,7 @@ public class TestNormalizedTypeIDName extends TestCase {
             NormalizedTypeIDName tin = new NormalizedTypeIDName("type:id|");
             Assert.assertEquals("type", tin.getType());
             Assert.assertEquals("id", tin.getID());
-            Assert.assertEquals("NAME_id", tin.getName());
+            Assert.assertEquals("id", tin.getName());
         }
         catch(AvatolCVException ace){
             Assert.fail(ace.getMessage());
@@ -64,7 +64,7 @@ public class TestNormalizedTypeIDName extends TestCase {
         try {
             NormalizedTypeIDName tin = new NormalizedTypeIDName("name");
             Assert.assertEquals(NormalizedTypeIDName.TYPE_UNSPECIFIED, tin.getType());
-            Assert.assertEquals("ID_name", tin.getID());
+            Assert.assertEquals(NormalizedTypeIDName.ID_UNSPECIFIED, tin.getID());
             Assert.assertEquals("name", tin.getName());
         }
         catch(AvatolCVException ace){
@@ -76,7 +76,7 @@ public class TestNormalizedTypeIDName extends TestCase {
         try {
             NormalizedTypeIDName tin = new NormalizedTypeIDName("|name");
             Assert.assertEquals(NormalizedTypeIDName.TYPE_UNSPECIFIED, tin.getType());
-            Assert.assertEquals("ID_name", tin.getID());
+            Assert.assertEquals(NormalizedTypeIDName.ID_UNSPECIFIED, tin.getID());
             Assert.assertEquals("name", tin.getName());
         }
         catch(AvatolCVException ace){
@@ -88,7 +88,7 @@ public class TestNormalizedTypeIDName extends TestCase {
         try {
             NormalizedTypeIDName tin = new NormalizedTypeIDName(":name");
             Assert.assertEquals(NormalizedTypeIDName.TYPE_UNSPECIFIED, tin.getType());
-            Assert.assertEquals("ID_name", tin.getID());
+            Assert.assertEquals(NormalizedTypeIDName.ID_UNSPECIFIED, tin.getID());
             Assert.assertEquals("name", tin.getName());
         }
         catch(AvatolCVException ace){
@@ -112,7 +112,7 @@ public class TestNormalizedTypeIDName extends TestCase {
         try {
             NormalizedTypeIDName tin = new NormalizedTypeIDName("type:name");
             Assert.assertEquals("type", tin.getType());
-            Assert.assertEquals("ID_name", tin.getID());
+            Assert.assertEquals(NormalizedTypeIDName.ID_UNSPECIFIED, tin.getID());
             Assert.assertEquals("name", tin.getName());
         }
         catch(AvatolCVException ace){
@@ -125,7 +125,7 @@ public class TestNormalizedTypeIDName extends TestCase {
             NormalizedTypeIDName tin = new NormalizedTypeIDName("id|");
             Assert.assertEquals(NormalizedTypeIDName.TYPE_UNSPECIFIED, tin.getType());
             Assert.assertEquals("id", tin.getID());
-            Assert.assertEquals("NAME_id", tin.getName());
+            Assert.assertEquals("id", tin.getName());
         }
         catch(AvatolCVException ace){
             Assert.fail(ace.getMessage());
@@ -137,7 +137,7 @@ public class TestNormalizedTypeIDName extends TestCase {
             NormalizedTypeIDName tin = new NormalizedTypeIDName(":id|");
             Assert.assertEquals(NormalizedTypeIDName.TYPE_UNSPECIFIED, tin.getType());
             Assert.assertEquals("id", tin.getID());
-            Assert.assertEquals("NAME_id", tin.getName());
+            Assert.assertEquals("id", tin.getName());
         }
         catch(AvatolCVException ace){
             Assert.fail(ace.getMessage());
