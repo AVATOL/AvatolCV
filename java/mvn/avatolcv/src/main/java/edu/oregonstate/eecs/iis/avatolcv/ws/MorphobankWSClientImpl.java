@@ -14,12 +14,15 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
+import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfo.MBAnnotation;
 import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.AnnotationInfoForSinglePoint;
@@ -46,6 +49,8 @@ public class MorphobankWSClientImpl implements MorphobankWSClient {
     private String password = "undefinedPassword";
     private static final String FILESEP = System.getProperty("file.separator");
     private boolean isAuthenticated = false;
+    private static final Logger logger = LogManager.getLogger(MorphobankWSClientImpl.class);
+
     public boolean authenticate(String name, String pw) throws MorphobankWSException{
         /*
          * http://morphobank.org/service.php/AVATOLCv/authenticateUser/username/irvine@eecs.oregonstate.edu/password/squonkmb
@@ -110,10 +115,12 @@ http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/userID/987
         List<MBMatrix> matrices = new ArrayList<MBMatrix>();
         Client client = ClientBuilder.newClient();
         String url = "http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/username/" + username + "/password/" + password;
+        String logUrl = url.replaceAll(password, "xxxxxxx");
         WebTarget webTarget = client.target(url);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
-            
+        
         Response response = invocationBuilder.get();
+        logger.info("accessed url " + logUrl);
         int status = response.getStatus();
         if (status!= 200){
             String reason = response.getStatusInfo().getReasonPhrase();
@@ -124,7 +131,7 @@ http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/userID/987
         if (ea.isError()){
             throw new MorphobankWSException("Error listing matrices for user : " + ea.getErrorMessage());
         }
-        System.out.println(jsonString);
+        logger.info("response : " + jsonString);
         ObjectMapper mapper = new ObjectMapper();
         try {
             MatrixInfo mi = mapper.readValue(jsonString, MatrixInfo.class);
@@ -162,10 +169,12 @@ http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/userID/987
         List<MBCharacter> characters = null;
         Client client = ClientBuilder.newClient();
         String url = "http://morphobank.org/service.php/AVATOLCv/getCharactersForMatrix/username/" + username + "/password/" + password + "/matrixID/" + matrixID;
+        String logUrl = url.replaceAll(password, "xxxxxxx");
         WebTarget webTarget = client.target(url);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
-            
+        
         Response response = invocationBuilder.get();
+        logger.info("accessed url " + logUrl);
         int status = response.getStatus();
         if (status!= 200){
             String reason = response.getStatusInfo().getReasonPhrase();
@@ -178,7 +187,7 @@ http://morphobank.org/service.php/AVATOLCv/getProjectsForUser/userID/987
             throw new MorphobankWSException("Error getting characters for matrix : " + ea.getErrorMessage());
         }
         
-        System.out.println(jsonString);
+        logger.info("response : " + jsonString);
         ObjectMapper mapper = new ObjectMapper();
         try {
             CharacterInfo ci = mapper.readValue(jsonString, CharacterInfo.class);
@@ -208,23 +217,25 @@ http://morphobank.org/service.php/AVATOLCv/getTaxaForMatrix/username/irvine@eecs
         List<MBTaxon> taxa = null;
         Client client = ClientBuilder.newClient();
         String url = "http://morphobank.org/service.php/AVATOLCv/getTaxaForMatrix/username/" + username + "/password/" + password + "/matrixID/" + matrixID;
+        String logUrl = url.replaceAll(password, "xxxxxxx");
         WebTarget webTarget = client.target(url);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
             
         Response response = invocationBuilder.get();
+        logger.info("accessed url " + logUrl);
         int status = response.getStatus();
         if (status!= 200){
             String reason = response.getStatusInfo().getReasonPhrase();
             throw new MorphobankWSException("error code " + status + " returned by " + thisMethodName + "... " + reason);
         }
         String jsonString = response.readEntity(String.class);
-        
+        logger.info("response : " + jsonString);
         ErrorCheck ea = new ErrorCheck(jsonString);
         if (ea.isError()){
             throw new MorphobankWSException("Error getting taxa for matrix : " + ea.getErrorMessage());
         }
         
-        System.out.println(jsonString);
+        
         ObjectMapper mapper = new ObjectMapper();
         try {
             TaxaInfo ti = mapper.readValue(jsonString, TaxaInfo.class);
@@ -265,10 +276,12 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
         List<MBCharStateValue> charStateValues = null;
         Client client = ClientBuilder.newClient();
         String url = "http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/" + username + "/password/" + password + "/matrixID/" + matrixID + "/characterID/" + charID + "/taxonID/" + taxonID;
+        String logUrl = url.replaceAll(password, "xxxxxxx");
         WebTarget webTarget = client.target(url);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
             
         Response response = invocationBuilder.get();
+        logger.info("accessed url " + logUrl);
         int status = response.getStatus();
         if (status!= 200){
             String reason = response.getStatusInfo().getReasonPhrase();
@@ -281,7 +294,7 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
             throw new MorphobankWSException("Error getting char states for cell : " + ea.getErrorMessage());
         }
         
-        System.out.println(jsonString);
+        logger.info("response : " + jsonString);
         ObjectMapper mapper = new ObjectMapper();
         try {
             CharStateInfo csi = mapper.readValue(jsonString, CharStateInfo.class);
@@ -309,10 +322,12 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
         List<MBMediaInfo> mediaInfo = null;
         Client client = ClientBuilder.newClient();
         String url = "http://morphobank.org/service.php/AVATOLCv/getMediaForCell/username/" + username + "/password/" + password + "/matrixID/" + matrixID + "/characterID/" + charID + "/taxonID/" + taxonID;
+        String logUrl = url.replaceAll(password, "xxxxxxx");
         WebTarget webTarget = client.target(url);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
             
         Response response = invocationBuilder.get();
+        logger.info("accessed url " + logUrl);
         int status = response.getStatus();
         if (status!= 200){
             String reason = response.getStatusInfo().getReasonPhrase();
@@ -325,7 +340,7 @@ http://morphobank.org/service.php/AVATOLCv/getCharStatesForCell/username/irvine@
             throw new MorphobankWSException("Error getting media for cell : " + ea.getErrorMessage());
         }
         
-        System.out.println(jsonString);
+        logger.info("response : " + jsonString);
         ObjectMapper mapper = new ObjectMapper();
         try {
             CellMediaInfo cmi = mapper.readValue(jsonString, CellMediaInfo.class);
@@ -360,10 +375,12 @@ NOTE - when there are multiplepoints, they are in an array:
         List<MBAnnotation> annotations = new ArrayList<MBAnnotation>();
         Client client = ClientBuilder.newClient();
         String url = "http://morphobank.org/service.php/AVATOLCv/getAnnotationsForCellMedia/username/" + username + "/password/" + password + "/matrixID/" + matrixID + "/characterID/" + charID + "/taxonID/" + taxonID + "/mediaID/" + mediaID;
+        String logUrl = url.replaceAll(password, "xxxxxxx");
         WebTarget webTarget = client.target(url);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
             
         Response response = invocationBuilder.get();
+        logger.info("accessed url " + logUrl);
         int status = response.getStatus();
         if (status!= 200){
             String reason = response.getStatusInfo().getReasonPhrase();
@@ -376,7 +393,7 @@ NOTE - when there are multiplepoints, they are in an array:
             throw new MorphobankWSException("Error getting annotations for cell media : " + ea.getErrorMessage());
         }
         
-        System.out.println(jsonString);
+        logger.info("response : " + jsonString);
         
         /*
          * PROBLEM - annotations of type point, polygon and rectangle all have different body forms that don't map so a consistent object structure to support jackson mapping.  
@@ -418,10 +435,12 @@ http://morphobank.org/service.php/AVATOLCv/getViewsForProject/username/irvine@ee
         List<MBView> views = null;
         Client client = ClientBuilder.newClient();
         String url = "http://morphobank.org/service.php/AVATOLCv/getViewsForProject/username/" + username + "/password/" + password + "/projectID/" + projectID;
+        String logUrl = url.replaceAll(password, "xxxxxxx");
         WebTarget webTarget = client.target(url);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
             
         Response response = invocationBuilder.get();
+        logger.info("accessed url " + logUrl);
         int status = response.getStatus();
         if (status!= 200){
             String reason = response.getStatusInfo().getReasonPhrase();
@@ -434,7 +453,7 @@ http://morphobank.org/service.php/AVATOLCv/getViewsForProject/username/irvine@ee
             throw new MorphobankWSException("Error getting views for project : " + ea.getErrorMessage());
         }
         
-        System.out.println(jsonString);
+        logger.info("response : " + jsonString);
         ObjectMapper mapper = new ObjectMapper();
         try {
             ViewInfo ai = mapper.readValue(jsonString, ViewInfo.class);
@@ -473,10 +492,12 @@ http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_med
             // first, use the sevice to get the url of the image
             Client client = ClientBuilder.newClient();
             String url = "http://morphobank.org/service.php/AVATOLCv/getMedia/username/" + username + "/password/" + password + "/mediaID/" + mediaID + "/version/" + type;
+            String logUrl = url.replaceAll(password, "xxxxxxx");
             WebTarget webTarget = client.target(url);
             Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
             
             Response response = invocationBuilder.get();
+            logger.info("accessed url " + logUrl);
             int status = response.getStatus();
             if (status!= 200){
                 String reason = response.getStatusInfo().getReasonPhrase();
@@ -489,11 +510,12 @@ http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_med
                 throw new MorphobankWSException("Error getting image for mediaID : " + ea.getErrorMessage());
             }
             
-            System.out.println(jsonString);
+            logger.info("response : " + jsonString);
             ObjectMapper mapper = new ObjectMapper();
         
             MediaUrlInfo mui = mapper.readValue(jsonString, MediaUrlInfo.class);
             String mediaUrl = mui.getMedia();
+            logUrl = mediaUrl.replaceAll(password, "xxxxxxx");
             //http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_media_284045_thumbnail.jpg
             String[] parts = ClassicSplitter.splitt(mediaUrl,'/');
             String filenameAtMB = parts[parts.length - 1];
@@ -512,6 +534,7 @@ http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_med
             webTarget = client.target(mediaUrl);
             invocationBuilder = webTarget.request();
             response = invocationBuilder.get();
+            logger.info("accessed url for loading image " + logUrl);
             status = response.getStatus();
             if (status!= 200){
                 String reason = response.getStatusInfo().getReasonPhrase();
@@ -555,23 +578,24 @@ http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_med
         // http://morphobank.org/service.php/AVATOLCv/recordScore/username/irvine@eecs.oregonstate.edu/password/***/matrixID/23331/characterID/1820895/taxonID/770536/stateID/4876140
         Client client = ClientBuilder.newClient();
         String url = "http://morphobank.org/service.php/AVATOLCv/recordScore/username/" + username + "/password/" + password + "/matrixID/" + matrixID + "/characterID/" + charID + "/taxonID/" + taxonID  + "/stateID/" + charStateID;
+        String logUrl = url.replaceAll(password, "xxxxxxx");
         WebTarget webTarget = client.target(url);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
         
         Response response = invocationBuilder.get();
+        logger.info("accessed url " + logUrl);
         int status = response.getStatus();
         if (status!= 200){
             String reason = response.getStatusInfo().getReasonPhrase();
             throw new MorphobankWSException("error code " + status + " returned by recordScore... " + reason);
         }
         String jsonString = response.readEntity(String.class);
-
+        logger.info("response : " + jsonString);
         ErrorCheck ea = new ErrorCheck(jsonString);
         if (ea.isError()){
             throw new MorphobankWSException("Error during recordScore : " + ea.getErrorMessage());
         }
         
-        System.out.println(jsonString);
         return true;
        
     }
@@ -581,23 +605,24 @@ http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_med
         
         Client client = ClientBuilder.newClient();
         String url = "http://morphobank.org/service.php/AVATOLCv/recordScore/username/" + username + "/password/" + password + "/matrixID/" + matrixID + "/cellID/" + cellID + "/stateID/" + charStateID;
+        String logUrl = url.replaceAll(password, "xxxxxxx");
         WebTarget webTarget = client.target(url);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
         
         Response response = invocationBuilder.get();
+        logger.info("accessed url " + logUrl);
         int status = response.getStatus();
         if (status!= 200){
             String reason = response.getStatusInfo().getReasonPhrase();
             throw new MorphobankWSException("error code " + status + " returned by recordScore... " + reason);
         }
         String jsonString = response.readEntity(String.class);
-
+        logger.info("response : " + jsonString);
         ErrorCheck ea = new ErrorCheck(jsonString);
         if (ea.isError()){
             throw new MorphobankWSException("Error during recordScore : " + ea.getErrorMessage());
         }
         
-        System.out.println(jsonString);
         return true;
     }
 }
