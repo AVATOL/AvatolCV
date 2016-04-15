@@ -14,8 +14,8 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmRunner;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.segmentation.BogusAlgorithmRunner;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
-import edu.oregonstate.eecs.iis.avatolcv.steps.ImageTransformReviewStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
+import edu.oregonstate.eecs.iis.obsolete.avatolcv.ImageTransformReviewStep;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.View;
 import edu.oregonstate.eecs.iis.obsolete.avatolcv.segmentation.SegmentationSessionData;
 

@@ -1,5 +1,8 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
@@ -10,6 +13,8 @@ public class LoginStep  extends Answerable implements Step {
     public String username = null;
     private String password = null;
     private SessionInfo sessionInfo = null;
+    private static final Logger logger = LogManager.getLogger(LoginStep.class);
+
     public LoginStep(SessionInfo sessionInfo){
         this.sessionInfo = sessionInfo;
     }
@@ -35,7 +40,7 @@ public class LoginStep  extends Answerable implements Step {
         if (!authenticated){
             throw new AvatolCVException("username " + this.username + " and password " + this.password + " not valid combination.");
         }
-       
+        logger.info("user is authenticated into data source");
     }
     public void setUsername(String s){
         this.username = s;

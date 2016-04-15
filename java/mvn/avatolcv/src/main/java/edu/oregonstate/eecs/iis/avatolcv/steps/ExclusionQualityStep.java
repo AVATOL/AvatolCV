@@ -2,6 +2,9 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
@@ -11,6 +14,8 @@ import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 public class ExclusionQualityStep extends Answerable implements Step {
     private SessionInfo sessionInfo = null;
     private ImagesForStep imagesForStep = null;
+    private static final Logger logger = LogManager.getLogger(ExclusionQualityStep.class);
+
     public ExclusionQualityStep(SessionInfo sessionInfo) throws AvatolCVException {
         this.sessionInfo = sessionInfo;
     }

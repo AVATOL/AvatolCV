@@ -5,7 +5,11 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.core.Defaults;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
@@ -22,6 +26,8 @@ public class DatasetChoiceStep extends Answerable implements Step {
     private List<DatasetInfo> datasets = null;
     private SessionInfo sessionInfo = null;
     private Hashtable<String,String> priorAnswers = null;
+    private static final Logger logger = LogManager.getLogger(DatasetChoiceStep.class);
+
     public DatasetChoiceStep(SessionInfo sessionInfo){
         this.sessionInfo = sessionInfo;
     }
@@ -42,11 +48,12 @@ public class DatasetChoiceStep extends Answerable implements Step {
     }
     public void setChosenDataset(String s) throws AvatolCVException {
         this.chosenDataset = null;
+        
         for (DatasetInfo di : this.datasets){
             String name = di.getName();
             if (name.equals(s)){
                 this.chosenDataset = di;
-                //this.sessionInfo.getDataSource().setChosenDataset(di);
+                logger.info("chosenDataset : " + s);
             }
         }
         if (this.chosenDataset == null){

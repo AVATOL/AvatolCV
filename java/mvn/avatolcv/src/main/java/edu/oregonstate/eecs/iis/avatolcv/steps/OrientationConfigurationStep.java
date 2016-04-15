@@ -2,6 +2,9 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
@@ -10,6 +13,8 @@ public class OrientationConfigurationStep extends Answerable implements Step {
     private SessionInfo sessionInfo = null;
     private boolean algChosen = false;
     private String algName = null;
+    private static final Logger logger = LogManager.getLogger(OrientationConfigurationStep.class);
+
     public OrientationConfigurationStep(SessionInfo sessionInfo){
         this.sessionInfo = sessionInfo;
     }
@@ -30,6 +35,7 @@ public class OrientationConfigurationStep extends Answerable implements Step {
     }
     public void setChosenAlgorithm(String algName){
         this.algName = algName;
+        
     }
     @Override
     public void init() throws AvatolCVException {
@@ -39,9 +45,11 @@ public class OrientationConfigurationStep extends Answerable implements Step {
     public void consumeProvidedData() throws AvatolCVException {
         if (this.algChosen){
             this.sessionInfo.setChosenOrientationAlgorithmName(this.algName);
+            logger.info("orientation algortihm chosen : " + algName);
         }
         else {
             this.sessionInfo.setChosenOrientationAlgorithmName(null);
+            logger.info("orientation algortihm skipped");
         }
     }
 

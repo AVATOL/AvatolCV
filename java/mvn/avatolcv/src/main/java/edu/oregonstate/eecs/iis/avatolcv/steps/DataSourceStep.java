@@ -1,5 +1,8 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.BisqueDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.FileSystemDataSource;
@@ -7,6 +10,8 @@ import edu.oregonstate.eecs.iis.avatolcv.datasource.MorphobankDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 
 public class DataSourceStep  extends Answerable implements Step {
+    private static final Logger logger = LogManager.getLogger(DataSourceStep.class);
+
     private enum DataSourceChoice {
         MORPHOBANK,
         BISQUE,
@@ -25,12 +30,15 @@ public class DataSourceStep  extends Answerable implements Step {
     }
 
     public void setDataSourceToMorphobank(){
+        logger.info("datasource set to : morphobank");
         choice = DataSourceChoice.MORPHOBANK;
     }
     public void activateBisqueDataSource(){
+        logger.info("datasource set to : bisque");
         choice = DataSourceChoice.BISQUE;
     }
     public void activateFileSystemDataSource(){
+        logger.info("datasource set to : file system");
         choice = DataSourceChoice.FILE_SYSTEM;
     }
     @Override

@@ -8,9 +8,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Hashtable;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.steps.ExclusionQualityStep;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class ImageInfo {
@@ -43,6 +47,7 @@ public class ImageInfo {
 	private String outputType = null;
 	private String extension = null;
 	private ImageInfo ancestorImage = null;
+    private static final Logger logger = LogManager.getLogger(ExclusionQualityStep.class);
     private static Hashtable<String, String> imageSizeNameHash = new Hashtable<String, String>();
     static {
         imageSizeNameHash.put(IMAGE_LARGE_WIDTH, IMAGE_LARGE_STRING);
@@ -201,6 +206,7 @@ public class ImageInfo {
 	public static void undoExcludeForDataset(String reason, String id) throws AvatolCVException {
 		if (isExcludedForDataset(id)){
 			String path =  AvatolCVFileSystem.getDatasetExclusionInfoFilePath(id);
+			logger.info("unexclude image for dataset : " + id);
 			deleteExclusionAtPathForReason(path, reason, id);
 		}
 	}
@@ -215,6 +221,7 @@ public class ImageInfo {
 	public static void undoExcludeForSession(String reason, String id) throws AvatolCVException {
 		if (isExcludedForSession(id)){
 			String path =  AvatolCVFileSystem.getSessionExclusionInfoFilePath(id);
+			
 			deleteExclusionAtPathForReason(path, reason, id);
 		}
 	}
@@ -242,10 +249,12 @@ public class ImageInfo {
 	}
 	public static void excludeForDataset(String reason, String ID) throws AvatolCVException {
 	    String path =  AvatolCVFileSystem.getDatasetExclusionInfoFilePath(ID);
+	    logger.info("exclude image for dataset : " + ID);
 	    excludeAtPath(path, reason);
 	}
 	 
 	public void excludeForSession(String reason) throws AvatolCVException {
+        logger.info("exclude image for session : " + this.ID);
 		excludeForSession(reason, this.ID);
 	}
 	public static void excludeForSession(String reason, String ID) throws AvatolCVException {

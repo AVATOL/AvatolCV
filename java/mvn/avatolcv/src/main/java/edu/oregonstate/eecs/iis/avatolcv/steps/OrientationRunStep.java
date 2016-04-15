@@ -2,6 +2,9 @@ package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import java.io.File;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmLauncher;
@@ -15,6 +18,8 @@ public class OrientationRunStep implements Step {
     private SessionInfo sessionInfo = null;
     private AlgorithmLauncher launcher = null;
     private RunConfigFile runConfigFile = null;
+    private static final Logger logger = LogManager.getLogger(OrientationRunStep.class);
+
     public OrientationRunStep(SessionInfo sessionInfo){
         this.sessionInfo = sessionInfo;
     }
@@ -43,6 +48,7 @@ public class OrientationRunStep implements Step {
         String path = AvatolCVFileSystem.getDatasetDir() + "skipRunConfigForOrientationON.txt";
         File f = new File(path);
         if (f.exists()){
+            logger.info("skipping runConfigForOrientation due to presence of " + path);
             return true;
         }
         return false;
@@ -55,7 +61,7 @@ public class OrientationRunStep implements Step {
         AlgorithmSequence algSequence = sessionInfo.getAlgorithmSequence();
         algSequence.enableOrientation();
         String runConfigPath = null;
-        
+        logger.info("running orientation algorithm ");
         if (useRunConfig) {
         	this.runConfigFile = new RunConfigFile(sa, algSequence, null);
             runConfigPath = this.runConfigFile.getRunConfigPath();
@@ -63,46 +69,18 @@ public class OrientationRunStep implements Step {
             if (!runConfigFile.exists()){
                 throw new AvatolCVException("runConfigFile path does not exist."); 
             }
+            logger.info("using runConfig file " + runConfigPath);
             this.launcher = new AlgorithmLauncher(sa, runConfigPath, true);
         }
         else {
             this.launcher = new AlgorithmLauncher(sa, runConfigPath, false);
         }
-        //String statusPath = rcf.getAlgorithmStatusPath();
-        //ProcessMonitor monitor = new ProcessMonitor(launcher, controller, statusPath);
-        //Thread t = new Thread(monitor);
-        //t.run();
         this.launcher.launch(controller);
     }
     public void cancelOrientation(){
         this.launcher.cancel();
+        logger.info("cancelled orientation algorithm run");
     }
-    /*
-    public class ProcessMonitor implements Runnable {
-        private AlgorithmLauncher launcher = null;
-        private String statusPath = null;
-        private OutputMonitor om = null;
-        public ProcessMonitor(AlgorithmLauncher launcher, OutputMonitor om, String statusPath){
-            this.launcher = launcher;
-            this.statusPath = statusPath;
-            this.om = om;
-        }
-        @Override
-        public void run() {
-            while (launcher.isProcessRunning()){
-                try {
-                    Thread.sleep(1000);
-                }
-                catch(Exception e){
-                    
-                }
-                String status = getStatus(statusPath);
-                //System.out.println(NL + "========================" + NL + "STATUS is " + status + NL + "========================" + NL);
-                this.pp.setMessage("", status);
-            }
-        }
-    }
-    */
     
     @Override
     public boolean isEnabledByPriorAnswers() {

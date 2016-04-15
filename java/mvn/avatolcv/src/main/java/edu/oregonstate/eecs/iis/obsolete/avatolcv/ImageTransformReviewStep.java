@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.steps;
+package edu.oregonstate.eecs.iis.obsolete.avatolcv;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -6,7 +6,8 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageTranformReviewData;
-import edu.oregonstate.eecs.iis.obsolete.avatolcv.View;
+import edu.oregonstate.eecs.iis.avatolcv.steps.Answerable;
+import edu.oregonstate.eecs.iis.avatolcv.steps.Step;
 
 public class ImageTransformReviewStep  extends Answerable implements Step {
 	private String view = null;	
