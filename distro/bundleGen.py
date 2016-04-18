@@ -60,7 +60,11 @@ def main():
         print "version for bundle {0} is {1}".format(bundle_name, version)
         bundle_zip_path = createGzippedTarFile(bundle_name, platform_code, version, distro_dir)
         sftp_connection.put(bundle_zip_path, preserve_mtime=True)
-        
+		
+    # copy up the new release notes
+	release_notes_path = os.path.join(distro_root_dir,'releaseNotes.txt')
+    sftp_connection.put(release_notes_path,preserve_mtime=True) 
+	
     # create the downloadManifest
     existing_filenames = sftp_connection.listdir()
     bundle_names = getAllBundlenames(distro_root_dir)
@@ -73,17 +77,31 @@ def main():
     if (len(download_manifest_entries) == 0):
         print "ERROR - download_manifest_entries is EMPTY, cannot generate new manifest!"
         exit()
-        
+    download_manifest_entries.append("releaseNotes.txt")    
     
     
 
-    # 
+    #  determine pathname of the new manifest
     most_recent_download_manifest_for_platform = getMostRecentDownloadManifestForPlatform(platform_code,existing_filenames)
     name_for_next_download_manifest_for_platform = getNextDownloadManifestName(most_recent_download_manifest_for_platform, platform_code)
     new_download_manifest_path = os.path.join(distro_root_dir,name_for_next_download_manifest_for_platform)
     
+	# write the header
     f = open(new_download_manifest_path, 'w')
     f.write('# ' + name_for_next_download_manifest_for_platform + '\n')
+	
+	# add in the latest release notes up until we hit a line that starts with '===='
+    release_notes_file = open(release_notes_path,'r')
+    release_notes_lines = release_notes_file.readlines()
+    release_notes_file.close()
+    for release_notes_line in release_notes_lines :
+        release_notes_line = release_notes_line.rstrip()
+        if release_notes_line.startswith('===='):
+            break
+        else :
+            f.write('# ' + release_notes_line + '\n')
+	
+	# write the bundle entries in
     for entry in download_manifest_entries:
         f.write(entry + '\n')
     f.close()

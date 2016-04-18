@@ -1,3 +1,5 @@
+20160418 AvatolCV Release Notes
+
 This release is the first drop for Andrea for running AvatolCV on Windows 10.
 
 It includes just the java code, the docs and modulesOSU.
@@ -6,3 +8,4 @@ Still need to test on Mac to validate recent adjustments.
 Known issues:
   - numerous minor bugs and issues, but onle one worth mentioning relevant to Morphobank datasets
   - Uploading scores is still broken pending Morphobank fix from Maria.
+==========================================================================
