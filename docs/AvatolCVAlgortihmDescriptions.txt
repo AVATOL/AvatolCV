@@ -1,0 +1,33 @@
+============================================
+algorithm name: partsScoring
+algorithm type: Deformable Part Model (DPM)
+============================================
+The best task for the DPM algorithm is to score presence and absence of "parts" in an image.  A "part" is any small component (e.g. tooth) of something larger (e.g. skull).  Furthermore, these "parts" should be spatially related to each other somehow.  An example is a bat skull and its teeth.  The teeth are the "parts" and they are spatially related to each other in a "U" or "V" shape.  One character of interest is the presence and absence of certain teeth in bat skulls.  The DPM algorithm exploits the spatial relationships of "parts" so it is important that the "parts" have some kind of consistent relationship across different images.
+
+============================================
+algorithm name: highClutterSegmenter
+algorithm type: HC-Search Segmentation
+============================================
+HC-Search segmentation is a special case algorithm that is best used in images with a lot of background clutter.  As an example, scanning electron microscope images of nematocysts usually contain significant background clutter such as cellular debris and mucus because it is extremely difficult to isolate individual nematocysts during image acquisition.  HC-Search segmentation would be appropriate for this case.  The HC-Search algorithm should not be used when the background is simple.  For instance, images of leaves placed against a uniform background (e.g. white background) are not a good candidate for HC-Search segmentation.  The HC-Search segmentation algorithm makes a trade-off of finding foreground objects in difficult images at the expense of imprecisely segmenting the object contour.
+
+============================================
+algorithm name: basicSegmenter
+algorithm type: 
+============================================
+documentation pending
+
+
+============================================
+algorithm name: basicOrientation
+algorithm type: 
+============================================
+documentation pending
+
+
+============================================
+algorithm name: shapeTextureScoring
+algorithm type: 
+============================================
+documentation pending
+
+
