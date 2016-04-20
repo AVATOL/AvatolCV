@@ -1,0 +1,9 @@
+#
+# darwin
+#
+#segmentationRunner.sh just references these:
+modules/3rdParty/darwin/drwn-1.8.0/bin
+modules/3rdParty/darwin/drwn-1.8.0/external/opencv/lib
+#
+#
+#
