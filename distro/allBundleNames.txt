@@ -1,4 +1,4 @@
 docs
 java
 modulesOSU
-#modules3rdParty
+modules3rdParty
