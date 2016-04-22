@@ -724,14 +724,7 @@ public class ResultsReviewSortable {
     public void undoSaveResults(){
         try {
             setDataSource();
-            boolean authenticated = false;
-            if (this.dataSource.isAuthenticated()){
-                authenticated = true;
-            }
-            else {
-                authenticated = authenticate();
-            }
-            if (!authenticated){
+            if (!verifyAuthentication()){
                 return;
             }
             Platform.runLater(() -> uploadProgress.setProgress(0.0));
@@ -810,17 +803,20 @@ public class ResultsReviewSortable {
             this.dataSource.setChosenDataset(di);
         }
     }
+    public boolean verifyAuthentication() throws AvatolCVException {
+        boolean authenticated = false;
+        if (this.dataSource.isAuthenticated()){
+            authenticated = true;
+        }
+        else {
+            authenticated = authenticate();
+        }
+        return authenticated;
+    }
     public void saveResults(){
         try {
             setDataSource();
-            boolean authenticated = false;
-            if (this.dataSource.isAuthenticated()){
-                authenticated = true;
-            }
-            else {
-                authenticated = authenticate();
-            }
-            if (!authenticated){
+            if (!verifyAuthentication()){
                 return;
             }
             
@@ -856,29 +852,36 @@ public class ResultsReviewSortable {
                     //Need to pass the normalized key and value for this row to Data source and ask if key exists for this image
                     NormalizedValue existingValueForKey = dataSource.getValueForKeyAtDatasourceForImage(normCharKey, imageID, trainTestConcern, trainTestConcernValue);
                     Node scoreLabel = (Node)resultsTable2.getWidget(imageID, COLNAME_SCORE);
-                    if (null == existingValueForKey){
-                        //add score
-                        boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
-                        if (result){
-                        	this.uploadSession.addNewKeyValue(imageID, normCharKey, newValue, trainTestConcern, trainTestConcernValue);
-                        	Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
-                        }
-                        else {
-                        	Platform.runLater(() -> dialog("cannot upload to add score for image " + name));
-                        }
-                        
+                    if (newValue.equals(existingValueForKey)){
+                        // don't need to upload
+                        Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
                     }
                     else {
-                        // revise score
-                        boolean result = dataSource.reviseValueForKey(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
-                        if (result){
-                        	this.uploadSession.reviseValueForKey(imageID, normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
-                        	Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
+                        if (null == existingValueForKey){
+                            //add score
+                            boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
+                            if (result){
+                                this.uploadSession.addNewKeyValue(imageID, normCharKey, newValue, trainTestConcern, trainTestConcernValue);
+                                Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
+                            }
+                            else {
+                                Platform.runLater(() -> dialog("cannot upload to add score for image " + name));
+                            }
+                            
                         }
                         else {
-                        	Platform.runLater(() -> dialog("cannot upload to revise score for image " + name));
+                            // revise score
+                            boolean result = dataSource.reviseValueForKey(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
+                            if (result){
+                                this.uploadSession.reviseValueForKey(imageID, normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
+                                Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
+                            }
+                            else {
+                                Platform.runLater(() -> dialog("cannot upload to revise score for image " + name));
+                            }
                         }
                     }
+                    
                     double percentDone = percentProgressPerRow * rowCount;
                     
                     
