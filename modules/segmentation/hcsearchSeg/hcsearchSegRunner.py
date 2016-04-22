@@ -102,10 +102,10 @@ def run_hc_search(input_dir, output_dir, time_bound, logs_dir, base_dir, infer_o
     stderr_logfile = os.path.join(logs_dir,
         'hcsearch_run_stderr_{0}.txt'.format(int(time.time())))
     application = []
-    HC_SEARCH_PATH = os.path.join('nematocyst/', 'HCSearch')
+    HC_SEARCH_BASE_PATH = 'nematocyst/'
     if platform.system() == 'Darwin': # Mac
         application = [
-        HC_SEARCH_PATH,
+        os.path.join(HC_SEARCH_BASE_PATH, 'HCSearch'),
         '{}'.format(input_dir),
         '{}'.format(output_dir),
         str(time_bound)]
@@ -125,7 +125,7 @@ def run_hc_search(input_dir, output_dir, time_bound, logs_dir, base_dir, infer_o
         # for Mac, have to separate arguments like this
     elif platform.system() == 'Windows': # Windows
         application = [
-        HC_SEARCH_PATH,
+        os.path.join(HC_SEARCH_BASE_PATH, 'HCSearch.exe'),
         '{}'.format(input_dir),
         '{}'.format(output_dir),
         str(time_bound)]
