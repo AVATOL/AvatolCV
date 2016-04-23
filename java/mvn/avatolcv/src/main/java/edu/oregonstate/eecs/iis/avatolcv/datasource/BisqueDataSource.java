@@ -402,4 +402,10 @@ public class BisqueDataSource implements DataSource {
     public List<String> filterBadSortCandidates(List<String> list) {
         return list;
     }
+    @Override
+    public void prepForUpload(List<String> charIDs,
+            List<String> trainTestConcernValueIDs) throws AvatolCVException {
+        // nothing to do
+        
+    }
 }

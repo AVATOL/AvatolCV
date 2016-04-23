@@ -48,4 +48,5 @@ public interface DataSource {
     boolean reviseValueForKey(String imageID, NormalizedKey key, NormalizedValue value, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException ;
     boolean addKeyValue(String imageID, NormalizedKey key, NormalizedValue value, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException ;
     List<String> filterBadSortCandidates(List<String> list);
+    void prepForUpload(List<String> charIDs, List<String> trainTestConcernValueIDs) throws AvatolCVException ;
 }

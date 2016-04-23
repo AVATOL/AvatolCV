@@ -55,7 +55,7 @@ public class MorphobankDataSource implements DataSource {
     private MorphobankImages morphobankImages = null;
     private NormalizedImageInfos niis = null;
     private SessionImages sessionImages = null;
-    private Hashtable<String, String> cellIDsForCellKeyHash = new Hashtable<String, String>();
+    private Hashtable<String, String> cellIDsForCellKeyHash = null;
     public MorphobankDataSource(){
         wsClient = new MorphobankWSClientImpl();
         mbDataFiles = new MorphobankDataFiles();
@@ -513,15 +513,15 @@ public class MorphobankDataSource implements DataSource {
                 return null;
             }
             MBCharStateValue csv = charStateValues.get(0);
-            String cellID = csv.getCellID();
-            if (null == cellID){
-                return null;
-            }
-            if ("".equals(cellID)){
-                return null;
-            }
-            String taxonID = trainTestConcernValue.getID();
-            cellIDsForCellKeyHash.put(getKeyForCell(charID, taxonID), cellID);
+            //String cellID = csv.getCellID();
+            //if (null == cellID){
+            //    return null;
+            //}
+            //if ("".equals(cellID)){
+            //    return null;
+            //}
+            //String taxonID = trainTestConcernValue.getID();
+            //cellIDsForCellKeyHash.put(getKeyForCell(charID, taxonID), cellID);
             String charStateID = csv.getCharStateID();
             String charStateName = null;
             if (null == this.charactersForMatrix){
@@ -536,10 +536,13 @@ public class MorphobankDataSource implements DataSource {
                 }
             }
             if (null == charStateName){
-                return new NormalizedValue(charStateID);
+                return null;
+            }
+            else if (charStateName.equals("unscored")){
+                return null;
             }
             else {
-                return new NormalizedValue("charState:" + charStateID + "|" + charStateName);
+                return new NormalizedValue("characterState:" + charStateID + "|" + charStateName);
             }
         }
         catch(MorphobankWSException e){
@@ -553,6 +556,9 @@ public class MorphobankDataSource implements DataSource {
 	    try {
 	        String matrixID = this.chosenDataset.getID();
 	        String charStateID = value.getID();
+	        if ("?".equals(charStateID)){
+	            charStateID = "null";
+	        }
 	        String charID = key.getID();
 	        String taxonID = trainTestConcernValue.getID();
 	        String cellID = cellIDsForCellKeyHash.get(getKeyForCell(charID, taxonID));
@@ -571,6 +577,9 @@ public class MorphobankDataSource implements DataSource {
 	        String matrixID = this.chosenDataset.getID();
 	        String taxonID = trainTestConcernValue.getID();
 	        String charStateID = value.getID();
+	        if ("?".equals(charStateID)){
+                charStateID = "null";
+            }
 	        String charID = key.getID();
 	        wsClient.addNewScore(matrixID, charID, taxonID, charStateID);
 	        return true;
@@ -589,5 +598,42 @@ public class MorphobankDataSource implements DataSource {
             }
         }
         return result;
+    }
+    private void loadCellIDs(List<String> charIDs, List<String> trainTestConcernValueIDs) throws AvatolCVException {
+        if (null == cellIDsForCellKeyHash){
+            cellIDsForCellKeyHash = new Hashtable<String, String>();
+            try {
+                String matrixID = this.chosenDataset.getID();
+                for (String charID : charIDs){
+                    for (String trainTestConcernValueID : trainTestConcernValueIDs){
+                        List<MBCharStateValue> charStateValues = wsClient.getCharStatesForCell(matrixID, charID, trainTestConcernValueID);
+                        // really only need to determine if there is at least one
+                        if (null == charStateValues){
+                            continue;
+                        }
+                        if (charStateValues.size() == 0){
+                            continue;
+                        }
+                        MBCharStateValue csv = charStateValues.get(0);
+                        String cellID = csv.getCellID();
+                        if (null == cellID){
+                            continue;
+                        }
+                        if ("".equals(cellID)){
+                            continue;
+                        }
+                        
+                        cellIDsForCellKeyHash.put(getKeyForCell(charID, trainTestConcernValueID), cellID);
+                    }
+                }
+            }
+            catch(MorphobankWSException e){
+                throw new AvatolCVException("problem trying to collect cellIDs in preparation for upload: " + e.getMessage(), e);
+            }
+        }
+    }
+    @Override
+    public void prepForUpload(List<String> charIDs, List<String> trainTestConcernValueIDs) throws AvatolCVException {
+        loadCellIDs(charIDs, trainTestConcernValueIDs);
     }
 }

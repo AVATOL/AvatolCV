@@ -7,6 +7,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -65,6 +68,7 @@ import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
+import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class ResultsReviewSortable {
@@ -113,6 +117,8 @@ public class ResultsReviewSortable {
     private String username = null;
     private String password = null;
     ScoringInfoFile scoringInfoFile = null;
+    private static final Logger logger = LogManager.getLogger(ResultsReviewSortable.class);
+
     public ResultsReviewSortable(){
     }
     public void init(AvatolCVJavaFX mainScreen, Stage mainWindow, String runName) throws AvatolCVException {
@@ -727,6 +733,7 @@ public class ResultsReviewSortable {
             if (!verifyAuthentication()){
                 return;
             }
+            prepForUpload();
             Platform.runLater(() -> uploadProgress.setProgress(0.0));
             List<UploadEvent> events = this.uploadSession.getEventsForUndo();
             double count = events.size();
@@ -737,9 +744,11 @@ public class ResultsReviewSortable {
                 if (event.wasNewKey()){
                     // for now, since there's no web service to remove a key (true?), just do the revise
                     this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
+                    logger.info("upload UNDO : " + event.getImageID() + " " + event.getKey().getName() + " " + event.getOrigValue().getName() + " - REVERTING TO PRIOR VALUE ");
                 }
                 else {
                     this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
+                    logger.info("upload UNDO : " + event.getImageID() + " " + event.getKey().getName() + " " + event.getOrigValue().getName() + " - REVERTING TO PRIOR VALUE ");
                 }
                 double percentDone = percentProgressPerEvent * curEvent;
                 Platform.runLater(() -> uploadProgress.setProgress(percentDone));
@@ -813,12 +822,31 @@ public class ResultsReviewSortable {
         }
         return authenticated;
     }
+    private void prepForUpload() throws AvatolCVException {
+        List<String> imageIDs = resultsTable2.getImageIDsInCurrentOrder();
+        List<String> charIDs = new ArrayList<String>();
+        List<String> ttConcernValueIDs = new ArrayList<String>();
+        for (String imageID : imageIDs){
+            NormalizedKey normCharKey = tif.getNormalizedCharacter();
+            NormalizedValue trainTestConcernValue = scoringInfoFile.getTrainTestConcernValueForImageID(imageID);
+            String charID = normCharKey.getID();
+            String ttConcernValueID = trainTestConcernValue.getID();
+            if (!charIDs.contains(charID)){
+                charIDs.add(charID);
+            }
+            if (!ttConcernValueIDs.contains(ttConcernValueID)){
+                ttConcernValueIDs.add(ttConcernValueID);
+            }
+        }
+        this.dataSource.prepForUpload(charIDs, ttConcernValueIDs);
+    }
     public void saveResults(){
         try {
             setDataSource();
             if (!verifyAuthentication()){
                 return;
             }
+            prepForUpload();
             
             // list all the answers above threshold
             List<String> imageIDs = resultsTable2.getImageIDsInCurrentOrder();
@@ -851,14 +879,19 @@ public class ResultsReviewSortable {
                     NormalizedValue newValue = sif.getScoreValueForImageID(imageID);
                     //Need to pass the normalized key and value for this row to Data source and ask if key exists for this image
                     NormalizedValue existingValueForKey = dataSource.getValueForKeyAtDatasourceForImage(normCharKey, imageID, trainTestConcern, trainTestConcernValue);
+                    logger.info("################################################################");
+                    logger.info("normCharKey: " + normCharKey + " trainTestConcernValue: " + trainTestConcernValue + " newValue: " + newValue + " existingValueForKey: " + existingValueForKey);
+                    logger.info("################################################################");
                     Node scoreLabel = (Node)resultsTable2.getWidget(imageID, COLNAME_SCORE);
                     if (newValue.equals(existingValueForKey)){
                         // don't need to upload
+                        logger.info("upload: " + imageID + " " + normCharKey.getName() + " " + newValue.getName() + " - new value same as old, SKIPPING ");
                         Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
                     }
                     else {
                         if (null == existingValueForKey){
                             //add score
+                            logger.info("upload: " + imageID + " " + normCharKey.getName() + " " + newValue.getName() + " - add NEW score ");
                             boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
                             if (result){
                                 this.uploadSession.addNewKeyValue(imageID, normCharKey, newValue, trainTestConcern, trainTestConcernValue);
@@ -871,6 +904,7 @@ public class ResultsReviewSortable {
                         }
                         else {
                             // revise score
+                            logger.info("upload: " + imageID + " " + normCharKey.getName() + " " + newValue.getName() + " - REVISE score ");
                             boolean result = dataSource.reviseValueForKey(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
                             if (result){
                                 this.uploadSession.reviseValueForKey(imageID, normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
