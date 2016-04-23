@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
@@ -21,6 +24,7 @@ import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionImages;
 import edu.oregonstate.eecs.iis.avatolcv.session.DataFilter.FilterItem;
+import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ResultsReviewSortable;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
@@ -56,6 +60,8 @@ public class MorphobankDataSource implements DataSource {
     private NormalizedImageInfos niis = null;
     private SessionImages sessionImages = null;
     private Hashtable<String, String> cellIDsForCellKeyHash = null;
+    private static final Logger logger = LogManager.getLogger(MorphobankDataSource.class);
+
     public MorphobankDataSource(){
         wsClient = new MorphobankWSClientImpl();
         mbDataFiles = new MorphobankDataFiles();
@@ -622,7 +628,7 @@ public class MorphobankDataSource implements DataSource {
                         if ("".equals(cellID)){
                             continue;
                         }
-                        
+                        logger.info("getting cell id for charID: " + charID + " trainTestConcernValueID: " +  trainTestConcernValueID + "  cellID: " + cellID);
                         cellIDsForCellKeyHash.put(getKeyForCell(charID, trainTestConcernValueID), cellID);
                     }
                 }
