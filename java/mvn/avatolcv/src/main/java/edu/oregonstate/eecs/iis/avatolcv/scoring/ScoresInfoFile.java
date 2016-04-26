@@ -82,7 +82,7 @@ public class ScoresInfoFile {
 		for (int j = 0; j < confCount; j++){
 			String key = pathname+this.valuesList.get(j);
 			String val = parts[i++];
-			System.out.println("key " + key + "   val " + val);
+			//System.out.println("key " + key + "   val " + val);
 			this.confidenceHash.put(key, val);
 		}
 	}

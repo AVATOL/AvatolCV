@@ -274,15 +274,13 @@ public class FileSystemDataSource implements DataSource {
     public boolean reviseValueForKey(String imageID, NormalizedKey key,
             NormalizedValue value, NormalizedKey trainTestConcern,
             NormalizedValue trainTestConcernValue) throws AvatolCVException {
-        // TODO Auto-generated method stub
-        return false;
+        throw new AvatolCVException("reviseValueForKey not yet implemented for FileSystemDataSource");
     }
     @Override
     public boolean addKeyValue(String imageID, NormalizedKey key,
             NormalizedValue value, NormalizedKey trainTestConcern,
             NormalizedValue trainTestConcernValue) throws AvatolCVException {
-        // TODO Auto-generated method stub
-        return false;
+        throw new AvatolCVException("addValueForKey not yet implemented for FileSystemDataSource");
     }
     @Override
     public List<String> filterBadSortCandidates(List<String> list) {
@@ -293,6 +291,16 @@ public class FileSystemDataSource implements DataSource {
             List<String> trainTestConcernValueIDs) throws AvatolCVException {
         // nothing to do
         
+    }
+    @Override
+    public boolean deleteScoreForKey(String imageID, NormalizedKey key,
+            NormalizedKey trainTestConcern,
+            NormalizedValue trainTestConcernValue) throws AvatolCVException {
+        throw new AvatolCVException("deleteScoreForKey not yet implemented for FileSystemDataSource");
+    }
+    @Override
+    public boolean groupByTrainTestConcernValueAndVoteForUpload() {
+        return false;
     }
 
 }

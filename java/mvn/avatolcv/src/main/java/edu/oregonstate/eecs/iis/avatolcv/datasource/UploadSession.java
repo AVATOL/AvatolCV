@@ -17,6 +17,8 @@ import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class UploadSession {
     private static final String NL = System.getProperty("line.separator");
+    private static final String TYPE_NEW = "NEW";
+    private static final String TYPE_REVISE = "REVISE";
     private List<UploadEvent> events = new ArrayList<UploadEvent>();
     private int uploadSessionNumber = 0;
     
@@ -32,15 +34,16 @@ public class UploadSession {
                 while (null != (line = reader.readLine())){
                     String[] parts = ClassicSplitter.splitt(line, ',');
                     String sessionNumber = parts[0];
-                    String imageID = parts[1];
-                    String key = parts[2];
-                    String val = parts[3];
-                    String origVal = parts[4];
-                    String trainTestConcern = parts[5];
-                    String trainTestConcernValue = parts[6];
+                    String type = parts[1];
+                    String imageID = parts[2];
+                    String key = parts[3];
+                    String val = parts[4];
+                    String origVal = parts[5];
+                    String trainTestConcern = parts[6];
+                    String trainTestConcernValue = parts[7];
                     Integer sessionNumInteger = new Integer(sessionNumber);
                     uploadSessionNumber = sessionNumInteger.intValue();
-                    if ("null".equals(origVal)){
+                    if (type.equals(TYPE_NEW)){
                         addNewKeyValue(uploadSessionNumber, imageID, new NormalizedKey(key), new NormalizedValue(val), new NormalizedKey(trainTestConcern), new NormalizedValue(trainTestConcernValue));
                     }
                     else {
@@ -97,7 +100,7 @@ public class UploadSession {
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(path));
                 for (UploadEvent event : events){
-                    writer.write(event.getUploadSessionNumber() + "," + event.getImageID() + "," + event.getKey() + "," + event.getVal() + "," + event.getOrigValue()  + "," + event.getTrainTestConcern()  + "," + event.getTrainTestConcernValue() + NL);
+                    writer.write(event.getUploadSessionNumber() + "," + event.getType() + "," + event.getImageID() + "," + event.getKey() + "," + event.getVal() + "," + event.getOrigValue()  + "," + event.getTrainTestConcern()  + "," + event.getTrainTestConcernValue() + NL);
                 }
                 writer.close();
             }
@@ -143,6 +146,12 @@ public class UploadSession {
         }
         public boolean wasNewKey(){
             return this.newKey;
+        }
+        public String getType(){
+            if (wasNewKey()){
+                return TYPE_NEW;
+            }
+            return TYPE_REVISE;
         }
         public NormalizedValue getOrigValue() throws AvatolCVException {
             if (null == this.oldValue){

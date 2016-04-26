@@ -408,4 +408,20 @@ public class BisqueDataSource implements DataSource {
         // nothing to do
         
     }
+    @Override
+    public boolean deleteScoreForKey(String imageID, NormalizedKey key,
+            NormalizedKey trainTestConcern,
+            NormalizedValue trainTestConcernValue) throws AvatolCVException {
+        try {
+            boolean result = this.wsClient.reviseAnnotation(imageID, key.getName(), "");
+            return result;
+        }
+        catch(BisqueWSException e){
+            throw new AvatolCVException("problem deleting value for key " + key.getName(), e);
+        }
+    }
+    @Override
+    public boolean groupByTrainTestConcernValueAndVoteForUpload() {
+        return false;
+    }
 }

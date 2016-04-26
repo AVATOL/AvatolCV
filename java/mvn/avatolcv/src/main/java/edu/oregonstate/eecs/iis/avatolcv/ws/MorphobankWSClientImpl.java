@@ -620,6 +620,31 @@ http://www.morphobank.org/media/morphobank3/images/2/8/4/0/53727_media_files_med
         logger.info("response : " + jsonString);
         ErrorCheck ea = new ErrorCheck(jsonString);
         if (ea.isError()){
+            throw new MorphobankWSException("Error during reviseScore : " + ea.getErrorMessage());
+        }
+        
+        return true;
+    }
+    @Override
+    public boolean deleteScore(String matrixID, String cellID)
+            throws MorphobankWSException {
+        Client client = ClientBuilder.newClient();
+        String url = "http://morphobank.org/service.php/AVATOLCv/deleteScore/username/" + username + "/password/" + password + "/matrixID/" + matrixID + "/cellID/" + cellID;
+        String logUrl = url.replaceAll(password, "xxxxxxx");
+        WebTarget webTarget = client.target(url);
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+        
+        Response response = invocationBuilder.get();
+        logger.info("accessed url " + logUrl);
+        int status = response.getStatus();
+        if (status!= 200){
+            String reason = response.getStatusInfo().getReasonPhrase();
+            throw new MorphobankWSException("error code " + status + " returned by deleteScore... " + reason);
+        }
+        String jsonString = response.readEntity(String.class);
+        logger.info("response : " + jsonString);
+        ErrorCheck ea = new ErrorCheck(jsonString);
+        if (ea.isError()){
             throw new MorphobankWSException("Error during recordScore : " + ea.getErrorMessage());
         }
         

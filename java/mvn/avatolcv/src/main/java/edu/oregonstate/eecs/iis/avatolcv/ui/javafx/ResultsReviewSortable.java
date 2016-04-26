@@ -63,15 +63,17 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.PointAsPercent;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTableSortable;
+import edu.oregonstate.eecs.iis.avatolcv.results.VotingUploader;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
-public class ResultsReviewSortable {
+public class ResultsReviewSortable implements ProgressPresenter {
     public static final String COLNAME_IMAGE = "image";
     public static final String COLNAME_TRUTH = "truth";
     public static final String COLNAME_SCORE = "score";
@@ -327,7 +329,7 @@ public class ResultsReviewSortable {
                     iv.setFitWidth(LARGE_IMAGE_FIT_WIDTH);
                     int boundWidth = (int)iv.getBoundsInParent().getWidth();
                     int boundHeight = (int)iv.getBoundsInParent().getHeight();
-                    System.out.println("boundWidth " + boundWidth + " boundHeight " + boundHeight);
+                    //System.out.println("boundWidth " + boundWidth + " boundHeight " + boundHeight);
                     AnchorPane ap = new AnchorPane();
                     ap.getChildren().add(iv);
                     drawCoordinates(ap, pointAnnotations, boundWidth, boundHeight);
@@ -526,7 +528,7 @@ public class ResultsReviewSortable {
     		scoreLabelForImageIDHash.put(imageID, scoreLabel);
     		resultsTable2.addWidgetForColumn(imageID, COLNAME_SCORE, scoreLabel);
     		
-    		System.out.println("getting confidence for ImageValue path(key) and value: " + path + ";" + scoringConcernValue);
+    		//System.out.println("getting confidence for ImageValue path(key) and value: " + path + ";" + scoringConcernValue);
     		String conf = sif.getConfidenceForImageValue(path, normalizedScoringConcernValue);
     		String trimmedScoreConf = limitToTwoDecimalPlaces(conf);
     		resultsTable2.addValueForColumn(imageID, COLNAME_CONFIDENCE, trimmedScoreConf);
@@ -563,7 +565,7 @@ public class ResultsReviewSortable {
             ImageView iv = new ImageView(image);
             int boundWidth = (int)iv.getBoundsInParent().getWidth();
             int boundHeight = (int)iv.getBoundsInParent().getHeight();
-            System.out.println("boundWidth " + boundWidth + " boundHeight " + boundHeight);
+            //System.out.println("boundWidth " + boundWidth + " boundHeight " + boundHeight);
             AnchorPane apForThumbnail = new AnchorPane();
             apForThumbnail.getChildren().add(iv);
             PointAnnotations pointAnnotations = sif.getAnnotationCoordinates(path);
@@ -618,7 +620,7 @@ public class ResultsReviewSortable {
                 ImageView iv = new ImageView(image);
                 int boundWidth = (int)iv.getBoundsInParent().getWidth();
                 int boundHeight = (int)iv.getBoundsInParent().getHeight();
-                System.out.println("boundWidth " + boundWidth + " boundHeight " + boundHeight);
+                //System.out.println("boundWidth " + boundWidth + " boundHeight " + boundHeight);
                 AnchorPane apForThumbnail = new AnchorPane();
                 apForThumbnail.getChildren().add(iv);
                 //addEventhandlerForImageClick(iv, sr);
@@ -742,9 +744,8 @@ public class ResultsReviewSortable {
             for (UploadEvent event : events){
                 curEvent++;
                 if (event.wasNewKey()){
-                    // for now, since there's no web service to remove a key (true?), just do the revise
-                    this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
-                    logger.info("upload UNDO : " + event.getImageID() + " " + event.getKey().getName() + " " + event.getOrigValue().getName() + " - REVERTING TO PRIOR VALUE ");
+                    this.dataSource.deleteScoreForKey(event.getImageID(), event.getKey(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
+                    logger.info("upload UNDO : " + event.getImageID() + " " + event.getKey().getName() + " " + event.getOrigValue().getName() + " - DELETING NEW VALUE ");
                 }
                 else {
                     this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
@@ -847,87 +848,167 @@ public class ResultsReviewSortable {
                 return;
             }
             prepForUpload();
-            
-            // list all the answers above threshold
-            List<String> imageIDs = resultsTable2.getImageIDsInCurrentOrder();
-            double rowToUploadCount = 0;
-            for (String imageID : imageIDs){
-                String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
-                if (isConfidenceStringLessThanThreshold(confString)){
-                    rowToUploadCount++;
-                }
+            if (this.dataSource.groupByTrainTestConcernValueAndVoteForUpload()){
+                voteThenUpload();
             }
-           
-            Platform.runLater(() -> uploadProgress.setProgress(0.0));
-            double percentProgressPerRow = 1 / rowToUploadCount;
-            int rowCount = 0;
-            uploadSession.nextSession();
-            for (String imageID : imageIDs){
-                String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
-                
-                //Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
-                if (!isConfidenceStringLessThanThreshold(confString)){
-                	rowCount++;
-                    //String value = scoreChoice.getValue();
-                    String value = resultsTable2.getValue(imageID, COLNAME_SCORE);
-                    String name = resultsTable2.getValue(imageID, COLNAME_NAME);
-                    System.out.println(name + "  -  " + value);
-       
-                    NormalizedKey normCharKey = tif.getNormalizedCharacter();
-                    NormalizedKey trainTestConcern = scoringInfoFile.getTrainTestConcernForImageID(imageID);
-                    NormalizedValue trainTestConcernValue = scoringInfoFile.getTrainTestConcernValueForImageID(imageID);
-                    NormalizedValue newValue = sif.getScoreValueForImageID(imageID);
-                    //Need to pass the normalized key and value for this row to Data source and ask if key exists for this image
-                    NormalizedValue existingValueForKey = dataSource.getValueForKeyAtDatasourceForImage(normCharKey, imageID, trainTestConcern, trainTestConcernValue);
-                    logger.info("################################################################");
-                    logger.info("normCharKey: " + normCharKey + " trainTestConcernValue: " + trainTestConcernValue + " newValue: " + newValue + " existingValueForKey: " + existingValueForKey);
-                    logger.info("################################################################");
-                    Node scoreLabel = (Node)resultsTable2.getWidget(imageID, COLNAME_SCORE);
-                    if (newValue.equals(existingValueForKey)){
-                        // don't need to upload
-                        logger.info("upload: " + imageID + " " + normCharKey.getName() + " " + newValue.getName() + " - new value same as old, SKIPPING ");
-                        Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
-                    }
-                    else {
-                        if (null == existingValueForKey){
-                            //add score
-                            logger.info("upload: " + imageID + " " + normCharKey.getName() + " " + newValue.getName() + " - add NEW score ");
-                            boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
-                            if (result){
-                                this.uploadSession.addNewKeyValue(imageID, normCharKey, newValue, trainTestConcern, trainTestConcernValue);
-                                Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
-                            }
-                            else {
-                                Platform.runLater(() -> dialog("cannot upload to add score for image " + name));
-                            }
-                            
-                        }
-                        else {
-                            // revise score
-                            logger.info("upload: " + imageID + " " + normCharKey.getName() + " " + newValue.getName() + " - REVISE score ");
-                            boolean result = dataSource.reviseValueForKey(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
-                            if (result){
-                                this.uploadSession.reviseValueForKey(imageID, normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
-                                Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
-                            }
-                            else {
-                                Platform.runLater(() -> dialog("cannot upload to revise score for image " + name));
-                            }
-                        }
-                    }
-                    
-                    double percentDone = percentProgressPerRow * rowCount;
-                    
-                    
-                    Platform.runLater(() -> uploadProgress.setProgress(percentDone));
-                }
+            else {
+                uploadScoresForAllImages();
             }
-            this.uploadSession.persist();
-            Platform.runLater(() -> enableUndoUploadButtonIfAppropriate());
-        }
+        }   
         catch(AvatolCVException ace){
             AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem trying to save results");
         }
+    }
+    private void voteThenUpload() throws AvatolCVException {
+        VotingUploader vu = new VotingUploader(this.dataSource, this, this.uploadSession);
+        // list all the answers above threshold
+        List<String> imageIDs = resultsTable2.getImageIDsInCurrentOrder();
+        double rowToUploadCount = 0;
+        for (String imageID : imageIDs){
+            String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
+            if (isConfidenceStringLessThanThreshold(confString)){
+                rowToUploadCount++;
+            }
+        }
+        
+        
+        int rowCount = 0;
+        for (String imageID : imageIDs){
+            String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
+            
+            if (!isConfidenceStringLessThanThreshold(confString)){
+                rowCount++;
+                //String value = scoreChoice.getValue();
+                String value = resultsTable2.getValue(imageID, COLNAME_SCORE);
+                String name = resultsTable2.getValue(imageID, COLNAME_NAME);
+                //System.out.println(name + "  -  " + value);
+   
+                NormalizedKey normCharKey = tif.getNormalizedCharacter();
+                NormalizedKey trainTestConcern = scoringInfoFile.getTrainTestConcernForImageID(imageID);
+                NormalizedValue trainTestConcernValue = scoringInfoFile.getTrainTestConcernValueForImageID(imageID);
+                NormalizedValue newValue = sif.getScoreValueForImageID(imageID);
+                //Need to pass the normalized key and value for this row to Data source and ask if key exists for this image
+                NormalizedValue existingValueForKey = dataSource.getValueForKeyAtDatasourceForImage(normCharKey, imageID, trainTestConcern, trainTestConcernValue);
+                
+                vu.addScore(imageID, normCharKey, trainTestConcern, trainTestConcernValue, newValue, existingValueForKey);
+                logger.info("################################################################");
+                logger.info("normCharKey: " + normCharKey + " trainTestConcernValue: " + trainTestConcernValue + " newValue: " + newValue + " existingValueForKey: " + existingValueForKey);
+                logger.info("################################################################");
+                Node scoreLabel = (Node)resultsTable2.getWidget(imageID, COLNAME_SCORE);
+                if (newValue.equals(existingValueForKey)){
+                    // don't need to upload
+                    logger.info("upload: " + imageID + " " + normCharKey.getName() + " " + newValue.getName() + " - new value same as old, SKIPPING ");
+                    Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
+                }
+                else {
+                    if (null == existingValueForKey){
+                        //add score
+                        logger.info("upload: " + imageID + " " + normCharKey.getName() + " " + newValue.getName() + " - add NEW score ");
+                        boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
+                        if (result){
+                            this.uploadSession.addNewKeyValue(imageID, normCharKey, newValue, trainTestConcern, trainTestConcernValue);
+                            Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
+                        }
+                        else {
+                            Platform.runLater(() -> dialog("cannot upload to add score for image " + name));
+                        }
+                        
+                    }
+                    else {
+                        // revise score
+                        logger.info("upload: " + imageID + " " + normCharKey.getName() + " " + newValue.getName() + " - REVISE score ");
+                        boolean result = dataSource.reviseValueForKey(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
+                        if (result){
+                            this.uploadSession.reviseValueForKey(imageID, normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
+                            Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
+                        }
+                        else {
+                            Platform.runLater(() -> dialog("cannot upload to revise score for image " + name));
+                        }
+                    }
+                }
+                double percentDone = percentProgressPerRow * rowToUploadCount;
+                Platform.runLater(() -> uploadProgress.setProgress(percentDone));
+            }
+        }
+        this.uploadSession.persist();
+        Platform.runLater(() -> enableUndoUploadButtonIfAppropriate());
+    }
+    private void uploadScoresForAllImages() throws AvatolCVException {
+        // list all the answers above threshold
+        List<String> imageIDs = resultsTable2.getImageIDsInCurrentOrder();
+        double rowToUploadCount = 0;
+        for (String imageID : imageIDs){
+            String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
+            if (isConfidenceStringLessThanThreshold(confString)){
+                rowToUploadCount++;
+            }
+        }
+       
+        Platform.runLater(() -> uploadProgress.setProgress(0.0));
+        double percentProgressPerRow = 1 / rowToUploadCount;
+        int rowCount = 0;
+        uploadSession.nextSession();
+        for (String imageID : imageIDs){
+            String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
+            
+            //Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
+            if (!isConfidenceStringLessThanThreshold(confString)){
+                rowCount++;
+                //String value = scoreChoice.getValue();
+                String value = resultsTable2.getValue(imageID, COLNAME_SCORE);
+                String name = resultsTable2.getValue(imageID, COLNAME_NAME);
+                System.out.println(name + "  -  " + value);
+   
+                NormalizedKey normCharKey = tif.getNormalizedCharacter();
+                NormalizedKey trainTestConcern = scoringInfoFile.getTrainTestConcernForImageID(imageID);
+                NormalizedValue trainTestConcernValue = scoringInfoFile.getTrainTestConcernValueForImageID(imageID);
+                NormalizedValue newValue = sif.getScoreValueForImageID(imageID);
+                //Need to pass the normalized key and value for this row to Data source and ask if key exists for this image
+                NormalizedValue existingValueForKey = dataSource.getValueForKeyAtDatasourceForImage(normCharKey, imageID, trainTestConcern, trainTestConcernValue);
+                logger.info("################################################################");
+                logger.info("normCharKey: " + normCharKey + " trainTestConcernValue: " + trainTestConcernValue + " newValue: " + newValue + " existingValueForKey: " + existingValueForKey);
+                logger.info("################################################################");
+                Node scoreLabel = (Node)resultsTable2.getWidget(imageID, COLNAME_SCORE);
+                if (newValue.equals(existingValueForKey)){
+                    // don't need to upload
+                    logger.info("upload: " + imageID + " " + normCharKey.getName() + " " + newValue.getName() + " - new value same as old, SKIPPING ");
+                    Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
+                }
+                else {
+                    if (null == existingValueForKey){
+                        //add score
+                        logger.info("upload: " + imageID + " " + normCharKey.getName() + " " + newValue.getName() + " - add NEW score ");
+                        boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
+                        if (result){
+                            this.uploadSession.addNewKeyValue(imageID, normCharKey, newValue, trainTestConcern, trainTestConcernValue);
+                            Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
+                        }
+                        else {
+                            Platform.runLater(() -> dialog("cannot upload to add score for image " + name));
+                        }
+                        
+                    }
+                    else {
+                        // revise score
+                        logger.info("upload: " + imageID + " " + normCharKey.getName() + " " + newValue.getName() + " - REVISE score ");
+                        boolean result = dataSource.reviseValueForKey(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
+                        if (result){
+                            this.uploadSession.reviseValueForKey(imageID, normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
+                            Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
+                        }
+                        else {
+                            Platform.runLater(() -> dialog("cannot upload to revise score for image " + name));
+                        }
+                    }
+                }
+                double percentDone = percentProgressPerRow * rowToUploadCount;
+                Platform.runLater(() -> uploadProgress.setProgress(percentDone));
+            }
+        }
+        this.uploadSession.persist();
+        Platform.runLater(() -> enableUndoUploadButtonIfAppropriate());
+   
     }
     private void dialog(String text){
 		Alert alert = new Alert(AlertType.ERROR);
@@ -936,6 +1017,14 @@ public class ResultsReviewSortable {
         alert.setContentText(text);
         alert.showAndWait();
 	}
+    @Override
+    public void updateProgress(String processName, double percentDone) {
+        Platform.runLater(() -> uploadProgress.setProgress(percentDone));
+    }
+    @Override
+    public void setMessage(String processName, String m) {
+        // not needed for this implementation
+    }
 }
 /*
  * private void runAndWait(Runnable runnable) throws InterruptedException, ExecutionException {
