@@ -8,10 +8,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javafx.application.Platform;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
-import edu.oregonstate.eecs.iis.avatolcv.datasource.MorphobankDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.UploadSession;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
@@ -23,7 +21,7 @@ public class VotingUploader {
     private UploadSession uploadSession = null;
     private NormalizedKey trainTestConcern = null;
     private Hashtable<NormalizedValue, List<ScoreItem>> scoreItemHash = new Hashtable<NormalizedValue, List<ScoreItem>>();
-    private Hashtable<NormalizedValue, NormalizedValue> voteWinnerHash = new Hashtable<NormalizedValue, NormalizedValue>();
+    private Hashtable<NormalizedValue, ScoreItem> voteWinnerHash = new Hashtable<NormalizedValue, ScoreItem>();
     private static final Logger logger = LogManager.getLogger(VotingUploader.class);
 
     private List<NormalizedValue> ttValuesSeen = new ArrayList<NormalizedValue>();
@@ -32,49 +30,20 @@ public class VotingUploader {
         this.pp = pp;
         this.uploadSession = uploadSession;
     }
-    public void addScore(String imageID, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue, NormalizedValue newValue, NormalizedValue existingValueForKey) throws AvatolCVException {
-        validateTrainTestConcernConsistent(trainTestConcern);
-        ScoreItem si = new ScoreItem(imageID, trainTestConcern, trainTestConcernValue, newValue, existingValueForKey);
-        List<ScoreItem> itemsForTTValue = scoreItemHash.get(trainTestConcernValue);
+    public void addScore(ScoreItem si) throws AvatolCVException {
+        validateTrainTestConcernConsistent(si.getTrainTestConcern());
+        
+        List<ScoreItem> itemsForTTValue = scoreItemHash.get(si.getTrainTestConcernValue());
         if (null == itemsForTTValue){
             itemsForTTValue = new ArrayList<ScoreItem>();
-            scoreItemHash.put(trainTestConcernValue, itemsForTTValue);
+            scoreItemHash.put(si.getTrainTestConcernValue(), itemsForTTValue);
         }
         itemsForTTValue.add(si);
-        if (! ttValuesSeen.contains(trainTestConcernValue)){
-            ttValuesSeen.add(trainTestConcernValue);
+        if (! ttValuesSeen.contains(si.getTrainTestConcernValue())){
+            ttValuesSeen.add(si.getTrainTestConcernValue());
         }
     }
-    public class ScoreItem{
-        private String imageID = null;
-        private NormalizedKey trainTestConcern = null;
-        private NormalizedValue trainTestConcernValue = null;
-        private NormalizedValue newValue = null;
-        private NormalizedValue existingValueForKey = null;
-       
-        public ScoreItem(String imageID, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue, NormalizedValue newValue, NormalizedValue existingValueForKey){
-            this.imageID = imageID;
-            this.trainTestConcern = trainTestConcern;
-            this.trainTestConcernValue = trainTestConcernValue;
-            this.newValue = newValue;
-            this.existingValueForKey = existingValueForKey;
-        }
-        public String getImageID() {
-            return imageID;
-        }
-        public NormalizedKey getTrainTestConcern() {
-            return trainTestConcern;
-        }
-        public NormalizedValue getTrainTestConcernValue() {
-            return trainTestConcernValue;
-        }
-        public NormalizedValue getNewValue() {
-            return newValue;
-        }
-        public NormalizedValue getExistingValueForKey() {
-            return existingValueForKey;
-        }
-    }
+    
     private void validateTrainTestConcernConsistent(NormalizedKey ttConcern) throws AvatolCVException {
         if (null == this.trainTestConcern){
             this.trainTestConcern = ttConcern;
@@ -89,14 +58,14 @@ public class VotingUploader {
         for (NormalizedValue ttConcernVal : ttValuesSeen){
             List<ScoreItem> itemsForTTValue = scoreItemHash.get(ttConcernVal);
             validateConsistentExistingValues(itemsForTTValue, ttConcernVal);
-            NormalizedValue voteWinner = getVoteWinnerForScoreItems(itemsForTTValue, ttConcernVal);
-            voteWinnerHash.put(ttConcernVal, voteWinner);
+            ScoreItem winner = getVoteWinnerForScoreItems(itemsForTTValue, ttConcernVal);
+            voteWinnerHash.put(ttConcernVal, winner);
         }
     }
-    public NormalizedValue getVoteWinner(NormalizedValue ttConcernVal){
-        return voteWinnerHash.get(ttConcernVal);
-    }
-    private NormalizedValue getVoteWinnerForScoreItems(List<ScoreItem> items, NormalizedValue ttConcernVal){
+    //public NormalizedValue getVoteWinner(NormalizedValue ttConcernVal){
+    //    return voteWinnerHash.get(ttConcernVal);
+    //}
+    private ScoreItem getVoteWinnerForScoreItems(List<ScoreItem> items, NormalizedValue ttConcernVal){
         Hashtable<NormalizedValue, List<ScoreItem>> hash = new Hashtable<NormalizedValue, List<ScoreItem>>();
         List<NormalizedValue> valuesSeen = new ArrayList<NormalizedValue>();
         // make a hash by newValue of the ScoreItems
@@ -125,22 +94,36 @@ public class VotingUploader {
         // if only one value was seen, return that value
         if (valuesSeen.size() == 1){
             logger.info("one value seen - winner is " + valuesSeen.get(0) );
-            return valuesSeen.get(0);
+            ScoreItem result = items.get(0);
+            result.setNewValue(valuesSeen.get(0));
+            result.deduceScoringFate();
+            result.setImageIDsRepresentedByWinner(getImageIdList(items));
+            return result;
         }
-        // if there are two or more values seen, if the first two are a tie, then that means there is an n-way tie, which means we should keep the prior answer
+        // if there are two or more values seen, if the first two are a tie, then that means there is an n-way tie, which means we should abstain from scoring
         int count0 = itemsWithValList.get(0).getCount();
         int count1 = itemsWithValList.get(1).getCount();
         if (count0 == count1){
             // return prior value
-            NormalizedValue priorValue = itemsWithValList.get(0).getItems().get(0).getExistingValueForKey();
-            logger.info("tie with first two values having  " + count0 + " ... using priorValue " + priorValue );
-            return priorValue;
+            logger.info("tie with first two values having  " + count0 + " ... NOT uploading" );
+            ScoreItem result = items.get(0);
+            result.noteTieVote();
+            result.setImageIDsRepresentedByWinner(getImageIdList(items));
+            return result;
         }
         // not a tie, return the new value for the top count
-        NormalizedValue newValue = itemsWithValList.get(0).getValue();
-        logger.info("hands down winning value is  " + count0 + " ... using newValue " + newValue );
-        return newValue;
+        logger.info("hands down winning value is  " + count0 + " ... using newValue " + items.get(0).getNewValue() );
+        ScoreItem result = items.get(0);
+        result.setImageIDsRepresentedByWinner(getImageIdList(items));
+        return result;
         
+    }
+    public List<String> getImageIdList(List<ScoreItem> items){
+    	List<String> result = new ArrayList<String>();
+    	for (ScoreItem si : items){
+    		result.add(si.getImageID());
+    	}
+    	return result;
     }
     public class ItemsWithVal implements Comparable<ItemsWithVal> {
         private List<ScoreItem> items = null;
@@ -176,11 +159,12 @@ public class VotingUploader {
             }
         }
     }
-    public void upload(){
-        pp.updateProgress("",0.0);
-        //double percentProgressPerRow = 1 / rowToUploadCount;
-        uploadSession.nextSession();
-        
-        
+    public List<ScoreItem> getVoteWinners(){
+    	List<ScoreItem> result = new ArrayList<ScoreItem>();
+    	Collections.sort(ttValuesSeen);
+    	for (NormalizedValue nv : ttValuesSeen){
+    		result.add(voteWinnerHash.get(nv));
+    	}
+    	return result;
     }
 }

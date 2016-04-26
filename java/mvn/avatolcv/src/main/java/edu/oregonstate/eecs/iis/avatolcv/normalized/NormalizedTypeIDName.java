@@ -10,7 +10,7 @@ import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 //character:1824350|Diastema between I2 and C=characterState:4884329|Diastema present
 //taxon=773126|Artibeus jamaicensis
 //view=8905|Skull - ventral annotated teeth
-public class NormalizedTypeIDName implements ScoringConcernDetails{
+public class NormalizedTypeIDName implements ScoringConcernDetails, Comparable<NormalizedTypeIDName> {
     public static final String TYPE_UNSPECIFIED = AvatolCVConstants.UNDETERMINED;
     public static final String ID_UNSPECIFIED = AvatolCVConstants.UNDETERMINED;
     public static final String NAME_UNSPECIFIED = AvatolCVConstants.UNDETERMINED;
@@ -125,4 +125,9 @@ public class NormalizedTypeIDName implements ScoringConcernDetails{
     	}
     	return true;
     }
+	
+	@Override
+	public int compareTo(NormalizedTypeIDName o) {
+		return this.normalizedValue.compareTo(o.getNormalizedValue());
+	}
 }

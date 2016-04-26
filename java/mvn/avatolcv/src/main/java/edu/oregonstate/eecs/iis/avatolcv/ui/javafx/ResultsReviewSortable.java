@@ -63,6 +63,8 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.PointAsPercent;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTableSortable;
+import edu.oregonstate.eecs.iis.avatolcv.results.ScoreItem;
+import edu.oregonstate.eecs.iis.avatolcv.results.ScoreItem.ScoringFate;
 import edu.oregonstate.eecs.iis.avatolcv.results.VotingUploader;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
@@ -859,20 +861,16 @@ public class ResultsReviewSortable implements ProgressPresenter {
             AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem trying to save results");
         }
     }
-    private void voteThenUpload() throws AvatolCVException {
-        VotingUploader vu = new VotingUploader(this.dataSource, this, this.uploadSession);
-        // list all the answers above threshold
-        List<String> imageIDs = resultsTable2.getImageIDsInCurrentOrder();
-        double rowToUploadCount = 0;
-        for (String imageID : imageIDs){
-            String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
-            if (isConfidenceStringLessThanThreshold(confString)){
-                rowToUploadCount++;
-            }
-        }
-        
-        
-        int rowCount = 0;
+    private List<Node> getScoreLabelsForImageIds(List<String> imageIDs){
+    	List<Node> nodes = new ArrayList<Node>();
+    	for (String imageID : imageIDs){
+    		Node scoreLabel = (Node)resultsTable2.getWidget(imageID, COLNAME_SCORE);
+    		nodes.add(scoreLabel);
+    	}
+    	return nodes;
+    }
+    private int populateVoter(VotingUploader vu, List<String> imageIDs) throws AvatolCVException {
+    	int rowCount = 0;
         for (String imageID : imageIDs){
             String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
             
@@ -889,47 +887,83 @@ public class ResultsReviewSortable implements ProgressPresenter {
                 NormalizedValue newValue = sif.getScoreValueForImageID(imageID);
                 //Need to pass the normalized key and value for this row to Data source and ask if key exists for this image
                 NormalizedValue existingValueForKey = dataSource.getValueForKeyAtDatasourceForImage(normCharKey, imageID, trainTestConcern, trainTestConcernValue);
-                
-                vu.addScore(imageID, trainTestConcern, trainTestConcernValue, newValue, existingValueForKey);
-                logger.info("################################################################");
-                logger.info("normCharKey: " + normCharKey + " trainTestConcernValue: " + trainTestConcernValue + " newValue: " + newValue + " existingValueForKey: " + existingValueForKey);
-                logger.info("################################################################");
-                Node scoreLabel = (Node)resultsTable2.getWidget(imageID, COLNAME_SCORE);
-                if (newValue.equals(existingValueForKey)){
-                    // don't need to upload
-                    logger.info("upload: " + imageID + " " + normCharKey.getName() + " " + newValue.getName() + " - new value same as old, SKIPPING ");
-                    Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
+                ScoreItem si = new ScoreItem(imageID, trainTestConcern, trainTestConcernValue, newValue, existingValueForKey);
+                vu.addScore(si);
+            }
+        }
+        return rowCount;
+    }
+    private void voteThenUpload() throws AvatolCVException {
+        VotingUploader vu = new VotingUploader(this.dataSource, this, this.uploadSession);
+        // list all the answers above threshold
+        List<String> imageIDs = resultsTable2.getImageIDsInCurrentOrder();
+        double rowToUploadCount = 0;
+        for (String imageID : imageIDs){
+            String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
+            if (isConfidenceStringLessThanThreshold(confString)){
+                rowToUploadCount++;
+            }
+        }
+        int rowCount = populateVoter(vu, imageIDs);
+        vu.vote();
+        List<ScoreItem> voteWinners = vu.getVoteWinners();
+        int toUploadCount = voteWinners.size();
+        uploadProgress.setProgress(0.0);
+        double percentProgressPerRow = 1 / toUploadCount;
+        uploadSession.nextSession();
+        for (ScoreItem si : voteWinners){
+        	List<String> ids = si.getImageIDsRepresentedByWinner();
+        	logger.info("################################################################");
+            logger.info(" trainTestConcernValue: " + si.getTrainTestConcernValue() + " newValue: " + si.getNewValue() + " existingValueForKey: " + si.getExistingValueForKey());
+            logger.info("################################################################");
+            List<Node> scoreLabelsForWinner = getScoreLabelsForImageIds(si.getImageIDsRepresentedByWinner());
+            if (si.getScoringFate() == ScoringFate.ABSTAIN_FROM_CHANGING_SCORE_NEW_VALUE_SAME){
+            	for (String id : ids){
+            		logger.info("UPLOAD - new value same as old, SKIPPING UPLOAD " + id);
+            	}
+            	for (Node label : scoreLabelsForWinner){
+            		Platform.runLater(() -> label.getStyleClass().add("skip_no_change"));
+            	}
+            }
+            else if (si.getScoringFate() == ScoringFate.ABSTAIN_FROM_CHANGING_SCORE_VOTE_TIE){
+            	for (String id : ids){
+            		logger.info("UPLOAD - ambiguous scoring - voting tied, SKIPPING UPLOAD " + id);
+            	}
+            	for (Node label : scoreLabelsForWinner){
+            		Platform.runLater(() -> label.getStyleClass().add("skip_tie_vote"));
+            	}
+            }
+            else if (si.getScoringFate() == ScoringFate.REVISE_VALUE){
+            	boolean result = dataSource.reviseValueForKey(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
+                if (result){
+                	this.uploadSession.reviseValueForKey(imageID, normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
+                	for (String id : ids){
+                		logger.info("UPLOAD - REVISING value from " + si.getExistingValueForKey() + " to " +  si.getNewValue() + " "  + id);
+                	}
+                	for (Node label : scoreLabelsForWinner){
+                		Platform.runLater(() -> label.getStyleClass().add("revise_score"));
+                	}
+                }
+            	
+            }
+            else {
+            	// must be ScoringFate.SET_NEW_VALUE
+            	boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
+                if (result){
+                	this.uploadSession.addNewKeyValue(imageID, normCharKey, newValue, trainTestConcern, trainTestConcernValue);
+                	for (String id : ids){
+                		logger.info("UPLOAD - NEW value from " + si.getExistingValueForKey() + " to " +  si.getNewValue() + " "  + id);
+                	}
+                	for (Node label : scoreLabelsForWinner){
+                		Platform.runLater(() -> label.getStyleClass().add("new_score"));
+                	}
                 }
                 else {
-                    if (null == existingValueForKey){
-                        //add score
-                        logger.info("upload: " + imageID + " " + normCharKey.getName() + " " + newValue.getName() + " - add NEW score ");
-                        boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
-                        if (result){
-                            this.uploadSession.addNewKeyValue(imageID, normCharKey, newValue, trainTestConcern, trainTestConcernValue);
-                            Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
-                        }
-                        else {
-                            Platform.runLater(() -> dialog("cannot upload to add score for image " + name));
-                        }
-                        
-                    }
-                    else {
-                        // revise score
-                        logger.info("upload: " + imageID + " " + normCharKey.getName() + " " + newValue.getName() + " - REVISE score ");
-                        boolean result = dataSource.reviseValueForKey(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
-                        if (result){
-                            this.uploadSession.reviseValueForKey(imageID, normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
-                            Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
-                        }
-                        else {
-                            Platform.runLater(() -> dialog("cannot upload to revise score for image " + name));
-                        }
-                    }
+                	Platform.runLater(() -> dialog("cannot upload new score for " + si.getTrainTestConcernValue()));
                 }
-                double percentDone = percentProgressPerRow * rowToUploadCount;
-                Platform.runLater(() -> uploadProgress.setProgress(percentDone));
             }
+            double percentDone = percentProgressPerRow * toUploadCount;
+            Platform.runLater(() -> uploadProgress.setProgress(percentDone));	
         }
         this.uploadSession.persist();
         Platform.runLater(() -> enableUndoUploadButtonIfAppropriate());
