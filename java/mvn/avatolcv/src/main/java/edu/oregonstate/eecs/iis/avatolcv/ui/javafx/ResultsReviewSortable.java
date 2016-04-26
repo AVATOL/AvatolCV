@@ -890,7 +890,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
                 //Need to pass the normalized key and value for this row to Data source and ask if key exists for this image
                 NormalizedValue existingValueForKey = dataSource.getValueForKeyAtDatasourceForImage(normCharKey, imageID, trainTestConcern, trainTestConcernValue);
                 
-                vu.addScore(imageID, normCharKey, trainTestConcern, trainTestConcernValue, newValue, existingValueForKey);
+                vu.addScore(imageID, trainTestConcern, trainTestConcernValue, newValue, existingValueForKey);
                 logger.info("################################################################");
                 logger.info("normCharKey: " + normCharKey + " trainTestConcernValue: " + trainTestConcernValue + " newValue: " + newValue + " existingValueForKey: " + existingValueForKey);
                 logger.info("################################################################");

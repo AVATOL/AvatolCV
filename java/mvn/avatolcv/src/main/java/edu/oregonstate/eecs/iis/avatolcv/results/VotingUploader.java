@@ -120,6 +120,7 @@ public class VotingUploader {
             itemsWithValList.add(iwv);
         }
         Collections.sort(itemsWithValList);
+        Collections.reverse(itemsWithValList);
         logger.info("finding voteWinner for " + ttConcernVal);
         // if only one value was seen, return that value
         if (valuesSeen.size() == 1){
@@ -161,16 +162,7 @@ public class VotingUploader {
         }
         @Override
         public int compareTo(ItemsWithVal other) {
-            if (other.getCount() == this.getCount()){
-                return 0;
-            }
-            else if (this.getCount() > other.getCount()){
-                return 1;
-            }
-            else {
-                return -1;
-            }
-            
+        	return Integer.compare(this.getCount(), other.getCount());
         }
     }
     private void validateConsistentExistingValues(List<ScoreItem> items, NormalizedValue ttConcernVal) throws AvatolCVException {
