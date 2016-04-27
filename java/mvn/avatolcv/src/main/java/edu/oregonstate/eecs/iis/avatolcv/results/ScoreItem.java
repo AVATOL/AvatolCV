@@ -1,8 +1,8 @@
 package edu.oregonstate.eecs.iis.avatolcv.results;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 
@@ -14,18 +14,20 @@ public class ScoreItem{
 		REVISE_VALUE
 	}
     private String imageID = null;
+    private NormalizedKey normCharKey = null;
     private NormalizedKey trainTestConcern = null;
     private NormalizedValue trainTestConcernValue = null;
     private NormalizedValue newValue = null;
     private NormalizedValue existingValueForKey = null;
     private List<String> imageIDsRepresentedByWinner = null;
     private ScoringFate fate = null;
-    public ScoreItem(String imageID, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue, NormalizedValue newValue, NormalizedValue existingValueForKey){
+    public ScoreItem(String imageID, NormalizedKey normCharKey, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue, NormalizedValue newValue, NormalizedValue existingValueForKey){
         this.imageID = imageID;
         this.trainTestConcern = trainTestConcern;
         this.trainTestConcernValue = trainTestConcernValue;
         this.newValue = newValue;
         this.existingValueForKey = existingValueForKey;
+        this.normCharKey = normCharKey;
     }
     public void deduceScoringFate(){
     	if (newValue.equals(existingValueForKey)){
@@ -35,9 +37,17 @@ public class ScoreItem{
     		this.fate = ScoringFate.SET_NEW_VALUE;
     	}
     	else if (existingValueForKey.getName().equals("")){
+            this.fate = ScoringFate.SET_NEW_VALUE;
+        }
+    	else if (existingValueForKey.getName().equals(AvatolCVConstants.UNDETERMINED)){
     		this.fate = ScoringFate.SET_NEW_VALUE;
     	}
-    	this.fate = ScoringFate.REVISE_VALUE;
+    	else {
+    	    this.fate = ScoringFate.REVISE_VALUE;
+    	}
+    }
+    public NormalizedKey getNormCharKey(){
+        return this.normCharKey;
     }
     public void setImageIDsRepresentedByWinner(List<String> ids){
     	this.imageIDsRepresentedByWinner = ids;

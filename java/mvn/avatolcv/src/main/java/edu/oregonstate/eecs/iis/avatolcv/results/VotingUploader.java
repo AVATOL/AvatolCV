@@ -62,9 +62,9 @@ public class VotingUploader {
             voteWinnerHash.put(ttConcernVal, winner);
         }
     }
-    //public NormalizedValue getVoteWinner(NormalizedValue ttConcernVal){
-    //    return voteWinnerHash.get(ttConcernVal);
-    //}
+    public ScoreItem getVoteWinner(NormalizedValue ttConcernVal){
+        return voteWinnerHash.get(ttConcernVal);
+    }
     private ScoreItem getVoteWinnerForScoreItems(List<ScoreItem> items, NormalizedValue ttConcernVal){
         Hashtable<NormalizedValue, List<ScoreItem>> hash = new Hashtable<NormalizedValue, List<ScoreItem>>();
         List<NormalizedValue> valuesSeen = new ArrayList<NormalizedValue>();
@@ -94,7 +94,7 @@ public class VotingUploader {
         // if only one value was seen, return that value
         if (valuesSeen.size() == 1){
             logger.info("one value seen - winner is " + valuesSeen.get(0) );
-            ScoreItem result = items.get(0);
+            ScoreItem result = itemsWithValList.get(0).getItems().get(0);
             result.setNewValue(valuesSeen.get(0));
             result.deduceScoringFate();
             result.setImageIDsRepresentedByWinner(getImageIdList(items));
@@ -106,14 +106,15 @@ public class VotingUploader {
         if (count0 == count1){
             // return prior value
             logger.info("tie with first two values having  " + count0 + " ... NOT uploading" );
-            ScoreItem result = items.get(0);
+            ScoreItem result = itemsWithValList.get(0).getItems().get(0);
             result.noteTieVote();
             result.setImageIDsRepresentedByWinner(getImageIdList(items));
             return result;
         }
         // not a tie, return the new value for the top count
         logger.info("hands down winning value is  " + count0 + " ... using newValue " + items.get(0).getNewValue() );
-        ScoreItem result = items.get(0);
+        ScoreItem result = itemsWithValList.get(0).getItems().get(0);
+        result.deduceScoringFate();
         result.setImageIDsRepresentedByWinner(getImageIdList(items));
         return result;
         
@@ -154,8 +155,15 @@ public class VotingUploader {
         }
         NormalizedValue priorVal1 = items.get(0).getExistingValueForKey();
         for (ScoreItem item : items){
-            if (!priorVal1.equals(item.getExistingValueForKey())){
-                throw new AvatolCVException("Assumption violated - expected all images with the same trainTestConcernValue to have consistent prior values at the dataSource and encountered " + priorVal1 + " and " + item.getExistingValueForKey());
+            if (null == priorVal1){
+                if (null != item.getExistingValueForKey()){
+                    throw new AvatolCVException("Assumption violated - expected all images with the same trainTestConcernValue to have consistent prior values at the dataSource and encountered " + priorVal1 + " and " + item.getExistingValueForKey());
+                }
+            }
+            else {
+                if (!priorVal1.equals(item.getExistingValueForKey())){
+                    throw new AvatolCVException("Assumption violated - expected all images with the same trainTestConcernValue to have consistent prior values at the dataSource and encountered " + priorVal1 + " and " + item.getExistingValueForKey());
+                }
             }
         }
     }

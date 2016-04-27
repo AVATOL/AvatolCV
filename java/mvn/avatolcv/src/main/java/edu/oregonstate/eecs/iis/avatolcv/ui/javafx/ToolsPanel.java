@@ -26,6 +26,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
@@ -210,7 +211,7 @@ public class ToolsPanel implements CopyDatasetTab {
 				String propValue = datasetEditor.getValueForProperty(niiFilename,propKey);
 				System.out.println(" niiName + " + niiFilename + " propKey " + propKey + " propValue " + propValue);
 				if (propValue.equals("")){
-					propValue = "?";
+					propValue = AvatolCVConstants.UNDETERMINED;
 				}
 				Label propLabel = new Label(propValue);
 				propLabelList.add(propLabel);

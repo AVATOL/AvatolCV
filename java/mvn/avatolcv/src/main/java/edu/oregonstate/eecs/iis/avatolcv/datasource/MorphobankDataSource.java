@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
@@ -562,7 +563,7 @@ public class MorphobankDataSource implements DataSource {
 	    try {
 	        String matrixID = this.chosenDataset.getID();
 	        String charStateID = value.getID();
-	        if ("?".equals(charStateID)){
+	        if (AvatolCVConstants.UNDETERMINED.equals(charStateID)){
 	            charStateID = "null";
 	        }
 	        String charID = key.getID();
@@ -584,7 +585,7 @@ public class MorphobankDataSource implements DataSource {
 	        String matrixID = this.chosenDataset.getID();
 	        String taxonID = trainTestConcernValue.getID();
 	        String charStateID = value.getID();
-	        if ("?".equals(charStateID)){
+	        if (AvatolCVConstants.UNDETERMINED.equals(charStateID)){
                 charStateID = "null";
             }
 	        String charID = key.getID();
