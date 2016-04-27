@@ -744,6 +744,77 @@ public class ResultsReviewSortable implements ProgressPresenter {
         Thread t = new Thread(() -> undoSaveResults());
         t.start();
     }
+    private static List<String> getIdListFromListString(String idListString){
+    	List<String> result = new ArrayList<String>();
+    	String[] ids = idListString.split(UploadSession.STRING_LIST_DELIM);
+    	
+    	for (String id : ids){
+    		result.add(id);
+    	}
+    	return result;
+    }
+    public void userFeedbackForUndo(List<String> ids){
+    	for (String id : ids){
+			Label scoreLabel = scoreLabelForImageIDHash.get(id);
+            Platform.runLater(() -> scoreLabel.getStyleClass().remove(UPLOADED_CSS_STYLE));
+            Label uploadStatusLabel = saveStatusLabelForImageIDHash.get(id);
+            Platform.runLater(() -> uploadStatusLabel.setText(STATUS_UNSAVED));
+		}
+    }
+    public void userFeedbackForUndoAbstain(List<String> ids){
+    	for (String id : ids){
+			Label uploadStatusLabel = saveStatusLabelForImageIDHash.get(id);
+            Platform.runLater(() -> uploadStatusLabel.setText(STATUS_UNSAVED));
+		}
+    }
+    public void userFeedbackForUndo(String id){
+		Label scoreLabel = scoreLabelForImageIDHash.get(id);
+        Platform.runLater(() -> scoreLabel.getStyleClass().remove(UPLOADED_CSS_STYLE));
+        Label uploadStatusLabel = saveStatusLabelForImageIDHash.get(id);
+        Platform.runLater(() -> uploadStatusLabel.setText(STATUS_UNSAVED));
+    }
+
+    public void userFeedbackForUndoAbstain(String id){
+	    Label uploadStatusLabel = saveStatusLabelForImageIDHash.get(id);
+        Platform.runLater(() -> uploadStatusLabel.setText(STATUS_UNSAVED));
+    }
+    private void undoNew(UploadEvent event) throws AvatolCVException {
+    	String imageIDString = event.getImageID();
+    	if (imageIDString.contains(UploadSession.STRING_LIST_DELIM)){
+    		List<String> ids = getIdListFromListString(imageIDString);
+    		this.dataSource.deleteScoreForKey(ids.get(0), event.getKey(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
+    		userFeedbackForUndo(ids);
+    	}
+    	else {
+    		this.dataSource.deleteScoreForKey(event.getImageID(), event.getKey(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
+    		userFeedbackForUndo(event.getImageID());
+    	}
+        logger.info("upload UNDO : " + event.getImageID() + " " + event.getKey().getName() + " " + event.getOrigValue().getName() + " - DELETING NEW VALUE ");
+    }
+    private void undoRevise(UploadEvent event) throws AvatolCVException {
+    	String imageIDString = event.getImageID();
+    	if (imageIDString.contains(UploadSession.STRING_LIST_DELIM)){
+    		List<String> ids = getIdListFromListString(imageIDString);
+    		this.dataSource.reviseValueForKey(ids.get(0), event.getKey(), event.getOrigValue(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
+    		userFeedbackForUndo(ids);
+    	}
+    	else {
+    		this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
+    		userFeedbackForUndo(event.getImageID());
+    	}
+    	logger.info("upload UNDO : " + event.getImageID() + " " + event.getKey().getName() + " " + event.getOrigValue().getName() + " - REVERTING TO PRIOR VALUE ");
+    }
+    private void undoAbstain(UploadEvent event) throws AvatolCVException {
+    	String imageIDString = event.getImageID();
+    	if (imageIDString.contains(UploadSession.STRING_LIST_DELIM)){
+    		List<String> ids = getIdListFromListString(imageIDString);
+    		userFeedbackForUndoAbstain(ids);
+    	}
+    	else {
+    		userFeedbackForUndoAbstain(event.getImageID());
+    	}
+    	logger.info("upload UNDO : " + event.getImageID() + " " + event.getKey().getName() + " " + event.getOrigValue().getName() + " - REVERTING ABSTAIN ");
+    }
     public void undoSaveResults(){
         try {
             setDataSource();
@@ -757,21 +828,19 @@ public class ResultsReviewSortable implements ProgressPresenter {
             double percentProgressPerEvent = 1 / count;
             int curEvent = 0;
             for (UploadEvent event : events){
-                LEFT OFF HERE - need to be unwrap multiple image lists to revert all the widgets, need to fill in the actions below for abstains
                 curEvent++;
                 if (event.getType() == UploadSession.TYPE_NEW){
-                    this.dataSource.deleteScoreForKey(event.getImageID(), event.getKey(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
-                    logger.info("upload UNDO : " + event.getImageID() + " " + event.getKey().getName() + " " + event.getOrigValue().getName() + " - DELETING NEW VALUE ");
+                	undoNew(event);
                 }
                 else if (event.getType() == UploadSession.TYPE_REVISE){
-                    this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
-                    logger.info("upload UNDO : " + event.getImageID() + " " + event.getKey().getName() + " " + event.getOrigValue().getName() + " - REVERTING TO PRIOR VALUE ");
+                	undoRevise(event);
                 }
                 else if (event.getType() == UploadSession.TYPE_ABSTAIN_TIE){
-                    
+                    undoAbstain(event);
                 }
                 else {
                     //event.getType() == UploadSession.TYPE_ABSTAIN_VALUE_SAME
+                	 undoAbstain(event);
                 }
                 double percentDone = percentProgressPerEvent * curEvent;
                 Platform.runLater(() -> uploadProgress.setProgress(percentDone));
