@@ -11,7 +11,7 @@ public class TestVotingUploader extends TestCase {
     // A single taxon, one score only, prior answer empty string
     public void testVotingUploaderSimplestSingleItemNewBlankPriorAnswer(){
         try {
-            VotingUploader vu = new VotingUploader(null, null, null);
+            UploadVoter vu = new UploadVoter(null, null, null);
             vu.addScore(new ScoreItem("im1", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("")));
             vu.vote();
             Assert.assertEquals(new NormalizedValue("taxonANewVal1"), vu.getVoteWinner(new NormalizedValue("taxonA")).getNewValue());
@@ -24,7 +24,7 @@ public class TestVotingUploader extends TestCase {
  // A single taxon, one score only, prior answer ?
     public void testVotingUploaderSimplestSingleItemNewQuestionMarkPriorAnswer(){
         try {
-            VotingUploader vu = new VotingUploader(null, null, null);
+            UploadVoter vu = new UploadVoter(null, null, null);
             vu.addScore(new ScoreItem("im1", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue(AvatolCVConstants.UNDETERMINED)));
             vu.vote();
             Assert.assertEquals(new NormalizedValue("taxonANewVal1"), vu.getVoteWinner(new NormalizedValue("taxonA")).getNewValue());
@@ -37,7 +37,7 @@ public class TestVotingUploader extends TestCase {
  // A single taxon, one score only, prior answer null
     public void testVotingUploaderSimplestSingleItemNewNullPriorAnswer(){
         try {
-            VotingUploader vu = new VotingUploader(null, null, null);
+            UploadVoter vu = new UploadVoter(null, null, null);
             vu.addScore(new ScoreItem("im1", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), null));
             vu.vote();
             Assert.assertEquals(new NormalizedValue("taxonANewVal1"), vu.getVoteWinner(new NormalizedValue("taxonA")).getNewValue());
@@ -50,7 +50,7 @@ public class TestVotingUploader extends TestCase {
  // A single taxon, one score only, prior answer exists
     public void testVotingUploaderSimplestSingleItemRevise(){
         try {
-            VotingUploader vu = new VotingUploader(null, null, null);
+            UploadVoter vu = new UploadVoter(null, null, null);
             vu.addScore(new ScoreItem("im1", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("taxonAPriorVal1")));
             vu.vote();
             Assert.assertEquals(new NormalizedValue("taxonANewVal1"), vu.getVoteWinner(new NormalizedValue("taxonA")).getNewValue());
@@ -66,7 +66,7 @@ public class TestVotingUploader extends TestCase {
     // B single taxon, two scores, conflicting prior value should throw exception
     public void testVotingUploaderConflictingPriorValues(){
         try {
-            VotingUploader vu = new VotingUploader(null, null, null);
+            UploadVoter vu = new UploadVoter(null, null, null);
             vu.addScore(new ScoreItem("im1", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("taxonAPriorVal1")));
             vu.addScore(new ScoreItem("im2", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("taxonAPriorVal2")));
             vu.vote();
@@ -83,7 +83,7 @@ public class TestVotingUploader extends TestCase {
     // C single taxon, two scores, different, cause tie, should use consistent prior value
     public void testVotingUploaderTwoCauseTie(){
         try {
-            VotingUploader vu = new VotingUploader(null, null, null);
+            UploadVoter vu = new UploadVoter(null, null, null);
             vu.addScore(new ScoreItem("im1", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("taxonAPriorVal1")));
             vu.addScore(new ScoreItem("im2", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal2"), new NormalizedValue("taxonAPriorVal1")));
             vu.vote();
@@ -99,7 +99,7 @@ public class TestVotingUploader extends TestCase {
     // D single taxon, two scores, both new values same, should use that new value
     public void testVotingUploaderTwoCauseWinnerPriorValueExists(){
         try {
-            VotingUploader vu = new VotingUploader(null, null, null);
+            UploadVoter vu = new UploadVoter(null, null, null);
             vu.addScore(new ScoreItem("im1", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("taxonAPriorVal1")));
             vu.addScore(new ScoreItem("im2", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("taxonAPriorVal1")));
             vu.vote();
@@ -113,7 +113,7 @@ public class TestVotingUploader extends TestCase {
  // D single taxon, two scores, both new values same, should use that new value
     public void testVotingUploaderTwoCauseWinnerPriorValueNull(){
         try {
-            VotingUploader vu = new VotingUploader(null, null, null);
+            UploadVoter vu = new UploadVoter(null, null, null);
             vu.addScore(new ScoreItem("im1", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), null));
             vu.addScore(new ScoreItem("im2", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), null));
             vu.vote();
@@ -127,7 +127,7 @@ public class TestVotingUploader extends TestCase {
     // D single taxon, two scores, both new values same, should use that new value
     public void testVotingUploaderTwoCauseWinnerPriorValueEmptyString(){
         try {
-            VotingUploader vu = new VotingUploader(null, null, null);
+            UploadVoter vu = new UploadVoter(null, null, null);
             vu.addScore(new ScoreItem("im1", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("")));
             vu.addScore(new ScoreItem("im2", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("")));
             vu.vote();
@@ -142,7 +142,7 @@ public class TestVotingUploader extends TestCase {
  // D single taxon, two scores, both new values same, should use that new value
     public void testVotingUploaderTwoCauseWinnerPriorValueQuestionMark(){
         try {
-            VotingUploader vu = new VotingUploader(null, null, null);
+            UploadVoter vu = new UploadVoter(null, null, null);
             vu.addScore(new ScoreItem("im1", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue(AvatolCVConstants.UNDETERMINED)));
             vu.addScore(new ScoreItem("im2", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue(AvatolCVConstants.UNDETERMINED)));
             vu.vote();
@@ -160,7 +160,7 @@ public class TestVotingUploader extends TestCase {
     // E single taxon, three scores, two same, should use new value for winner
     public void testVotingUploaderThreeCauseWinnerYesPriorValue(){
         try {
-            VotingUploader vu = new VotingUploader(null, null, null);
+            UploadVoter vu = new UploadVoter(null, null, null);
             vu.addScore(new ScoreItem("im1", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("taxonAPriorVal1")));
             vu.addScore(new ScoreItem("im2", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("taxonAPriorVal1")));
             vu.addScore(new ScoreItem("im3", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal2"), new NormalizedValue("taxonAPriorVal1")));
@@ -175,7 +175,7 @@ public class TestVotingUploader extends TestCase {
     // E single taxon, three scores, two same, should use new value for winner
     public void testVotingUploaderThreeCauseWinnerNoPriorValue(){
         try {
-            VotingUploader vu = new VotingUploader(null, null, null);
+            UploadVoter vu = new UploadVoter(null, null, null);
             vu.addScore(new ScoreItem("im1", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("")));
             vu.addScore(new ScoreItem("im2", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("")));
             vu.addScore(new ScoreItem("im3", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal2"), new NormalizedValue("")));
@@ -191,7 +191,7 @@ public class TestVotingUploader extends TestCase {
     // F single taxon, four scores, two and two -> tie, should use consistent prior value
     public void testVotingUploaderFourMakesTie(){
         try {
-            VotingUploader vu = new VotingUploader(null, null, null);
+            UploadVoter vu = new UploadVoter(null, null, null);
             vu.addScore(new ScoreItem("im1", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("taxonAPriorVal1")));
             vu.addScore(new ScoreItem("im2", new NormalizedKey("char1"),  new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("taxonAPriorVal1")));
             vu.addScore(new ScoreItem("im3", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal2"), new NormalizedValue("taxonAPriorVal1")));
@@ -206,7 +206,7 @@ public class TestVotingUploader extends TestCase {
     // G single taxon, four scores, three to one, should use vote winner
     public void testVotingUploaderFourWinnerPriorValueExists(){
         try {
-            VotingUploader vu = new VotingUploader(null, null, null);
+            UploadVoter vu = new UploadVoter(null, null, null);
             vu.addScore(new ScoreItem("im1", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("taxonAPriorVal1")));
             vu.addScore(new ScoreItem("im2", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal2"), new NormalizedValue("taxonAPriorVal1")));
             vu.addScore(new ScoreItem("im3", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal2"), new NormalizedValue("taxonAPriorVal1")));
@@ -221,7 +221,7 @@ public class TestVotingUploader extends TestCase {
     }
     public void testVotingUploaderFourWinnerNoPriorValue(){
         try {
-            VotingUploader vu = new VotingUploader(null, null, null);
+            UploadVoter vu = new UploadVoter(null, null, null);
             vu.addScore(new ScoreItem("im1", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("")));
             vu.addScore(new ScoreItem("im2", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal2"), new NormalizedValue("")));
             vu.addScore(new ScoreItem("im3", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal2"), new NormalizedValue("")));
@@ -237,7 +237,7 @@ public class TestVotingUploader extends TestCase {
     // seven taxa, one of each cases A, C, D, E, F, G, each should behave as before - make sure to randomize adds
     public void testVotingUploaderAllTogether(){
         try {
-            VotingUploader vu = new VotingUploader(null, null, null);
+            UploadVoter vu = new UploadVoter(null, null, null);
             vu.addScore(new ScoreItem("im1", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("taxonAPriorVal1")));
             //
             vu.addScore(new ScoreItem("im2", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonB"), new NormalizedValue("taxonBNewVal1"), new NormalizedValue("taxonBPriorVal1")));
@@ -284,7 +284,7 @@ public class TestVotingUploader extends TestCase {
     // H mixed trainTest concerns passed to VotingUploader - should throw exception 
     public void testVotingUploaderConflictingTTConcerns(){
         try {
-            VotingUploader vu = new VotingUploader(null, null, null);
+            UploadVoter vu = new UploadVoter(null, null, null);
             vu.addScore(new ScoreItem("im1", new NormalizedKey("char1"), new NormalizedKey("taxon"), new NormalizedValue("taxonA"), new NormalizedValue("taxonANewVal1"), new NormalizedValue("taxonAPriorVal1")));
             vu.addScore(new ScoreItem("im2", new NormalizedKey("char1"), new NormalizedKey("klaxon"), new NormalizedValue("klaxonA"), new NormalizedValue("klaxonANewVal1"), new NormalizedValue("klaxonAPriorVal1")));
             Assert.fail("should have thrown exception on inconsistent ttConcern");

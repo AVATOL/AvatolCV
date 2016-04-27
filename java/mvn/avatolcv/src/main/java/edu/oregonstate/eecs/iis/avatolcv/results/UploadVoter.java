@@ -15,17 +15,17 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 
-public class VotingUploader {
+public class UploadVoter {
     private DataSource dataSource = null;
     private ProgressPresenter pp = null;
     private UploadSession uploadSession = null;
     private NormalizedKey trainTestConcern = null;
     private Hashtable<NormalizedValue, List<ScoreItem>> scoreItemHash = new Hashtable<NormalizedValue, List<ScoreItem>>();
     private Hashtable<NormalizedValue, ScoreItem> voteWinnerHash = new Hashtable<NormalizedValue, ScoreItem>();
-    private static final Logger logger = LogManager.getLogger(VotingUploader.class);
+    private static final Logger logger = LogManager.getLogger(UploadVoter.class);
 
     private List<NormalizedValue> ttValuesSeen = new ArrayList<NormalizedValue>();
-    public VotingUploader(DataSource dataSource,ProgressPresenter pp, UploadSession uploadSession) throws AvatolCVException {
+    public UploadVoter(DataSource dataSource,ProgressPresenter pp, UploadSession uploadSession) throws AvatolCVException {
         this.dataSource = dataSource;
         this.pp = pp;
         this.uploadSession = uploadSession;

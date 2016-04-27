@@ -65,7 +65,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.PointAsPercent;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTableSortable;
 import edu.oregonstate.eecs.iis.avatolcv.results.ScoreItem;
 import edu.oregonstate.eecs.iis.avatolcv.results.ScoreItem.ScoringFate;
-import edu.oregonstate.eecs.iis.avatolcv.results.VotingUploader;
+import edu.oregonstate.eecs.iis.avatolcv.results.UploadVoter;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringInfoFile;
@@ -963,7 +963,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
         }
         return nodes;
     }
-    private void populateVoter(VotingUploader vu, List<String> imageIDs) throws AvatolCVException {
+    private void populateVoter(UploadVoter vu, List<String> imageIDs) throws AvatolCVException {
         int imageCount = imageIDs.size();
         // divide by two since using half the progress bar for this bit
         double percentProgressPerImage = 0.5 / imageCount;
@@ -1041,7 +1041,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
         }
     }
     private void voteThenUpload() throws AvatolCVException {
-        VotingUploader vu = new VotingUploader(this.dataSource, this, this.uploadSession);
+        UploadVoter vu = new UploadVoter(this.dataSource, this, this.uploadSession);
         List<String> imageIDs = resultsTable2.getImageIDsInCurrentOrder();
         
         // use 50% of progress bar on populateVoter
