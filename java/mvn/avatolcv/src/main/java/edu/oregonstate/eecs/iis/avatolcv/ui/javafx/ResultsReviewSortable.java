@@ -194,7 +194,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
             runSelectChoiceBox.getSelectionModel().select(this.runName);
             runSelectChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new RunChoiceChangeListener(runSelectChoiceBox, this.mainScreen, this.mainWindow));
             setRunDetails(this.runName);
-            this.uploadSession = new UploadSession();
+            this.uploadSession = new UploadSession(this.runName);
             setScoredImagesInfo(this.runID, scoringConcernValue.getText());
             //runDetailsAccordion.requestLayout();
             setupSlider();
@@ -221,6 +221,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
             try {
                 newRunID =(String)cb.getItems().get((Integer)newValue);
                 cb.getSelectionModel().select(newRunID);
+                uploadSession = new UploadSession(newRunID);
                 init(mainScreen, mainWindow, newRunID);
                 
             }

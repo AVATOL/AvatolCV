@@ -24,9 +24,10 @@ public class UploadSession {
     public static final String TYPE_ABSTAIN_VALUE_SAME = "ABSTAIN_VALUE_SAME";
     private List<UploadEvent> events = new ArrayList<UploadEvent>();
     private int uploadSessionNumber = 0;
-    
-    public UploadSession() throws AvatolCVException {
-        String path = AvatolCVFileSystem.getPathForUploadSessionFile();
+    private String runName = null;
+    public UploadSession(String runName) throws AvatolCVException {
+        this.runName = runName;
+        String path = AvatolCVFileSystem.getPathForUploadSessionFile(runName);
         File f = new File(path);
         
         if (f.exists()){
@@ -137,7 +138,7 @@ public class UploadSession {
     }
     
     public void persist() throws AvatolCVException {
-        String path = AvatolCVFileSystem.getPathForUploadSessionFile();
+        String path = AvatolCVFileSystem.getPathForUploadSessionFile(this.runName);
         if (events.size() == 0){
             File f = new File(path);
             if (f.exists()){
