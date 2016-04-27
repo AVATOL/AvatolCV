@@ -94,11 +94,19 @@ public class BisqueDataSource implements DataSource {
    
     @Override
     public String getDefaultUsername() {
-        return Defaults.instance.getBisqueLogin();
+        String result = Defaults.instance.getBisqueLogin();
+        if (null == result){
+            result = "";
+        }
+        return result;
     }
     @Override
     public String getDefaultPassword() {
-        return Defaults.instance.getBisquePassword();
+        String result = Defaults.instance.getBisquePassword();
+        if (null == result){
+            result = "";
+        }
+        return result;
     }
     @Override
     public void loadPrimaryMetadataForChosenDataset(ProgressPresenter pp,

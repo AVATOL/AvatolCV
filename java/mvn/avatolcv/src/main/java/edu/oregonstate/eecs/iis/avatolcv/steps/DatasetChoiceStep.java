@@ -9,17 +9,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
-import edu.oregonstate.eecs.iis.avatolcv.core.Defaults;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
-import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
-import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
-import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueDataset;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.CharacterInfo.MBCharacter;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.MatrixInfo.MBMatrix;
-import edu.oregonstate.eecs.iis.avatolcv.ws.morphobank.TaxaInfo.MBTaxon;
-import edu.oregonstate.eecs.iis.obsolete.avatolcv.View;
 
 public class DatasetChoiceStep extends Answerable implements Step {
     private DatasetInfo chosenDataset = null;

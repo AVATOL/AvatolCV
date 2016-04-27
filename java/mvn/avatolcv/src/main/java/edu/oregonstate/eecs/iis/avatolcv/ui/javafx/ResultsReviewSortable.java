@@ -759,6 +759,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
             Platform.runLater(() -> scoreLabel.getStyleClass().remove(UPLOADED_CSS_STYLE));
             Label uploadStatusLabel = saveStatusLabelForImageIDHash.get(id);
             Platform.runLater(() -> uploadStatusLabel.setText(STATUS_UNSAVED));
+            Platform.runLater(() -> uploadStatusLabel.getStyleClass().remove(UPLOADED_CSS_STYLE));
 		}
     }
     public void userFeedbackForUndoAbstain(List<String> ids){
@@ -847,12 +848,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
             }
             this.uploadSession.forgetEvents(events);
             
-            // check to see if any scoreLabels should still reflect being uploaded
-            for (UploadEvent event : events){
-                String imageID = event.getImageID();
-                Label scoreLabel = scoreLabelForImageIDHash.get(imageID);
-                Platform.runLater(() -> scoreLabel.getStyleClass().remove(UPLOADED_CSS_STYLE));
-            }
+          
             
             Platform.runLater(() -> enableUndoUploadButtonIfAppropriate());
         }
@@ -865,7 +861,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
         @Override
         public void run() {
             LoginDialog dialog = new LoginDialog();
-            dialog.display(dataSource.getName());
+            dialog.display(dataSource.getName(), dataSource.getDefaultUsername(), dataSource.getDefaultPassword());
             username = dialog.getLogin();
             password = dialog.getPword();
         }
@@ -996,7 +992,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
         }
     }
     
-    private void userFeedbackForUpload(String logMessage, List<String> ids, List<Label> scoreLabels, List<Label> saveStatusLabels, ScoringFate scoringFate){
+    private void userFeedbackForUpload(String logMessage, List<String> ids, List<Label> scoreLabels, List<Label> saveStatusLabels, ScoringFate scoringFate, NormalizedValue newScore){
         for (String id : ids){
             logger.info(logMessage + id);
         }
@@ -1007,7 +1003,10 @@ public class ResultsReviewSortable implements ProgressPresenter {
             }
         }
         for (Label label : saveStatusLabels){
-            Platform.runLater(() -> label.setText(getTextForScoringFate(scoringFate)));
+            Platform.runLater(() -> label.setText(getTextForScoringFate(scoringFate, newScore.getName())));
+            if (scoringFate == ScoringFate.REVISE_VALUE || scoringFate == ScoringFate.SET_NEW_VALUE){
+                Platform.runLater(() -> label.getStyleClass().add(styleString));
+            }
         }
     }
     private String getStyleForScoringFate(ScoringFate fate){
@@ -1025,19 +1024,19 @@ public class ResultsReviewSortable implements ProgressPresenter {
             return UPLOADED_CSS_STYLE;
         }
     }
-    private String getTextForScoringFate(ScoringFate fate){
+    private String getTextForScoringFate(ScoringFate fate, String newScore){
         if (fate == ScoringFate.ABSTAIN_FROM_CHANGING_SCORE_NEW_VALUE_SAME){
-            return "score wouldn't change";
+            return "no, score wouldn't change";
         }
         else if (fate == ScoringFate.ABSTAIN_FROM_CHANGING_SCORE_VOTE_TIE){
-            return "scores were tied  ";
+            return "no, scores were tied";
         }
         else if (fate == ScoringFate.REVISE_VALUE){
-            return "revised score ";
+            return "changed to " + newScore;
         }
         else {
             //fate == ScoringFate.SET_NEW_VALUE){
-            return "added score ";
+            return "set to " + newScore;
         }
     }
     private void voteThenUpload() throws AvatolCVException {
@@ -1072,17 +1071,17 @@ public class ResultsReviewSortable implements ProgressPresenter {
             List<Label> saveStatusLabelsForWinner = getSaveStatusLabelsForImageIds(si.getImageIDsRepresentedByWinner());
             if (si.getScoringFate() == ScoringFate.ABSTAIN_FROM_CHANGING_SCORE_NEW_VALUE_SAME){
                 this.uploadSession.abstainSinceValueSame(si.getImageIDsRepresentedByWinner(), normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
-                userFeedbackForUpload("UPLOAD - new value same as old, SKIPPING UPLOAD", ids, scoreLabelsForWinner,saveStatusLabelsForWinner, si.getScoringFate());
+                userFeedbackForUpload("UPLOAD - new value same as old, SKIPPING UPLOAD", ids, scoreLabelsForWinner,saveStatusLabelsForWinner, si.getScoringFate(),newValue);
             }
             else if (si.getScoringFate() == ScoringFate.ABSTAIN_FROM_CHANGING_SCORE_VOTE_TIE){
                 this.uploadSession.abstainSinceTieVote(si.getImageIDsRepresentedByWinner(), normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
-                userFeedbackForUpload("UPLOAD - ambiguous scoring - voting tied, SKIPPING UPLOAD", ids, scoreLabelsForWinner,saveStatusLabelsForWinner, si.getScoringFate());
+                userFeedbackForUpload("UPLOAD - ambiguous scoring - voting tied, SKIPPING UPLOAD", ids, scoreLabelsForWinner,saveStatusLabelsForWinner, si.getScoringFate(),newValue);
             }
             else if (si.getScoringFate() == ScoringFate.REVISE_VALUE){
             	boolean result = dataSource.reviseValueForKey(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
                 if (result){
                 	this.uploadSession.reviseValueForKey(si.getImageIDsRepresentedByWinner(), normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
-                	userFeedbackForUpload("UPLOAD - REVISING value from " + si.getExistingValueForKey() + " to " +  si.getNewValue(), ids, scoreLabelsForWinner,saveStatusLabelsForWinner, si.getScoringFate());
+                	userFeedbackForUpload("UPLOAD - REVISING value from " + si.getExistingValueForKey() + " to " +  si.getNewValue(), ids, scoreLabelsForWinner,saveStatusLabelsForWinner, si.getScoringFate(),newValue);
                 }
             }
             else {
@@ -1090,7 +1089,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
             	boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
                 if (result){
                 	this.uploadSession.addNewKeyValue(si.getImageIDsRepresentedByWinner(), normCharKey, newValue, trainTestConcern, trainTestConcernValue);
-                	userFeedbackForUpload("UPLOAD - NEW value from " + si.getExistingValueForKey() + " to " +  si.getNewValue(), ids, scoreLabelsForWinner,saveStatusLabelsForWinner, si.getScoringFate());
+                	userFeedbackForUpload("UPLOAD - NEW value from " + si.getExistingValueForKey() + " to " +  si.getNewValue(), ids, scoreLabelsForWinner,saveStatusLabelsForWinner, si.getScoringFate(),newValue);
                 }
                 else {
                 	Platform.runLater(() -> dialog("cannot upload new score for " + si.getTrainTestConcernValue()));

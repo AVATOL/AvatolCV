@@ -17,7 +17,7 @@ import javafx.util.Pair;
 public class LoginDialog {
     // found this here : http://code.makery.ch/blog/javafx-dialogs-official/
     private InfoCatcher infoCatcher = null;
-    public void display(String sourceName){
+    public void display(String sourceName, String defaultLoginName, String defaultPassword){
         // Create the custom dialog.
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Login to " + sourceName);
@@ -38,8 +38,11 @@ public class LoginDialog {
 
         TextField username = new TextField();
         username.setPromptText("Username");
+        username.setText(defaultLoginName);
+        
         PasswordField password = new PasswordField();
         password.setPromptText("Password");
+        password.setText(defaultPassword);
 
         grid.add(new Label("Username:"), 0, 0);
         grid.add(username, 1, 0);
@@ -48,7 +51,9 @@ public class LoginDialog {
 
         // Enable/Disable login button depending on whether a username was entered.
         Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
-        loginButton.setDisable(true);
+        if ("".equals(defaultLoginName)){
+            loginButton.setDisable(true);
+        }
 
         // Do some validation (using the Java 8 lambda syntax).
         username.textProperty().addListener((observable, oldValue, newValue) -> {

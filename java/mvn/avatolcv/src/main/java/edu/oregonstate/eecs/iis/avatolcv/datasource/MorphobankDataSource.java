@@ -109,11 +109,19 @@ public class MorphobankDataSource implements DataSource {
     
     @Override
     public String getDefaultUsername() {
-        return Defaults.instance.getMorphobankLogin();
+        String result = Defaults.instance.getMorphobankLogin();
+        if (null == result){
+            result = "";
+        }
+        return result;
     }
     @Override
     public String getDefaultPassword() {
-        return Defaults.instance.getMorphobankPassword();
+        String result = Defaults.instance.getMorphobankPassword();
+        if (null == result){
+            result = "";
+        }
+        return result;
     }
     
     @Override
