@@ -20,7 +20,7 @@ public class CleanUploadedScores {
         try {
             AvatolCVFileSystem.setRootDir("C:\\jed\\avatol\\git\\avatol_cv");
             BisqueWSClientImpl bisque = new BisqueWSClientImpl();
-            bisque.authenticate("jedirv","Neton3plants**");
+            bisque.authenticate("jedirv","badPassword");
             List<String> ids = getImageIDs();
             for (String id : ids){
                 cleanScore(bisque, id, tagname);

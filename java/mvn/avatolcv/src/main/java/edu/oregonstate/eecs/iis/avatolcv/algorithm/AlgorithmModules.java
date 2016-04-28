@@ -30,12 +30,6 @@ public class AlgorithmModules {
 		SCORING
 	}
 	private static final String FILESEP = System.getProperty("file.separator");
-	//private Hashtable<String, Algorithm> propsForNameHashSegmentation = new Hashtable<String, Algorithm>();
-	//private Hashtable<String, Algorithm> propsForNameHashOrientation = new Hashtable<String, Algorithm>();
-	//private Hashtable<String, Algorithm> propsForNameHashScoring = new Hashtable<String, Algorithm>();
-	//private List<String> algNamesSegmentation = new ArrayList<String>();
-	//private List<String> algNamesOrientation = new ArrayList<String>();
-	//private List<String> algNamesScoring = new ArrayList<String>();
 	private List<Algorithm> segAlgs = new ArrayList<Algorithm>();
     private List<Algorithm> orientAlgs = new ArrayList<Algorithm>();
     private List<Algorithm> scoringAlgs = new ArrayList<Algorithm>();
@@ -45,7 +39,6 @@ public class AlgorithmModules {
     public static void init() throws AvatolCVException {
         instance = new AlgorithmModules(AvatolCVFileSystem.getModulesDir());
     }
-	//private ScoringAlgorithms scoringAlgorithms = null;
 	public AlgorithmModules(String moduleRootDir) throws AvatolCVException {
 		File moduleRootFile = new File(moduleRootDir);
 		if (!moduleRootFile.exists()){
@@ -54,7 +47,6 @@ public class AlgorithmModules {
 		String segmentationAlgPath = moduleRootDir + FILESEP + AlgType.SEGMENTATION.toString().toLowerCase();
 		String orientationAlgPath = moduleRootDir + FILESEP + AlgType.ORIENTATION.toString().toLowerCase();
 		String scoringAlgPath = moduleRootDir + FILESEP + AlgType.SCORING.toString().toLowerCase();
-		//String algsSetsPath = moduleRootDir + FILESEP + "algSets";
 		
 		String propertiesFileName = getPropertiesFileRootName();
 		File segDir = new File(segmentationAlgPath);
@@ -69,12 +61,6 @@ public class AlgorithmModules {
 		if (scoringDir.exists()){
 			loadAlgsForCategory(scoringDir, propertiesFileName);
 		}
-		/*
-		File algsSetsDir = new File(algsSetsPath);
-		if (algsSetsDir.exists()){
-			loadAlgSets(algsSetsDir);
-		}
-		*/
 	}
 	public List<String> getAlgNamesForScoringFocus(ScoringAlgorithm.ScoringSessionFocus focus) throws AvatolCVException {
 	    List<String> names = new ArrayList<String>();
@@ -126,58 +112,8 @@ public class AlgorithmModules {
 	    String description = alg.getAlgDescription();
 	    return description;
 	}
-	/*
-	private void loadAlgSets(File parentDir) throws AvatolCVException {
-		File[] algSetDirs = parentDir.listFiles();
-		for (File f : algSetDirs){
-			loadAlgSet(f);
-		}
-	}
-	private void loadAlgSet(File algDirSet) throws AvatolCVException {
-		File[] files = algDirSet.listFiles();
-		String prefixToMatch = getPropertiesFilenamePrefix();
-		for (File f : files){
-			String name = f.getName();
-			if (name.startsWith(prefixToMatch)){
-				// this is an AlgorithmProperties file
-				String configFilePath = f.getAbsolutePath();
-				List<String> lines = loadProps(configFilePath);
-				Algorithm algProps = new Algorithm(lines,configFilePath);
-				//String[] nameParts = ClassicSplitter.splitt(name,'.');
-				//String nameRoot = nameParts[0];
-				//String[] nameRootParts = ClassicSplitter.splitt(nameRoot,'_');
-				//String algName = nameRootParts[1];
-				//algProps.setAlgName(algName);
-				String algName = algProps.getAlgName();
-				String algTypeString = algProps.getAlgType();
-				if (algTypeString.equals(Algorithm.PROPERTY_ALG_TYPE_VALUE_ORIENTATION)){
-					propsForNameHashOrientation.put(algName, algProps);
-
-				}
-				else if (algTypeString.equals(Algorithm.PROPERTY_ALG_TYPE_VALUE_SCORING)){
-					propsForNameHashScoring.put(algName, algProps);
-					algNamesScoring.add(algName);
-				}
-				else {
-					// AlgorithmProperties.PROPERTY_ALG_TYPE_VALUE_SEGMENTATION
-					propsForNameHashSegmentation.put(algName, algProps);
-
-				}
-			}
-		}
-	}
-
-	*/
-	private String getPropertiesFilename(){
-		String result = null;
-		if (Platform.isWindows()){
-			result = "algPropertiesWindows.txt";
-		}
-		else {
-			result ="algPropertiesMac.txt";
-		}
-		return result;
-	}
+	
+	
 	private String getPropertiesFileRootName(){
         String result = null;
         if (Platform.isWindows()){

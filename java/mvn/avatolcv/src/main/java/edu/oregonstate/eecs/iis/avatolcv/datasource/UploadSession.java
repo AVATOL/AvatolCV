@@ -16,12 +16,18 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class UploadSession {
+    public static final String STRING_LIST_DELIM = ";";
     private static final String NL = System.getProperty("line.separator");
+    public static final String TYPE_NEW = "NEW";
+    public static final String TYPE_REVISE = "REVISE";
+    public static final String TYPE_ABSTAIN_TIE = "ABSTAIN_TIE";
+    public static final String TYPE_ABSTAIN_VALUE_SAME = "ABSTAIN_VALUE_SAME";
     private List<UploadEvent> events = new ArrayList<UploadEvent>();
     private int uploadSessionNumber = 0;
-    
-    public UploadSession() throws AvatolCVException {
-        String path = AvatolCVFileSystem.getPathForUploadSessionFile();
+    private String runName = null;
+    public UploadSession(String runName) throws AvatolCVException {
+        this.runName = runName;
+        String path = AvatolCVFileSystem.getPathForUploadSessionFile(runName);
         File f = new File(path);
         
         if (f.exists()){
@@ -32,15 +38,16 @@ public class UploadSession {
                 while (null != (line = reader.readLine())){
                     String[] parts = ClassicSplitter.splitt(line, ',');
                     String sessionNumber = parts[0];
-                    String imageID = parts[1];
-                    String key = parts[2];
-                    String val = parts[3];
-                    String origVal = parts[4];
-                    String trainTestConcern = parts[5];
-                    String trainTestConcernValue = parts[6];
+                    String type = parts[1];
+                    String imageID = parts[2];
+                    String key = parts[3];
+                    String val = parts[4];
+                    String origVal = parts[5];
+                    String trainTestConcern = parts[6];
+                    String trainTestConcernValue = parts[7];
                     Integer sessionNumInteger = new Integer(sessionNumber);
                     uploadSessionNumber = sessionNumInteger.intValue();
-                    if ("null".equals(origVal)){
+                    if (type.equals(TYPE_NEW)){
                         addNewKeyValue(uploadSessionNumber, imageID, new NormalizedKey(key), new NormalizedValue(val), new NormalizedKey(trainTestConcern), new NormalizedValue(trainTestConcernValue));
                     }
                     else {
@@ -57,36 +64,81 @@ public class UploadSession {
             }
         }
     }
-    public boolean isImageUploaded(String imageID){
-        for (UploadEvent event : this.events){
-            if (event.getImageID().equals(imageID)){
-                return true;
-            }
-        }
-        return false;
-    }
+    //public boolean isImageUploaded(String imageID){
+    //    for (UploadEvent event : this.events){
+    //        if (event.getImageID().equals(imageID)){
+    //            return true;
+    //        }
+    //    }
+    //    return false;
+    //}
     public void nextSession(){
         uploadSessionNumber += 1;
     }
     public int getUploadSessionNumber(){
         return uploadSessionNumber;
     }
+    
+    public static String getImageIDListString(List<String> ids){
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < ids.size() - 1; i++){
+            String id = ids.get(i);
+            sb.append(id + STRING_LIST_DELIM);
+        }
+        String finalID = ids.get(ids.size() - 1);
+        sb.append(finalID);
+        return "" + sb;
+    }
+    
     public void addNewKeyValue(int sessionNumber, String imageID, NormalizedKey key, NormalizedValue val, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue){
-        events.add(new UploadEvent(sessionNumber, imageID, key, val, true, null, trainTestConcern, trainTestConcernValue));
+        events.add(new UploadEvent(sessionNumber, TYPE_NEW, imageID, key, val, true, null, trainTestConcern, trainTestConcernValue));
     }
     public void addNewKeyValue(String imageID, NormalizedKey key, NormalizedValue val, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue){
         addNewKeyValue(uploadSessionNumber, imageID, key, val, trainTestConcern, trainTestConcernValue);
     }
-
+    public void addNewKeyValue(List<String> imageIDs, NormalizedKey key, NormalizedValue val, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue){
+        String imageIDString = getImageIDListString(imageIDs);
+        addNewKeyValue(uploadSessionNumber, imageIDString, key, val, trainTestConcern, trainTestConcernValue);
+    }
+    
+    
     public void reviseValueForKey(int sessionNumber, String imageID, NormalizedKey key, NormalizedValue val, NormalizedValue origValue, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue){
-        events.add(new UploadEvent(sessionNumber, imageID, key, val, false, origValue, trainTestConcern, trainTestConcernValue));
+        events.add(new UploadEvent(sessionNumber, TYPE_REVISE, imageID, key, val, false, origValue, trainTestConcern, trainTestConcernValue));
     }
     public void reviseValueForKey(String imageID, NormalizedKey key, NormalizedValue val, NormalizedValue origValue, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue){
         reviseValueForKey(uploadSessionNumber,  imageID,  key,  val,  origValue, trainTestConcern, trainTestConcernValue);
     }
+    public void reviseValueForKey(List<String> imageIDs, NormalizedKey key, NormalizedValue val, NormalizedValue origValue, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue){
+        String imageIDString = getImageIDListString(imageIDs);
+        reviseValueForKey(uploadSessionNumber,  imageIDString,  key,  val,  origValue, trainTestConcern, trainTestConcernValue);
+    }
+    
+    
+    public void abstainSinceValueSame(int sessionNumber, String imageID, NormalizedKey key, NormalizedValue val, NormalizedValue origValue, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue){
+        events.add(new UploadEvent(sessionNumber, TYPE_ABSTAIN_VALUE_SAME, imageID, key, val, false, origValue, trainTestConcern, trainTestConcernValue));
+    }
+    public void abstainSinceValueSame(String imageID, NormalizedKey key, NormalizedValue val, NormalizedValue origValue, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue){
+        reviseValueForKey(uploadSessionNumber,  imageID,  key,  val,  origValue, trainTestConcern, trainTestConcernValue);
+    }
+    public void abstainSinceValueSame(List<String> imageIDs, NormalizedKey key, NormalizedValue val, NormalizedValue origValue, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue){
+        String imageIDString = getImageIDListString(imageIDs);
+        reviseValueForKey(uploadSessionNumber,  imageIDString,  key,  val,  origValue, trainTestConcern, trainTestConcernValue);
+    }
+    
+    
+    public void abstainSinceTieVote(int sessionNumber, String imageID, NormalizedKey key, NormalizedValue val, NormalizedValue origValue, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue){
+        events.add(new UploadEvent(sessionNumber, TYPE_ABSTAIN_TIE, imageID, key, val, false, origValue, trainTestConcern, trainTestConcernValue));
+    }
+    public void abstainSinceTieVote(String imageID, NormalizedKey key, NormalizedValue val, NormalizedValue origValue, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue){
+        reviseValueForKey(uploadSessionNumber,  imageID,  key,  val,  origValue, trainTestConcern, trainTestConcernValue);
+    }
+    public void abstainSinceTieVote(List<String> imageIDs, NormalizedKey key, NormalizedValue val, NormalizedValue origValue, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue){
+        String imageIDString = getImageIDListString(imageIDs);
+        reviseValueForKey(uploadSessionNumber,  imageIDString,  key,  val,  origValue, trainTestConcern, trainTestConcernValue);
+    }
     
     public void persist() throws AvatolCVException {
-        String path = AvatolCVFileSystem.getPathForUploadSessionFile();
+        String path = AvatolCVFileSystem.getPathForUploadSessionFile(this.runName);
         if (events.size() == 0){
             File f = new File(path);
             if (f.exists()){
@@ -97,7 +149,7 @@ public class UploadSession {
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(path));
                 for (UploadEvent event : events){
-                    writer.write(event.getUploadSessionNumber() + "," + event.getImageID() + "," + event.getKey() + "," + event.getVal() + "," + event.getOrigValue()  + "," + event.getTrainTestConcern()  + "," + event.getTrainTestConcernValue() + NL);
+                    writer.write(event.getUploadSessionNumber() + "," + event.getType() + "," + event.getImageID() + "," + event.getKey() + "," + event.getVal() + "," + event.getOrigValue()  + "," + event.getTrainTestConcern()  + "," + event.getTrainTestConcernValue() + NL);
                 }
                 writer.close();
             }
@@ -111,17 +163,17 @@ public class UploadSession {
         private String imageID = null;
         private NormalizedKey key = null;
         private NormalizedValue val = null;
-        private boolean newKey = false;
         private NormalizedValue oldValue = null;
         int uploadSessionNumber = -1;
         private NormalizedKey trainTestConcern = null;
         private NormalizedValue trainTestConcernValue = null;
-        public UploadEvent(int uploadSessionNumber, String imageID, NormalizedKey key, NormalizedValue val, boolean newKey, NormalizedValue oldValue, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue){
+        private String type = null;
+        public UploadEvent(int uploadSessionNumber, String type, String imageID, NormalizedKey key, NormalizedValue val, boolean newKey, NormalizedValue oldValue, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue){
             this.uploadSessionNumber = uploadSessionNumber;
+            this.type = type;
             this.imageID = imageID;
             this.key = key;
             this.val = val;
-            this.newKey = newKey;
             this.oldValue = oldValue;
             this.trainTestConcern = trainTestConcern;
             this.trainTestConcernValue = trainTestConcernValue;
@@ -141,8 +193,9 @@ public class UploadSession {
         public NormalizedValue getTrainTestConcernValue(){
             return this.trainTestConcernValue;
         }
-        public boolean wasNewKey(){
-            return this.newKey;
+        
+        public String getType(){
+            return this.type;
         }
         public NormalizedValue getOrigValue() throws AvatolCVException {
             if (null == this.oldValue){

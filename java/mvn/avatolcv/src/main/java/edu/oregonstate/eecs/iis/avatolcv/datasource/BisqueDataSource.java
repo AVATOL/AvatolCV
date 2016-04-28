@@ -94,11 +94,19 @@ public class BisqueDataSource implements DataSource {
    
     @Override
     public String getDefaultUsername() {
-        return Defaults.instance.getBisqueLogin();
+        String result = Defaults.instance.getBisqueLogin();
+        if (null == result){
+            result = "";
+        }
+        return result;
     }
     @Override
     public String getDefaultPassword() {
-        return Defaults.instance.getBisquePassword();
+        String result = Defaults.instance.getBisquePassword();
+        if (null == result){
+            result = "";
+        }
+        return result;
     }
     @Override
     public void loadPrimaryMetadataForChosenDataset(ProgressPresenter pp,
@@ -401,5 +409,27 @@ public class BisqueDataSource implements DataSource {
     @Override
     public List<String> filterBadSortCandidates(List<String> list) {
         return list;
+    }
+    @Override
+    public void prepForUpload(List<String> charIDs,
+            List<String> trainTestConcernValueIDs) throws AvatolCVException {
+        // nothing to do
+        
+    }
+    @Override
+    public boolean deleteScoreForKey(String imageID, NormalizedKey key,
+            NormalizedKey trainTestConcern,
+            NormalizedValue trainTestConcernValue) throws AvatolCVException {
+        try {
+            boolean result = this.wsClient.reviseAnnotation(imageID, key.getName(), "");
+            return result;
+        }
+        catch(BisqueWSException e){
+            throw new AvatolCVException("problem deleting value for key " + key.getName(), e);
+        }
+    }
+    @Override
+    public boolean groupByTrainTestConcernValueAndVoteForUpload() {
+        return false;
     }
 }

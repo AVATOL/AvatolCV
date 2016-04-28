@@ -1,0 +1,64 @@
+############################################
+1. clone or pull into gitReleaseCreation
+############################################
+This sets up the area that files will be bundled from.  Generate the bundles here so that runtime artifacts do not bloat the bundles
+
+############################################
+2. ensure modulesOSU ready
+############################################
+If add anything, make sure its represented properly in distro/mainfests/distro_manifest_modulesOSU.txt.
+    -if its a standalone file, add it as an entry.
+    -if it will be pulled in due to a parent dir that is already represented, no need to change anything.
+
+batskull
+    - the bat repo must be cloned into play, and the branch changed:
+        %cd avatol_cv/modules/scoring/batskull
+        %git clone https://github.com/AVATOL/bat.git
+        %git checkout new_integ
+        
+    - then it must be built
+        start up MATLAB
+        in MATLAB, run compile.m
+
+yaoSeg, yaoOrient, leafScore are all present in the avatolcv repo - no compiling required, but if add any algProperties files for different variants of those algs, make sure to add to distro_manifest_modulesOSU.txt
+hcSearch -
+
+
+
+hcSearch   (On Mac)
+    - the nematocyst repo must be cloned into play:
+        %cd avatol_cv/modules/segmentation/hcsearchSeg
+        %git clone https://github.com/AVATOL/nematocyst.git
+        %cd nematocyst
+        %./master_install_linux.sh
+        
+    - MATLAB builds need to happen
+        hcsearchSeg/nematocyst/external/liblinear/matlab,   run  make (within MATLAB)
+        hcsearchSeg/nematocyst/external/libsvm/matlab,   run  make (within MATLAB)
+        
+hcSearch   (On Windows)
+    TBD
+############################################
+3. ensure modules3rdParty ready
+############################################
+If add anything, make sure its represented properly in distro/mainfests/distro_manifest_modules3rdParty.txt.
+If its a standalone file, add it as an entry.
+If it will be pulled in due to a parent dir that is already represented, no need to change anything.
+
+############################################
+4. ensure java ready
+############################################
+If add anything, make sure its represented properly in distro/mainfests/distro_manifest_java.txt.
+All java changes will be held in the one jar, so only if need to add supporting image files, or another jar will manifest need to change
+
+If java changed, export new runnable jar to jave/lib/avatol_cv.jar, commit, push and pull to the gitReleaseCreation area
+############################################
+5. ensure docs ready
+############################################        
+If add any doc, add it to distro/mainfests/distro_manifest_docs.txt
+
+
+        
+4. cd gitReleaseCreation/avatol_cv/distro
+5. python bundleGen.py <platform_code> <list of modules> <path to credentials>
+  

@@ -133,7 +133,6 @@ public class AvatolCVJavaFX extends Application {
         priorSessionSelector.requestLayout();
     }
     public void launchSession(){
-        System.out.println("called this");
         try {
            
             if (radioNewSession.isSelected()){

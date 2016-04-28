@@ -45,7 +45,10 @@ public interface DataSource {
     void setNormalizedImageInfos(NormalizedImageInfos niis) throws AvatolCVException ;
     String getDefaultTrainTestConcern();
     NormalizedValue getValueForKeyAtDatasourceForImage(NormalizedKey normCharKey, String imageID, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException ;
+    boolean deleteScoreForKey(String imageID, NormalizedKey key, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException ;
     boolean reviseValueForKey(String imageID, NormalizedKey key, NormalizedValue value, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException ;
     boolean addKeyValue(String imageID, NormalizedKey key, NormalizedValue value, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException ;
     List<String> filterBadSortCandidates(List<String> list);
+    void prepForUpload(List<String> charIDs, List<String> trainTestConcernValueIDs) throws AvatolCVException ;
+    boolean groupByTrainTestConcernValueAndVoteForUpload();
 }

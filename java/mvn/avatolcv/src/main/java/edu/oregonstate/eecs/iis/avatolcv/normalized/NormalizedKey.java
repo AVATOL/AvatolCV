@@ -2,7 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.normalized;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
-public class NormalizedKey extends NormalizedTypeIDName implements Comparable {
+public class NormalizedKey extends NormalizedTypeIDName  {
 	public NormalizedKey(String s) throws AvatolCVException {
 		super(s);
 	}
@@ -15,11 +15,6 @@ public class NormalizedKey extends NormalizedTypeIDName implements Comparable {
 		}
 		NormalizedKey other = (NormalizedKey) obj;
 		return this.normalizedValue.equals(other.getNormalizedValue());
-	}
-	@Override
-	public int compareTo(Object obj) {
-		NormalizedKey other = (NormalizedKey) obj;
-		return this.normalizedValue.compareTo(other.getNormalizedValue());
 	}
 	
 }

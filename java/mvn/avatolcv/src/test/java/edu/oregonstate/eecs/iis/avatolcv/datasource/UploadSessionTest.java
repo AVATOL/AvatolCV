@@ -31,7 +31,7 @@ public class UploadSessionTest extends TestCase {
     }
     public void testUploadSession1deep(){
         try {
-            UploadSession us = new UploadSession();
+            UploadSession us = new UploadSession("runX");
             us.nextSession();
             Assert.assertEquals(1, us.getUploadSessionNumber());
             us.addNewKeyValue("image1", new NormalizedKey("charx"), new NormalizedValue("val1"), null, null);
@@ -43,7 +43,7 @@ public class UploadSessionTest extends TestCase {
             Assert.assertEquals("image1", undoEvents.get(0).getImageID());
             Assert.assertEquals("image2", undoEvents.get(1).getImageID());
             Assert.assertEquals("image3", undoEvents.get(2).getImageID());
-            String logPath = AvatolCVFileSystem.getPathForUploadSessionFile();
+            String logPath = AvatolCVFileSystem.getPathForUploadSessionFile("runX");
             File f = new File(logPath);
             Assert.assertTrue(f.exists());
             us.forgetEvents(undoEvents);
@@ -56,7 +56,7 @@ public class UploadSessionTest extends TestCase {
     }
     public void testUploadSession2deep(){
         try {
-            UploadSession us = new UploadSession();
+            UploadSession us = new UploadSession("runY");
             us.nextSession(); 
             Assert.assertEquals(1, us.getUploadSessionNumber());
             us.addNewKeyValue("image1", new NormalizedKey("charx"), new NormalizedValue("val1"), null, null);
@@ -79,7 +79,7 @@ public class UploadSessionTest extends TestCase {
             Assert.assertEquals("image3", undoEvents.get(2).getImageID());
             Assert.assertEquals("image4", undoEvents.get(3).getImageID());
             Assert.assertEquals("val4",  undoEvents.get(3).getVal().getName());
-            String logPath = AvatolCVFileSystem.getPathForUploadSessionFile();
+            String logPath = AvatolCVFileSystem.getPathForUploadSessionFile("runY");
             File f = new File(logPath);
             Assert.assertTrue(f.exists());
             us.forgetEvents(undoEvents);

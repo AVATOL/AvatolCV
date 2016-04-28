@@ -36,7 +36,7 @@ public class KeySorterTrueScoring {
 	 */
 	private void sortByImageValueOfKeyAndMode(){
 	    for (NormalizedValue nv : valuesForKey){
-	        System.out.println("sortByImageValueOfKeyAndMode  -  for NV " + nv);
+	        //System.out.println("sortByImageValueOfKeyAndMode  -  for NV " + nv);
 	        for (ModalImageInfo mii : allModals ){
 	            if (mii.getNormalizedImageInfo().getValueForKey(nKey).equals(nv)){
 	            	if (mii.isTraining()){

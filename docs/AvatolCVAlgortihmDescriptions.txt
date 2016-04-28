@@ -11,23 +11,43 @@ algorithm type: HC-Search Segmentation
 HC-Search segmentation is a special case algorithm that is best used in images with a lot of background clutter.  As an example, scanning electron microscope images of nematocysts usually contain significant background clutter such as cellular debris and mucus because it is extremely difficult to isolate individual nematocysts during image acquisition.  HC-Search segmentation would be appropriate for this case.  The HC-Search algorithm should not be used when the background is simple.  For instance, images of leaves placed against a uniform background (e.g. white background) are not a good candidate for HC-Search segmentation.  The HC-Search segmentation algorithm makes a trade-off of finding foreground objects in difficult images at the expense of imprecisely segmenting the object contour.
 
 ============================================
-algorithm name: basicSegmenter
-algorithm type: 
+algorithm name: basicSegmenter (for leaves)
+algorithm type: Conditional Random Field (CRF)
 ============================================
-documentation pending
+This algorithm was designed to characterize the main observed leaf in an image. The goal of segmentation is to identify the boundaries of the leaf object. Since the given image might include other observed objects such as digits, letters, or even other smaller leaves, we use a segmentation algorithm to identify the set of pixels which belong to a leaf object. The 'basicSegmenter' algorithm is capable of identifying the pixels of the leaves if the color and texture of leaves are similar to the examples in figure .....
+
+For other application domains (other than leaves), the user would need to provide the annotated training data to train a new segmentation model, by doing the following steps:
+
+RETRAINING THE MODEL 
+1. Provide original and labeled images.
+2. Labeled images are color coded .png file, where the colors are specified in the darwin config file located at:
+
+avatol_cv/modules/segmentation/yaoSeg/darwinConfig.xml
+
+In this file, it is important to leave the foreground objects color with this stting (green) so that post processing algorithms will work.
+
+<region id='0' name="leaves" color="0 255 0"/>
+
+... and the files should be positioned as follows:
+
+original images : avatol_cv/modules/segmentation/yaoSeg/data/allImages
+labeled images  : avatol_cv/modules/segmentation/yaoSeg/data/allLabels
+
+3.  Retrain the model prior to running the segmentation algorithm by choosing the segmentation algorithm called basicSegmentation_retrain when at the segmentation screen of AvatolCV, rather than basicSegmentation.
+
 
 
 ============================================
 algorithm name: basicOrientation
-algorithm type: 
+algorithm type: Connected Components Algorithm, Support Vector Machines (SVM)
 ============================================
-documentation pending
+This algorithm was designed to ensure that leaf images that had been run through the basicSegmenter algorithm would be oriented consistently. The goal of the orientation is to identify the main leaf object and rotate the image such that the apex is on the left side and the base is on the right side. The 'basicOrientation' algorithm first finds the largest group of leaf pixels and fits an ellipse around the silhouette. Base on the ellipses orientation it identifies the rotation angle. To make sure that the apex is always on the left it uses an SVM classifier to identify if the left side is an apex or not. If not it rotates the image 180 degrees. 
 
 
 ============================================
 algorithm name: shapeTextureScoring
-algorithm type: 
+algorithm type: Histogram of Oriented Gradients (HOG), Support Vector Machines (SVM)
 ============================================
-documentation pending
+The scoring algorithm uses the shape and texture information to describe the apex or base of the oriented leaf image. Given this description, it uses an SVM classifier to classify the character of interest. Histogram of Oriented Gradients is used to describe the texture and beam-angle descriptors used to describe the shape. The 'shapeTextureScoring' algorithm is trained using annotated data provided by the user. 
 
 

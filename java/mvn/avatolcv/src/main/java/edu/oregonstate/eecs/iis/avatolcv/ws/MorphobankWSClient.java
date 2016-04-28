@@ -28,4 +28,5 @@ public interface MorphobankWSClient {
 	
 	public boolean addNewScore(String matrixID, String charID, String taxonID, String charStateID) throws MorphobankWSException;
     public boolean reviseScore(String matrixID, String cellID, String charStateID) throws MorphobankWSException;
+    public boolean deleteScore(String matrixID, String cellID) throws MorphobankWSException;
 }

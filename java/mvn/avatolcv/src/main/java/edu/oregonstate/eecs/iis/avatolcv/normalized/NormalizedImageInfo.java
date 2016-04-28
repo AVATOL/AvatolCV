@@ -123,7 +123,7 @@ public class NormalizedImageInfo {
     }
     public boolean hasValueForKey(NormalizedKey key){
     	NormalizedValue value = getValueForKey(key);
-    	System.out.println("value for key " + value);
+    	//System.out.println("value for key " + value);
     	if (null == value){
     		return false;
     	}

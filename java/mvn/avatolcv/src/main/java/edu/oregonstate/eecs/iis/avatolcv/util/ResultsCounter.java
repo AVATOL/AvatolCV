@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
+
 public class ResultsCounter {
     public static void main(String[] args){
         ResultsCounter rc = new ResultsCounter();
@@ -25,7 +27,7 @@ public class ResultsCounter {
                 String[] parts = ClassicSplitter.splitt(line, ',');
                 String conf = parts[3];
                 String eval = parts[5];
-                if (!eval.equals("?")){
+                if (!eval.equals(AvatolCVConstants.UNDETERMINED)){
                     //System.out.println("conf " + conf + "  eval " + eval);
                     ScoreInfo si = new ScoreInfo(conf, eval);
                     infos.add(si);

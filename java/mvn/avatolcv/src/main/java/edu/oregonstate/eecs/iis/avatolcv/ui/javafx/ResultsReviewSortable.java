@@ -7,6 +7,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -47,6 +50,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.BisqueDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSourceUtils;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.FileSystemDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.MorphobankDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.PointAnnotations;
@@ -60,22 +64,31 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.PointAsPercent;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTableSortable;
+import edu.oregonstate.eecs.iis.avatolcv.results.ResultsUtils;
+import edu.oregonstate.eecs.iis.avatolcv.results.ScoreItem;
+import edu.oregonstate.eecs.iis.avatolcv.results.ScoreItem.ScoringFate;
+import edu.oregonstate.eecs.iis.avatolcv.results.UploadVoter;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
+import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
-public class ResultsReviewSortable {
+public class ResultsReviewSortable implements ProgressPresenter {
+    public static final String STATUS_UNSAVED = "no";
     public static final String COLNAME_IMAGE = "image";
     public static final String COLNAME_TRUTH = "truth";
     public static final String COLNAME_SCORE = "score";
     public static final String COLNAME_CONFIDENCE = "confidence";
     public static final String COLNAME_NAME = "name";
+    public static final String COLNAME_SAVE_STATUS = "saved?";
+    private static final String UPLOADED_CSS_STYLE = "uploaded";
     //public static final String COLNAME_TRAIN_TEST = "";
-    private static final int CROSSHAIR_RADIUS_THUMBNAIL = 4;
-    private static final int CROSSHAIR_RADIUS_LARGE = 20;
+    //private static final int CROSSHAIR_RADIUS_THUMBNAIL = 4;
+    //private static final int CROSSHAIR_RADIUS_LARGE = 20;
     private static final int LARGE_IMAGE_FIT_WIDTH = 600;
 	public Slider thresholdSlider = null;
     public Accordion runDetailsAccordion = null;
@@ -104,15 +117,18 @@ public class ResultsReviewSortable {
     private AvatolCVJavaFX mainScreen = null;
     private ResultsTableSortable resultsTable2 = null;
     private ResultsTableSortable trainingTable = null;
-    private String currentThresholdString  = "?";
+    private String currentThresholdString  = AvatolCVConstants.UNDETERMINED;
     private TrainingInfoFile tif = null;
     private ScoresInfoFile sif = null;
     private UploadSession uploadSession = null;
     private DataSource dataSource = null;
     private Hashtable<String,Label> scoreLabelForImageIDHash = null;
+    private Hashtable<String,Label> saveStatusLabelForImageIDHash = null;
     private String username = null;
     private String password = null;
     ScoringInfoFile scoringInfoFile = null;
+    private static final Logger logger = LogManager.getLogger(ResultsReviewSortable.class);
+
     public ResultsReviewSortable(){
     }
     public void init(AvatolCVJavaFX mainScreen, Stage mainWindow, String runName) throws AvatolCVException {
@@ -180,7 +196,7 @@ public class ResultsReviewSortable {
             runSelectChoiceBox.getSelectionModel().select(this.runName);
             runSelectChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new RunChoiceChangeListener(runSelectChoiceBox, this.mainScreen, this.mainWindow));
             setRunDetails(this.runName);
-            this.uploadSession = new UploadSession();
+            this.uploadSession = new UploadSession(this.runName);
             setScoredImagesInfo(this.runID, scoringConcernValue.getText());
             //runDetailsAccordion.requestLayout();
             setupSlider();
@@ -207,6 +223,7 @@ public class ResultsReviewSortable {
             try {
                 newRunID =(String)cb.getItems().get((Integer)newValue);
                 cb.getSelectionModel().select(newRunID);
+                uploadSession = new UploadSession(newRunID);
                 init(mainScreen, mainWindow, newRunID);
                 
             }
@@ -255,7 +272,7 @@ public class ResultsReviewSortable {
     public void adjustConfidencesToThreshold(double value) throws AvatolCVException{
 	    double newValPercent = value/100;
         String newValString = "" + newValPercent;
-        String twoDecimalString = limitToTwoDecimalPlaces(newValString);
+        String twoDecimalString = ResultsUtils.limitToTwoDecimalPlaces(newValString);
 	    disableAllUnderThreshold(twoDecimalString);
     }
     public void disableNodes(List<Node> nodes, boolean disable){
@@ -277,6 +294,8 @@ public class ResultsReviewSortable {
             nodesInRow.add(nameNode);
             Node scoreNode = (Node)resultsTable2.getWidget(imageID, COLNAME_SCORE);
             nodesInRow.add(scoreNode);
+            Node saveStatusNode = (Node)resultsTable2.getWidget(imageID, COLNAME_SAVE_STATUS);
+            nodesInRow.add(saveStatusNode);
     	    if (isEvaluationMode()){
     	        Node truthNode = (Node)resultsTable2.getWidget(imageID, COLNAME_TRUTH);
                 nodesInRow.add(truthNode);
@@ -321,7 +340,7 @@ public class ResultsReviewSortable {
                     iv.setFitWidth(LARGE_IMAGE_FIT_WIDTH);
                     int boundWidth = (int)iv.getBoundsInParent().getWidth();
                     int boundHeight = (int)iv.getBoundsInParent().getHeight();
-                    System.out.println("boundWidth " + boundWidth + " boundHeight " + boundHeight);
+                    //System.out.println("boundWidth " + boundWidth + " boundHeight " + boundHeight);
                     AnchorPane ap = new AnchorPane();
                     ap.getChildren().add(iv);
                     drawCoordinates(ap, pointAnnotations, boundWidth, boundHeight);
@@ -430,6 +449,7 @@ public class ResultsReviewSortable {
             result.add(COLNAME_TRUTH); 
         }
         result.add(COLNAME_SCORE);
+        result.add(COLNAME_SAVE_STATUS);
         result.add(COLNAME_CONFIDENCE);
         if (this.runSummary.hasTrainTestConcern()){
             result.add(getTrainTestHeader());
@@ -482,6 +502,7 @@ public class ResultsReviewSortable {
     }
     private void setScoredImagesInfo(String runID, String scoringConcernName) throws AvatolCVException {
     	scoreLabelForImageIDHash = new Hashtable<String, Label>();
+    	saveStatusLabelForImageIDHash = new Hashtable<String, Label>();
     	scoredImagesTab.setText(scoringConcernName + " - SCORED images");
     	trainingImagesTab.setText(scoringConcernName + " - TRAINING images");
 
@@ -520,9 +541,14 @@ public class ResultsReviewSortable {
     		scoreLabelForImageIDHash.put(imageID, scoreLabel);
     		resultsTable2.addWidgetForColumn(imageID, COLNAME_SCORE, scoreLabel);
     		
-    		System.out.println("getting confidence for ImageValue path(key) and value: " + path + ";" + scoringConcernValue);
+    		Label saveStatusLabel = new Label(STATUS_UNSAVED);
+    		saveStatusLabel.getStyleClass().add("columnValue");
+            saveStatusLabelForImageIDHash.put(imageID, saveStatusLabel);
+            resultsTable2.addWidgetForColumn(imageID, COLNAME_SAVE_STATUS, saveStatusLabel);
+    		
+    		//System.out.println("getting confidence for ImageValue path(key) and value: " + path + ";" + scoringConcernValue);
     		String conf = sif.getConfidenceForImageValue(path, normalizedScoringConcernValue);
-    		String trimmedScoreConf = limitToTwoDecimalPlaces(conf);
+    		String trimmedScoreConf = ResultsUtils.limitToTwoDecimalPlaces(conf);
     		resultsTable2.addValueForColumn(imageID, COLNAME_CONFIDENCE, trimmedScoreConf);
     		Label confLabel = new Label(trimmedScoreConf);
     		confLabel.getStyleClass().add("columnValue");
@@ -538,7 +564,7 @@ public class ResultsReviewSortable {
                 resultsTable2.addWidgetForColumn(imageID, COLNAME_TRUTH, truthLabel);
     		}
     		
-        	String origImageNameWithID = getTrueImageNameFromImagePathForCookingShow(path);
+        	String origImageNameWithID = ResultsUtils.getTrueImageNameFromImagePath(path);
         	String[] parts = ClassicSplitter.splitt(origImageNameWithID,'_');
         	String origImageName = parts[1];
         	if ("".equals(origImageName)){
@@ -551,13 +577,13 @@ public class ResultsReviewSortable {
         	nameLabel.getStyleClass().add("columnValue");
             resultsTable2.addWidgetForColumn(imageID, COLNAME_NAME, nameLabel);
             
-        	String thumbnailPathname = getThumbnailPathWithImagePathForCookingShow(path);
+        	String thumbnailPathname = ResultsUtils.getThumbnailPathWithImagePath(path);
         	resultsTable2.addValueForColumn(imageID, COLNAME_IMAGE, thumbnailPathname);
         	Image image = new Image("file:"+thumbnailPathname);
             ImageView iv = new ImageView(image);
             int boundWidth = (int)iv.getBoundsInParent().getWidth();
             int boundHeight = (int)iv.getBoundsInParent().getHeight();
-            System.out.println("boundWidth " + boundWidth + " boundHeight " + boundHeight);
+            //System.out.println("boundWidth " + boundWidth + " boundHeight " + boundHeight);
             AnchorPane apForThumbnail = new AnchorPane();
             apForThumbnail.getChildren().add(iv);
             PointAnnotations pointAnnotations = sif.getAnnotationCoordinates(path);
@@ -593,7 +619,7 @@ public class ResultsReviewSortable {
     			valueLabel.getStyleClass().add("columnValue");
     			trainingTable.addWidgetForColumn(imageID, COLNAME_SCORE, valueLabel);
     			
-        		String trueNameWithSuffix = getTrueImageNameFromImagePathForCookingShow(path);
+        		String trueNameWithSuffix = ResultsUtils.getTrueImageNameFromImagePath(path);
         		String[] parts = ClassicSplitter.splitt(trueNameWithSuffix,'_');
                 String origImageName = parts[1];
                 if ("".equals(origImageName)){
@@ -612,7 +638,7 @@ public class ResultsReviewSortable {
                 ImageView iv = new ImageView(image);
                 int boundWidth = (int)iv.getBoundsInParent().getWidth();
                 int boundHeight = (int)iv.getBoundsInParent().getHeight();
-                System.out.println("boundWidth " + boundWidth + " boundHeight " + boundHeight);
+                //System.out.println("boundWidth " + boundWidth + " boundHeight " + boundHeight);
                 AnchorPane apForThumbnail = new AnchorPane();
                 apForThumbnail.getChildren().add(iv);
                 //addEventhandlerForImageClick(iv, sr);
@@ -636,40 +662,9 @@ public class ResultsReviewSortable {
         String ttHeaderString = new NormalizedKey(ttKeyString).getName();
         return ttHeaderString;
     }
-    public static String limitToTwoDecimalPlaces(String conf){
-        Double confDouble = new Double(conf);
-        return String.format("%.2f", confDouble);
-    }
-   
-  
-    private String getTrueImageNameFromImagePathForCookingShow(String imagePath) throws AvatolCVException {
-        String imageDirPath = AvatolCVFileSystem.getNormalizedImagesLargeDir();
-        String imageID = ImageInfo.getImageIDFromPath(imagePath);
-        File imageDir = new File(imageDirPath);
-        File[] files = imageDir.listFiles();
-        for (File f : files){
-            String fname = f.getName();
-            if (fname.contains(imageID)){
-                return fname;
-            }
-        }
-        return null;
-    }
-  
     
-    private String getThumbnailPathWithImagePathForCookingShow(String imagePath) throws AvatolCVException {
-    	String thumbnailDirPath = AvatolCVFileSystem.getNormalizedImagesThumbnailDir();
-        String imageID = ImageInfo.getImageIDFromPath(imagePath);
-    	File thumbnailDir = new File(thumbnailDirPath);
-    	File[] files = thumbnailDir.listFiles();
-    	for (File f : files){
-    		String fname = f.getName();
-    		if (fname.contains(imageID)){
-    			return f.getAbsolutePath();
-    		}
-    	}
-    	return null;
-    }
+  
+
    
 
     private void setRunDetails(String runName) throws AvatolCVException {
@@ -703,37 +698,90 @@ public class ResultsReviewSortable {
     public void doneWithResultsReview(){
     	this.mainScreen.start(this.mainWindow);
     }
-    private DataSource getDataSourceForRun(){
-        DataSource ds = null;
-        String dataSourceName = this.runSummary.getDataSource();
-        if ("bisque".equals(dataSourceName)){
-            ds = new BisqueDataSource(); 
-        } 
-        else if ("morphobank".equals(dataSourceName)){
-            ds = new MorphobankDataSource();
-        }
-        else {
-            ds = new FileSystemDataSource();
-        }
-        return ds;
-    }
+    
     public void doUndoSaveResults(){
         Thread t = new Thread(() -> undoSaveResults());
         t.start();
     }
+    private static List<String> getIdListFromListString(String idListString){
+    	List<String> result = new ArrayList<String>();
+    	String[] ids = idListString.split(UploadSession.STRING_LIST_DELIM);
+    	
+    	for (String id : ids){
+    		result.add(id);
+    	}
+    	return result;
+    }
+    public void userFeedbackForUndo(List<String> ids){
+    	for (String id : ids){
+			Label scoreLabel = scoreLabelForImageIDHash.get(id);
+            Platform.runLater(() -> scoreLabel.getStyleClass().remove(UPLOADED_CSS_STYLE));
+            Label uploadStatusLabel = saveStatusLabelForImageIDHash.get(id);
+            Platform.runLater(() -> uploadStatusLabel.setText(STATUS_UNSAVED));
+            Platform.runLater(() -> uploadStatusLabel.getStyleClass().remove(UPLOADED_CSS_STYLE));
+		}
+    }
+    public void userFeedbackForUndoAbstain(List<String> ids){
+    	for (String id : ids){
+			Label uploadStatusLabel = saveStatusLabelForImageIDHash.get(id);
+            Platform.runLater(() -> uploadStatusLabel.setText(STATUS_UNSAVED));
+		}
+    }
+    public void userFeedbackForUndo(String id){
+		Label scoreLabel = scoreLabelForImageIDHash.get(id);
+        Platform.runLater(() -> scoreLabel.getStyleClass().remove(UPLOADED_CSS_STYLE));
+        Label uploadStatusLabel = saveStatusLabelForImageIDHash.get(id);
+        Platform.runLater(() -> uploadStatusLabel.setText(STATUS_UNSAVED));
+    }
+
+    public void userFeedbackForUndoAbstain(String id){
+	    Label uploadStatusLabel = saveStatusLabelForImageIDHash.get(id);
+        Platform.runLater(() -> uploadStatusLabel.setText(STATUS_UNSAVED));
+    }
+    private void undoNew(UploadEvent event) throws AvatolCVException {
+    	String imageIDString = event.getImageID();
+    	if (imageIDString.contains(UploadSession.STRING_LIST_DELIM)){
+    		List<String> ids = getIdListFromListString(imageIDString);
+    		this.dataSource.deleteScoreForKey(ids.get(0), event.getKey(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
+    		userFeedbackForUndo(ids);
+    	}
+    	else {
+    		this.dataSource.deleteScoreForKey(event.getImageID(), event.getKey(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
+    		userFeedbackForUndo(event.getImageID());
+    	}
+        logger.info("upload UNDO : " + event.getImageID() + " " + event.getKey().getName() + " " + event.getOrigValue().getName() + " - DELETING NEW VALUE ");
+    }
+    private void undoRevise(UploadEvent event) throws AvatolCVException {
+    	String imageIDString = event.getImageID();
+    	if (imageIDString.contains(UploadSession.STRING_LIST_DELIM)){
+    		List<String> ids = getIdListFromListString(imageIDString);
+    		this.dataSource.reviseValueForKey(ids.get(0), event.getKey(), event.getOrigValue(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
+    		userFeedbackForUndo(ids);
+    	}
+    	else {
+    		this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
+    		userFeedbackForUndo(event.getImageID());
+    	}
+    	logger.info("upload UNDO : " + event.getImageID() + " " + event.getKey().getName() + " " + event.getOrigValue().getName() + " - REVERTING TO PRIOR VALUE ");
+    }
+    private void undoAbstain(UploadEvent event) throws AvatolCVException {
+    	String imageIDString = event.getImageID();
+    	if (imageIDString.contains(UploadSession.STRING_LIST_DELIM)){
+    		List<String> ids = getIdListFromListString(imageIDString);
+    		userFeedbackForUndoAbstain(ids);
+    	}
+    	else {
+    		userFeedbackForUndoAbstain(event.getImageID());
+    	}
+    	logger.info("upload UNDO : " + event.getImageID() + " " + event.getKey().getName() + " " + event.getOrigValue().getName() + " - REVERTING ABSTAIN ");
+    }
     public void undoSaveResults(){
         try {
             setDataSource();
-            boolean authenticated = false;
-            if (this.dataSource.isAuthenticated()){
-                authenticated = true;
-            }
-            else {
-                authenticated = authenticate();
-            }
-            if (!authenticated){
+            if (!verifyAuthentication()){
                 return;
             }
+            prepForUpload();
             Platform.runLater(() -> uploadProgress.setProgress(0.0));
             List<UploadEvent> events = this.uploadSession.getEventsForUndo();
             double count = events.size();
@@ -741,24 +789,25 @@ public class ResultsReviewSortable {
             int curEvent = 0;
             for (UploadEvent event : events){
                 curEvent++;
-                if (event.wasNewKey()){
-                    // for now, since there's no web service to remove a key (true?), just do the revise
-                    this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
+                if (event.getType() == UploadSession.TYPE_NEW){
+                	undoNew(event);
+                }
+                else if (event.getType() == UploadSession.TYPE_REVISE){
+                	undoRevise(event);
+                }
+                else if (event.getType() == UploadSession.TYPE_ABSTAIN_TIE){
+                    undoAbstain(event);
                 }
                 else {
-                    this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
+                    //event.getType() == UploadSession.TYPE_ABSTAIN_VALUE_SAME
+                	 undoAbstain(event);
                 }
                 double percentDone = percentProgressPerEvent * curEvent;
                 Platform.runLater(() -> uploadProgress.setProgress(percentDone));
             }
             this.uploadSession.forgetEvents(events);
             
-            // check to see if any scoreLabels should still reflect being uploaded
-            for (UploadEvent event : events){
-                String imageID = event.getImageID();
-                Label scoreLabel = scoreLabelForImageIDHash.get(imageID);
-                Platform.runLater(() -> scoreLabel.getStyleClass().remove("uploaded"));
-            }
+          
             
             Platform.runLater(() -> enableUndoUploadButtonIfAppropriate());
         }
@@ -771,7 +820,7 @@ public class ResultsReviewSortable {
         @Override
         public void run() {
             LoginDialog dialog = new LoginDialog();
-            dialog.display(dataSource.getName());
+            dialog.display(dataSource.getName(), dataSource.getDefaultUsername(), dataSource.getDefaultPassword());
             username = dialog.getLogin();
             password = dialog.getPword();
         }
@@ -793,112 +842,311 @@ public class ResultsReviewSortable {
         Thread t = new Thread(() -> saveResults());
         t.start();
     }
-    public boolean isConfidenceStringLessThanThreshold(String confString){
-        Double confDouble = new Double(confString);
-        Double threshDouble = new Double(currentThresholdString);
-        if (confDouble.doubleValue() < threshDouble.doubleValue()){
-            return true;
-        }
-        return false;
-    }
+    
     public void setDataSource() throws AvatolCVException {
         if (null == this.dataSource){
-            this.dataSource = getDataSourceForRun();
+            this.dataSource = DataSourceUtils.getDataSourceForRun(this.runSummary.getDataSource());
             DatasetInfo di = new DatasetInfo();
             di.setName(this.runSummary.getDataset());
             di.setID(this.runSummary.getDatasetID());
             this.dataSource.setChosenDataset(di);
         }
     }
+    public boolean verifyAuthentication() throws AvatolCVException {
+        boolean authenticated = false;
+        if (this.dataSource.isAuthenticated()){
+            authenticated = true;
+        }
+        else {
+            authenticated = authenticate();
+        }
+        return authenticated;
+    }
+    private void prepForUpload() throws AvatolCVException {
+        List<String> imageIDs = resultsTable2.getImageIDsInCurrentOrder();
+        List<String> charIDs = new ArrayList<String>();
+        List<String> ttConcernValueIDs = new ArrayList<String>();
+        for (String imageID : imageIDs){
+            NormalizedKey normCharKey = tif.getNormalizedCharacter();
+            NormalizedValue trainTestConcernValue = scoringInfoFile.getTrainTestConcernValueForImageID(imageID);
+            String charID = normCharKey.getID();
+            String ttConcernValueID = trainTestConcernValue.getID();
+            if (!charIDs.contains(charID)){
+                charIDs.add(charID);
+            }
+            if (!ttConcernValueIDs.contains(ttConcernValueID)){
+                ttConcernValueIDs.add(ttConcernValueID);
+            }
+        }
+        this.dataSource.prepForUpload(charIDs, ttConcernValueIDs);
+    }
     public void saveResults(){
         try {
             setDataSource();
-            boolean authenticated = false;
-            if (this.dataSource.isAuthenticated()){
-                authenticated = true;
-            }
-            else {
-                authenticated = authenticate();
-            }
-            if (!authenticated){
+            if (!verifyAuthentication()){
                 return;
             }
-            
-            // list all the answers above threshold
-            List<String> imageIDs = resultsTable2.getImageIDsInCurrentOrder();
-            double rowToUploadCount = 0;
-            for (String imageID : imageIDs){
-                String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
-                if (isConfidenceStringLessThanThreshold(confString)){
-                    rowToUploadCount++;
-                }
+            prepForUpload();
+            if (this.dataSource.groupByTrainTestConcernValueAndVoteForUpload()){
+                voteThenUpload();
             }
-           
-            Platform.runLater(() -> uploadProgress.setProgress(0.0));
-            double percentProgressPerRow = 1 / rowToUploadCount;
-            int rowCount = 0;
-            uploadSession.nextSession();
-            for (String imageID : imageIDs){
-                String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
-                
-                //Label scoreLabel = (Label)row.getWidget(ResultsTable.COLNAME_SCORE);
-                if (!isConfidenceStringLessThanThreshold(confString)){
-                	rowCount++;
-                    //String value = scoreChoice.getValue();
-                    String value = resultsTable2.getValue(imageID, COLNAME_SCORE);
-                    String name = resultsTable2.getValue(imageID, COLNAME_NAME);
-                    System.out.println(name + "  -  " + value);
-       
-                    NormalizedKey normCharKey = tif.getNormalizedCharacter();
-                    NormalizedKey trainTestConcern = scoringInfoFile.getTrainTestConcernForImageID(imageID);
-                    NormalizedValue trainTestConcernValue = scoringInfoFile.getTrainTestConcernValueForImageID(imageID);
-                    NormalizedValue newValue = sif.getScoreValueForImageID(imageID);
-                    //Need to pass the normalized key and value for this row to Data source and ask if key exists for this image
-                    NormalizedValue existingValueForKey = dataSource.getValueForKeyAtDatasourceForImage(normCharKey, imageID, trainTestConcern, trainTestConcernValue);
-                    Node scoreLabel = (Node)resultsTable2.getWidget(imageID, COLNAME_SCORE);
-                    if (null == existingValueForKey){
-                        //add score
-                        boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
-                        if (result){
-                        	this.uploadSession.addNewKeyValue(imageID, normCharKey, newValue, trainTestConcern, trainTestConcernValue);
-                        	Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
-                        }
-                        else {
-                        	Platform.runLater(() -> dialog("cannot upload to add score for image " + name));
-                        }
-                        
-                    }
-                    else {
-                        // revise score
-                        boolean result = dataSource.reviseValueForKey(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
-                        if (result){
-                        	this.uploadSession.reviseValueForKey(imageID, normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
-                        	Platform.runLater(() -> scoreLabel.getStyleClass().add("uploaded"));
-                        }
-                        else {
-                        	Platform.runLater(() -> dialog("cannot upload to revise score for image " + name));
-                        }
-                    }
-                    double percentDone = percentProgressPerRow * rowCount;
-                    
-                    
-                    Platform.runLater(() -> uploadProgress.setProgress(percentDone));
-                }
+            else {
+                uploadScoresForAllImages();
             }
-            this.uploadSession.persist();
-            Platform.runLater(() -> enableUndoUploadButtonIfAppropriate());
-        }
+        }   
         catch(AvatolCVException ace){
             AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem trying to save results");
         }
     }
-    private void dialog(String text){
-		Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle("Error Dialog");
-        alert.setHeaderText("AvatolCV error");
-        alert.setContentText(text);
-        alert.showAndWait();
-	}
+    private List<Label> getScoreLabelsForImageIds(List<String> imageIDs){
+    	List<Label> nodes = new ArrayList<Label>();
+    	for (String imageID : imageIDs){
+    		Label scoreLabel = (Label)resultsTable2.getWidget(imageID, COLNAME_SCORE);
+    		nodes.add(scoreLabel);
+    	}
+    	return nodes;
+    }
+    private List<Label> getSaveStatusLabelsForImageIds(List<String> imageIDs){
+        List<Label> nodes = new ArrayList<Label>();
+        for (String imageID : imageIDs){
+            Label saveStatusLabel = (Label)resultsTable2.getWidget(imageID, COLNAME_SAVE_STATUS);
+            nodes.add(saveStatusLabel);
+        }
+        return nodes;
+    }
+  
+    
+    private List<ScoreItem> collectScoreItems(List<String> imageIDs) throws AvatolCVException {
+        List<ScoreItem> scoreItems = new ArrayList<ScoreItem>();
+        int imageCount = imageIDs.size();
+        // divide by two since using half the progress bar for this bit
+        double percentProgressPerImage = 0.5 / imageCount;
+        int curImage = 0;
+        for (String imageID : imageIDs){
+            String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
+            
+            if (!ResultsUtils.isConfidenceStringLessThanThreshold(confString, currentThresholdString)){
+                //String value = scoreChoice.getValue();
+                String value = resultsTable2.getValue(imageID, COLNAME_SCORE);
+                String name = resultsTable2.getValue(imageID, COLNAME_NAME);
+                //System.out.println(name + "  -  " + value);
+   
+                NormalizedKey normCharKey = tif.getNormalizedCharacter();
+                NormalizedKey trainTestConcern = scoringInfoFile.getTrainTestConcernForImageID(imageID);
+                NormalizedValue trainTestConcernValue = scoringInfoFile.getTrainTestConcernValueForImageID(imageID);
+                NormalizedValue newValue = sif.getScoreValueForImageID(imageID);
+                //Need to pass the normalized key and value for this row to Data source and ask if key exists for this image
+                NormalizedValue existingValueForKey = dataSource.getValueForKeyAtDatasourceForImage(normCharKey, imageID, trainTestConcern, trainTestConcernValue);
+                ScoreItem si = new ScoreItem(imageID, normCharKey, trainTestConcern, trainTestConcernValue, newValue, existingValueForKey);
+                scoreItems.add(si);
+            }
+            curImage++;
+            double percentDone = percentProgressPerImage * curImage;
+            System.out.println("percentDone 0 - 0.5 : " + percentDone + " curImage " + curImage + " of total images " + imageCount);
+            Platform.runLater(() -> uploadProgress.setProgress(percentDone));
+        }
+        return scoreItems;
+    }
+    private void userFeedbackForUpload(String logMessage, List<String> ids, List<Label> scoreLabels, List<Label> saveStatusLabels, ScoringFate scoringFate, NormalizedValue newScore){
+        for (String id : ids){
+            logger.info(logMessage + id);
+        }
+        String styleString = getStyleForScoringFate(scoringFate);
+        if (null != styleString){
+            for (Label label : scoreLabels){
+                Platform.runLater(() -> label.getStyleClass().add(styleString));
+            }
+        }
+        for (Label label : saveStatusLabels){
+            Platform.runLater(() -> label.setText(getTextForScoringFate(scoringFate, newScore.getName())));
+            if (scoringFate == ScoringFate.REVISE_VALUE || scoringFate == ScoringFate.SET_NEW_VALUE){
+                Platform.runLater(() -> label.getStyleClass().add(styleString));
+            }
+        }
+    }
+    private void userFeedbackForUpload(String logMessage, String id,Label scoreLabel, Label saveStatusLabel, ScoringFate scoringFate, NormalizedValue newScore){
+        logger.info(logMessage + id);
+        String styleString = getStyleForScoringFate(scoringFate);
+        if (null != styleString){
+            Platform.runLater(() -> scoreLabel.getStyleClass().add(styleString));
+        }
+
+        Platform.runLater(() -> saveStatusLabel.setText(getTextForScoringFate(scoringFate, newScore.getName())));
+        if (scoringFate == ScoringFate.REVISE_VALUE || scoringFate == ScoringFate.SET_NEW_VALUE){
+            Platform.runLater(() -> saveStatusLabel.getStyleClass().add(styleString));
+        }
+       
+    }
+    private String getStyleForScoringFate(ScoringFate fate){
+        if (fate == ScoringFate.ABSTAIN_FROM_CHANGING_SCORE_NEW_VALUE_SAME){
+            return null;
+        }
+        else if (fate == ScoringFate.ABSTAIN_FROM_CHANGING_SCORE_VOTE_TIE){
+            return null;
+        }
+        else if (fate == ScoringFate.REVISE_VALUE){
+            return UPLOADED_CSS_STYLE;
+        }
+        else {
+            //fate == ScoringFate.SET_NEW_VALUE){
+            return UPLOADED_CSS_STYLE;
+        }
+    }
+    private String getTextForScoringFate(ScoringFate fate, String newScore){
+        if (fate == ScoringFate.ABSTAIN_FROM_CHANGING_SCORE_NEW_VALUE_SAME){
+            return "no, score wouldn't change";
+        }
+        else if (fate == ScoringFate.ABSTAIN_FROM_CHANGING_SCORE_VOTE_TIE){
+            return "no, scores were tied";
+        }
+        else if (fate == ScoringFate.REVISE_VALUE){
+            return "changed to " + newScore;
+        }
+        else {
+            //fate == ScoringFate.SET_NEW_VALUE){
+            return "set to " + newScore;
+        }
+    }
+    private void voteThenUpload() throws AvatolCVException {
+        UploadVoter vu = new UploadVoter(this.dataSource, this, this.uploadSession);
+        List<String> imageIDs = resultsTable2.getImageIDsInCurrentOrder();
+        
+        // use 50% of progress bar on populateVoter
+        Platform.runLater(() -> uploadProgress.setProgress(0.0));
+        List<ScoreItem> scoreItems = collectScoreItems(imageIDs);
+        vu.addScores(scoreItems);
+        vu.vote();
+        List<ScoreItem> voteWinners = vu.getVoteWinners();
+        int toUploadCount = voteWinners.size();
+        
+        Platform.runLater(() -> uploadProgress.setProgress(0.5));
+        // use the other 50% of progress bar on uploading
+        double percentProgressPerRow = 0.5 / toUploadCount;
+        uploadSession.nextSession();
+        int uploadCount = 0;
+        for (ScoreItem si : voteWinners){
+            String imageID = si.getImageID();
+            NormalizedKey normCharKey = si.getNormCharKey();
+            NormalizedValue newValue = si.getNewValue();
+            NormalizedKey trainTestConcern = si.getTrainTestConcern();
+            NormalizedValue trainTestConcernValue = si.getTrainTestConcernValue();
+            NormalizedValue existingValueForKey = si.getExistingValueForKey();
+        	List<String> ids = si.getImageIDsRepresentedByWinner();
+        	
+        	logger.info("################################################################");
+            logger.info(" trainTestConcernValue: " + trainTestConcernValue + " newValue: " + newValue + " existingValueForKey: " + existingValueForKey);
+            logger.info("################################################################");
+            List<Label> scoreLabelsForWinner = getScoreLabelsForImageIds(si.getImageIDsRepresentedByWinner());
+            List<Label> saveStatusLabelsForWinner = getSaveStatusLabelsForImageIds(si.getImageIDsRepresentedByWinner());
+            if (si.getScoringFate() == ScoringFate.ABSTAIN_FROM_CHANGING_SCORE_NEW_VALUE_SAME){
+                this.uploadSession.abstainSinceValueSame(si.getImageIDsRepresentedByWinner(), normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
+                userFeedbackForUpload("UPLOAD - new value same as old, SKIPPING UPLOAD", ids, scoreLabelsForWinner,saveStatusLabelsForWinner, si.getScoringFate(),newValue);
+            }
+            else if (si.getScoringFate() == ScoringFate.ABSTAIN_FROM_CHANGING_SCORE_VOTE_TIE){
+                this.uploadSession.abstainSinceTieVote(si.getImageIDsRepresentedByWinner(), normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
+                userFeedbackForUpload("UPLOAD - ambiguous scoring - voting tied, SKIPPING UPLOAD", ids, scoreLabelsForWinner,saveStatusLabelsForWinner, si.getScoringFate(),newValue);
+            }
+            else if (si.getScoringFate() == ScoringFate.REVISE_VALUE){
+            	boolean result = dataSource.reviseValueForKey(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
+                if (result){
+                	this.uploadSession.reviseValueForKey(si.getImageIDsRepresentedByWinner(), normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
+                	userFeedbackForUpload("UPLOAD - REVISING value from " + si.getExistingValueForKey() + " to " +  si.getNewValue(), ids, scoreLabelsForWinner,saveStatusLabelsForWinner, si.getScoringFate(),newValue);
+                }
+            }
+            else {
+            	// must be ScoringFate.SET_NEW_VALUE
+            	boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
+                if (result){
+                	this.uploadSession.addNewKeyValue(si.getImageIDsRepresentedByWinner(), normCharKey, newValue, trainTestConcern, trainTestConcernValue);
+                	userFeedbackForUpload("UPLOAD - NEW value from " + si.getExistingValueForKey() + " to " +  si.getNewValue(), ids, scoreLabelsForWinner,saveStatusLabelsForWinner, si.getScoringFate(),newValue);
+                }
+                else {
+                	Platform.runLater(() -> JavaFXUtils.dialog("cannot upload new score for " + si.getTrainTestConcernValue()));
+                }
+            }
+            uploadCount++;
+            
+            double percentDone = 0.5 + percentProgressPerRow * uploadCount;
+            System.out.println("percentDone 0.5 - 1.0 : " + percentDone);
+            Platform.runLater(() -> uploadProgress.setProgress(percentDone));	
+        }
+        this.uploadSession.persist();
+        Platform.runLater(() -> enableUndoUploadButtonIfAppropriate());
+    }
+    private void uploadScoresForAllImages() throws AvatolCVException {
+        // list all the answers above threshold
+        List<String> imageIDs = resultsTable2.getImageIDsInCurrentOrder();
+        Platform.runLater(() -> uploadProgress.setProgress(0.0));
+        List<ScoreItem> scoreItems = collectScoreItems(imageIDs);
+        // for voteThenUpload, calling deduce happens in the Voter so that ties can be noted.  Since we're not voting, all muxt be assessed. 
+        for (ScoreItem si : scoreItems){
+            si.deduceScoringFate();
+        }
+        double rowToUploadCount = scoreItems.size();
+        
+        Platform.runLater(() -> uploadProgress.setProgress(0.5));
+        double percentProgressPerRow = 1 / rowToUploadCount;
+        int rowCount = 0;
+        uploadSession.nextSession();
+        for (ScoreItem si : scoreItems){
+            String imageID = si.getImageID();
+            NormalizedKey normCharKey = si.getNormCharKey();
+            NormalizedValue newValue = si.getNewValue();
+            NormalizedKey trainTestConcern = si.getTrainTestConcern();
+            NormalizedValue trainTestConcernValue = si.getTrainTestConcernValue();
+            NormalizedValue existingValueForKey = si.getExistingValueForKey();
+            
+            logger.info("################################################################");
+            logger.info("normCharKey: " + normCharKey + " trainTestConcernValue: " + trainTestConcernValue + " newValue: " + newValue + " existingValueForKey: " + existingValueForKey);
+            logger.info("################################################################");
+            Label scoreLabel = (Label)resultsTable2.getWidget(imageID, COLNAME_SCORE);
+            Label saveStatusLabel = (Label)resultsTable2.getWidget(imageID, COLNAME_SAVE_STATUS);
+           
+            if (si.getScoringFate() == ScoringFate.ABSTAIN_FROM_CHANGING_SCORE_NEW_VALUE_SAME){
+                this.uploadSession.abstainSinceValueSame(imageID, normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
+                userFeedbackForUpload("UPLOAD - new value same as old, SKIPPING UPLOAD", imageID, scoreLabel,saveStatusLabel, si.getScoringFate(),newValue);
+            }
+            // TIE WON'T EVER HAPPEN IF WE ARE UPLOADING ALL AND NOT VOTING
+            else if (si.getScoringFate() == ScoringFate.ABSTAIN_FROM_CHANGING_SCORE_VOTE_TIE){
+                throw new AvatolCVException("During upload, found score that claimed to be a tie, but we aren't in a voting context.");
+                //this.uploadSession.abstainSinceTieVote(imageID, normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
+                ///userFeedbackForUpload("UPLOAD - ambiguous scoring - voting tied, SKIPPING UPLOAD", imageID, scoreLabel,saveStatusLabel, si.getScoringFate(),newValue);
+            }
+            else if (si.getScoringFate() == ScoringFate.REVISE_VALUE){
+                boolean result = dataSource.reviseValueForKey(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
+                if (result){
+                    this.uploadSession.reviseValueForKey(imageID, normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
+                    userFeedbackForUpload("UPLOAD - REVISING value from " + si.getExistingValueForKey() + " to " +  si.getNewValue(), imageID, scoreLabel,saveStatusLabel, si.getScoringFate(),newValue);
+                }
+            }
+            else {
+                // must be ScoringFate.SET_NEW_VALUE
+                boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
+                if (result){
+                    this.uploadSession.addNewKeyValue(imageID, normCharKey, newValue, trainTestConcern, trainTestConcernValue);
+                    userFeedbackForUpload("UPLOAD - NEW value from " + si.getExistingValueForKey() + " to " +  si.getNewValue(), imageID, scoreLabel ,saveStatusLabel, si.getScoringFate(),newValue);
+                }
+                else {
+                    Platform.runLater(() -> JavaFXUtils.dialog("cannot upload new score for " + si.getTrainTestConcernValue()));
+                }
+            }
+            rowCount++;
+            double percentDone = percentProgressPerRow * rowCount;
+            Platform.runLater(() -> uploadProgress.setProgress(percentDone));
+        }
+        this.uploadSession.persist();
+        Platform.runLater(() -> enableUndoUploadButtonIfAppropriate());
+   
+    }
+    
+    @Override
+    public void updateProgress(String processName, double percentDone) {
+        Platform.runLater(() -> uploadProgress.setProgress(percentDone));
+    }
+    @Override
+    public void setMessage(String processName, String m) {
+        // not needed for this implementation
+    }
 }
 /*
  * private void runAndWait(Runnable runnable) throws InterruptedException, ExecutionException {

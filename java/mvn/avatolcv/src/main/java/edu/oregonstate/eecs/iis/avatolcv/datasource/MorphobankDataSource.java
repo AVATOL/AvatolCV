@@ -6,6 +6,10 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVDataFiles;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
@@ -21,6 +25,7 @@ import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionImages;
 import edu.oregonstate.eecs.iis.avatolcv.session.DataFilter.FilterItem;
+import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ResultsReviewSortable;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClientImpl;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
@@ -55,7 +60,9 @@ public class MorphobankDataSource implements DataSource {
     private MorphobankImages morphobankImages = null;
     private NormalizedImageInfos niis = null;
     private SessionImages sessionImages = null;
-    private Hashtable<String, String> cellIDsForCellKeyHash = new Hashtable<String, String>();
+    private Hashtable<String, String> cellIDsForCellKeyHash = null;
+    private static final Logger logger = LogManager.getLogger(MorphobankDataSource.class);
+
     public MorphobankDataSource(){
         wsClient = new MorphobankWSClientImpl();
         mbDataFiles = new MorphobankDataFiles();
@@ -102,11 +109,19 @@ public class MorphobankDataSource implements DataSource {
     
     @Override
     public String getDefaultUsername() {
-        return Defaults.instance.getMorphobankLogin();
+        String result = Defaults.instance.getMorphobankLogin();
+        if (null == result){
+            result = "";
+        }
+        return result;
     }
     @Override
     public String getDefaultPassword() {
-        return Defaults.instance.getMorphobankPassword();
+        String result = Defaults.instance.getMorphobankPassword();
+        if (null == result){
+            result = "";
+        }
+        return result;
     }
     
     @Override
@@ -513,15 +528,15 @@ public class MorphobankDataSource implements DataSource {
                 return null;
             }
             MBCharStateValue csv = charStateValues.get(0);
-            String cellID = csv.getCellID();
-            if (null == cellID){
-                return null;
-            }
-            if ("".equals(cellID)){
-                return null;
-            }
-            String taxonID = trainTestConcernValue.getID();
-            cellIDsForCellKeyHash.put(getKeyForCell(charID, taxonID), cellID);
+            //String cellID = csv.getCellID();
+            //if (null == cellID){
+            //    return null;
+            //}
+            //if ("".equals(cellID)){
+            //    return null;
+            //}
+            //String taxonID = trainTestConcernValue.getID();
+            //cellIDsForCellKeyHash.put(getKeyForCell(charID, taxonID), cellID);
             String charStateID = csv.getCharStateID();
             String charStateName = null;
             if (null == this.charactersForMatrix){
@@ -536,10 +551,13 @@ public class MorphobankDataSource implements DataSource {
                 }
             }
             if (null == charStateName){
-                return new NormalizedValue(charStateID);
+                return null;
+            }
+            else if (charStateName.equals("unscored")){
+                return null;
             }
             else {
-                return new NormalizedValue("charState:" + charStateID + "|" + charStateName);
+                return new NormalizedValue("characterState:" + charStateID + "|" + charStateName);
             }
         }
         catch(MorphobankWSException e){
@@ -553,9 +571,13 @@ public class MorphobankDataSource implements DataSource {
 	    try {
 	        String matrixID = this.chosenDataset.getID();
 	        String charStateID = value.getID();
+	        if (AvatolCVConstants.UNDETERMINED.equals(charStateID)){
+	            charStateID = "null";
+	        }
 	        String charID = key.getID();
 	        String taxonID = trainTestConcernValue.getID();
 	        String cellID = cellIDsForCellKeyHash.get(getKeyForCell(charID, taxonID));
+	        logger.info("calling reviseScore for imageID " + imageID + " taxon " + trainTestConcernValue.getName());
 	        wsClient.reviseScore(matrixID, cellID, charStateID);
 	        return true;
 	    }
@@ -571,14 +593,18 @@ public class MorphobankDataSource implements DataSource {
 	        String matrixID = this.chosenDataset.getID();
 	        String taxonID = trainTestConcernValue.getID();
 	        String charStateID = value.getID();
+	        if (AvatolCVConstants.UNDETERMINED.equals(charStateID)){
+                charStateID = "null";
+            }
 	        String charID = key.getID();
+	        logger.info("calling addNewScore for imageID " + imageID + " taxon " + trainTestConcernValue.getName());
 	        wsClient.addNewScore(matrixID, charID, taxonID, charStateID);
+	        rememberCellIDForCell(charID, taxonID, matrixID);
 	        return true;
 	    }
 	    catch(MorphobankWSException e){
 	        throw new AvatolCVException ("problem adding new score " + e.getMessage());
 	    }
-		
 	}
     @Override
     public List<String> filterBadSortCandidates(List<String> list) {
@@ -589,5 +615,69 @@ public class MorphobankDataSource implements DataSource {
             }
         }
         return result;
+    }
+    private void rememberCellIDForCell(String charID, String trainTestConcernValueID, String matrixID) throws AvatolCVException {
+        try {
+            List<MBCharStateValue> charStateValues = wsClient.getCharStatesForCell(matrixID, charID, trainTestConcernValueID);
+            // really only need to determine if there is at least one
+            if (null == charStateValues){
+                return;
+            }
+            if (charStateValues.size() == 0){
+                return;
+            }
+            MBCharStateValue csv = charStateValues.get(0);
+            String cellID = csv.getCellID();
+            if (null == cellID){
+                return;
+            }
+            if ("".equals(cellID)){
+                return;
+            }
+            logger.info("getting cell id for charID: " + charID + " trainTestConcernValueID: " +  trainTestConcernValueID + "  cellID: " + cellID);
+            cellIDsForCellKeyHash.put(getKeyForCell(charID, trainTestConcernValueID), cellID);
+        }
+        catch(MorphobankWSException e){
+            throw new AvatolCVException("problem trying to remember cellID: " + e.getMessage(), e);
+        }
+    }
+    private void loadCellIDs(List<String> charIDs, List<String> trainTestConcernValueIDs) throws AvatolCVException {
+        if (null == cellIDsForCellKeyHash){
+            cellIDsForCellKeyHash = new Hashtable<String, String>();
+            String matrixID = this.chosenDataset.getID();
+            for (String charID : charIDs){
+                for (String trainTestConcernValueID : trainTestConcernValueIDs){
+                    rememberCellIDForCell(charID, trainTestConcernValueID, matrixID);
+                }
+            }  
+        }
+    }
+    @Override
+    public void prepForUpload(List<String> charIDs, List<String> trainTestConcernValueIDs) throws AvatolCVException {
+        loadCellIDs(charIDs, trainTestConcernValueIDs);
+    }
+    @Override
+    public boolean deleteScoreForKey(String imageID, NormalizedKey key,
+            NormalizedKey trainTestConcern,
+            NormalizedValue trainTestConcernValue) throws AvatolCVException {
+        //http://morphobank.org/service.php/AVATOLCv/deleteScore/username/<email address of user>/password/<password>/matrixID/<matrix identifier>/cellID/<cell identifier as returned by recordScore>
+        try {
+            String matrixID = this.chosenDataset.getID();
+           
+            String charID = key.getID();
+            String taxonID = trainTestConcernValue.getID();
+            String cellID = cellIDsForCellKeyHash.get(getKeyForCell(charID, taxonID));
+            logger.info("calling deleteScore for imageID " + imageID + " taxon " + trainTestConcernValue.getName());
+            wsClient.deleteScore(matrixID, cellID);
+            return true;
+        }
+        catch(MorphobankWSException e){
+            throw new AvatolCVException ("problem revising score " + e.getMessage());
+        }
+    }
+    @Override
+    public boolean groupByTrainTestConcernValueAndVoteForUpload() {
+        // for MB, only want one upload per cell, which means we need to collapse scores for multiple images in cell to single vote.
+        return true;
     }
 }
