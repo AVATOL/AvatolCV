@@ -1110,7 +1110,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
                 	userFeedbackForUpload("UPLOAD - NEW value from " + si.getExistingValueForKey() + " to " +  si.getNewValue(), ids, scoreLabelsForWinner,saveStatusLabelsForWinner, si.getScoringFate(),newValue);
                 }
                 else {
-                	Platform.runLater(() -> dialog("cannot upload new score for " + si.getTrainTestConcernValue()));
+                	Platform.runLater(() -> JavaFXUtils.dialog("cannot upload new score for " + si.getTrainTestConcernValue()));
                 }
             }
             uploadCount++;
@@ -1176,7 +1176,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
                     userFeedbackForUpload("UPLOAD - NEW value from " + si.getExistingValueForKey() + " to " +  si.getNewValue(), imageID, scoreLabel ,saveStatusLabel, si.getScoringFate(),newValue);
                 }
                 else {
-                    Platform.runLater(() -> dialog("cannot upload new score for " + si.getTrainTestConcernValue()));
+                    Platform.runLater(() -> JavaFXUtils.dialog("cannot upload new score for " + si.getTrainTestConcernValue()));
                 }
             }
             rowCount++;
@@ -1187,13 +1187,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
         Platform.runLater(() -> enableUndoUploadButtonIfAppropriate());
    
     }
-    private void dialog(String text){
-		Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle("Error Dialog");
-        alert.setHeaderText("AvatolCV error");
-        alert.setContentText(text);
-        alert.showAndWait();
-	}
+    
     @Override
     public void updateProgress(String processName, double percentDone) {
         Platform.runLater(() -> uploadProgress.setProgress(percentDone));
