@@ -30,6 +30,11 @@ public class UploadVoter {
         this.pp = pp;
         this.uploadSession = uploadSession;
     }
+    public void addScores(List<ScoreItem> sis) throws AvatolCVException {
+        for (ScoreItem si : sis){
+            addScore(si);
+        }
+    }
     public void addScore(ScoreItem si) throws AvatolCVException {
         validateTrainTestConcernConsistent(si.getTrainTestConcern());
         

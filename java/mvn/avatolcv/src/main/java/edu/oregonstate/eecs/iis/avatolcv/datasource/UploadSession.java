@@ -16,7 +16,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class UploadSession {
-    public static final String STRING_LIST_DELIM = "-";
+    public static final String STRING_LIST_DELIM = ";";
     private static final String NL = System.getProperty("line.separator");
     public static final String TYPE_NEW = "NEW";
     public static final String TYPE_REVISE = "REVISE";

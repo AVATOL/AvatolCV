@@ -37,7 +37,8 @@ public class ScoreItem{
     		this.fate = ScoringFate.SET_NEW_VALUE;
     	}
     	else if (existingValueForKey.getName().equals("")){
-            this.fate = ScoringFate.SET_NEW_VALUE;
+    	    //this.fate = ScoringFate.SET_NEW_VALUE;
+            this.fate = ScoringFate.REVISE_VALUE;
         }
     	else if (existingValueForKey.getName().equals(AvatolCVConstants.UNDETERMINED)){
     		this.fate = ScoringFate.SET_NEW_VALUE;
