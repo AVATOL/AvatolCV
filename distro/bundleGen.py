@@ -427,6 +427,7 @@ def copyFile(src_file_path, dest_file_path):
         dest_dir = os.path.dirname(dest_file_path)
         ensureDirExists(dest_dir)
         shutil.copyfile(src_file_path, dest_file_path)
+        shutil.copystat(src_file_path, dest_file_path)
     except Exception, e:
         print e
                     
