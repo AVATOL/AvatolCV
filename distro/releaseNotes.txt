@@ -1,3 +1,7 @@
+20160428 AvatolCV Release Notes
+
+Fix issue where permissions were lost for .sh files during release generation
+==========================================================================
 20160418 AvatolCV Release Notes
 
 This release is the first drop for Andrea for running AvatolCV on Windows 10.
