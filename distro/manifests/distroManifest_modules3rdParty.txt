@@ -1,9 +1,32 @@
 #
-# darwin
+# darwin  (yaoSeg aka basicSegmenter)
 #
 #segmentationRunner.sh just references these:
 modules/3rdParty/darwin/drwn-1.8.0/bin
 modules/3rdParty/darwin/drwn-1.8.0/external/opencv/lib
 #
+#  Eigen 		(nematocyst aka hcSearch)
 #
+modules/segmentation/hcsearchSeg/nematocyst/external/Eigen
 #
+#  vlfeat (		nematocyst aka hcSearch)
+#
+modules/segmentation/hcsearchSeg/nematocyst/external/vlfeat
+#
+#  vowpal_wabbit (nematocyst aka hcSearch)
+#
+modules/segmentation/hcsearchSeg/nematocyst/external/vowpal_wabbit/vowpalwabbit/vw
+#
+#  liblinear 	(nematocyst aka hcSearch)
+#
+modules/segmentation/hcsearchSeg/nematocyst/external/liblinear/matlab
+modules/segmentation/hcsearchSeg/nematocyst/external/liblinear/windows
+modules/segmentation/hcsearchSeg/nematocyst/external/liblinear/train
+modules/segmentation/hcsearchSeg/nematocyst/external/liblinear/predict
+#
+#  libsvm		(nematocyst aka hcSearch)
+#
+modules/segmentation/hcsearchSeg/nematocyst/external/libsvm/matlab
+modules/segmentation/hcsearchSeg/nematocyst/external/libsvm/windows
+modules/segmentation/hcsearchSeg/nematocyst/external/libsvm/svm-predict
+modules/segmentation/hcsearchSeg/nematocyst/external/libsvm/svm-train

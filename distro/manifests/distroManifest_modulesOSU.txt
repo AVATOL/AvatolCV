@@ -935,6 +935,12 @@ modules/scoring/leafScore/scoringShipped
 #
 #segmentation/hcsearchSeg
 #
+modules/segmentation/hcsearchSeg/algPropertiesMac.txt
+modules/segmentation/hcsearchSeg/algPropertiesWindows.txt
+modules/segmentation/hcsearchSeg/hcsearchSegRunner.py
+modules/segmentation/hcsearchSeg/models
+modules/segmentation/hcsearchSeg/postprocess_for_hcsearch.m
+modules/segmentation/hcsearchSeg/preprocess_for_hcsearch.m
 #
 #segmentation/yaoSeg
 #
