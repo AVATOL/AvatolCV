@@ -61,3 +61,4 @@ If add any doc, add it to distro/mainfests/distro_manifest_docs.txt
         
 4. cd gitReleaseCreation/avatol_cv/distro
 5. python bundleGen.py <platform_code> <list of modules> <path to credentials>
+  
