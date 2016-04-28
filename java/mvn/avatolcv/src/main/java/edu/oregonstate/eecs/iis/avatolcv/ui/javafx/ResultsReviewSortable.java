@@ -50,6 +50,7 @@ import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.BisqueDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSourceUtils;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.FileSystemDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.MorphobankDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.PointAnnotations;
@@ -63,6 +64,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.PointAsPercent;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTableSortable;
+import edu.oregonstate.eecs.iis.avatolcv.results.ResultsUtils;
 import edu.oregonstate.eecs.iis.avatolcv.results.ScoreItem;
 import edu.oregonstate.eecs.iis.avatolcv.results.ScoreItem.ScoringFate;
 import edu.oregonstate.eecs.iis.avatolcv.results.UploadVoter;
@@ -270,7 +272,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
     public void adjustConfidencesToThreshold(double value) throws AvatolCVException{
 	    double newValPercent = value/100;
         String newValString = "" + newValPercent;
-        String twoDecimalString = limitToTwoDecimalPlaces(newValString);
+        String twoDecimalString = ResultsUtils.limitToTwoDecimalPlaces(newValString);
 	    disableAllUnderThreshold(twoDecimalString);
     }
     public void disableNodes(List<Node> nodes, boolean disable){
@@ -546,7 +548,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
     		
     		//System.out.println("getting confidence for ImageValue path(key) and value: " + path + ";" + scoringConcernValue);
     		String conf = sif.getConfidenceForImageValue(path, normalizedScoringConcernValue);
-    		String trimmedScoreConf = limitToTwoDecimalPlaces(conf);
+    		String trimmedScoreConf = ResultsUtils.limitToTwoDecimalPlaces(conf);
     		resultsTable2.addValueForColumn(imageID, COLNAME_CONFIDENCE, trimmedScoreConf);
     		Label confLabel = new Label(trimmedScoreConf);
     		confLabel.getStyleClass().add("columnValue");
@@ -562,7 +564,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
                 resultsTable2.addWidgetForColumn(imageID, COLNAME_TRUTH, truthLabel);
     		}
     		
-        	String origImageNameWithID = getTrueImageNameFromImagePathForCookingShow(path);
+        	String origImageNameWithID = ResultsUtils.getTrueImageNameFromImagePath(path);
         	String[] parts = ClassicSplitter.splitt(origImageNameWithID,'_');
         	String origImageName = parts[1];
         	if ("".equals(origImageName)){
@@ -575,7 +577,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
         	nameLabel.getStyleClass().add("columnValue");
             resultsTable2.addWidgetForColumn(imageID, COLNAME_NAME, nameLabel);
             
-        	String thumbnailPathname = getThumbnailPathWithImagePathForCookingShow(path);
+        	String thumbnailPathname = ResultsUtils.getThumbnailPathWithImagePath(path);
         	resultsTable2.addValueForColumn(imageID, COLNAME_IMAGE, thumbnailPathname);
         	Image image = new Image("file:"+thumbnailPathname);
             ImageView iv = new ImageView(image);
@@ -617,7 +619,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
     			valueLabel.getStyleClass().add("columnValue");
     			trainingTable.addWidgetForColumn(imageID, COLNAME_SCORE, valueLabel);
     			
-        		String trueNameWithSuffix = getTrueImageNameFromImagePathForCookingShow(path);
+        		String trueNameWithSuffix = ResultsUtils.getTrueImageNameFromImagePath(path);
         		String[] parts = ClassicSplitter.splitt(trueNameWithSuffix,'_');
                 String origImageName = parts[1];
                 if ("".equals(origImageName)){
@@ -660,40 +662,9 @@ public class ResultsReviewSortable implements ProgressPresenter {
         String ttHeaderString = new NormalizedKey(ttKeyString).getName();
         return ttHeaderString;
     }
-    public static String limitToTwoDecimalPlaces(String conf){
-        Double confDouble = new Double(conf);
-        return String.format("%.2f", confDouble);
-    }
-   
-  
-    private String getTrueImageNameFromImagePathForCookingShow(String imagePath) throws AvatolCVException {
-        String imageDirPath = AvatolCVFileSystem.getNormalizedImagesLargeDir();
-        String imageID = ImageInfo.getImageIDFromPath(imagePath);
-        File imageDir = new File(imageDirPath);
-        File[] files = imageDir.listFiles();
-        for (File f : files){
-            String fname = f.getName();
-            if (fname.contains(imageID)){
-                return fname;
-            }
-        }
-        return null;
-    }
-  
     
-    private String getThumbnailPathWithImagePathForCookingShow(String imagePath) throws AvatolCVException {
-    	String thumbnailDirPath = AvatolCVFileSystem.getNormalizedImagesThumbnailDir();
-        String imageID = ImageInfo.getImageIDFromPath(imagePath);
-    	File thumbnailDir = new File(thumbnailDirPath);
-    	File[] files = thumbnailDir.listFiles();
-    	for (File f : files){
-    		String fname = f.getName();
-    		if (fname.contains(imageID)){
-    			return f.getAbsolutePath();
-    		}
-    	}
-    	return null;
-    }
+  
+
    
 
     private void setRunDetails(String runName) throws AvatolCVException {
@@ -727,20 +698,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
     public void doneWithResultsReview(){
     	this.mainScreen.start(this.mainWindow);
     }
-    private DataSource getDataSourceForRun(){
-        DataSource ds = null;
-        String dataSourceName = this.runSummary.getDataSource();
-        if ("bisque".equals(dataSourceName)){
-            ds = new BisqueDataSource(); 
-        } 
-        else if ("morphobank".equals(dataSourceName)){
-            ds = new MorphobankDataSource();
-        }
-        else {
-            ds = new FileSystemDataSource();
-        }
-        return ds;
-    }
+    
     public void doUndoSaveResults(){
         Thread t = new Thread(() -> undoSaveResults());
         t.start();
@@ -884,17 +842,10 @@ public class ResultsReviewSortable implements ProgressPresenter {
         Thread t = new Thread(() -> saveResults());
         t.start();
     }
-    public boolean isConfidenceStringLessThanThreshold(String confString){
-        Double confDouble = new Double(confString);
-        Double threshDouble = new Double(currentThresholdString);
-        if (confDouble.doubleValue() < threshDouble.doubleValue()){
-            return true;
-        }
-        return false;
-    }
+    
     public void setDataSource() throws AvatolCVException {
         if (null == this.dataSource){
-            this.dataSource = getDataSourceForRun();
+            this.dataSource = DataSourceUtils.getDataSourceForRun(this.runSummary.getDataSource());
             DatasetInfo di = new DatasetInfo();
             di.setName(this.runSummary.getDataset());
             di.setID(this.runSummary.getDatasetID());
@@ -974,7 +925,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
         for (String imageID : imageIDs){
             String confString = resultsTable2.getValue(imageID, COLNAME_CONFIDENCE);
             
-            if (!isConfidenceStringLessThanThreshold(confString)){
+            if (!ResultsUtils.isConfidenceStringLessThanThreshold(confString, currentThresholdString)){
                 //String value = scoreChoice.getValue();
                 String value = resultsTable2.getValue(imageID, COLNAME_SCORE);
                 String name = resultsTable2.getValue(imageID, COLNAME_NAME);
