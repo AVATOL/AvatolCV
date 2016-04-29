@@ -1,3 +1,11 @@
+20160429 AvatolCV Release Notes
+
+Add missing vlfeat and libsvm files to 3rdParty modules
+
+This means we have two copies of vlfeat and libsvm in play, but deferring 
+making both algs use the same copy as Michael would have to make that adjustment
+to hcsearchSeg.
+==========================================================================
 20160428 AvatolCV Release Notes
 
 Fix issue where permissions were lost for .sh files during release generation

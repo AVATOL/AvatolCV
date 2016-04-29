@@ -13,6 +13,10 @@ modules/segmentation/hcsearchSeg/nematocyst/external/Eigen
 #
 modules/segmentation/hcsearchSeg/nematocyst/external/vlfeat
 #
+#  vlfeat (     yaoOrient )
+#
+modules/3rdParty/libsvm
+#
 #  vowpal_wabbit (nematocyst aka hcSearch)
 #
 modules/segmentation/hcsearchSeg/nematocyst/external/vowpal_wabbit/vowpalwabbit/vw
@@ -30,3 +34,7 @@ modules/segmentation/hcsearchSeg/nematocyst/external/libsvm/matlab
 modules/segmentation/hcsearchSeg/nematocyst/external/libsvm/windows
 modules/segmentation/hcsearchSeg/nematocyst/external/libsvm/svm-predict
 modules/segmentation/hcsearchSeg/nematocyst/external/libsvm/svm-train
+#
+#  libsvm (     yaoOrient )
+#
+modules/3rdParty/vlfeat
