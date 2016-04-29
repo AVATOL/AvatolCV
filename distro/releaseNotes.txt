@@ -1,6 +1,13 @@
 20160428 AvatolCV Release Notes
 
 Fix issue where permissions were lost for .sh files during release generation
+
+Putting these algorithms into play
+
+basicSegmenter       aka yaoSeg
+basicOrientation     aka yaoOrient
+ShapeTextureScoring  aka leafScore  
+highClutterSegmenter aka hcsearchSeg
 ==========================================================================
 20160418 AvatolCV Release Notes
 
