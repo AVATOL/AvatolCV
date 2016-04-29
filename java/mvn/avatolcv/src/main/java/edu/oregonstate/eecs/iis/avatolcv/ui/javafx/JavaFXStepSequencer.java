@@ -113,7 +113,7 @@ public class JavaFXStepSequencer  {
         ss.appendStep(summaryFilterStep);
         SummaryFilterStepController summaryFilterStepController = new SummaryFilterStepController(summaryFilterStep, "SummaryFilterStep.fxml");
         controllerForStep.put(summaryFilterStep, summaryFilterStepController);
-        addLabelForStep(summaryFilterStep,"Summary/Filter");
+        addLabelForStep(summaryFilterStep,"Filter");
         scoringConcernStep.setNextAnswerableInSeries(summaryFilterStep);
         
         ImagePullStep imagePullStep = new ImagePullStep(sessionInfo);
