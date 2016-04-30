@@ -942,6 +942,7 @@ modules/segmentation/hcsearchSeg/models
 modules/segmentation/hcsearchSeg/postprocess_for_hcsearch.m
 modules/segmentation/hcsearchSeg/preprocess_for_hcsearch.m
 modules/segmentation/hcsearchSeg/nematocyst/Doxyfile
+modules/segmentation/hcsearchSeg/nematocyst/HCSearch
 modules/segmentation/hcsearchSeg/nematocyst/HCSearch.exe
 modules/segmentation/hcsearchSeg/nematocyst/HCSearchMPI.exe
 modules/segmentation/hcsearchSeg/nematocyst/Makefile

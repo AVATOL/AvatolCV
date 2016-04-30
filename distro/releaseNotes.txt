@@ -1,3 +1,8 @@
+20160429c AvatolCV Release Notes
+
+forgot to run ./master_install_linux before populating manifest for
+hcsearcgSeg.  After doing so, a few more files are in play
+==========================================================================
 20160429b AvatolCV Release Notes
 
 Add missing matlab code for hcsearchSeg under the nematocyst directory
