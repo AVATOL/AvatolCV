@@ -31,7 +31,8 @@ hcSearch   (On Mac)
         %cd avatol_cv/modules/segmentation/hcsearchSeg
         %git clone https://github.com/AVATOL/nematocyst.git
         %cd nematocyst
-        %./master_install_linux.sh
+        WINDOWS %python setup.py
+        MAC     %./master_install_linux.sh)
         
     - MATLAB builds need to happen
         hcsearchSeg/nematocyst/external/liblinear/matlab,   run  make (within MATLAB)

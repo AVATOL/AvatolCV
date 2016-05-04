@@ -1,3 +1,9 @@
+20160502a AvatolCV Release Notes
+
+For hcsearchSeg, vowpalwabbit build was failing unnoticed (vw executable is just used for training
+which we don't do in default deployed system).  But for completeness, wanted it included, so fixed 
+the build and creating this release to include vw
+==========================================================================
 20160429c AvatolCV Release Notes
 
 forgot to run ./master_install_linux before populating manifest for
