@@ -26,7 +26,7 @@ train_idx = vl_colsubset(list_idx,numTrain);
 
 addpath(inputImagesDir);
 fileID = fopen(testImagesFile);
-testlist = textscan(fileID, '%s');
+testlist = textscan(fileID, '%s', 'delimiter', '\n');
 fclose(fileID);
 testlist = testlist{1};
 

@@ -23,13 +23,13 @@ do
     if [ ${key:0:1} = "#" ]; then
         foo=1
     elif [ "userProvidedTrainImagesFile" = "$key" ]; then
-	    userProvidedTrainImagesFile=${val}
+	    userProvidedTrainImagesFile="${val}"
     elif [ "testImagesFile" = "$key" ]; then
-	    testImagesFile=${val}
+	    testImagesFile="${val}"
 	elif [ "segmentationOutputDir" = "$key" ]; then
-	    segmentationOutputDir=${val}
+	    segmentationOutputDir="${val}"
     elif [ "userProvidedGroundTruthImagesFile" = "$key" ]; then
-	    userProvidedGroundTruthImagesFile=${val}
+	    userProvidedGroundTruthImagesFile="${val}"
     fi
 done < "$filename"
 
@@ -63,12 +63,13 @@ echo userProvidedGroundTruthImagesFile is ${userProvidedGroundTruthImagesFile}
 #
 # copy trainlistShipped.txt into trainlist.txt and add any files coming in from userProvidedTrainImagesFile
 #
-TRAIN_LIST=${THIS_DIR}/trainlist.txt
-
-cp ${THIS_DIR}/trainlistShipped.txt ${TRAIN_LIST}
+TRAIN_LIST="${THIS_DIR}/trainlist.txt"
+echo COPY trainListShipped into play if it exists...
+cp "${THIS_DIR}/trainlistShipped.txt" "${TRAIN_LIST}"
 
 while read -r line
 do
+    echo userProvidedTrainImages line is $line
     filename=$(basename $line)
     echo filename detected was ${filename}
     lineAsArray=(${filename//./ })
@@ -84,11 +85,12 @@ done < "$userProvidedTrainImagesFile"
 # reformat testing image file to correct form
 #
 #
-TEST_LIST=${THIS_DIR}/testlist.txt
-rm ${TEST_LIST}
+TEST_LIST="${THIS_DIR}/testlist.txt"
+rm "${TEST_LIST}"
 while read -r line
 do
-    filename=$(basename $line)
+    echo testIMagesFile line is: $line
+    filename=$(basename "$line")
     echo filename detected was ${filename}
 #lineAsArray=(${filename//./ })
 #fileroot=${lineAsArray[0]}
@@ -106,19 +108,19 @@ done < "$testImagesFile"
 # (we will not be testing the shipped test images so don't copy those)
 #
 
-DATA_DIR=${THIS_DIR}/data
-mkdir ${DATA_DIR}
-OUTPUT_DIR=${THIS_DIR}/output
-mkdir ${OUTPUT_DIR}
+DATA_DIR="${THIS_DIR}/data"
+mkdir "${DATA_DIR}"
+OUTPUT_DIR="${THIS_DIR}/output"
+mkdir "${OUTPUT_DIR}"
 RELATIVE_ALL_IMAGES_DIR=data/allImages
-ALL_IMAGES_DIR=${THIS_DIR}/${RELATIVE_ALL_IMAGES_DIR}
-mkdir ${ALL_IMAGES_DIR}
-rm ${ALL_IMAGES_DIR}/*
+ALL_IMAGES_DIR="${THIS_DIR}/${RELATIVE_ALL_IMAGES_DIR}"
+mkdir "${ALL_IMAGES_DIR}"
+rm "${ALL_IMAGES_DIR}/"*
 while read -r line
 do
     filepath=${line}
     echo testing image filepath found for copying : ${filepath}
-    cp ${filepath} ${ALL_IMAGES_DIR}
+    cp "${filepath}" "${ALL_IMAGES_DIR}"
 done < "$testImagesFile"
 
 
@@ -131,7 +133,7 @@ done < "$testImagesFile"
 #create dir in case its not there yet
 SHIPPED_TRAINING_IMAGES_DIR=data/training_imgs
 mkdir ${SHIPPED_TRAINING_IMAGES_DIR}
-cp ${THIS_DIR}/data/training_imgs/* ${ALL_IMAGES_DIR}
+cp "${THIS_DIR}/data/training_imgs/"* "${ALL_IMAGES_DIR}"
 
 
 #
@@ -144,7 +146,7 @@ while read -r line
 do
     filepath=${line}
     echo training image filepath found for copying : ${filepath}
-    cp ${filepath} ${ALL_IMAGES_DIR}
+    cp "${filepath}" "${ALL_IMAGES_DIR}"
 done < "$userProvidedTrainImagesFile"
 #by this point, training images are in place
 
@@ -155,9 +157,9 @@ done < "$userProvidedTrainImagesFile"
 #
 #
 RELATIVE_LABELS_DIR=data/allLabels
-ALL_LABELS_DIR=${THIS_DIR}/${RELATIVE_LABELS_DIR}
-mkdir ${ALL_LABELS_DIR}
-cp ${THIS_DIR}/data/labels/* ${ALL_LABELS_DIR}
+ALL_LABELS_DIR="${THIS_DIR}/${RELATIVE_LABELS_DIR}"
+mkdir "${ALL_LABELS_DIR}"
+cp "${THIS_DIR}/data/labels/"* "${ALL_LABELS_DIR}"
 
 
 #
@@ -170,15 +172,15 @@ while read -r line
 do
     filepath=${line}
     echo ground truth image filepath found for copying : ${filepath}
-    cp ${filepath} ${ALL_LABELS_DIR}
+    cp "${filepath}" "${ALL_LABELS_DIR}"
 done < "$userProvidedGroundTruthImagesFile"
 
 
 #
 # create darwin's config.xml file
 #
-DARWIN_CONFIG_XML=${THIS_DIR}/darwinConfig.xml
-${THIS_DIR}/createDarwinConfigXml.sh ${DARWIN_CONFIG_XML} ${THIS_DIR} ${RELATIVE_ALL_IMAGES_DIR} ${RELATIVE_LABELS_DIR}
+DARWIN_CONFIG_XML="${THIS_DIR}/darwinConfig.xml"
+"${THIS_DIR}/createDarwinConfigXml.sh" "${DARWIN_CONFIG_XML}" "${THIS_DIR}" ${RELATIVE_ALL_IMAGES_DIR} ${RELATIVE_LABELS_DIR}
 
 
 #
@@ -186,23 +188,24 @@ ${THIS_DIR}/createDarwinConfigXml.sh ${DARWIN_CONFIG_XML} ${THIS_DIR} ${RELATIVE
 # RUN THE STEPS OF DARWIN
 #
 #
-OPENCV_LIB_DIR=${THIRD_PARTY_DIR}/darwin/drwn-1.8.0/external/opencv/lib
+OPENCV_LIB_DIR="${THIRD_PARTY_DIR}/darwin/drwn-1.8.0/external/opencv/lib"
 export DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:${OPENCV_LIB_DIR}"
-DARWIN_BIN_DIR=${THIRD_PARTY_DIR}/darwin/drwn-1.8.0/bin
+DARWIN_BIN_DIR="${THIRD_PARTY_DIR}/darwin/drwn-1.8.0/bin"
 # converting pixel labels
 echo running step 1 of 7  - Darwin convertPixellabels
-echo ${DARWIN_BIN_DIR}/convertPixelLabels -config ${DARWIN_CONFIG_XML} -i "_GT.png" ${TRAIN_LIST}
-${DARWIN_BIN_DIR}/convertPixelLabels -config ${DARWIN_CONFIG_XML} -i "_GT.png" ${TRAIN_LIST}
+echo "${DARWIN_BIN_DIR}/convertPixelLabels" -config "${DARWIN_CONFIG_XML}" -i "_GT.png" "${TRAIN_LIST}"
+"${DARWIN_BIN_DIR}/convertPixelLabels" -config "${DARWIN_CONFIG_XML}" -i "_GT.png" "${TRAIN_LIST}"
 
 # evaluate with unary and pariwise terms
 echo running step 6 of 7 - Darwin inferPixelLabels
-echo ${DARWIN_BIN_DIR}/inferPixelLabels -config ${DARWIN_CONFIG_XML} -outLabels .pairwise.txt -outImages .pairwise.png ${TEST_LIST}
+echo "${DARWIN_BIN_DIR}/inferPixelLabels" -config "${DARWIN_CONFIG_XML}" -outLabels .pairwise.txt -outImages .pairwise.png ${TEST_LIST}
 ${DARWIN_BIN_DIR}/inferPixelLabels -config ${DARWIN_CONFIG_XML} -outLabels .pairwise.txt -outImages .pairwise.png ${TEST_LIST}
 
 #
 #  call matlab to crop the leaf on both raw and mask images
 #
 echo running step 7 of 7 - cropping images
+
 #direct matlabe call
 matlab_func='Yao_postprocessing('
 matlab_func+="'"${segmentationOutputDir}"'"
@@ -217,7 +220,7 @@ matlab_func+=')'
 echo $matlab_func
 cd $THIS_DIR
 
-/Applications/MATLAB_R2015b.app/bin/matlab -nodisplay -r $matlab_func quit
+/Applications/MATLAB_R2015b.app/bin/matlab -nodisplay -r "$matlab_func" quit
 
 echo "matlab exited!!!"
 # this is the compiled version

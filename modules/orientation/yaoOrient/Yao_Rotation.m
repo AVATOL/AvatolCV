@@ -13,7 +13,7 @@ function [] = Yao_Rotation(inputImagesDir, testImagesFile, testImagesMaskFile,ro
 
 %% read the 'test' images list into variable 'testlist'
 fileID = fopen(testImagesFile);
-testlist = textscan(fileID, '%s');
+testlist = textscan(fileID, '%s', 'delimiter', '\n');
 fclose(fileID);
 testlist = testlist{1};
 
@@ -24,7 +24,7 @@ else
 end
 %% read the 'test' images MASK list into variable 'testlistMask'
 fileID = fopen(testImagesMaskFile);
-testlistMask = textscan(fileID, '%s');
+testlistMask = textscan(fileID, '%s', 'delimiter', '\n');
 fclose(fileID);
 testlistMask = testlistMask{1};
 
@@ -47,17 +47,20 @@ for i = 1:1:length(testlist)
     mask_name = [nameMask extMask];
     I = imread(imgfullpath);
     I_mask = im2bw(imread(imgMaskfullpath)); % raw mask image, may have multiple CC
-    
+   
     % finding the largest connected component
     CC = bwconncomp(I_mask);
     numPixels = cellfun(@numel,CC.PixelIdxList);
+    if numPixels < 5
+        continue
+    end
     [~,idx] = max(numPixels);
     linear_idx = CC.PixelIdxList{idx};
     [x,y] = ind2sub(size(I_mask),linear_idx);
     Mask = zeros(size(I_mask));
     Mask(linear_idx) = 1;
     Mask = imfill(Mask, 'holes'); % fill the holes in Masks
-    
+
     % find the minimum BB around Mask
     bb = Yao_minBoundingBox([y x]'); % bb including the coordinates of bb's 4 corners
     length_1 = norm([bb(1,1)-bb(1,2) bb(2,1)-bb(2,2)]);

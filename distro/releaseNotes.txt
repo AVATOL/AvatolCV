@@ -1,3 +1,7 @@
+20160512a AvatolCV Release Notes
+
+Leaf pipeline wrapper scripts now handle spaces in pathnames caused by spaces in project name
+==========================================================================
 20160502a AvatolCV Release Notes
 
 For hcsearchSeg, vowpalwabbit build was failing unnoticed (vw executable is just used for training

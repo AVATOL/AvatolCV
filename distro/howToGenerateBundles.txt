@@ -14,6 +14,7 @@ batskull
     - the bat repo must be cloned into play, and the branch changed:
         %cd avatol_cv/modules/scoring/batskull
         %git clone https://github.com/AVATOL/bat.git
+        %cd bat
         %git checkout new_integ
         
     - then it must be built

@@ -1,4 +1,5 @@
 function  Yao_postprocessing(segmentationOutputDir, testingImagesFile, croppedOrigImageSuffix, croppedMaskImageSuffix) 
+
 %   1. Generate the fullsize mask images:  
 %   2. Find the largest connected component of mask and then fit a
 %   rectangle on it
@@ -9,18 +10,23 @@ function  Yao_postprocessing(segmentationOutputDir, testingImagesFile, croppedOr
 %
 
 close all
-
+%%fprintf('segmentationOutputDir is %s\n',segmentationOutputDir);
 %% add the 'output' folder into path to get access to segmentation results
 currentPath = pwd;
+%%fprintf('currentPath as pwd %s\n',currentPath);
 %parentPath = fileparts(currentPath);
 addpath([currentPath '/output']);
 
+%%fprintf('currentPath as pwd/output %s\n',currentPath);
 %% read the 'test' images list into variable 'testlist'
 fileID = fopen(testingImagesFile);
-testlist = textscan(fileID, '%s');
+
+
+fprintf('made it past fopen\n');
+testlist = textscan(fileID, '%s', 'delimiter', '\n');
 fclose(fileID);
 testlist = testlist{1};
-
+%fprintf('testlist %s\n',testlist);
 %% creating the morphlogical structure element for 'erode' and 'dialate'
 se = strel('disk',5);  % se = strel('disk', R, N) 
 

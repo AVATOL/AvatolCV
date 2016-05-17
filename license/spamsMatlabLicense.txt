@@ -1,0 +1,5 @@
+spams-matlab is licensed under GPLv3 license which can be viewed here:
+
+http://www.gnu.org/licenses/gpl.html
+
+

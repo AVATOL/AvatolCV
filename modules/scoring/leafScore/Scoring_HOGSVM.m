@@ -93,7 +93,7 @@ end
 % -------------------------------------------------------------------------
 
 fileID = fopen(testImagesFile);
-testlist = textscan(fileID, '%s');
+testlist = textscan(fileID, '%s', 'delimiter', '\n');
 fclose(fileID);
 testlist = testlist{1};
 
