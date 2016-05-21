@@ -20,14 +20,18 @@ public class ScoreItem{
     private NormalizedValue newValue = null;
     private NormalizedValue existingValueForKey = null;
     private List<String> imageIDsRepresentedByWinner = null;
+    private ScoringProvenanceInfo scoringProvenanceInfo = null;
     private ScoringFate fate = null;
-    public ScoreItem(String imageID, NormalizedKey normCharKey, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue, NormalizedValue newValue, NormalizedValue existingValueForKey){
+    private String confidence = null;
+    public ScoreItem(String imageID, NormalizedKey normCharKey, NormalizedKey trainTestConcern, 
+            NormalizedValue trainTestConcernValue, NormalizedValue newValue, NormalizedValue existingValueForKey, String confidence){
         this.imageID = imageID;
         this.trainTestConcern = trainTestConcern;
         this.trainTestConcernValue = trainTestConcernValue;
         this.newValue = newValue;
         this.existingValueForKey = existingValueForKey;
         this.normCharKey = normCharKey;
+        this.confidence = confidence;
     }
     public void deduceScoringFate(){
     	if (newValue.equals(existingValueForKey)){
@@ -46,6 +50,15 @@ public class ScoreItem{
     	else {
     	    this.fate = ScoringFate.REVISE_VALUE;
     	}
+    }
+    public String getConfidence(){
+        return this.confidence;
+    }
+    public void setScoringProvenanceInfo(ScoringProvenanceInfo spi){
+        this.scoringProvenanceInfo = spi;
+    }
+    public ScoringProvenanceInfo getScoringProvenanceInfo(){
+        return this.scoringProvenanceInfo;
     }
     public NormalizedKey getNormCharKey(){
         return this.normCharKey;

@@ -383,7 +383,7 @@ public class BisqueDataSource implements DataSource {
         }
     }
     @Override
-    public boolean reviseValueForKey(String imageID, NormalizedKey key,
+    public boolean reviseValueForKey(String provenanceString, String imageID, NormalizedKey key,
             NormalizedValue value, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException {
         try {
             boolean result = this.wsClient.reviseAnnotation(imageID, key.getName(), value.getName());
@@ -395,7 +395,7 @@ public class BisqueDataSource implements DataSource {
         
     }
     @Override
-    public boolean addKeyValue(String imageID, NormalizedKey key,
+    public boolean addKeyValue(String provenanceString, String imageID, NormalizedKey key,
             NormalizedValue value, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException {
         try {
             boolean result = this.wsClient.addNewAnnotation(imageID, key.getName(), value.getName());

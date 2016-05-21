@@ -59,20 +59,23 @@ public class UploadVoter {
             }
         }
     }
-    public void vote() throws AvatolCVException {
+    public void vote(ScoringProvenanceInfo spi) throws AvatolCVException {
         for (NormalizedValue ttConcernVal : ttValuesSeen){
             List<ScoreItem> itemsForTTValue = scoreItemHash.get(ttConcernVal);
             validateConsistentExistingValues(itemsForTTValue, ttConcernVal);
-            ScoreItem winner = getVoteWinnerForScoreItems(itemsForTTValue, ttConcernVal);
+            ScoreItem winner = getVoteWinnerForScoreItems(itemsForTTValue, ttConcernVal, spi);
             voteWinnerHash.put(ttConcernVal, winner);
         }
     }
     public ScoreItem getVoteWinner(NormalizedValue ttConcernVal){
         return voteWinnerHash.get(ttConcernVal);
     }
-    private ScoreItem getVoteWinnerForScoreItems(List<ScoreItem> items, NormalizedValue ttConcernVal){
+    
+    private ScoreItem getVoteWinnerForScoreItems(List<ScoreItem> items, NormalizedValue ttConcernVal, ScoringProvenanceInfo spi){
         Hashtable<NormalizedValue, List<ScoreItem>> hash = new Hashtable<NormalizedValue, List<ScoreItem>>();
         List<NormalizedValue> valuesSeen = new ArrayList<NormalizedValue>();
+        // note scores in provenance info
+        spi.setScoreinfo(items);
         // make a hash by newValue of the ScoreItems
         for (ScoreItem item : items){
             NormalizedValue curNewValue = item.getNewValue();
@@ -103,6 +106,8 @@ public class UploadVoter {
             result.setNewValue(valuesSeen.get(0));
             result.deduceScoringFate();
             result.setImageIDsRepresentedByWinner(getImageIdList(items));
+            spi.setVoteResultType(ScoringProvenanceInfo.VoteResultType.VOTE_UNANIMOUS);
+            result.setScoringProvenanceInfo(spi);
             return result;
         }
         // if there are two or more values seen, if the first two are a tie, then that means there is an n-way tie, which means we should abstain from scoring
@@ -114,6 +119,8 @@ public class UploadVoter {
             ScoreItem result = itemsWithValList.get(0).getItems().get(0);
             result.noteTieVote();
             result.setImageIDsRepresentedByWinner(getImageIdList(items));
+            spi.setVoteResultType(ScoringProvenanceInfo.VoteResultType.VOTE_TIE);
+            result.setScoringProvenanceInfo(spi);
             return result;
         }
         // not a tie, return the new value for the top count
@@ -121,8 +128,9 @@ public class UploadVoter {
         ScoreItem result = itemsWithValList.get(0).getItems().get(0);
         result.deduceScoringFate();
         result.setImageIDsRepresentedByWinner(getImageIdList(items));
+        spi.setVoteResultType(ScoringProvenanceInfo.VoteResultType.VOTE_MAJORITY);
+        result.setScoringProvenanceInfo(spi);
         return result;
-        
     }
     public List<String> getImageIdList(List<ScoreItem> items){
     	List<String> result = new ArrayList<String>();
