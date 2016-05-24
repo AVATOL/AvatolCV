@@ -45,6 +45,7 @@ public class BisqueDataSource implements DataSource {
     private BisqueImages bisqueImages = null;
     private NormalizedImageInfos niis = null;
     private SessionImages sessionImages = null;
+    private List<BisqueDataset> allDataSets = null;
     public BisqueDataSource(){
         
         wsClient = new BisqueWSClientImpl();
@@ -75,9 +76,9 @@ public class BisqueDataSource implements DataSource {
     public List<DatasetInfo> getDatasets() throws AvatolCVException {
         List<DatasetInfo> datasets = new ArrayList<DatasetInfo>();
         try {
-            List<BisqueDataset> bds = wsClient.getDatasets();
+            allDataSets = wsClient.getDatasets();
             
-            for (BisqueDataset ds : bds){
+            for (BisqueDataset ds : allDataSets){
                 DatasetInfo di = new DatasetInfo();
                 di.setName(ds.getName());
                 di.setID(ds.getResourceUniq());
@@ -432,4 +433,17 @@ public class BisqueDataSource implements DataSource {
     public boolean groupByTrainTestConcernValueAndVoteForUpload() {
         return false;
     }
+	@Override
+	public String getDatasetIDforName(String name) throws AvatolCVException {
+		if (null == this.allDataSets){
+			throw new AvatolCVException("asked to lookup id for datasetname before this.allDataSets has been set");
+		}
+		for (BisqueDataset bd : allDataSets){
+			String curName = bd.getName();
+			if (curName.equals(name)){
+				return bd.getResourceUniq();
+			}
+		}
+		throw new AvatolCVException("no id found for datasetname " + name);
+	}
 }

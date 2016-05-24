@@ -51,4 +51,5 @@ public interface DataSource {
     List<String> filterBadSortCandidates(List<String> list);
     void prepForUpload(List<String> charIDs, List<String> trainTestConcernValueIDs) throws AvatolCVException ;
     boolean groupByTrainTestConcernValueAndVoteForUpload();
+    String getDatasetIDforName(String name) throws AvatolCVException;
 }

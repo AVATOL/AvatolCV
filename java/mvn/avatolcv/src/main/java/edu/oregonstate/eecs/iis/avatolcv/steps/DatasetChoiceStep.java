@@ -55,6 +55,9 @@ public class DatasetChoiceStep extends Answerable implements Step {
     public String getDatasetTitleText(){
         return this.sessionInfo.getDataSource().getDatasetTitleText();
     }
+    public SessionInfo getSessionInfo(){
+    	return this.sessionInfo;
+    }
     @Override
     public void consumeProvidedData() throws AvatolCVException {
         this.sessionInfo.setChosenDataset(this.chosenDataset);

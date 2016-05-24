@@ -13,6 +13,16 @@
             <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
             <Label fx:id="datasetTitleName" text="Select Dataset/Matrix" />
             <ComboBox fx:id="selectedDataset" minWidth="300.0" />
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="ID :  " HBox.hgrow="NEVER">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Label>
+                  <TextField fx:id="datasetIdTextField" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
             <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>

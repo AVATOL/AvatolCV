@@ -61,6 +61,8 @@ public class MorphobankDataSource implements DataSource {
     private NormalizedImageInfos niis = null;
     private SessionImages sessionImages = null;
     private Hashtable<String, String> cellIDsForCellKeyHash = null;
+    private List<MBMatrix> matrices = null;
+    List<DatasetInfo> datasets = null;
     private static final Logger logger = LogManager.getLogger(MorphobankDataSource.class);
 
     public MorphobankDataSource(){
@@ -88,8 +90,8 @@ public class MorphobankDataSource implements DataSource {
     }
     @Override
     public List<DatasetInfo> getDatasets() throws AvatolCVException {
-        List<DatasetInfo> datasets = new ArrayList<DatasetInfo>();
-        List<MBMatrix> matrices = null;
+        datasets = new ArrayList<DatasetInfo>();
+        
         try {
             matrices = wsClient.getMorphobankMatricesForUser();
             for (MBMatrix mm : matrices){
@@ -680,4 +682,17 @@ public class MorphobankDataSource implements DataSource {
         // for MB, only want one upload per cell, which means we need to collapse scores for multiple images in cell to single vote.
         return true;
     }
+	@Override
+	public String getDatasetIDforName(String name) throws AvatolCVException {
+		if (null == datasets){
+			throw new AvatolCVException("asked for id of dataset before datasets set");
+		}
+		for (DatasetInfo di : datasets){
+			String curName = di.getName();
+			if (curName.equals(name)){
+				return di.getProjectID();
+			}
+		}
+		throw new AvatolCVException("could not find project id of for project " + name);
+	}
 }

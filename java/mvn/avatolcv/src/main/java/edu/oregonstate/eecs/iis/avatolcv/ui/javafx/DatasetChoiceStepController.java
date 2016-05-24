@@ -8,24 +8,32 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.DatasetChoiceStep;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernStep;
+import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConfigurationStep;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ScoringConcernStepController.RemainingMetadataDownloadTask;
+import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.ScoringConfigurationStepController.GroupChangeListener;
 
 public class DatasetChoiceStepController implements StepController {
     public static final String SCORING_INFO_DOWNLOAD = "scoringInfoDownload"; 
@@ -33,6 +41,7 @@ public class DatasetChoiceStepController implements StepController {
     public VBox datasetChoiceVBox;
     public ProgressBar scoringInfoDownloadProgressBar;
     public Label scoringInfoDownloadMessageLabel;
+    public TextField datasetIdTextField;
     public ComboBox<String> selectedDataset;
     private DatasetChoiceStep step;
     private String fxmlDocName;
@@ -81,22 +90,51 @@ public class DatasetChoiceStepController implements StepController {
     		for (String m : datasetNames){
     			list.add(m);
     		}
-            if (this.step.hasPriorAnswers()){
+    		if (this.step.hasPriorAnswers()){
             	followUpDataDownloadPhaseComplete = false;
             	Hashtable<String, String> hash = this.step.getPriorAnswers();
             	String choice = hash.get("chosenDataset");
             	selectedDataset.setValue(choice);
+            	
+            	datasetIdTextField.setText(getDatasetIDForDatasetName(choice));
             }
             else {
         		selectedDataset.setValue(datasetNames.get(0));
+            	datasetIdTextField.setText(getDatasetIDForDatasetName(datasetNames.get(0)));
             }
             datasetTitleName.setText(this.step.getDatasetTitleText());
+            this.selectedDataset.getSelectionModel().selectedIndexProperty().addListener(new DatasetChangeListener(this.selectedDataset, this.datasetIdTextField));
             return content;
         }
         catch(IOException ioe){
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
         } 
 	}
+	public String getDatasetIDForDatasetName(String dsName) throws AvatolCVException {
+		SessionInfo si = this.step.getSessionInfo();
+		DataSource ds = si.getDataSource();
+		String result = ds.getDatasetIDforName(dsName);
+        return result;
+	}
+	public class DatasetChangeListener implements ChangeListener<Number> {
+        private ComboBox<String> cb;
+        private TextField ta;
+        public DatasetChangeListener(ComboBox<String> selectedDataset, TextField ta){
+            this.ta = ta;
+            this.cb = selectedDataset;
+        }
+        @Override
+        public void changed(ObservableValue ov, Number value, Number newValue) {
+            try {
+                //System.out.println("new Value " + newValue);
+            	String newSelectedValue = this.cb.getItems().get((Integer) newValue);
+            	datasetIdTextField.setText(getDatasetIDForDatasetName(newSelectedValue));
+            }
+            catch(Exception e){
+                AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem changing grouping of training vs score ");
+            }
+        }
+    }
 	@Override
 	public boolean delayEnableNavButtons() {
 		return false;
