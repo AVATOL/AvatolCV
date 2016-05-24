@@ -46,8 +46,8 @@ public interface DataSource {
     String getDefaultTrainTestConcern();
     NormalizedValue getValueForKeyAtDatasourceForImage(NormalizedKey normCharKey, String imageID, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException ;
     boolean deleteScoreForKey(String imageID, NormalizedKey key, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException ;
-    boolean reviseValueForKey(String imageID, NormalizedKey key, NormalizedValue value, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException ;
-    boolean addKeyValue(String imageID, NormalizedKey key, NormalizedValue value, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException ;
+    boolean reviseValueForKey(String provenanceString, String imageID, NormalizedKey key, NormalizedValue value, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException ;
+    boolean addKeyValue(String provenaceString, String imageID, NormalizedKey key, NormalizedValue value, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException ;
     List<String> filterBadSortCandidates(List<String> list);
     void prepForUpload(List<String> charIDs, List<String> trainTestConcernValueIDs) throws AvatolCVException ;
     boolean groupByTrainTestConcernValueAndVoteForUpload();

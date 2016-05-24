@@ -567,9 +567,10 @@ public class MorphobankDataSource implements DataSource {
         }
     }
 	@Override
-	public boolean reviseValueForKey(String imageID, NormalizedKey key,
+	public boolean reviseValueForKey(String provenanceString, String imageID, NormalizedKey key,
 			NormalizedValue value, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException {
-		// http://morphobank.org/service.php/AVATOLCv/recordScore/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/23331/cellID/58835485/stateID/4876140
+	    // NOTE - provenanceString not yet used
+	    // http://morphobank.org/service.php/AVATOLCv/recordScore/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/23331/cellID/58835485/stateID/4876140
 	    try {
 	        String matrixID = this.chosenDataset.getID();
 	        String charStateID = value.getID();
@@ -588,8 +589,9 @@ public class MorphobankDataSource implements DataSource {
 	    }
 	}
 	@Override
-	public boolean addKeyValue(String imageID, NormalizedKey key,
+	public boolean addKeyValue(String provenanceString, String imageID, NormalizedKey key,
 			NormalizedValue value, NormalizedKey trainTestConcern, NormalizedValue trainTestConcernValue) throws AvatolCVException {
+	    // NOTE - provenanceString not yet used
 		// http://morphobank.org/service.php/AVATOLCv/recordScore/username/irvine@eecs.oregonstate.edu/password/squonkmb/matrixID/23331/characterID/1820895/taxonID/770536/stateID/4876140
 	    try {
 	        String matrixID = this.chosenDataset.getID();

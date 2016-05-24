@@ -67,6 +67,7 @@ import edu.oregonstate.eecs.iis.avatolcv.results.ResultsTableSortable;
 import edu.oregonstate.eecs.iis.avatolcv.results.ResultsUtils;
 import edu.oregonstate.eecs.iis.avatolcv.results.ScoreItem;
 import edu.oregonstate.eecs.iis.avatolcv.results.ScoreItem.ScoringFate;
+import edu.oregonstate.eecs.iis.avatolcv.results.ScoringProvenanceInfo;
 import edu.oregonstate.eecs.iis.avatolcv.results.UploadVoter;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
@@ -755,11 +756,11 @@ public class ResultsReviewSortable implements ProgressPresenter {
     	String imageIDString = event.getImageID();
     	if (imageIDString.contains(UploadSession.STRING_LIST_DELIM)){
     		List<String> ids = getIdListFromListString(imageIDString);
-    		this.dataSource.reviseValueForKey(ids.get(0), event.getKey(), event.getOrigValue(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
+    		this.dataSource.reviseValueForKey("",ids.get(0), event.getKey(), event.getOrigValue(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
     		userFeedbackForUndo(ids);
     	}
     	else {
-    		this.dataSource.reviseValueForKey(event.getImageID(), event.getKey(), event.getOrigValue(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
+    		this.dataSource.reviseValueForKey("",event.getImageID(), event.getKey(), event.getOrigValue(), event.getTrainTestConcern(), event.getTrainTestConcernValue());
     		userFeedbackForUndo(event.getImageID());
     	}
     	logger.info("upload UNDO : " + event.getImageID() + " " + event.getKey().getName() + " " + event.getOrigValue().getName() + " - REVERTING TO PRIOR VALUE ");
@@ -937,7 +938,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
                 NormalizedValue newValue = sif.getScoreValueForImageID(imageID);
                 //Need to pass the normalized key and value for this row to Data source and ask if key exists for this image
                 NormalizedValue existingValueForKey = dataSource.getValueForKeyAtDatasourceForImage(normCharKey, imageID, trainTestConcern, trainTestConcernValue);
-                ScoreItem si = new ScoreItem(imageID, normCharKey, trainTestConcern, trainTestConcernValue, newValue, existingValueForKey);
+                ScoreItem si = new ScoreItem(imageID, normCharKey, trainTestConcern, trainTestConcernValue, newValue, existingValueForKey, confString);
                 scoreItems.add(si);
             }
             curImage++;
@@ -1015,7 +1016,8 @@ public class ResultsReviewSortable implements ProgressPresenter {
         Platform.runLater(() -> uploadProgress.setProgress(0.0));
         List<ScoreItem> scoreItems = collectScoreItems(imageIDs);
         vu.addScores(scoreItems);
-        vu.vote();
+        ScoringProvenanceInfo spi = new ScoringProvenanceInfo();
+        vu.vote(spi);
         List<ScoreItem> voteWinners = vu.getVoteWinners();
         int toUploadCount = voteWinners.size();
         
@@ -1038,6 +1040,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
             logger.info("################################################################");
             List<Label> scoreLabelsForWinner = getScoreLabelsForImageIds(si.getImageIDsRepresentedByWinner());
             List<Label> saveStatusLabelsForWinner = getSaveStatusLabelsForImageIds(si.getImageIDsRepresentedByWinner());
+            String provenanceString = spi.toString();
             if (si.getScoringFate() == ScoringFate.ABSTAIN_FROM_CHANGING_SCORE_NEW_VALUE_SAME){
                 this.uploadSession.abstainSinceValueSame(si.getImageIDsRepresentedByWinner(), normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
                 userFeedbackForUpload("UPLOAD - new value same as old, SKIPPING UPLOAD", ids, scoreLabelsForWinner,saveStatusLabelsForWinner, si.getScoringFate(),newValue);
@@ -1047,7 +1050,8 @@ public class ResultsReviewSortable implements ProgressPresenter {
                 userFeedbackForUpload("UPLOAD - ambiguous scoring - voting tied, SKIPPING UPLOAD", ids, scoreLabelsForWinner,saveStatusLabelsForWinner, si.getScoringFate(),newValue);
             }
             else if (si.getScoringFate() == ScoringFate.REVISE_VALUE){
-            	boolean result = dataSource.reviseValueForKey(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
+                
+            	boolean result = dataSource.reviseValueForKey(provenanceString,imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
                 if (result){
                 	this.uploadSession.reviseValueForKey(si.getImageIDsRepresentedByWinner(), normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
                 	userFeedbackForUpload("UPLOAD - REVISING value from " + si.getExistingValueForKey() + " to " +  si.getNewValue(), ids, scoreLabelsForWinner,saveStatusLabelsForWinner, si.getScoringFate(),newValue);
@@ -1055,7 +1059,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
             }
             else {
             	// must be ScoringFate.SET_NEW_VALUE
-            	boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
+            	boolean result = dataSource.addKeyValue(provenanceString,imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
                 if (result){
                 	this.uploadSession.addNewKeyValue(si.getImageIDsRepresentedByWinner(), normCharKey, newValue, trainTestConcern, trainTestConcernValue);
                 	userFeedbackForUpload("UPLOAD - NEW value from " + si.getExistingValueForKey() + " to " +  si.getNewValue(), ids, scoreLabelsForWinner,saveStatusLabelsForWinner, si.getScoringFate(),newValue);
@@ -1076,6 +1080,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
     private void uploadScoresForAllImages() throws AvatolCVException {
         // list all the answers above threshold
         List<String> imageIDs = resultsTable2.getImageIDsInCurrentOrder();
+        ScoringProvenanceInfo spi = new ScoringProvenanceInfo();
         Platform.runLater(() -> uploadProgress.setProgress(0.0));
         List<ScoreItem> scoreItems = collectScoreItems(imageIDs);
         // for voteThenUpload, calling deduce happens in the Voter so that ties can be noted.  Since we're not voting, all muxt be assessed. 
@@ -1101,7 +1106,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
             logger.info("################################################################");
             Label scoreLabel = (Label)resultsTable2.getWidget(imageID, COLNAME_SCORE);
             Label saveStatusLabel = (Label)resultsTable2.getWidget(imageID, COLNAME_SAVE_STATUS);
-           
+            String provenanceString = spi.toString();
             if (si.getScoringFate() == ScoringFate.ABSTAIN_FROM_CHANGING_SCORE_NEW_VALUE_SAME){
                 this.uploadSession.abstainSinceValueSame(imageID, normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
                 userFeedbackForUpload("UPLOAD - new value same as old, SKIPPING UPLOAD", imageID, scoreLabel,saveStatusLabel, si.getScoringFate(),newValue);
@@ -1113,7 +1118,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
                 ///userFeedbackForUpload("UPLOAD - ambiguous scoring - voting tied, SKIPPING UPLOAD", imageID, scoreLabel,saveStatusLabel, si.getScoringFate(),newValue);
             }
             else if (si.getScoringFate() == ScoringFate.REVISE_VALUE){
-                boolean result = dataSource.reviseValueForKey(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
+                boolean result = dataSource.reviseValueForKey(provenanceString, imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
                 if (result){
                     this.uploadSession.reviseValueForKey(imageID, normCharKey, newValue, existingValueForKey, trainTestConcern, trainTestConcernValue);
                     userFeedbackForUpload("UPLOAD - REVISING value from " + si.getExistingValueForKey() + " to " +  si.getNewValue(), imageID, scoreLabel,saveStatusLabel, si.getScoringFate(),newValue);
@@ -1121,7 +1126,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
             }
             else {
                 // must be ScoringFate.SET_NEW_VALUE
-                boolean result = dataSource.addKeyValue(imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
+                boolean result = dataSource.addKeyValue(provenanceString, imageID, normCharKey, newValue,trainTestConcern,trainTestConcernValue);
                 if (result){
                     this.uploadSession.addNewKeyValue(imageID, normCharKey, newValue, trainTestConcern, trainTestConcernValue);
                     userFeedbackForUpload("UPLOAD - NEW value from " + si.getExistingValueForKey() + " to " +  si.getNewValue(), imageID, scoreLabel ,saveStatusLabel, si.getScoringFate(),newValue);
