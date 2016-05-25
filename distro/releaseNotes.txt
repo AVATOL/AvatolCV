@@ -1,3 +1,8 @@
+20160525a AvatolCV Release Notes
+
+Add projectID to matrix/dataset screen
+Fix bug with NPA charStateID causing crash.
+==========================================================================
 20160512a AvatolCV Release Notes
 
 Leaf pipeline wrapper scripts now handle spaces in pathnames caused by spaces in project name
