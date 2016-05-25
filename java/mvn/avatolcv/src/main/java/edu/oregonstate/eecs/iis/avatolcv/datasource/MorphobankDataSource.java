@@ -335,6 +335,7 @@ public class MorphobankDataSource implements DataSource {
     	throw new AvatolCVException("no view name for given viewID " + viewID);
     }
     public String getCharStateNameForID(MBCharacter character, String charStateID) throws AvatolCVException {
+    	System.out.println("charStateID " + charStateID);
     	List<MBCharState> charStates = character.getCharStates();
     	for (MBCharState cs : charStates){
     		if (cs.getCharStateID().equals(charStateID)){
@@ -370,6 +371,12 @@ public class MorphobankDataSource implements DataSource {
 		if (charStateID.equals("unscored")){
 			charStateName = ""; // for now, leave it as empty string
 		}   
+		else if (charStateID.equalsIgnoreCase("?")){
+			charStateName = "?";
+		}
+		else if (charStateID.equals("NPA")){
+			charStateName = "NPA";
+		}
 		else {
 			charStateName = getCharStateNameForID(character, charStateID);
 		}
