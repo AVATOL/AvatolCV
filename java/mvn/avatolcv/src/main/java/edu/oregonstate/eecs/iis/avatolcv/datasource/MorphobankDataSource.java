@@ -704,4 +704,9 @@ public class MorphobankDataSource implements DataSource {
 		}
 		throw new AvatolCVException("could not find project id of for project " + name);
 	}
+	@Override
+	public String getMandatoryTrainTestConcern() {
+		// it will be "taxon"
+		return getDefaultTrainTestConcern();
+	}
 }

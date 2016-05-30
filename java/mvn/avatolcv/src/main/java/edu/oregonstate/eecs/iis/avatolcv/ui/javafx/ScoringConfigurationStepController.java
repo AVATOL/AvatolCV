@@ -54,6 +54,8 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConfigurationStep;
 public class ScoringConfigurationStepController implements StepController {
 	private ScoringConfigurationStep step = null;
     private String fxmlDocName = null;
+    public HBox divideByGroupHBox = null;
+    public VBox trainingVsScoringVbox = null;
     public RadioButton radioViewByImage = null;
     public RadioButton radioViewByGroup = null;
     public ChoiceBox<String> choiceBoxGroupProperty = null;
@@ -160,7 +162,11 @@ public class ScoringConfigurationStepController implements StepController {
             SessionInfo sessionInfo = this.step.getSessionInfo();
             sessionInfo.reAssessImagesInPlay();
             
-            NormalizedKey trainTestKey = sessionInfo.getDefaultTrainTestConcern();
+            NormalizedKey mandatoryTrainTestKey = sessionInfo.getMandatoryTrainTestConcern();
+            NormalizedKey trainTestKey = mandatoryTrainTestKey;
+            if (null == trainTestKey){
+            	trainTestKey = sessionInfo.getDefaultTrainTestConcern();
+            } 
             this.step.setTrainTestConcern(trainTestKey);
             
             sessionInfo.alignLabelsAcrossCharacters();
@@ -178,6 +184,10 @@ public class ScoringConfigurationStepController implements StepController {
             	radioViewByGroup.setSelected(true);
             	radioViewByImage.setDisable(true);
             	configureAsGroupByProperty();
+            	if (mandatoryTrainTestKey != null){
+            		this.trainingVsScoringVbox.getChildren().remove(this.radioViewByImage);
+            		this.trainingVsScoringVbox.getChildren().remove(this.divideByGroupHBox);
+            	}
             }
             else {
             	configureAsSortByImage();

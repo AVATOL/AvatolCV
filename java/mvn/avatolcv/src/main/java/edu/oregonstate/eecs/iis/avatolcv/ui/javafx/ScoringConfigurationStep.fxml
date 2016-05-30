@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxWidth="1.7976931348623157E308" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="trainingVsScoringVbox" maxWidth="1.7976931348623157E308" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label maxWidth="1.7976931348623157E308" minHeight="30.0" text="How the data is divided into Training vs Scoring" VBox.vgrow="NEVER">
          <VBox.margin>
@@ -22,7 +22,7 @@
             <ToggleGroup fx:id="TrainVsScoring" />
          </toggleGroup>
       </RadioButton>
-      <HBox minHeight="30.0" VBox.vgrow="NEVER">
+      <HBox fx:id="divideByGroupHBox" minHeight="30.0" VBox.vgrow="NEVER">
          <children>
             <RadioButton fx:id="radioViewByGroup" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#configureAsGroupByProperty" text="divide by value of " toggleGroup="$TrainVsScoring" VBox.vgrow="NEVER">
                <HBox.margin>

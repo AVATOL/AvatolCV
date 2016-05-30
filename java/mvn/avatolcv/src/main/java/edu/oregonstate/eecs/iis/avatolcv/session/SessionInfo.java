@@ -304,7 +304,13 @@ public class SessionInfo{
 		}
 		return new NormalizedKey(ttc);
 	}
-    
+    public NormalizedKey getMandatoryTrainTestConcern() throws AvatolCVException {
+		String ttc = dataSource.getMandatoryTrainTestConcern();
+		if (null == ttc){
+			return null;
+		}
+		return new NormalizedKey(ttc);
+	}
     /*
      * FILTER
      */

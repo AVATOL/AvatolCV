@@ -446,4 +446,9 @@ public class BisqueDataSource implements DataSource {
 		}
 		throw new AvatolCVException("no id found for datasetname " + name);
 	}
+	@Override
+	public String getMandatoryTrainTestConcern() {
+		// Bisque does not have one
+		return null;
+	}
 }

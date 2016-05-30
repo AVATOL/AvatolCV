@@ -307,5 +307,10 @@ public class FileSystemDataSource implements DataSource {
 		// TODO Auto-generated method stub
 		return "datasetID lookup to be implemented";
 	}
+	@Override
+	public String getMandatoryTrainTestConcern() {
+		// if this was a copy of MB dataset, then this will be "taxon"
+		return getDefaultTrainTestConcern();
+	}
 
 }
