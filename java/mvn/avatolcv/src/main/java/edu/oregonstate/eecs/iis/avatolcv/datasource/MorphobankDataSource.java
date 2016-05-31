@@ -709,4 +709,10 @@ public class MorphobankDataSource implements DataSource {
 		// it will be "taxon"
 		return getDefaultTrainTestConcern();
 	}
+	@Override
+	public void forgetMetadata() throws AvatolCVException {
+		AvatolCVFileSystem.deleteDirectory(MorphobankDataFiles.getCharStateInfoDir());
+		AvatolCVFileSystem.deleteDirectory(MorphobankDataFiles.getImageInfoDir());
+		AvatolCVFileSystem.deleteDirectory(MorphobankDataFiles.getAnnotationDataDir());
+	}
 }

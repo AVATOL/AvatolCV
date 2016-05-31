@@ -451,4 +451,9 @@ public class BisqueDataSource implements DataSource {
 		// Bisque does not have one
 		return null;
 	}
+	@Override
+	public void forgetMetadata() throws AvatolCVException {
+		AvatolCVFileSystem.deleteDirectory(BisqueDataFiles.getAnnotationInfoDir());
+		AvatolCVFileSystem.deleteDirectory(AvatolCVFileSystem.getSpecializedImageInfoDir());
+	}
 }

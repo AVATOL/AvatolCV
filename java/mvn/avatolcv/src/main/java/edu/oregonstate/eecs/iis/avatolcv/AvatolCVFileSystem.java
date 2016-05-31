@@ -698,4 +698,20 @@ public class AvatolCVFileSystem {
     public static String getImagesDir(){
     	return avatolCVRootDir + FILESEP + "images";
     }
+    public static void deleteNormalizedMetadataForDataset() throws AvatolCVException {
+    	String imageInfoPath = AvatolCVFileSystem.getNormalizedImageInfoDir();
+    	deleteDirectory(imageInfoPath);
+    }
+    public static void deleteDirectory(String path){
+    	File f = new File(path);
+    	File[] files = f.listFiles();
+    	for (File file : files){
+    		if (file.isDirectory()){
+    			deleteDirectory(file.getAbsolutePath());
+    		}
+    		else {
+    			file.delete();
+    		}
+    	}
+    }
 }

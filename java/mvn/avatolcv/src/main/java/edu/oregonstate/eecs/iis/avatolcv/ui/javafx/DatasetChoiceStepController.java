@@ -14,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -39,6 +40,7 @@ public class DatasetChoiceStepController implements StepController {
     public static final String SCORING_INFO_DOWNLOAD = "scoringInfoDownload"; 
     public Label datasetTitleName;
     public VBox datasetChoiceVBox;
+    public CheckBox reloadDatasetCheckbox = null;
     public ProgressBar scoringInfoDownloadProgressBar;
     public Label scoringInfoDownloadMessageLabel;
     public TextField datasetIdTextField;
@@ -56,6 +58,7 @@ public class DatasetChoiceStepController implements StepController {
 		try {
 			String chosenDataset = (String)this.selectedDataset.getValue();
 			this.step.setChosenDataset(chosenDataset);
+			this.step.setRefreshFromDatasourceNeeded(this.reloadDatasetCheckbox.selectedProperty().getValue());
 			Hashtable<String, String> answerHash = new Hashtable<String, String>();
 			answerHash.put("chosenDataset", chosenDataset);
 			this.step.saveAnswers(answerHash);

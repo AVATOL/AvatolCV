@@ -24,6 +24,8 @@
                </children>
             </HBox>
             <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+            <CheckBox fx:id="reloadDatasetCheckbox" mnemonicParsing="false" text="matrix has been updated, pull in changes" />
+            <Region prefHeight="200.0" prefWidth="200.0" />
          </children>
       </VBox>
       <Region HBox.hgrow="ALWAYS" />

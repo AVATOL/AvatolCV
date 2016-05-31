@@ -312,5 +312,9 @@ public class FileSystemDataSource implements DataSource {
 		// if this was a copy of MB dataset, then this will be "taxon"
 		return getDefaultTrainTestConcern();
 	}
+	@Override
+	public void forgetMetadata() {
+		// don't need to do anything, all changes are in place locally and thus already in play
+	}
 
 }

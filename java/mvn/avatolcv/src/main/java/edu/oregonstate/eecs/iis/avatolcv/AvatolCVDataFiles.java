@@ -44,15 +44,10 @@ public class AvatolCVDataFiles {
     		throw new AvatolCVException("could not persist normalized image file to path " + path);
     	}
     }
+    
     public void clearNormalizedImageFiles() throws AvatolCVException {
     	String path = AvatolCVFileSystem.getNormalizedImageInfoDir();
-    	File f = new File(path);
-    	File[] files = f.listFiles();
-    	for (File file : files){
-    		if (!file.isDirectory()){
-    			file.delete();
-    		}
-    	}
+    	AvatolCVFileSystem.deleteDirectory(path);
     }
     public Properties loadNormalizedImageFile(String path) throws AvatolCVException {
     	File f = new File(path);

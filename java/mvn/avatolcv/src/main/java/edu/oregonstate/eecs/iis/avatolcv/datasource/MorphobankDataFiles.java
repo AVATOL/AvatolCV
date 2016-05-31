@@ -31,10 +31,10 @@ public class MorphobankDataFiles  extends AvatolCVDataFiles{
     public void prepareForMetadataDownload() throws AvatolCVException {
     	AvatolCVFileSystem.ensureDir(getAnnotationDataDir());
     }
-    public String getImageInfoDir() throws AvatolCVException {
+    public static String getImageInfoDir() throws AvatolCVException {
         return AvatolCVFileSystem.getSpecializedDataDir() + FILESEP + "mediaInfo";
     }
-    public String getCharStateInfoDir() throws AvatolCVException {
+    public static String getCharStateInfoDir() throws AvatolCVException {
         return AvatolCVFileSystem.getSpecializedDataDir() + FILESEP + "charStates";
     }
     public void persistMBCharStatesForCell(List<MBCharStateValue> charStatesForCell, String charID, String taxonID) throws AvatolCVException {
@@ -198,7 +198,7 @@ public class MorphobankDataFiles  extends AvatolCVDataFiles{
         }
         return null;
     }
-    private String getAnnotationDataDir() throws AvatolCVException {
+    public static String getAnnotationDataDir() throws AvatolCVException {
     	return AvatolCVFileSystem.getSpecializedDataDir() + FILESEP + "annotations";
     }
     

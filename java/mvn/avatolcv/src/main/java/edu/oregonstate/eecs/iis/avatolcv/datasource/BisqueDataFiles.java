@@ -17,7 +17,7 @@ import edu.oregonstate.eecs.iis.avatolcv.ws.bisque.BisqueAnnotation;
 
 public class BisqueDataFiles extends AvatolCVDataFiles {
     
-    public String getAnnotationInfoDir() throws AvatolCVException {
+    public static String getAnnotationInfoDir() throws AvatolCVException {
         return AvatolCVFileSystem.getSpecializedDataDir() + FILESEP + "annotationInfo";
     }
     
