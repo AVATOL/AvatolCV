@@ -26,6 +26,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
+import edu.oregonstate.eecs.iis.avatolcv.datasource.FileSystemDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
@@ -76,6 +77,7 @@ public class DatasetChoiceStepController implements StepController {
 	    selectedDataset.setValue(datasetNames.get(0));
 	}
 
+	
 	@Override
 	public Node getContentNode() throws AvatolCVException {
 		try {
@@ -88,6 +90,15 @@ public class DatasetChoiceStepController implements StepController {
             if (datasetNames.size() < 1){
             	throw new AvatolCVException("no valid matrices detected.");
             }
+            DataSource dataSource = this.step.getSessionInfo().getDataSource();
+            if (dataSource instanceof FileSystemDataSource){
+            	reloadDatasetCheckbox.setDisable(true);
+            	datasetChoiceVBox.getChildren().remove(reloadDatasetCheckbox);
+            }
+            else {
+            	reloadDatasetCheckbox.setText(dataSource.getRepullPrompt());
+            }
+            
             Collections.sort(datasetNames);
             ObservableList<String> list = selectedDataset.getItems();
     		for (String m : datasetNames){

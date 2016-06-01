@@ -316,5 +316,9 @@ public class FileSystemDataSource implements DataSource {
 	public void forgetMetadata() {
 		// don't need to do anything, all changes are in place locally and thus already in play
 	}
+	@Override
+	public String getRepullPrompt() {
+		return "NA";
+	}
 
 }

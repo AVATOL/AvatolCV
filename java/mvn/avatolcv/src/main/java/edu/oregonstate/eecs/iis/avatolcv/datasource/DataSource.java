@@ -54,4 +54,5 @@ public interface DataSource {
     boolean groupByTrainTestConcernValueAndVoteForUpload();
     String getDatasetIDforName(String name) throws AvatolCVException;
     void forgetMetadata() throws AvatolCVException ;
+    String getRepullPrompt();
 }

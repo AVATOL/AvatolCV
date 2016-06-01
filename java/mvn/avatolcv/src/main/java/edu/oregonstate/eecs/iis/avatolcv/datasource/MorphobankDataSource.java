@@ -715,4 +715,8 @@ public class MorphobankDataSource implements DataSource {
 		AvatolCVFileSystem.deleteDirectory(MorphobankDataFiles.getImageInfoDir());
 		AvatolCVFileSystem.deleteDirectory(MorphobankDataFiles.getAnnotationDataDir());
 	}
+	@Override
+	public String getRepullPrompt() {
+		return "matrix has been updated, pull in changes";
+	}
 }

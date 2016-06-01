@@ -456,4 +456,8 @@ public class BisqueDataSource implements DataSource {
 		AvatolCVFileSystem.deleteDirectory(BisqueDataFiles.getAnnotationInfoDir());
 		AvatolCVFileSystem.deleteDirectory(AvatolCVFileSystem.getSpecializedImageInfoDir());
 	}
+	@Override
+	public String getRepullPrompt() {
+		return "dataset has been updated, pull in changes";
+	}
 }
