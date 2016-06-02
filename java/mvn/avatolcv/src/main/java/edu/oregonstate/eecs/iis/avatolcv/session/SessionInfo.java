@@ -398,6 +398,9 @@ public class SessionInfo{
         }
         return this.algorithmSequence;
     }
+    /*
+     * If any cells are unscored, unscore them for all characters for that taxon
+     */
     public void alignLabelsAcrossCharacters() throws AvatolCVException {
     	if (!this.hasTrainTestConcern()){
     		// with no trainTestConcern (ex. taxon) in play, no need to do the alignment
