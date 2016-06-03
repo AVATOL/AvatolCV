@@ -5,51 +5,80 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox styleClass="navRoot" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-         <children>
-            <VBox>
-               <children>
-                  <Label text="Session Steps">
-                     <VBox.margin>
-                        <Insets bottom="8.0" left="8.0" top="8.0" />
-                     </VBox.margin>
-                  </Label>
-                  <ScrollPane hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
-                    <content>
-                      <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
-                           <children>
-                              <VBox fx:id="stepList" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                           </children>
-                           <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding>
-                        </AnchorPane>
-                    </content>
-                  </ScrollPane>
-               </children>
-               <padding>
-                  <Insets left="10.0" top="20.0" />
-               </padding>
-            </VBox>
-            <AnchorPane id="navigationShellContentPane" fx:id="primaryContentPane"  prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-         </children>
-      </HBox>
-      <HBox spacing="10.0" VBox.vgrow="NEVER">
-         <children>
-            <Button fx:id="cancelSessionButton" mnemonicParsing="false" onAction="#cancelSession" text="Cancel Session">
-               <padding>
-                  <Insets bottom="6.0" left="16.0" right="16.0" top="6.0" />
-               </padding>
-            </Button>
-            <Region HBox.hgrow="ALWAYS" />
-            <Button fx:id="backButton" mnemonicParsing="false" onAction="#previousStep" text="Back" />
-            <Button fx:id="nextButton" mnemonicParsing="false" onAction="#nextStep" text="Next" />
-         </children>
-         <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </padding>
-      </HBox>
-   </children>
-</VBox>
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+		   <children>
+		      <Accordion maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		        <panes>
+		          <TitledPane animated="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Session">
+		            <content>
+		              <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
+		              	<padding>
+                        	<Insets bottom="0" left="0" right="0" top="0" />                 
+                		</padding>
+		                     <children>
+		                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="navRoot" stylesheets="@../../css/javafx.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		                           <children>
+		                              <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+		                                 <children>
+		                                    <VBox>
+		                                       <children>
+		                                          <Label text="Session Steps">
+		                                             <VBox.margin>
+		                                                <Insets bottom="8.0" left="8.0" top="8.0" />
+		                                             </VBox.margin>
+		                                          </Label>
+		                                          <ScrollPane hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+		                                            <content>
+		                                              <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
+		                                                   <children>
+		                                                      <VBox fx:id="stepList" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+		                                                   </children>
+		                                                   <padding>
+		                                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+		                                                   </padding>
+		                                                </AnchorPane>
+		                                            </content>
+		                                          </ScrollPane>
+		                                       </children>
+		                                       <padding>
+		                                          <Insets left="10.0" top="20.0" />
+		                                       </padding>
+		                                    </VBox>
+		                                    <AnchorPane id="navigationShellContentPane" fx:id="primaryContentPane" HBox.hgrow="ALWAYS" />
+		                                 </children>
+		                              </HBox>
+		                              <HBox maxWidth="1.7976931348623157E308" spacing="10.0" VBox.vgrow="NEVER">
+		                                 <children>
+		                                    <Button fx:id="cancelSessionButton" mnemonicParsing="false" onAction="#cancelSession" text="Cancel Session">
+		                                       <padding>
+		                                          <Insets bottom="6.0" left="16.0" right="16.0" top="6.0" />
+		                                       </padding>
+		                                    </Button>
+		                                    <Region HBox.hgrow="ALWAYS" />
+		                                    <Button fx:id="backButton" mnemonicParsing="false" onAction="#previousStep" text="Back" />
+		                                    <Button fx:id="nextButton" mnemonicParsing="false" onAction="#nextStep" text="Next" />
+		                                 </children>
+		                                 <padding>
+		                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+		                                 </padding>
+		                              </HBox>
+		                           </children>
+		                        </VBox>
+		                     </children>
+		                  </AnchorPane>
+		            </content>
+		          </TitledPane>
+		          <TitledPane animated="false" expanded="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Data In Play">
+		            <content>
+		              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+		            </content>
+		          </TitledPane>
+		          <TitledPane animated="false" expanded="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Issues">
+		            <content>
+		              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+		            </content>
+		          </TitledPane>
+		        </panes>
+		      </Accordion>
+		   </children>
+		</AnchorPane>

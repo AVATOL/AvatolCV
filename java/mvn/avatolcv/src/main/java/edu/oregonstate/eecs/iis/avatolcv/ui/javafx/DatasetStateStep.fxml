@@ -7,27 +7,30 @@
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Region prefWidth="100.0" HBox.hgrow="NEVER" />
-      <VBox fx:id="datasetChoiceVBox" spacing="10.0" HBox.hgrow="NEVER">
+      <VBox fx:id="datasetChoiceVBox" maxWidth="1.7976931348623157E308" spacing="10.0" HBox.hgrow="ALWAYS">
          <children>
-            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-            <Label fx:id="datasetTitleName" text="Select Dataset/Matrix" />
-            <ComboBox fx:id="selectedDataset" minWidth="300.0" />
-            <HBox prefHeight="100.0" prefWidth="200.0">
-               <children>
-                  <Label text="ID :  " HBox.hgrow="NEVER">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </Label>
-                  <TextField fx:id="datasetIdTextField" HBox.hgrow="ALWAYS" />
-               </children>
-            </HBox>
-            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-            <CheckBox fx:id="reloadDatasetCheckbox" mnemonicParsing="false" text="matrix has been updated, pull in changes" />
-            <Region prefHeight="200.0" prefWidth="200.0" />
+            <Label fx:id="datasetTitleName" text="Summary of data in play" />
+            <TextArea VBox.vgrow="NEVER" />
+            <RadioButton mnemonicParsing="false" text="I intend for all cells to be pre-scored so that I can compare algorithm scores to mine" />
+            <RadioButton mnemonicParsing="false" text="I intend to use the algorithm to score currently unscored cells" />
+            <Label text="Issues with the data">
+               <padding>
+                  <Insets top="10.0" />
+               </padding>
+            </Label>
+            <ScrollPane prefHeight="200.0" prefWidth="200.0">
+              <content>
+                <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                     <children>
+                        <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </ScrollPane>
          </children>
+         <padding>
+            <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+         </padding>
       </VBox>
-      <Region HBox.hgrow="ALWAYS" />
    </children>
 </HBox>

@@ -20,6 +20,15 @@
 /* 
 .accordion .titled-pane .title  {
     -fx-background-color: transparent ;
+}
+*/ 
+
+.accordion .titled-pane > *.content{
+    -fx-background-color: transparent ;
+}
+
+/* .titled-pane > * > * > AnchorPane {
+    -fx-padding: 0em ;
 }*/
 .vbox {
 	-fx-background-color: transparent ;
