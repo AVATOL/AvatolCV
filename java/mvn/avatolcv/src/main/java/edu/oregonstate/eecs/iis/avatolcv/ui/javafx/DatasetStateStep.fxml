@@ -9,10 +9,6 @@
    <children>
       <VBox fx:id="datasetChoiceVBox" maxWidth="1.7976931348623157E308" spacing="10.0" HBox.hgrow="ALWAYS">
          <children>
-            <Label fx:id="datasetTitleName" text="Summary of data in play" />
-            <TextArea VBox.vgrow="NEVER" />
-            <RadioButton mnemonicParsing="false" text="I intend for all cells to be pre-scored so that I can compare algorithm scores to mine" />
-            <RadioButton mnemonicParsing="false" text="I intend to use the algorithm to score currently unscored cells" />
             <Label text="Issues with the data">
                <padding>
                   <Insets top="10.0" />

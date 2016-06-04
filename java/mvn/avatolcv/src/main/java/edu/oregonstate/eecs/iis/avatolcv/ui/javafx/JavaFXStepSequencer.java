@@ -55,6 +55,7 @@ public class JavaFXStepSequencer  {
     private StepSequence ss = null;
     private Stage mainWindow = null;
     private Scene scene = null;
+    public Label labelScoringGoalValue;
     private Hashtable<Step,Label> labelForStepHash = new Hashtable<Step,Label>();
     private AvatolCVJavaFX mainScreen = null;
     private Hashtable<Step,StepController> controllerForStep = new Hashtable<Step,StepController>();
@@ -257,13 +258,22 @@ public class JavaFXStepSequencer  {
     			}
     		}
     	}
-    	
+    }
+    private void reRenderScoringGoal(){
+    	labelScoringGoalValue.getStyleClass().add("stepListLabel");
+    	if (sessionInfo.isScoringGoalEvalAlg()){
+    		labelScoringGoalValue.setText("eval algorithm");
+    	}
+    	else {
+        	labelScoringGoalValue.setText("score images");
+    	}
     }
     /*
      * runs in the application thread so UI adjustments can fly
      */
     private void activateCurrentStep() throws AvatolCVException {
     	reRenderStepList();
+    	reRenderScoringGoal();
         Step step = ss.getCurrentStep();
         
         StepController controller = controllerForStep.get(step);

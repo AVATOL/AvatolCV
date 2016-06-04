@@ -39,6 +39,12 @@
 		                                                </AnchorPane>
 		                                            </content>
 		                                          </ScrollPane>
+                                          <Label text="Scoring Goal">
+                                             <VBox.margin>
+                                                <Insets bottom="8.0" left="8.0" top="8.0" />
+                                             </VBox.margin>
+                                          </Label>
+                                          <Label fx:id="labelScoringGoalValue" />
 		                                       </children>
 		                                       <padding>
 		                                          <Insets left="10.0" top="20.0" />
@@ -70,12 +76,12 @@
 		          </TitledPane>
 		          <TitledPane animated="false" expanded="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Data In Play">
 		            <content>
-		              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+		              <AnchorPane fx:id="anchorPaneDataInPlay" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
 		            </content>
 		          </TitledPane>
 		          <TitledPane animated="false" expanded="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Issues">
 		            <content>
-		              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+		              <AnchorPane fx:id="anchorPaneIssues" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
 		            </content>
 		          </TitledPane>
 		        </panes>

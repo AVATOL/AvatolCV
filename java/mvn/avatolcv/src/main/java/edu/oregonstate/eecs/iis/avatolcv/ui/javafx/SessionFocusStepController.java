@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
@@ -21,12 +22,17 @@ public class SessionFocusStepController implements StepController {
 	private static final String KEY_PRESENCE_ABSENCE = "presenceAbsence";
 	private static final String KEY_SHAPE_ASPECT = "shapeAspect";
 	private static final String KEY_TEXTURE_ASPECT = "textureAspect";
+	private static final String KEY_SCORING_GOAL = "scoringGoal";
+	private static final String SCORING_GOAL_TRUE_SCORING = "trueScoring";
+	private static final String SCORING_GOAL_EVAL_ALG = "evalAlg";
     public RadioButton radioPresenceAbsence;
     public RadioButton radioShape;
     public RadioButton radioTexture;
     public ComboBox<String> presenceAbsenceAlgChoice;
     public ComboBox<String> shapeAlgChoice;
     public ComboBox<String> textureAlgChoice;
+    public RadioButton radioTrueScoring;
+    public RadioButton radioEvalAlg;
     private SessionFocusStep focusStep;
     private String fxmlDocName;
     public SessionFocusStepController(SessionFocusStep focusStep, String fxmlDocName){
@@ -53,6 +59,15 @@ public class SessionFocusStepController implements StepController {
     			//answerHash.put(KEY_TEXTURE_ASPECT, scoringAlg);
                 //this.focusStep.setSelectedScoringAlgName(scoringAlg);
             }
+            if (radioTrueScoring.isSelected()){
+            	this.focusStep.setScoringGoalTrueScoring(true);
+            	answerHash.put(KEY_SCORING_GOAL, SCORING_GOAL_TRUE_SCORING);
+            }
+            else {
+            	this.focusStep.setScoringGoalTrueScoring(false);
+            	answerHash.put(KEY_SCORING_GOAL, SCORING_GOAL_EVAL_ALG);
+            }
+            
 			this.focusStep.saveAnswers(answerHash);
             this.focusStep.consumeProvidedData();
             return true;
@@ -87,11 +102,26 @@ public class SessionFocusStepController implements StepController {
             
             setAlgSelector(presenceAbsenceAlgChoice, radioPresenceAbsence, paList,      KEY_PRESENCE_ABSENCE);
             setAlgSelector(shapeAlgChoice,           radioShape,           shapeList,   KEY_SHAPE_ASPECT);
+            setScoringGoalChoice();
             return content;
         }
         catch(IOException ioe){
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
         }
+    }
+    private void setScoringGoalChoice(){
+    	if (this.focusStep.hasPriorAnswers()){
+    		String val = this.focusStep.getPriorAnswers().get(KEY_SCORING_GOAL);
+    		if (SCORING_GOAL_TRUE_SCORING.equals(val)){
+    			radioTrueScoring.setSelected(true);
+    		}
+    		else {
+    			radioEvalAlg.setSelected(true);
+    		}
+    	}
+    	else {
+    		radioTrueScoring.setSelected(true);
+    	}
     }
     private void setAlgSelector(ComboBox<String> choiceBox, RadioButton radioButton, ObservableList<String> oList, String key){
     	choiceBox.setItems(oList);

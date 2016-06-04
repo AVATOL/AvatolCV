@@ -90,6 +90,7 @@ public class SessionInfo{
     private Hashtable<String, ScoringSet> scoringSetForScoringConcernHash = new Hashtable<String, ScoringSet>();
     private NormalizedKey trainTestConcern = null;
     private boolean scoringModeIsEvaluation = false;
+    private boolean scoringGoalIsTrueScoring = true;
 	public SessionInfo() throws AvatolCVException {
 		File f = new File(AvatolCVFileSystem.getAvatolCVRootDir());
         if (!f.isDirectory()){
@@ -104,6 +105,15 @@ public class SessionInfo{
 	}
 	public String getSessionID(){
 		return this.sessionID;
+	}
+	public void setScoringGoalTrueScoring(boolean val){
+		this.scoringGoalIsTrueScoring = val;
+	}
+	public boolean isScoringGoalTrueScoring(){
+		return this.scoringGoalIsTrueScoring;
+	}
+	public boolean isScoringGoalEvalAlg(){
+		return !isScoringGoalTrueScoring();
 	}
 	public List<NormalizedKey> getScoringSortingCandidates() throws AvatolCVException {
 		List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();

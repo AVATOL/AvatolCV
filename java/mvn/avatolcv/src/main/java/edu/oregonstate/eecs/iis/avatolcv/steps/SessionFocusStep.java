@@ -22,6 +22,9 @@ public class SessionFocusStep  extends Answerable implements Step {
     public void setSelectedScoringAlgName(String algName) throws AvatolCVException {
         this.scoringAlgName = algName;
     }
+    public void setScoringGoalTrueScoring(boolean val){
+    	this.sessionInfo.setScoringGoalTrueScoring(val);
+    }
     @Override
     public void consumeProvidedData() throws AvatolCVException {
         this.sessionInfo.setSelectedScoringAlgName(this.scoringAlgName);
