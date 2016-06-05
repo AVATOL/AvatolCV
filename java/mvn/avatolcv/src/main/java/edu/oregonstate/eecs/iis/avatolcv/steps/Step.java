@@ -12,5 +12,5 @@ public interface Step {
     boolean hasFollowUpDataLoadPhase();
     boolean isEnabledByPriorAnswers();
     boolean shouldRenderIfBackingIntoIt();
-    List<DataIssue> getDataIssues();
+    List<DataIssue> getDataIssues() throws AvatolCVException;
 }

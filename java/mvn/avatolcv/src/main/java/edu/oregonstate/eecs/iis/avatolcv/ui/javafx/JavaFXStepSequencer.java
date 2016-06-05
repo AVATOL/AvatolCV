@@ -52,6 +52,8 @@ public class JavaFXStepSequencer  {
 	public Button nextButton;
 	public Button backButton;
 	public Button cancelSessionButton;
+	public Label issueCountLabel;
+	public static Label issueCountLabelSingleton;
 	public VBox stepList;
     private SessionInfo sessionInfo = null;
     private StepSequence ss = null;
@@ -325,6 +327,7 @@ public class JavaFXStepSequencer  {
             this.scene = new Scene(navShell, AvatolCVJavaFX.MAIN_WINDOW_WIDTH, AvatolCVJavaFX.MAIN_WINDOW_HEIGHT);
             scene.getStylesheets().add("../css/javafx.css");
             vBoxDataIssuesSingleton = vBoxDataIssues;
+            issueCountLabelSingleton = issueCountLabel;
             sessionAccordion.setExpandedPane(titlePaneSession);
             //anchorPaneIssues.get
             this.mainWindow.setScene(scene);

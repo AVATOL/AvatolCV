@@ -156,6 +156,14 @@
 	font-style:plain;
 	-fx-font-name:arial;
 }
+.label.issueText {
+	-fx-font-size:13px;
+	font-style:plain;
+	-fx-font-name:arial;
+}
+.label.issueAlert {
+	-fx-background-color:#FFFF00;
+}
 .indentedFirstColumn {
 	-fx-margin-left:10px;
 }

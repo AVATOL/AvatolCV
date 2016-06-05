@@ -67,7 +67,7 @@ public class ScoringConfigurationStep extends Answerable implements Step {
 		return true;
 	}
 	@Override
-	public List<DataIssue> getDataIssues() {
+	public List<DataIssue> getDataIssues() throws AvatolCVException{
 		return null;
 	}
 }

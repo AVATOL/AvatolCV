@@ -59,7 +59,7 @@ public class ScoringModeStep  extends Answerable implements Step {
 		return isEnabledByPriorAnswers();
 	}
     @Override
-	public List<DataIssue> getDataIssues() {
+	public List<DataIssue> getDataIssues() throws AvatolCVException{
 		return null;
 	}
 }

@@ -174,6 +174,14 @@ public class SessionInfo{
 	    this.normalizedImageInfos = new NormalizedImageInfos(AvatolCVFileSystem.getNormalizedImageInfoDir());
 	    this.dataSource.setNormalizedImageInfos(this.normalizedImageInfos);
 	}
+	public List<NormalizedKey> getChosenScoringConcernKeys(){
+		List<ChoiceItem> choiceItems = getChosenScoringConcerns();
+		List<NormalizedKey> result = new ArrayList<NormalizedKey>();
+		for (ChoiceItem ci : choiceItems){
+			result.add(ci.getNormalizedKey());
+		}
+		return result;
+	}
 	public List<ChoiceItem> getChosenScoringConcerns(){
 	    List<ChoiceItem> result = new ArrayList<ChoiceItem>();
 	    if (this.chosenScoringConcern != null){
@@ -561,13 +569,18 @@ public class SessionInfo{
     public String getSessionName(){
     	return this.sessionName;
     }
-    public List<DataIssue> checkDataIssues(){
+    public List<DataIssue> checkDataIssues() throws AvatolCVException {
     	List<DataIssue> result = new ArrayList<DataIssue>();
-    	DataIssue di = new DataIssue();
-    	di.setDescription("something isn't right somewhere");
-    	di.addActionOption("run for the hills");
-    	di.addActionOption("yell Burma!");
-    	result.add(di);
+    	List<IssueCheck> issuesToCheck = new ArrayList<IssueCheck>();
+    	boolean eval = this.isScoringGoalEvalAlg();
+    	boolean needsPointCoordinates = this.getChosenScoringAlgorithm().shouldIncludePointAnnotationsInScoringFile();
+    	boolean hasMandatoryTrainTestConcern = (this.getDataSource().getMandatoryTrainTestConcern() != null);
+    	if (eval){
+    		issuesToCheck.add(new IssueCheckUnscoredImageInfo(this.normalizedImageInfos.getNormalizedImageInfosForSession(),this.getChosenScoringConcernKeys()));
+    	}
+    	for (IssueCheck issueCheck : issuesToCheck){
+    		result.addAll(issueCheck.runIssueCheck());
+    	}
     	return result;
 	}
 }

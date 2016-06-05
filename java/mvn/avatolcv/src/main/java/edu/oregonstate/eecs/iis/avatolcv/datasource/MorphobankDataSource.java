@@ -374,8 +374,8 @@ public class MorphobankDataSource implements DataSource {
 		else if (charStateID.equalsIgnoreCase("?")){
 			charStateName = "?";
 		}
-		else if (charStateID.equals("NPA")){
-			charStateName = "NPA";
+		else if (charStateID.equals(AvatolCVConstants.NPA)){
+			charStateName = AvatolCVConstants.NPA;
 		}
 		else {
 			charStateName = getCharStateNameForID(character, charStateID);

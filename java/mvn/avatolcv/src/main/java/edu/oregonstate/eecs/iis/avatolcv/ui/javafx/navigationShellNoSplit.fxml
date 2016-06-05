@@ -60,6 +60,14 @@
 		                                          <Insets bottom="6.0" left="16.0" right="16.0" top="6.0" />
 		                                       </padding>
 		                                    </Button>
+                                    <Label fx:id="issueCountLabel">
+                                       <HBox.margin>
+                                          <Insets left="12.0" right="12.0" />
+                                       </HBox.margin>
+                                       <padding>
+                                          <Insets left="20.0" right="20.0" />
+                                       </padding>
+                                    </Label>
 		                                    <Region HBox.hgrow="ALWAYS" />
 		                                    <Button fx:id="backButton" mnemonicParsing="false" onAction="#previousStep" text="Back" />
 		                                    <Button fx:id="nextButton" mnemonicParsing="false" onAction="#nextStep" text="Next" />
@@ -76,9 +84,9 @@
 		          </TitledPane>
 		          <TitledPane fx:id="titlePaneDataInPlay" animated="false" expanded="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Data In Play">
 		            <content>
-		              <AnchorPane fx:id="anchorPaneDataInPlay" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" >
+		              <AnchorPane fx:id="anchorPaneDataInPlay" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 		               <padding>
-                        <Insets top="0" right="0" left="0" bottom="0"/>                 
+                        <Insets bottom="0" left="0" right="0" top="0" />                 
                		 </padding>
                		  </AnchorPane>
 		            </content>
@@ -87,10 +95,14 @@
 		            <content>
 		              <AnchorPane fx:id="anchorPaneIssues" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 		               <padding>
-                        <Insets top="0" right="0" left="0" bottom="0"/>                 
+                        <Insets bottom="0" left="0" right="0" top="0" />                 
                 		</padding>
                      <children>
-                        <VBox fx:id="vBoxDataIssues" spacing="4.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <ScrollPane prefViewportHeight="180.0" prefViewportWidth="380.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <content>
+                              <VBox fx:id="vBoxDataIssues" spacing="4.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </content>
+                        </ScrollPane>
                      </children></AnchorPane>
 		            </content>
 		          </TitledPane>

@@ -65,7 +65,8 @@ public class SummaryFilterStepController implements StepController {
             Node content = loader.load();
             //summaryTextArea.setText(this.step.getSummaryText());
             populateFilterGridPane();
-            JavaFXUtils.populateIssues(JavaFXStepSequencer.vBoxDataIssuesSingleton, this.step.getDataIssues());
+            List<DataIssue> dataIssues =  this.step.getDataIssues();
+            JavaFXUtils.populateIssues(dataIssues);
             return content;
         }
         catch(IOException ioe){

@@ -52,7 +52,7 @@ public class ImagePullStep  extends Answerable implements Step {
 		return false;
 	}
 	@Override
-	public List<DataIssue> getDataIssues() {
+	public List<DataIssue> getDataIssues() throws AvatolCVException{
 		return null;
 	}
 }

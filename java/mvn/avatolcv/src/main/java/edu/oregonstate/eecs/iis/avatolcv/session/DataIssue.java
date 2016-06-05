@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataIssue {
+	private static final String NL = "\n";
+	private static final String TAB = "\t";
 	private String description = "";
 	private List<String> actionOptions = new ArrayList<String>();
 	public String getDescription(){
@@ -20,13 +22,14 @@ public class DataIssue {
 	}
 	public String getIssueText(int issueNumber){
 		StringBuilder sb = new StringBuilder();
-    	sb.append("ISSUE " + issueNumber + '\n');
-    	sb.append(getDescription() + '\n');
+    	sb.append("ISSUE " + issueNumber + TAB);
+    	sb.append(getDescription() + NL);
     	List<String> options = getActionOptions();
     	for (int i = 0; i < options.size(); i++){
     		String option = options.get(i);
-    		sb.append('\t' + "OPTION " + (i+1) + " :" + option + '\n');
+    		sb.append("action option " + (i+1) + " :" + option + NL);
     	}
+    	sb.append(NL);
     	return ""+sb;
 	}
 }

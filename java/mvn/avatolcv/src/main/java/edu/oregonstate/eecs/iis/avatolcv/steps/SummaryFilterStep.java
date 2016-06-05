@@ -70,7 +70,7 @@ public class SummaryFilterStep  extends Answerable implements Step {
     	return !SessionInfo.isBisqueSession();
 	}
     @Override
-	public List<DataIssue> getDataIssues() {
+	public List<DataIssue> getDataIssues() throws AvatolCVException {
 		return sessionInfo.checkDataIssues();
 	}
 }

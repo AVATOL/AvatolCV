@@ -130,6 +130,9 @@ public class NormalizedImageInfo {
     	else if ("".equals(value.getName())){
     		return false;
     	}
+    	else if (AvatolCVConstants.NPA.equals(value.getName())){
+    		return false;
+    	}
     	else if (AvatolCVConstants.UNDETERMINED.equals(value.getName())){
     	    return false;
     	}
