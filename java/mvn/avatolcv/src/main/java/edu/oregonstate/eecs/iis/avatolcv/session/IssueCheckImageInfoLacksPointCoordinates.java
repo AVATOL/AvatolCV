@@ -7,43 +7,43 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 
-public class IssueCheckUnscoredImageInfo implements IssueCheck {
+public class IssueCheckImageInfoLacksPointCoordinates implements IssueCheck {
 	private static final char TAB = '\t';
 	private static final char NL = '\n';
 	private List<NormalizedImageInfo> niis = null;
     private List<NormalizedKey> scoringConcernKeys = null;
-	public IssueCheckUnscoredImageInfo(List<NormalizedImageInfo> niis, List<NormalizedKey> scoringConcernKeys){
+	public IssueCheckImageInfoLacksPointCoordinates(List<NormalizedImageInfo> niis, List<NormalizedKey> scoringConcernKeys){
 		this.niis = niis;
 		this.scoringConcernKeys = scoringConcernKeys;
 	}
 	@Override
 	public List<DataIssue> runIssueCheck() {
-		List<NormalizedImageInfo> unscoreds = new ArrayList<NormalizedImageInfo>();
+		List<NormalizedImageInfo> lackingCoords = new ArrayList<NormalizedImageInfo>();
 		for (NormalizedKey scoringConcernKey : this.scoringConcernKeys){
 			for (NormalizedImageInfo nii : niis){
 				if (nii.hasKey(scoringConcernKey)){
-					if (!nii.hasValueForKey(scoringConcernKey)){
-						unscoreds.add(nii);
-						//System.out.println("NOT Scored: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getValueForKey(scoringConcernKey));
+					if (nii.getAnnotationCoordinates().equals("")){
+						lackingCoords.add(nii);
+						System.out.println("NO  coords: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getAnnotationCoordinates());
 					}
 					else {
-						//System.out.println("yes Scored: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getValueForKey(scoringConcernKey));
+						System.out.println("yes coords: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getAnnotationCoordinates());
 					}
 				}
 			}
 		}
 		List<DataIssue> dataIssues = new ArrayList<DataIssue>();
-		for (NormalizedImageInfo nii : unscoreds){
+		for (NormalizedImageInfo nii : lackingCoords){
 			DataIssue di = new DataIssue();
 			StringBuilder sb = new StringBuilder();
-			sb.append("unscored image : " + nii.getImageID());
+			sb.append("no point annotations: " + nii.getImageID());
 			List<NormalizedKey> keys = nii.getKeys();
 			for (NormalizedKey key : keys){
 				NormalizedValue val = nii.getValueForKey(key);
 				sb.append("       " + key.getName() + ":" + "  " + val.getName() + ",");
 			}
 			di.setDescription("" + sb);
-			di.addActionOption("Score by hand, return to dataset choice screen and check the \"pull in changes\" checkbox");
+			di.addActionOption("Annotate the image, return to dataset choice screen and check the \"pull in changes\" checkbox");
 			dataIssues.add(di);
 		}
 		return dataIssues;

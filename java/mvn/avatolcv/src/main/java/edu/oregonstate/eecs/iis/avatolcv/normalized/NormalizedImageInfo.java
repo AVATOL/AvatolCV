@@ -277,7 +277,7 @@ public class NormalizedImageInfo {
         }
     }
    
-	public String getAnnotationCoordinates() throws AvatolCVException  {
+	public String getAnnotationCoordinates()  {
 		return this.annotationString;
 	}
 	public boolean isExcluded() throws AvatolCVException {

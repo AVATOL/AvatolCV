@@ -576,7 +576,10 @@ public class SessionInfo{
     	boolean needsPointCoordinates = this.getChosenScoringAlgorithm().shouldIncludePointAnnotationsInScoringFile();
     	boolean hasMandatoryTrainTestConcern = (this.getDataSource().getMandatoryTrainTestConcern() != null);
     	if (eval){
-    		issuesToCheck.add(new IssueCheckUnscoredImageInfo(this.normalizedImageInfos.getNormalizedImageInfosForSession(),this.getChosenScoringConcernKeys()));
+    	//	issuesToCheck.add(new IssueCheckUnscoredImageInfo(this.normalizedImageInfos.getNormalizedImageInfosForSession(),this.getChosenScoringConcernKeys()));
+    	}
+    	if (eval && needsPointCoordinates){
+    		issuesToCheck.add(new IssueCheckImageInfoLacksPointCoordinates(this.normalizedImageInfos.getNormalizedImageInfosForSession(),this.getChosenScoringConcernKeys()));
     	}
     	for (IssueCheck issueCheck : issuesToCheck){
     		result.addAll(issueCheck.runIssueCheck());
