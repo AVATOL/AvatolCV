@@ -7,12 +7,13 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 
-public class IssueCheckImageInfoLacksPointCoordinates implements IssueCheck {
+public class IssueCheckScoredImageInfoLacksPointCoordinates implements
+		IssueCheck {
 	private static final char TAB = '\t';
 	private static final char NL = '\n';
 	private List<NormalizedImageInfo> niis = null;
     private List<NormalizedKey> scoringConcernKeys = null;
-	public IssueCheckImageInfoLacksPointCoordinates(List<NormalizedImageInfo> niis, List<NormalizedKey> scoringConcernKeys){
+	public IssueCheckScoredImageInfoLacksPointCoordinates(List<NormalizedImageInfo> niis, List<NormalizedKey> scoringConcernKeys){
 		this.niis = niis;
 		this.scoringConcernKeys = scoringConcernKeys;
 	}
@@ -21,13 +22,15 @@ public class IssueCheckImageInfoLacksPointCoordinates implements IssueCheck {
 		List<NormalizedImageInfo> lackingCoords = new ArrayList<NormalizedImageInfo>();
 		for (NormalizedKey scoringConcernKey : this.scoringConcernKeys){
 			for (NormalizedImageInfo nii : niis){
-				if (nii.hasKey(scoringConcernKey)){
-					if (nii.getAnnotationCoordinates().equals("")){
-						lackingCoords.add(nii);
-						System.out.println("NO  coords: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getAnnotationCoordinates());
-					}
-					else {
-						System.out.println("yes coords: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getAnnotationCoordinates());
+				if (nii.hasKey(scoringConcernKey)){ // is hasScoringConcern that is relevant
+					if (nii.hasValueForKey(scoringConcernKey)){  // is scored
+						if (nii.getAnnotationCoordinates().equals("")){ //but missing coordinatess
+							lackingCoords.add(nii);
+							System.out.println("NO  coords: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getAnnotationCoordinates());
+						}
+						else {
+							System.out.println("yes coords: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getAnnotationCoordinates());
+						}
 					}
 				}
 			}

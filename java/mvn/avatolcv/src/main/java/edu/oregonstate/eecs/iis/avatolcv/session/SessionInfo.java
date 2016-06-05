@@ -575,11 +575,16 @@ public class SessionInfo{
     	boolean eval = this.isScoringGoalEvalAlg();
     	boolean needsPointCoordinates = this.getChosenScoringAlgorithm().shouldIncludePointAnnotationsInScoringFile();
     	boolean hasMandatoryTrainTestConcern = (this.getDataSource().getMandatoryTrainTestConcern() != null);
+    	List<NormalizedImageInfo> imageInfosForSession = this.normalizedImageInfos.getNormalizedImageInfosForSession();
+    	List<NormalizedKey> scoringConcerns = this.getChosenScoringConcernKeys();
     	if (eval){
-    	//	issuesToCheck.add(new IssueCheckUnscoredImageInfo(this.normalizedImageInfos.getNormalizedImageInfosForSession(),this.getChosenScoringConcernKeys()));
+    	//	issuesToCheck.add(new IssueCheckUnscoredImageInfo(imageInfosForSession,scoringConcerns));
     	}
     	if (eval && needsPointCoordinates){
-    		issuesToCheck.add(new IssueCheckImageInfoLacksPointCoordinates(this.normalizedImageInfos.getNormalizedImageInfosForSession(),this.getChosenScoringConcernKeys()));
+    	//	issuesToCheck.add(new IssueCheckImageInfoLacksPointCoordinates(imageInfosForSession,scoringConcerns));
+    	}
+    	if (!eval && needsPointCoordinates){
+    		issuesToCheck.add(new IssueCheckScoredImageInfoLacksPointCoordinates(imageInfosForSession,scoringConcerns));
     	}
     	for (IssueCheck issueCheck : issuesToCheck){
     		result.addAll(issueCheck.runIssueCheck());
