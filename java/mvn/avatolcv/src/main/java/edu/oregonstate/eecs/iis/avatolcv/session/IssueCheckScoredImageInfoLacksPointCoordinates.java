@@ -3,6 +3,7 @@ package edu.oregonstate.eecs.iis.avatolcv.session;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
@@ -18,18 +19,20 @@ public class IssueCheckScoredImageInfoLacksPointCoordinates implements
 		this.scoringConcernKeys = scoringConcernKeys;
 	}
 	@Override
-	public List<DataIssue> runIssueCheck() {
+	public List<DataIssue> runIssueCheck() throws AvatolCVException {
 		List<NormalizedImageInfo> lackingCoords = new ArrayList<NormalizedImageInfo>();
 		for (NormalizedKey scoringConcernKey : this.scoringConcernKeys){
 			for (NormalizedImageInfo nii : niis){
-				if (nii.hasKey(scoringConcernKey)){ // is hasScoringConcern that is relevant
-					if (nii.hasValueForKey(scoringConcernKey)){  // is scored.  Also, this appropriately ignores NPA cells - don't want to complain about lack of annotations on NPAs
-						if (nii.getAnnotationCoordinates().equals("")){ //but missing coordinatess
-							lackingCoords.add(nii);
-							System.out.println("NO  coords: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getAnnotationCoordinates());
-						}
-						else {
-							System.out.println("yes coords: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getAnnotationCoordinates());
+				if (!nii.isExcluded()){
+					if (nii.hasKey(scoringConcernKey)){ // is hasScoringConcern that is relevant
+						if (nii.hasValueForKey(scoringConcernKey)){  // is scored.  Also, this appropriately ignores NPA cells - don't want to complain about lack of annotations on NPAs
+							if (nii.getAnnotationCoordinates().equals("")){ //but missing coordinatess
+								lackingCoords.add(nii);
+								System.out.println("NO  coords: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getAnnotationCoordinates());
+							}
+							else {
+								System.out.println("yes coords: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getAnnotationCoordinates());
+							}
 						}
 					}
 				}
