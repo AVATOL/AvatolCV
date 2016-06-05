@@ -574,17 +574,29 @@ public class SessionInfo{
     	List<IssueCheck> issuesToCheck = new ArrayList<IssueCheck>();
     	boolean eval = this.isScoringGoalEvalAlg();
     	boolean needsPointCoordinates = this.getChosenScoringAlgorithm().shouldIncludePointAnnotationsInScoringFile();
-    	boolean hasMandatoryTrainTestConcern = (this.getDataSource().getMandatoryTrainTestConcern() != null);
+    	boolean hasMandatoryTrainTestConcern = (this.getMandatoryTrainTestConcern() != null);
+    	NormalizedKey mandatoryTrainTestConcern = this.getMandatoryTrainTestConcern();
+    	boolean hasTrainTestConcern = (this.getTrainTestConcern() != null);
+    	NormalizedKey trainTestConcern = this.getTrainTestConcern();
     	List<NormalizedImageInfo> imageInfosForSession = this.normalizedImageInfos.getNormalizedImageInfosForSession();
     	List<NormalizedKey> scoringConcerns = this.getChosenScoringConcernKeys();
+    	boolean trueScoring = !eval;
     	if (eval){
-    	//	issuesToCheck.add(new IssueCheckUnscoredImageInfo(imageInfosForSession,scoringConcerns));
+    		issuesToCheck.add(new IssueCheckUnscoredImageInfo(imageInfosForSession,scoringConcerns));
     	}
     	if (eval && needsPointCoordinates){
-    	//	issuesToCheck.add(new IssueCheckImageInfoLacksPointCoordinates(imageInfosForSession,scoringConcerns));
+    		issuesToCheck.add(new IssueCheckImageInfoLacksPointCoordinates(imageInfosForSession,scoringConcerns));
     	}
-    	if (!eval && needsPointCoordinates){
+    	if (trueScoring && needsPointCoordinates){
     		issuesToCheck.add(new IssueCheckScoredImageInfoLacksPointCoordinates(imageInfosForSession,scoringConcerns));
+    	}
+    	// use hasMandatoryTrainTestConcern to help catch the MB case at the filter screen where taxa have both scored and unscored
+    	if (trueScoring && hasMandatoryTrainTestConcern) {
+    		issuesToCheck.add(new IssueCheckTaxaPartiallyScored(imageInfosForSession,scoringConcerns,mandatoryTrainTestConcern));
+    	}
+    	// use trainTestConcern to help catch BisQue at the ScoringConfigurationScreen if there is a trainTestConcern and some of one are scored and some are not
+    	else if (trueScoring && hasTrainTestConcern){
+    		issuesToCheck.add(new IssueCheckTaxaPartiallyScored(imageInfosForSession,scoringConcerns,trainTestConcern));
     	}
     	for (IssueCheck issueCheck : issuesToCheck){
     		result.addAll(issueCheck.runIssueCheck());
