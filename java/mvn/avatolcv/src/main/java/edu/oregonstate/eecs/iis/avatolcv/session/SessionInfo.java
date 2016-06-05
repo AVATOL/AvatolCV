@@ -103,6 +103,7 @@ public class SessionInfo{
         this.sessionID = AvatolCVFileSystem.createSessionID();
         AvatolCVFileSystem.setSessionID(this.sessionID);
 	}
+	
 	public String getSessionID(){
 		return this.sessionID;
 	}
@@ -560,4 +561,13 @@ public class SessionInfo{
     public String getSessionName(){
     	return this.sessionName;
     }
+    public List<DataIssue> checkDataIssues(){
+    	List<DataIssue> result = new ArrayList<DataIssue>();
+    	DataIssue di = new DataIssue();
+    	di.setDescription("something isn't right somewhere");
+    	di.addActionOption("run for the hills");
+    	di.addActionOption("yell Burma!");
+    	result.add(di);
+    	return result;
+	}
 }

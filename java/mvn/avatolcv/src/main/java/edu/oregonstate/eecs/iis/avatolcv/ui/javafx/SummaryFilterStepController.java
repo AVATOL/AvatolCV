@@ -16,10 +16,12 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.session.DataFilter;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.session.DataFilter.FilterItem;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringConcernStep;
@@ -54,7 +56,7 @@ public class SummaryFilterStepController implements StepController {
     public void clearUIFields() {
         // NA
     }
-
+    
     @Override
     public Node getContentNode() throws AvatolCVException {
         try {
@@ -63,6 +65,14 @@ public class SummaryFilterStepController implements StepController {
             Node content = loader.load();
             //summaryTextArea.setText(this.step.getSummaryText());
             populateFilterGridPane();
+            VBox issuesVBox = JavaFXStepSequencer.vBoxDataIssuesSingleton;
+            issuesVBox.getChildren().clear();
+            List<DataIssue> dataIssues = this.step.getDataIssues();
+            for (int i = 0; i < dataIssues.size() ; i++){
+            	DataIssue di = dataIssues.get(i);
+            	TextArea ta = JavaFXUtils.getIssueText(di, i+1);
+            	issuesVBox.getChildren().add(ta);
+            }
             return content;
         }
         catch(IOException ioe){

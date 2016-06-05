@@ -11,6 +11,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSet;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.TrueScoringSet;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 
 public class ScoringConfigurationStep extends Answerable implements Step {
@@ -65,5 +66,8 @@ public class ScoringConfigurationStep extends Answerable implements Step {
 	public boolean shouldRenderIfBackingIntoIt() {
 		return true;
 	}
-    
+	@Override
+	public List<DataIssue> getDataIssues() {
+		return null;
+	}
 }

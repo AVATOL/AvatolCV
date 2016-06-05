@@ -1,9 +1,12 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSClient;
 import edu.oregonstate.eecs.iis.avatolcv.ws.MorphobankWSException;
@@ -65,5 +68,9 @@ public class LoginStep  extends Answerable implements Step {
     		return true;
     	}
 		return false;
+	}
+	@Override
+	public List<DataIssue> getDataIssues() {
+		return null;
 	}
 }

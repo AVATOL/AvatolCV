@@ -10,6 +10,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm.ScoringScope;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.ChoiceItem;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 
@@ -79,5 +80,8 @@ public class ScoringConcernStep  extends Answerable implements Step {
 	public boolean shouldRenderIfBackingIntoIt() {
 		return true;
 	}
-    
+    @Override
+	public List<DataIssue> getDataIssues() {
+		return null;
+	}
 }

@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.ImagesForStep;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 
@@ -72,6 +73,10 @@ public class ExclusionQualityStep extends Answerable implements Step {
 	@Override
 	public boolean shouldRenderIfBackingIntoIt() {
 		return true;
+	}
+	@Override
+	public List<DataIssue> getDataIssues() {
+		return null;
 	}
 }
 

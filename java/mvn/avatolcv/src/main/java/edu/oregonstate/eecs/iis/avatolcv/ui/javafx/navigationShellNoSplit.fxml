@@ -7,9 +7,9 @@
 
 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../../css/javafx.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 		   <children>
-		      <Accordion maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		      <Accordion fx:id="sessionAccordion" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 		        <panes>
-		          <TitledPane animated="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Session">
+		          <TitledPane fx:id="titlePaneSession" animated="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Session">
 		            <content>
 		              <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
 		              	<padding>
@@ -74,14 +74,24 @@
 		                  </AnchorPane>
 		            </content>
 		          </TitledPane>
-		          <TitledPane animated="false" expanded="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Data In Play">
+		          <TitledPane fx:id="titlePaneDataInPlay" animated="false" expanded="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Data In Play">
 		            <content>
-		              <AnchorPane fx:id="anchorPaneDataInPlay" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+		              <AnchorPane fx:id="anchorPaneDataInPlay" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" >
+		               <padding>
+                        <Insets top="0" right="0" left="0" bottom="0"/>                 
+               		 </padding>
+               		  </AnchorPane>
 		            </content>
 		          </TitledPane>
-		          <TitledPane animated="false" expanded="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Issues">
+		          <TitledPane fx:id="titlePaneIssues" animated="false" expanded="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Issues">
 		            <content>
-		              <AnchorPane fx:id="anchorPaneIssues" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+		              <AnchorPane fx:id="anchorPaneIssues" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+		               <padding>
+                        <Insets top="0" right="0" left="0" bottom="0"/>                 
+                		</padding>
+                     <children>
+                        <VBox fx:id="vBoxDataIssues" spacing="4.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children></AnchorPane>
 		            </content>
 		          </TitledPane>
 		        </panes>

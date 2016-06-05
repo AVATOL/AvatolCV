@@ -10,10 +10,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -56,11 +58,17 @@ public class JavaFXStepSequencer  {
     private Stage mainWindow = null;
     private Scene scene = null;
     public Label labelScoringGoalValue;
+    public VBox vBoxDataIssues;
+    public Accordion sessionAccordion;
+    public static VBox vBoxDataIssuesSingleton = null;
+    public TitledPane titlePaneSession;
+    public TitledPane titlePaneIssues;
+    public TitledPane titlePaneDataInPlay;
+    public AnchorPane anchorPaneIssues;
     private Hashtable<Step,Label> labelForStepHash = new Hashtable<Step,Label>();
     private AvatolCVJavaFX mainScreen = null;
     private Hashtable<Step,StepController> controllerForStep = new Hashtable<Step,StepController>();
     private static final Logger logger = LogManager.getLogger(JavaFXStepSequencer.class);
-
     public JavaFXStepSequencer(AvatolCVJavaFX mainScreen){
         this.mainScreen = mainScreen;
         AvatolCVFileSystem.flushPriorSettings();
@@ -72,7 +80,6 @@ public class JavaFXStepSequencer  {
         //MorphobankWSClient client = new MorphobankWSClientImpl();
         sessionInfo = new SessionInfo();
         ss = new StepSequence();
-        
         
         DataSourceStep dataSourceStep = new DataSourceStep(sessionInfo);
         ss.appendStep(dataSourceStep);
@@ -317,6 +324,9 @@ public class JavaFXStepSequencer  {
             
             this.scene = new Scene(navShell, AvatolCVJavaFX.MAIN_WINDOW_WIDTH, AvatolCVJavaFX.MAIN_WINDOW_HEIGHT);
             scene.getStylesheets().add("../css/javafx.css");
+            vBoxDataIssuesSingleton = vBoxDataIssues;
+            sessionAccordion.setExpandedPane(titlePaneSession);
+            //anchorPaneIssues.get
             this.mainWindow.setScene(scene);
         }
         catch(Exception e){

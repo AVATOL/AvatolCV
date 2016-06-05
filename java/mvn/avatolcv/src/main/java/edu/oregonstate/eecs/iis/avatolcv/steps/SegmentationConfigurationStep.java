@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmModules;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 
 public class SegmentationConfigurationStep extends Answerable implements Step {
@@ -64,5 +65,8 @@ public class SegmentationConfigurationStep extends Answerable implements Step {
 	public boolean shouldRenderIfBackingIntoIt() {
 		return true;
 	}
-    
+    @Override
+	public List<DataIssue> getDataIssues() {
+		return null;
+	}
 }

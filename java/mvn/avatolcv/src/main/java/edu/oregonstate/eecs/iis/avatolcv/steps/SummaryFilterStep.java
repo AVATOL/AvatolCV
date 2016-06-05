@@ -12,6 +12,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfos;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.session.DataFilter;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.DataFilter.FilterItem;
 
@@ -68,5 +69,8 @@ public class SummaryFilterStep  extends Answerable implements Step {
 	public boolean shouldRenderIfBackingIntoIt() {
     	return !SessionInfo.isBisqueSession();
 	}
-    
+    @Override
+	public List<DataIssue> getDataIssues() {
+		return sessionInfo.checkDataIssues();
+	}
 }

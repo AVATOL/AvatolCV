@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,6 +13,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OutputMonitor;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.RunConfigFile;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OrientationAlgorithm;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 
 public class OrientationRunStep implements Step {
@@ -95,6 +97,10 @@ public class OrientationRunStep implements Step {
     @Override
 	public boolean shouldRenderIfBackingIntoIt() {
 		return false;
+	}
+	@Override
+	public List<DataIssue> getDataIssues() {
+		return null;
 	}
     
 }

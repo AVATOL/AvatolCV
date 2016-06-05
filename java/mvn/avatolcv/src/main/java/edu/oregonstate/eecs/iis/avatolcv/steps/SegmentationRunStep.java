@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,6 +12,7 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmLauncher;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmSequence;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.RunConfigFile;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.SegmentationAlgorithm;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.ui.javafx.SegmentationRunStepController;
 
@@ -96,5 +98,8 @@ public class SegmentationRunStep implements Step {
 	public boolean shouldRenderIfBackingIntoIt() {
 		return false;
 	}
-    
+    @Override
+	public List<DataIssue> getDataIssues() {
+		return null;
+	}
 }

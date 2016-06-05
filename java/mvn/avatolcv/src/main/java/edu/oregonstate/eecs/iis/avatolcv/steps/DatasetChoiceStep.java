@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
@@ -86,5 +87,9 @@ public class DatasetChoiceStep extends Answerable implements Step {
 	@Override
 	public boolean shouldRenderIfBackingIntoIt() {
 		return true;
+	}
+	@Override
+	public List<DataIssue> getDataIssues() {
+		return null;
 	}
 }

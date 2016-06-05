@@ -1,9 +1,12 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
+import java.util.List;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.BisqueDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.FileSystemDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.MorphobankDataSource;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 
 public class ScoringModeStep  extends Answerable implements Step {
@@ -55,5 +58,8 @@ public class ScoringModeStep  extends Answerable implements Step {
 	public boolean shouldRenderIfBackingIntoIt() {
 		return isEnabledByPriorAnswers();
 	}
-    
+    @Override
+	public List<DataIssue> getDataIssues() {
+		return null;
+	}
 }

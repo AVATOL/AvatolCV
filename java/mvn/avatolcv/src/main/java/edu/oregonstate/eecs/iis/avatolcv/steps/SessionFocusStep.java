@@ -1,9 +1,12 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 
 public class SessionFocusStep  extends Answerable implements Step {
@@ -43,5 +46,8 @@ public class SessionFocusStep  extends Answerable implements Step {
 	public boolean shouldRenderIfBackingIntoIt() {
 		return true;
 	}
-    
+    @Override
+	public List<DataIssue> getDataIssues() {
+		return null;
+	}
 }

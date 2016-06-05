@@ -27,6 +27,7 @@ import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringConcernDetails;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringProfile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSet;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 
 public class ScoringRunStep implements Step {
@@ -227,5 +228,8 @@ public class ScoringRunStep implements Step {
 	public boolean shouldRenderIfBackingIntoIt() {
 		return false;
 	}
-    
+    @Override
+	public List<DataIssue> getDataIssues() {
+		return null;
+	}
 }
