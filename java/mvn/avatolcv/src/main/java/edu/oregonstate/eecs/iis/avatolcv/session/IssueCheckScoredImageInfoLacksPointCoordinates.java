@@ -23,7 +23,7 @@ public class IssueCheckScoredImageInfoLacksPointCoordinates implements
 		for (NormalizedKey scoringConcernKey : this.scoringConcernKeys){
 			for (NormalizedImageInfo nii : niis){
 				if (nii.hasKey(scoringConcernKey)){ // is hasScoringConcern that is relevant
-					if (nii.hasValueForKey(scoringConcernKey)){  // is scored
+					if (nii.hasValueForKey(scoringConcernKey)){  // is scored.  Also, this appropriately ignores NPA cells - don't want to complain about lack of annotations on NPAs
 						if (nii.getAnnotationCoordinates().equals("")){ //but missing coordinatess
 							lackingCoords.add(nii);
 							System.out.println("NO  coords: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getAnnotationCoordinates());

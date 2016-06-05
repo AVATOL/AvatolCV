@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.AlgorithmLauncher;
@@ -77,6 +78,10 @@ public class ScoringRunStep implements Step {
         NormalizedImageInfo nii = mii.getNormalizedImageInfo();
         String imagePath = getPathForNii(nii, sessionInfo.getAlgorithmSequence(), sessionInfo.getSelectedScoringAlgorithm().getTrainingLabelImageSuffix());
         NormalizedValue value = nii.getValueForKey(scoringConcernKey);
+        // omit any marked as NPA from the training file, in case they slipped through prior screening - unlikely since an NPA score answers false to nii.hasValueForKey(key).
+        if (value.getID().equals(AvatolCVConstants.NPA) || value.getName().equals(AvatolCVConstants.NPA)){
+        	return;
+        }
         if (null == imagePath){
             System.out.println("WARNING - no imageFile found for imageID " + nii.getImageID());
             imagePath = "imageFileNotAvailable";

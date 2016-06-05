@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
@@ -47,15 +48,17 @@ public class IssueCheckTaxaPartiallyScored implements IssueCheck {
 			List<NormalizedImageInfo> niisForVal = trainTestHash.get(ttVal);
 			List<NormalizedImageInfo> scoredNiisForVal   = new ArrayList<NormalizedImageInfo>();
 			List<NormalizedImageInfo> unscoredNiisForVal = new ArrayList<NormalizedImageInfo>();
-			int unscoredCount = 0;
 			for (NormalizedImageInfo nii : niisForVal){ // look through all the niis for this taxon
 				for (NormalizedKey scoringConcernKey : scoringConcernKeys){
 					if (nii.hasKey(scoringConcernKey)){
-						if (nii.hasValueForKey(scoringConcernKey)){ // is it scored?
-							scoredNiisForVal.add(nii);
-						}
-						else {
-							unscoredNiisForVal.add(nii);
+						// ignore NPA cells in this discovery, see the NPA declaration for details
+						if (!AvatolCVConstants.NPA.equals(nii.getValueForKey(scoringConcernKey).getName())){
+							if (nii.hasValueForKey(scoringConcernKey)){ // is it scored?
+								scoredNiisForVal.add(nii);
+							}
+							else {
+								unscoredNiisForVal.add(nii);
+							}
 						}
 					}
 				}

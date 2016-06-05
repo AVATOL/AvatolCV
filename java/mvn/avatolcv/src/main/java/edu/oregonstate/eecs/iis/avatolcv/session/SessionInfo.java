@@ -581,6 +581,7 @@ public class SessionInfo{
     	List<NormalizedImageInfo> imageInfosForSession = this.normalizedImageInfos.getNormalizedImageInfosForSession();
     	List<NormalizedKey> scoringConcerns = this.getChosenScoringConcernKeys();
     	boolean trueScoring = !eval;
+ 
     	if (eval){
     		issuesToCheck.add(new IssueCheckUnscoredImageInfo(imageInfosForSession,scoringConcerns));
     	}
@@ -598,6 +599,8 @@ public class SessionInfo{
     	else if (trueScoring && hasTrainTestConcern){
     		issuesToCheck.add(new IssueCheckTaxaPartiallyScored(imageInfosForSession,scoringConcerns,trainTestConcern));
     	}
+    	
+    	
     	for (IssueCheck issueCheck : issuesToCheck){
     		result.addAll(issueCheck.runIssueCheck());
     	}
