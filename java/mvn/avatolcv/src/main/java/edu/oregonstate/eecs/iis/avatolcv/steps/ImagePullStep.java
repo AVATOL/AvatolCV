@@ -21,6 +21,7 @@ public class ImagePullStep  extends Answerable implements Step {
         // nothing to do
 
     }
+    @Override
     public SessionInfo getSessionInfo(){
         return this.sessionInfo;
     }

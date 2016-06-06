@@ -2,6 +2,7 @@ package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +20,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.OutputMonitor;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringRunStep;
 
@@ -87,6 +89,9 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
+            List<DataIssue> dataIssues =  this.step.getSessionInfo().checkDataIssues();
+            JavaFXUtils.populateIssues(dataIssues);
+            
             String algName = this.step.getSelectedScoringAlgorithm();
             this.algName.setText(algName);
             this.outputText.setText("Starting...");

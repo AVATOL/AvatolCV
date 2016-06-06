@@ -73,4 +73,8 @@ public class SummaryFilterStep  extends Answerable implements Step {
 	public List<DataIssue> getDataIssues() throws AvatolCVException {
 		return sessionInfo.checkDataIssues();
 	}
+	@Override
+	public SessionInfo getSessionInfo() {
+		return this.sessionInfo;
+	}
 }

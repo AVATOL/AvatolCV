@@ -20,7 +20,7 @@
 		                           <children>
 		                              <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
 		                                 <children>
-		                                    <VBox>
+		                                    <VBox minWidth="163.0">
 		                                       <children>
 		                                          <Label text="Session Steps">
 		                                             <VBox.margin>
@@ -80,15 +80,6 @@
 		                        </VBox>
 		                     </children>
 		                  </AnchorPane>
-		            </content>
-		          </TitledPane>
-		          <TitledPane fx:id="titlePaneDataInPlay" animated="false" expanded="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Data In Play">
-		            <content>
-		              <AnchorPane fx:id="anchorPaneDataInPlay" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-		               <padding>
-                        <Insets bottom="0" left="0" right="0" top="0" />                 
-               		 </padding>
-               		  </AnchorPane>
 		            </content>
 		          </TitledPane>
 		          <TitledPane fx:id="titlePaneIssues" animated="false" expanded="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Issues">

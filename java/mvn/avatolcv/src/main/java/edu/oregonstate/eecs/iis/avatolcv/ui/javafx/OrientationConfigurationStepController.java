@@ -14,6 +14,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.OrientationConfigurationStep;
 
@@ -66,6 +67,9 @@ public class OrientationConfigurationStepController implements StepController {
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
+            List<DataIssue> dataIssues =  this.step.getSessionInfo().checkDataIssues();
+            JavaFXUtils.populateIssues(dataIssues);
+            
             List<String> orientAlgNames = this.step.getOrientationAlgNames();
             if (orientAlgNames.size() == 0){
             	this.orientAlgChoiceBox.setDisable(true);

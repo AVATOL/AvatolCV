@@ -19,6 +19,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.FileSystemDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ImagePullStep;
@@ -71,6 +72,8 @@ public class ImagePullStepController implements StepController, ProgressPresente
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
+            List<DataIssue> dataIssues =  this.step.getSessionInfo().checkDataIssues();
+            JavaFXUtils.populateIssues(dataIssues);
             
             if (this.step.getSessionInfo().getDataSource() instanceof FileSystemDataSource){
                 FileSystemDataSource fsds = (FileSystemDataSource)this.step.getSessionInfo().getDataSource();

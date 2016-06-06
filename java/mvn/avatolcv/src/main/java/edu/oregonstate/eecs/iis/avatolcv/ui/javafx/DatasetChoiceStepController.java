@@ -85,7 +85,7 @@ public class DatasetChoiceStepController implements StepController {
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
-            
+            JavaFXUtils.clearIssues(JavaFXStepSequencer.vBoxDataIssuesSingleton);
             this.datasetNames = this.step.getAvailableDatasets();
             if (datasetNames.size() < 1){
             	throw new AvatolCVException("no valid matrices detected.");

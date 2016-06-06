@@ -74,6 +74,7 @@ public class LoginStepController implements StepController {
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
+            JavaFXUtils.clearIssues(JavaFXStepSequencer.vBoxDataIssuesSingleton);
             setDefaultCredentials();
             if (this.loginStep.hasPriorAnswers()){
             	Hashtable<String, String> priorAnswers = this.loginStep.getPriorAnswers();

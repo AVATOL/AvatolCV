@@ -32,6 +32,7 @@ public class SegmentationRunStep implements Step {
         // TODO Auto-generated method stub
         
     }
+    @Override
     public SessionInfo getSessionInfo(){
         return this.sessionInfo;
     }

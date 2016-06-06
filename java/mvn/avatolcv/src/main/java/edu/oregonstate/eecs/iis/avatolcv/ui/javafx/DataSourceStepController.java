@@ -65,6 +65,7 @@ public class DataSourceStepController implements StepController {
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
+            JavaFXUtils.clearIssues(JavaFXStepSequencer.vBoxDataIssuesSingleton);
             if (this.dataSourceStep.hasPriorAnswers()){
             	Hashtable<String, String> priorAnswers = this.dataSourceStep.getPriorAnswers();
             	String chosenDataSource = priorAnswers.get("chosenDataSource");

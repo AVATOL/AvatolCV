@@ -15,6 +15,7 @@ import javafx.scene.control.TextArea;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVExceptionExpresser;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.SegmentationConfigurationStep;
 
@@ -67,6 +68,9 @@ public class SegmentationConfigurationStepController implements StepController {
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
+            List<DataIssue> dataIssues =  this.step.getSessionInfo().checkDataIssues();
+            JavaFXUtils.populateIssues(dataIssues);
+            
             List<String> segAlgNames = this.step.getSegmentationAlgNames();
             Collections.sort(segAlgNames);
             this.segAlgChoiceBox.getItems().addAll(segAlgNames);

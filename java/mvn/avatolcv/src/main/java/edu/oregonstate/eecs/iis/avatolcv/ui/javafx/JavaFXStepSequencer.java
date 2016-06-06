@@ -65,7 +65,7 @@ public class JavaFXStepSequencer  {
     public static VBox vBoxDataIssuesSingleton = null;
     public TitledPane titlePaneSession;
     public TitledPane titlePaneIssues;
-    public TitledPane titlePaneDataInPlay;
+    //public TitledPane titlePaneDataInPlay;
     public AnchorPane anchorPaneIssues;
     private Hashtable<Step,Label> labelForStepHash = new Hashtable<Step,Label>();
     private AvatolCVJavaFX mainScreen = null;

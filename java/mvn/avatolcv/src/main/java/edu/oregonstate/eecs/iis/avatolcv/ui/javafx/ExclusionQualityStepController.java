@@ -22,6 +22,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageWithInfo;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
 import edu.oregonstate.eecs.iis.avatolcv.steps.ExclusionQualityStep;
 
@@ -117,6 +118,9 @@ public class ExclusionQualityStepController  implements StepController {
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
+            List<DataIssue> dataIssues =  this.step.getSessionInfo().checkDataIssues();
+            JavaFXUtils.populateIssues(dataIssues);
+            
             excludeImageGrid.getChildren().clear();
             //excludeImageGrid.set
             this.thumbnailImages = this.step.getImagesThumbnail();

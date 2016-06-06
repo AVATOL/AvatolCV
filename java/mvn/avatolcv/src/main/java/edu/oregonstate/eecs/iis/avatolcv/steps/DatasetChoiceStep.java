@@ -61,6 +61,7 @@ public class DatasetChoiceStep extends Answerable implements Step {
     public String getDatasetTitleText(){
         return this.sessionInfo.getDataSource().getDatasetTitleText();
     }
+    @Override
     public SessionInfo getSessionInfo(){
     	return this.sessionInfo;
     }

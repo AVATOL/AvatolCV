@@ -46,6 +46,7 @@ import edu.oregonstate.eecs.iis.avatolcv.scoring.ModalImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.KeySorterEvaluation;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.TrueScoringSet;
+import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.ImagesForStep;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
@@ -158,6 +159,9 @@ public class ScoringConfigurationStepController implements StepController {
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
+            List<DataIssue> dataIssues =  this.step.getSessionInfo().checkDataIssues();
+            JavaFXUtils.populateIssues(dataIssues);
+            
             //trainTestSettingsPane.setStyle("-fx-border-color: black;");
             SessionInfo sessionInfo = this.step.getSessionInfo();
             sessionInfo.reAssessImagesInPlay();

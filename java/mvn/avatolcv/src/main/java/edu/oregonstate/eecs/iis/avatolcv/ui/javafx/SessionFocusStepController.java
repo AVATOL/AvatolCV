@@ -90,6 +90,7 @@ public class SessionFocusStepController implements StepController {
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
             loader.setController(this);
             Node content = loader.load();
+            JavaFXUtils.clearIssues(JavaFXStepSequencer.vBoxDataIssuesSingleton);
             
             radioPresenceAbsence.setText(ScoringAlgorithm.getRadioButtonTextForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_PART_PRESENCE_ABSENCE));
             radioShape.setText(          ScoringAlgorithm.getRadioButtonTextForScoringFocus(ScoringAlgorithm.ScoringSessionFocus.SPECIMEN_SHAPE_OR_TEXTURE_ASPECT));
