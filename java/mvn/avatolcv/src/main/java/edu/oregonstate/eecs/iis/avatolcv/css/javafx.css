@@ -132,14 +132,14 @@
 .label.columnHeader {
 	-fx-background-color:#EEEEEE;
 	-fx-font-size:14px;
-	font-style:bold;
+	font-weight:bold;
 	-fx-font-name:arial;
 	-fx-padding:2px 8px 2px 8px;
 }
 .label.columnValue {
 	/*-fx-background-color:#CCCCCC;*/
 	-fx-font-size:13px;
-	font-style:plain;
+	font-weight:normal;
 	-fx-font-name:arial;
 	-fx-padding:2px 8px 2px 8px;
 }
@@ -153,12 +153,12 @@
 }
 .label.summaryValue {
 	-fx-font-size:14px;
-	font-style:plain;
+	font-weight:normal;
 	-fx-font-name:arial;
 }
 .label.issueText {
 	-fx-font-size:13px;
-	font-style:plain;
+	font-weight:normal;
 	-fx-font-name:arial;
 }
 .label.issueAlert {
