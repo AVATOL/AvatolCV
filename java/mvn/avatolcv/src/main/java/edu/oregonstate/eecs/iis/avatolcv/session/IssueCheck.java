@@ -6,4 +6,5 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 
 public interface IssueCheck {
 	List<DataIssue> runIssueCheck()  throws AvatolCVException;
+	String getIssueType();
 }

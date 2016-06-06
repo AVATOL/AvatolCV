@@ -53,9 +53,14 @@ public class IssueCheckUnscoredImageInfo implements IssueCheck {
 			}
 			di.setDescription("" + sb);
 			di.addActionOption("Score by hand, return to dataset choice screen and check the \"pull in changes\" checkbox");
+			di.setType(getIssueType());
 			dataIssues.add(di);
 		}
 		return dataIssues;
+	}
+	@Override
+	public String getIssueType() {
+		return this.getClass().getName();
 	}
 
 }

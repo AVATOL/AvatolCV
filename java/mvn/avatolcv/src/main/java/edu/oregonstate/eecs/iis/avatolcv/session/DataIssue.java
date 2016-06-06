@@ -7,6 +7,7 @@ public class DataIssue {
 	private static final String NL = "\n";
 	private static final String TAB = "\t";
 	private String description = "";
+	private String type = "?";
 	private List<String> actionOptions = new ArrayList<String>();
 	public String getDescription(){
 		return this.description;
@@ -31,5 +32,11 @@ public class DataIssue {
     	}
     	sb.append(NL);
     	return ""+sb;
+	}
+	public void setType(String type){
+		this.type = type;
+	}
+	public String getType(){
+		return this.type;
 	}
 }

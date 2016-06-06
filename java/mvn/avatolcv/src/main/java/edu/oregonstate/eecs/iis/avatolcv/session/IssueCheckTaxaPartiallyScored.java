@@ -85,6 +85,12 @@ public class IssueCheckTaxaPartiallyScored implements IssueCheck {
 			sb.append(NL);
 		}
 		di.addActionOption("" + sb);
+		di.setType(getIssueType());
 		return di;
 	}
+	@Override
+	public String getIssueType() {
+		return this.getClass().getName();
+	}
+
 }

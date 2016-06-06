@@ -54,9 +54,14 @@ public class IssueCheckImageInfoLacksPointCoordinates implements IssueCheck {
 			}
 			di.setDescription("" + sb);
 			di.addActionOption("Annotate the image, return to dataset choice screen and check the \"pull in changes\" checkbox");
+			di.setType(getIssueType());
 			dataIssues.add(di);
 		}
 		return dataIssues;
+	}
+	@Override
+	public String getIssueType() {
+		return this.getClass().getName();
 	}
 
 }
