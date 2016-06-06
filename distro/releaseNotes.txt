@@ -1,3 +1,14 @@
+20160605c AvatolCV Release Notes
+
+Add checkbox on dataset screen which will cause all the metadata for the 
+project to be deleted, forcing it to be reloaded at later screens.  This is
+to be used if the user makes a change at the datasource and then needs
+that update to be pulled into AvatolCV.
+
+Added Issue Detection for issues in the dataset depending on the choice of 
+algorithm and scoring goal.  As part of this, added a scoring goal question
+to the ScoringApproach screen.
+==========================================================================
 20160525a AvatolCV Release Notes
 
 Add projectID to matrix/dataset screen
