@@ -37,11 +37,12 @@
               </rowConstraints>
                <children>
                   <Label minWidth="-Infinity" styleClass="heading-text" text="Select from the choices below and click Start" GridPane.columnSpan="2" GridPane.vgrow="NEVER" />
-                  <RadioButton fx:id="radioReviewResults" mnemonicParsing="false" text="Review results of prior session" GridPane.rowIndex="2">
-                     <toggleGroup>
+                  <RadioButton fx:id="radioNewSession" mnemonicParsing="false" selected="true" text="Start a new scoring session" GridPane.rowIndex="1">
+                   <toggleGroup>
                         <ToggleGroup fx:id="sessionChoice" />
-                     </toggleGroup></RadioButton>
-                  <RadioButton fx:id="radioNewSession" mnemonicParsing="false" selected="true" text="Start a new scoring session" toggleGroup="$sessionChoice" GridPane.rowIndex="1" />
+                     </toggleGroup>
+                 </RadioButton>
+                  <RadioButton fx:id="radioReviewResults" mnemonicParsing="false" text="Review results of prior session"  toggleGroup="$sessionChoice" GridPane.rowIndex="2"/>
                   <ChoiceBox fx:id="priorSessionSelector" maxWidth="1.7976931348623157E308" styleClass="control-text" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
                </children>
                <opaqueInsets>
