@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.session;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -78,6 +79,7 @@ public class IssueCheckTaxaPartiallyScored implements IssueCheck {
 		sb.append("score the following images, return to dataset choice screen and check the \"pull in changes\" checkbox" + NL );
 		for (NormalizedImageInfo nii : unscoredNiis){
 			List<NormalizedKey> keys = nii.getKeys();
+			Collections.sort(keys);
 			for (NormalizedKey key : keys){
 				NormalizedValue val = nii.getValueForKey(key);
 				sb.append("      " + key.getName() + ": " + val.getName());

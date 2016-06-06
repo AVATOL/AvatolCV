@@ -575,6 +575,8 @@ public class SessionInfo{
     	boolean eval = this.isScoringGoalEvalAlg();
     	boolean needsPointCoordinates = this.getChosenScoringAlgorithm().shouldIncludePointAnnotationsInScoringFile();
     	boolean hasMandatoryTrainTestConcern = (this.getMandatoryTrainTestConcern() != null);
+    	boolean isMorphobankRun = (this.getDataSource().getName().toLowerCase().equals("morphobank"));
+    	
     	NormalizedKey mandatoryTrainTestConcern = this.getMandatoryTrainTestConcern();
     	boolean hasTrainTestConcern = (this.getTrainTestConcern() != null);
     	NormalizedKey trainTestConcern = this.getTrainTestConcern();
@@ -599,7 +601,9 @@ public class SessionInfo{
     	else if (trueScoring && hasTrainTestConcern){
     		issuesToCheck.add(new IssueCheckTaxaPartiallyScored(imageInfosForSession,scoringConcerns,trainTestConcern));
     	}
-    	
+    	if (isMorphobankRun){
+    	    issuesToCheck.add(new IssueCheckMultipleViewsInPlay(imageInfosForSession,scoringConcerns));
+    	}
     	
     	for (IssueCheck issueCheck : issuesToCheck){
     		result.addAll(issueCheck.runIssueCheck());
