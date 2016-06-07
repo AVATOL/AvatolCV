@@ -45,7 +45,7 @@ public class IssueCheckEverythingScoredForcesEvalMode implements IssueCheck {
 		if (unscoreds.size() == 0){
 			
 			DataIssue di = new DataIssue();
-			di.setDescription("FYI - all images already scored puts run into evaluation (compare scores) mode.  No need to change anything.");
+			di.setDescription("FYI - You chose 'score unscored images' mode but all images are already scored.  This automatically puts the run into evaluation (compare scores) mode.  No need to change anything.  You will be able to select which itms to score at the Scoring Configuration Screen.");
 			di.setType(getIssueType());
 			dataIssues.add(di);
 		}
