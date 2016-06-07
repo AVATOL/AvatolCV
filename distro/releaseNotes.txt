@@ -1,3 +1,12 @@
+20160607b AvatolCV Release Notes
+
+Fix bug where default or mandatory trainTestConcern was not selected at
+the Scoring Configuration Screen.
+
+Added IssueCheck for the case where user selects "score unscored cells"
+but it turns out that all the cells are scored so it automatically gets
+put into eval mode.  Displays an FYI message in the issues pane.
+==========================================================================
 20160607a AvatolCV Release Notes
 
 Now show project id and matrix or datasetID in the dataset selection control.
