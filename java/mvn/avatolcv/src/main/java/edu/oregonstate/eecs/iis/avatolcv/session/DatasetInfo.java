@@ -2,10 +2,11 @@ package edu.oregonstate.eecs.iis.avatolcv.session;
 
 
 public class DatasetInfo implements Comparable {
-    public static final String NO_CONTAINING_PROJECT_ID = "noProjectID";
+    public static final String NO_CONTAINING_PROJECT_ID = "-";
     private String ID = null;
     private String name = null;
     private String projectID = null;
+    private String datasetLabel = null;
     
     public String getID() {
         return ID;
@@ -38,5 +39,13 @@ public class DatasetInfo implements Comparable {
         String thisName = this.getName();
         return thisName.compareTo(otherName);
     }
+
+	public String getDatasetLabel() {
+		return datasetLabel;
+	}
+
+	public void setDatasetLabel(String datasetLabel) {
+		this.datasetLabel = datasetLabel;
+	}
     
 }

@@ -33,7 +33,7 @@ public class DatasetChoiceStep extends Answerable implements Step {
     public void setRefreshFromDatasourceNeeded(boolean value){
     	refreshFromDatasourceNeeded = value;
     }
-    public List<String> getAvailableDatasets() throws AvatolCVException {
+    /*public List<String> getAvailableDatasets() throws AvatolCVException {
         List<String> result = new ArrayList<String>();
         this.datasets = this.sessionInfo.getDataSource().getDatasets();
         //Collections.sort(this.datasets);
@@ -43,20 +43,9 @@ public class DatasetChoiceStep extends Answerable implements Step {
         }
         Collections.sort(result);
         return result;
-    }
-    public void setChosenDataset(String s) throws AvatolCVException {
-        this.chosenDataset = null;
-        
-        for (DatasetInfo di : this.datasets){
-            String name = di.getName();
-            if (name.equals(s)){
-                this.chosenDataset = di;
-                logger.info("chosenDataset : " + s);
-            }
-        }
-        if (this.chosenDataset == null){
-            throw new AvatolCVException("no DatasetInfo match for name " + s);
-        }
+    }*/
+    public void setChosenDataset(DatasetInfo di)  {
+        this.chosenDataset = di;
     }
     public String getDatasetTitleText(){
         return this.sessionInfo.getDataSource().getDatasetTitleText();

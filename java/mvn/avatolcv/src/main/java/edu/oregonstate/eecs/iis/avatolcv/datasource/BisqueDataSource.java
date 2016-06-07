@@ -83,6 +83,7 @@ public class BisqueDataSource implements DataSource {
                 di.setName(ds.getName());
                 di.setID(ds.getResourceUniq());
                 di.setProjectID(DatasetInfo.NO_CONTAINING_PROJECT_ID);
+                di.setDatasetLabel("dataset");
                 datasets.add(di);
             }
             Collections.sort(datasets);

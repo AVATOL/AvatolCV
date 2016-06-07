@@ -13,7 +13,7 @@
             <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
             <Label fx:id="datasetTitleName" text="Select Dataset/Matrix" />
             <ComboBox fx:id="selectedDataset" minWidth="300.0" />
-            <HBox prefHeight="100.0" prefWidth="200.0">
+            <!--  <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
                   <Label text="ID :  " HBox.hgrow="NEVER">
                      <HBox.margin>
@@ -22,8 +22,8 @@
                   </Label>
                   <TextField fx:id="datasetIdTextField" HBox.hgrow="ALWAYS" />
                </children>
-            </HBox>
-            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+            </HBox>-->
+            <Region prefHeight="20.0" prefWidth="200.0" VBox.vgrow="NEVER" />
             <CheckBox fx:id="reloadDatasetCheckbox" mnemonicParsing="false" text="matrix has been updated, pull in changes" />
             <Region prefHeight="200.0" prefWidth="200.0" />
          </children>

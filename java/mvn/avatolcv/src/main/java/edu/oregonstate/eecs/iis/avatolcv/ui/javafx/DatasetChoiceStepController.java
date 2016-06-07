@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
@@ -28,6 +29,7 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.FileSystemDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVExceptionExpresserJavaFX;
+import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.StepController;
@@ -44,12 +46,15 @@ public class DatasetChoiceStepController implements StepController {
     public CheckBox reloadDatasetCheckbox = null;
     public ProgressBar scoringInfoDownloadProgressBar;
     public Label scoringInfoDownloadMessageLabel;
-    public TextField datasetIdTextField;
+    //public TextField datasetIdTextField;
     public ComboBox<String> selectedDataset;
     private DatasetChoiceStep step;
     private String fxmlDocName;
-    private List<String> datasetNames = null;
     private boolean followUpDataDownloadPhaseComplete = false;
+    private List<DatasetInfo> datasetInfos = new ArrayList<DatasetInfo>();
+    //private List<String> datasetNames = new ArrayList<String>();
+    //private List<String> datasetIDs = new ArrayList<String>();
+    private int selectedDatasetIndex = 0;
 	public DatasetChoiceStepController(DatasetChoiceStep step, String fxmlDocName){
 		this.step = step;
 		this.fxmlDocName = fxmlDocName;
@@ -57,11 +62,10 @@ public class DatasetChoiceStepController implements StepController {
 	@Override
 	public boolean consumeUIData() {
 		try {
-			String chosenDataset = (String)this.selectedDataset.getValue();
-			this.step.setChosenDataset(chosenDataset);
+			this.step.setChosenDataset(datasetInfos.get(selectedDatasetIndex));
 			this.step.setRefreshFromDatasourceNeeded(this.reloadDatasetCheckbox.selectedProperty().getValue());
 			Hashtable<String, String> answerHash = new Hashtable<String, String>();
-			answerHash.put("chosenDataset", chosenDataset);
+			answerHash.put("chosenDatasetIndex", "" + this.selectedDatasetIndex);
 			this.step.saveAnswers(answerHash);
 			this.step.consumeProvidedData();
 			return true;
@@ -74,10 +78,22 @@ public class DatasetChoiceStepController implements StepController {
 
 	@Override
 	public void clearUIFields() {
-	    selectedDataset.setValue(datasetNames.get(0));
+	    selectedDataset.setValue(datasetInfos.get(0).getName());
 	}
 
-	
+	private void resetDatasetInfo() throws AvatolCVException {
+		this.datasetInfos = this.step.getSessionInfo().getDataSource().getDatasets();
+        Collections.sort(this.datasetInfos);
+       // datasetNames.clear();
+       //// datasetIDs.clear();
+       // for (DatasetInfo di : this.datasetInfos){
+       // 	datasetNames.add(di.getName());
+       // 	datasetIDs.add(di.getProjectID());
+       // }
+        if (datasetInfos.size() < 1){
+        	throw new AvatolCVException("no valid datasets detected.");
+        }
+	}
 	@Override
 	public Node getContentNode() throws AvatolCVException {
 		try {
@@ -86,10 +102,7 @@ public class DatasetChoiceStepController implements StepController {
             loader.setController(this);
             Node content = loader.load();
             JavaFXUtils.clearIssues(JavaFXStepSequencer.vBoxDataIssuesSingleton);
-            this.datasetNames = this.step.getAvailableDatasets();
-            if (datasetNames.size() < 1){
-            	throw new AvatolCVException("no valid matrices detected.");
-            }
+            
             DataSource dataSource = this.step.getSessionInfo().getDataSource();
             if (dataSource instanceof FileSystemDataSource){
             	reloadDatasetCheckbox.setDisable(true);
@@ -98,31 +111,33 @@ public class DatasetChoiceStepController implements StepController {
             else {
             	reloadDatasetCheckbox.setText(dataSource.getRepullPrompt());
             }
+            resetDatasetInfo();
             
-            Collections.sort(datasetNames);
             ObservableList<String> list = selectedDataset.getItems();
-    		for (String m : datasetNames){
-    			list.add(m);
-    		}
+            for (int i = 0; i < this.datasetInfos.size(); i++){
+            	list.add(getTextForDatasetChoice(i));
+            }
     		if (this.step.hasPriorAnswers()){
             	followUpDataDownloadPhaseComplete = false;
             	Hashtable<String, String> hash = this.step.getPriorAnswers();
-            	String choice = hash.get("chosenDataset");
-            	selectedDataset.setValue(choice);
-            	
-            	datasetIdTextField.setText(getDatasetIDForDatasetName(choice));
+            	String priorSelectedIndexString = hash.get("chosenDatasetIndex");
+            	int rememberedIndex = new Integer(priorSelectedIndexString).intValue();
+            	selectedDataset.setValue(getTextForDatasetChoice(rememberedIndex));
             }
             else {
-        		selectedDataset.setValue(datasetNames.get(0));
-            	datasetIdTextField.setText(getDatasetIDForDatasetName(datasetNames.get(0)));
+        		selectedDataset.setValue(getTextForDatasetChoice(0));
             }
             datasetTitleName.setText(this.step.getDatasetTitleText());
-            this.selectedDataset.getSelectionModel().selectedIndexProperty().addListener(new DatasetChangeListener(this.selectedDataset, this.datasetIdTextField));
+            this.selectedDataset.getSelectionModel().selectedIndexProperty().addListener(new DatasetChangeListener());
             return content;
         }
         catch(IOException ioe){
             throw new AvatolCVException("problem loading ui " + fxmlDocName + " for controller " + this.getClass().getName());
         } 
+	}
+	private String getTextForDatasetChoice(int i){
+		DatasetInfo di = this.datasetInfos.get(i);
+		return di.getName() + " ( project ID: " + di.getProjectID() + "  ,  " + di.getDatasetLabel() + " ID: " + di.getID() +" )";
 	}
 	public String getDatasetIDForDatasetName(String dsName) throws AvatolCVException {
 		SessionInfo si = this.step.getSessionInfo();
@@ -131,18 +146,11 @@ public class DatasetChoiceStepController implements StepController {
         return result;
 	}
 	public class DatasetChangeListener implements ChangeListener<Number> {
-        private ComboBox<String> cb;
-        private TextField ta;
-        public DatasetChangeListener(ComboBox<String> selectedDataset, TextField ta){
-            this.ta = ta;
-            this.cb = selectedDataset;
-        }
         @Override
         public void changed(ObservableValue ov, Number value, Number newValue) {
             try {
-                //System.out.println("new Value " + newValue);
-            	String newSelectedValue = this.cb.getItems().get((Integer) newValue);
-            	datasetIdTextField.setText(getDatasetIDForDatasetName(newSelectedValue));
+            	int index = ((Integer)newValue).intValue();
+            	selectedDatasetIndex = index;
             }
             catch(Exception e){
                 AvatolCVExceptionExpresserJavaFX.instance.showException(e, "Problem changing grouping of training vs score ");

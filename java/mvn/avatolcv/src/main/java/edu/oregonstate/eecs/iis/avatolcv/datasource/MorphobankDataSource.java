@@ -99,6 +99,7 @@ public class MorphobankDataSource implements DataSource {
                 di.setName(mm.getName());
                 di.setID(mm.getMatrixID());
                 di.setProjectID(mm.getProjectID());
+                di.setDatasetLabel("matrix");
                 datasets.add(di);
             }
             Collections.sort(datasets);
