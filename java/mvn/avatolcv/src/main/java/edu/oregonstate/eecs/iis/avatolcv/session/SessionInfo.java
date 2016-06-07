@@ -590,6 +590,9 @@ public class SessionInfo{
     	if (eval && needsPointCoordinates){
     		issuesToCheck.add(new IssueCheckImageInfoLacksPointCoordinates(imageInfosForSession,scoringConcerns));
     	}
+    	if (trueScoring){
+    		issuesToCheck.add(new IssueCheckEverythingScoredForcesEvalMode(imageInfosForSession,scoringConcerns));
+    	}
     	if (trueScoring && needsPointCoordinates){
     		issuesToCheck.add(new IssueCheckScoredImageInfoLacksPointCoordinates(imageInfosForSession,scoringConcerns));
     	}
