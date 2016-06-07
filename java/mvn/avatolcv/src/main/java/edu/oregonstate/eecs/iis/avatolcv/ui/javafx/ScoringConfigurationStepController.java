@@ -66,6 +66,7 @@ public class ScoringConfigurationStepController implements StepController {
     private List<EvaluationSet> evaluationSets = null;
     private List<TrueScoringSet> trueScoringSets = null;
     private boolean sortByImage = true;
+    private NormalizedKey trainTestKey = null;
     private Hashtable<String, NormalizedKey> normalizedKeyHash = new Hashtable<String, NormalizedKey>();
     
     
@@ -167,7 +168,7 @@ public class ScoringConfigurationStepController implements StepController {
             sessionInfo.reAssessImagesInPlay();
             
             NormalizedKey mandatoryTrainTestKey = sessionInfo.getMandatoryTrainTestConcern();
-            NormalizedKey trainTestKey = mandatoryTrainTestKey;
+            trainTestKey = mandatoryTrainTestKey;
             if (null == trainTestKey){
             	trainTestKey = sessionInfo.getDefaultTrainTestConcern();
             } 
@@ -213,7 +214,13 @@ public class ScoringConfigurationStepController implements StepController {
 		sortCandidateStrings = this.step.getSessionInfo().getDataSource().filterBadSortCandidates(sortCandidateStrings);
 		Collections.sort(sortCandidateStrings);
         this.choiceBoxGroupProperty.getItems().addAll(sortCandidateStrings);
-        this.choiceBoxGroupProperty.setValue(this.choiceBoxGroupProperty.getItems().get(0));
+        if (null == trainTestKey){
+        	this.choiceBoxGroupProperty.setValue(this.choiceBoxGroupProperty.getItems().get(0));
+        }
+        else {
+        	System.out.println("Setting choiceBox to " + trainTestKey.getName());
+        	this.choiceBoxGroupProperty.setValue(trainTestKey.getName());
+        }
         this.choiceBoxGroupProperty.getSelectionModel().selectedIndexProperty().addListener(new GroupChangeListener(this.choiceBoxGroupProperty, this.groupDescriptionTextArea, this.step));
 	}
 	public class GroupChangeListener implements ChangeListener<Number> {
