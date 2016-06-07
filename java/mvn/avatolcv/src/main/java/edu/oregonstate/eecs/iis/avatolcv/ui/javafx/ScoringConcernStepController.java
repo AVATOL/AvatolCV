@@ -11,8 +11,11 @@ import org.apache.logging.log4j.Logger;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -51,7 +54,8 @@ public class ScoringConcernStepController implements StepController {
     private Hashtable<String, ChoiceItem> choiceItemForNameHash;
     private boolean dataDownloadPhaseComplete = false;
     //private List<MBCharacter> characters;
-    List<ChoiceItem> allChoiceItems = null;
+    private List<ChoiceItem> allChoiceItems = null;
+    private List<CheckBox> allCheckboxes = new ArrayList<CheckBox>();
     public ScoringConcernStepController(ScoringConcernStep step, String fxmlDocName){
         this.step = step;
         this.fxmlDocName = fxmlDocName;
@@ -130,6 +134,7 @@ public class ScoringConcernStepController implements StepController {
     	}
     }
     public Node getContentNodeForMultipleItem() throws AvatolCVException {
+    	allCheckboxes.clear();
         checkBoxForChoiceItemHash = new Hashtable<ChoiceItem, CheckBox>();
     	try {
     		FXMLLoader loader = new FXMLLoader(this.getClass().getResource(this.fxmlDocName));
@@ -157,6 +162,7 @@ public class ScoringConcernStepController implements StepController {
             for (ChoiceItem ci : this.allChoiceItems){
             	CheckBox cb = new CheckBox("");
             	grid.add(cb,0,curRow);
+            	allCheckboxes.add(cb);
             	if (this.step.hasPriorAnswers()){
             		dataDownloadPhaseComplete = false;
             	    String selectionState = this.step.getPriorAnswers().get(ci.getNormalizedKey().toString());
@@ -184,6 +190,14 @@ public class ScoringConcernStepController implements StepController {
             }
             scrollPane.setContent(grid);
             vb.getChildren().add(scrollPane);
+            Button buttonUnselectAll = new Button("Unselect All");
+            buttonUnselectAll.setOnAction(new EventHandler<ActionEvent>() {
+                @Override public void handle(ActionEvent e) {
+                    unselectAll();
+                }
+            });
+            buttonUnselectAll.setStyle("-fx-margin-top:10px");
+            vb.getChildren().add(buttonUnselectAll);
             Region regionBottom = new Region();
             VBox.setVgrow(regionBottom, Priority.ALWAYS);
             vb.getChildren().add(regionBottom);
@@ -277,5 +291,10 @@ public class ScoringConcernStepController implements StepController {
     @Override
     public boolean isFollowUpDataLoadPhaseComplete() {
         return dataDownloadPhaseComplete;
+    }
+    public void unselectAll(){
+    	for (CheckBox cb : allCheckboxes){
+    		cb.setSelected(false);
+    	}
     }
 }
