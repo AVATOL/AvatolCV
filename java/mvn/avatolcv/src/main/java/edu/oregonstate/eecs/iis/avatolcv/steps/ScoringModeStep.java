@@ -58,10 +58,6 @@ public class ScoringModeStep  extends Answerable implements Step {
 	public boolean shouldRenderIfBackingIntoIt() {
 		return isEnabledByPriorAnswers();
 	}
-    @Override
-	public List<DataIssue> getDataIssues() throws AvatolCVException{
-		return null;
-	}
 	@Override
 	public SessionInfo getSessionInfo() {
 		return this.sessionInfo;

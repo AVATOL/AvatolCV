@@ -70,10 +70,6 @@ public class DataSourceStep  extends Answerable implements Step {
 		return true;
 	}
 	@Override
-	public List<DataIssue> getDataIssues() throws AvatolCVException{
-		return null;
-	}
-	@Override
 	public SessionInfo getSessionInfo() {
 		return this.sessionInfo;
 	}

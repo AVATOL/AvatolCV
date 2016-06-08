@@ -78,8 +78,4 @@ public class DatasetChoiceStep extends Answerable implements Step {
 	public boolean shouldRenderIfBackingIntoIt() {
 		return true;
 	}
-	@Override
-	public List<DataIssue> getDataIssues() throws AvatolCVException {
-		return null;
-	}
 }

@@ -52,8 +52,4 @@ public class ImagePullStep  extends Answerable implements Step {
 	public boolean shouldRenderIfBackingIntoIt() {
 		return false;
 	}
-	@Override
-	public List<DataIssue> getDataIssues() throws AvatolCVException{
-		return null;
-	}
 }

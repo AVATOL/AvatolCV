@@ -69,10 +69,7 @@ public class SummaryFilterStep  extends Answerable implements Step {
 	public boolean shouldRenderIfBackingIntoIt() {
     	return !SessionInfo.isBisqueSession();
 	}
-    @Override
-	public List<DataIssue> getDataIssues() throws AvatolCVException {
-		return sessionInfo.checkDataIssues();
-	}
+
 	@Override
 	public SessionInfo getSessionInfo() {
 		return this.sessionInfo;

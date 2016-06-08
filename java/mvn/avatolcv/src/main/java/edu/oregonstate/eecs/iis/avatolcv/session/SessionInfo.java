@@ -586,12 +586,14 @@ public class SessionInfo{
  
     	if (eval){
     		issuesToCheck.add(new IssueCheckUnscoredImageInfo(imageInfosForSession,scoringConcerns));
+    		issuesToCheck.add(new IssueCheckDisqualifyCharacterIfHasNoScoredImages(imageInfosForSession,scoringConcerns, this));
     	}
     	if (eval && needsPointCoordinates){
     		issuesToCheck.add(new IssueCheckImageInfoLacksPointCoordinates(imageInfosForSession,scoringConcerns));
     	}
     	if (trueScoring){
     		issuesToCheck.add(new IssueCheckEverythingScoredForcesEvalMode(imageInfosForSession,scoringConcerns));
+    		issuesToCheck.add(new IssueCheckNotifyIfCharacterHasNoUnscoredImages(imageInfosForSession,scoringConcerns));
     	}
     	if (trueScoring && needsPointCoordinates){
     		issuesToCheck.add(new IssueCheckScoredImageInfoLacksPointCoordinates(imageInfosForSession,scoringConcerns));
@@ -607,10 +609,29 @@ public class SessionInfo{
     	if (isMorphobankRun){
     	    issuesToCheck.add(new IssueCheckMultipleViewsInPlay(imageInfosForSession,scoringConcerns));
     	}
-    	
+    	issuesToCheck.add(new IssueCheckNoCharactersInChosenList(this));
     	for (IssueCheck issueCheck : issuesToCheck){
     		result.addAll(issueCheck.runIssueCheck());
     	}
     	return result;
 	}
+    public void disqualifyScoringConcern(NormalizedKey scoringConcernKey) throws AvatolCVException {
+    	List<ChoiceItem> scoringConcernChoiceItems = getChosenScoringConcerns();
+    	ChoiceItem choiceItemToRemove = null;
+    	for (ChoiceItem choiceItem : scoringConcernChoiceItems){
+    		if (choiceItem.getNormalizedKey().equals(scoringConcernKey)){
+    			choiceItemToRemove = choiceItem;
+    		}
+    	}
+    	if (null == choiceItemToRemove){
+    		throw new AvatolCVException("could not find ChoiceItem scoringConcern for NormalizedKey " + scoringConcernKey);
+    	}
+    	// if it was from the multi-list, remove it
+    	if (this.chosenScoringConcerns.contains(choiceItemToRemove)){
+    		this.chosenScoringConcerns.remove(choiceItemToRemove);
+    	}
+    	else {// it must have been from the single selection variable
+    		this.chosenScoringConcern = null;
+    	}
+    }
 }

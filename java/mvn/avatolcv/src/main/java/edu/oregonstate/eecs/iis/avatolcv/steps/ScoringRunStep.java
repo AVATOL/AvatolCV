@@ -233,10 +233,6 @@ public class ScoringRunStep implements Step {
 	public boolean shouldRenderIfBackingIntoIt() {
 		return false;
 	}
-    @Override
-	public List<DataIssue> getDataIssues() throws AvatolCVException{
-		return null;
-	}
 	@Override
 	public SessionInfo getSessionInfo() {
 		return this.sessionInfo;

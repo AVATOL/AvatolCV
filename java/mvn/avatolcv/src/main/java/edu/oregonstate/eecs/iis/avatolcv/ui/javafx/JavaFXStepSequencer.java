@@ -15,6 +15,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -61,8 +62,10 @@ public class JavaFXStepSequencer  {
     private Scene scene = null;
     public Label labelScoringGoalValue;
     public VBox vBoxDataIssues;
+    //public TableView<InPlayCell> tableViewDataInPlay;
     public Accordion sessionAccordion;
     public static VBox vBoxDataIssuesSingleton = null;
+    //public static TableView<InPlayCell> tableViewDataInPlaySingleton = null;
     public TitledPane titlePaneSession;
     public TitledPane titlePaneIssues;
     //public TitledPane titlePaneDataInPlay;
@@ -328,6 +331,7 @@ public class JavaFXStepSequencer  {
             scene.getStylesheets().add("../css/javafx.css");
             vBoxDataIssuesSingleton = vBoxDataIssues;
             issueCountLabelSingleton = issueCountLabel;
+            //tableViewDataInPlaySingleton = tableViewDataInPlay;
             sessionAccordion.setExpandedPane(titlePaneSession);
             //anchorPaneIssues.get
             this.mainWindow.setScene(scene);

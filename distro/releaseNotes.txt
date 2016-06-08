@@ -1,3 +1,13 @@
+20160608a AvatolCV Release Notes
+
+Added IssueCheckers looking for the following conditions:
+
+- (eval mode) detect if any characters have no training data after exclusions 
+(ex. view) and disqualify them
+- (scoring mode) detect if any characters have no items to score and give 
+FYI about it
+- detect if all characters have been disqualified
+==========================================================================
 20160607b AvatolCV Release Notes
 
 Fix bug where default or mandatory trainTestConcern was not selected at
