@@ -29,7 +29,8 @@ public class IssueCheckUnscoredImageInfo implements IssueCheck {
 							// don't count NPA as unscored here as this is the list we are trying to generate to tell them to score.
 							// but...  NPA is the I Don't Know score, so they can't fix that problem.
 							// see the NPA declaration for more details
-							if (!AvatolCVConstants.NPA.equals(nii.getValueForKey(scoringConcernKey))){
+						    NormalizedValue value = nii.getValueForKey(scoringConcernKey);
+							if (!AvatolCVConstants.NPA.equals(value.getName())){
 								unscoreds.add(nii);
 							}
 							//System.out.println("NOT Scored: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getValueForKey(scoringConcernKey));
