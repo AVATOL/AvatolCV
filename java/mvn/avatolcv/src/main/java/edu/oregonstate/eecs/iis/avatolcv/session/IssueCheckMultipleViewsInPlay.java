@@ -25,11 +25,13 @@ public class IssueCheckMultipleViewsInPlay implements IssueCheck {
             for (NormalizedImageInfo nii : niis){
                 if (!nii.isExcluded()){
                     if (nii.hasKey(scoringConcernKey)){
-                        if (nii.hasKey(viewKey)){
-                            NormalizedValue viewValue = nii.getValueForKey(viewKey);
-                            String viewName = viewValue.getName();
-                            if (!viewsSeen.contains(viewName)){
-                                viewsSeen.add(viewName);
+                        if (!nii.isExcludedByValueForKey(scoringConcernKey)){
+                            if (nii.hasKey(viewKey)){
+                                NormalizedValue viewValue = nii.getValueForKey(viewKey);
+                                String viewName = viewValue.getName();
+                                if (!viewsSeen.contains(viewName)){
+                                    viewsSeen.add(viewName);
+                                }
                             }
                         }
                     }

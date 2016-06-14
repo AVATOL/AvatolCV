@@ -30,17 +30,21 @@ public class NormalizedImageInfos {
 			}
 		}
 	}
-	public List<String> getTrainTestConcernValuesFromUnscoredNiisWithKey(NormalizedKey charKey, NormalizedKey trainTestConcern){
+	public List<String> getTrainTestConcernValuesFromUnscoredNiisWithKey(NormalizedKey charKey, NormalizedKey trainTestConcern) throws AvatolCVException {
 		List<String> result = new ArrayList<String>();
 		for (String name : niiSession){
 			NormalizedImageInfo nii = niiHash.get(name);
-			if (nii.hasKey(charKey)){
-				if (!nii.hasValueForKey(charKey)){
-					if (nii.hasValueForKey(trainTestConcern)){
-						NormalizedValue ttcValue = nii.getValueForKey(trainTestConcern);
-						result.add(ttcValue.getName());
-					}
-				}
+			if (!nii.isExcluded()){
+			    if (nii.hasKey(charKey)){
+	                if (!nii.hasValueForKey(charKey)){
+	                    if (!nii.isExcludedByValueForKey(charKey)){ // ignore NPA cells
+	                        if (nii.hasValueForKey(trainTestConcern)){
+	                            NormalizedValue ttcValue = nii.getValueForKey(trainTestConcern);
+	                            result.add(ttcValue.getName());
+	                        }
+	                    }
+	                }
+	            }
 			}
 		}
 		return result;
@@ -145,16 +149,20 @@ public class NormalizedImageInfos {
 		}
 		return niis;
 	}
-	public boolean isEveryImageScoredForKey(NormalizedKey key){
+	public boolean isAnyImageUnscoredForKey(NormalizedKey key) throws AvatolCVException {
 	    for (String name : niiSession){
             NormalizedImageInfo nii = niiHash.get(name);
-            if (nii.hasKey(key)){
-                if (!nii.hasValueForKey(key)){
-                    return false;
+            if (!nii.isExcluded()){
+                if (nii.hasKey(key)){
+                    if (!nii.isExcludedByValueForKey(key)){
+                        if (!nii.hasValueForKey(key)){
+                            return true;
+                        }
+                    }
                 }
             }
 	    }
-        return true;        
+        return false;        
 	}
 	public void flush(){
 		niiAllPresent.clear();

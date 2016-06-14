@@ -90,7 +90,8 @@ public class SessionInfo{
     private Hashtable<String, ScoringSet> scoringSetForScoringConcernHash = new Hashtable<String, ScoringSet>();
     private NormalizedKey trainTestConcern = null;
     private boolean scoringModeIsEvaluation = false;
-    private boolean scoringGoalIsTrueScoring = true;
+    private boolean userChoseTrueScoringGoal = true;
+    private boolean evalGoalForcedByEverythingBeingScored = false;
 	public SessionInfo() throws AvatolCVException {
 		File f = new File(AvatolCVFileSystem.getAvatolCVRootDir());
         if (!f.isDirectory()){
@@ -108,10 +109,13 @@ public class SessionInfo{
 		return this.sessionID;
 	}
 	public void setScoringGoalTrueScoring(boolean val){
-		this.scoringGoalIsTrueScoring = val;
+		this.userChoseTrueScoringGoal = val;
 	}
 	public boolean isScoringGoalTrueScoring(){
-		return this.scoringGoalIsTrueScoring;
+	    if (this.evalGoalForcedByEverythingBeingScored){
+	        return false;
+	    }
+		return this.userChoseTrueScoringGoal;
 	}
 	public boolean isScoringGoalEvalAlg(){
 		return !isScoringGoalTrueScoring();
@@ -452,8 +456,8 @@ public class SessionInfo{
         List<ChoiceItem> scoringConcerns = getChosenScoringConcerns();
         for (ChoiceItem item : scoringConcerns){
             NormalizedKey keyToScore = getKeyToScore(item);
-            boolean everyImageScoredForKey = this.normalizedImageInfos.isEveryImageScoredForKey(keyToScore);
-            if (!everyImageScoredForKey){
+            boolean anImageIsUnscored = this.normalizedImageInfos.isAnyImageUnscoredForKey(keyToScore);
+            if (anImageIsUnscored){
             	this.scoringModeIsEvaluation = false;
                 return false;
             }
@@ -612,6 +616,13 @@ public class SessionInfo{
     	issuesToCheck.add(new IssueCheckNoCharactersInChosenList(this));
     	for (IssueCheck issueCheck : issuesToCheck){
     		result.addAll(issueCheck.runIssueCheck());
+    	}
+    	
+    	for (DataIssue issue : result){
+    	    String issueType = issue.getType();
+    	    if (issueType.contains("IssueCheckEverythingScoredForcesEvalMode")){
+    	        evalGoalForcedByEverythingBeingScored = true;
+    	    }
     	}
     	return result;
 	}

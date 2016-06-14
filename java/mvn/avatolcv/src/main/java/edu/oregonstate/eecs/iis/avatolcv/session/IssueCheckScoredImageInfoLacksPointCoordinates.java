@@ -26,12 +26,14 @@ public class IssueCheckScoredImageInfoLacksPointCoordinates implements
 				if (!nii.isExcluded()){
 					if (nii.hasKey(scoringConcernKey)){ // is hasScoringConcern that is relevant
 						if (nii.hasValueForKey(scoringConcernKey)){  // is scored.  Also, this appropriately ignores NPA cells - don't want to complain about lack of annotations on NPAs
-							if (nii.getAnnotationCoordinates().equals("")){ //but missing coordinatess
-								lackingCoords.add(nii);
-								System.out.println("NO  coords: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getAnnotationCoordinates());
-							}
-							else {
-								System.out.println("yes coords: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getAnnotationCoordinates());
+							if (!nii.isExcludedByValueForKey(scoringConcernKey)){
+							    if (nii.getAnnotationCoordinates().equals("")){ //but missing coordinatess
+	                                lackingCoords.add(nii);
+	                                System.out.println("NO  coords: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getAnnotationCoordinates());
+	                            }
+	                            else {
+	                                System.out.println("yes coords: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getAnnotationCoordinates());
+	                            }
 							}
 						}
 					}

@@ -3,6 +3,9 @@ package edu.oregonstate.eecs.iis.avatolcv.scoring;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
@@ -14,15 +17,25 @@ public class TrueScoringSet implements ScoringSet {
 	private List<NormalizedImageInfo> niisWithKeyToScore = new ArrayList<NormalizedImageInfo>();
 	private List<ModalImageInfo> modals = new ArrayList<ModalImageInfo>();
 	private NormalizedKey keyToScore = null;
+	private static final Logger logger = LogManager.getLogger(TrueScoringSet.class);
 	public TrueScoringSet(List<NormalizedImageInfo> niis, NormalizedKey keyToScore) throws AvatolCVException {
 		this.niis = niis;
 		this.keyToScore = keyToScore;
 		System.out.println("keyToScore " + keyToScore);
 		// isolate the ones that have values for the scoring key
 		for (NormalizedImageInfo nii : this.niis){
-			if (nii.hasKey(keyToScore)){
-				niisWithKeyToScore.add(nii);
-			}
+		    if (!nii.isExcluded()){
+		        if (nii.hasKey(keyToScore)){
+		            if (nii.isExcludedByValueForKey(keyToScore)){
+		                String msg = "nii exluded from trueScoringSet by valueForKey " + nii.getImageID() + " " + keyToScore.getName() + " " + nii.getValueForKey(keyToScore).getName();
+		                logger.info(msg);
+		                System.out.println(msg);
+		            }
+		            else {
+		                niisWithKeyToScore.add(nii);
+		            }
+	            }
+		    }
 		}
 		for (NormalizedImageInfo nii : this.niisWithKeyToScore){
 			ModalImageInfo mii = new ModalImageInfo(nii);

@@ -27,17 +27,17 @@ public class IssueCheckNotifyIfCharacterHasNoUnscoredImages implements
 			for (NormalizedImageInfo nii : niis){
 				if (!nii.isExcluded()){
 					if (nii.hasKey(scoringConcernKey)){
-						if (!nii.hasValueForKey(scoringConcernKey)){
-							// don't count NPA as unscored here as this is the list we are trying to generate to tell them to score.
-							// but...  NPA is the I Don't Know score, so they can't fix that problem.
-							// see the NPA declaration for more details
-							if (!AvatolCVConstants.NPA.equals(nii.getValueForKey(scoringConcernKey))){
-								unscoredImageCount++;
-							}
-						}
-						else {
-							//System.out.println("yes Scored: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getValueForKey(scoringConcernKey));
-						}
+					    // don't count NPA as unscored here as this is the list we are trying to generate to tell them to score.
+                        // but...  NPA is the I Don't Know score, so they can't fix that problem.
+                        // see the NPA declaration for more details
+					    if (!nii.isExcludedByValueForKey(scoringConcernKey)){
+					        if (!nii.hasValueForKey(scoringConcernKey)){
+	                            unscoredImageCount++;
+	                        }
+	                        else {
+	                            //System.out.println("yes Scored: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getValueForKey(scoringConcernKey));
+	                        }
+					    }
 					}
 				}
 			}

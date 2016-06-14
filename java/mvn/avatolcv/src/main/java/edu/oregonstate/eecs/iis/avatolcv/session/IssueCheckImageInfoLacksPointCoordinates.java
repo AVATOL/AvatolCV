@@ -25,11 +25,7 @@ public class IssueCheckImageInfoLacksPointCoordinates implements IssueCheck {
 			for (NormalizedImageInfo nii : niis){
 				if (!nii.isExcluded()){
 					if (nii.hasKey(scoringConcernKey)){
-						if (AvatolCVConstants.NPA.equals(nii.getValueForKey(scoringConcernKey).getName())){
-							System.out.println("coords NA for NPA cells: " + scoringConcernKey + " " + nii.getImageID());
-						}
-						else {
-							// ! NPA, so need to check if coords missing
+					    if (!nii.isExcludedByValueForKey(scoringConcernKey)){
 							if (nii.getAnnotationCoordinates().equals("")){
 								lackingCoords.add(nii);
 								System.out.println("NO  coords: " + scoringConcernKey + " " + nii.getImageID() + " " + nii.getAnnotationCoordinates());

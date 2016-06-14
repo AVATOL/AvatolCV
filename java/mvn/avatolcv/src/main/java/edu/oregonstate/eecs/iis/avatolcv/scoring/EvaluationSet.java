@@ -3,6 +3,9 @@ package edu.oregonstate.eecs.iis.avatolcv.scoring;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
@@ -18,18 +21,28 @@ public class EvaluationSet implements ScoringSet {
 	private List<ModalImageInfo> modals = new ArrayList<ModalImageInfo>();
 	private double percentToTrainOn = 0;
 	private NormalizedKey keyToScore = null;
-	public EvaluationSet(List<NormalizedImageInfo> niis, NormalizedKey keyToScore, double percentToTrainOn){
+    private static final Logger logger = LogManager.getLogger(EvaluationSet.class);
+	public EvaluationSet(List<NormalizedImageInfo> niis, NormalizedKey keyToScore, double percentToTrainOn) throws AvatolCVException {
 		this.niis = niis;
 		this.percentToTrainOn = percentToTrainOn;
 		this.keyToScore = keyToScore;
 		// isolate the ones that have values for the scoring key
 		//System.out.println("EVALUATION SET " + keyToScore + " GIVEN this many niis " + niis.size());
 		for (NormalizedImageInfo nii : this.niis){
-			if (nii.hasKey(keyToScore)){
-				if (nii.hasValueForKey(keyToScore)){
-					niisWithValueForKey.add(nii);
-				}
-			}
+		    if (!nii.isExcluded()){
+		        if (nii.hasKey(keyToScore)){
+		            if (nii.isExcludedByValueForKey(keyToScore)){
+		                String msg = "nii exluded from evalSet by valueForKey " + nii.getImageID() + " " + keyToScore.getName() + " " + nii.getValueForKey(keyToScore).getName();
+		                logger.info(msg);
+		                System.out.println(msg);
+		            }
+		            else {
+		                if (nii.hasValueForKey(keyToScore)){
+	                        niisWithValueForKey.add(nii);
+	                    }
+		            }
+	            }
+		    }
 		}
 		//System.out.println("EVALUATION SET for " + keyToScore + " has this many niisWithValueForKey " + niisWithValueForKey.size());
 		// get integer number to hold out

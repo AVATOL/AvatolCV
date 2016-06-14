@@ -12,10 +12,14 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
+import edu.oregonstate.eecs.iis.avatolcv.steps.SessionFocusStep;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class NormalizedImageInfo {
@@ -130,19 +134,23 @@ public class NormalizedImageInfo {
     	else if ("".equals(value.getName())){
     		return false;
     	}
-    	else if (AvatolCVConstants.NPA.equals(value.getName())){
-    		return false;
-    	}
     	else if (AvatolCVConstants.UNDETERMINED.equals(value.getName())){
     	    return false;
     	}
     	else if (AvatolCVConstants.MORPHOBANK_UNSCORED_ID.equals(value.getID())){
-    		System.out.println("found MORPHOBANK_UNSCORED_ID");
+    		//System.out.println("found MORPHOBANK_UNSCORED_ID");
     		return false;
     	}
     	else {
     		return true;
     	}
+    }
+    public boolean isExcludedByValueForKey(NormalizedKey key){
+        NormalizedValue value = getValueForKey(key);
+        if (AvatolCVConstants.NPA.equals(value.getName()) || AvatolCVConstants.NPA.equals(value.getID())){
+            return true;
+        }
+        return false;
     }
     public static String getImageIDFromPath(String path){
         File f = new File(path);
@@ -281,8 +289,8 @@ public class NormalizedImageInfo {
 		return this.annotationString;
 	}
 	public boolean isExcluded() throws AvatolCVException {
-		return ImageInfo.isExcluded(this.imageID);
-	}
+        return ImageInfo.isExcluded(this.imageID);
+    }
 	public void excludeForSession(String reason) throws AvatolCVException {
 		ImageInfo.excludeForSession(reason, this.imageID);
 	}

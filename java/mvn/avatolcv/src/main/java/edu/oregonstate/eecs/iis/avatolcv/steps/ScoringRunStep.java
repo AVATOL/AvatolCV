@@ -76,12 +76,17 @@ public class ScoringRunStep implements Step {
    
     public void addImageToTrainingInfoFile(ModalImageInfo mii, NormalizedKey scoringConcernKey,TrainingInfoFile tif, ScoringProfile sp) throws AvatolCVException {
         NormalizedImageInfo nii = mii.getNormalizedImageInfo();
+        if (nii.isExcluded()){
+            return;
+        }
+        // omit any marked as NPA from the training file, in case they slipped through prior screening.
+        if (nii.isExcludedByValueForKey(scoringConcernKey)){
+            logger.info("excluding nii at trainingFile creation due to valueForKey " + nii.getValueForKey(scoringConcernKey).getName());
+            return;
+        }
         String imagePath = getPathForNii(nii, sessionInfo.getAlgorithmSequence(), sessionInfo.getSelectedScoringAlgorithm().getTrainingLabelImageSuffix());
         NormalizedValue value = nii.getValueForKey(scoringConcernKey);
-        // omit any marked as NPA from the training file, in case they slipped through prior screening - unlikely since an NPA score answers false to nii.hasValueForKey(key).
-        if (value.getID().equals(AvatolCVConstants.NPA) || value.getName().equals(AvatolCVConstants.NPA)){
-        	return;
-        }
+        
         if (null == imagePath){
             System.out.println("WARNING - no imageFile found for imageID " + nii.getImageID());
             imagePath = "imageFileNotAvailable";
@@ -105,6 +110,9 @@ public class ScoringRunStep implements Step {
     
     public void addImageToScoringInfoFile(ModalImageInfo mii, ScoringInfoFile sif, ScoringProfile sp) throws AvatolCVException {
         NormalizedImageInfo nii = mii.getNormalizedImageInfo();
+        if (nii.isExcluded()){
+            return;
+        }
         String imagePath = getPathForNii(nii, sessionInfo.getAlgorithmSequence(),  "*");
         
         if (null == imagePath){

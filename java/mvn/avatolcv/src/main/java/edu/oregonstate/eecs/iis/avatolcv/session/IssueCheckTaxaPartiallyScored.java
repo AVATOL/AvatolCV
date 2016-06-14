@@ -50,19 +50,22 @@ public class IssueCheckTaxaPartiallyScored implements IssueCheck {
 			List<NormalizedImageInfo> scoredNiisForVal   = new ArrayList<NormalizedImageInfo>();
 			List<NormalizedImageInfo> unscoredNiisForVal = new ArrayList<NormalizedImageInfo>();
 			for (NormalizedImageInfo nii : niisForVal){ // look through all the niis for this taxon
-				for (NormalizedKey scoringConcernKey : scoringConcernKeys){
-					if (nii.hasKey(scoringConcernKey)){
-						// ignore NPA cells in this discovery, see the NPA declaration for details
-						if (!AvatolCVConstants.NPA.equals(nii.getValueForKey(scoringConcernKey).getName())){
-							if (nii.hasValueForKey(scoringConcernKey)){ // is it scored?
-								scoredNiisForVal.add(nii);
-							}
-							else {
-								unscoredNiisForVal.add(nii);
-							}
-						}
-					}
-				}
+			    if (!nii.isExcluded()){
+			        for (NormalizedKey scoringConcernKey : scoringConcernKeys){
+	                    if (nii.hasKey(scoringConcernKey)){
+	                        // ignore NPA cells in this discovery, see the NPA declaration for details
+	                        if (!nii.isExcludedByValueForKey(scoringConcernKey)){
+	                            if (nii.hasValueForKey(scoringConcernKey)){ // is it scored?
+	                                scoredNiisForVal.add(nii);
+	                            }
+	                            else {
+	                                unscoredNiisForVal.add(nii);
+	                            }
+	                        }
+	                    }
+	                } 
+			    }
+				
 			}
 			if ((scoredNiisForVal.size() != 0) && (unscoredNiisForVal.size() != 0)){
 				DataIssue di = createDataIssue(ttVal,scoredNiisForVal, unscoredNiisForVal);

@@ -30,9 +30,11 @@ public class IssueCheckDisqualifyCharacterIfHasNoScoredImages implements
 			for (NormalizedImageInfo nii : niis){
 				if (!nii.isExcluded()){
 					if (nii.hasKey(scoringConcernKey)){
-						if (nii.hasValueForKey(scoringConcernKey)){
-							scoreCount++;
-						}
+					    if (!nii.isExcludedByValueForKey(scoringConcernKey)){
+					        if (nii.hasValueForKey(scoringConcernKey)){
+	                            scoreCount++;
+	                        }
+					    }
 					}
 				}
 			}
