@@ -77,6 +77,12 @@ public class SummaryFilterStepController implements StepController {
     private void populateFilterGridPane() throws AvatolCVException {
         DataFilter filter = this.step.getDataFilter();
         List<FilterItem> items = filter.getItems();
+        if (items.size() == 0){
+            Label noFileterItemsLabel = new Label("(No items qualify for filtering. You may move to the next screen.)");
+            noFileterItemsLabel.getStyleClass().add("columnValue");
+            filterGrid.add(noFileterItemsLabel, 2, 1);
+            return;
+        }
         int row = 1;
         for (FilterItem fi : items){
             CheckBox cb = new CheckBox();

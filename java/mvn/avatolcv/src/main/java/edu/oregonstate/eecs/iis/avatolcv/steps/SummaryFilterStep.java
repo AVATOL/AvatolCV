@@ -63,11 +63,13 @@ public class SummaryFilterStep  extends Answerable implements Step {
     }
     @Override
     public boolean isEnabledByPriorAnswers() {
-    	return !SessionInfo.isBisqueSession();
+    	//return !SessionInfo.isBisqueSession();
+        return true;
     }
     @Override
 	public boolean shouldRenderIfBackingIntoIt() {
-    	return !SessionInfo.isBisqueSession();
+    	//return !SessionInfo.isBisqueSession();
+        return true;
 	}
 
 	@Override
