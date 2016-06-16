@@ -1,5 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.util;
 
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 
 public class MapLeafTestToYaoData {
@@ -10,7 +11,12 @@ public class MapLeafTestToYaoData {
     }
     public MapLeafTestToYaoData(){
         FileSystemPrimer.prime("C:\\jed\\avatol\\git\\avatol_cv", "explore", "leafDev", "20150924_01", "bisque");
-        String modulesDir = AvatolCVFileSystem.getModulesDir();
+        try {
+        	String modulesDir = AvatolCVFileSystem.getModulesDir();
+        }
+        catch(AvatolCVException ace){
+        	
+        }
         /*
          * segmentation/yaoSeg/data/labels
          * segmentation/yaoSeg/data/trainin_imgs
