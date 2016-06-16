@@ -70,6 +70,7 @@ public class SegmentationConfigurationStepController implements StepController {
             Node content = loader.load();
             List<DataIssue> dataIssues =  this.step.getSessionInfo().checkDataIssues();
             JavaFXUtils.populateIssues(dataIssues);
+            JavaFXUtils.populateDataInPlay(this.step.getSessionInfo());
             
             List<String> segAlgNames = this.step.getSegmentationAlgNames();
             Collections.sort(segAlgNames);

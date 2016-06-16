@@ -84,6 +84,7 @@ public class OrientationRunStepController implements StepController, OutputMonit
             Node content = loader.load();
             List<DataIssue> dataIssues =  this.step.getSessionInfo().checkDataIssues();
             JavaFXUtils.populateIssues(dataIssues);
+            JavaFXUtils.populateDataInPlay(this.step.getSessionInfo());
             
             String algName = this.step.getSelectedOrientationAlgorithm();
             this.algName.setText(algName);

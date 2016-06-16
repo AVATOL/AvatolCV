@@ -74,7 +74,7 @@ public class ImagePullStepController implements StepController, ProgressPresente
             Node content = loader.load();
             List<DataIssue> dataIssues =  this.step.getSessionInfo().checkDataIssues();
             JavaFXUtils.populateIssues(dataIssues);
-            
+            JavaFXUtils.populateDataInPlay(this.step.getSessionInfo());
             if (this.step.getSessionInfo().getDataSource() instanceof FileSystemDataSource){
                 FileSystemDataSource fsds = (FileSystemDataSource)this.step.getSessionInfo().getDataSource();
                 imageLoadVBox.getChildren().remove(3);

@@ -67,6 +67,7 @@ public class SummaryFilterStepController implements StepController {
             populateFilterGridPane();
             List<DataIssue> dataIssues =  this.step.getSessionInfo().checkDataIssues();
             JavaFXUtils.populateIssues(dataIssues);
+            JavaFXUtils.populateDataInPlay(this.step.getSessionInfo());
             return content;
         }
         catch(IOException ioe){

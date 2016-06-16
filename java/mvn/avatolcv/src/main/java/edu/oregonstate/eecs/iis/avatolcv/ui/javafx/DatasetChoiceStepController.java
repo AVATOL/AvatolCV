@@ -102,7 +102,7 @@ public class DatasetChoiceStepController implements StepController {
             loader.setController(this);
             Node content = loader.load();
             JavaFXUtils.clearIssues(JavaFXStepSequencer.vBoxDataIssuesSingleton);
-            
+            JavaFXUtils.clearDataInPlay();
             DataSource dataSource = this.step.getSessionInfo().getDataSource();
             if (dataSource instanceof FileSystemDataSource){
             	reloadDatasetCheckbox.setDisable(true);

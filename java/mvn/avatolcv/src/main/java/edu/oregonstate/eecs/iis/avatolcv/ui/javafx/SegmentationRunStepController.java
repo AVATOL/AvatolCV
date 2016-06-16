@@ -86,6 +86,7 @@ public class SegmentationRunStepController implements StepController, OutputMoni
             Node content = loader.load();
             List<DataIssue> dataIssues =  this.step.getSessionInfo().checkDataIssues();
             JavaFXUtils.populateIssues(dataIssues);
+            JavaFXUtils.populateDataInPlay(this.step.getSessionInfo());
             
             String algName = this.step.getSessionInfo().getSegmentationAlgName();
             this.algName.setText(algName);

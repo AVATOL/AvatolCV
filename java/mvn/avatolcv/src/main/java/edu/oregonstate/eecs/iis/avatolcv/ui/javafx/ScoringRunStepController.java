@@ -91,6 +91,7 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
             Node content = loader.load();
             List<DataIssue> dataIssues =  this.step.getSessionInfo().checkDataIssues();
             JavaFXUtils.populateIssues(dataIssues);
+            JavaFXUtils.populateDataInPlay(this.step.getSessionInfo());
             
             String algName = this.step.getSelectedScoringAlgorithm();
             this.algName.setText(algName);
