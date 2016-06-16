@@ -170,6 +170,28 @@
 .imageGrid {
 	-fx-background-color:white;
 }
+.inPlayCellGreen {
+	-fx-background-color: #CCFFCC;
+}
+.inPlayCellYellow {
+	-fx-background-color: #FFFF88;
+}
+.inPlayCellWhite {
+	-fx-background-color:white;
+}
+.inPlayCell {
+	-fx-padding: 0;
+	-fx-border-style: solid inside;
+	-fx-border-width: 1;
+	-fx-border-insets: 0;
+	-fx-border-radius: 0;
+	-fx-border-color: black;
+	-fx-background-color: #FFFFFF;
+}
+.inPlayNiiInfo {
+	-fx-font-size: 13px;
+	-fx-text-fill: black;
+}
 /*
  * TITLED PANE
  */
