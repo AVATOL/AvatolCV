@@ -162,7 +162,7 @@ public class ScoringConfigurationStepController implements StepController {
             Node content = loader.load();
             List<DataIssue> dataIssues =  this.step.getSessionInfo().checkDataIssues();
             JavaFXUtils.populateIssues(dataIssues);
-            
+            JavaFXUtils.populateDataInPlay(this.step.getSessionInfo());
             //trainTestSettingsPane.setStyle("-fx-border-color: black;");
             SessionInfo sessionInfo = this.step.getSessionInfo();
             sessionInfo.reAssessImagesInPlay();

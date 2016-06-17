@@ -66,6 +66,7 @@ public class DataSourceStepController implements StepController {
             loader.setController(this);
             Node content = loader.load();
             JavaFXUtils.clearIssues(JavaFXStepSequencer.vBoxDataIssuesSingleton);
+            JavaFXUtils.clearDataInPlay();
             if (this.dataSourceStep.hasPriorAnswers()){
             	Hashtable<String, String> priorAnswers = this.dataSourceStep.getPriorAnswers();
             	String chosenDataSource = priorAnswers.get("chosenDataSource");

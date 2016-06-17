@@ -217,6 +217,7 @@ public class ScoringConcernStepController implements StepController {
             throw new AvatolCVException("no valid ChoiceItems detected for scoring concern screen.");
         }
         JavaFXUtils.clearIssues(JavaFXStepSequencer.vBoxDataIssuesSingleton);
+        JavaFXUtils.clearDataInPlay();
         if (this.step.getScoringScope() == ScoringAlgorithm.ScoringScope.MULTIPLE_ITEM){
         	return getContentNodeForMultipleItem();
         }

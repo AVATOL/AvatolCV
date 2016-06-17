@@ -60,12 +60,12 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
 
     @Override
     public boolean consumeUIData() {
-        try {
-            this.step.generateRunSummaries();
-        }
-        catch(AvatolCVException ace){
-            AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem generating runSummary: " + ace.getMessage());
-        }
+        //try {
+        //    this.step.generateRunSummaries();
+        //}
+        //catch(AvatolCVException ace){
+        //    AvatolCVExceptionExpresserJavaFX.instance.showException(ace, "problem generating runSummary: " + ace.getMessage());
+        //}
         return true;
     }
 
@@ -91,6 +91,7 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
             Node content = loader.load();
             List<DataIssue> dataIssues =  this.step.getSessionInfo().checkDataIssues();
             JavaFXUtils.populateIssues(dataIssues);
+            JavaFXUtils.populateDataInPlay(this.step.getSessionInfo());
             
             String algName = this.step.getSelectedScoringAlgorithm();
             this.algName.setText(algName);
@@ -174,12 +175,14 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
                 AvatolCVFileSystem.clearScoringLogs();
                 if (this.useRunConfig){
                     this.step.runScoring(this.controller, processName, true);
+                    this.step.generateRunSummaries();
                     PostScoringUIAdjustments runner = new PostScoringUIAdjustments();
                     Platform.runLater(runner);
                     return new Boolean(true);
                 }
                 else {
                     this.step.runScoring(this.controller, processName, false);
+                    this.step.generateRunSummaries();
                     PostScoringUIAdjustments runner = new PostScoringUIAdjustments();
                     Platform.runLater(runner);
                     return new Boolean(true);

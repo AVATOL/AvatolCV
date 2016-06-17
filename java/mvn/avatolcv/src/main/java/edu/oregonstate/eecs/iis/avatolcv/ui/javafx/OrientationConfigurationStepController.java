@@ -69,7 +69,7 @@ public class OrientationConfigurationStepController implements StepController {
             Node content = loader.load();
             List<DataIssue> dataIssues =  this.step.getSessionInfo().checkDataIssues();
             JavaFXUtils.populateIssues(dataIssues);
-            
+            JavaFXUtils.populateDataInPlay(this.step.getSessionInfo());
             List<String> orientAlgNames = this.step.getOrientationAlgNames();
             if (orientAlgNames.size() == 0){
             	this.orientAlgChoiceBox.setDisable(true);
