@@ -11,6 +11,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
@@ -30,7 +31,7 @@ public class HoldoutInfoFile {
     public HoldoutInfoFile(String scoringConcernType, String scoringConcernID, String scoringConcernName){
         this.scoringConcernType = scoringConcernType;
         this.scoringConcernID   = scoringConcernID;
-        this.scoringConcernName = scoringConcernName;
+        this.scoringConcernName = AvatolCVFileSystem.makeStringSafeForFilename(scoringConcernName);;
     }
     public String getScoringConcernValueForImagePath(String imagePath){
         return this.scoringConcernValueHash.get(imagePath);

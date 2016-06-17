@@ -6,15 +6,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import edu.oregonstate.eecs.iis.avatolcv.algorithm.Algorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
@@ -713,5 +710,103 @@ public class AvatolCVFileSystem {
     			file.delete();
     		}
     	}
+    }
+    public static String makeStringSafeForFilename(String s){
+    	char filenameFriendlyChar = '-';
+    	if (s.indexOf("~") != -1){
+        	s = s.replace('~', filenameFriendlyChar);
+        }
+        if (s.indexOf("`") != -1){
+        	s = s.replace('`', filenameFriendlyChar);
+        }
+        if (s.indexOf("!") != -1){
+        	s = s.replace('!', filenameFriendlyChar);
+        }
+        if (s.indexOf("@") != -1){
+        	s = s.replace('@', filenameFriendlyChar);
+        }
+        if (s.indexOf("#") != -1){
+        	s = s.replace('#', filenameFriendlyChar);
+        }
+        if (s.indexOf("$") != -1){
+        	s = s.replace('$', filenameFriendlyChar);
+        }
+        if (s.indexOf("%") != -1){
+        	s = s.replace('%', filenameFriendlyChar);
+        }
+        if (s.indexOf("^") != -1){
+        	s = s.replace('^', filenameFriendlyChar);
+        }
+        if (s.indexOf("&") != -1){
+        	s = s.replace('&', filenameFriendlyChar);
+        }
+        if (s.indexOf("*") != -1){
+        	s = s.replace('*', filenameFriendlyChar);
+        }
+        if (s.indexOf("(") != -1){
+        	s = s.replace('(', filenameFriendlyChar);
+        }
+        if (s.indexOf(")") != -1){
+            s = s.replace(')', filenameFriendlyChar);
+        }
+        if (s.indexOf("+") != -1){
+        	s = s.replace('+', filenameFriendlyChar);
+        }
+        if (s.indexOf("=") != -1){
+        	s = s.replace('=', filenameFriendlyChar);
+        }
+        if (s.indexOf("{") != -1){
+            s = s.replace('{', filenameFriendlyChar);
+        }
+        if (s.indexOf("}") != -1){
+            s = s.replace('}', filenameFriendlyChar);
+        }
+        if (s.indexOf("[") != -1){
+        	s = s.replace('[', filenameFriendlyChar);
+        }
+        if (s.indexOf("]") != -1){
+        	s = s.replace(']', filenameFriendlyChar);
+        }
+		if (s.indexOf("|") != -1){
+        	s = s.replace('|', filenameFriendlyChar);
+        }
+        if (s.indexOf("'") != -1){
+        	s = s.replace('\'', filenameFriendlyChar);
+        }
+        if (s.indexOf("\"") != -1){
+        	s = s.replace('"', filenameFriendlyChar);
+        }
+        if (s.indexOf(":") != -1){
+        	s = s.replace(':', filenameFriendlyChar);
+        }
+        if (s.indexOf(";") != -1){
+            s = s.replace(';', filenameFriendlyChar);
+        }
+        if (s.indexOf("<") != -1){
+        	s = s.replace('<', filenameFriendlyChar);
+        }
+        if (s.indexOf(">") != -1){
+        	s = s.replace('>', filenameFriendlyChar);
+        }
+        if (s.indexOf(".") != -1){
+        	s = s.replace('.', filenameFriendlyChar);
+        }
+        if (s.indexOf("?") != -1){
+        	s = s.replace('?', filenameFriendlyChar);
+        }	
+    	if (s.indexOf("/") != -1){
+        	s = s.replace('/',filenameFriendlyChar);
+        }
+        if (s.indexOf("\\") != -1){
+        	s = s.replace('\\',filenameFriendlyChar);
+        }
+        if (s.indexOf(",") != -1){
+        	s = s.replace(',', filenameFriendlyChar);
+        }
+        // also have to change any underscores because downstream processing reserves them
+        if (s.indexOf("_") != -1){
+        	s = s.replace(',', filenameFriendlyChar);
+        }
+        return s;
     }
 }

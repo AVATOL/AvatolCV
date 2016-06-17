@@ -11,6 +11,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
+import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.PointAnnotations;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
@@ -44,7 +45,7 @@ public class ScoresInfoFile {
 	public ScoresInfoFile(String scoringConcernType, String scoringConcernID, String scoringConcernName){
 		this.scoringConcernType = scoringConcernType;
 		this.scoringConcernID   = scoringConcernID;
-		this.scoringConcernName = scoringConcernName;
+		this.scoringConcernName = AvatolCVFileSystem.makeStringSafeForFilename(scoringConcernName);;
 	}
 	public List<String> getImagePaths(){
 		return this.imagePaths;

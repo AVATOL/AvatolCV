@@ -242,15 +242,6 @@ public class NormalizedImageInfo {
                 else {
                     String[] parts = ClassicSplitter.splitt(line,'=');
                     String key = parts[0];
-                    if (key.indexOf("/") != -1){
-                    	key = key.replace('/','-');
-                    }
-                    if (key.indexOf("\\") != -1){
-                    	key = key.replace('\\','-');
-                    }
-                    if (key.indexOf(",") != -1){
-                    	key = key.replace(',', '-');
-                    }
                     String value = "";
                     if (parts.length > 1){
                         value = parts[1];
