@@ -809,4 +809,7 @@ public class AvatolCVFileSystem {
         }
         return s;
     }
+    public static String getPathnameForResultsSummaryFile(String runID, String scoringConcernName) throws AvatolCVException {
+        return AvatolCVFileSystem.getScoredDataDir() + FILESEP + "outputStats_" + runID + "_" + scoringConcernName;
+    }
 }

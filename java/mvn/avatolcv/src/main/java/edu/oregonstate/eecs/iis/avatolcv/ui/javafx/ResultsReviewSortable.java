@@ -1,6 +1,9 @@
 package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -79,6 +82,7 @@ import edu.oregonstate.eecs.iis.avatolcv.steps.ScoringRunStep;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class ResultsReviewSortable implements ProgressPresenter {
+    private static final String NL = System.getProperty("line.separator");
     public static final String STATUS_UNSAVED = "no";
     public static final String COLNAME_IMAGE = "image";
     public static final String COLNAME_TRUTH = "truth";
@@ -198,6 +202,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
             runSelectChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new RunChoiceChangeListener(runSelectChoiceBox, this.mainScreen, this.mainWindow));
             setRunDetails(this.runName);
             this.uploadSession = new UploadSession(this.runName);
+            generateResultsStatsFile(this.runID, scoringConcernValue.getText());
             setScoredImagesInfo(this.runID, scoringConcernValue.getText());
             //runDetailsAccordion.requestLayout();
             setupSlider();
@@ -499,6 +504,131 @@ public class ResultsReviewSortable implements ProgressPresenter {
         ObservableList<RowConstraints> rowConstraints = gp.getRowConstraints();
         for (RowConstraints rc : rowConstraints){
             rc.setVgrow(Priority.NEVER);
+        }
+    }
+    private boolean isConfidencePastThreshold(double thresh, String trimmedScoreConf){
+        Double d = new Double(trimmedScoreConf);
+        if (d.doubleValue() >= thresh){
+            return true;
+        }
+        return false;
+    }
+    private void generateResultsStatsFile(String runID, String scoringConcernName) throws AvatolCVException {
+        double qualityBar = 0.95;
+        String statsFilePath = AvatolCVFileSystem.getPathnameForResultsSummaryFile(runID, scoringConcernName);
+        try{
+            File f = new File(statsFilePath);
+            if (f.exists()){
+                f.delete();
+            }
+            BufferedWriter writer = new BufferedWriter(new FileWriter(statsFilePath));
+            StringBuilder sb = new StringBuilder();
+            String scoringFilePath = AvatolCVFileSystem.getScoringFilePath(runID, scoringConcernName);
+            scoringInfoFile = new ScoringInfoFile(scoringFilePath);
+            String scoreFilePath = AvatolCVFileSystem.getScoreFilePath(runID, scoringConcernName);
+            sif = new ScoresInfoFile(scoreFilePath);
+            
+            String trainingFilePath = AvatolCVFileSystem.getTrainingFilePath(runID, scoringConcernName);
+            tif = new TrainingInfoFile(trainingFilePath);
+            
+            HoldoutInfoFile hif = null;
+            if (isEvaluationMode()){
+                String holdoutFilePath = AvatolCVFileSystem.getHoldoutFilePath(runID, scoringConcernName);
+                hif = new HoldoutInfoFile(holdoutFilePath);
+            }
+            sb.append("SCORES for " + runID + "  " + scoringConcernName + NL);
+            List<String> scoringImagePaths = sif.getImagePaths();
+            double thresholdOrBetterCount = 0;
+            double totalScoredCount = 0;
+            double incorrectOverQualityBarCount = 0;
+            for (String path : scoringImagePaths){
+                totalScoredCount++;
+                String normalizedScoringConcernValue = sif.getScoringConcernValueForImagePath(path);
+                String imageID = ImageInfo.getImageIDFromPath(path);
+                sb.append("image: " + imageID);
+                String scoringConcernValue = new NormalizedValue(normalizedScoringConcernValue).getName();
+                sb.append("  score: " + scoringConcernValue);
+                
+                //System.out.println("getting confidence for ImageValue path(key) and value: " + path + ";" + scoringConcernValue);
+                String conf = sif.getConfidenceForImageValue(path, normalizedScoringConcernValue);
+                String trimmedScoreConf = ResultsUtils.limitToTwoDecimalPlaces(conf);
+                sb.append("   conf: " + trimmedScoreConf);
+                if (isConfidencePastThreshold(qualityBar, trimmedScoreConf)){
+                    thresholdOrBetterCount++;
+                }
+                
+                String normalizedTruthString = null;
+                if (isEvaluationMode()){
+                    normalizedTruthString = hif.getScoringConcernValueForImagePath(path);
+                    String truth = new NormalizedValue(normalizedTruthString).getName();
+                    sb.append("   truth: " + truth);
+                    if (isConfidencePastThreshold(qualityBar, trimmedScoreConf)){
+                        if (!truth.equals(scoringConcernValue)){
+                            incorrectOverQualityBarCount++;
+                        }
+                    }
+                }
+                
+                String origImageNameWithID = ResultsUtils.getTrueImageNameFromImagePath(path);
+                String[] parts = ClassicSplitter.splitt(origImageNameWithID,'_');
+                String origImageName = parts[1];
+                if ("".equals(origImageName)){
+                    origImageName = parts[0];
+                }
+                sb.append("   name: " + origImageName);
+                String thumbnailPathname = ResultsUtils.getThumbnailPathWithImagePath(path);
+                 
+                if (this.runSummary.hasTrainTestConcern()){
+                    String trainTestConcernValue = scoringInfoFile.getTrainTestConcernValueForImageID(ImageInfo.getImageIDFromPath(path)).getName();
+                    sb.append("   ttc: " + trainTestConcernValue + NL);
+                }
+                
+            }
+            sb.append(NL + NL + "TRAINING INFO for " + runID + "  " + scoringConcernName + NL);
+            List<String> imagePaths = tif.getImagePaths();
+            int totalTrainingCount = 0;;
+
+            for (String path : imagePaths){
+                if (!sif.hasImage(path)){
+                    totalTrainingCount++;
+                    String imageID = ImageInfo.getImageIDFromPath(path);
+                    sb.append("image: " + imageID);
+                    String normalizedScoringConcernValue = tif.getScoringConcernValueForImagePath(path);
+                    String value = new NormalizedValue(normalizedScoringConcernValue).getName();
+                    sb.append("  score: " + value);
+                    String trueNameWithSuffix = ResultsUtils.getTrueImageNameFromImagePath(path);
+                    String[] parts = ClassicSplitter.splitt(trueNameWithSuffix,'_');
+                    String origImageName = parts[1];
+                    if ("".equals(origImageName)){
+                        origImageName = parts[0];
+                    }
+                    sb.append("   name: " + origImageName + NL);
+                }
+            }
+            
+            double percentTrained = totalTrainingCount / ( totalTrainingCount + totalScoredCount);
+            double qualityPercent = thresholdOrBetterCount / totalScoredCount;
+            writer.write("RUN ID " + runID + "  " + scoringConcernName + NL);
+            writer.write("run had these characters " + NL);
+            //writer.write(getAllCharactersForRunID(runID);
+            if (isEvaluationMode()){
+                double percentWrongOverQualityBar = incorrectOverQualityBarCount / thresholdOrBetterCount;
+                writer.write(ResultsUtils.limitToTwoDecimalPlaces("" +percentWrongOverQualityBar) + "\tpercent wrong (" + incorrectOverQualityBarCount + ") at or above " + qualityBar + " confidence" + NL);
+            }
+            
+            writer.write(ResultsUtils.limitToTwoDecimalPlaces("" +qualityPercent) + "\tpercent (" + thresholdOrBetterCount + ") over " + qualityBar + " confidence" + NL + NL);
+            
+            
+            writer.write("# training samples: " + totalTrainingCount + NL);
+            writer.write("# scored   samples: " + totalScoredCount + NL);
+            writer.write("percent trained:    " + ResultsUtils.limitToTwoDecimalPlaces("" +percentTrained) + NL);
+            
+            writer.write(NL + NL);
+            writer.write("" + sb);
+            writer.close();
+        }
+        catch(IOException ioe){
+            throw new AvatolCVException("problem creating runStats file", ioe);
         }
     }
     private void setScoredImagesInfo(String runID, String scoringConcernName) throws AvatolCVException {
