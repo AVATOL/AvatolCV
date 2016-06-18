@@ -543,6 +543,15 @@ public class SessionInfo{
             }
         }
     }
+    public static NormalizedKey getNormalizedKeySafeForFilenameUse(NormalizedKey key) throws AvatolCVException {
+    	String type = key.getType();
+    	String name = key.getName();
+    	String id = key.getID();
+    	name = AvatolCVFileSystem.makeStringSafeForFilename(name);
+    	String s = NormalizedTypeIDName.buildTypeIdName(type, id, name);
+    	NormalizedKey result = new NormalizedKey(s);
+    	return result;
+    }
     public void generateRunSummary(String runID, ChoiceItem scoringConcern) throws AvatolCVException{
         RunSummary rs = new RunSummary(runID);
         if (this.scoringModeIsEvaluation){
@@ -551,8 +560,10 @@ public class SessionInfo{
         else {
         	rs.setScoringMode(RunSummary.SCORING_MODE_VALUE_TRUE_SCORING_MODE);
         }
-        
-        rs.setScoringConcern(scoringConcern.getNormalizedKey().toString());
+        // need to make the nane portion of the scoringConcern be safeForUseInFilename
+        NormalizedKey scoringConcernKey = scoringConcern.getNormalizedKey();
+        NormalizedKey scoringConcernKeyFilenameSafe = getNormalizedKeySafeForFilenameUse(scoringConcernKey);
+        rs.setScoringConcern(scoringConcernKeyFilenameSafe.toString());
         rs.setDataset(this.chosenDataset.getName());
         rs.setDatasetID(this.chosenDataset.getID());
         rs.setDataSource(dataSource.getName());
