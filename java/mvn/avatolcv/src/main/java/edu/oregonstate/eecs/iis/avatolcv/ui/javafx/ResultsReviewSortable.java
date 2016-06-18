@@ -513,6 +513,21 @@ public class ResultsReviewSortable implements ProgressPresenter {
         }
         return false;
     }
+    private String getAllCharactersForRunID(String runID) throws AvatolCVException {
+        String dirPath = AvatolCVFileSystem.getScoredDataDir();
+        File f = new File(dirPath);
+        String[] filenames = f.list();
+        StringBuilder sb = new StringBuilder();
+        for (String s : filenames){
+            if (s.startsWith("scored_character_")){
+                s = s.replaceAll(".txt", "");
+                String[] parts = ClassicSplitter.splitt(s, '_');
+                sb.append("      " + parts[3] + NL);
+            }
+        }
+        sb.append(NL);
+        return "" + sb;
+    }
     private void generateResultsStatsFile(String runID, String scoringConcernName) throws AvatolCVException {
         double qualityBar = 0.95;
         String statsFilePath = AvatolCVFileSystem.getPathnameForResultsSummaryFile(runID, scoringConcernName);
@@ -540,19 +555,19 @@ public class ResultsReviewSortable implements ProgressPresenter {
             List<String> scoringImagePaths = sif.getImagePaths();
             double thresholdOrBetterCount = 0;
             double totalScoredCount = 0;
-            double incorrectOverQualityBarCount = 0;
+            double correctOverQualityBarCount = 0;
             for (String path : scoringImagePaths){
                 totalScoredCount++;
                 String normalizedScoringConcernValue = sif.getScoringConcernValueForImagePath(path);
                 String imageID = ImageInfo.getImageIDFromPath(path);
                 sb.append("image: " + imageID);
                 String scoringConcernValue = new NormalizedValue(normalizedScoringConcernValue).getName();
-                sb.append("  score: " + scoringConcernValue);
+                sb.append("\tscore: " + scoringConcernValue);
                 
                 //System.out.println("getting confidence for ImageValue path(key) and value: " + path + ";" + scoringConcernValue);
                 String conf = sif.getConfidenceForImageValue(path, normalizedScoringConcernValue);
                 String trimmedScoreConf = ResultsUtils.limitToTwoDecimalPlaces(conf);
-                sb.append("   conf: " + trimmedScoreConf);
+                sb.append("\tconf: " + trimmedScoreConf);
                 if (isConfidencePastThreshold(qualityBar, trimmedScoreConf)){
                     thresholdOrBetterCount++;
                 }
@@ -561,10 +576,10 @@ public class ResultsReviewSortable implements ProgressPresenter {
                 if (isEvaluationMode()){
                     normalizedTruthString = hif.getScoringConcernValueForImagePath(path);
                     String truth = new NormalizedValue(normalizedTruthString).getName();
-                    sb.append("   truth: " + truth);
+                    sb.append("\ttruth: " + truth);
                     if (isConfidencePastThreshold(qualityBar, trimmedScoreConf)){
-                        if (!truth.equals(scoringConcernValue)){
-                            incorrectOverQualityBarCount++;
+                        if (truth.equals(scoringConcernValue)){
+                            correctOverQualityBarCount++;
                         }
                     }
                 }
@@ -575,12 +590,12 @@ public class ResultsReviewSortable implements ProgressPresenter {
                 if ("".equals(origImageName)){
                     origImageName = parts[0];
                 }
-                sb.append("   name: " + origImageName);
+                sb.append("\tname: " + origImageName);
                 String thumbnailPathname = ResultsUtils.getThumbnailPathWithImagePath(path);
                  
                 if (this.runSummary.hasTrainTestConcern()){
                     String trainTestConcernValue = scoringInfoFile.getTrainTestConcernValueForImageID(ImageInfo.getImageIDFromPath(path)).getName();
-                    sb.append("   ttc: " + trainTestConcernValue + NL);
+                    sb.append("\tttc: " + trainTestConcernValue + NL);
                 }
                 
             }
@@ -595,33 +610,33 @@ public class ResultsReviewSortable implements ProgressPresenter {
                     sb.append("image: " + imageID);
                     String normalizedScoringConcernValue = tif.getScoringConcernValueForImagePath(path);
                     String value = new NormalizedValue(normalizedScoringConcernValue).getName();
-                    sb.append("  score: " + value);
+                    sb.append("\tscore: " + value);
                     String trueNameWithSuffix = ResultsUtils.getTrueImageNameFromImagePath(path);
                     String[] parts = ClassicSplitter.splitt(trueNameWithSuffix,'_');
                     String origImageName = parts[1];
                     if ("".equals(origImageName)){
                         origImageName = parts[0];
                     }
-                    sb.append("   name: " + origImageName + NL);
+                    sb.append("\tname: " + origImageName + NL);
                 }
             }
             
-            double percentTrained = totalTrainingCount / ( totalTrainingCount + totalScoredCount);
-            double qualityPercent = thresholdOrBetterCount / totalScoredCount;
+            double percentTrained = 100 * (totalTrainingCount / ( totalTrainingCount + totalScoredCount));
+            double qualityPercent = 100 * (thresholdOrBetterCount / totalScoredCount);
             writer.write("RUN ID " + runID + "  " + scoringConcernName + NL);
             writer.write("run had these characters " + NL);
-            //writer.write(getAllCharactersForRunID(runID);
+            writer.write(getAllCharactersForRunID(runID));
             if (isEvaluationMode()){
-                double percentWrongOverQualityBar = incorrectOverQualityBarCount / thresholdOrBetterCount;
-                writer.write(ResultsUtils.limitToTwoDecimalPlaces("" +percentWrongOverQualityBar) + "\tpercent wrong (" + incorrectOverQualityBarCount + ") at or above " + qualityBar + " confidence" + NL);
+                double percentRightOverQualityBar = 100 * (correctOverQualityBarCount / thresholdOrBetterCount);
+                writer.write((int)percentRightOverQualityBar + "\tpercent correct (" + (int)correctOverQualityBarCount + ") at or above " + (int)(100*qualityBar) + "% confidence" + NL);
             }
             
-            writer.write(ResultsUtils.limitToTwoDecimalPlaces("" +qualityPercent) + "\tpercent (" + thresholdOrBetterCount + ") over " + qualityBar + " confidence" + NL + NL);
+            writer.write((int)qualityPercent + "\tpercent (" + (int)thresholdOrBetterCount + ") over " + (int)(100*qualityBar) + "% confidence" + NL + NL);
             
             
-            writer.write("# training samples: " + totalTrainingCount + NL);
-            writer.write("# scored   samples: " + totalScoredCount + NL);
-            writer.write("percent trained:    " + ResultsUtils.limitToTwoDecimalPlaces("" +percentTrained) + NL);
+            writer.write("# training samples: " + (int)totalTrainingCount + NL);
+            writer.write("# scored   samples: " + (int)totalScoredCount + NL);
+            writer.write("percent trained:    " + (int)percentTrained + NL);
             
             writer.write(NL + NL);
             writer.write("" + sb);
