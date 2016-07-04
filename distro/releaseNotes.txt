@@ -1,3 +1,11 @@
+20160704 AvatolCV Release Notes
+
+Add .txt to stats file
+Fix bug in "delete metadata due to change at data source" that caused crash 
+when files did not yet exist
+
+==========================================================================
+
 20160618a AvatolCV Release Notes
 
 -Added stats file creation to the results review screen.  When it is loaded,
