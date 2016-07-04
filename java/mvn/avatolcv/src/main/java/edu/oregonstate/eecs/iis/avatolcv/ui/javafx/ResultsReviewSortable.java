@@ -595,9 +595,9 @@ public class ResultsReviewSortable implements ProgressPresenter {
                  
                 if (this.runSummary.hasTrainTestConcern()){
                     String trainTestConcernValue = scoringInfoFile.getTrainTestConcernValueForImageID(ImageInfo.getImageIDFromPath(path)).getName();
-                    sb.append("\tttc: " + trainTestConcernValue + NL);
+                    sb.append("\tttc: " + trainTestConcernValue);
                 }
-                
+                sb.append(NL);
             }
             sb.append(NL + NL + "TRAINING INFO for " + runID + "  " + scoringConcernName + NL);
             List<String> imagePaths = tif.getImagePaths();

@@ -175,6 +175,12 @@ public class BisqueDataSource implements DataSource {
             for (BisqueAnnotation a : annotations){
                 String annotationName = a.getName();
                 String annotationId = a.getAnnotationID();
+                /*
+                 * HACK TO DEAL WITH bisque data that was saved not having the ID correct
+                if (annotationName.equalsIgnoreCase("leaf apex angle")){
+                	annotationId = "7231166";
+                }
+                */
                 String annotationKey = NormalizedTypeIDName.buildTypeIdName(NormalizedTypeIDName.TYPE_UNSPECIFIED, annotationId, annotationName);
                 annotationIDforNameHash.put(annotationName, annotationId);
                 if (annotationName.equals("filename") || annotationName.equals("upload_datetime")){
@@ -328,6 +334,27 @@ public class BisqueDataSource implements DataSource {
             //	int foo = 3;
             //}
             String keyString = NormalizedTypeIDName.buildTypeIdName(NormalizedTypeIDName.TYPE_UNSPECIFIED, id, name);
+            //System.out.println("KEY STRING WAS : " + keyString);
+            /*
+            // hack to weave together the entries that were saved that have non-existent type ID
+            if (keyString.equals("?:|leaf apex angle")){
+            	keyString = "?:7231166|leaf apex angle";
+            }
+            if (keyString.equals("?:?|leaf apex angle")){
+            	keyString = "?:7231166|leaf apex angle";
+            } 
+            if (keyString.equals(":|leaf apex angle")){
+            	keyString = "?:7231166|leaf apex angle";
+            }
+            if (keyString.contains("leaf apex angle")){
+            	if (!keyString.equals("?:7231166|leaf apex angle")){
+            		System.out.println("KEY STRING WRONG  : " + keyString);
+            	}
+            }
+            
+
+            //end hack
+             */
             if (name.equals("filename")){
                 keyString = NormalizedImageInfo.KEY_IMAGE_NAME;
             } 
