@@ -1,3 +1,22 @@
+20160618a AvatolCV Release Notes
+
+-Added stats file creation to the results review screen.  When it is loaded,
+a file is created at avatol_cv/sessions/<projname>/<runID>/scoredData/outputStats*
+that shows all the training and scored data for that character in that run,
+which characters were involved with the run, what percentage had confidence
+over 95%, and what percent of those were correct (if it was an eval run)
+
+-Added fleshed out DataInPlay view for MB runs, shows:
+    - which cells are scored and have point coordinates (green with S)
+    - which cells are scored but lack point coordinates (yellow with X)
+    - which cells are unscored (white with ?)
+    - which cells are excluded for some reason (greyed out with text giving cause of exclusion).
+    
+-fixed bug where special characters (,/\ etc) in character names caused problems
+when used in filenames
+
+-another fix for NPA character handling (not presently available)
+==========================================================================
 20160608a AvatolCV Release Notes
 
 Added IssueCheckers looking for the following conditions:
