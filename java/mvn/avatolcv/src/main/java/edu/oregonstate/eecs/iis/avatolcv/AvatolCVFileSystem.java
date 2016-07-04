@@ -701,6 +701,9 @@ public class AvatolCVFileSystem {
     }
     public static void deleteDirectory(String path){
     	File f = new File(path);
+    	if (!f.exists()){
+    		return;
+    	}
     	File[] files = f.listFiles();
     	for (File file : files){
     		if (file.isDirectory()){
