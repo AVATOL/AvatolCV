@@ -148,6 +148,13 @@ public class EvaluationSet implements ScoringSet {
 				sb.append("    ID: " + nii.getImageID() + "   NAME: " + nii.getImageName() + "    COORDS: " + nii.getAnnotationString() + NL);
 			}
 		}
+		sb.append(NL + "images to IGNORE    : " + NL);
+		for (ModalImageInfo mii : modals){
+			if (mii.isIgnore()){
+				NormalizedImageInfo nii = mii.getNormalizedImageInfo();
+				sb.append("    ID: " + nii.getImageID() + "   NAME: " + nii.getImageName() + "    COORDS: " + nii.getAnnotationString() + NL);
+			}
+		}
 		return "" + sb;
 	}
 }

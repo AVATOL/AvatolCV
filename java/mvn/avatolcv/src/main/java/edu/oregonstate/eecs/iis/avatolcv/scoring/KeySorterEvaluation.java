@@ -153,7 +153,15 @@ public class KeySorterEvaluation {
         }
         return count;
 	}
-	
+	public int getTotalIgnoreCount(){
+	    int count = 0;
+        for (ModalImageInfo mii : allModals){
+            if (mii.isIgnore()){
+                count++;
+            }
+        }
+        return count;
+	}
 	public List<NormalizedImageInfo> getImagesInBothTrainingAndScoring(){
 	    //TODO - deferred
 	    return null;
@@ -181,6 +189,15 @@ public class KeySorterEvaluation {
 	    if (null != miis){
 	    	 for (ModalImageInfo mii: miis){
 	             mii.setAsToScore();
+	         }
+	    }
+	}
+	public void setValueToIgnore(NormalizedValue nv) throws AvatolCVException {
+	    //System.out.println("setting value to score " + nv.getName());
+	    List<ModalImageInfo> miis = miisForValueHash.get(nv);
+	    if (null != miis){
+	    	 for (ModalImageInfo mii: miis){
+	             mii.setAsToIgnore();
 	         }
 	    }
 	}

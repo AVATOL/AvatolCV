@@ -40,6 +40,11 @@ import javafx.scene.layout.VBox;
  * 
  */
 public class GroupedPanelEvaluation extends VBox {
+	public enum RadioType {
+		Train,
+		Test,
+		Ignore
+	};
 	private List<ScoringSet> sets = null;
 	private String trainTestConcern = null;
 	private NormalizedKey trainTestConcernKey = null;
@@ -69,9 +74,9 @@ public class GroupedPanelEvaluation extends VBox {
         
         
         Label ttConcernLabel = new Label(this.trainTestConcern);
-        gp.add(ttConcernLabel, 2, 0);
+        gp.add(ttConcernLabel, 3, 0);
         Label countTitleLabel = new Label("image count");
-        gp.add(countTitleLabel, 3, 0);
+        gp.add(countTitleLabel, 4, 0);
         /*
         int column = 4;
         for (ScoringSet set : sets){
@@ -86,21 +91,25 @@ public class GroupedPanelEvaluation extends VBox {
             // put train/test radios in grid line
             RadioButton radioTrain = new RadioButton("train");
             RadioButton radioScore = new RadioButton("score");
+            RadioButton radioIgnore = new RadioButton("ignore");
             ToggleGroup tg = new ToggleGroup();
+            radioIgnore.setToggleGroup(tg);
             radioTrain.setToggleGroup(tg);
             radioTrain.setStyle("styleClass:indentedFirstColumn");
             radioScore.setToggleGroup(tg);
             radioTrain.setSelected(true);
-            radioTrain.selectedProperty().addListener(new RadioChangeListener(ttValue, keySorter, true, numbersUpdater));
-            radioScore.selectedProperty().addListener(new RadioChangeListener(ttValue, keySorter, false, numbersUpdater));
-            gp.add(radioTrain, 0,row);
-            gp.add(radioScore, 1,row);
-            
+            radioTrain.selectedProperty().addListener(new RadioChangeListener(ttValue, keySorter, RadioType.Train, numbersUpdater));
+            radioScore.selectedProperty().addListener(new RadioChangeListener(ttValue, keySorter, RadioType.Test, numbersUpdater));
+            radioIgnore.selectedProperty().addListener(new RadioChangeListener(ttValue, keySorter, RadioType.Ignore, numbersUpdater));
+            int column = 0;
+            gp.add(radioTrain, column++,row);
+            gp.add(radioScore, column++,row);
+            gp.add(radioIgnore, column++, row);
             
             
             // put (ex.) taxon name in grid line
             Label ttValNameLabel = new Label(ttValName);
-            gp.add(ttValNameLabel, 2, row);
+            gp.add(ttValNameLabel, column++, row);
             // put total count for that taxa
             Label countLabel = new Label();
             if (keySorter.isValueToTrain(ttValue)){
@@ -111,7 +120,7 @@ public class GroupedPanelEvaluation extends VBox {
                 radioScore.setSelected(true);
                 countLabel.setText("" + keySorter.getCountForValue(ttValue));
             }
-            gp.add(countLabel, 3, row);
+            gp.add(countLabel, column++, row);
             row++;
         }
         ScrollPane sp = new ScrollPane();
@@ -134,15 +143,19 @@ public class GroupedPanelEvaluation extends VBox {
 		Label percentToScoreLabel =      new Label("    % to score: ");
 		Label percentToScoreValueLabel = new Label();
 		Label ratioCountLabel =          new Label();
+		Label countToIgnoreLabel =      new Label("    # to ignore: "); 
+		Label ignoreCountValueLabel =         new Label();
 		
 		percentageExpressionHbox.getChildren().add(totalImagesLabel);
 		percentageExpressionHbox.getChildren().add(totalImagesValueLabel);
+		percentageExpressionHbox.getChildren().add(countToIgnoreLabel);
+		percentageExpressionHbox.getChildren().add(ignoreCountValueLabel);
 		percentageExpressionHbox.getChildren().add(percentToTrainLabel);
 		percentageExpressionHbox.getChildren().add(percentToTainValueLabel);
 		percentageExpressionHbox.getChildren().add(percentToScoreLabel);
 		percentageExpressionHbox.getChildren().add(percentToScoreValueLabel);
 		percentageExpressionHbox.getChildren().add(ratioCountLabel);
-		this.numbersUpdater = new NumbersUpdater(keySorter, totalImagesValueLabel, percentToTainValueLabel, percentToScoreValueLabel,ratioCountLabel);
+		this.numbersUpdater = new NumbersUpdater(keySorter, totalImagesValueLabel, percentToTainValueLabel, percentToScoreValueLabel,ratioCountLabel, ignoreCountValueLabel);
 		return percentageExpressionHbox;
 	}
 	
@@ -151,16 +164,18 @@ public class GroupedPanelEvaluation extends VBox {
 		private Label percentToTrain;
 		private Label percentToScore;
 		private Label ratioCount;
+		private Label ignoreCount;
 		private KeySorterEvaluation kse;
-		public NumbersUpdater(KeySorterEvaluation kse, Label totalImages, Label percentToTrain, Label percentToScore, Label ratioCount){
+		public NumbersUpdater(KeySorterEvaluation kse, Label totalImages, Label percentToTrain, Label percentToScore, Label ratioCount, Label ignoreCount){
 			this.totalImages = totalImages;
 			this.percentToTrain = percentToTrain;
 			this.percentToScore = percentToScore;
 			this.ratioCount = ratioCount;
+			this.ignoreCount = ignoreCount;
 			this.kse = kse;
 			update();
 		}
-		public void update(){
+		public void update(){ 
 			double imageCount = kse.getTotalScoringCount() + kse.getTotalTrainingCount();
 			totalImages.setText("" + (int)imageCount);
 			double pTrain = 100 * kse.getTotalTrainingCount() / imageCount;
@@ -170,18 +185,21 @@ public class GroupedPanelEvaluation extends VBox {
 			String pScoreString = String.format( "%.2f", pScore );
 			percentToScore.setText("" + pScoreString);
 			ratioCount.setText("    (" + kse.getTotalTrainingCount() + " vs " + kse.getTotalScoringCount() + ")");
+			int numberIgnored = kse.getTotalIgnoreCount();
+			ignoreCount.setText("" + numberIgnored);
 		}
 		
 	}
 	public class RadioChangeListener implements ChangeListener<Boolean> {
+		
 	    private NormalizedValue nv = null;
 	    private KeySorterEvaluation ssks = null;
-	    private boolean isTraining = false;
+	    private RadioType radioType = RadioType.Ignore;
 	    private NumbersUpdater nu = null;
-	    public RadioChangeListener(NormalizedValue nv, KeySorterEvaluation ssks, boolean isTraining, NumbersUpdater nu){
+	    public RadioChangeListener(NormalizedValue nv, KeySorterEvaluation ssks, RadioType radioType, NumbersUpdater nu){
 	        this.nv = nv;
 	        this.ssks = ssks;
-	        this.isTraining = isTraining;
+	        this.radioType = radioType;
 	        this.nu = nu;
 	    }
         @Override
@@ -189,13 +207,17 @@ public class GroupedPanelEvaluation extends VBox {
                 Boolean wasPreviouslySelected, Boolean isNowSelected) {
             if (isNowSelected){
                 try {
-                    if (isTraining){
+                    if (radioType == RadioType.Train){
                         ssks.setValueToTrain(this.nv);
                         nu.update();
                     }
-                    else {
+                    else if (radioType == RadioType.Test) {
                         ssks.setValueToScore(this.nv);
                         nu.update();
+                    }
+                    else {
+                    	ssks.setValueToIgnore(this.nv);
+                    	nu.update();
                     }
                 }
                 catch(AvatolCVException ace){
