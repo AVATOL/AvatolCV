@@ -45,6 +45,7 @@ import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSet;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ModalImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.KeySorterEvaluation;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.TrainScoreIgnoreBreakdown;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.TrueScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.ImagesForStep;
@@ -68,7 +69,7 @@ public class ScoringConfigurationStepController implements StepController {
     private boolean sortByImage = true;
     private NormalizedKey trainTestKey = null;
     private Hashtable<String, NormalizedKey> normalizedKeyHash = new Hashtable<String, NormalizedKey>();
-    
+    private TrainScoreIgnoreBreakdown trainScoreIgnore = null;
     
     public ScoringConfigurationStepController(ScoringConfigurationStep step, String fxmlDocName) throws AvatolCVException {
         this.step = step;
@@ -106,6 +107,7 @@ public class ScoringConfigurationStepController implements StepController {
 			}
 			else {
 				if (this.step.getSessionInfo().isEvaluationRun()){
+				    trainScoreIgnore.persist();
 					consumeEvaluationSets();
 			    }
 			    else {
@@ -297,7 +299,8 @@ public class ScoringConfigurationStepController implements StepController {
         List<NormalizedValue> trainTestValues = this.step.getSessionInfo().getValuesForTrainTestConcern(selectedTrainTestConcernKey);
         
         if (this.step.getSessionInfo().isEvaluationRun()){
-        	GroupedPanelEvaluation panel = new GroupedPanelEvaluation(sets, selectedTrainTestConcern, selectedTrainTestConcernKey, trainTestValues);
+            trainScoreIgnore = new TrainScoreIgnoreBreakdown();
+        	GroupedPanelEvaluation panel = new GroupedPanelEvaluation(sets, selectedTrainTestConcern, selectedTrainTestConcernKey, trainTestValues, trainScoreIgnore);
     	    AnchorPane.setTopAnchor(panel, 0.0);
             AnchorPane.setLeftAnchor(panel, 0.0);
             AnchorPane.setRightAnchor(panel, 0.0);

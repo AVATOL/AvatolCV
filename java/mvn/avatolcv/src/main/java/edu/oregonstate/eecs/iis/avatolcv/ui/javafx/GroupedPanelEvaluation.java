@@ -1,5 +1,6 @@
 package edu.oregonstate.eecs.iis.avatolcv.ui.javafx;
 
+import java.util.Hashtable;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
@@ -9,6 +10,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.EvaluationSet;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSet;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.KeySorterEvaluation;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.TrainScoreIgnoreBreakdown;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.TrueScoringSet;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -40,22 +42,20 @@ import javafx.scene.layout.VBox;
  * 
  */
 public class GroupedPanelEvaluation extends VBox {
-	public enum RadioType {
-		Train,
-		Test,
-		Ignore
-	};
+	
 	private List<ScoringSet> sets = null;
 	private String trainTestConcern = null;
 	private NormalizedKey trainTestConcernKey = null;
 	private List<NormalizedValue> trainTestValues = null;
 	private KeySorterEvaluation keySorter = null;
 	private NumbersUpdater numbersUpdater = null;
-	public GroupedPanelEvaluation(List<ScoringSet> sets, String trainTestConcern, NormalizedKey trainTestConcernKey, List<NormalizedValue> trainTestValues) throws AvatolCVException {
+	private TrainScoreIgnoreBreakdown trainScoreIgnore = null;
+	public GroupedPanelEvaluation(List<ScoringSet> sets, String trainTestConcern, NormalizedKey trainTestConcernKey, List<NormalizedValue> trainTestValues, TrainScoreIgnoreBreakdown trainScoreIgnore) throws AvatolCVException {
 		this.sets = sets;
 		this.trainTestConcern = trainTestConcern;
 		this.trainTestConcernKey = trainTestConcernKey;
 		this.trainTestValues = trainTestValues;
+		this.trainScoreIgnore = trainScoreIgnore;
 		if (null == keySorter){
         	 keySorter = new KeySorterEvaluation(sets,trainTestConcernKey);
         }
@@ -98,9 +98,9 @@ public class GroupedPanelEvaluation extends VBox {
             radioTrain.setStyle("styleClass:indentedFirstColumn");
             radioScore.setToggleGroup(tg);
             radioTrain.setSelected(true);
-            radioTrain.selectedProperty().addListener(new RadioChangeListener(ttValue, keySorter, RadioType.Train, numbersUpdater));
-            radioScore.selectedProperty().addListener(new RadioChangeListener(ttValue, keySorter, RadioType.Test, numbersUpdater));
-            radioIgnore.selectedProperty().addListener(new RadioChangeListener(ttValue, keySorter, RadioType.Ignore, numbersUpdater));
+            radioTrain.selectedProperty().addListener(new RadioChangeListener(ttValue, keySorter, TrainScoreIgnoreBreakdown.TreatmentOption.TRAIN, numbersUpdater));
+            radioScore.selectedProperty().addListener(new RadioChangeListener(ttValue, keySorter, TrainScoreIgnoreBreakdown.TreatmentOption.SCORE, numbersUpdater));
+            radioIgnore.selectedProperty().addListener(new RadioChangeListener(ttValue, keySorter, TrainScoreIgnoreBreakdown.TreatmentOption.IGNORE, numbersUpdater));
             int column = 0;
             gp.add(radioTrain, column++,row);
             gp.add(radioScore, column++,row);
@@ -114,10 +114,12 @@ public class GroupedPanelEvaluation extends VBox {
             Label countLabel = new Label();
             if (keySorter.isValueToTrain(ttValue)){
                 radioTrain.setSelected(true);
+                trainScoreIgnore.setTreatmentOptionForNormalizedValue(ttValue, TrainScoreIgnoreBreakdown.TreatmentOption.TRAIN);
                 countLabel.setText("" + keySorter.getCountForValue(ttValue));
             }
             else {
                 radioScore.setSelected(true);
+                trainScoreIgnore.setTreatmentOptionForNormalizedValue(ttValue, TrainScoreIgnoreBreakdown.TreatmentOption.SCORE);
                 countLabel.setText("" + keySorter.getCountForValue(ttValue));
             }
             gp.add(countLabel, column++, row);
@@ -193,12 +195,12 @@ public class GroupedPanelEvaluation extends VBox {
 	public class RadioChangeListener implements ChangeListener<Boolean> {
 		
 	    private NormalizedValue nv = null;
-	    private KeySorterEvaluation ssks = null;
-	    private RadioType radioType = RadioType.Ignore;
+	    private KeySorterEvaluation kse = null;
+	    private TrainScoreIgnoreBreakdown.TreatmentOption radioType = TrainScoreIgnoreBreakdown.TreatmentOption.IGNORE;
 	    private NumbersUpdater nu = null;
-	    public RadioChangeListener(NormalizedValue nv, KeySorterEvaluation ssks, RadioType radioType, NumbersUpdater nu){
+	    public RadioChangeListener(NormalizedValue nv, KeySorterEvaluation kse, TrainScoreIgnoreBreakdown.TreatmentOption radioType, NumbersUpdater nu){
 	        this.nv = nv;
-	        this.ssks = ssks;
+	        this.kse = kse;
 	        this.radioType = radioType;
 	        this.nu = nu;
 	    }
@@ -207,16 +209,19 @@ public class GroupedPanelEvaluation extends VBox {
                 Boolean wasPreviouslySelected, Boolean isNowSelected) {
             if (isNowSelected){
                 try {
-                    if (radioType == RadioType.Train){
-                        ssks.setValueToTrain(this.nv);
+                    if (radioType == TrainScoreIgnoreBreakdown.TreatmentOption.TRAIN){
+                        kse.setValueToTrain(this.nv);
+                        trainScoreIgnore.setTreatmentOptionForNormalizedValue(this.nv, TrainScoreIgnoreBreakdown.TreatmentOption.TRAIN);
                         nu.update();
                     }
-                    else if (radioType == RadioType.Test) {
-                        ssks.setValueToScore(this.nv);
+                    else if (radioType == TrainScoreIgnoreBreakdown.TreatmentOption.SCORE) {
+                        kse.setValueToScore(this.nv);
+                        trainScoreIgnore.setTreatmentOptionForNormalizedValue(this.nv, TrainScoreIgnoreBreakdown.TreatmentOption.SCORE);
                         nu.update();
                     }
                     else {
-                    	ssks.setValueToIgnore(this.nv);
+                    	kse.setValueToIgnore(this.nv);
+                    	trainScoreIgnore.setTreatmentOptionForNormalizedValue(this.nv, TrainScoreIgnoreBreakdown.TreatmentOption.IGNORE);
                     	nu.update();
                     }
                 }
@@ -226,4 +231,5 @@ public class GroupedPanelEvaluation extends VBox {
             }
         }
 	}
+	
 }

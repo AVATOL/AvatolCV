@@ -525,7 +525,9 @@ public class AvatolCVFileSystem {
         }
         return null;
     }
-    
+    public static String getTrainScoreIgnorePath() throws AvatolCVException {
+        return getScoredDataDir() + FILESEP + "trainScoreIgnoreBreakdown.txt";
+    }
 	// IMAGES
 	public static String getDatasetExclusionInfoFilePath(String imageID) throws AvatolCVException {
 		return  AvatolCVFileSystem.getNormalizedExclusionDir() + FILESEP + imageID + ".txt";

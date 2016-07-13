@@ -155,4 +155,5 @@ public class TrueScoringSet implements ScoringSet {
 		}
 		return "" + sb;
 	}
+
 }
