@@ -9,6 +9,7 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 public interface ScoringSet {
 	List<ModalImageInfo> getImagesToTrainOn() throws AvatolCVException;
 	List<ModalImageInfo> getImagesToScore() throws AvatolCVException;
+    List<ModalImageInfo> getImagesToIgnore() throws AvatolCVException;
 	List<ModalImageInfo> getImagesToTrainOnForKeyValue(NormalizedKey key, NormalizedValue value) throws AvatolCVException;
 	List<NormalizedKey> getAllKeys();
 	NormalizedKey getKeyToScore();

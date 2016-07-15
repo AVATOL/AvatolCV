@@ -113,6 +113,9 @@ public class ResultsReviewSortable implements ProgressPresenter {
     public Button saveResultsButton = null;
     public Button undoSaveButton = null;
     public ProgressBar uploadProgress = null;
+    private Label labelCorrectValue = null;
+    private Label labelIncorrectValue = null;
+    private Label labelPercentCorrectValue = null;
     private Stage mainWindow = null;
     private Scene scene = null;
     private String runID = null;
@@ -556,6 +559,8 @@ public class ResultsReviewSortable implements ProgressPresenter {
             double thresholdOrBetterCount = 0;
             double totalScoredCount = 0;
             double correctOverQualityBarCount = 0;
+            double correct = 0;
+            double incorrect = 0;
             for (String path : scoringImagePaths){
                 totalScoredCount++;
                 String normalizedScoringConcernValue = sif.getScoringConcernValueForImagePath(path);
@@ -576,6 +581,12 @@ public class ResultsReviewSortable implements ProgressPresenter {
                 if (isEvaluationMode()){
                     normalizedTruthString = hif.getScoringConcernValueForImagePath(path);
                     String truth = new NormalizedValue(normalizedTruthString).getName();
+                    if (truth.equals(scoringConcernValue)){
+                        correct++;
+                    }
+                    else {
+                        incorrect++;
+                    }
                     sb.append("\ttruth: " + truth);
                     if (isConfidencePastThreshold(qualityBar, trimmedScoreConf)){
                         if (truth.equals(scoringConcernValue)){
@@ -591,7 +602,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
                     origImageName = parts[0];
                 }
                 sb.append("\tname: " + origImageName);
-                String thumbnailPathname = ResultsUtils.getThumbnailPathWithImagePath(path);
+                //String thumbnailPathname = ResultsUtils.getThumbnailPathWithImagePath(path);
                  
                 if (this.runSummary.hasTrainTestConcern()){
                     String trainTestConcernValue = scoringInfoFile.getTrainTestConcernValueForImageID(ImageInfo.getImageIDFromPath(path)).getName();
@@ -601,7 +612,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
             }
             sb.append(NL + NL + "TRAINING INFO for " + runID + "  " + scoringConcernName + NL);
             List<String> imagePaths = tif.getImagePaths();
-            int totalTrainingCount = 0;;
+            int totalTrainingCount = 0;
 
             for (String path : imagePaths){
                 if (!sif.hasImage(path)){
@@ -620,23 +631,51 @@ public class ResultsReviewSortable implements ProgressPresenter {
                     sb.append("\tname: " + origImageName + NL);
                 }
             }
-            
+            int totalIgnoreCount = 0;
+            if (isEvaluationMode()){
+                List<String> holdoutPaths = hif.getImagePaths();
+                for (String path : holdoutPaths){
+                    totalIgnoreCount++;
+                    String imageID = ImageInfo.getImageIDFromPath(path);
+                    sb.append("image: " + imageID);
+                    String normalizedScoringConcernValue = hif.getScoringConcernValueForImagePath(path);
+                    String value = new NormalizedValue(normalizedScoringConcernValue).getName();
+                    sb.append("\tscore: " + value);
+                    String trueNameWithSuffix = ResultsUtils.getTrueImageNameFromImagePath(path);
+                    String[] parts = ClassicSplitter.splitt(trueNameWithSuffix,'_');
+                    String origImageName = parts[1];
+                    if ("".equals(origImageName)){
+                        origImageName = parts[0];
+                    }
+                    sb.append("\tname: " + origImageName + NL);
+                }
+            }
             double percentTrained = 100 * (totalTrainingCount / ( totalTrainingCount + totalScoredCount));
             double qualityPercent = 100 * (thresholdOrBetterCount / totalScoredCount);
+            double correctPercent = 100 * (correct / totalScoredCount);
             writer.write("RUN ID " + runID + "  " + scoringConcernName + NL);
             writer.write("run had these characters " + NL);
             writer.write(getAllCharactersForRunID(runID));
-            if (isEvaluationMode()){
-                double percentRightOverQualityBar = 100 * (correctOverQualityBarCount / thresholdOrBetterCount);
-                writer.write((int)percentRightOverQualityBar + "\tpercent correct (" + (int)correctOverQualityBarCount + ") at or above " + (int)(100*qualityBar) + "% confidence" + NL);
-            }
-            
-            writer.write((int)qualityPercent + "\tpercent (" + (int)thresholdOrBetterCount + ") over " + (int)(100*qualityBar) + "% confidence" + NL + NL);
-            
-            
             writer.write("# training samples: " + (int)totalTrainingCount + NL);
             writer.write("# scored   samples: " + (int)totalScoredCount + NL);
-            writer.write("percent trained:    " + (int)percentTrained + NL);
+            writer.write("percent trained:    " + (int)percentTrained + NL + NL);
+            if (isEvaluationMode()){
+                writer.write("# ignored  samples: " + (int)totalIgnoreCount + NL + NL);
+            }
+            if (isEvaluationMode()){
+                writer.write("Of those scored..." + NL + (int)correctPercent + " % are correct.  (CORRECT: " + (int)correct + " , WRONG: " + (int)incorrect + ")" + NL + NL);
+                labelCorrectValue.setText("" + (int)correct);
+                labelIncorrectValue.setText("" + (int)incorrect);
+                labelPercentCorrectValue.setText("" + (int)correctPercent + " %");
+            }
+           
+            writer.write((int)thresholdOrBetterCount + " of " + (int)totalScoredCount + "  (" + (int)qualityPercent + " %) have confidence value of " + (int)(100*qualityBar) + " % or higher" + NL);
+            if (isEvaluationMode()){
+                double percentRightOverQualityBar = 100 * (correctOverQualityBarCount / thresholdOrBetterCount);
+                writer.write("of those, " + (int)correctOverQualityBarCount + " of " + (int)thresholdOrBetterCount + "  (" + (int)percentRightOverQualityBar + " %) are correct");
+            }
+            
+            
             
             writer.write(NL + NL);
             writer.write("" + sb);
@@ -838,6 +877,35 @@ public class ResultsReviewSortable implements ProgressPresenter {
             label.getStyleClass().add("summaryValue");
             overviewGridPane.add(label, 1, row++);
         }
+        if (isEvaluationMode()){
+            Label spacerLabel1 = new Label(" ");
+            Label spacerLabel2 = new Label(" ");
+            Label spacerLabel3 = new Label(" ");
+            Label labelCorrectTitle = new Label("# correct");
+            labelCorrectValue = new Label("");
+            Label labelIncorrectTitle = new Label("# wrong");
+            labelIncorrectValue = new Label("");
+            Label percentCorrectTitle = new Label("% correct");
+            labelPercentCorrectValue = new Label("");
+            labelCorrectTitle.getStyleClass().add("summaryValue");
+            labelCorrectValue.getStyleClass().add("summaryValue");
+            labelIncorrectTitle.getStyleClass().add("summaryValue");
+            labelIncorrectValue.getStyleClass().add("summaryValue");
+            percentCorrectTitle.getStyleClass().add("summaryValue");
+            labelPercentCorrectValue.getStyleClass().add("summaryValue");
+            
+
+            overviewGridPane.add(spacerLabel1, 0, row++);
+            overviewGridPane.add(spacerLabel2, 0, row++);
+            overviewGridPane.add(labelCorrectTitle, 0, row);
+            overviewGridPane.add(labelCorrectValue, 1, row++);
+            overviewGridPane.add(labelIncorrectTitle, 0, row);
+            overviewGridPane.add(labelIncorrectValue, 1, row++);
+            overviewGridPane.add(spacerLabel3, 0, row++);
+            overviewGridPane.add(percentCorrectTitle, 0, row);
+            overviewGridPane.add(labelPercentCorrectValue, 1, row++);
+        }
+        
         //
         //this.scoreIndex = new ScoreIndex(AvatolCVFileSystem.getScoreIndexPath(rs.getRunID()));
     }

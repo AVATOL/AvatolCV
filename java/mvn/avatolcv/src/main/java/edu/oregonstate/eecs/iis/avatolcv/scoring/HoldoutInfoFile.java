@@ -33,6 +33,9 @@ public class HoldoutInfoFile {
         this.scoringConcernID   = scoringConcernID;
         this.scoringConcernName = AvatolCVFileSystem.makeStringSafeForFilename(scoringConcernName);;
     }
+    public List<String> getImagePaths(){
+        return this.imagePaths;
+    }
     public String getScoringConcernValueForImagePath(String imagePath){
         return this.scoringConcernValueHash.get(imagePath);
     }

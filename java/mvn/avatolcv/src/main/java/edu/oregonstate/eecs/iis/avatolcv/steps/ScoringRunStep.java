@@ -177,7 +177,8 @@ public class ScoringRunStep implements Step {
             if (this.sessionInfo.isScoringModeEvaluation()){
             	logger.info("creating HoldoutInfoFile");
                 HoldoutInfoFile hif = new HoldoutInfoFile(scoringConcernType, scoringConcernID, scoringConcernName);
-                for (ModalImageInfo mii : scoringImages){
+                List<ModalImageInfo> ignoreImages = scoringSet.getImagesToIgnore();
+                for (ModalImageInfo mii : ignoreImages){
                     NormalizedImageInfo nii = mii.getNormalizedImageInfo();
                     NormalizedValue value = nii.getValueForKey(scoringConcernKey);
                     String imagePath = getPathForNii(nii, algSequence, sessionInfo.getSelectedScoringAlgorithm().getTrainingLabelImageSuffix());

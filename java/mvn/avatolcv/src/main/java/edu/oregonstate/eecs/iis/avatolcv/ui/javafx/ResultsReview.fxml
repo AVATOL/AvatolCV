@@ -16,7 +16,7 @@
                         <VBox>
                            <children>
                               <ChoiceBox fx:id="runSelectChoiceBox" maxWidth="1.7976931348623157E308" />
-                          <AnchorPane minHeight="0.0" minWidth="0.0">
+                          <AnchorPane minHeight="0.0" minWidth="0.0" VBox.vgrow="ALWAYS">
                                  <children>
                                     <ScrollPane fx:id="runDetailsScrollPane" layoutX="9.600000381469727" layoutY="9.600000381469727" prefViewportHeight="287.0" prefViewportWidth="240.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <content>

@@ -156,4 +156,10 @@ public class TrueScoringSet implements ScoringSet {
 		return "" + sb;
 	}
 
+    @Override
+    public List<ModalImageInfo> getImagesToIgnore() throws AvatolCVException {
+        List<ModalImageInfo> result = new ArrayList<ModalImageInfo>();
+        return result;
+    }
+
 }

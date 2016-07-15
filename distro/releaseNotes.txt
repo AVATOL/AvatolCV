@@ -1,3 +1,12 @@
+20160715 AvatolCV Release Notes
+
+-added option to exclude taxa on the evaluation run scoring config screen
+-display #right, #wrong and percent correct for eval run in results viewer
+-added correctness info to stats file that is generated at
+avatol_cv/sessions/<project>/<runid>/scoredData/outputStats*.txt when results
+are viewed.
+
+==========================================================================
 20160704 AvatolCV Release Notes
 
 Add .txt to stats file

@@ -157,4 +157,14 @@ public class EvaluationSet implements ScoringSet {
 		}
 		return "" + sb;
 	}
+    @Override
+    public List<ModalImageInfo> getImagesToIgnore() throws AvatolCVException {
+        List<ModalImageInfo> result = new ArrayList<ModalImageInfo>();
+        for (ModalImageInfo mii : modals){
+            if (mii.isIgnore()){
+                result.add(mii);
+            }
+        }
+        return result;
+    }
 }
