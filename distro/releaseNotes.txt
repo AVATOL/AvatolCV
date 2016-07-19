@@ -1,4 +1,4 @@
-20160715 AvatolCV Release Notes
+20160719 AvatolCV Release Notes
 
 -added option to exclude taxa on the evaluation run scoring config screen
 -display #right, #wrong and percent correct for eval run in results viewer
