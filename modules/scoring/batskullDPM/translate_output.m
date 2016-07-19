@@ -315,8 +315,12 @@ fh = fopen(outputFile, 'wt');
 %% write class header
 class1 = [CHARACTER_STATE ':' charMeta(1).id ...
         '|' charMeta(1).name];
-class2 = [CHARACTER_STATE ':' charMeta(2).id ...
+try
+    class2 = [CHARACTER_STATE ':' charMeta(2).id ...
         '|' charMeta(2).name];
+catch
+    class2 = '?';
+end
 fprintf(fh, 'classNames=%s,%s\n', class1, class2);
 
 %% write scored data

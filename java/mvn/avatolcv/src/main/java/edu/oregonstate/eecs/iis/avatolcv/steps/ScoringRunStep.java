@@ -15,7 +15,6 @@ import edu.oregonstate.eecs.iis.avatolcv.algorithm.OutputMonitor;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.RunConfigFile;
 import edu.oregonstate.eecs.iis.avatolcv.algorithm.ScoringAlgorithm;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.ChoiceItem;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.PointAnnotations;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
@@ -23,11 +22,13 @@ import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.IgnoreInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ModalImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringConcernDetails;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringProfile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringSet;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DataIssue;
 import edu.oregonstate.eecs.iis.avatolcv.session.SessionInfo;
 
@@ -152,6 +153,19 @@ public class ScoringRunStep implements Step {
             NormalizedKey scoringConcernKey = new NormalizedKey(NormalizedTypeIDName.buildTypeIdName(scoringConcernType, scoringConcernID, scoringConcernName));
             ScoringProfile scoringProfile = new ScoringProfile(sessionInfo);
             /*
+             * ignore file
+             */
+            if (this.sessionInfo.isScoringModeEvaluation()){
+                logger.info("creating IgnoreInfoFile");
+                IgnoreInfoFile iif = new IgnoreInfoFile(scoringConcernType, scoringConcernID, scoringConcernName);
+                ScoringSet scoringSet = this.sessionInfo.getScoringSetForScoringConcern(scoringConcernName);
+                List<ModalImageInfo> ignoreImages = scoringSet.getImagesToIgnore();
+                for (ModalImageInfo mii : ignoreImages){
+                    addImageToTrainingInfoFile(mii, scoringConcernKey, iif, scoringProfile);
+                }
+                iif.persist(AvatolCVFileSystem.getTrainingDataDirForScoring());
+            }
+            /*
              * training file
              */
             TrainingInfoFile tif = new TrainingInfoFile(scoringConcernType, scoringConcernID, scoringConcernName);
@@ -182,7 +196,7 @@ public class ScoringRunStep implements Step {
                     NormalizedImageInfo nii = mii.getNormalizedImageInfo();
                     NormalizedValue value = nii.getValueForKey(scoringConcernKey);
                     String imagePath = getPathForNii(nii, algSequence, sessionInfo.getSelectedScoringAlgorithm().getTrainingLabelImageSuffix());
-                    hif.addInfo(imagePath, value.toString());
+                    hif.addInfo(imagePath, value.toString(), scoringProfile.getTrainTestConcernValue(mii));
                 }
                 hif.persist(AvatolCVFileSystem.getTrainingDataDirForScoring());
             }

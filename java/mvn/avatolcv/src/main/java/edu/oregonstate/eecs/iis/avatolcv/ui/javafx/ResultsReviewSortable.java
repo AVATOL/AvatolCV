@@ -50,7 +50,6 @@ import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.BisqueDataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSource;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.DataSourceUtils;
@@ -73,8 +72,10 @@ import edu.oregonstate.eecs.iis.avatolcv.results.ScoreItem.ScoringFate;
 import edu.oregonstate.eecs.iis.avatolcv.results.ScoringProvenanceInfo;
 import edu.oregonstate.eecs.iis.avatolcv.results.UploadVoter;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.IgnoreInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringInfoFile;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.ProgressPresenter;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
@@ -550,9 +551,17 @@ public class ResultsReviewSortable implements ProgressPresenter {
             tif = new TrainingInfoFile(trainingFilePath);
             
             HoldoutInfoFile hif = null;
+            IgnoreInfoFile iif = null;
             if (isEvaluationMode()){
                 String holdoutFilePath = AvatolCVFileSystem.getHoldoutFilePath(runID, scoringConcernName);
+                // there will always be a holdout file in evaluation mode
                 hif = new HoldoutInfoFile(holdoutFilePath);
+                
+                String ignoreFilePath = AvatolCVFileSystem.getIgnoreFilePath(runID, scoringConcernName);
+                if (null != ignoreFilePath){
+                    iif = new IgnoreInfoFile(ignoreFilePath);
+                }
+                
             }
             sb.append("SCORES for " + runID + "  " + scoringConcernName + NL);
             List<String> scoringImagePaths = sif.getImagePaths();
@@ -593,6 +602,12 @@ public class ResultsReviewSortable implements ProgressPresenter {
                             correctOverQualityBarCount++;
                         }
                     }
+                    NormalizedValue trainTestConcernValue = hif.getTrainTestConcernValueForImagePath(path);
+                    String ttcName = trainTestConcernValue.getName();
+                    if (!"".equals(ttcName)){
+                        sb.append("\t" + ttcName);
+                    }
+                    
                 }
                 
                 String origImageNameWithID = ResultsUtils.getTrueImageNameFromImagePath(path);
@@ -622,6 +637,12 @@ public class ResultsReviewSortable implements ProgressPresenter {
                     String normalizedScoringConcernValue = tif.getScoringConcernValueForImagePath(path);
                     String value = new NormalizedValue(normalizedScoringConcernValue).getName();
                     sb.append("\tscore: " + value);
+                    NormalizedValue ttcValue = tif.getTrainTestConcernValueForImageID(imageID);
+                    String ttcName = ttcValue.getName();
+                    if (!"".equals(ttcName)){
+                        sb.append("\t: " + ttcName);
+                    }
+                    
                     String trueNameWithSuffix = ResultsUtils.getTrueImageNameFromImagePath(path);
                     String[] parts = ClassicSplitter.splitt(trueNameWithSuffix,'_');
                     String origImageName = parts[1];
@@ -631,23 +652,32 @@ public class ResultsReviewSortable implements ProgressPresenter {
                     sb.append("\tname: " + origImageName + NL);
                 }
             }
+            sb.append(NL + NL + "IGNORE INFO for " + runID + "  " + scoringConcernName + NL);
             int totalIgnoreCount = 0;
             if (isEvaluationMode()){
-                List<String> holdoutPaths = hif.getImagePaths();
-                for (String path : holdoutPaths){
-                    totalIgnoreCount++;
-                    String imageID = ImageInfo.getImageIDFromPath(path);
-                    sb.append("image: " + imageID);
-                    String normalizedScoringConcernValue = hif.getScoringConcernValueForImagePath(path);
-                    String value = new NormalizedValue(normalizedScoringConcernValue).getName();
-                    sb.append("\tscore: " + value);
-                    String trueNameWithSuffix = ResultsUtils.getTrueImageNameFromImagePath(path);
-                    String[] parts = ClassicSplitter.splitt(trueNameWithSuffix,'_');
-                    String origImageName = parts[1];
-                    if ("".equals(origImageName)){
-                        origImageName = parts[0];
+                if (null != iif){
+                    List<String> ignorePaths = iif.getImagePaths();
+                    for (String path : ignorePaths){
+                        totalIgnoreCount++;
+                        String imageID = ImageInfo.getImageIDFromPath(path);
+                        sb.append("image: " + imageID);
+                        String normalizedScoringConcernValue = iif.getScoringConcernValueForImagePath(path);
+                        String value = new NormalizedValue(normalizedScoringConcernValue).getName();
+                        sb.append("\tscore: " + value);
+                        NormalizedValue ttcValue = iif.getTrainTestConcernValueForImageID(imageID);
+                        String ttcName = ttcValue.getName();
+                        if (!"".equals(ttcName)){
+                            sb.append("\t: " + ttcName);
+                        }
+                        
+                        String trueNameWithSuffix = ResultsUtils.getTrueImageNameFromImagePath(path);
+                        String[] parts = ClassicSplitter.splitt(trueNameWithSuffix,'_');
+                        String origImageName = parts[1];
+                        if ("".equals(origImageName)){
+                            origImageName = parts[0];
+                        }
+                        sb.append("\tname: " + origImageName + NL);
                     }
-                    sb.append("\tname: " + origImageName + NL);
                 }
             }
             double percentTrained = 100 * (totalTrainingCount / ( totalTrainingCount + totalScoredCount));

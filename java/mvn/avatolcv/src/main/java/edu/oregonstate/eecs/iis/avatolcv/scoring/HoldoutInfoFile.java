@@ -13,6 +13,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedTypeIDName;
+import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedValue;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
 
 public class HoldoutInfoFile {
@@ -25,6 +26,7 @@ public class HoldoutInfoFile {
     private String scoringConcernID;
     private String scoringConcernName;
     private Hashtable<String,String> scoringConcernValueHash = new Hashtable<String, String>();
+    private Hashtable<String,String> trainTestConcernValueHash = new Hashtable<String, String>();
     private List<String> imagePaths = new ArrayList<String>();
     private List<String> holdoutLines = new ArrayList<String>();
     
@@ -38,6 +40,9 @@ public class HoldoutInfoFile {
     }
     public String getScoringConcernValueForImagePath(String imagePath){
         return this.scoringConcernValueHash.get(imagePath);
+    }
+    public NormalizedValue getTrainTestConcernValueForImagePath(String imagePath) throws AvatolCVException {
+        return new NormalizedValue(this.trainTestConcernValueHash.get(imagePath));
     }
     public String getFilename(){
         
@@ -82,11 +87,13 @@ public class HoldoutInfoFile {
         String[] parts = ClassicSplitter.splitt(line,',');
         String filepath = parts[0];
         String scoringConcernValue = parts[1];
+        String trainTestConcernValue = parts[2];
         this.imagePaths.add(filepath);
         this.scoringConcernValueHash.put(filepath, scoringConcernValue);
+        this.trainTestConcernValueHash.put(filepath, trainTestConcernValue);
     }
-    public void addInfo(String imagePath, String scoringConcernValue){
-        String holdoutLine = imagePath+","+scoringConcernValue+ NL;
+    public void addInfo(String imagePath, String scoringConcernValue, NormalizedValue trainTestConcernValue){
+        String holdoutLine = imagePath+","+scoringConcernValue+","+trainTestConcernValue+ NL;
         holdoutLines.add(holdoutLine);
     }
     public void persist(String parentDir) throws AvatolCVException {

@@ -33,7 +33,6 @@ public class ResultsTableSortable {
         }
         @Override
         public int compareTo(Object arg0) {
-            // TODO Auto-generated method stub
             ImageIDColumnValue other = (ImageIDColumnValue)arg0;
             return this.value.compareTo(other.getValue());
         }
@@ -66,7 +65,7 @@ public class ResultsTableSortable {
     }
     public void sortOnColumn(String colName) throws AvatolCVException {
         if (!colNames.contains(colName)){
-            throw new AvatolCVException("cannot sort results table on nonexistent column " + colName);
+            return;
         }
         List<ImageIDColumnValue> colVals = valuesListForColumnNameHash.get(colName);
         Collections.sort(colVals);

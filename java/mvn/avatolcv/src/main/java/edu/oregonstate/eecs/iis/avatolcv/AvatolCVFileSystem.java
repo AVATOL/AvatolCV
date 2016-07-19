@@ -13,10 +13,11 @@ import java.util.Date;
 import java.util.List;
 
 import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
-import edu.oregonstate.eecs.iis.avatolcv.core.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.HoldoutInfoFile;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.IgnoreInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoresInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.scoring.ScoringInfoFile;
+import edu.oregonstate.eecs.iis.avatolcv.scoring.TrainingInfoFile;
 import edu.oregonstate.eecs.iis.avatolcv.session.DatasetInfo;
 import edu.oregonstate.eecs.iis.avatolcv.session.RunSummary;
 import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
@@ -488,7 +489,7 @@ public class AvatolCVFileSystem {
 		return null;
 	}
 	public static String getScoringFilePath(String runID, String scoringConcernName) throws AvatolCVException {
-		String dirToSearch = getDatasetDir() + FILESEP + runID + FILESEP + "trainingDataForScoring";
+		String dirToSearch = getDatasetDir() + FILESEP + runID + FILESEP + DIR_NAME_SCORING_TRAINING;
 		
 		File dir = new File(dirToSearch);
 		File[] files = dir.listFiles();
@@ -501,7 +502,7 @@ public class AvatolCVFileSystem {
 		return null;
 	}
 	public static String getTrainingFilePath(String runID, String scoringConcernName) throws AvatolCVException {
-		String dirToSearch = getDatasetDir() + FILESEP + runID + FILESEP + "trainingDataForScoring";
+		String dirToSearch = getDatasetDir() + FILESEP + runID + FILESEP + DIR_NAME_SCORING_TRAINING;
 		
 		File dir = new File(dirToSearch);
 		File[] files = dir.listFiles();
@@ -514,17 +515,23 @@ public class AvatolCVFileSystem {
 	}
 	
 	public static String getHoldoutFilePath(String runID, String scoringConcernName) throws AvatolCVException {
-        String dirToSearch = getDatasetDir() + FILESEP + runID + FILESEP + "trainingDataForScoring";
+	    return getPathFromTrainingDataDir(runID, scoringConcernName, HoldoutInfoFile.FILE_PREFIX);
+    }
+	public static String getIgnoreFilePath(String runID, String scoringConcernName) throws AvatolCVException {
+	    return getPathFromTrainingDataDir(runID, scoringConcernName, IgnoreInfoFile.FILE_PREFIX);
+    }
+	public static String getPathFromTrainingDataDir(String runID, String scoringConcernName, String prefix) throws AvatolCVException{
+	    String dirToSearch = getDatasetDir() + FILESEP + runID + FILESEP + DIR_NAME_SCORING_TRAINING;
         
         File dir = new File(dirToSearch);
         File[] files = dir.listFiles();
         for (File f : files){
-            if (f.getName().contains(scoringConcernName) && f.getName().startsWith(HoldoutInfoFile.FILE_PREFIX)){
+            if (f.getName().contains(scoringConcernName) && f.getName().startsWith(prefix)){
                 return f.getAbsolutePath();
             }
         }
         return null;
-    }
+	}
     public static String getTrainScoreIgnorePath() throws AvatolCVException {
         return getScoredDataDir() + FILESEP + "trainScoreIgnoreBreakdown.txt";
     }

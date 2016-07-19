@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.avatolcv.core;
+package edu.oregonstate.eecs.iis.avatolcv.scoring;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,6 +13,7 @@ import java.util.List;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVConstants;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVException;
 import edu.oregonstate.eecs.iis.avatolcv.AvatolCVFileSystem;
+import edu.oregonstate.eecs.iis.avatolcv.core.ImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.datasource.PointAnnotations;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedImageInfo;
 import edu.oregonstate.eecs.iis.avatolcv.normalized.NormalizedKey;
@@ -176,7 +177,10 @@ public class TrainingInfoFile {
 		if (idString.equals(NormalizedTypeIDName.ID_UNSPECIFIED)){
 			idString = "";
 		}
-		return FILE_PREFIX + typeString + "_" + idString + "_" + scoringConcernName + ".txt";
+		return getPrefix() + typeString + "_" + idString + "_" + scoringConcernName + ".txt";
+	}
+	public String getPrefix(){
+	    return FILE_PREFIX;
 	}
 	public void addImageInfo(String imagePath, String scoringConcernValue, String pointCoordinates, String trainTestConcern, String trainTestConcernValue) throws AvatolCVException {
 		String imageID = NormalizedImageInfo.getImageIDFromPath(imagePath);
