@@ -153,7 +153,9 @@ FILE_WITHIN_LINE_DELIMITER = ',';
 EXPECTED_NUM_LINE_COMPONENTS = 5;
 
 POINT = 'point';
+RECTANGLE = 'rectangle';
 POINT_COORDS_DELIMITER = '-';
+RECTANGLE_POINTS_DELIMITER = ';';
 
 %% parse file name
 [~, fileName, ~] = fileparts(trainingFile);
@@ -210,15 +212,26 @@ while 1
     %% parse point coordinates
     if strcmp(pointCoords, '') == 0
         components1 = strsplit(pointCoords, ':');
-        if strcmp(components1{1}, POINT) == 0
-            error('expected point from parsing line(%d) in file "%s"', ...
+        if (strcmp(components1{1}, POINT))
+            components2 = strsplit(components1{2}, POINT_COORDS_DELIMITER);
+            [trainingData(counter).x, ...
+            trainingData(counter).y] = ...
+            deal(str2double(components2{1}), str2double(components2{2}));
+            trainingData(counter).x2 = -1;
+            trainingData(counter).y2 = -1;
+        elseif (strcmp(components1{1}, RECTANGLE))
+            rect_points = strsplit(components1{2}, RECTANGLE_POINTS_DELIMITER);
+            pair1 = strsplit(rect_points{1}, POINT_COORDS_DELIMITER);
+            pair2 = strsplit(rect_points{2}, POINT_COORDS_DELIMITER);
+            trainingData(counter).x = str2double(pair1{1});
+            trainingData(counter).y = str2double(pair1{2});
+            trainingData(counter).x2 = str2double(pair2{1});
+            trainingData(counter).y2 = str2double(pair2{2});
+        else 
+            error('expected point or rectangle from parsing line(%d) in file "%s"', ...
                 lineNum, fileName);
         end
         
-        components2 = strsplit(components1{2}, POINT_COORDS_DELIMITER);
-        [trainingData(counter).x, ...
-            trainingData(counter).y] = ...
-            deal(str2double(components2{1}), str2double(components2{2}));
     else
         fprintf('omitting example due to no annotation: %s\n', ...
             imagePath);
@@ -432,7 +445,7 @@ function generate_annotation_files(trainingDataList, ...
 %% constants
 DELIM = ':';
 COORDS_DELIM = ',';
-
+RECTANGLE_POINTS_DELIMITER = ';';
 %% write annotation files
 for charIndex = 1:length(trainingDataList)
     trainingData = trainingDataList{charIndex};
@@ -444,6 +457,8 @@ for charIndex = 1:length(trainingDataList)
         
         x = trainingData(exampleIndex).x;
         y = trainingData(exampleIndex).y;
+        x2 = trainingData(exampleIndex).x2;
+        y2 = trainingData(exampleIndex).y2;
         charStateId = trainingData(exampleIndex).charStateId;
         charStateName = trainingData(exampleIndex).charStateName;
         
@@ -452,12 +467,27 @@ for charIndex = 1:length(trainingDataList)
         annotationPath = fullfile(annotationsDir, annotationFile);
         fh = fopen(annotationPath, 'wt');
         
-        fprintf(fh, [num2str(x) COORDS_DELIM ...
-            num2str(y) DELIM ...
-            charId DELIM ...
-            charName DELIM ...
-            charStateId DELIM ...
-            charStateName '\n']);
+        if (x2 == -1)
+            fprintf(fh, [num2str(x) COORDS_DELIM ...
+                num2str(y) DELIM ...
+                charId DELIM ...
+                charName DELIM ...
+                charStateId DELIM ...
+                charStateName '\n']);
+        else 
+            fprintf(fh, [num2str(x) COORDS_DELIM ...
+                num2str(y) ...
+                RECTANGLE_POINTS_DELIMITER ...
+                num2str(x2) COORDS_DELIM ...
+                num2str(y2) ...
+                DELIM ...
+                charId DELIM ...
+                charName DELIM ...
+                charStateId DELIM ...
+                charStateName '\n']);
+            
+        end
+        
         
         fclose(fh);
     end
