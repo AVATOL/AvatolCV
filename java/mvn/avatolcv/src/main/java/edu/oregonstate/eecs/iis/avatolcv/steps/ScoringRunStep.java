@@ -1,6 +1,7 @@
 package edu.oregonstate.eecs.iis.avatolcv.steps;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -130,18 +131,18 @@ public class ScoringRunStep implements Step {
         }
     }
   
-    public void runScoring(OutputMonitor controller, String processName, boolean useRunConfig) throws AvatolCVException {
+    public boolean runScoring(OutputMonitor controller, String processName, boolean useRunConfig) throws AvatolCVException {
         if (!useRunConfig){
         	logger.info("Scoring run skipping runConfigFile");
             String runConfigPath = null;
             ScoringAlgorithm sa  = sessionInfo.getSelectedScoringAlgorithm();
             this.launcher = new AlgorithmLauncher(sa, runConfigPath, false);
-            return;
+            return true;
         }
     	 
         AlgorithmSequence algSequence = sessionInfo.getAlgorithmSequence();
         algSequence.enableScoring();
-        
+        List<String> scoringConcernsWithOnlyOneCharacterState = new ArrayList<String>();
         List<ChoiceItem> scoringConcerns = this.sessionInfo.getChosenScoringConcerns();
         for (ChoiceItem scoringConcern : scoringConcerns){
         	logger.info("creating TrainingInfoFile and ScoringInfoFile for " + scoringConcern.getNormalizedKey());
@@ -176,7 +177,9 @@ public class ScoringRunStep implements Step {
                 addImageToTrainingInfoFile(mii, scoringConcernKey, tif, scoringProfile);
             }
             tif.persist(AvatolCVFileSystem.getTrainingDataDirForScoring());
-
+            if (tif.isOnlyOneCharacterStateInPlay()){
+                scoringConcernsWithOnlyOneCharacterState.add(scoringConcernName);
+            }
             /*
              * scoring_ file
              */
@@ -219,11 +222,28 @@ public class ScoringRunStep implements Step {
             logger.info("created runConfigFile " + runConfigPath);
             logger.info("runConfigFile has: " + runConfig.getPropertiesAsString());
         }
+        ScoringAlgorithm sa  = sessionInfo.getSelectedScoringAlgorithm();
+        boolean watchForSingleCharState = false;
+        if (sa.requiresPresentAndAbsentTrainingExamplesForCharacter()){
+            watchForSingleCharState = true;
+        }
         
-       
-        logger.info("launching " + sessionInfo.getSelectedScoringAlgorithm().getAlgName());
-        this.launcher = new AlgorithmLauncher(sessionInfo.getSelectedScoringAlgorithm(), runConfig.getRunConfigPath(), true);
-        this.launcher.launch(controller);
+        if (watchForSingleCharState && !scoringConcernsWithOnlyOneCharacterState.isEmpty() ){
+            controller.acceptOutput("Cannot launch algorithm" + NL + NL);
+            controller.acceptOutput(sa.getAlgName() + " requires that there be both present and absent character states in the training data for each character." +NL);
+            controller.acceptOutput("The following characters have either all present or all absent" + NL + NL);
+            for (String s : scoringConcernsWithOnlyOneCharacterState){
+                controller.acceptOutput("  " + s);
+            }
+            return false;
+        }
+        else {
+            logger.info("launching " + sessionInfo.getSelectedScoringAlgorithm().getAlgName());
+            this.launcher = new AlgorithmLauncher(sessionInfo.getSelectedScoringAlgorithm(), runConfig.getRunConfigPath(), true);
+            this.launcher.launch(controller);
+            return true;
+        }
+        
     }
     
     public void cancelScoring(){

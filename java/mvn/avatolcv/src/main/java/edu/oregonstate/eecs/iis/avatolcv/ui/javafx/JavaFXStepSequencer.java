@@ -320,6 +320,10 @@ public class JavaFXStepSequencer  {
     	nextButton.setDisable(false);
     	backButton.setDisable(false);
     }
+
+    public void enableBackButton(){
+        backButton.setDisable(false);
+    }
     public void disableNavButtons(){
         nextButton.setDisable(true);
         backButton.setDisable(true);

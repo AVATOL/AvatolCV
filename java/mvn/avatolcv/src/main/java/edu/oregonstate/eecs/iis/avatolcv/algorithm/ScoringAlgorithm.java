@@ -12,6 +12,7 @@ public class ScoringAlgorithm extends Algorithm {
     public static final String PROPERTY_TRAIN_TEST_CONCERN_REQUIRED = "trainTestConcernRequired";
     public static final String PROPERTY_CAN_TRAIN_ON_MULTIPLE_ANNOTATIONS_PER_IMAGE = "canTrainOnMultipleAnnotationsPerImage";
     private static final String PROPERTY_INCLUDE_POINT_ANNOTATIONS_IN_SCORING_FILE = "includePointAnnotationsInScoringFile";
+    private static final String PROPERTY_REQUIRES_PRESENT_AND_ABSENT_TRAINING_EXAMPLES_FOR_CHARACTER = "requiresPresentAndAbsentTrainingExamplesForCharacter";
     public enum ScoringSessionFocus { 
         SPECIMEN_PART_PRESENCE_ABSENCE, 
         SPECIMEN_SHAPE_OR_TEXTURE_ASPECT};
@@ -21,6 +22,7 @@ public class ScoringAlgorithm extends Algorithm {
         MULTIPLE_ITEM
     }
     private boolean includePointAnnotationsInScoringFile = false;
+    private boolean requiresPresentAndAbsentTrainingExamplesForCharacter = false;
     private static Hashtable<ScoringSessionFocus, String> radioButtonTextForFocusHash = new Hashtable<ScoringSessionFocus, String>();
     
     static {
@@ -51,6 +53,12 @@ public class ScoringAlgorithm extends Algorithm {
                 if (key.equals(PROPERTY_SCORING_FOCUS)){
                     setFocusValue(val);
                 }
+                else if (key.equals(PROPERTY_REQUIRES_PRESENT_AND_ABSENT_TRAINING_EXAMPLES_FOR_CHARACTER)){
+                    if ("true".equals(val)){
+                        requiresPresentAndAbsentTrainingExamplesForCharacter = true;
+                    }
+                }
+
                 else if (key.equals(PROPERTY_CAN_TRAIN_ON_MULTIPLE_ANNOTATIONS_PER_IMAGE)){
                     if ("true".equals(val)){
                         canTrainOnMultipleAnnotationsPerImage = true;
@@ -77,6 +85,9 @@ public class ScoringAlgorithm extends Algorithm {
                 }
             }
         }
+    }
+    public boolean requiresPresentAndAbsentTrainingExamplesForCharacter(){
+        return requiresPresentAndAbsentTrainingExamplesForCharacter;
     }
     public boolean canTrainOnMultipleAnnotationsPerImage(){
         return canTrainOnMultipleAnnotationsPerImage;

@@ -185,6 +185,11 @@ public class TrainingInfoFile {
 	public void addImageInfo(String imagePath, String scoringConcernValue, String pointCoordinates, String trainTestConcern, String trainTestConcernValue) throws AvatolCVException {
 		String imageID = NormalizedImageInfo.getImageIDFromPath(imagePath);
 		if (!ImageInfo.isExcluded(imageID)){
+		    imagePaths.add(imagePath);
+		    scoringConcernValueForPathHash.put(imagePath, scoringConcernValue);
+		    pointCoordinatesForPathHash.put(imagePath, pointCoordinates);
+		    trainTestConcernForPathHash.put(imagePath,trainTestConcern);
+		    trainTestConcernValuePathHash.put(imagePath, trainTestConcernValue);
 			String trainingLine = imagePath+","+scoringConcernValue+","+pointCoordinates + "," + trainTestConcern + "," + trainTestConcernValue +NL;
 			trainingLines.add(trainingLine);
 		}
@@ -207,5 +212,18 @@ public class TrainingInfoFile {
 		catch(IOException ioe){
 			throw new AvatolCVException("cannot write training info file for " + scoringConcernName);
 		}
+	}
+	public boolean isOnlyOneCharacterStateInPlay(){
+	    List<String> valuesSeen = new ArrayList<String>();
+	    for (String p : imagePaths){
+	        String value = scoringConcernValueForPathHash.get(p);
+	        if (!valuesSeen.contains(value)){
+	            valuesSeen.add(value);
+	        }
+	    }
+	    if (valuesSeen.size() < 2){
+	        return true;
+	    }
+	    return false;
 	}
 }

@@ -140,6 +140,12 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
         }
         
     }
+    public class PostScoringUIAdjustmentsAllowBackOnly implements Runnable {
+        @Override
+        public void run() {
+            fxSession.enableBackButton();
+        }
+    }
     public class PostScoringUIAdjustments implements Runnable{
         @Override
         public void run() {
@@ -173,21 +179,19 @@ public class ScoringRunStepController implements StepController, OutputMonitor{
         protected Boolean call() throws Exception {
             try {
                 AvatolCVFileSystem.clearScoringLogs();
-                if (this.useRunConfig){
-                    this.step.runScoring(this.controller, processName, true);
+                boolean useRunConfig = this.useRunConfig;
+                boolean runCompleted = this.step.runScoring(this.controller, processName, useRunConfig);
+                if (runCompleted){
                     this.step.generateRunSummaries();
                     PostScoringUIAdjustments runner = new PostScoringUIAdjustments();
                     Platform.runLater(runner);
                     return new Boolean(true);
                 }
                 else {
-                    this.step.runScoring(this.controller, processName, false);
-                    this.step.generateRunSummaries();
-                    PostScoringUIAdjustments runner = new PostScoringUIAdjustments();
+                    PostScoringUIAdjustmentsAllowBackOnly runner = new PostScoringUIAdjustmentsAllowBackOnly();
                     Platform.runLater(runner);
                     return new Boolean(true);
                 }
-                
             }
             //catch(AvatolCVException ace){
             catch(Exception e){    
