@@ -26,6 +26,7 @@ import edu.oregonstate.eecs.iis.avatolcv.util.ClassicSplitter;
         ...
  */
 public class ScoresInfoFile {
+	public static final String NOT_SCORE = "NOT_SCORE"; //algorithm abstained from scoring
 	public static final String FILE_PREFIX = "scored_";
 	public static final String FILE_PREFIX_ALTERNATE = "scoring_";
 	public static final String IMAGE_DIR = "imageDir";
@@ -81,14 +82,24 @@ public class ScoresInfoFile {
 		this.pointCoordinatesHash.put(pathname, pointCoordinates);
 		//System.out.println("line : " + line);
 		for (int j = 0; j < confCount; j++){
-			String key = pathname+this.valuesList.get(j);
-			String val = parts[i++];
-			//System.out.println("key " + key + "   val " + val);
-			this.confidenceHash.put(key, val);
+			if (NOT_SCORE.equals(scoringConcernValue)){
+				String key = pathname+NOT_SCORE;
+				this.confidenceHash.put(key, "0.0");
+			}
+			else {
+				String key = pathname+this.valuesList.get(j);
+				String val = parts[i++];
+				//System.out.println("key " + key + "   val " + val);
+				this.confidenceHash.put(key, val);
+			}
+			
 		}
 	}
 	public PointAnnotations getAnnotationCoordinates(String imagePath){
 		String coordinateString = this.pointCoordinatesHash.get(imagePath);
+		if ("?".equals(coordinateString)){
+			return null;
+		}
 		PointAnnotations pas = new PointAnnotations(coordinateString);
 		return pas;
 	}

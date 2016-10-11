@@ -353,7 +353,9 @@ public class ResultsReviewSortable implements ProgressPresenter {
                     //System.out.println("boundWidth " + boundWidth + " boundHeight " + boundHeight);
                     AnchorPane ap = new AnchorPane();
                     ap.getChildren().add(iv);
-                    drawCoordinates(ap, pointAnnotations, boundWidth, boundHeight);
+                    if (null != pointAnnotations){
+                    	 drawCoordinates(ap, pointAnnotations, boundWidth, boundHeight);
+                    }
                     gp.add(ap, 0, targetRowIndex, 5, 1);
                     rt.addLargeImage(imageID, ap);
                 }
@@ -370,6 +372,7 @@ public class ResultsReviewSortable implements ProgressPresenter {
     public void drawCoordinates(AnchorPane ap, PointAnnotations pointAnnotations, int imageWidthInPixels, int imageHeightInPixels){
     	if (pointAnnotations == null){
     		// ignore
+    		return;
     	}
     	List<Annotation> annotations = pointAnnotations.getAnnotations();
     	for (Annotation annotation : annotations){
