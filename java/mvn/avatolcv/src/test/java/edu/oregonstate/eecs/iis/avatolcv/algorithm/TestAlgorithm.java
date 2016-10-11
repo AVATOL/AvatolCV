@@ -130,6 +130,11 @@ public class TestAlgorithm extends TestCase {
         if (f.exists()){
             return jedMacRoot;
         }
+        String jedT460Root = "C:\\Users\\Jed Irvine\\av\\avatol_cv";
+        f = new File(jedT460Root);
+        if (f.exists()){
+            return jedT460Root;
+        }
         throw new AvatolCVException("no valid algorithm root found");
     }
 }
