@@ -1,7 +1,0 @@
-path(path,'/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv')
-path(path,'/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/questionnaire')
-path(path,'/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/tutorial')
-path(path,'/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/dataset') 
-path(path,'/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/tests') 
-path(path,'/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/algorithms') 
-path(path,'/nfs/guille/bugid/bugid/AVATOL/av_cv/git/avatol_cv/app')

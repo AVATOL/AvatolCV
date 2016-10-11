@@ -1,2 +1,0 @@
-training_data_split_threshold=0.7
-matrix_row_type=specimen

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<questions>
-    <question type="choice" id="WELL_CONTRASTED">
-        <text>Is the character derived from information at the perimeter of the leaf or the interior?</text>
-        <answer value="perimeter" next="NO_MORE_QUESTIONS" />
-        <answer value="interior" next="NO_MORE_QUESTIONS" />
-    </question>
-</questions>
