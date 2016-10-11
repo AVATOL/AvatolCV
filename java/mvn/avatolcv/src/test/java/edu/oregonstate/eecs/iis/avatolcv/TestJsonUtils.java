@@ -7,10 +7,10 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import edu.oregonstate.eecs.iis.obsolete.avatolcv.jsontesting.Annotation;
-import edu.oregonstate.eecs.iis.obsolete.avatolcv.jsontesting.Annotations;
-import edu.oregonstate.eecs.iis.obsolete.avatolcv.jsontesting.JsonUtils;
-import edu.oregonstate.eecs.iis.obsolete.avatolcv.jsontesting.Point;
+import edu.oregonstate.eecs.iis.avatolcv.util.jsontesting.Annotation;
+import edu.oregonstate.eecs.iis.avatolcv.util.jsontesting.Annotations;
+import edu.oregonstate.eecs.iis.avatolcv.util.jsontesting.JsonUtils;
+import edu.oregonstate.eecs.iis.avatolcv.util.jsontesting.Point;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

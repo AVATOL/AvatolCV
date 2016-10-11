@@ -1,4 +1,4 @@
-package edu.oregonstate.eecs.iis.obsolete.avatolcv.jsontesting;
+package edu.oregonstate.eecs.iis.avatolcv.util.jsontesting;
 
 public class Point {
     private double x;
