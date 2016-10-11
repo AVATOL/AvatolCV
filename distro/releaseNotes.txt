@@ -1,3 +1,8 @@
+20161011 AvatolCV Release Notes
+
+-fixed bug where if the algorithm chose to not score an image, and assigned
+it a value of NOT_SCORE, the results review screen would crash.
+==========================================================================
 20160801 AvatolCV Release Notes
 
 -added support for rectangle annotations to support partScoring
