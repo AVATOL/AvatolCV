@@ -8,13 +8,15 @@ through computer vision algorithms for the purpose of scoring morphologic charac
 
 To install an AvatolCV distribution, visit https://github.com/AVATOL/AvatolCVInstaller and consult the README file there.
 
+# Documentation
 The documentation available with this source code is located in the docs directory:
 
-AvatolCVUsersGuide.pdf
-AvatolCVDeveloperDocumentation.pdf
-AddingNewAlgorithmsToAvatolCV.pdf
-AvatolCVAlgorithmsDescriptions.txt
+- AvatolCVUsersGuide.pdf
+- AvatolCVDeveloperDocumentation.pdf
+- AddingNewAlgorithmsToAvatolCV.pdf
+- AvatolCVAlgorithmsDescriptions.txt
 
+# Three Subsystems
 The big pieces of AvatolCV are:
 - UI which guides user through a session wizard-style
 - DataSource api with two implementations provided: 
@@ -28,23 +30,24 @@ The big pieces of AvatolCV are:
       - Segmentation:  highClutterSegmenter (segments specimens in high clutter environments)
       - Scoring:       partsScoring (scores presence/absence of small parts, such as teeth in a skull)
       
-      
+# The java code landscape
+
 The java packages contained in AvatolCV are:
 
 - edu.oregonstate.eecs.iis.avatolcv.algorithm // classes that encapsulate algorithm related concerns
-- edu.oregonstate.eecs.iis.avatolcv.core
-- edu.oregonstate.eecs.iis.avatolcv.css
-- edu.oregonstate.eecs.iis.avatolcv.datasource
-- edu.oregonstate.eecs.iis.avatolcv.javafxui
-- edu.oregonstate.eecs.iis.avatolcv.normalized
-- edu.oregonstate.eecs.iis.avatolcv.results
-- edu.oregonstate.eecs.iis.avatolcv.scoring
-- edu.oregonstate.eecs.iis.avatolcv.session
-- edu.oregonstate.eecs.iis.avatolcv.steps
-- edu.oregonstate.eecs.iis.avatolcv.tools
-- edu.oregonstate.eecs.iis.avatolcv.tutorial
-- edu.oregonstate.eecs.iis.avatolcv.ui.javafx
-- edu.oregonstate.eecs.iis.avatolcv.util
-- edu.oregonstate.eecs.iis.avatolcv.ws
-- edu.oregonstate.eecs.iis.avatolcv.ws.bisque
-- edu.oregonstate.eecs.iis.avatolcv.ws.morphobank
+- edu.oregonstate.eecs.iis.avatolcv.core   // a few core files
+- edu.oregonstate.eecs.iis.avatolcv.css // css stylesheets for the JavaFX UI
+- edu.oregonstate.eecs.iis.avatolcv.datasource // encapsulates sources of image data (Morphobank, BisQue) and interactions therewith
+- edu.oregonstate.eecs.iis.avatolcv.javafxui // includes AvatolCVJavaFX.java which has main().  These files could be moved to the ui.javafx package
+- edu.oregonstate.eecs.iis.avatolcv.normalized // all the classes dealing with AvatolCV's normalized data format
+- edu.oregonstate.eecs.iis.avatolcv.results // classes supporting the ResultsViewer screen
+- edu.oregonstate.eecs.iis.avatolcv.scoring // classes supporting scoring prep mechanics and nuances
+- edu.oregonstate.eecs.iis.avatolcv.session // classes supporting the notion of a scoring session and issues that arise therein
+- edu.oregonstate.eecs.iis.avatolcv.steps // each class represents the data behind each screen in the wizerd
+- edu.oregonstate.eecs.iis.avatolcv.tools // some classes supporting editing of datasets that have been pulled in
+- edu.oregonstate.eecs.iis.avatolcv.tutorial // now obsolete
+- edu.oregonstate.eecs.iis.avatolcv.ui.javafx // JavaFX controllers for each screen in wizard, plus the corresponding .fxml files
+- edu.oregonstate.eecs.iis.avatolcv.util // various utilities - some standalone, some used in the codebase
+- edu.oregonstate.eecs.iis.avatolcv.ws // Web Service clients for Morphobank and Bisque
+- edu.oregonstate.eecs.iis.avatolcv.ws.bisque // classes for unmarshalling data that flows in the BisQue Web Service conversation
+- edu.oregonstate.eecs.iis.avatolcv.ws.morphobank // classes for unmarshalling data that flows in the Morphobank Web Service conversation
