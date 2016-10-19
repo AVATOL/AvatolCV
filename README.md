@@ -1,3 +1,4 @@
+
 # AvatolCV
 NOTE: This material is based upon work supported by the National Science Foundation under Grant No. 1208272. 
 Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) 
@@ -43,7 +44,7 @@ The java packages contained in AvatolCV are:
 - edu.oregonstate.eecs.iis.avatolcv.results // classes supporting the ResultsViewer screen
 - edu.oregonstate.eecs.iis.avatolcv.scoring // classes supporting scoring prep mechanics and nuances
 - edu.oregonstate.eecs.iis.avatolcv.session // classes supporting the notion of a scoring session and issues that arise therein
-- edu.oregonstate.eecs.iis.avatolcv.steps // each class represents the data behind each screen in the wizerd
+- edu.oregonstate.eecs.iis.avatolcv.steps // each class represents the data behind each screen in the wizard
 - edu.oregonstate.eecs.iis.avatolcv.tools // some classes supporting editing of datasets that have been pulled in
 - edu.oregonstate.eecs.iis.avatolcv.tutorial // now obsolete
 - edu.oregonstate.eecs.iis.avatolcv.ui.javafx // JavaFX controllers for each screen in wizard, plus the corresponding .fxml files
@@ -51,3 +52,20 @@ The java packages contained in AvatolCV are:
 - edu.oregonstate.eecs.iis.avatolcv.ws // Web Service clients for Morphobank and Bisque
 - edu.oregonstate.eecs.iis.avatolcv.ws.bisque // classes for unmarshalling data that flows in the BisQue Web Service conversation
 - edu.oregonstate.eecs.iis.avatolcv.ws.morphobank // classes for unmarshalling data that flows in the Morphobank Web Service conversation
+
+# To Develop
+If using eclipse, after cloning, import this as an existing maven project:
+- avatol_cv/java/mvn/avatolcv
+
+To start AvatolCV, run the following class:
+- edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX.java
+
+# Random notes
+- when you authenticate into BisQue, the authentication token Bisque offers is stored in avatol_cv/bisqueCookies.txt.  Once that file is in play, user is no longer asked to authenticate into BisQue.  This is possible because the auth token is valid for six (?) months.
+- to avoid having to type in authentication info for BisQue and Morphobank during development, create a file called avatol_cv/defaults.txt of this form:
+```
+morphobankUserId=<thatID>
+morphobankPassword=<thatPW>
+bisqueUserId=<thatID>
+bisquePassword=<thatPW>
+```
