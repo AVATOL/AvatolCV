@@ -43,7 +43,12 @@ hcSearch   (On Windows)
 ############################################
 3. ensure modules3rdParty ready
 ############################################
-If add anything, make sure its represented properly in distro/mainfests/distro_manifest_modules3rdParty.txt.
+On Mac, ensure the modules/3rdParty directory is populated. This can be done by following directions in
+modules/Darwin_Library_Installation_Instructions_MACOS.pdf, or copying the files from another Mac 
+that was used for builds prior.  The directory should have darwin, libsvm, and vlfeat represented.
+(cmake is not in the manifest file - its just used to build Darwin)
+
+If add anything new, make sure its represented properly in distro/mainfests/distro_manifest_modules3rdParty.txt.
 If its a standalone file, add it as an entry.
 If it will be pulled in due to a parent dir that is already represented, no need to change anything.
 

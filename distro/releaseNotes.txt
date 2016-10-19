@@ -2,6 +2,7 @@
 
 -fixed bug where if the algorithm chose to not score an image, and assigned
 it a value of NOT_SCORE, the results review screen would crash.
+-added more documentation to the avatol_cv/docs folder
 ==========================================================================
 20160801 AvatolCV Release Notes
 
