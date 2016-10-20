@@ -7,6 +7,27 @@ and do not necessarily reflect the views of the National Science Foundation.
 This is the source code repository for AvatolCV, a desktop Java application for running biological image data 
 through computer vision algorithms for the purpose of scoring morphologic characters.
 
+# Personnel
+This system was developed at Oregon State University, School of EECS, Machine Learning Group by
+
+- Jed Irvine - primary software developer
+- Michael Lam - highClutterSegmenter algorithm
+- Yao Zhou - basicSegmenter, basicOrientation and shapeTextureScoring algorithms
+- Shell Hu - partsScoring algorithm
+- Behrooz Mahasseni - algorithm integration support
+- Sinisa Todorovic - Associate Professor of Computer Science, Computer Vision, co-Principal Investigator
+- Thomas Dietterich, Distinguished Professor and Director of Intelligent Systems Research, co-Principal Investigator
+
+in collaboration with 
+
+- Maureen O'Leary, Stony Brook University - co-Principal Investigator and Morphobank integration support
+- Maria Passarotti, Whirl-i-gig.com - Morphobank Web Services integration support
+- Andrea Cirranello, American Museum Of Natural History - bat skull dataset
+- Ramona Walls, CyVerse, University of Arizona - leaf dataset and BisQue integration support
+- Kristian Kvilekval, University of California Santa Barbara - BisQue Web Services integration support
+- Meg Daly, Ohio State University - nematocyst dataset
+
+
 To install an AvatolCV distribution, visit https://github.com/AVATOL/AvatolCVInstaller and consult the README file there.
 
 # Documentation
