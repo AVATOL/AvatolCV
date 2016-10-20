@@ -31,7 +31,7 @@ The big pieces of AvatolCV are:
       - Segmentation:  highClutterSegmenter (segments specimens in high clutter environments)
       - Scoring:       partsScoring (scores presence/absence of small parts, such as teeth in a skull)
 - A results reviewer
-      
+lt      
 # The java code landscape
 
 The java packages contained in AvatolCV are:
@@ -41,8 +41,7 @@ The java packages contained in AvatolCV are:
 - edu.oregonstate.eecs.iis.avatolcv.css // css stylesheets for the JavaFX UI
 - edu.oregonstate.eecs.iis.avatolcv.datasource // encapsulates sources of image data (Morphobank, BisQue) and interactions therewith
 - edu.oregonstate.eecs.iis.avatolcv.javafxui // includes AvatolCVJavaFX.java which has main().  These files could be moved to the ui.javafx package
-- edu.oregonstate.eecs.iis.avatolcv.normalized // all the classes dealing with AvatolCV's normalized data format
-- edu.oregonstate.eecs.iis.avatolcv.results // classes supporting the ResultsViewer screen
+- edu.oregonstate.eecs.iis.avatolcv.normalized // all the classes dealing with AvatolCV's normalized data format- edu.oregonstate.eecs.iis.avatolcv.results // classes supporting the ResultsViewer screen
 - edu.oregonstate.eecs.iis.avatolcv.scoring // classes supporting scoring prep mechanics and nuances
 - edu.oregonstate.eecs.iis.avatolcv.session // classes supporting the notion of a scoring session and issues that arise therein
 - edu.oregonstate.eecs.iis.avatolcv.steps // each class represents the data behind each screen in the wizard
@@ -62,9 +61,10 @@ If using eclipse, after cloning, import this as an existing maven project:
 To start AvatolCV, run the following class:
 
 - edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX.java
-
+ 
 # Overview of Key Files
 Documentation
+
 - avatol_cv/docs/\*   
 
 The executable jar file for AvatolCV (java -jar avatol_cv.jar)
@@ -75,23 +75,44 @@ License files for 3rdParty code
 
 - avatol_cv/license/\*
 
+Algorims and depended upon libraries live in the modules directory
 
-avatol_cv/modules
-avatol_cv/modules/3rdParty
-avatol_cv/modules/3rdParty/darwin
-avatol_cv/modules/3rdParty/libsvm
-avatol_cv/modules/3rdParty/vlfeat
-avatol_cv/modules/Darwin_Library_Installation_Instructions_MACOS.pdf
-avatol_cv/modules/hcSearch_Installation_Instructions.txt
-avatol_cv/modules/orientation
-avatol_cv/modules/orientation/yaoOrient
-avatol_cv/modules/orientation/yaoOrient/algPropertiesMac.txt
-avatol_cv/modules/runConfigSpecForOrientation.txt
-avatol_cv/modules/runConfigSpecForScoring.txt
-avatol_cv/modules/runConfigSpecForSegmentation.txt
-avatol_cv/modules/scoredDataSpec.txt
-avatol_cv/modules/scoring/batskullDPM/algPropertiesMac.txt
-avatol_cv/modules/scoring/batskullDPM/algPropertiesWindows.txt
+- avatol_cv/modules\*
+
+3rdParty libraries for the basicSegmenter need to live here (Mac only).  They are not in this repo and need to be installed. See avatol_cv/modules/Darwin_Library_Installation_Instructions_MACOS.pdf for instructions 
+
+- avatol_cv/modules/3rdParty/darwin
+- avatol_cv/modules/3rdParty/libsvm
+- avatol_cv/modules/3rdParty/vlfeat
+
+highClutterSegmenter lives in another repo (https://github.com/AVATOL/nematocyst) and needs to be installed as per this file, if it is to be run (highClutterSegmenter does not currently hook into either functioning scoring pipelines):
+
+- avatol_cv/modules/hcSearch_Installation_Instructions.txt
+
+Orientation algorithms live under this directory:
+
+- avatol_cv/modules/orientation
+
+The basicOrientation algorithm is included in this AvatolCV repo (yaoOrient) and is integrated with AvatolCV via this file:
+
+- avatol_cv/modules/orientation/yaoOrient/algPropertiesMac.txt
+
+These three files document the relationship between algProperties files and runConfig files:
+
+- avatol_cv/modules/runConfigSpecForOrientation.txt
+- avatol_cv/modules/runConfigSpecForScoring.txt
+- avatol_cv/modules/runConfigSpecForSegmentation.txt
+
+This file captures the specification of what form scoring algorithms must put output data so that it can be read by the ResultsViewer:
+
+- avatol_cv/modules/scoredDataSpec.txt
+
+The partsScopring algortihm is integrated with AvatolCV via these two files:
+
+- avatol_cv/modules/scoring/batskullDPM/algPropertiesMac.txt
+- avatol_cv/modules/scoring/batskullDPM/algPropertiesWindows.txt
+
+The partScoring algorithm lives in another repo (https://github.com/AVATOL/bat).  See docs/ 
 avatol_cv/modules/scoring/batskullDPM/bat
 avatol_cv/modules/scoring/leafScore/algPropertiesMac.txt
 
