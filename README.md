@@ -10,7 +10,7 @@ through computer vision algorithms for the purpose of scoring morphologic charac
 To install an AvatolCV distribution, visit https://github.com/AVATOL/AvatolCVInstaller and consult the README file there.
 
 # Documentation
-The documentation available with this source code is located in the docs directory:
+The documentation available with this source code is located in the avatol_cv/docs directory:
 
 - AvatolCVUsersGuide.pdf
 - AvatolCVDeveloperDocumentation.pdf
