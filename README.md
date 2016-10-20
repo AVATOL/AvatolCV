@@ -76,6 +76,75 @@ License files for 3rdParty code
 - avatol_cv/license/\*
 
 
+avatol_cv/modules
+avatol_cv/modules/3rdParty
+avatol_cv/modules/3rdParty/darwin
+avatol_cv/modules/3rdParty/libsvm
+avatol_cv/modules/3rdParty/vlfeat
+avatol_cv/modules/Darwin_Library_Installation_Instructions_MACOS.pdf
+avatol_cv/modules/hcSearch_Installation_Instructions.txt
+avatol_cv/modules/orientation
+avatol_cv/modules/orientation/yaoOrient
+avatol_cv/modules/orientation/yaoOrient/algPropertiesMac.txt
+avatol_cv/modules/runConfigSpecForOrientation.txt
+avatol_cv/modules/runConfigSpecForScoring.txt
+avatol_cv/modules/runConfigSpecForSegmentation.txt
+avatol_cv/modules/scoredDataSpec.txt
+avatol_cv/modules/scoring/batskullDPM/algPropertiesMac.txt
+avatol_cv/modules/scoring/batskullDPM/algPropertiesWindows.txt
+avatol_cv/modules/scoring/batskullDPM/bat
+avatol_cv/modules/scoring/leafScore/algPropertiesMac.txt
+
+avatol_cv/modules/segmentation/hcsearchSeg/algPropertiesMac.txt
+avatol_cv/modules/segmentation/hcsearchSeg/algPropertiesWindows.txt
+avatol_cv/modules/segmentation/hcsearchSeg/nematocyst
+
+avatol_cv/modules/segmentation/yaoSeg/algPropertiesMac.txt
+avatol_cv/modules/segmentation/yaoSeg/algPropertiesMac_reTrain.txt
+avatol_cv/sessions/AVAToL Computer Vision Matrix
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/exclusions/381004.txt
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/filter.txt
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/logs/scoring/matlab_run_1476913497_translate_input.txt
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/logs/scoring/matlab_run_1476913506_invoke_batskull_system.txt
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/logs/scoring/matlab_run_1476927805_translate_output.txt
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/orientedData
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/runConfig_scoring.txt
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/scoredData/outputStats_20161019_01_M3 presence.txt
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/scoredData/scored_character_1824347_Upper I1 presence.txt
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/scoredData/scored_character_1824349_Upper I2 presence.txt
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/scoredData/scored_character_1824351_Upper P1 presence.txt
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/scoredData/scored_character_1824352_Upper P4 presence.txt
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/scoredData/scored_character_1824358_M3 presence.txt
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/scoredData/trainScoreIgnoreBreakdown.txt
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/segmentedData
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/testImagesFile_scoring.txt
+
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/trainingDataForScoring/holdout_character_1824347_Upper I1 presence.txt
+
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/trainingDataForScoring/ignore_character_1824347_Upper I1 presence.txt
+
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/trainingDataForScoring/scoring_character_1824347_Upper I1 presence.txt
+
+avatol_cv/sessions/AVAToL Computer Vision Matrix/20161019_01/trainingDataForScoring/training_character_1824347_Upper I1 presence.txt
+
+avatol_cv/sessions/AVAToL Computer Vision Matrix/morphobank
+avatol_cv/sessions/AVAToL Computer Vision Matrix/morphobank/annotations/c1824347_m380454_t773126.txt
+avatol_cv/sessions/AVAToL Computer Vision Matrix/morphobank/charStates/c1824347_t773120.txt
+avatol_cv/sessions/AVAToL Computer Vision Matrix/morphobank/mediaInfo/c1824347_t773120_v8902.txt
+avatol_cv/sessions/AVAToL Computer Vision Matrix/normalized
+avatol_cv/sessions/AVAToL Computer Vision Matrix/normalized/exclusions
+avatol_cv/sessions/AVAToL Computer Vision Matrix/normalized/imageInfo/380454_1.txt
+
+avatol_cv/sessions/AVAToL Computer Vision Matrix/normalized/images/large/380454__1000.jpg
+
+avatol_cv/sessions/AVAToL Computer Vision Matrix/normalized/images/thumbnail/380454__80.jpg
+avatol_cv/sessionSummaries
+avatol_cv/sessionSummaries/20161019_01_M3 presence.txt
+avatol_cv/sessionSummaries/20161019_01_Upper I1 presence.txt
+avatol_cv/sessionSummaries/20161019_01_Upper I2 presence.txt
+avatol_cv/sessionSummaries/20161019_01_Upper P1 presence.txt
+avatol_cv/sessionSummaries/20161019_01_Upper P4 presence.txt
 
 
 # Special Files
