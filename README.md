@@ -17,7 +17,7 @@ The documentation available with this source code is located in the docs directo
 - AddingNewAlgorithmsToAvatolCV.pdf
 - AvatolCVAlgorithmsDescriptions.txt
 
-# Three Subsystems
+# Subsystems
 The big pieces of AvatolCV are:
 - UI which guides user through a session wizard-style
 - DataSource api with two implementations provided: 
@@ -30,6 +30,7 @@ The big pieces of AvatolCV are:
       - Scoring:       shapeTextureScoring (scores certain leaf shape aspect characters)
       - Segmentation:  highClutterSegmenter (segments specimens in high clutter environments)
       - Scoring:       partsScoring (scores presence/absence of small parts, such as teeth in a skull)
+- A results reviewer
       
 # The java code landscape
 
@@ -55,12 +56,29 @@ The java packages contained in AvatolCV are:
 
 # To Develop
 If using eclipse, after cloning, import this as an existing maven project:
+
 - avatol_cv/java/mvn/avatolcv
 
 To start AvatolCV, run the following class:
+
 - edu.oregonstate.eecs.iis.avatolcv.javafxui.AvatolCVJavaFX.java
 
-# Random notes
+# Overview of Key Files
+Documentation
+- avatol_cv/docs/\*   
+
+The executable jar file for AvatolCV (java -jar avatol_cv.jar)
+
+- avatol_cv/java/lib/avatol_cv.jar   
+
+License files for 3rdParty code
+
+- avatol_cv/license/\*
+
+
+
+
+# Special Files
 - when you authenticate into BisQue, the authentication token Bisque offers is stored in avatol_cv/bisqueCookies.txt.  Once that file is in play, user is no longer asked to authenticate into BisQue.  This is possible because the auth token is valid for six (?) months.
 - to avoid having to type in authentication info for BisQue and Morphobank during development, create a file called avatol_cv/defaults.txt of this form:
 ```
