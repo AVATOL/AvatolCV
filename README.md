@@ -1,4 +1,4 @@
-
+Additional 
 # AvatolCV
 NOTE: This material is based upon work supported by the National Science Foundation under Grant No. 1208272. 
 Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) 
@@ -27,6 +27,13 @@ in collaboration with
 - Kristian Kvilekval, University of California Santa Barbara - BisQue Web Services integration support
 - Meg Daly, Ohio State University - nematocyst dataset
 
+Additional National Science Foundation grants supporting the AVAToL project
+
+- DEB 1208270 to M.A. O’Leary
+- DEB 1208523 to M. Daly
+- DEB 1208845 to D.W. Stevenson
+- DEB 1208306 to N. B. Simmons
+- DEB 1208619 to E. C. Theriot. 
 
 To install an AvatolCV distribution, visit https://github.com/AVATOL/AvatolCVInstaller and consult the README file there.
 
